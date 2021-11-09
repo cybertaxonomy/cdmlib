@@ -262,11 +262,12 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     protected void accumulateSingleTaxon(TaxonNode taxonNode){
 
         Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
-        if(logger.isDebugEnabled()){
-            logger.debug("accumulate - taxon :" + taxonToString(taxon));
-        }
+        if(logger.isDebugEnabled()){logger.debug("accumulate - taxon :" + taxonToString(taxon));}
 
+        //description
         TaxonDescription targetDescription = getAggregatedDescription(taxon);
+
+        //temporary result
         ResultHolder resultHolder = createResultHolder();
         for (AggregationMode mode : getConfig().getAggregationModes()){
             if (mode == AggregationMode.ToParent){
@@ -279,6 +280,8 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 throw new IllegalArgumentException("Mode " + mode + " not yet supported");
             }
         }
+
+        //persist
         addAggregationResultToDescription(targetDescription, resultHolder);
         removeDescriptionIfEmpty(targetDescription, resultHolder);  //AM: necessary? Seems to be done in addAggregationResultToDescription() already...
         deleteDescriptionsToDelete(resultHolder);
