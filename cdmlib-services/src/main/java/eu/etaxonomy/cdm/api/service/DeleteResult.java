@@ -8,9 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -47,18 +45,7 @@ public class DeleteResult extends UpdateResult{
 		this.relatedObjects.addAll(relatedObjects);
 	}
 
-
-	@Override
-	public void includeResult(UpdateResult includedResult){
-
-        this.setMaxStatus(includedResult.getStatus());
-        this.addExceptions(includedResult.getExceptions());
-        this.addUpdatedObjects(includedResult.getUpdatedObjects());
-        if (includedResult instanceof DeleteResult){
-            this.addDeletedObjects(((DeleteResult)includedResult).getDeletedObjects());
-        }
-
-    }
+	//deleted objects
     public Set<CdmBase> getDeletedObjects() {
         return deletedObjects;
     }
@@ -69,4 +56,15 @@ public class DeleteResult extends UpdateResult{
         this.deletedObjects.add(deletedObject);
     }
 
+// ******************* Methods *************************************************/
+
+    @Override
+    public void includeResult(UpdateResult includedResult, boolean excludeStatusAndException){
+        super.includeResult(includedResult, excludeStatusAndException);
+        if (includedResult instanceof DeleteResult){
+            DeleteResult includedDeleteResult = (DeleteResult)includedResult;
+            this.addDeletedObjects(includedDeleteResult.getDeletedObjects());
+            this.addRelatedObjects(includedDeleteResult.getRelatedObjects());
+        }
+    }
 }

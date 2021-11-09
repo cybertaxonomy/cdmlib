@@ -146,9 +146,15 @@ public class UpdateResult implements Serializable{
     }
 
     public void includeResult(UpdateResult includedResult){
+        includeResult(includedResult, false);
+    }
 
-        this.setMaxStatus(includedResult.getStatus());
-        this.addExceptions(includedResult.getExceptions());
+    public void includeResult(UpdateResult includedResult, boolean excludeStatusAndException){
+
+        if (!excludeStatusAndException){
+            this.setMaxStatus(includedResult.getStatus());
+            this.addExceptions(includedResult.getExceptions());
+        }
         this.addUpdatedObjects(includedResult.getUpdatedObjects());
         this.addUpdatedCdmIds(includedResult.getUpdatedCdmIds());
         //also add cdm entity of included result to updated objects
