@@ -198,7 +198,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 initTransaction();
             }
 
-            // load taxa for this batch
+            //load taxa for this batch
             List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
 //            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
 
@@ -250,10 +250,14 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     }
 
+    /**
+     * Base class for temporary aggregation results for a single taxon. For within taxon
+     * and from child to parent aggregation. Should be extended by implementing aggregation classes.
+     */
     protected class ResultHolder{
         //descriptions are identifiable and therefore are not deleted automatically by removing them from taxon or specimen
         //here we store all descriptions that need to be deleted after aggregation as they are not needed anymore
-        Set<DescriptionBase<?>> descriptionsToDelete = new HashSet<>();;
+        Set<DescriptionBase<?>> descriptionsToDelete = new HashSet<>();
     }
 
     protected void accumulateSingleTaxon(TaxonNode taxonNode){
@@ -281,6 +285,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         deleteDescriptionsToDelete(resultHolder);
     }
 
+    /**
+     * Remove descriptions to be deleted from persistent data if possible.
+     */
     private void deleteDescriptionsToDelete(DescriptionAggregationBase<T, CONFIG>.ResultHolder resultHolder) {
         for (DescriptionBase<?> descriptionToDelete : resultHolder.descriptionsToDelete){
             if (descriptionToDelete.isPersited()){
@@ -291,6 +298,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
     }
 
+    /**
+     * If target description is empty the description is added to the descriptions to be deleted
+     * in the result holder.
+     */
     protected void removeDescriptionIfEmpty(TaxonDescription description, ResultHolder resultHolder) {
         if (description.getElements().isEmpty()){
             description.getTaxon().removeDescription(description);
@@ -298,6 +309,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
     }
 
+    /**
+     * Adds the temporary aggregated data (resultHolder) to the description.
+     * Tries to reuse existing data if possible.
+     */
     protected abstract void addAggregationResultToDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder);
 
@@ -307,10 +322,14 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     protected abstract void aggregateWithinSingleTaxon(Taxon taxon, ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions);
 
+    /**
+     * Creates a {@link ResultHolder} object to temporarily store the aggregation
+     * result (within taxon and from child to parent) for a single taxon.
+     */
     protected abstract ResultHolder createResultHolder();
 
     /**
-     * Either finds an existing taxon description of the given taxon or creates a new one.
+     * Either finds an existing taxon description for the given taxon or creates a new one.
      */
     private TaxonDescription getAggregatedDescription(Taxon taxon) {
 
