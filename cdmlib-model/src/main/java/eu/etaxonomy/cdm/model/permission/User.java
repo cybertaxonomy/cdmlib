@@ -126,6 +126,7 @@ public class User extends CdmBase implements UserDetails {
     protected String salt;
 
     @XmlElement(name = "EmailAddress")
+    
     protected String emailAddress;
 
     @XmlElementWrapper(name = "GrantedAuthorities")

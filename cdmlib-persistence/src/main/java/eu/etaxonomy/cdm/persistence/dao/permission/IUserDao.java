@@ -31,6 +31,13 @@ public interface IUserDao extends ICdmEntityDao<User> {
      */
     public User findUserByUsername(String username);
 
+    /**
+     * Find the user having the supplied email address
+     * @param emailAddress
+     * @return The user or null
+     */
+    public User findByEmailAddress(String emailAddress);
+    
      /**
      * Return a List of users matching the given query string, optionally filtered by class, optionally with a particular MatchMode
      *

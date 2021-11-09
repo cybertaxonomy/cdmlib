@@ -36,7 +36,29 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
         query.setParameter("username", username);
 
         User user = (User)query.uniqueResult(); // username is a @NaturalId
+        return initializeUser(user);
+    }
 
+    @Override
+    public User findByEmailAddress(String emailAddress) {
+        Query query = getSession().createQuery("select user from User user where user.emailAddress = :emailAddress");
+        query.setParameter("emailAddress", emailAddress);
+
+        User user = (User)query.uniqueResult(); // emailAddress to be unique, see https://dev.e-taxonomy.eu/redmine/issues/7276
+        return initializeUser(user);
+    }
+
+    @Override
+    public long countByUsername(String queryString, MatchMode matchmode, List<Criterion> criterion) {
+        return countByParam(type, "username",queryString,matchmode,criterion);
+    }
+
+    @Override
+    public List<User> findByUsername(String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParam(type, "username", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    }
+
+    public User initializeUser(User user) {
         if(user != null) {
             getSession().refresh(user); // make sure the user is always up to date
             Hibernate.initialize(user.getPerson());
@@ -45,18 +67,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
                 Hibernate.initialize(group.getGrantedAuthorities());
             }
         }
-
         return user;
-    }
-
-    @Override
-    public long countByUsername(String queryString,	MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(type, "username",queryString,matchmode,criterion);
-    }
-
-    @Override
-    public List<User> findByUsername(String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(type, "username", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
 }

@@ -1661,12 +1661,18 @@
          <artifactId>tools</artifactId>
          <version>1.8.0</version>
       </dependency>
-      <!-- Email functionality (used in cdmlib-services) -->
       <dependency>
+        <!-- Email functionality (used in cdmlib-services) -->
         <groupId>javax.mail</groupId>
         <artifactId>mailapi</artifactId>
         <version>1.4.3</version>
       </dependency>
+      <dependency>
+        <!-- only needed for PasswordResetService, may be replaced by Thymeleaf -->
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>1.9</version>
+    </dependency>
    </dependencies>    
   </dependencyManagement>
 </project>
