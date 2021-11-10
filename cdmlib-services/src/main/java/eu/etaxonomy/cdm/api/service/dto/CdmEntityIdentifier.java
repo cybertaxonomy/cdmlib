@@ -25,7 +25,19 @@ public class CdmEntityIdentifier implements Serializable {
     private final int id;
     private final Class<? extends CdmBase> cdmClass;
 
-    public CdmEntityIdentifier(int id, Class<? extends CdmBase> cdmClass) {
+//******************************** FACTORY *************************************************/
+
+    public static CdmEntityIdentifier NewInstance(int id, Class<? extends CdmBase> cdmClass){
+        return new CdmEntityIdentifier(id, cdmClass);
+    }
+
+    public static CdmEntityIdentifier NewInstance(CdmBase cdmBase){
+        return new CdmEntityIdentifier(cdmBase.getId(), CdmBase.deproxy(cdmBase).getClass());
+    }
+
+//******************************** CONSTRUCTOR *********************************************/
+
+    private CdmEntityIdentifier(int id, Class<? extends CdmBase> cdmClass) {
         this.id = id;
         this.cdmClass = cdmClass;
     }

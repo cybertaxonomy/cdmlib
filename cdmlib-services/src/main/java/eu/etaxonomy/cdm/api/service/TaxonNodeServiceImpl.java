@@ -537,8 +537,8 @@ public class TaxonNodeServiceImpl
                 microReference,
                 secHandling, setNameInSource);
 
-        result.addUpdatedCdmId(new CdmEntityIdentifier(oldTaxonParentNode.getId(), TaxonNode.class));
-        result.addUpdatedCdmId(new CdmEntityIdentifier(newTaxonNode.getId(), TaxonNode.class));
+        result.addUpdatedCdmId(CdmEntityIdentifier.NewInstance(oldTaxonParentNode));
+        result.addUpdatedCdmId(CdmEntityIdentifier.NewInstance(newTaxonNode));
         result.setCdmEntity(oldTaxonParentNode);
         return result;
     }

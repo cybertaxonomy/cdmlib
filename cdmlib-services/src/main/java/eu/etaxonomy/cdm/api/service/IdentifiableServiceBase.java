@@ -289,7 +289,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				entity = HibernateProxyHelper.deproxy(entity);
 			    if (entity.updateCaches(cacheStrategy)){
 			        countUpdated++;
-			        updatedCdmIds.add(new CdmEntityIdentifier(entity.getId(), clazz));
+			        updatedCdmIds.add(CdmEntityIdentifier.NewInstance(entity.getId(), clazz));
 			    }
 				worked++;
 				subMonitor.internalWorked(1);

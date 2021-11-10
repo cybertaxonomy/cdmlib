@@ -103,6 +103,9 @@ public class UpdateResult implements Serializable{
     public void addUpdatedCdmIds(Set<CdmEntityIdentifier> updatedCdmIds) {
         this.updatedCdmIds.addAll(updatedCdmIds);
     }
+    public void addUpdatedCdmId(CdmBase updatedObject) {
+        this.updatedCdmIds.add(CdmEntityIdentifier.NewInstance(updatedObject));
+    }
 
 
     public Set<CdmBase> getUpdatedObjects() {
