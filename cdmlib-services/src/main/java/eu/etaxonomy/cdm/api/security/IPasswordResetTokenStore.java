@@ -55,4 +55,5 @@ public interface IPasswordResetTokenStore {
 
     public void setTokenLifetimeMinutes(int tokenLifetimeMinutes);
 
+
 }

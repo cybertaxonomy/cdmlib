@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 
 import javax.mail.internet.MimeMessage;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.security.IPasswordResetTokenStore;
+import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
 import eu.etaxonomy.cdm.api.security.PasswordResetTokenStore;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.permission.User;
@@ -43,6 +46,14 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest {
 
+    /**
+     *
+     */
+    private static final double maxRequestRate = 4.0;
+
+    Logger logger = Logger.getLogger(PasswordResetServiceTest.class);
+
+    private static final int rateLimiterTimeout = 200;
     private static final String userName = "pwdResetTestUser";
     private static final String userPWD = "super_SECURE_123";
     private static final String newPWD = "NEW_123_new_456";
@@ -88,7 +99,26 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         userService.save(user);
         commitAndStartNewTransaction();
         // printDataSet(System.err, "User");
+    }
 
+    @Before
+    public void resetpasswordResetService() throws InterruptedException {
+        logger.setLevel(Level.DEBUG);
+        Logger.getLogger(PasswordResetRequest.class).setLevel(Level.TRACE);
+        // speed up testing
+        passwordResetService.setRateLimiterTimeout(Duration.ofMillis(rateLimiterTimeout));
+        passwordResetService.setRate(maxRequestRate);
+        // pause long enough to avoid conflicts
+        long sleepTime = Math.round(1000 / maxRequestRate) + rateLimiterTimeout;
+        Thread.sleep(sleepTime);
+    }
+
+    @Before
+    public void resetAsyncVars() {
+        assyncError = null;
+        resetTokenSendSignal = null;
+        resetTokenSendSignal2 = null;
+        passwordChangedSignal = null;
     }
 
     @After
@@ -106,6 +136,8 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testSuccessfulEmailReset() throws Throwable {
+
+        logger.debug("testSuccessfulEmailReset() ...");
 
         // printDataSet(System.err, "UserAccount");
 
@@ -165,15 +197,61 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void emailResetTokenTimeoutTest() throws Throwable {
 
-        // printDataSet(System.err, "UserAccount");
-
-        // Logger.getLogger(PasswordResetRequest.class).setLevel(Level.DEBUG);
+        // Logger.getLogger(PasswordResetRequest.class).setLevel(Level.TRACE);
 
         resetTokenSendSignal = new CountDownLatch(1);
         resetTokenSendSignal2 = new CountDownLatch(1);
 
-        passwordResetService.setRateLimiterTimeout(Duration.ofMillis(1)); // as should as possible to allow the fist call to be successful (with 1ns the fist call fails!)
+        passwordResetService.setRate(0.1);
+        passwordResetService.setRateLimiterTimeout(Duration.ofMillis(1)); // as should as possible to allow the fist call to be successful
+
+        logger.debug("1. request");
         ListenableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture.addCallback(
+                requestSuccessVal -> {
+                    logger.debug("success 1");
+                    resetTokenSendSignal.countDown();
+                }, futureException -> {
+                    logger.debug("error 1");
+                    assyncError = futureException;
+                    resetTokenSendSignal.countDown();
+                });
+
+        logger.debug("2. request");
+        ListenableFuture<Boolean> emailResetFuture2 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture2.addCallback(
+                requestSuccessVal -> {
+                    logger.debug("success 2");
+                    resetTokenSendSignal2.countDown();
+                }, futureException -> {
+                    logger.debug("error 2");
+                    assyncError = futureException;
+                    resetTokenSendSignal2.countDown();
+                });
+
+        // -- wait for passwordResetService.emailResetToken() to complete
+        resetTokenSendSignal.await();
+        resetTokenSendSignal2.await();
+
+        logger.debug("all completed, testing assertions");
+
+        if(assyncError != null) {
+            throw assyncError; // an error should not have been thrown
+        }
+        assertTrue("First request should have been successful", emailResetFuture.get());
+        assertFalse("Second request should have been rejecded", emailResetFuture2.get());
+    }
+
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public void emailResetToken_ivalidUserNameTest() throws Throwable {
+
+        logger.debug("emailResetToken_ivalidUserNameTest() ...");
+
+        resetTokenSendSignal = new CountDownLatch(1);
+
+        passwordResetService.setRateLimiterTimeout(Duration.ofMillis(1)); // as should as possible to allow the fist call to be successful (with 1ns the fist call fails!)
+        ListenableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken("iDoNotExist", requestFormUrlTemplate);
         emailResetFuture.addCallback(
                 requestSuccessVal -> {
                     resetTokenSendSignal.countDown();
@@ -182,25 +260,38 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
                     resetTokenSendSignal.countDown();
                 });
 
-        ListenableFuture<Boolean> emailResetFuture2 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
-        emailResetFuture2.addCallback(
-                requestSuccessVal -> {
-                    resetTokenSendSignal2.countDown();
-                }, futureException -> {
-                    assyncError = futureException;
-                    resetTokenSendSignal2.countDown();
-                });
-
 
         // -- wait for passwordResetService.emailResetToken() to complete
         resetTokenSendSignal.await();
-        resetTokenSendSignal2.await();
 
         if(assyncError != null) {
-            throw assyncError; // an error should not have been thrown
+            throw assyncError; // emailResetToken must be agnostic of the existence of user names
         }
-        assertTrue("First request should have been successful", emailResetFuture.get());
-        assertFalse("Second request should have been rejecded", emailResetFuture2.get());
+        assertTrue("The request should look like succesful even in the user does not exist.", emailResetFuture.get());
+    }
+
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public void testInvalidToken() throws Throwable {
+
+        logger.debug("testInvalidToken() ...");
+
+        passwordChangedSignal = new CountDownLatch(1);
+
+        // -- change password
+        ListenableFuture<Boolean> resetPasswordFuture = passwordResetService.resetPassword( "IUER9843URIO--INVALID-TOKEN--UWEUR89EUWWEOIR", newPWD);
+        resetPasswordFuture.addCallback(requestSuccessVal -> {
+            passwordChangedSignal.countDown();
+        }, futureException -> {
+            assyncError =  futureException;
+            passwordChangedSignal.countDown();
+        });
+        // -- wait for passwordResetService.resetPassword to complete
+        passwordChangedSignal.await();
+
+        assertNotNull(assyncError);
+        assertEquals(PasswordResetException.class, assyncError.getClass());
+        assertEquals(0, wiser.getMessages().size());
     }
 
     @Override

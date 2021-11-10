@@ -52,12 +52,6 @@ public class PasswordResetService implements IPasswordResetService {
 
     private static Logger logger = Logger.getLogger(PasswordResetRequest.class);
 
-    private static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
-
-    private static final double PERMITS_PER_SECOND = 0.3;
-
-
-
     @Autowired
     private IUserDao userDao;
 
@@ -114,8 +108,7 @@ public class PasswordResetService implements IPasswordResetService {
      * @return A <code>Future</code> for a <code>Boolean</code> flag. The
      *         boolean value will be <code>false</code> in case the max access
      *         rate for this method has been exceeded and a time out has
-     *         occurred on in case of other errors or in case of
-     *         {@UsernameNotFoundException}. Internal error states that may
+     *         occurred. Internal error states that may
      *         expose sensitive information are intentionally hidden this way
      *         (see above link to the Forgot_Password_Cheat_Sheet).
      * @throws MailException
@@ -125,18 +118,20 @@ public class PasswordResetService implements IPasswordResetService {
     @Async
     public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException {
 
+        if(logger.isTraceEnabled()) {
+            logger.trace("emailResetToken trying to aquire from rate limiter [rate: " + emailResetToken_rateLimiter.getRate() + ", timeout: " + getRateLimiterTimeout().toMillis() + "ms]");
+        }
         if (emailResetToken_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
-
+            logger.trace("emailResetToken allowed by rate limiter");
             try {
                 User user = findUser(userNameOrEmail);
                 PasswordResetRequest resetRequest = passwordResetTokenStore.create(user);
-
                 String passwordRequestFormUrl = String.format(passwordRequestFormUrlTemplate, resetRequest.getToken());
                 Map<String, String> additionalValues = new HashMap<>();
                 additionalValues.put("linkUrl", passwordRequestFormUrl);
                 sendEmail(user.getEmailAddress(), user.getUsername(), RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE, RESET_REQUEST_EMAIL_BODY_TEMPLATE,
                         additionalValues);
-                logger.info("Password reset request for  " + userNameOrEmail + " has been send");
+                logger.info("A password reset request for  " + user.getUsername() + " has been send to " + user.getEmailAddress());
             } catch (UsernameNotFoundException e) {
                 logger.warn("Password reset request for unknown user, cause: " + e.getMessage());
             } catch (MailException e) {
@@ -144,6 +139,7 @@ public class PasswordResetService implements IPasswordResetService {
             }
             return new AsyncResult<Boolean>(true);
         } else {
+            logger.trace("blocked by rate limiter");
             return new AsyncResult<Boolean>(false);
         }
     }
@@ -253,12 +249,21 @@ public class PasswordResetService implements IPasswordResetService {
 
     @Override
     public Duration getRateLimiterTimeout() {
-        return Duration.ofSeconds(RATE_LIMTER_TIMEOUT_SECONDS);
+        if(rateLimiterTimeout == null) {
+            rateLimiterTimeout = Duration.ofSeconds(RATE_LIMTER_TIMEOUT_SECONDS);
+        }
+        return rateLimiterTimeout;
     }
 
     @Override
     public void setRateLimiterTimeout(Duration timeout) {
         this.rateLimiterTimeout = timeout;
+    }
+
+    @Override
+    public void setRate(double rate) {
+        resetPassword_rateLimiter.setRate(rate);
+        emailResetToken_rateLimiter.setRate(rate);
     }
 
 }

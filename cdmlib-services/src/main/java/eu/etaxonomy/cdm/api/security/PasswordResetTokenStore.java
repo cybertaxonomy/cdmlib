@@ -76,12 +76,12 @@ public class PasswordResetTokenStore implements IPasswordResetTokenStore {
 
     private boolean isEligibleResetRequest(PasswordResetRequest resetRequest) {
         if(resetRequest == null) {
-            logger.error("PasswordResetRequest must not be null");
+            logger.info("isEligibleToken() : PasswordResetRequest must not be null");
             return false;
         }
         if(resetRequest.getExpiryDate().before(new Date())) {
             tokenList.remove(resetRequest.getToken());
-            logger.info("Token is expired, and has been deleted now.");
+            logger.info("isEligibleToken() : Token is expired, and has been deleted now.");
             return false;
         }
         return true;

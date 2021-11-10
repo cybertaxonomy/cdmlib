@@ -18,6 +18,10 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 public interface IPasswordResetService {
 
+    public static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
+
+    public static final double PERMITS_PER_SECOND = 0.3;
+
     /**
      * Create a request token and send it to the user via email.
      *
@@ -65,9 +69,27 @@ public interface IPasswordResetService {
     ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws PasswordResetException;
 
 
+    /**
+     * Requests to the service methods should be rate limited.
+     * This method allows to set the timeout when waiting for a
+     * free execution slot. {@link #RATE_LIMTER_TIMEOUT_SECONDS}
+     * is the default
+     */
     void setRateLimiterTimeout(Duration timeout);
 
 
+    /**
+     * see {@link #setRateLimiterTimeout(Duration)}
+     *
+     * @return the currently used timeout
+     */
     Duration getRateLimiterTimeout();
+
+    /**
+     * Requests to the service methods should be rate limited.
+     * This method allows to override the default rate
+     * {@link #PERMITS_PER_SECOND}
+     */
+    public void setRate(double rate);
 
 }
