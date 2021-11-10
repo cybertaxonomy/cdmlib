@@ -94,8 +94,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     protected DeleteResult doInvoke() {
 
         try {
-            //TODO FIXME use UpdateResult
-
             double start = System.currentTimeMillis();
             IProgressMonitor monitor = getConfig().getMonitor();
 
@@ -153,11 +151,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             logger.info("Time elapsed for invoking task(): " + (end - start) / (1000) + "s");
 
             done();
-            return getResult();
         } catch (Exception e) {
             getResult().addException(new RuntimeException("Unhandled error during doInvoke", e));
-            return getResult();
         }
+        return getResult();
     }
 
     private DeleteResult handleException(Exception e, String unhandledMessage) {
@@ -286,8 +283,11 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
 
         //persist
-        mergeAggregationResultIntoTargetDescription(targetDescription, resultHolder);
-        removeDescriptionIfEmpty(targetDescription, resultHolder);  //AM: necessary? Seems to be done in addAggregationResultToDescription() already...
+        boolean updated = mergeAggregationResultIntoTargetDescription(targetDescription, resultHolder);
+        if (updated){
+            getResult().addUpdatedObject(targetDescription);
+        }
+        removeDescriptionIfEmpty(targetDescription, resultHolder);
         deleteDescriptionsToDelete(resultHolder);
     }
 
@@ -300,7 +300,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 getSession().flush(); // move to service method #9801
                 DeleteResult descriptionDeleteResult = repository.getDescriptionService().deleteDescription(descriptionToDelete);
                 //TODO handle result somehow if not OK, but careful, descriptions may be linked >1x and therefore maybe deleted only after last link was removed
-                this.getResult().includeResult(descriptionDeleteResult, true);
+                if (descriptionDeleteResult.getDeletedObjects().contains(descriptionToDelete) && descriptionToDelete.isPersited()){
+                    this.getResult().addDeletedObject(descriptionToDelete);
+                }
+//                this.getResult().includeResult(descriptionDeleteResult, true);
             }
         }
     }
@@ -320,21 +323,24 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
      * Removes description elements not needed anymore from their description and
      * updates the {@link DeleteResult}.
      */
-    protected void handleDescriptionElementsToRemove(TaxonDescription targetDescription,
+    protected boolean handleDescriptionElementsToRemove(TaxonDescription targetDescription,
             Set<? extends DescriptionElementBase> elementsToRemove) {
+        boolean updated = false;
         //remove all elements not needed anymore
         for(DescriptionElementBase elementToRemove : elementsToRemove){
             targetDescription.removeElement(elementToRemove);
             //AM: do we really want to add each element to the deleteResult?
-            this.getResult().addDeletedObject(elementToRemove);
+            //this.getResult().addDeletedObject(elementToRemove);
+            updated |= elementToRemove.isPersited();
         }
+        return updated;
     }
 
     /**
      * Adds the temporary aggregated data (resultHolder) to the description.
      * Tries to reuse existing data if possible.
      */
-    protected abstract void mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
+    protected abstract boolean mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder);
 
     protected abstract void aggregateToParentTaxon(TaxonNode taxonNode, ResultHolder resultHolder,
@@ -369,10 +375,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
         // create a new one
         TaxonDescription newDescription = createNewDescription(taxon);
-
-        //TODO maybe not necessary here as the new description only will be kept if not empty
-        //(otherwise they could end up in updated and deleted objects which is unwanted)
-        getResult().addUpdatedObject(newDescription);
         return newDescription;
     }
 
@@ -392,14 +394,18 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             for(DescriptionElementBase descriptionElement : deleteCandidates) {
                 aggregationDescription.removeElement(descriptionElement);
                 getDescriptionService().deleteDescriptionElement(descriptionElement);
-                getResult().addDeletedObject(descriptionElement);
+                if (descriptionElement.isPersited()){
+                    getResult().addDeletedObject(descriptionElement);
+                }
             }
             getDescriptionService().saveOrUpdate(aggregationDescription);
         }
     }
 
-    protected <S extends DescriptionElementBase, TE extends DefinedTermBase<?>> void mergeDescriptionElements(
+    protected <S extends DescriptionElementBase, TE extends DefinedTermBase<?>> boolean mergeDescriptionElements(
             TaxonDescription targetDescription, Map<TE, S> newElementsMap, Class<S> debClass) {
+
+        boolean updated = false;
 
         //init elements to remove
         Set<DescriptionElementBase> elementsToRemove = new HashSet<>(
@@ -424,22 +430,27 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             //if there is no element for this character in old data, add the new element for this character to the target description (otherwise reuse old element)
             if (elementToStay == null){
                 targetDescription.addElement(newElement);
+                updated = true;
             }else{
                 elementsToRemove.remove(elementToStay);
-                mergeDescriptionElement(elementToStay, newElement);
+                updated |= mergeDescriptionElement(elementToStay, newElement);
             }
         }
 
-        handleDescriptionElementsToRemove(targetDescription, elementsToRemove);
+        updated |= handleDescriptionElementsToRemove(targetDescription, elementsToRemove);
+        return updated;
     }
 
     /**
      * Merges a new (temporary description element into an existing one)
      */
     protected abstract <S extends DescriptionElementBase>
-            void mergeDescriptionElement(S targetElement, S newElement);
+            boolean mergeDescriptionElement(S targetElement, S newElement);
 
-    protected void mergeSourcesForDescriptionElements(DescriptionElementBase deb, Set<DescriptionElementSource> newSources) {
+    protected boolean mergeSourcesForDescriptionElements(DescriptionElementBase deb,
+            Set<DescriptionElementSource> newSources) {
+
+        boolean updated = false;
         Set<DescriptionElementSource> toDeleteSources = new HashSet<>(deb.getSources());
         for(DescriptionElementSource newSource : newSources) {
             boolean contained = false;
@@ -453,6 +464,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             if(!contained) {
                 try {
                     deb.addSource(newSource.clone());
+                    updated = true;
                 } catch (CloneNotSupportedException e) {
                     // should never happen
                     throw new RuntimeException(e);
@@ -461,7 +473,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
         for (DescriptionElementSource toDeleteSource : toDeleteSources){
             deb.removeSource(toDeleteSource);
+            updated |= toDeleteSource.isPersited();
         }
+        return updated;
     }
 
     protected abstract TaxonDescription createNewDescription(Taxon taxon);

@@ -24,6 +24,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.search.Search;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -233,8 +234,10 @@ public class DistributionAggregation
     }
 
     @Override
-    protected void mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
+    protected boolean mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder) {
+
+        boolean updated = false;
 
         Class<? extends DescriptionElementBase> debClass = Distribution.class;
         Map<NamedArea, Distribution> accumulatedStatusMap = ((DistributionResultHolder)resultHolder).accumulatedStatusMap;
@@ -256,26 +259,33 @@ public class DistributionAggregation
                 // create a new distribution element
                 targetDistribution = newElement;
                 targetDescription.addElement(targetDistribution);
+                updated = true;
             }else{
-                mergeDescriptionElement(targetDistribution, newElement);
+                updated |= mergeDescriptionElement(targetDistribution, newElement);
                 elementsToRemove.remove(targetDistribution);  //we keep the distribution for reuse
             }
-            mergeSourcesForDescriptionElements(targetDistribution, accumulatedStatusMap.get(area).getSources());
+            updated |= mergeSourcesForDescriptionElements(targetDistribution, accumulatedStatusMap.get(area).getSources());
         }
 
-        this.handleDescriptionElementsToRemove(targetDescription, elementsToRemove);
+        updated |= this.handleDescriptionElementsToRemove(targetDescription, elementsToRemove);
+        return updated;
     }
 
     @Override
-    protected <S extends DescriptionElementBase> void mergeDescriptionElement(S targetElement,
+    protected <S extends DescriptionElementBase> boolean mergeDescriptionElement(S targetElement,
             S newElement) {
+        boolean updated = false;
         if (!(targetElement instanceof Distribution)){
             throw new AggregationException("Unexpected class: " + targetElement.getClass().getName());
         }else{
             Distribution targetDistribution = (Distribution)targetElement;
             Distribution newDistribution = (Distribution)newElement;
-            targetDistribution.setStatus(newDistribution.getStatus());
+            if (!CdmUtils.nullSafeEqual(targetDistribution.getStatus(), newDistribution.getStatus())){
+                targetDistribution.setStatus(newDistribution.getStatus());
+                updated = true;
+            }
         }
+        return updated;
     }
 
     @Override
