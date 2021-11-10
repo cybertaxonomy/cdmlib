@@ -154,6 +154,11 @@ public class StructuredDescriptionAggregation
         }
     }
 
+    @Override
+    protected boolean isRelevantDescriptionElement(DescriptionElementBase deb){
+        return deb.isInstanceOf(CategoricalData.class) || deb.isInstanceOf(QuantitativeData.class);
+    }
+
     private <T extends DescriptionBase<?>> void addAggregationSources(TaxonDescription targetDescription,
                 StructuredDescriptionResultHolder structuredResultHolder) {
 
@@ -330,43 +335,9 @@ public class StructuredDescriptionAggregation
         return clonedDescription;
     }
 
-    private <S extends DescriptionElementBase> void mergeDescriptionElements(TaxonDescription targetDescription,
-            Map<Feature, ? extends DescriptionElementBase> newElementsMap, Class<? extends DescriptionElementBase> debClass) {
-
-        Set<DescriptionElementBase> elementsToRemove = new HashSet<>(
-                targetDescription.getElements().stream()
-                    .filter(el->el.isInstanceOf(debClass))
-                    .collect(Collectors.toSet()));
-
-        //for each character in "characters of new elements"
-        for (Feature characterNew : newElementsMap.keySet()) {
-
-            //if elements for this character exist in old data, remember any of them to keep (in clean data there should be only max. 1
-            DescriptionElementBase elementToStay = null;
-            for (DescriptionElementBase existingDeb : elementsToRemove) {
-                if(existingDeb.getFeature().equals(characterNew)){
-                    elementToStay = existingDeb;
-                    elementsToRemove.remove(existingDeb);
-                    break;
-                }
-            }
-
-            //if there is no element for this character in old data, add the new element for this character to the target description (otherwise reuse old element)
-            if (elementToStay == null){
-                targetDescription.addElement(newElementsMap.get(characterNew));
-            }else{
-                mergeDescriptionElement(elementToStay, newElementsMap.get(characterNew));
-            }
-        }
-
-        //remove all elements not needed anymore
-        for(DescriptionElementBase elementToRemove : elementsToRemove){
-            targetDescription.removeElement(elementToRemove);
-        }
-    }
-
-    private void mergeDescriptionElement(DescriptionElementBase targetElement,
-            DescriptionElementBase newElement) {
+    @Override
+    protected <S extends DescriptionElementBase> void mergeDescriptionElement(S targetElement,
+            S newElement) {
 
         targetElement = CdmBase.deproxy(targetElement);
         newElement = CdmBase.deproxy(newElement);

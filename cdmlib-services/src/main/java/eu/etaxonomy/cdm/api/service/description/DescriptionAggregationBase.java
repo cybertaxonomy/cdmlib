@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
@@ -40,6 +42,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter.ORDER;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -48,6 +51,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -149,10 +153,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             logger.info("Time elapsed for invoking task(): " + (end - start) / (1000) + "s");
 
             done();
-            return result;
+            return getResult();
         } catch (Exception e) {
-            result.addException(new RuntimeException("Unhandled error during doInvoke", e));
-            return result;
+            getResult().addException(new RuntimeException("Unhandled error during doInvoke", e));
+            return getResult();
         }
     }
 
@@ -164,10 +168,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             ex = new RuntimeException(unhandledMessage + ": " + e.getMessage() , e);
             e.printStackTrace();
         }
-        result.addException(ex);
-        result.setError();
+        getResult().addException(ex);
+        getResult().setError();
         done();
-        return result;
+        return getResult();
     }
 
     protected void aggregate(List<Integer> taxonNodeIdList, IProgressMonitor subMonitor)  throws JvmLimitsException {
@@ -294,8 +298,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         for (DescriptionBase<?> descriptionToDelete : resultHolder.descriptionsToDelete){
             if (descriptionToDelete.isPersited()){
                 getSession().flush(); // move to service method #9801
-                DeleteResult result = repository.getDescriptionService().deleteDescription(descriptionToDelete);
+                DeleteResult descriptionDeleteResult = repository.getDescriptionService().deleteDescription(descriptionToDelete);
                 //TODO handle result somehow if not OK, but careful, descriptions may be linked >1x and therefore maybe deleted only after last link was removed
+                this.getResult().includeResult(descriptionDeleteResult, true);
             }
         }
     }
@@ -308,6 +313,20 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         if (description.getElements().isEmpty()){
             description.getTaxon().removeDescription(description);
             resultHolder.descriptionsToDelete.add(description);
+        }
+    }
+
+    /**
+     * Removes description elements not needed anymore from their description and
+     * updates the {@link DeleteResult}.
+     */
+    protected void handleDescriptionElementsToRemove(TaxonDescription targetDescription,
+            Set<? extends DescriptionElementBase> elementsToRemove) {
+        //remove all elements not needed anymore
+        for(DescriptionElementBase elementToRemove : elementsToRemove){
+            targetDescription.removeElement(elementToRemove);
+            //AM: do we really want to add each element to the deleteResult?
+            this.getResult().addDeletedObject(elementToRemove);
         }
     }
 
@@ -340,19 +359,118 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             if (hasDescriptionType(description)){
                 if (logger.isDebugEnabled()){logger.debug("reusing existing aggregated description for " + taxonToString(taxon));}
                 setDescriptionTitle(description, taxon);  //maybe we want to redefine the title
+                if (getConfig().isDoClearExistingDescription()){
+                    clearDescription(description);
+                }
+
                 return description;
             }
         }
 
         // create a new one
-        return createNewDescription(taxon);
+        TaxonDescription newDescription = createNewDescription(taxon);
+
+        //TODO maybe not necessary here as the new description only will be kept if not empty
+        //(otherwise they could end up in updated and deleted objects which is unwanted)
+        getResult().addUpdatedObject(newDescription);
+        return newDescription;
+    }
+
+    /**
+     * Removes all description elements of the according type from the
+     * (aggregation) description.
+     */
+    private void clearDescription(TaxonDescription aggregationDescription) {
+        Set<DescriptionElementBase> deleteCandidates = new HashSet<>();
+        for (DescriptionElementBase descriptionElement : aggregationDescription.getElements()) {
+
+            if(isRelevantDescriptionElement(descriptionElement)) {
+                deleteCandidates.add(descriptionElement);
+            }
+        }
+        if(deleteCandidates.size() > 0){
+            for(DescriptionElementBase descriptionElement : deleteCandidates) {
+                aggregationDescription.removeElement(descriptionElement);
+                getDescriptionService().deleteDescriptionElement(descriptionElement);
+                getResult().addDeletedObject(descriptionElement);
+            }
+            getDescriptionService().saveOrUpdate(aggregationDescription);
+        }
+    }
+
+    protected <S extends DescriptionElementBase, TE extends DefinedTermBase<?>> void mergeDescriptionElements(
+            TaxonDescription targetDescription, Map<TE, S> newElementsMap, Class<S> debClass) {
+
+        //init elements to remove
+        Set<DescriptionElementBase> elementsToRemove = new HashSet<>(
+                targetDescription.getElements().stream()
+                    .filter(el->el.isInstanceOf(debClass))
+                    .collect(Collectors.toSet()));
+
+        //for each character in "characters of new elements"
+        for (TE keyTerm : newElementsMap.keySet()) {
+            S newElement = newElementsMap.get(keyTerm);
+
+            //if elements for this character exist in old data, remember any of them to keep
+            //(in clean data there should be only max. 1
+            DescriptionElementBase elementToStay = null;
+            for (DescriptionElementBase existingDeb : elementsToRemove) {
+                if(existingDeb.getFeature().equals(keyTerm)){
+                    elementToStay = existingDeb;
+                    break;
+                }
+            }
+
+            //if there is no element for this character in old data, add the new element for this character to the target description (otherwise reuse old element)
+            if (elementToStay == null){
+                targetDescription.addElement(newElement);
+            }else{
+                elementsToRemove.remove(elementToStay);
+                mergeDescriptionElement(elementToStay, newElement);
+            }
+        }
+
+        handleDescriptionElementsToRemove(targetDescription, elementsToRemove);
+    }
+
+    /**
+     * Merges a new (temporary description element into an existing one)
+     */
+    protected abstract <S extends DescriptionElementBase>
+            void mergeDescriptionElement(S targetElement, S newElement);
+
+    protected void mergeSourcesForDescriptionElements(DescriptionElementBase deb, Set<DescriptionElementSource> newSources) {
+        Set<DescriptionElementSource> toDeleteSources = new HashSet<>(deb.getSources());
+        for(DescriptionElementSource newSource : newSources) {
+            boolean contained = false;
+            for(DescriptionElementSource existingSource: deb.getSources()) {
+                if(existingSource.equalsByShallowCompare(newSource)) {
+                    contained = true;
+                    toDeleteSources.remove(existingSource);
+                    break;
+                }
+            }
+            if(!contained) {
+                try {
+                    deb.addSource(newSource.clone());
+                } catch (CloneNotSupportedException e) {
+                    // should never happen
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        for (DescriptionElementSource toDeleteSource : toDeleteSources){
+            deb.removeSource(toDeleteSource);
+        }
     }
 
     protected abstract TaxonDescription createNewDescription(Taxon taxon);
 
     protected abstract boolean hasDescriptionType(TaxonDescription description);
 
-    protected abstract void setDescriptionTitle(TaxonDescription description, Taxon taxon) ;
+    protected abstract void setDescriptionTitle(TaxonDescription description, Taxon taxon);
+
+    protected abstract boolean isRelevantDescriptionElement(DescriptionElementBase deb);
 
     protected String taxonToString(TaxonBase<?> taxon) {
         if(logger.isTraceEnabled()) {
@@ -384,13 +502,13 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         result = new DeleteResult();
     }
 
-    protected void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sourcesToAdd) {
+    protected void addSourcesDeduplicated(DescriptionElementBase targetDeb, Set<DescriptionElementSource> sourcesToAdd) {
         for(DescriptionElementSource source : sourcesToAdd) {
             boolean contained = false;
             if (!hasValidSourceType(source)&& !isAggregationSource(source)){  //only aggregate sources of defined source types
                 continue;
             }
-            for(DescriptionElementSource existingSource: target) {
+            for(DescriptionElementSource existingSource: targetDeb.getSources()) {
                 if(existingSource.equalsByShallowCompare(source)) {
                     contained = true;
                     break;
@@ -398,7 +516,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             }
             if(!contained) {
                 try {
-                    target.add(source.clone());
+                    targetDeb.addSource(source.clone());
                 } catch (CloneNotSupportedException e) {
                     // should never happen
                     throw new RuntimeException(e);
