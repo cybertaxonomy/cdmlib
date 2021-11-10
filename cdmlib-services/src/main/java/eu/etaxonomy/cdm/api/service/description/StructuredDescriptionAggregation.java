@@ -381,6 +381,7 @@ public class StructuredDescriptionAggregation
 
     private void mergeDescriptionElement(CategoricalData elementToStay,
             CategoricalData newElement) {
+
         List<StateData> oldData = new ArrayList<>(elementToStay.getStateData());
         List<StateData> newData = new ArrayList<>(newElement.getStateData());
         for (StateData newStateData : newData){
@@ -413,6 +414,7 @@ public class StructuredDescriptionAggregation
 
     private void mergeDescriptionElement(QuantitativeData elementToStay,
             QuantitativeData newElement) {
+
         Set<StatisticalMeasurementValue> oldValues = new HashSet<>(elementToStay.getStatisticalValues());
         Set<StatisticalMeasurementValue> newValues = new HashSet<>(newElement.getStatisticalValues());
         for (StatisticalMeasurementValue newValue : newValues){

@@ -509,26 +509,25 @@ public class TaxonNodeServiceImpl
         Reference citation = referenceDao.load(citationUuid);
 
         switch (secHandling){
-        case AlwaysDelete:
-            citation = null;
-            break;
-        case UseNewParentSec:
-            citation = newTaxonNode.getTaxon() != null? newTaxonNode.getTaxon().getSec(): null;
-            break;
-        case KeepOrWarn:
+            case AlwaysDelete:
+                citation = null;
+                break;
+            case UseNewParentSec:
+                citation = newTaxonNode.getTaxon() != null? newTaxonNode.getTaxon().getSec(): null;
+                break;
+            case KeepOrWarn:
 
-            Reference synSec = oldTaxonNode.getTaxon().getSec();
-            if (synSec != null ){
-                citation = CdmBase.deproxy(synSec);
-            }
-            break;
-        case KeepOrSelect:
+                Reference synSec = oldTaxonNode.getTaxon().getSec();
+                if (synSec != null ){
+                    citation = CdmBase.deproxy(synSec);
+                }
+                break;
+            case KeepOrSelect:
 
-            break;
-        default:
-            break;
-    }
-
+                break;
+            default:
+                break;
+        }
 
         DeleteResult result = makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
                 newTaxonNode,
@@ -597,7 +596,6 @@ public class TaxonNodeServiceImpl
             			for (TaxonNode child: childNodesList){
             				parent.addChildNode(child, child.getReference(), child.getMicroReference());
             			}
-
             		}
             	}
 

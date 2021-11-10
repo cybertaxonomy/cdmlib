@@ -368,10 +368,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         //      (equal instances existed in previous aggregation)
 
         //add higher status to L. communis alpina/yug_mn
-        Set<Distribution> nativ_mn_distr = new HashSet<>();
+        Set<Distribution> mn_distr = new HashSet<>();
         Distribution distrNative = newDistribution(null, yug_mn, PresenceAbsenceTerm.INTRODUCED(), "5");
-        nativ_mn_distr.add(distrNative);
-        addDistributions(T_LAPSANA_COMMUNIS_ALPINA_UUID, nativ_mn_distr);
+        mn_distr.add(distrNative);
+        addDistributions(T_LAPSANA_COMMUNIS_ALPINA_UUID, mn_distr);
 
         Set<DescriptionElementSource> lca_yug_ko_sources = descriptionService.loadDescriptionElement(distributions_LCA.get(1).getUuid(), null).getSources();
         Assert.assertEquals(1, lca_yug_ko_sources.size());

@@ -244,7 +244,7 @@ public class DistributionAggregation
             //old: if we want to reuse distribution only with exact same status
 //          Distribution distribution = findDistributionForAreaAndStatus(aggregationDescription, area, status);
 
-            if(distribution == null) {
+            if(targetDistribution == null) {
                 // create a new distribution element
                 distribution = Distribution.NewInstance(area, status);
                 targetDescription.addElement(distribution);
@@ -298,7 +298,7 @@ public class DistributionAggregation
         }
 
         Set<TaxonDescription> descriptions = descriptionsFor(taxon, excludedDescriptions);
-        Set<Distribution> distributions = distributionsFor(descriptions);
+        Set<Distribution> existingDistributions = distributionsFor(descriptions);
 
         // Step through superAreas for accumulation of subAreas
         for (NamedArea superArea : superAreaList){
@@ -311,7 +311,7 @@ public class DistributionAggregation
             for(NamedArea subArea : subAreas){
                 if(logger.isTraceEnabled()){logger.trace("accumulateByArea() - \t\t" + termToString(subArea));}
                 // step through all distributions for the given subArea
-                for(Distribution distribution : distributions){
+                for(Distribution distribution : existingDistributions){
                     //TODO AM is the status handling here correct? The mapping to CDM handled
                     if(subArea.equals(distribution.getArea()) && distribution.getStatus() != null) {
                         PresenceAbsenceTerm status = distribution.getStatus();
@@ -450,7 +450,7 @@ public class DistributionAggregation
         }
     }
 
-    private Distribution findDistributionForArea(TaxonDescription description, NamedArea area) {
+    private Distribution findDistributionToStayForArea(TaxonDescription description, NamedArea area) {
         for(DescriptionElementBase item : description.getElements()) {
             if(!(item.isInstanceOf(Distribution.class))) {
                 continue;
@@ -494,16 +494,10 @@ public class DistributionAggregation
         }
     }
 
-    private void flushAndClear() {
-       flush();
-       logger.debug("clearing session ...");
-       getSession().clear();
-    }
-
     @Override
     protected TaxonDescription createNewDescription(Taxon taxon) {
         String title = taxon.getTitleCache();
-        logger.debug("creating new description for " + title);
+        if (logger.isDebugEnabled()){logger.debug("creating new description for " + title);}
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
         setDescriptionTitle(description, taxon);
@@ -609,31 +603,4 @@ public class DistributionAggregation
         OrderedTermVocabulary<PresenceAbsenceTerm> voc = (OrderedTermVocabulary<PresenceAbsenceTerm>)getRepository().getVocabularyService().find(VocabularyEnum.PresenceAbsenceTerm.getUuid());
         return voc;
     }
-
-    private void replaceSources(Distribution distribution, Set<DescriptionElementSource> newSources) {
-        Set<DescriptionElementSource> toDeleteSources = new HashSet<>(distribution.getSources());
-        for(DescriptionElementSource newSource : newSources) {
-            boolean contained = false;
-            for(DescriptionElementSource existingSource: distribution.getSources()) {
-                if(existingSource.equalsByShallowCompare(newSource)) {
-                    contained = true;
-                    toDeleteSources.remove(existingSource);
-                    break;
-                }
-            }
-            if(!contained) {
-                try {
-                    distribution.addSource(newSource.clone());
-                } catch (CloneNotSupportedException e) {
-                    // should never happen
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        for (DescriptionElementSource toDeleteSource : toDeleteSources){
-            distribution.removeSource(toDeleteSource);
-        }
-    }
-
-
 }

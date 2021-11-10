@@ -90,10 +90,7 @@ public class UpdateResult implements Serializable{
         this.exceptions.addAll(exceptions);
     }
 
-    /**
-     * Related objects that prevent the delete action to take place.
-     * @return
-     */
+    //updated CDM id-s
     public Set<CdmEntityIdentifier> getUpdatedCdmIds() {
         return updatedCdmIds;
     }
@@ -107,15 +104,35 @@ public class UpdateResult implements Serializable{
         this.updatedCdmIds.add(CdmEntityIdentifier.NewInstance(updatedObject));
     }
 
-
+    //updated objects
     public Set<CdmBase> getUpdatedObjects() {
         return updatedObjects;
     }
     public void addUpdatedObject(CdmBase relatedObject) {
             this.updatedObjects.add(relatedObject);
-        }
+    }
     public void addUpdatedObjects(Set<? extends CdmBase> updatedObjects) {
         this.updatedObjects.addAll(updatedObjects);
+    }
+
+
+    //cdmEntity
+    public void setCdmEntity(CdmBase cdmBase) {
+        this.cdmEntity = cdmBase;
+    }
+    public CdmBase getCdmEntity(){
+        return cdmEntity;
+    }
+
+    //unchanged objects
+    public Set<CdmBase> getUnchangedObjects() {
+        return unchangedObjects;
+    }
+    public void addUnchangedObjects(Set<? extends CdmBase> unchangedObjects) {
+        this.unchangedObjects.addAll(unchangedObjects);
+    }
+    public void addUnChangedObject(CdmBase unchangedObject) {
+        this.unchangedObjects.add(unchangedObject);
     }
 
     //****************** CONVENIENCE *********************************************/
@@ -178,6 +195,7 @@ public class UpdateResult implements Serializable{
         return this.status == Status.ERROR;
     }
 
+// *********************************** TO STRING ***************************************/
     @Override
     public String toString(){
         String separator = ", ";
@@ -188,39 +206,21 @@ public class UpdateResult implements Serializable{
         if(exceptionString.endsWith(separator)){
             exceptionString = exceptionString.substring(0, exceptionString.length()-separator.length());
         }
-        String relatedObjectString = "";
+        String updatedObjectString = "";
         for (CdmBase upatedObject: updatedObjects) {
             if(upatedObject instanceof IIdentifiableEntity){
-                relatedObjectString += ((IIdentifiableEntity) upatedObject).getTitleCache()+separator;
+                updatedObjectString += ((IIdentifiableEntity) upatedObject).getTitleCache()+separator;
             }
             else{
-                relatedObjectString += upatedObject.toString()+separator;
+                updatedObjectString += upatedObject.toString()+separator;
             }
         }
-        if(relatedObjectString.endsWith(separator)){
-            relatedObjectString = relatedObjectString.substring(0, relatedObjectString.length()-separator.length());
+        if(updatedObjectString.endsWith(separator)){
+            updatedObjectString = updatedObjectString.substring(0, updatedObjectString.length()-separator.length());
         }
         return "[UpdateResult]\n" +
             "Status: " + status.toString()+"\n" +
             "Exceptions: " + exceptionString+"\n" +
-            "Related Objects: "+relatedObjectString;
-    }
-    public void setCdmEntity(CdmBase cdmBase) {
-        this.cdmEntity = cdmBase;
-    }
-
-    public CdmBase getCdmEntity(){
-        return cdmEntity;
-    }
-
-    public Set<CdmBase> getUnchangedObjects() {
-        return unchangedObjects;
-    }
-
-    public void addUnchangedObjects(Set<? extends CdmBase> unchangedObjects) {
-        this.unchangedObjects.addAll(unchangedObjects);
-    }
-    public void addUnChangedObject(CdmBase unchangedObject) {
-        this.unchangedObjects.add(unchangedObject);
+            "Updated Objects: " + updatedObjectString;
     }
 }
