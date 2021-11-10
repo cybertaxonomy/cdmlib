@@ -74,6 +74,6 @@ public class CdmEntityIdentifier implements Serializable {
 
     @Override
     public String toString() {
-        return this.cdmClass.getName() + String.valueOf(this.id);
+        return this.cdmClass.getSimpleName() + ":" + String.valueOf(this.id);
     }
 }
