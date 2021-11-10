@@ -139,7 +139,7 @@ public class StructuredDescriptionAggregation
     }
 
     @Override
-    protected void addAggregationResultToDescription(TaxonDescription targetDescription,
+    protected void mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder) {
 
         StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;

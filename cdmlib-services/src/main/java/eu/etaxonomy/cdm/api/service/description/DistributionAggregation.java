@@ -233,7 +233,7 @@ public class DistributionAggregation
     }
 
     @Override
-    protected void addAggregationResultToDescription(TaxonDescription targetDescription,
+    protected void mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder) {
 
         Class<? extends DescriptionElementBase> debClass = Distribution.class;

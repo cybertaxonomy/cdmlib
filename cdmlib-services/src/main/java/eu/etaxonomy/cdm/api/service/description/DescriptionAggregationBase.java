@@ -286,7 +286,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
 
         //persist
-        addAggregationResultToDescription(targetDescription, resultHolder);
+        mergeAggregationResultIntoTargetDescription(targetDescription, resultHolder);
         removeDescriptionIfEmpty(targetDescription, resultHolder);  //AM: necessary? Seems to be done in addAggregationResultToDescription() already...
         deleteDescriptionsToDelete(resultHolder);
     }
@@ -334,7 +334,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
      * Adds the temporary aggregated data (resultHolder) to the description.
      * Tries to reuse existing data if possible.
      */
-    protected abstract void addAggregationResultToDescription(TaxonDescription targetDescription,
+    protected abstract void mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder);
 
     protected abstract void aggregateToParentTaxon(TaxonNode taxonNode, ResultHolder resultHolder,
