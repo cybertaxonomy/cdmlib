@@ -189,11 +189,11 @@ public class StructuredDescriptionAggregation
                     T descriptionToDelete = (T)target;
                     if (descriptionToDelete.isCloneForSource()){
                         //TODO maybe this is not really needed as it is later done anyway with .deltedDescription
-                        //but currently this still leads to an re-saved by cascade exception
+                        //but currently this still leads to a re-saved by cascade exception
                         ((IDescribable<T>)descriptionToDelete.describedEntity()).removeDescription(descriptionToDelete);
                         structuredResultHolder.descriptionsToDelete.add(descriptionToDelete);
                     }
-                }else if (target.isInstanceOf(Taxon.class)){
+                } else if (target.isInstanceOf(Taxon.class)){
                     //nothing to do for now
                 } else {
                     throw new AggregationException("CdmLink target type not yet supported: " + target.getClass().getSimpleName());
@@ -603,8 +603,8 @@ public class StructuredDescriptionAggregation
     }
 
     /**
-     * Computes all specimen attached to the given taxon within the given dataSet.
-     * For these secimen it returns all attache
+     * Computes all specimens attached to the given taxon within the given dataSet.
+     * For these secimens it returns all attache
      * */
     private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
         Set<SpecimenDescription> result = new HashSet<>();
