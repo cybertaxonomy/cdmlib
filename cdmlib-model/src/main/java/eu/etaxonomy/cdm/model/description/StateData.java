@@ -314,9 +314,9 @@ public class StateData
     @Override
     public String toString() {
         return "[" + state
-                + (modifiers.isEmpty()? "": ", modifiers=" + modifiers)
-                + (modifyingText.isEmpty()?"": ", modifyingText=" + modifyingText)
-                + (count==null?"": " ("+count+")")
+                + (modifiers.isEmpty() ? "" : ", modifiers=" + modifiers)
+                + (modifyingText.isEmpty() ? "" : ", modifyingText=" + modifyingText)
+                + (count==null?"": "("+count+")")
                 + "]";
     }
 
