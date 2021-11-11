@@ -17,6 +17,7 @@ import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 
@@ -206,21 +207,40 @@ public class UpdateResult implements Serializable{
         if(exceptionString.endsWith(separator)){
             exceptionString = exceptionString.substring(0, exceptionString.length()-separator.length());
         }
-        String updatedObjectString = "";
-        for (CdmBase upatedObject: updatedObjects) {
-            if(upatedObject instanceof IIdentifiableEntity){
-                updatedObjectString += ((IIdentifiableEntity) upatedObject).getTitleCache()+separator;
-            }
-            else{
-                updatedObjectString += upatedObject.toString()+separator;
-            }
-        }
-        if(updatedObjectString.endsWith(separator)){
-            updatedObjectString = updatedObjectString.substring(0, updatedObjectString.length()-separator.length());
-        }
+        String updatedObjectString = toStringObjectsString(separator, updatedObjects);
+        String unchangedObjectString = toStringObjectsString(separator, unchangedObjects);
         return "[UpdateResult]\n" +
             "Status: " + status.toString()+"\n" +
             "Exceptions: " + exceptionString+"\n" +
-            "Updated Objects: " + updatedObjectString;
+            "Updated objects: " + updatedObjectString+"\n" +
+            "Updated objects IDs: " + toStringIdsString(separator, updatedCdmIds)+"\n" +
+            "Unchanged objects: " + unchangedObjectString
+            ;
+    }
+
+    private String toStringIdsString(String separator, Set<CdmEntityIdentifier> cdmIds) {
+        String result = "";
+        for (CdmEntityIdentifier id : cdmIds){
+            result = CdmUtils.concat(separator, id.toString());
+        }
+        return result;
+    }
+    /**
+     * Serializes the CdmBase collection
+     */
+    protected static String toStringObjectsString(String separator, Set<CdmBase> cdmBases) {
+        String cdmBasesString = "";
+        for (CdmBase cdmBase: cdmBases) {
+            if(cdmBase instanceof IIdentifiableEntity){
+                cdmBasesString += ((IIdentifiableEntity) cdmBase).getTitleCache()+separator;
+            }
+            else{
+                cdmBasesString += cdmBase.toString()+separator;
+            }
+        }
+        if(cdmBasesString.endsWith(separator)){
+            cdmBasesString = cdmBasesString.substring(0, cdmBasesString.length()-separator.length());
+        }
+        return cdmBasesString;
     }
 }

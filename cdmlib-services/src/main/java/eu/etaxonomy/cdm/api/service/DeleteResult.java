@@ -67,4 +67,16 @@ public class DeleteResult extends UpdateResult{
             //Note: we do not include related objects as they loose there context, if needed in some cases in future it should be done paremeterized
         }
     }
+
+// ******************* TO STRING ***********************************************/
+
+    @Override
+    public String toString() {
+        String separator = ", ";
+        String deletedObjectString = toStringObjectsString(separator, deletedObjects);
+        String relatedObjectString = toStringObjectsString(separator, deletedObjects);
+        return super.toString().replace("[UpdateResult]", "[DeleteResult]")+"\n"
+                + "Deleted objects: " + deletedObjectString +"\n"
+                + "Related objects: " + relatedObjectString;
+    }
 }

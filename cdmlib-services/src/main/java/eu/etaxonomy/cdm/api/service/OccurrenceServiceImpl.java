@@ -1027,7 +1027,7 @@ public class OccurrenceServiceImpl
     @Override
     public DeleteResult isDeletable(UUID specimenUuid, DeleteConfiguratorBase config) {
         DeleteResult deleteResult = new DeleteResult();
-        SpecimenOrObservationBase specimen = this.load(specimenUuid);
+        SpecimenOrObservationBase<?> specimen = this.load(specimenUuid);
         SpecimenDeleteConfigurator specimenDeleteConfigurator = (SpecimenDeleteConfigurator) config;
 
         // check elements found by super method
@@ -1115,15 +1115,11 @@ public class OccurrenceServiceImpl
         return deleteResult;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Transactional(readOnly = false)
     @Override
     public DeleteResult delete(UUID specimenUuid, SpecimenDeleteConfigurator config) {
         return delete(load(specimenUuid), config);
     }
-
 
     @Transactional(readOnly = false)
     @Override
@@ -1148,14 +1144,12 @@ public class OccurrenceServiceImpl
                     DerivedUnit unit = it.next();
                     derivativesToDelete.add(unit);
                 }
-                for (DerivedUnit unit:derivativesToDelete){
-                    deleteResult.includeResult(delete(unit, config));
+                for (DerivedUnit unit: derivativesToDelete){
+                    DeleteResult derivedDeleteResult = delete(unit, config);
+                    deleteResult.includeResult(derivedDeleteResult);
                 }
             }
         }
-
-
-
 
         // check related objects
         Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();

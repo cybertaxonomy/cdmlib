@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author pplitzner
  * @since 31.03.2014
- *
  */
 public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegrationTest {
 
@@ -76,7 +75,6 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
     public void testDeepDelete_FieldUnit(){
-
 
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
@@ -110,7 +108,6 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
         assertEquals("incorrect number of gathering events", 1, eventService.count(GatheringEvent.class));
-
 
         deleteResult = occurrenceService.delete(fieldUnit2, config);
         assertEquals(assertMessage, 0, eventService.count(GatheringEvent.class));
