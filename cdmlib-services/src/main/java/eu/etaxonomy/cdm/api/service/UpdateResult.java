@@ -123,6 +123,12 @@ public class UpdateResult implements Serializable{
         return byMapKey(this.updatedUuids, clazz);
     }
 
+    public Set<UUID> getInsertedOrUpdatedUuids(Class<? extends CdmBase> clazz){
+        HashSet<UUID> result = new HashSet<UUID>(getUpdatedUuids(clazz));
+        result.addAll(getInsertedUuids(clazz));
+        return result;
+    }
+
     private void initClassRecord(Map<Class<? extends CdmBase>, Set<UUID>> map, Class<? extends CdmBase> clazz){
         if (map.get(clazz) == null){
             map.put(clazz, new HashSet<>());
