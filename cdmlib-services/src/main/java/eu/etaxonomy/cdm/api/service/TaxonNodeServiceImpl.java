@@ -454,17 +454,18 @@ public class TaxonNodeServiceImpl
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         conf.setDeleteNameIfPossible(false);
-        DeleteResult result = taxonService.isDeletable(oldTaxon.getUuid(), conf);
+        DeleteResult taxonDeleteResult = taxonService.isDeletable(oldTaxon.getUuid(), conf);
 
-
-        if (result.isOk()){
+        DeleteResult result;
+        if (taxonDeleteResult.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, classification.getUuid());
         }else{
-        	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
         	config.setDeleteElement(false);
         	conf.setTaxonNodeConfig(config);
-        	result.includeResult(deleteTaxonNode(oldTaxonNode, conf));
+        	result = deleteTaxonNode(oldTaxonNode, conf);
+        	result.getRelatedObjects().addAll(taxonDeleteResult.getRelatedObjects());  //we want to know what causes that the taxon can not be deleted
+        	result.getExceptions().addAll(taxonDeleteResult.getExceptions()); //same for the exceptions
         }
 
         result.addUpdatedObject(newAcceptedTaxon);
