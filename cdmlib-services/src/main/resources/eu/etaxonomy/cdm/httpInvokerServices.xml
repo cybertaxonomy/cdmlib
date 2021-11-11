@@ -265,7 +265,7 @@
       <ref bean="passwordResetServiceImpl" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IPasswordResetService</value>
+      <value>eu.etaxonomy.cdm.api.service.security.IPasswordResetService</value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
