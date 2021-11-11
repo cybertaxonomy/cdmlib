@@ -10,8 +10,11 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.log4j.Logger;
@@ -46,6 +49,9 @@ public class UpdateResult implements Serializable{
     private final Set<CdmBase> unchangedObjects = new HashSet<>();
 
     private CdmBase cdmEntity;
+
+    private Map<Class<? extends CdmBase>, Set<UUID>> insertedUuids = new HashMap<>();
+    private Map<Class<? extends CdmBase>, Set<UUID>> updatedUuids = new HashMap<>();
 
     public enum Status {
         OK(0),
@@ -89,6 +95,41 @@ public class UpdateResult implements Serializable{
     }
     public void addExceptions(Collection<Exception> exceptions) {
         this.exceptions.addAll(exceptions);
+    }
+
+    //inserted object UUIDs
+    public Map<Class<? extends CdmBase>, Set<UUID>> getInsertedUuids(){
+        return this.insertedUuids;
+    }
+    public void addInsertedUuid(CdmBase cdmBase) {
+        Class<? extends CdmBase> clazz = CdmBase.deproxy(cdmBase).getClass();
+        initClassRecord(insertedUuids, clazz);
+        this.insertedUuids.get(clazz).add(cdmBase.getUuid());
+    }
+    public Set<UUID> getInsertedUuids(Class<? extends CdmBase> clazz){
+        return byMapKey(this.insertedUuids, clazz);
+    }
+
+    //updated object UUIDs
+    public Map<Class<? extends CdmBase>, Set<UUID>> getUpdatedUuids(){
+        return this.updatedUuids;
+    }
+    public void addUpdatedUuid(CdmBase cdmBase) {
+        Class<? extends CdmBase> clazz = CdmBase.deproxy(cdmBase).getClass();
+        initClassRecord(updatedUuids, clazz);
+        this.updatedUuids.get(clazz).add(cdmBase.getUuid());
+    }
+    public Set<UUID> getUpdatedUuids(Class<? extends CdmBase> clazz){
+        return byMapKey(this.updatedUuids, clazz);
+    }
+
+    private void initClassRecord(Map<Class<? extends CdmBase>, Set<UUID>> map, Class<? extends CdmBase> clazz){
+        if (map.get(clazz) == null){
+            map.put(clazz, new HashSet<>());
+        }
+    }
+    private Set<UUID> byMapKey(Map<Class<? extends CdmBase>, Set<UUID>> map, Class<? extends CdmBase> clazz){
+        return map.get(clazz) == null ? new HashSet<>() : map.get(clazz);
     }
 
     //updated CDM id-s

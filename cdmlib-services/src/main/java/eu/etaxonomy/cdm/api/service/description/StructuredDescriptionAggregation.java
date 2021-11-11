@@ -378,7 +378,7 @@ public class StructuredDescriptionAggregation
                 //for now only state and count is used for aggregation, below code needs to be adapted if this changes
                 if (!CdmUtils.nullSafeEqual(oldStateData.getCount(), newStateData.getCount())){
                     oldStateData.setCount(newStateData.getCount());
-//                    getResult().addUpdatedObject(oldStateData);
+//                  getResult().addUpdatedUuid(oldStateData);
                     updated = true;
                 }
                 dataToRemove.remove(oldStateData);

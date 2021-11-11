@@ -285,7 +285,11 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         //persist
         boolean updated = mergeAggregationResultIntoTargetDescription(targetDescription, resultHolder);
         if (updated){
-            getResult().addUpdatedObject(targetDescription);
+            if (targetDescription.isPersited()){
+                getResult().addUpdatedUuid(targetDescription);
+            }else{
+                getResult().addInsertedUuid(targetDescription);
+            }
         }
         removeDescriptionIfEmpty(targetDescription, resultHolder);
         deleteDescriptionsToDelete(resultHolder);
