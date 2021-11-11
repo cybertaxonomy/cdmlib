@@ -120,7 +120,7 @@ public class TermNodeServiceImpl
 	             result.addUpdatedObject(parent);
 	         }
 	         if (config.isDeleteElement()){
-	             DefinedTermBase term = node.getTerm();
+	             DefinedTermBase<?> term = node.getTerm();
                  termService.delete(term.getUuid());
                  result.addDeletedObject(term);
              }

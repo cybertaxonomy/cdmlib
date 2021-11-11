@@ -64,7 +64,7 @@ public class DeleteResult extends UpdateResult{
         if (includedResult instanceof DeleteResult){
             DeleteResult includedDeleteResult = (DeleteResult)includedResult;
             this.addDeletedObjects(includedDeleteResult.getDeletedObjects());
-            //Note: we do not include related objects as they loose there context, if needed in some cases in future it should be done paremeterized
+            //Note: we do not include related objects as they loose there context, if needed in some cases in future it should be done parameterized
         }
     }
 
@@ -74,7 +74,7 @@ public class DeleteResult extends UpdateResult{
     public String toString() {
         String separator = ", ";
         String deletedObjectString = toStringObjectsString(separator, deletedObjects);
-        String relatedObjectString = toStringObjectsString(separator, deletedObjects);
+        String relatedObjectString = toStringObjectsString(separator, relatedObjects);
         return super.toString().replace("[UpdateResult]", "[DeleteResult]")+"\n"
                 + "Deleted objects: " + deletedObjectString +"\n"
                 + "Related objects: " + relatedObjectString;

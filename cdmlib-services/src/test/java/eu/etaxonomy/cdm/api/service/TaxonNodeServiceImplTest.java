@@ -279,7 +279,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		if (!result.getUpdatedObjects().iterator().hasNext()){
 			Assert.fail("Some updates must have taken place");
 		}
-		assertEquals(3,result.getUpdatedObjects().size());
+		assertEquals(3, result.getUpdatedObjects().size());
 		assertNotNull("Old taxon should not have been deleted as it is referenced by key node", taxonService.find(t1Uuid));
 		assertNull("Old taxon node should not exist anymore", taxonNodeService.find(node1Uuid));
 

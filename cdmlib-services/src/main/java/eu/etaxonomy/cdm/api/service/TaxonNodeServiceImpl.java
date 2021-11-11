@@ -384,15 +384,12 @@ public class TaxonNodeServiceImpl
                 }else{
                     srt = synonym.getType();
                 }
-
             }
             if (secHandling != null &&  !secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)){
                 synonym.setSec(newSec);
             }
             newAcceptedTaxon.addSynonym(synonym, srt);
-
         }
-
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
@@ -462,7 +459,6 @@ public class TaxonNodeServiceImpl
 
         if (result.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, classification.getUuid());
-
         }else{
         	result.setStatus(Status.OK);
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
@@ -473,10 +469,10 @@ public class TaxonNodeServiceImpl
 
         result.addUpdatedObject(newAcceptedTaxon);
 
-
         //oldTaxonNode.delete();
         return result;
     }
+
     @Override
     @Transactional(readOnly = false)
     public DeleteResult makeTaxonNodeSynonymsOfAnotherTaxonNode( Set<UUID> oldTaxonNodeUuids,
@@ -703,15 +699,12 @@ public class TaxonNodeServiceImpl
         }catch(NullPointerException e){
             result.setAbort();
             result.addException(new Exception("The Taxon was already deleted."));
-
         }
-
 
     	TaxonNode parent = HibernateProxyHelper.deproxy(node.getParent(), TaxonNode.class);
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
-
 
     	if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.MOVE_TO_PARENT)){
     	   Object[] children = node.getChildNodes().toArray();
@@ -719,18 +712,18 @@ public class TaxonNodeServiceImpl
     	   for (Object child: children){
     	       childNode = (TaxonNode) child;
     	       parent.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference());
-
     	   }
     	}else{
-    	    result.includeResult(deleteTaxonNodes(node.getChildNodes(), config));
+    	    DeleteResult tmpResult = deleteTaxonNodes(node.getChildNodes(), config);
+    	    result.includeResult(tmpResult);
     	}
 
     	//remove node from DescriptiveDataSet
         commonService.getReferencingObjects(node).stream()
-        .filter(obj->obj instanceof DescriptiveDataSet)
-        .forEach(dataSet->{
-            ((DescriptiveDataSet)dataSet).removeTaxonSubtree(node);
-            dataSetService.saveOrUpdate((DescriptiveDataSet) dataSet);
+            .filter(obj->obj instanceof DescriptiveDataSet)
+            .forEach(dataSet->{
+                ((DescriptiveDataSet)dataSet).removeTaxonSubtree(node);
+                dataSetService.saveOrUpdate((DescriptiveDataSet) dataSet);
         });
 
     	if (taxon != null){
