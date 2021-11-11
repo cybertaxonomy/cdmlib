@@ -62,30 +62,35 @@ public class LuceneSearch {
 
     private BooleanQuery filter = null;
 
+    //class filter
+    protected Class<? extends CdmBase> cdmTypeRestriction;
+
+    /**
+     * The MAX_HITS_ALLOWED value must be one less than Integer.MAX_VALUE
+     * otherwise PriorityQueue will produce an exception since it
+     * will always add 1 to the maxhits so Integer.MAX_VALUE
+     * would become Integer.MIN_VALUE
+     */
+    public final int MAX_HITS_ALLOWED = 10000;
+
+    protected BooleanQuery query;
+
+    protected String[] highlightFields = new String[0];
+
+    private int maxDocsPerGroup = 10;
+
     protected Class<? extends CdmBase> getDirectorySelectClass() {
         return pushAbstractBaseTypeDown(directorySelectClass);
     }
-
-    /**
-     * classFilter
-     */
-    protected Class<? extends CdmBase> cdmTypeRestriction;
-
 
     public Class<? extends CdmBase> getCdmTypRestriction() {
         return cdmTypeRestriction;
     }
 
-    /**
-     * @return the filter
-     */
+    //filter
     public BooleanQuery getFilter() {
         return filter;
     }
-
-    /**
-     * @param filter the filter to set
-     */
     public void setFilter(BooleanQuery filter) {
         this.filter = filter;
     }
@@ -108,40 +113,17 @@ public class LuceneSearch {
         this.cdmTypeRestriction = clazz;
     }
 
-    /**
-     * The MAX_HITS_ALLOWED value must be one less than Integer.MAX_VALUE
-     * otherwise PriorityQueue will produce an exception since it
-     * will always add 1 to the maxhits so Integer.MAX_VALUE
-     * would become Integer.MIN_VALUE
-     */
-    public final int MAX_HITS_ALLOWED = 10000;
-
-    protected BooleanQuery query;
-
-    protected String[] highlightFields = new String[0];
-
-    private int maxDocsPerGroup = 10;
-
-
     public int getMaxDocsPerGroup() {
         return maxDocsPerGroup;
     }
-
     public void setMaxDocsPerGroup(int maxDocsPerGroup) {
         this.maxDocsPerGroup = maxDocsPerGroup;
     }
 
-    /**
-     * @param session
-     */
     public LuceneSearch(ILuceneIndexToolProvider toolProvider, Class<? extends CdmBase> directorySelectClass) {
          this.toolProvider = toolProvider;
          this.directorySelectClass = directorySelectClass;
     }
-
-    /**
-     * @param session
-     */
     public LuceneSearch(ILuceneIndexToolProvider toolProvider, String groupByField, Class<? extends CdmBase> directorySelectClass) {
         this.toolProvider = toolProvider;
         this.directorySelectClass = directorySelectClass;
@@ -175,9 +157,6 @@ public class LuceneSearch {
 
     }
 
-    /**
-     * @return
-     */
     public IndexSearcher getSearcher() {
         if(searcher == null){
             searcher = new IndexSearcher(toolProvider.getIndexReaderFor(directorySelectClass));
@@ -244,7 +223,6 @@ public class LuceneSearch {
      */
     public TopGroups<BytesRef> executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
-
         if(pageNumber == null || pageNumber < 0){
             pageNumber = 0;
         }
@@ -289,7 +267,7 @@ public class LuceneSearch {
         if(groupSort.getSort()[0] != SortField.FIELD_SCORE){
             getMaxScores = false;
             // see inner class TopGroupsWithMaxScore
-            logger.error("Fist sort field must be SortField.FIELD_SCORE otherwise the max score value will not be correct! MaxScore calculation will be skipped");
+            logger.warn("Fist sort field must be SortField.FIELD_SCORE otherwise the max score value will not be correct! MaxScore calculation will be skipped");
         }
         boolean fillFields = true;
         TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(groupByField);
