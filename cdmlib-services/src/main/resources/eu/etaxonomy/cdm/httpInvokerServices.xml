@@ -258,6 +258,17 @@
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
+  
+  <bean id="httpPasswordResetService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="passwordResetServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IPasswordResetService</value>
+    </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
+  </bean>
 
   <bean id="httpProgressMonitorService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
