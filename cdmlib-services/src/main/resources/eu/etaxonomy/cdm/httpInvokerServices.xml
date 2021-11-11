@@ -262,7 +262,7 @@
   <bean id="httpPasswordResetService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
-      <ref bean="passwordResetServiceImpl" />
+      <ref bean="passwordResetService" />
     </property>
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.security.IPasswordResetService</value>
