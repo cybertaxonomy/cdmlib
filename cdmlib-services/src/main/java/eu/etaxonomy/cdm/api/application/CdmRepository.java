@@ -73,6 +73,7 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 
 /**
@@ -199,9 +200,10 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     private MediaInfoFactory mediaInfoFactory; // FIXME define and use interface
 	@Autowired
     private SessionFactory factory;
-
 	@Autowired
 	private IDescriptiveDataSetService descriptiveDataSetService;
+    @Autowired
+    private IPasswordResetService passwordResetService;
 
 	//********************** CONSTRUCTOR *********************************************************/
 
@@ -441,6 +443,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		return permissionEvaluator;
 	}
 
+    @Override
     public MediaInfoFactory getMediaInfoFactory() { // FIXME define and use interface
         return mediaInfoFactory;
     }
@@ -508,6 +511,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     }
 
     @Override
+    public IPasswordResetService getPasswordResetService() {
+        return passwordResetService;
+    }
+
+    @Override
 	public ILongRunningTasksService getLongRunningTasksService() {
 		return longRunningTasksService;
 	}
@@ -537,5 +545,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
             // no current session: nothing to clear!
         }
     }
+
+
 
 }

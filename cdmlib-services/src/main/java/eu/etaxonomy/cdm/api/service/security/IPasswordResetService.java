@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.security;
 
 import java.time.Duration;
 
+import org.springframework.mail.MailException;
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
@@ -46,11 +47,13 @@ public interface IPasswordResetService {
      * @return A <code>Future</code> for a <code>Boolean</code> flag. The
      *         boolean value will be <code>false</code> in case the max access
      *         rate for this method has been exceeded and a time out has
-     *         occurred. Other internal error states are intentionally hidden to
-     *         avoid leaking of information on the existence of users (see above
-     *         link to the Forgot_Password_Cheat_Sheet).
+     *         occurred. Internal error states that may
+     *         expose sensitive information are intentionally hidden this way
+     *         (see above link to the Forgot_Password_Cheat_Sheet).
+     * @throws MailException
+     *             in case sending the email has failed
      */
-    ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate);
+    ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException;
 
     /**
      *
