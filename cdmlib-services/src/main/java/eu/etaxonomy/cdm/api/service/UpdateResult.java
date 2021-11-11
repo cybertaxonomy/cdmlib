@@ -268,7 +268,7 @@ public class UpdateResult implements Serializable{
     private String toStringIdsString(String separator, Set<CdmEntityIdentifier> cdmIds) {
         String result = "";
         for (CdmEntityIdentifier id : cdmIds){
-            result = CdmUtils.concat(separator, id.toString());
+            result = CdmUtils.concat(separator, result, id.toString());
         }
         return result;
     }
