@@ -291,7 +291,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				worked++;
 				subMonitor.internalWorked(1);
 			}
-
+			getSession().flush();
+			getSession().clear();
 			if (subMonitor.isCanceled()){
 				break;
 			}
