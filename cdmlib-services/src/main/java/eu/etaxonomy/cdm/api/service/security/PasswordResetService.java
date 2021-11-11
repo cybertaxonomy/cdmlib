@@ -65,13 +65,11 @@ public class PasswordResetService implements IPasswordResetService {
     private JavaMailSender emailSender;
 
     @Autowired
-    Environment env;
+    private Environment env;
 
-    Duration rateLimiterTimeout = null;
-    RateLimiter emailResetToken_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
-    RateLimiter resetPassword_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
-
-
+    private Duration rateLimiterTimeout = null;
+    private RateLimiter emailResetToken_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
+    private RateLimiter resetPassword_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
 
     /**
      * Create a request token and send it to the user via email.
@@ -260,5 +258,4 @@ public class PasswordResetService implements IPasswordResetService {
         resetPassword_rateLimiter.setRate(rate);
         emailResetToken_rateLimiter.setRate(rate);
     }
-
 }
