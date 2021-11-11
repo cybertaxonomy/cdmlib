@@ -26,7 +26,7 @@ public class CdmRemoteApplicationController extends CdmIoApplicationController {
 	private static final Logger logger = Logger.getLogger(CdmRemoteApplicationController.class);
 
 
-	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/applicationContext-test.xml";
+	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/applicationRemoteContext.xml";
 
 
 	public static CdmRemoteApplicationController NewRemoteInstance() {
