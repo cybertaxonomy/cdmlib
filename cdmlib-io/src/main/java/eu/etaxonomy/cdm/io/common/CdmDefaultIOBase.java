@@ -12,6 +12,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.api.application.CdmIoApplicationController;
 
 /**
  * This is an exporter that invokes the application aware defaultExport when
@@ -25,7 +26,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDefaultIOBase.class);
 
-	public static final String DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";
+	public static final String DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE = CdmIoApplicationController.DEFAULT_APPLICATION_CONTEXT_RESOURCE;
 
 	protected ICdmRepository cdmApp = null;
 
