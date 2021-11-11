@@ -71,18 +71,7 @@ public class PasswordResetService implements IPasswordResetService {
     RateLimiter emailResetToken_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
     RateLimiter resetPassword_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
 
-    public static final String RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE = "Your password reset request for ${userName}";
-    public static final String RESET_REQUEST_EMAIL_BODY_TEMPLATE = "You are receiving this email because a password reset was requested for your account at the ${dataBase}"
-            + " data base. If this was not initiated by you, please ignore this message."
-            + ".\n Please click ${linkUrl} to reset your password";
 
-    public static final String RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE = "Your password for ${userName} has been changed";
-    public static final String RESET_SUCCESS_EMAIL_BODY_TEMPLATE = "The password of your account at the ${dataBase} data base has just been changed."
-            + "If this was not initiated by you, please contact the adminitrator as soon as possible.";
-
-    public static final String RESET_FAILED_EMAIL_SUBJECT_TEMPLATE = "Changing your password for ${userName} has failed";
-    public static final String RESET_FAILED_EMAIL_BODY_TEMPLATE = "The attempt to change the password of your account at the ${dataBase} data base has failed."
-            + "If this was not initiated by you, please contact the adminitrator as soon as possible.";
 
     /**
      * Create a request token and send it to the user via email.
@@ -129,9 +118,11 @@ public class PasswordResetService implements IPasswordResetService {
                 String passwordRequestFormUrl = String.format(passwordRequestFormUrlTemplate, resetRequest.getToken());
                 Map<String, String> additionalValues = new HashMap<>();
                 additionalValues.put("linkUrl", passwordRequestFormUrl);
-                sendEmail(user.getEmailAddress(), user.getUsername(), RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE, RESET_REQUEST_EMAIL_BODY_TEMPLATE,
-                        additionalValues);
-                logger.info("A password reset request for  " + user.getUsername() + " has been send to " + user.getEmailAddress());
+                sendEmail(user.getEmailAddress(), user.getUsername(),
+                        PasswordResetTemplates.RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE,
+                        PasswordResetTemplates.RESET_REQUEST_EMAIL_BODY_TEMPLATE, additionalValues);
+                logger.info("A password reset request for  " + user.getUsername() + " has been send to "
+                        + user.getEmailAddress());
             } catch (UsernameNotFoundException e) {
                 logger.warn("Password reset request for unknown user, cause: " + e.getMessage());
             } catch (MailException e) {
@@ -234,11 +225,15 @@ public class PasswordResetService implements IPasswordResetService {
             if (resetRequest.isPresent()) {
                 try {
                     userService.changePasswordForUser(resetRequest.get().getUserName(), newPassword);
-                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(), RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE, RESET_SUCCESS_EMAIL_BODY_TEMPLATE, null);
+                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
+                            PasswordResetTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
+                            PasswordResetTemplates.RESET_SUCCESS_EMAIL_BODY_TEMPLATE, null);
                     return new AsyncResult<Boolean>(true);
                 } catch (DataAccessException | UsernameNotFoundException e) {
                     logger.error("Failed to change password of User " + resetRequest.get().getUserName(), e);
-                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(), RESET_FAILED_EMAIL_SUBJECT_TEMPLATE, RESET_FAILED_EMAIL_BODY_TEMPLATE, null);
+                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
+                            PasswordResetTemplates.RESET_FAILED_EMAIL_SUBJECT_TEMPLATE,
+                            PasswordResetTemplates.RESET_FAILED_EMAIL_BODY_TEMPLATE, null);
                 }
             } else {
                 throw new PasswordResetException("Invalid password reset token");

@@ -166,7 +166,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         // -- read email message
         WiserMessage requestMessage = wiser.getMessages().get(0);
         MimeMessage requestMimeMessage = requestMessage.getMimeMessage();
-        assertEquals(PasswordResetService.RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE.replace("${userName}", userName), requestMimeMessage.getSubject());
+        assertEquals(PasswordResetTemplates.RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE.replace("${userName}", userName), requestMimeMessage.getSubject());
 
         String messageContent = requestMimeMessage.getContent().toString();
         // -- extract token
@@ -190,7 +190,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         assertEquals(2, wiser.getMessages().size());
         WiserMessage successMessage = wiser.getMessages().get(1);
         MimeMessage successMimeMessage = successMessage.getMimeMessage();
-        assertEquals(PasswordResetService.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE.replace("${userName}", userName), successMimeMessage.getSubject());
+        assertEquals(PasswordResetTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE.replace("${userName}", userName), successMimeMessage.getSubject());
     }
 
     @Test
