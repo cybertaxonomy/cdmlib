@@ -64,7 +64,7 @@ public class DeleteResult extends UpdateResult{
         if (includedResult instanceof DeleteResult){
             DeleteResult includedDeleteResult = (DeleteResult)includedResult;
             this.addDeletedObjects(includedDeleteResult.getDeletedObjects());
-            this.addRelatedObjects(includedDeleteResult.getRelatedObjects());
+            //Note: we do not include related objects as they loose there context, if needed in some cases in future it should be done paremeterized
         }
     }
 }
