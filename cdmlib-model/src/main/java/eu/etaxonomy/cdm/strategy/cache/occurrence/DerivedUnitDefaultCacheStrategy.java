@@ -137,6 +137,25 @@ public class DerivedUnitDefaultCacheStrategy
         };
     }
 
+
+    //NOTE still need to discuss, if the identity cache for derived units
+    //should also include the identity cache for field units (see also #5951).
+    //This may make sense for searching, but is less comfortable in
+    //tree representations.
+    //For search it might be not so urgent if showing both the identity cache
+    //followed by the titleCache whcih includes field unit information.
+    @Override
+    protected String doGetIdentityCache(DerivedUnit derivedUnit) {
+        String specimenLabel = getSpecimenLabel(derivedUnit);
+        if (isBlank(specimenLabel)){
+            return getTitleCache(derivedUnit);
+        }else{
+            //NOTE: in future we may add further information if not both data are given
+            //      collection code/label AND unit number
+            return specimenLabel;
+        }
+    }
+
     /**
      * Produces the collection code and number which is the combination of the collection code and
      * accession number or barcode.

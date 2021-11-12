@@ -95,6 +95,21 @@ public class FieldUnitDefaultCacheStrategy
         return result;
     }
 
+    @Override
+    protected String doGetIdentityCache(FieldUnit fieldUnit) {
+        if (fieldUnit == null){
+            return null;
+        }
+        String collectorAndFieldNumber = getCollectorAndFieldNumber(fieldUnit);
+        if (isBlank(collectorAndFieldNumber)){
+            return this.doGetTitleCache(fieldUnit);
+        }else{
+            //NOTE: in future we may decide to return further information if
+            //not both information is available collector AND fieldNumber.
+            return collectorAndFieldNumber;
+        }
+    }
+
     private String getFieldData(FieldUnit fieldUnit) {
 
         if (fieldUnit.isProtectedTitleCache()){

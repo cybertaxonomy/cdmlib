@@ -277,9 +277,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         this.identityCache = identityCache;
     }
 
+    /**
+     * Sets the identity (short) cache. For how to use see {@link #setTitleCache(String, boolean)}
+     */
     public void setIdentityCache(String identityCache, boolean isProtected) {
-        this.protectedIdentityCache = isProtected;
         setIdentityCache(identityCache);
+        this.protectedIdentityCache = isProtected;
     }
 
     /**
