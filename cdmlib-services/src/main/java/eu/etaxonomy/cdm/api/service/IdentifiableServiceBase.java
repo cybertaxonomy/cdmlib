@@ -292,7 +292,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 				subMonitor.internalWorked(1);
 			}
 			getSession().flush();
-			getSession().clear();
+			//still causes LIE during hibernate search indexing (but not when running from command line)
+//			getSession().clear();
 			if (subMonitor.isCanceled()){
 				break;
 			}
