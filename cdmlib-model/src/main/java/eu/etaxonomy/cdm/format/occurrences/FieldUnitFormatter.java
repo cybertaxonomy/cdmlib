@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 /**
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public class FieldUnitFormatter extends SpecimenOrObservationBaseFormatter {
 
@@ -43,5 +42,4 @@ public class FieldUnitFormatter extends SpecimenOrObservationBaseFormatter {
         }
         formatKeyMap.put(FormatKey.FIELD_NUMBER, fieldUnit.getFieldNumber());
     }
-
 }

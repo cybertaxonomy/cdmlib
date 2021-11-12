@@ -37,5 +37,4 @@ public class MediaSpecimenFormatter extends DerivedUnitFormatter {
             formatKeyMap.put(FormatKey.MEDIA_TITLE_CACHE, media.getTitleCache());
         }
     }
-
 }

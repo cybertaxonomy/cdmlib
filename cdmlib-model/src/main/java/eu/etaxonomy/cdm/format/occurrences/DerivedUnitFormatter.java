@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.format.occurrences;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
-
 /**
  * @author pplitzner
  * @since Nov 30, 2015
@@ -55,5 +54,4 @@ public class DerivedUnitFormatter extends SpecimenOrObservationBaseFormatter{
             }
         }
     }
-
 }
