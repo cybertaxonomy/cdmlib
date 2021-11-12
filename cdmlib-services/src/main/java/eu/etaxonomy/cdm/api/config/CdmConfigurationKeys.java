@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.config;
 
+import org.springframework.core.env.Environment;
+
 /**
  * @author a.kohlbecker
  * @since Feb 15, 2018
@@ -15,7 +17,11 @@ package eu.etaxonomy.cdm.api.config;
 public class CdmConfigurationKeys {
 
     /**
-     * key for the spring environment to the datasource bean id aka instance name
+     * Key for the spring environment to the datasource bean id aka instance name.
+     * <p>
+     * By now this key can be used to retrieve the datasource bean id from the Spring {@link Environment} from
+     * all applications that are making use of the {@code eu.etaxonomy.cdm.opt.config.DataSourceConfigurer}.
+     * - as far as other classes that configure the data sources do not yet implement setting this property.
      */
     public static final String CDM_DATA_SOURCE_ID = "cdm.dataSource.id";
 }
