@@ -1672,7 +1672,12 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>1.9</version>
-    </dependency>
+      </dependency>
+      <dependency>
+        <groupId>org.passay</groupId>
+        <artifactId>passay</artifactId>
+        <version>1.6.1</version>
+      </dependency>
    </dependencies>    
   </dependencyManagement>
 </project>
