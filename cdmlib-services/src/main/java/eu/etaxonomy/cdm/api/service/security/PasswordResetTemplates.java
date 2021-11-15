@@ -20,11 +20,11 @@ public class PasswordResetTemplates {
             + "\n\nPlease click ${linkUrl} to reset your password";
 
     public static final String RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE = "Your password for ${userName} has been changed";
-    public static final String RESET_SUCCESS_EMAIL_BODY_TEMPLATE = "The password of your account at the ${dataBase} data base has just been changed."
-            + "\n\nIf this was not initiated by you, please contact the adminitrator as soon as possible.";
+    public static final String RESET_SUCCESS_EMAIL_BODY_TEMPLATE = "The password of your account (${userName}) at the ${dataBase} data base has just been changed."
+            + "\n\nIf this was not initiated by you, please contact the administrator (${supportEmailAddress}) as soon as possible.";
 
     public static final String RESET_FAILED_EMAIL_SUBJECT_TEMPLATE = "Changing your password for ${userName} has failed";
     public static final String RESET_FAILED_EMAIL_BODY_TEMPLATE = "The attempt to change the password of your account at the ${dataBase} data base has failed."
-            + "\n\nIf this was not initiated by you, please contact the adminitrator as soon as possible.";
+            + "\n\nIf this was not initiated by you, please contact the administrator (${supportEmailAddress}) as soon as possible.";
 
 }

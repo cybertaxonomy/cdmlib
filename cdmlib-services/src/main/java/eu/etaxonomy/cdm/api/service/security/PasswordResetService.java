@@ -27,9 +27,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import com.google.common.util.concurrent.RateLimiter;
@@ -47,7 +49,7 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
  * @since Oct 26, 2021
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 public class PasswordResetService implements IPasswordResetService {
 
     private static Logger logger = Logger.getLogger(PasswordResetRequest.class);
@@ -135,7 +137,7 @@ public class PasswordResetService implements IPasswordResetService {
 
     /**
      * Uses the {@link StringSubstitutor} as simple template engine.
-     * Below named values are automatically resoved, more can be added via the
+     * Below named values are automatically resolved, more can be added via the
      * <code>valuesMap</code> parameter.
      *
      * @param userEmail
@@ -153,8 +155,12 @@ public class PasswordResetService implements IPasswordResetService {
 
         String from = env.getProperty(SendEmailConfigurer.FROM_ADDRESS);
         String dataSourceBeanId = env.getProperty(CdmConfigurationKeys.CDM_DATA_SOURCE_ID);
+        String supportEmailAddress = env.getProperty(CdmConfigurationKeys.MAIL_ADDRESS_SUPPORT);
         if(additionalValuesMap == null) {
             additionalValuesMap = new HashedMap<>();
+        }
+        if(supportEmailAddress != null) {
+            additionalValuesMap.put("supportEmailAddress", supportEmailAddress);
         }
         additionalValuesMap.put("userName", userName);
         additionalValuesMap.put("dataBase", dataSourceBeanId);
@@ -222,12 +228,16 @@ public class PasswordResetService implements IPasswordResetService {
             Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(token);
             if (resetRequest.isPresent()) {
                 try {
-                    userService.changePasswordForUser(resetRequest.get().getUserName(), newPassword);
+                    UserDetails user = userService.loadUserByUsername(resetRequest.get().getUserName());
+                    Assert.isAssignable(user.getClass(), User.class);
+                    userService.encodeUserPassword((User)user, newPassword);
+                    userDao.saveOrUpdate((User)user);
+                    passwordResetTokenStore.remove(token);
                     sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
                             PasswordResetTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
                             PasswordResetTemplates.RESET_SUCCESS_EMAIL_BODY_TEMPLATE, null);
                     return new AsyncResult<Boolean>(true);
-                } catch (DataAccessException | UsernameNotFoundException e) {
+                } catch (DataAccessException | IllegalArgumentException | UsernameNotFoundException e) {
                     logger.error("Failed to change password of User " + resetRequest.get().getUserName(), e);
                     sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
                             PasswordResetTemplates.RESET_FAILED_EMAIL_SUBJECT_TEMPLATE,

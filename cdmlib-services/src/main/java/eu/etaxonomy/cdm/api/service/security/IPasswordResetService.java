@@ -56,19 +56,20 @@ public interface IPasswordResetService {
     ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException;
 
     /**
-     *
-     * @param token
-     *            the token string
-     * @param newPassword
-     *            The new password to set
-     * @return A <code>Future</code> for a <code>Boolean</code> flag. The
-     *         boolean value will be <code>false</code> in case the max access
-     *         rate for this method has been exceeded and a time out has
-     *         occurred. Other internal error states are intentionally hidden to
-     *         avoid leaking of information on the existence of users (see above
-     *         link to the Forgot_Password_Cheat_Sheet).
-     * @throws PasswordResetException
-     */
+    *
+    * @param token
+    *            the token string
+    * @param newPassword
+    *            The new password to set
+    * @return A <code>Future</code> for a <code>Boolean</code> flag. The
+    *         boolean value will be <code>false</code> in case the max access
+    *         rate for this method has been exceeded and a time out has
+    *         occurred.
+    * @throws PasswordResetException
+    *             in case an invalid token has been used
+    * @throws MailException
+    *             in case sending the email has failed
+    */
     ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws PasswordResetException;
 
 

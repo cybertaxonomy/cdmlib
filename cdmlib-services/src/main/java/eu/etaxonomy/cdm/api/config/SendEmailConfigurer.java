@@ -19,7 +19,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 /**
  * This class replaces the {@code org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration} which can not
- * yet used in this project
+ * yet used in this project.
+ * <p>
+ * The configurations keys contained in here explicitly are not placed in {@link CdmConfigurationKeys} since this class here
+ * does only replace missing functionality which otherwise would be provided by the spring boot <code>MailSenderAutoConfiguration</code>.
  *
  * @author a.kohlbecker
  * @since Sep 14, 2021
