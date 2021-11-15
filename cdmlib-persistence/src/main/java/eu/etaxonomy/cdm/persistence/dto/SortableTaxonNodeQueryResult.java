@@ -54,12 +54,16 @@ public class SortableTaxonNodeQueryResult {
         this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, nameRank, parentNodeUuid);
     }
 
+
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
             Rank nameRank) {
         this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, nameRank, null);
     }
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache, UUID parentNodeUuid) {
         this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, parentNodeUuid);
+    }
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
+        this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, null);
     }
 
     public UUID getTaxonNodeUuid() {
