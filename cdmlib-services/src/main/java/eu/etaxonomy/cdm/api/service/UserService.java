@@ -134,12 +134,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
             // check if old password is valid
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), oldPassword));
-
-            // make new password and set it
-            Object salt = this.saltSource.getSalt(user);
-            String password = passwordEncoder.encodePassword(newPassword, salt);
-            user.setPassword(password);
-            dao.update(user);
+            encodeUserPassword(user, newPassword);
 
             // authenticate the user again with the new password
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
@@ -150,6 +145,22 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         } else {
             throw new AccessDeniedException("Can't change password as no Authentication object found in context for current user.");
         }
+    }
+
+    /**
+     * make new password salt, encode and set it for the passed user
+     *
+     * @param user
+     *  The user to set the new password for.
+     * @param newPassword
+     *  the new password to be encoded and set for the <code>user</code>
+     */
+    @Override
+    public void encodeUserPassword(User user, String newPassword) {
+        Object salt = this.saltSource.getSalt(user);
+        String password = passwordEncoder.encodePassword(newPassword, salt);
+        user.setPassword(password);
+        dao.update(user);
     }
 
     @Override
@@ -165,12 +176,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
                 throw new UsernameNotFoundException(username);
             }
 
-            Object salt = this.saltSource.getSalt(user);
-
-            String password = passwordEncoder.encodePassword(newPassword, salt);
-            user.setPassword(password);
-
-            dao.update(user);
+            encodeUserPassword(user, newPassword);
             userCache.removeUserFromCache(user.getUsername());
         } catch(NonUniqueResultException nure) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
@@ -182,13 +188,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void createUser(UserDetails user) {
     	Assert.isInstanceOf(User.class, user);
-
-        String rawPassword = user.getPassword();
-        Object salt = this.saltSource.getSalt(user);
-
-        String password = passwordEncoder.encodePassword(rawPassword, salt);
-        ((User)user).setPassword(password);
-
+        encodeUserPassword((User)user, user.getPassword());
         dao.save((User)user);
     }
 
