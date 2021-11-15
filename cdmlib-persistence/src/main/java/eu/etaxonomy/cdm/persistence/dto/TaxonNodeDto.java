@@ -92,9 +92,10 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     }
 
-    public TaxonNodeDto(UUID uuid, Integer id, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex) {
+    public TaxonNodeDto(UUID uuid, Integer id, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid) {
         super(uuid, id, nameTitleCache, taxonTitleCache);
         this.rankOrderIndex = rankOrderIndex;
+        this.parentUUID = parentUuid;
     }
 
     public TaxonNodeDto(UUID uuid, Integer id, String titleCache, Integer rankOrderIndex) {
