@@ -23,6 +23,7 @@ public class SortableTaxonNodeQueryResult {
     protected String taxonTitleCache;
     protected String nameTitleCache;
     protected Rank nameRank = Rank.UNKNOWN_RANK();
+    protected UUID parentNodeUuid;
 
     /**Is this the reason
      * @param taxonNodeUuid
@@ -31,7 +32,7 @@ public class SortableTaxonNodeQueryResult {
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache, String nameTitleCache,
-            Rank nameRank) {
+            Rank nameRank, UUID parentNodeUuid) {
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.taxonTitleCache = taxonTitleCache;
@@ -39,6 +40,7 @@ public class SortableTaxonNodeQueryResult {
         if(nameRank != null){
             this.nameRank = nameRank;
         }
+        this.parentNodeUuid = parentNodeUuid;
     }
 
     /**
@@ -48,12 +50,12 @@ public class SortableTaxonNodeQueryResult {
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
-            Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, nameRank);
+            Rank nameRank, UUID parentNodeUuid) {
+        this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, nameRank, parentNodeUuid);
     }
 
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
-        this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null);
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache, UUID parentNodeUuid) {
+        this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, parentNodeUuid);
     }
 
     public UUID getTaxonNodeUuid() {
@@ -62,6 +64,20 @@ public class SortableTaxonNodeQueryResult {
     public void setTaxonNodeUuid(UUID taxonNodeUuid) {
         this.taxonNodeUuid = taxonNodeUuid;
     }
+    /**
+     * @return the parentNodeUuid
+     */
+    public UUID getParentNodeUuid() {
+        return parentNodeUuid;
+    }
+
+    /**
+     * @param parentNodeUuid the parentNodeUuid to set
+     */
+    public void setParentNodeUuid(UUID parentNodeUuid) {
+        this.parentNodeUuid = parentNodeUuid;
+    }
+
     public Integer getTaxonNodeId() {
         return taxonNodeId;
     }

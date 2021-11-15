@@ -916,4 +916,23 @@ public class DescriptiveDataSetService
         return dao.getDescriptiveDataSetDtoByUuid(uuid);
     }
 
+    @Override
+    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid) {
+        Classification classification = null;
+        DescriptionBaseDto description = descriptionService.loadDto(taxonDescriptionUuid);
+
+        DescriptiveDataSet descriptiveDataSet = dao.load(descriptiveDataSetUuid, null);
+        Optional<TaxonNode> first = descriptiveDataSet.getTaxonSubtreeFilter().stream()
+                .filter(node->node.getClassification()!=null).findFirst();
+        Optional<Classification> classificationOptional = first.map(node->node.getClassification());
+        Set<DescriptionBaseDto> descriptions = new HashSet<>();
+        TaxonNodeDto nodeDto = null;
+        if(classificationOptional.isPresent()){
+            classification = classificationOptional.get();
+            nodeDto = taxonNodeService.dto(description.getTaxonDto().getUuid(), classification.getUuid());
+        }
+
+        return new TaxonRowWrapperDTO(description, nodeDto, descriptions);
+    }
+
 }

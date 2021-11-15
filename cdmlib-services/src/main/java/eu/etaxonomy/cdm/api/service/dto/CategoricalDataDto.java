@@ -17,6 +17,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
@@ -31,7 +32,9 @@ public class CategoricalDataDto extends DescriptionElementDto {
 
     public CategoricalDataDto (UUID elementUuid, FeatureDto feature, List<StateDataDto> states){
        super(elementUuid, feature);
-       this.states = states;
+       if (states != null){
+           this.states = states;
+       }
     }
 
     public CategoricalDataDto(FeatureDto feature){
@@ -107,26 +110,29 @@ public class CategoricalDataDto extends DescriptionElementDto {
         states.clear();
     }
 
-    public static String getCategoricalDtoSelect(UUID fromDescription){
-        String[] result = createSqlParts(fromDescription);
+    public static String getCategoricalDtoSelect(){
+        String[] result = createSqlParts();
 
         return result[0]+result[1]+result[2] + result[3];
     }
 
-    private static String[] createSqlParts(UUID fromDescription) {
+    private static String[] createSqlParts() {
         //featureDto, uuid, states
 
         String sqlSelectString = ""
                 + "select a.uuid, "
                 + "feature.uuid, "
-                + "state.uuid  ";
+                + "state.uuid,  "
+                + "state.count, "
+                + "state.state ";
 
         String sqlFromString =   " FROM CategoricalData as a ";
 
-        String sqlJoinString =  "LEFT JOIN a.states as state "
+        String sqlJoinString =  "LEFT JOIN a.stateData as state "
                 + "LEFT JOIN a.feature as feature ";
 
-        String sqlWhereString =  "WHERE a.description.uuid like "+ fromDescription;
+        String sqlWhereString =  " WHERE a.inDescription.uuid = :uuid";
+
 
         String[] result = new String[4];
         result[0] = sqlSelectString;
@@ -134,6 +140,30 @@ public class CategoricalDataDto extends DescriptionElementDto {
         result[2] = sqlJoinString;
         result[3] = sqlWhereString;
         return result;
+    }
+
+    /**
+     * @param result
+     * @return
+     */
+    public static List<CategoricalDataDto> categoricalDataDtoListFrom(List<Object[]> result) {
+        List<CategoricalDataDto> dtoResult = new ArrayList<>();
+        CategoricalDataDto dto = null;
+
+        for (Object[] o: result){
+            UUID uuid = (UUID)o[0];
+            UUID featureUuid = (UUID)o[1];
+            if (dto == null || !dto.getElementUuid().equals(uuid)){
+                dto = new CategoricalDataDto(uuid, new FeatureDto(featureUuid, null, null, null, null, null, null, true, false, true, null, true, false, null, null, null, null), null);
+                dtoResult.add(dto);
+            }
+            StateDataDto state = new StateDataDto(TermDto.fromTerm((DefinedTermBase)o[4]),(Integer) o[3], uuid);
+            dto.addState(state);
+        }
+
+
+        return dtoResult;
+
     }
 
 
