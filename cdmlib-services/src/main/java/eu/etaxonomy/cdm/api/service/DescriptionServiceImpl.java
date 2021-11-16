@@ -1144,7 +1144,24 @@ public class DescriptionServiceImpl
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
 
         if (list.size()== 1){
-            return list.get(0);
+            DescriptionBaseDto dto = list.get(0);
+            //get categorical data
+            sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid", descriptionUuid);
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultCat = query.list();
+            List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
+            dto.getElements().addAll(listCategorical);
+            //get quantitative data
+            sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid", descriptionUuid);
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultQuant = query.list();
+            List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
+            dto.getElements().addAll(listQuant);
+            return dto;
         }else{
             return null;
         }
@@ -1153,8 +1170,9 @@ public class DescriptionServiceImpl
 
     @Override
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid) {
-        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect(taxonUuid);
+        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect();
         Query query =  getSession().createQuery(sqlSelect);
+        query.setParameter("uuid", taxonUuid);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
