@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 @Audited
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed
-public class GatheringEvent extends EventBase implements Cloneable{
+public class GatheringEvent extends EventBase {
 	private static final long serialVersionUID = 7980806082366532180L;
 	private static final Logger logger = Logger.getLogger(GatheringEvent.class);
 

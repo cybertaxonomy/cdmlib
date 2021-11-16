@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @Audited
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {
+
     private static final long serialVersionUID = 6582191171369439163L;
     private static final Logger logger = Logger.getLogger(User.class);
 
@@ -126,7 +127,6 @@ public class User extends CdmBase implements UserDetails {
     protected String salt;
 
     @XmlElement(name = "EmailAddress")
-    
     protected String emailAddress;
 
     @XmlElementWrapper(name = "GrantedAuthorities")

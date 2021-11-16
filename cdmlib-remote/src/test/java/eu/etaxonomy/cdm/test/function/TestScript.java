@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.io.application.CdmRemoteApplicationController;
@@ -125,7 +127,8 @@ public class TestScript {
         HttpServletResponse response = null;
         TaxonPortalController taxonPortalController = (TaxonPortalController) appCtr.getBean("taxonPortalController");
 
-        taxonPortalController.doGet(taxonUUID, null, response);
+        TaxonBase<?> taxon = taxonPortalController.doGet(taxonUUID, null, response);
+        TeamOrPersonBase<?> secAuthor = taxon.getSec().getAuthorship();
 
     }
 

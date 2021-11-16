@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 @DataSet
 public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 
-    private final String[] tableNames = new String[]{"USERACCOUNT", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL", "CDMMETADATA", "PERMISSIONGROUP"};
+//    private final String[] tableNames = new String[]{"USERACCOUNT", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL", "CDMMETADATA", "PERMISSIONGROUP"};
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
