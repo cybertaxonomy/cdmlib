@@ -135,6 +135,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
             // check if old password is valid
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), oldPassword));
             encodeUserPassword(user, newPassword);
+            dao.update(user);
 
             // authenticate the user again with the new password
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
@@ -160,7 +161,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         Object salt = this.saltSource.getSalt(user);
         String password = passwordEncoder.encodePassword(newPassword, salt);
         user.setPassword(password);
-        dao.update(user);
     }
 
     @Override
@@ -177,6 +177,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
             }
 
             encodeUserPassword(user, newPassword);
+            dao.update(user);
             userCache.removeUserFromCache(user.getUsername());
         } catch(NonUniqueResultException nure) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
