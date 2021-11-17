@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -72,7 +73,8 @@ public class FeatureDto extends TermDto {
     static public FeatureDto fromFeature(Feature term) {
         UUID partOfUuid = term.getPartOf() != null? term.getPartOf().getUuid(): null;
         UUID kindOfUuid = term.getKindOf() != null? term.getKindOf().getUuid(): null;
-        UUID vocUuid =  term.getVocabulary() != null? term.getVocabulary().getUuid(): null;
+        TermVocabulary<?> vocabulary = HibernateProxyHelper.deproxy(term.getVocabulary());
+        UUID vocUuid =  vocabulary != null? vocabulary.getUuid(): null;
         Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
         for (TermVocabulary<State> stateVoc:term.getSupportedCategoricalEnumerations()){
             supportedCategoricalEnumerations.add(TermVocabularyDto.fromVocabulary(stateVoc));

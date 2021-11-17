@@ -142,6 +142,9 @@ public class QuantitativeDataDto extends DescriptionElementDto {
             }
             StatisticalMeasurementValueDto statVal = new StatisticalMeasurementValueDto(TermDto.fromTerm((DefinedTermBase)o[4]),(BigDecimal)o[3], (UUID)o[2]) ;
             dto.addValue(statVal);
+            if (o[5] != null) {
+                dto.setMeasurementUnit(TermDto.fromTerm((DefinedTermBase)o[5]));
+            }
         }
 
 

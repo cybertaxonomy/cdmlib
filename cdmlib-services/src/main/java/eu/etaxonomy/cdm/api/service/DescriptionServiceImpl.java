@@ -92,6 +92,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -123,6 +124,7 @@ public class DescriptionServiceImpl
     protected IOccurrenceDao occurrenceDao;
     protected ITaxonNodeDao taxonNodeDao;
     protected IDescriptiveDataSetDao dataSetDao;
+    protected ITermService termService;
 
     //TODO change to Interface
     private NaturalLanguageGenerator naturalLanguageGenerator;
@@ -151,6 +153,12 @@ public class DescriptionServiceImpl
     protected void setDefinedTermDao(IDefinedTermDao definedTermDao) {
         this.definedTermDao = definedTermDao;
     }
+
+    @Autowired
+    protected void setTermService(ITermService definedTermService) {
+        this.termService = definedTermService;
+    }
+
 
     @Autowired
     protected void statisticalMeasurementValueDao(IStatisticalMeasurementValueDao statisticalMeasurementValueDao) {
@@ -1152,6 +1160,16 @@ public class DescriptionServiceImpl
             @SuppressWarnings("unchecked")
             List<Object[]>  resultCat = query.list();
             List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
+
+            List<UUID> featureUuids = new ArrayList<>();
+            for (CategoricalDataDto catDto: listCategorical){
+                featureUuids.add(catDto.getFeatureUuid());
+            }
+            Map<UUID, TermDto> featureDtos = termService.findFeatureByUUIDsAsDtos(featureUuids);
+            for (CategoricalDataDto catDto: listCategorical){
+                FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
+                catDto.setFeatureDto(featuredto);
+            }
             dto.getElements().addAll(listCategorical);
             //get quantitative data
             sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();

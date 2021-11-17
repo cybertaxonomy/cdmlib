@@ -237,7 +237,7 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
         for (Object element: desc.getElements()){
             if (element instanceof CategoricalData){
                 Feature feature = ((CategoricalData) element).getFeature();
-                FeatureDto featureDto = FeatureDto.fromFeature(feature);
+//                FeatureDto featureDto = FeatureDto.fromFeature(feature);
                 CategoricalDataDto dto = CategoricalDataDto.fromCategoricalData((CategoricalData)element);
                 elements.add(dto);
             }

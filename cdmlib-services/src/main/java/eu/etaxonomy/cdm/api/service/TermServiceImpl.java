@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -631,6 +632,17 @@ public class TermServiceImpl
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList){
         return dao.findFeatureByUUIDsAsDto(uuidList);
     }
+
+    @Override
+    public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList){
+        Collection<TermDto> col = dao.findFeatureByUUIDsAsDto(uuidList);
+        Map<UUID, TermDto> result = new HashMap<>();
+        for (TermDto dto: col){
+            result.put(dto.getUuid(), dto);
+        }
+        return result;
+    }
+
 
     @Override
     public Collection<TermDto> findFeatureByTitleAsDto(String title){

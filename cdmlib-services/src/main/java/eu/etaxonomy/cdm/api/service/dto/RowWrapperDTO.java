@@ -180,8 +180,24 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         displayData = "";
         BigDecimal min = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.MIN().getUuid());
         BigDecimal max = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.MAX().getUuid());
+        BigDecimal mean = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.AVERAGE().getUuid());
+        BigDecimal low = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY().getUuid());
+        BigDecimal high = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY().getUuid());
+        BigDecimal size = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.SAMPLE_SIZE().getUuid());
+        String typicalValues = "";
+        if (low != null || high != null){
+            typicalValues += low!= null?low.toString():""+"-"+high!= null?high.toString():"";
+        }
         if(min!=null||max!=null){
-            displayData += "["+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+"] ";
+            if (min!= null && max != null && min.intValue() == max.intValue()){
+                displayData += "("+min.toString()+")"+typicalValues;
+            }else{
+                if (StringUtils.isBlank(typicalValues)){
+                    displayData += "("+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+") ";
+                }else{
+                    displayData += "("+(min!=null?min.toString():"?")+typicalValues+(max!=null?max.toString():"?")+") ";
+                }
+            }
         }
         displayData += quantitativeData.getValues().stream()
                 .filter(value->value.getType().getUuid().equals(StatisticalMeasure.EXACT_VALUE().getUuid()))
@@ -190,6 +206,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         if (quantitativeData.getMeasurementUnit() != null && StringUtils.isNotBlank(displayData)){
             displayData += " "+ quantitativeData.getMeasurementIdInVocabulary();
         }
+
         return displayData;
     }
 
