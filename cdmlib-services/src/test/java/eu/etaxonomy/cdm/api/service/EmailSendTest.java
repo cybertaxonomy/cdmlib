@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Objects;
@@ -57,13 +59,15 @@ public class EmailSendTest extends CdmIntegrationTest {
         }
 
         String from = env.getProperty(SendEmailConfigurer.FROM_ADDRESS);
+        assertNotNull(from);
+        assertTrue(from.contains("@"));
 
         boolean useWiser = Objects.equals(env.getProperty(SendEmailConfigurer.INT_TEST_SERVER), "wiser");
         Wiser wiser = null;
         if(useWiser) {
             // start test smtp server
             wiser = new Wiser();
-            wiser.setPort(2500); // Default is 25
+            wiser.setPort(2500); // better use random port
             wiser.start();
         }
 

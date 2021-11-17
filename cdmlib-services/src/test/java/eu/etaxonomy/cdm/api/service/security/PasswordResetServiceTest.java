@@ -26,6 +26,8 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.subethamail.wiser.Wiser;
@@ -77,6 +79,9 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     @SpringBeanByType
     private JavaMailSender emailSender;
 
+    @Autowired
+    private Environment env;
+
     private Wiser wiser = null;
 
     private CountDownLatch resetTokenSendSignal;
@@ -86,9 +91,11 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
 
     @Before
     public void startEmailServer() {
+        // Integer smtpPort = env.getProperty(SendEmailConfigurer.PORT, Integer.class);
         wiser = new Wiser();
-        wiser.setPort(2500); // Default is 25
+        wiser.setPort(2500); // must be the same as configured for SendEmailConfigurer.PORT
         wiser.start();
+        logger.debug("Wiser email server started");
     }
 
 

@@ -49,6 +49,7 @@
 	<aspectj.version>1.9.6</aspectj.version>            <!-- checked 2020-08 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.0</dozer.version>                <!-- checked 2021-02 -->
+    <javax.mail.version>1.5.6</javax.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
     <javadoc.opts>-Xdoclint:none</javadoc.opts>         
   </properties>
   
@@ -1663,9 +1664,9 @@
       </dependency>
       <dependency>
         <!-- Email functionality (used in cdmlib-services) -->
-          <groupId>javax.mail</groupId>
-          <artifactId>javax.mail-api</artifactId>
-          <version>1.5.6</version><!-- same as for spring-context-support/4.3.28.RELEASE -->
+          <groupId>com.sun.mail</groupId>
+          <artifactId>javax.mail</artifactId>
+          <version>${javax.mail.version}</version>
       </dependency>
       <dependency>
         <!-- only needed for PasswordResetService, may be replaced by Thymeleaf -->
