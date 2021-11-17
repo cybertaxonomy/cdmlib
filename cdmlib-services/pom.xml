@@ -92,8 +92,9 @@
         <artifactId>spring-context-support</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mailapi</artifactId>
+          <groupId>javax.mail</groupId>
+          <artifactId>javax.mail-api</artifactId>
+        <!-- dependency managed by spring-context-support -->
     </dependency>
     <dependency>
         <groupId>org.subethamail</groupId>
