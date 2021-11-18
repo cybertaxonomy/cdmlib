@@ -35,9 +35,9 @@ import org.subethamail.wiser.WiserMessage;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.security.AbstractRequestTokenStore;
 import eu.etaxonomy.cdm.api.security.IPasswordResetTokenStore;
 import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
-import eu.etaxonomy.cdm.api.security.PasswordResetTokenStore;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -180,7 +180,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         Pattern pattern = Pattern.compile("=\\{(" + base64UrlSaveCharClass + "+)\\}");
         Matcher m = pattern.matcher(messageContent);
         assertTrue(m.find());
-        assertEquals(PasswordResetTokenStore.TOKEN_LENGTH + 17, m.group(1).length());
+        assertEquals(AbstractRequestTokenStore.TOKEN_LENGTH + 17, m.group(1).length());
 
         // -- change password
         ListenableFuture<Boolean> resetPasswordFuture = passwordResetService.resetPassword( m.group(1), newPWD);

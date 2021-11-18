@@ -16,14 +16,14 @@ import eu.etaxonomy.cdm.model.permission.User;
  * @author a.kohlbecker
  * @since Nov 3, 2021
  */
-public interface IPasswordResetTokenStore {
+public interface IPasswordResetTokenStore<T extends AbstractRequestToken> {
 
     public static final int TOKEN_LIFETIME_MINUTES_DEFAULT = 60 * 6;
 
-    public PasswordResetRequest create(User user);
+    public T create(User user);
 
     /**
-     * Removes the corresponding <code>PasswordResetRequest</code> from the
+     * Removes the corresponding <code>AbstractRequestToken</code> from the
      * store
      *
      * @param token
@@ -42,18 +42,19 @@ public interface IPasswordResetTokenStore {
     public boolean isEligibleToken(String token);
 
     /**
-     * Returns the corresponding <code>PasswordResetRequest</code> if it exists
+     * Returns the corresponding <code>AbstractRequestToken</code> if it exists
      * and is not expired.
      *
      * @param token
      *            The token string
-     * @return the valid <code>PasswordResetRequest</code> or an empty
+     * @return the valid <code>AbstractRequestToken</code> or an empty
      *         <code>Optional</code>
      */
-    public Optional<PasswordResetRequest> findResetRequest(String token);
+    public Optional<T> findResetRequest(String token);
 
 
     public void setTokenLifetimeMinutes(int tokenLifetimeMinutes);
 
+    public T createNewToken(User user, String randomToken, int tokenLifetimeMinutes);
 
 }

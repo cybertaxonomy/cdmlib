@@ -38,6 +38,7 @@ import com.google.common.util.concurrent.RateLimiter;
 
 import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
 import eu.etaxonomy.cdm.api.config.SendEmailConfigurer;
+import eu.etaxonomy.cdm.api.security.AbstractRequestToken;
 import eu.etaxonomy.cdm.api.security.IPasswordResetTokenStore;
 import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
 import eu.etaxonomy.cdm.api.service.IUserService;
@@ -114,7 +115,7 @@ public class PasswordResetService implements IPasswordResetService {
             logger.trace("emailResetToken allowed by rate limiter");
             try {
                 User user = findUser(userNameOrEmail);
-                PasswordResetRequest resetRequest = passwordResetTokenStore.create(user);
+                AbstractRequestToken resetRequest = passwordResetTokenStore.create(user);
                 String passwordRequestFormUrl = String.format(passwordRequestFormUrlTemplate, resetRequest.getToken());
                 Map<String, String> additionalValues = new HashMap<>();
                 additionalValues.put("linkUrl", passwordRequestFormUrl);
