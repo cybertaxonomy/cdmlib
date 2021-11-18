@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.security;
 
-import java.time.Duration;
-
 import org.springframework.mail.MailException;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -17,11 +15,8 @@ import org.springframework.util.concurrent.ListenableFuture;
  * @author a.kohlbecker
  * @since Nov 8, 2021
  */
-public interface IPasswordResetService {
+public interface IPasswordResetService extends IRateLimitedService {
 
-    public static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
-
-    public static final double PERMITS_PER_SECOND = 0.3;
 
     /**
      * Create a request token and send it to the user via email.
@@ -65,35 +60,12 @@ public interface IPasswordResetService {
     *         boolean value will be <code>false</code> in case the max access
     *         rate for this method has been exceeded and a time out has
     *         occurred.
-    * @throws PasswordResetException
+    * @throws AccountSelfManagementException
     *             in case an invalid token has been used
     * @throws MailException
     *             in case sending the email has failed
     */
-    ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws PasswordResetException;
+    ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException;
 
-
-    /**
-     * Requests to the service methods should be rate limited.
-     * This method allows to set the timeout when waiting for a
-     * free execution slot. {@link #RATE_LIMTER_TIMEOUT_SECONDS}
-     * is the default
-     */
-    void setRateLimiterTimeout(Duration timeout);
-
-
-    /**
-     * see {@link #setRateLimiterTimeout(Duration)}
-     *
-     * @return the currently used timeout
-     */
-    Duration getRateLimiterTimeout();
-
-    /**
-     * Requests to the service methods should be rate limited.
-     * This method allows to override the default rate
-     * {@link #PERMITS_PER_SECOND}
-     */
-    public void setRate(double rate);
 
 }

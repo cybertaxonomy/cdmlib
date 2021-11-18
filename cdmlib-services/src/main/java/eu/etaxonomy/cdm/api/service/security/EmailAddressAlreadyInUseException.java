@@ -11,16 +11,17 @@ package eu.etaxonomy.cdm.api.service.security;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
- * To be thrown when a user can not be found using the email address.
+ * To be thrown an email address is already bound to an account an can nor be
+ * used to create a new user account.
  *
  * @author a.kohlbecker
  * @since Nov 4, 2021
  */
-public class EmailAddressNotFoundException extends UsernameNotFoundException {
+public class EmailAddressAlreadyInUseException extends UsernameNotFoundException {
 
     private static final long serialVersionUID = 1572067792460999503L;
 
-    public EmailAddressNotFoundException(String msg) {
+    public EmailAddressAlreadyInUseException(String msg) {
         super(msg);
     }
 }

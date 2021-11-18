@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -36,13 +37,14 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
     private static final String USER_NAME = "dummy";
 
     @SpringBeanByType
-    private IPasswordResetTokenStore passwordResetTokenStore;
+    @Qualifier("passwordResetTokenStore")
+    private IAbstractRequestTokenStore passwordResetTokenStore;
 
     private User testUser;
 
     @Before
     public void reset() {
-        passwordResetTokenStore.setTokenLifetimeMinutes(IPasswordResetTokenStore.TOKEN_LIFETIME_MINUTES_DEFAULT);
+        passwordResetTokenStore.setTokenLifetimeMinutes(IAbstractRequestTokenStore.TOKEN_LIFETIME_MINUTES_DEFAULT);
         testUser = User.NewInstance(USER_NAME, USER_PWD);
         testUser.setEmailAddress(USER_EMAIL);
     }

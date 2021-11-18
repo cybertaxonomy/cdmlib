@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.security;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -16,15 +15,10 @@ import java.util.Optional;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.collections4.map.HashedMap;
-import org.apache.commons.text.StringSubstitutor;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,16 +28,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import com.google.common.util.concurrent.RateLimiter;
-
-import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
-import eu.etaxonomy.cdm.api.config.SendEmailConfigurer;
 import eu.etaxonomy.cdm.api.security.AbstractRequestToken;
-import eu.etaxonomy.cdm.api.security.IPasswordResetTokenStore;
+import eu.etaxonomy.cdm.api.security.IAbstractRequestTokenStore;
 import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
-import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 
 /**
  * @author a.kohlbecker
@@ -51,28 +39,11 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
  */
 @Service
 @Transactional(readOnly = false)
-public class PasswordResetService implements IPasswordResetService {
-
-    private static Logger logger = Logger.getLogger(PasswordResetRequest.class);
+public class PasswordResetService extends AccountSelfManagementService implements IPasswordResetService {
 
     @Autowired
-    private IUserDao userDao;
-
-    @Autowired
-    private IUserService userService;
-
-    @Autowired
-    private IPasswordResetTokenStore passwordResetTokenStore;
-
-    @Autowired
-    private JavaMailSender emailSender;
-
-    @Autowired
-    private Environment env;
-
-    private Duration rateLimiterTimeout = null;
-    private RateLimiter emailResetToken_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
-    private RateLimiter resetPassword_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
+    @Qualifier("passwordResetTokenStore")
+    IAbstractRequestTokenStore<PasswordResetRequest> passwordResetTokenStore;
 
     /**
      * Create a request token and send it to the user via email.
@@ -120,8 +91,8 @@ public class PasswordResetService implements IPasswordResetService {
                 Map<String, String> additionalValues = new HashMap<>();
                 additionalValues.put("linkUrl", passwordRequestFormUrl);
                 sendEmail(user.getEmailAddress(), user.getUsername(),
-                        PasswordResetTemplates.RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE,
-                        PasswordResetTemplates.RESET_REQUEST_EMAIL_BODY_TEMPLATE, additionalValues);
+                        UserAccountEmailTemplates.RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE,
+                        UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_BODY_TEMPLATE, additionalValues);
                 logger.info("A password reset request for  " + user.getUsername() + " has been send to "
                         + user.getEmailAddress());
             } catch (UsernameNotFoundException e) {
@@ -137,48 +108,50 @@ public class PasswordResetService implements IPasswordResetService {
     }
 
     /**
-     * Uses the {@link StringSubstitutor} as simple template engine.
-     * Below named values are automatically resolved, more can be added via the
-     * <code>valuesMap</code> parameter.
-     *
-     * @param userEmail
-     *  The TO-address
-     * @param userName
-     *  Used to set the value for <code>${userName}</code>
-     * @param subjectTemplate
-     *  A {@link StringSubstitutor} template for the email subject
-     * @param bodyTemplate
-     *  A {@link StringSubstitutor} template for the email body
-     * @param additionalValuesMap
-     *  Additional named values for to be replaced in the template strings.
-     */
-    public void sendEmail(String userEmail, String userName, String subjectTemplate, String bodyTemplate, Map<String, String> additionalValuesMap) throws MailException {
+    *
+    * @param token
+    *            the token string
+    * @param newPassword
+    *            The new password to set
+    * @return A <code>Future</code> for a <code>Boolean</code> flag. The
+    *         boolean value will be <code>false</code> in case the max access
+    *         rate for this method has been exceeded and a time out has
+    *         occurred.
+    * @throws AccountSelfManagementException
+    *             in case an invalid token has been used
+    * @throws MailException
+    *             in case sending the email has failed
+    */
+   @Override
+   @Async
+   public ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException, MailException {
 
-        String from = env.getProperty(SendEmailConfigurer.FROM_ADDRESS);
-        String dataSourceBeanId = env.getProperty(CdmConfigurationKeys.CDM_DATA_SOURCE_ID);
-        String supportEmailAddress = env.getProperty(CdmConfigurationKeys.MAIL_ADDRESS_SUPPORT);
-        if(additionalValuesMap == null) {
-            additionalValuesMap = new HashedMap<>();
-        }
-        if(supportEmailAddress != null) {
-            additionalValuesMap.put("supportEmailAddress", supportEmailAddress);
-        }
-        additionalValuesMap.put("userName", userName);
-        additionalValuesMap.put("dataBase", dataSourceBeanId);
-        StringSubstitutor substitutor = new StringSubstitutor(additionalValuesMap);
+       if (resetPassword_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
 
-        // TODO use MimeMessages for better email layout?
-        // TODO user Thymeleaf instead for HTML support?
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setFrom(from);
-        message.setTo(userEmail);
-
-        message.setSubject(substitutor.replace(subjectTemplate));
-        message.setText(substitutor.replace(bodyTemplate));
-
-        emailSender.send(message);
-    }
+           Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(token);
+           if (resetRequest.isPresent()) {
+               try {
+                   UserDetails user = userService.loadUserByUsername(resetRequest.get().getUserName());
+                   Assert.isAssignable(user.getClass(), User.class);
+                   userService.encodeUserPassword((User)user, newPassword);
+                   userDao.saveOrUpdate((User)user);
+                   passwordResetTokenStore.remove(token);
+                   sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
+                           UserAccountEmailTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
+                           UserAccountEmailTemplates.RESET_SUCCESS_EMAIL_BODY_TEMPLATE, null);
+                   return new AsyncResult<Boolean>(true);
+               } catch (DataAccessException | IllegalArgumentException | UsernameNotFoundException e) {
+                   logger.error("Failed to change password of User " + resetRequest.get().getUserName(), e);
+                   sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
+                           UserAccountEmailTemplates.RESET_FAILED_EMAIL_SUBJECT_TEMPLATE,
+                           UserAccountEmailTemplates.RESET_FAILED_EMAIL_BODY_TEMPLATE, null);
+               }
+           } else {
+               throw new AccountSelfManagementException("Invalid password reset token");
+           }
+       }
+       return new AsyncResult<Boolean>(false);
+   }
 
     /**
      *
@@ -203,70 +176,5 @@ public class PasswordResetService implements IPasswordResetService {
             }
         }
         return user;
-    }
-
-    /**
-     *
-     * @param token
-     *            the token string
-     * @param newPassword
-     *            The new password to set
-     * @return A <code>Future</code> for a <code>Boolean</code> flag. The
-     *         boolean value will be <code>false</code> in case the max access
-     *         rate for this method has been exceeded and a time out has
-     *         occurred.
-     * @throws PasswordResetException
-     *             in case an invalid token has been used
-     * @throws MailException
-     *             in case sending the email has failed
-     */
-    @Override
-    @Async
-    public ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws PasswordResetException, MailException {
-
-        if (resetPassword_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
-
-            Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(token);
-            if (resetRequest.isPresent()) {
-                try {
-                    UserDetails user = userService.loadUserByUsername(resetRequest.get().getUserName());
-                    Assert.isAssignable(user.getClass(), User.class);
-                    userService.encodeUserPassword((User)user, newPassword);
-                    userDao.saveOrUpdate((User)user);
-                    passwordResetTokenStore.remove(token);
-                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
-                            PasswordResetTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
-                            PasswordResetTemplates.RESET_SUCCESS_EMAIL_BODY_TEMPLATE, null);
-                    return new AsyncResult<Boolean>(true);
-                } catch (DataAccessException | IllegalArgumentException | UsernameNotFoundException e) {
-                    logger.error("Failed to change password of User " + resetRequest.get().getUserName(), e);
-                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
-                            PasswordResetTemplates.RESET_FAILED_EMAIL_SUBJECT_TEMPLATE,
-                            PasswordResetTemplates.RESET_FAILED_EMAIL_BODY_TEMPLATE, null);
-                }
-            } else {
-                throw new PasswordResetException("Invalid password reset token");
-            }
-        }
-        return new AsyncResult<Boolean>(false);
-    }
-
-    @Override
-    public Duration getRateLimiterTimeout() {
-        if(rateLimiterTimeout == null) {
-            rateLimiterTimeout = Duration.ofSeconds(RATE_LIMTER_TIMEOUT_SECONDS);
-        }
-        return rateLimiterTimeout;
-    }
-
-    @Override
-    public void setRateLimiterTimeout(Duration timeout) {
-        this.rateLimiterTimeout = timeout;
-    }
-
-    @Override
-    public void setRate(double rate) {
-        resetPassword_rateLimiter.setRate(rate);
-        emailResetToken_rateLimiter.setRate(rate);
     }
 }

@@ -27,7 +27,7 @@ public class AccountCreationRequestTokenStore extends AbstractRequestTokenStore<
     @Override
     public AccountCreationRequest createNewToken(User user, String randomToken, int tokenLifetimeMinutes) {
         userService.encodeUserPassword(user, user.getPassword());
-        AccountCreationRequest token = new AccountCreationRequest(user.getUsername(), user.getEmailAddress(), user.getPassword(), randomToken, tokenLifetimeMinutes);
+        AccountCreationRequest token = new AccountCreationRequest(user.getUsername(), user.getPassword(), user.getEmailAddress(), randomToken, tokenLifetimeMinutes);
         return token;
     }
 

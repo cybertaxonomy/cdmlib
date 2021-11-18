@@ -12,15 +12,15 @@ package eu.etaxonomy.cdm.api.service.security;
  * @author a.kohlbecker
  * @since Nov 3, 2021
  */
-public class PasswordResetException extends Exception {
+public class AccountSelfManagementException extends Exception {
 
     private static final long serialVersionUID = -2154469325094431262L;
 
-    public PasswordResetException(String message, Throwable cause) {
+    public AccountSelfManagementException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public PasswordResetException(String message) {
+    public AccountSelfManagementException(String message) {
         super(message);
     }
 

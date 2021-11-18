@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.permission.User;
  * @author a.kohlbecker
  * @since Nov 3, 2021
  */
-public interface IPasswordResetTokenStore<T extends AbstractRequestToken> {
+public interface IAbstractRequestTokenStore<T extends AbstractRequestToken> {
 
     public static final int TOKEN_LIFETIME_MINUTES_DEFAULT = 60 * 6;
 

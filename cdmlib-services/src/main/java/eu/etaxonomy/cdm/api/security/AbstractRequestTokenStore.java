@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.permission.User;
  * @author a.kohlbecker
  * @since Nov 18, 2021
  */
-public abstract class AbstractRequestTokenStore<T extends AbstractRequestToken>  implements IPasswordResetTokenStore<T> {
+public abstract class AbstractRequestTokenStore<T extends AbstractRequestToken>  implements IAbstractRequestTokenStore<T> {
 
     public static final int TOKEN_LENGTH = 50;
     protected static Logger logger = Logger.getLogger(AbstractRequestTokenStore.class);
