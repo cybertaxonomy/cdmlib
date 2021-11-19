@@ -17,10 +17,9 @@ import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.unitils.spring.annotation.SpringBeanByName;
 
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -36,9 +35,8 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
     private static final String USER_PWD = "dummy123";
     private static final String USER_NAME = "dummy";
 
-    @SpringBeanByType
-    @Qualifier("passwordResetTokenStore")
-    private IAbstractRequestTokenStore passwordResetTokenStore;
+    @SpringBeanByName
+    private IAbstractRequestTokenStore<PasswordResetRequest> passwordResetTokenStore;
 
     private User testUser;
 
