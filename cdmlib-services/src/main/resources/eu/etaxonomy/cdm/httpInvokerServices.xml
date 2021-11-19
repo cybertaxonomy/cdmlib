@@ -20,7 +20,7 @@
       <ref bean="accountRegistrationService" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IAccountRegistrationService</value>
+      <value>eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService</value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
