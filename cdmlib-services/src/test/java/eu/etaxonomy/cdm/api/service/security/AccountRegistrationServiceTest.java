@@ -229,6 +229,32 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
         assertEquals(0, wiser.getMessages().size());
     }
 
+    // @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public void testUserNameExists() throws Throwable {
+
+        logger.debug("testUserNameExists() ...");
+
+        createRequestTokenSendSignal = new CountDownLatch(1);
+
+        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, "admin", userPWD, requestFormUrlTemplate);
+        emailResetFuture.addCallback(
+                requestSuccessVal -> {
+                    createRequestTokenSendSignal.countDown();
+                }, futureException -> {
+                    assyncError = futureException;
+                    createRequestTokenSendSignal.countDown();
+                });
+
+        // -- wait for passwordResetService.emailResetToken() to complete
+        createRequestTokenSendSignal.await();
+
+        assertNotNull(assyncError);
+        assertEquals(AccountSelfManagementException.class, assyncError.getClass());
+        assertEquals(AccountRegistrationService.USER_NAME_EXISTS_MSG, assyncError.getMessage());
+        assertEquals(0, wiser.getMessages().size());
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // not needed

@@ -52,9 +52,12 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      *             in case sending the email has failed
      * @throws AddressException
      *             in case the <code>emailAddress</code> in not valid
+     * @throws AccountSelfManagementException
+     *             in case the user name is already being used.
      */
     ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress, String userName, String password,
-            String passwordRequestFormUrlTemplate) throws MailException, AddressException;
+            String passwordRequestFormUrlTemplate)
+            throws MailException, AddressException, AccountSelfManagementException;
 
     /**
      *
@@ -81,5 +84,9 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      */
     ListenableFuture<Boolean> createUserAccount(String token, String givenName, String familyName, String prefix)
             throws MailException, AccountSelfManagementException, AddressException;
+
+    boolean userNameExists(String userName);
+
+    boolean emailAddressExists(String emailAddress);
 
 }

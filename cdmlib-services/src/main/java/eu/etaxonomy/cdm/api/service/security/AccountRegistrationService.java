@@ -40,6 +40,11 @@ import eu.etaxonomy.cdm.model.permission.User;
 @Transactional(readOnly = true)
 public class AccountRegistrationService extends AccountSelfManagementService implements IAccountRegistrationService {
 
+
+    protected static final String EMAIL_EXISTS = "An account for this email address already exits.";
+
+    protected static final String USER_NAME_EXISTS_MSG = "This user name is already being used by someone else.";
+
     private static Logger logger = Logger.getLogger(PasswordResetRequest.class);
 
     @Autowired
@@ -49,7 +54,7 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
     @Override
     @Async
     public ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress,
-            String userName, String password, String accountCreationRequestFormUrlTemplate) throws MailException, AddressException {
+            String userName, String password, String accountCreationRequestFormUrlTemplate) throws MailException, AddressException, AccountSelfManagementException {
 
         if(logger.isTraceEnabled()) {
             logger.trace("emailAccountRegistrationConfirmation() trying to aquire from rate limiter [rate: " + emailResetToken_rateLimiter.getRate() + ", timeout: " + getRateLimiterTimeout().toMillis() + "ms]");
@@ -58,6 +63,9 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
             logger.trace("emailAccountRegistrationConfirmation() allowed by rate limiter");
             try {
                 emailAddressValidAndUnused(emailAddress);
+                if(userNameExists(userName)) {
+                    throw new AccountSelfManagementException(USER_NAME_EXISTS_MSG);
+                }
                 User user = User.NewInstance(userName, password);
                 user.setEmailAddress(emailAddress);
                 AbstractRequestToken resetRequest = accountRegistrationTokenStore.create(user);
@@ -92,6 +100,9 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
                 try {
                     // check again if the email address is still unused
                     emailAddressValidAndUnused(creationRequest.get().getUserEmail());
+                    if(userNameExists(creationRequest.get().getUserName())) {
+                        throw new AccountSelfManagementException(USER_NAME_EXISTS_MSG);
+                    }
                     User newUser = User.NewInstance(creationRequest.get().getUserName(), creationRequest.get().getEncryptedPassword());
                     userDao.saveOrUpdate(newUser);
                     accountRegistrationTokenStore.remove(token);
@@ -125,9 +136,19 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
             throws AddressException, EmailAddressAlreadyInUseException {
         InternetAddress emailAddr = new InternetAddress(emailAddress);
         emailAddr.validate();
-        if (userDao.findByEmailAddress(emailAddr.toString()) != null) {
-            throw new EmailAddressAlreadyInUseException("Email address is already in use");
+        if (emailAddressExists(emailAddr.toString())) {
+            throw new EmailAddressAlreadyInUseException(EMAIL_EXISTS);
         }
+    }
+
+    @Override
+    public boolean emailAddressExists(String emailAddress) {
+        return userDao.emailAddressExists(emailAddress);
+    }
+
+    @Override
+    public boolean userNameExists(String userName) {
+        return userDao.userNameExists(userName);
     }
 
 }
