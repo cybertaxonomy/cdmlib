@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 
-public class TestScript {
-	private static final Logger logger = Logger.getLogger(TestScript.class);
+public class TestScriptPersistence {
+	private static final Logger logger = Logger.getLogger(TestScriptPersistence.class);
 
 	private void test(){
 		System.out.println("Start Datasource");
@@ -54,7 +54,7 @@ public class TestScript {
 	}
 
 	public static void  main(String[] args) {
-		TestScript cc = new TestScript();
+		TestScriptPersistence cc = new TestScriptPersistence();
     	cc.test();
 	}
 }

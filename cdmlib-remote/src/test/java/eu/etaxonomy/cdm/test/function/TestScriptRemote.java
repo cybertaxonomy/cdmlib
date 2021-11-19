@@ -35,10 +35,10 @@ import eu.etaxonomy.cdm.remote.io.application.CdmRemoteApplicationController;
  * @author a.mueller
  * @since 08.11.2021
  */
-public class TestScript {
+public class TestScriptRemote {
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TestScript.class);
+    private static final Logger logger = Logger.getLogger(TestScriptPersistence.class);
 
 
 	private void testNewConfigControler(){
@@ -152,7 +152,7 @@ public class TestScript {
 	}
 
 	public static void  main(String[] args) {
-	    TestScript cc = new TestScript();
+	    TestScriptRemote cc = new TestScriptRemote();
     	cc.test();
 	}
 

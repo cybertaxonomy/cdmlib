@@ -62,8 +62,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 
-public class TestScript {
-	private static final Logger logger = Logger.getLogger(TestScript.class);
+public class TestScriptService {
+	private static final Logger logger = Logger.getLogger(TestScriptPersistence.class);
 
 
 	private void testNewConfigControler(){
@@ -499,7 +499,7 @@ public class TestScript {
 	 * @param args
 	 */
 	public static void  main(String[] args) {
-		TestScript cc = new TestScript();
+	    TestScriptService cc = new TestScriptService();
     	cc.test();
 	}
 
