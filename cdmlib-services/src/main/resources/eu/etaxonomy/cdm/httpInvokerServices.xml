@@ -13,6 +13,17 @@
 
   <bean id="remoteInvocationExecutor" class="eu.etaxonomy.cdm.api.remoting.DebuggingRemoteInvocationExecutor"
     scope="prototype" />
+    
+  <bean id="httpAccountRegistrationService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="accountRegistrationService" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IAccountRegistrationService</value>
+    </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
+  </bean>
 
   <bean id="httpAgentService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
