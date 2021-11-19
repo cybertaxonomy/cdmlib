@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @since 23.01.2015
- *
  */
 public class TestValidationManager {
 
@@ -27,12 +26,10 @@ public class TestValidationManager {
     public void testMe(){
         DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
-
         String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\testValidation2";
         String username = "sa";
         CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("validationTest", username, "", path);
 //        dataSource = getMySQLDatasource(schema);
-
 
         //CdmPersistentDataSource.save(dataSource.getName(), dataSource);
         CdmApplicationController appCtr;
@@ -46,13 +43,10 @@ public class TestValidationManager {
         ref.setIsbn("1234");
         appCtr.getReferenceService().save(ref);
 
-
         //      insertSomeData(appCtr);
 //      deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
 
         appCtr.close();
-
-
     }
 
     private CdmDataSource getMySQLDatasource (DbSchemaValidation schema){
@@ -63,9 +57,6 @@ public class TestValidationManager {
         return dataSource;
     }
 
-    /**
-     * @param args
-     */
     public static void  main(String[] args) {
         TestValidationManager cc = new TestValidationManager();
         cc.testMe();
