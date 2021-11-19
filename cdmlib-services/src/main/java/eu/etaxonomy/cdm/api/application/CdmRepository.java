@@ -73,6 +73,7 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
 import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 
@@ -107,6 +108,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	@Autowired
 	//@Qualifier("referenceService")
 	private IReferenceService referenceService;
+	@Autowired
+	private IAccountRegistrationService accountRegistrationService;
 	@Autowired
 	//@Qualifier("agentService")
 	private IAgentService agentService;
@@ -222,6 +225,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	public Object getBean(String name){
 	    return this.applicationContext.getBean(name);
 	}
+
+    @Override
+    public IAccountRegistrationService getAccountRegistrationService() {
+        return accountRegistrationService;
+    }
 
 	@Override
 	public IAnnotationService getAnnotationService(){
@@ -545,7 +553,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
             // no current session: nothing to clear!
         }
     }
-
 
 
 }

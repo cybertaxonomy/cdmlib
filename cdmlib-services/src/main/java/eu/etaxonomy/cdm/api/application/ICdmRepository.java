@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
 import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.persistence.permission.CdmPermissionEvaluator;
@@ -78,7 +79,6 @@ public interface ICdmRepository extends ICdmImportSource {
 
 	public Object getBean(String string);
 
-
     public IAnnotationService getAnnotationService();
 
 	public INameService getNameService();
@@ -90,6 +90,8 @@ public interface ICdmRepository extends ICdmImportSource {
 	public ITaxonNodeService getTaxonNodeService();
 
 	public IReferenceService getReferenceService();
+
+    public IAccountRegistrationService getAccountRegistrationService();
 
 	public IAgentService getAgentService();
 
