@@ -63,8 +63,8 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 
 public class TestScriptService {
-	private static final Logger logger = Logger.getLogger(TestScriptPersistence.class);
 
+    private static final Logger logger = Logger.getLogger(TestScriptService.class);
 
 	private void testNewConfigControler(){
 

@@ -38,8 +38,7 @@ import eu.etaxonomy.cdm.remote.io.application.CdmRemoteApplicationController;
 public class TestScriptRemote {
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TestScriptPersistence.class);
-
+    private static final Logger logger = Logger.getLogger(TestScriptRemote.class);
 
 	private void testNewConfigControler(){
 
