@@ -110,7 +110,6 @@ public class State extends OrderedTermBase<State> {
 		termMap = null;
 	}
 
-
 	@Override
 	protected void setDefaultTerms(TermVocabulary<State> termVocabulary){
 		termMap = new HashMap<>();
