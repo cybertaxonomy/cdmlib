@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IEventBaseService;
-import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -587,12 +586,6 @@ public class CdmApplicationController implements ICdmRepository {
 	@Override
 	public final IPreferenceService getPreferenceService(){
 	    return configuration.getPreferenceService();
-	}
-
-
-	@Override
-	public final IFeatureNodeService getFeatureNodeService(){
-		return configuration.getFeatureNodeService();
 	}
 
     @Override

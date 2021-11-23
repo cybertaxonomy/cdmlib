@@ -386,11 +386,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	    return termTreeService;
 	}
 
-	@Override
-	public IFeatureNodeService getFeatureNodeService(){
-		return featureNodeService;
-	}
-
     @Override
     public ITermNodeService getTermNodeService(){
         return termNodeService;
