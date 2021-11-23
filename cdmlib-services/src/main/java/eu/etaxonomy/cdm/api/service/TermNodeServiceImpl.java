@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -82,16 +83,16 @@ public class TermNodeServiceImpl
 	@Transactional(readOnly = false)
 	public DeleteResult deleteNode(UUID nodeUuid, TermNodeDeletionConfigurator config) {
 	    DeleteResult result = new DeleteResult();
-        TermNode<Feature> node = CdmBase.deproxy(dao.load(nodeUuid));
+        TermNode node = CdmBase.deproxy(dao.load(nodeUuid));
 	    result = isDeletable(nodeUuid, config);
 	    if (result.isOk()){
-	        TermNode<Feature> parent = node.getParent();
-            parent = CdmBase.deproxy(parent, TermNode.class);
+	        TermNode<?> parent = node.getParent();
+            parent = CdmBase.deproxy(parent);
 	        List<TermNode> children = new ArrayList<>(node.getChildNodes());
 
 	        if (config.getChildHandling().equals(ChildHandling.DELETE)){
 
-	            for (TermNode child: children){
+	            for (TermNode<?> child: children){
 	                deleteNode(child.getUuid(), config);
 	               // node.removeChild(child);
 	            }
@@ -127,6 +128,7 @@ public class TermNodeServiceImpl
 	     }
 	     return result;
 	 }
+
 	 private UpdateResult createChildNode(UUID parentNodeUUID, UUID nodeUuid, DefinedTermBase term, UUID vocabularyUuid){
 	     UpdateResult result =  createChildNode(parentNodeUUID, term, vocabularyUuid);
 	     result.getCdmEntity().setUuid(nodeUuid);
@@ -179,27 +181,31 @@ public class TermNodeServiceImpl
          return result;
      }
 
-	 @Override
-	 public DeleteResult isDeletable(UUID nodeUuid, TermNodeDeletionConfigurator config){
-	     TermNode<Feature> node = load(nodeUuid);
-	     DeleteResult result = new DeleteResult();
-	     Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(node);
-	     for (CdmBase ref:references){
-	         if (ref instanceof TermNode){
-	             break;
-	         }
-	         if (ref instanceof TermTree){
-	             TermTree<Feature> refTree = HibernateProxyHelper.deproxy(ref, TermTree.class);
-	             if (node.getGraph().equals((refTree))){
-	                 break;
-	             }
-	         }
-	         result.setAbort();
-	         result.addException(new ReferencedObjectUndeletableException("The featureNode is referenced by " + ref.getUserFriendlyDescription() +" with id " +ref.getId()));
-
-	     }
-	     return result;
-	 }
+	@Override
+	public DeleteResult isDeletable(UUID nodeUuid, TermNodeDeletionConfigurator config){
+	    TermNode<Feature> node = load(nodeUuid);
+	    DeleteResult result = new DeleteResult();
+        if (node == null){
+            result.addException(new DataChangeNoRollbackException("The object is not available anymore."));
+            result.setAbort();
+            return result;
+        }
+	    Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(node);
+	    for (CdmBase ref:references){
+	        if (ref instanceof TermNode){
+	            break;
+	        }
+	        if (ref instanceof TermTree){
+	            TermTree<Feature> refTree = HibernateProxyHelper.deproxy(ref, TermTree.class);
+	            if (node.getGraph().equals((refTree))){
+	                break;
+	            }
+	        }
+	        result.setAbort();
+	        result.addException(new ReferencedObjectUndeletableException("The featureNode is referenced by " + ref.getUserFriendlyDescription() +" with id " +ref.getId()));
+	    }
+	    return result;
+	}
 
     @Override
     public UpdateResult moveNode(UUID movedNodeUuid, UUID targetNodeUuid, int position) {
@@ -210,8 +216,8 @@ public class TermNodeServiceImpl
         propertyPaths.add("children");
         TermNode test = load(movedNodeUuid, propertyPaths);
         TermNode movedNode = CdmBase.deproxy(load(movedNodeUuid, propertyPaths), TermNode.class);
-        TermNode targetNode = CdmBase.deproxy(load(targetNodeUuid, propertyPaths));
-        TermNode parent = CdmBase.deproxy(movedNode.getParent());
+        TermNode<?> targetNode = CdmBase.deproxy(load(targetNodeUuid, propertyPaths));
+        TermNode<?> parent = CdmBase.deproxy(movedNode.getParent());
         parent.removeChild(movedNode);
         if(position < 0){
             targetNode.addChild(movedNode);
@@ -220,9 +226,7 @@ public class TermNodeServiceImpl
             targetNode.addChild(movedNode, position);
         }
         result.addUpdatedObject(targetNode);
-        if(parent!=null){
-            result.addUpdatedObject(parent);
-        }
+        result.addUpdatedObject(parent);
         result.setCdmEntity(movedNode);
         return result;
     }
@@ -235,12 +239,11 @@ public class TermNodeServiceImpl
     @Override
     public UpdateResult saveTermNodeDtoList(List<TermNodeDto> dtos){
         UpdateResult result = new UpdateResult();
-        MergeResult<TermNode> mergeResult;
         List<UUID> uuids = new ArrayList<>();
         dtos.stream().forEach(dto -> uuids.add(dto.getUuid()));
         List<TermNode> nodes = dao.list(uuids, null, 0, null, null);
         //check all attributes for changes and adapt
-        for (TermNode node: nodes){
+        for (TermNode<?> node: nodes){
             for (TermNodeDto dto: dtos){
 
                 if (dto.getUuid().equals(node.getUuid())){
@@ -254,7 +257,7 @@ public class TermNodeServiceImpl
                         node.getOnlyApplicableIf().addAll(dto.getOnlyApplicableIf());
                     }
                 }
-                mergeResult = dao.merge(node, true);
+                MergeResult<TermNode> mergeResult = dao.merge(node, true);
                 result.addUpdatedObject(mergeResult.getMergedEntity());
             }
         }
@@ -421,9 +424,5 @@ public class TermNodeServiceImpl
         List<CharacterNodeDto> dtoList = new ArrayList<>(dtos.values());
         result.includeResult(saveCharacterNodeDtoList(dtoList));
         return result;
-
     }
-
-
-
 }

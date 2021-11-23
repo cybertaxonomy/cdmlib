@@ -42,31 +42,32 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 public class CdmIDResolver extends IDResolver {
-	private static final Logger logger = Logger.getLogger(CdmIDResolver.class);
 
-	IUserService userService;
+    private static final Logger logger = Logger.getLogger(CdmIDResolver.class);
 
-	IAgentService agentService;
+    private IUserService userService;
 
-	ITermService termService;
+    private IAgentService agentService;
 
-	IVocabularyService vocabularyService;
+    private ITermService termService;
 
-	IDescriptionService descriptionService;
+    private IVocabularyService vocabularyService;
 
-	IFeatureTreeService featureTreeService;
+    private IDescriptionService descriptionService;
 
-	IMediaService mediaService;
+    private ITermTreeService termTreeService;
 
-	INameService nameService;
+    private IMediaService mediaService;
 
-	IOccurrenceService occurrenceService;
+    private INameService nameService;
 
-	ICollectionService collectionService;
+    private IOccurrenceService occurrenceService;
 
-	IReferenceService referenceService;
+    private ICollectionService collectionService;
 
-	ITaxonService taxonService;
+    private IReferenceService referenceService;
+
+    private ITaxonService taxonService;
 
 	@Autowired
 	public void setUserService(IUserService userService) {
@@ -140,7 +141,7 @@ public class CdmIDResolver extends IDResolver {
 	@Override
 	public void bind(String id, Object obj) throws SAXException {
 		if(idmap==null) {
-			idmap = new HashMap<String,Object>();
+			idmap = new HashMap<>();
 		}
 		idmap.put(id,obj);
 	}
