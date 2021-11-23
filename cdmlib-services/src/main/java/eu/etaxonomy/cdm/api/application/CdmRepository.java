@@ -446,6 +446,26 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
         return mediaInfoFactory;
     }
 
+    @Override
+    public IRightsService getRightsService() {
+        return rightsService;
+    }
+
+    @Override
+    public IRegistrationService getRegistrationService() {
+        return registrationService;
+    }
+
+    @Override
+    public IPasswordResetService getPasswordResetService() {
+        return passwordResetService;
+    }
+
+    @Override
+    public ILongRunningTasksService getLongRunningTasksService() {
+        return longRunningTasksService;
+    }
+
 	@Override
 	public TransactionStatus startTransaction(){
 		return startTransaction(false);
@@ -498,26 +518,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		context.setAuthentication(authentication);
 	}
 
-    @Override
-    public IRightsService getRightsService() {
-        return rightsService;
-    }
-
-    @Override
-    public IRegistrationService getRegistrationService() {
-        return registrationService;
-    }
-
-    @Override
-    public IPasswordResetService getPasswordResetService() {
-        return passwordResetService;
-    }
-
-    @Override
-	public ILongRunningTasksService getLongRunningTasksService() {
-		return longRunningTasksService;
-	}
-
     public SessionFactory getSessionFactory() {
         return factory;
     }
@@ -543,6 +543,4 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
             // no current session: nothing to clear!
         }
     }
-
-
 }

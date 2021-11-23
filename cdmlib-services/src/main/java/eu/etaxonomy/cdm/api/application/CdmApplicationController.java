@@ -593,45 +593,35 @@ public class CdmApplicationController implements ICdmRepository {
         return configuration.getTermNodeService();
     }
 
-
 	@Override
 	public final IVocabularyService getVocabularyService(){
 		return configuration.getVocabularyService();
 	}
-
 
 	@Override
 	public final IIdentificationKeyService getIdentificationKeyService(){
 		return configuration.getIdentificationKeyService();
 	}
 
-
 	@Override
 	public final IPolytomousKeyService getPolytomousKeyService(){
 		return configuration.getPolytomousKeyService();
 	}
-
 
 	@Override
 	public final IPolytomousKeyNodeService getPolytomousKeyNodeService(){
 		return configuration.getPolytomousKeyNodeService();
 	}
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProgressMonitorService getProgressMonitorService() {
         return configuration.getProgressMonitorService();
     }
 
-
 	@Override
 	public IEntityValidationService getEntityValidationService(){
 		return configuration.getEntityValidationService();
 	}
-
 
 	@Override
 	public IEntityConstraintViolationService getEntityConstraintViolationService(){
@@ -643,101 +633,11 @@ public class CdmApplicationController implements ICdmRepository {
 		return configuration.getDescriptiveDataSetService();
 	}
 
-
 	@Override
 	public final ConversationHolder NewConversation(){
 		//return (ConversationHolder)applicationContext.getBean("conversationHolder");
 		return configuration.NewConversation();
 	}
-
-
-	/* **** Security ***** */
-
-	@Override
-	public void authenticate(String username, String password){
-		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
-		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-	}
-
-	@Override
-	public final ProviderManager getAuthenticationManager(){
-		return configuration.getAuthenticationManager();
-	}
-
-
-	@Override
-	public ICdmPermissionEvaluator getPermissionEvaluator(){
-		return configuration.getPermissionEvaluator();
-	}
-
-	/**
-	 * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication,
-	 *      java.lang.Object, java.lang.Object)
-	 *
-	 * @param targetDomainObject
-	 * @param permission
-	 * @return
-	 */
-	public boolean currentAuthentiationHasPermissions(CdmBase targetDomainObject, EnumSet<CRUD> permission){
-		SecurityContext context = SecurityContextHolder.getContext();
-		return getPermissionEvaluator().hasPermission(context.getAuthentication(), targetDomainObject, permission);
-	}
-
-
-	@Override
-	public final PlatformTransactionManager getTransactionManager(){
-		return configuration.getTransactionManager();
-	}
-
-
-	@Override
-	public final Object getBean(String name){
-		return this.applicationContext.getBean(name);
-	}
-
-
-	/*
-	 * OLD TRANSACTION STUFF
-	 */
-
-	/* **** flush ********** */
-	public void flush(){
-		SessionFactory sf = (SessionFactory) applicationContext.getBean("sessionFactory");
-		sf.getCurrentSession().flush();
-	}
-
-
-	public SessionFactory getSessionFactory(){
-		return (SessionFactory) applicationContext.getBean("sessionFactory");
-	}
-
-
-	@Override
-	public TransactionStatus startTransaction(){
-		return startTransaction(false);
-	}
-
-
-	@Override
-	public TransactionStatus startTransaction(Boolean readOnly){
-		return configuration.startTransaction(readOnly);
-	}
-
-	@Override
-	public void commitTransaction(TransactionStatus txStatus){
-		PlatformTransactionManager txManager = configuration.getTransactionManager();
-		txManager.commit(txStatus);
-		return;
-	}
-
-    @Override
-    public void rollbackTransaction(TransactionStatus txStatus){
-        PlatformTransactionManager txManager = configuration.getTransactionManager();
-        txManager.rollback(txStatus);
-        return;
-    }
 
     @Override
     public IRightsService getRightsService() {
@@ -764,5 +664,85 @@ public class CdmApplicationController implements ICdmRepository {
         return configuration.getAccountRegistrationService();
     }
 
-}
+	/* **** Security ***** */
 
+	@Override
+	public void authenticate(String username, String password){
+		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
+		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+	}
+
+	@Override
+	public final ProviderManager getAuthenticationManager(){
+		return configuration.getAuthenticationManager();
+	}
+
+	@Override
+	public ICdmPermissionEvaluator getPermissionEvaluator(){
+		return configuration.getPermissionEvaluator();
+	}
+
+	/**
+	 * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication,
+	 *      java.lang.Object, java.lang.Object)
+	 *
+	 * @param targetDomainObject
+	 * @param permission
+	 * @return
+	 */
+	public boolean currentAuthentiationHasPermissions(CdmBase targetDomainObject, EnumSet<CRUD> permission){
+		SecurityContext context = SecurityContextHolder.getContext();
+		return getPermissionEvaluator().hasPermission(context.getAuthentication(), targetDomainObject, permission);
+	}
+
+	@Override
+	public final PlatformTransactionManager getTransactionManager(){
+		return configuration.getTransactionManager();
+	}
+
+	@Override
+	public final Object getBean(String name){
+		return this.applicationContext.getBean(name);
+	}
+
+	/*
+	 * OLD TRANSACTION STUFF
+	 */
+
+	/* **** flush ********** */
+	public void flush(){
+		SessionFactory sf = (SessionFactory) applicationContext.getBean("sessionFactory");
+		sf.getCurrentSession().flush();
+	}
+
+	public SessionFactory getSessionFactory(){
+		return (SessionFactory) applicationContext.getBean("sessionFactory");
+	}
+
+	@Override
+	public TransactionStatus startTransaction(){
+		return startTransaction(false);
+	}
+
+	@Override
+	public TransactionStatus startTransaction(Boolean readOnly){
+		return configuration.startTransaction(readOnly);
+	}
+
+	@Override
+	public void commitTransaction(TransactionStatus txStatus){
+		PlatformTransactionManager txManager = configuration.getTransactionManager();
+		txManager.commit(txStatus);
+		return;
+	}
+
+    @Override
+    public void rollbackTransaction(TransactionStatus txStatus){
+        PlatformTransactionManager txManager = configuration.getTransactionManager();
+        txManager.rollback(txStatus);
+        return;
+    }
+
+}
