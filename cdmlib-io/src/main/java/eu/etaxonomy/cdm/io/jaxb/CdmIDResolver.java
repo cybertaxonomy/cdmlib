@@ -15,7 +15,6 @@ import com.sun.xml.bind.IDResolver;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -23,6 +22,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -94,8 +94,8 @@ public class CdmIDResolver extends IDResolver {
 	}
 
 	@Autowired
-	public void setFeatureTreeService(IFeatureTreeService featureTreeService) {
-		this.featureTreeService = featureTreeService;
+	public void setTermTreeService(ITermTreeService termTreeService) {
+		this.termTreeService = termTreeService;
 	}
 
 	@Autowired
@@ -169,7 +169,7 @@ public class CdmIDResolver extends IDResolver {
 				  } else if(DescriptionBase.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, descriptionService);
 				  } else if(TermTree.class.isAssignableFrom(targetType)) {
-					  return resolveObject(uuid, targetType, featureTreeService);
+					  return resolveObject(uuid, targetType, termTreeService);
 				  } else if(Media.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, mediaService);
 				  } else if(TaxonName.class.isAssignableFrom(targetType)) {

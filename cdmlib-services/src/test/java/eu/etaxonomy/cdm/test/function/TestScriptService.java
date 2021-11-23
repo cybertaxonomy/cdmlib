@@ -249,7 +249,7 @@ public class TestScriptService {
 //		TermTree<Feature> ft1 = TermTree.NewInstance();
 //		FeatureNode fn1 = TermNode.NewInstance((Feature)null);
 //		ft1.getRoot().addChild(fn1);
-//		appCtr.getFeatureNodeService().save(fn1);
+//		appCtr.getTermNodeService().save(fn1);
 //
 //		TermNode fn2 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2);
@@ -257,10 +257,10 @@ public class TestScriptService {
 //		TermNode fn3 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2, 0);
 //
-//		appCtr.getFeatureNodeService().saveOrUpdate(fn1);
+//		appCtr.getTermNodeService().saveOrUpdate(fn1);
 //
 //		ft1.getRoot().addChild(fn3, 0);
-//		appCtr.getFeatureNodeService().saveOrUpdate(fn3);
+//		appCtr.getTermNodeService().saveOrUpdate(fn3);
 //		appCtr.getTermTreeService().saveOrUpdate(ft1);
 //	}
 

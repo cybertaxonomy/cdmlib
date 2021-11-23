@@ -35,9 +35,7 @@
         <prop key="/remoting/common.service">httpCommonService</prop>
         <prop key="/remoting/database.service">httpDatabaseService</prop>
         <prop key="/remoting/description.service">httpDescriptionService</prop>
-        <prop key="/remoting/featurenode.service">httpFeatureNodeService</prop>
         <prop key="/remoting/termnode.service">httpTermNodeService</prop>
-        <prop key="/remoting/featuretree.service">httpFeatureTreeService</prop>
         <prop key="/remoting/termtree.service">httpTermTreeService</prop>
         <prop key="/remoting/grantedauthority.service">httpGrantedAuthorityService</prop>
         <prop key="/remoting/group.service">httpGroupService</prop>

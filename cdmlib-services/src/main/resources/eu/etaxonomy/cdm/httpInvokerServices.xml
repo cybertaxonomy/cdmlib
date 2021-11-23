@@ -103,17 +103,6 @@
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
-  <bean id="httpFeatureNodeService"
-    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-    <property name="service">
-      <ref bean="featureNodeServiceImpl" />
-    </property>
-    <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IFeatureNodeService</value>
-    </property>
-    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
-  </bean>
-
   <bean id="httpTermNodeService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -121,17 +110,6 @@
     </property>
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ITermNodeService</value>
-    </property>
-    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
-  </bean>
-
-  <bean id="httpFeatureTreeService"
-    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-    <property name="service">
-      <ref bean="featureTreeServiceImpl" />
-    </property>
-    <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IFeatureTreeService</value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
