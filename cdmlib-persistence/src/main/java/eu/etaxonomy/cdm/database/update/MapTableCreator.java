@@ -31,7 +31,7 @@ public class MapTableCreator extends TableCreator {
 	}
 
     protected MapTableCreator(List<ISchemaUpdaterStep> stepList, String stepName, String MN_tableName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String mapKeyTableName, boolean includeAudTable) {
-	      super(stepList, stepName, MN_tableName, new ArrayList<>(), new ArrayList<>(), new ArrayList<Object>(), new ArrayList<Boolean>(), new ArrayList<String>(), includeAudTable, false, false, false, false);
+	      super(stepList, stepName, MN_tableName, new ArrayList<>(), new ArrayList<>(), new ArrayList<Object>(), new ArrayList<Boolean>(), new ArrayList<String>(), includeAudTable, false, false, false, false, false);
 	      this.firstTableName = firstTableName;
 	      this.secondTableName = secondTableName;
 	      this.firstTableAlias = (firstTableAlias != null )? firstTableAlias : firstTableName ;

@@ -828,6 +828,7 @@ public class FullCoverageDataGenerator {
 		preservation.setTemperature(22.4);
 		mediaSpecimen.setPreservation(preservation);
 		mediaSpecimen.setOriginalLabelInfo("Original Label Info");
+		mediaSpecimen.addStatus(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), getReference(), "123");
 		handleIdentifiableEntity(mediaSpecimen);
 
 		//DerivationEvent

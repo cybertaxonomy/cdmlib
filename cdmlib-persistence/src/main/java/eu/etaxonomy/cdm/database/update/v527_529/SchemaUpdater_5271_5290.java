@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.v525_527.SchemaUpdater_5270_5271;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -29,7 +30,7 @@ public class SchemaUpdater_5271_5290 extends SchemaUpdaterBase {
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_5271_5290.class);
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_27_01;
-	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_27_01;
+	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_29_00;
 
 // ********************** FACTORY METHOD *************************************
 
@@ -50,8 +51,17 @@ public class SchemaUpdater_5271_5290 extends SchemaUpdaterBase {
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
 
 		String stepName;
+		String tableName;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
+
+		//#2506 status for specimen
+		stepName = "Add status for specimen";
+		tableName = "OccurrenceStatus";
+		String[] columnNames = new String[]{"unit_id","type_id"};
+        String[] columnTypes = new String[]{"int","int"};
+        String[] referencedTables = new String[]{"SpecimenAndObservationBase","DefinedTermBase"};
+		TableCreator.NewSingleSourcedInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
 
         return stepList;
     }

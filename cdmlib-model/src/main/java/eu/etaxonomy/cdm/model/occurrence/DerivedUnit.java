@@ -18,6 +18,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,9 +38,13 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
@@ -68,7 +73,8 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
 	"preservation",
 	"exsiccatum",
 	"originalLabelInfo",
-    "specimenTypeDesignations"
+    "specimenTypeDesignations",
+    "status"
 })
 @XmlRootElement(name = "DerivedUnit")
 @Entity
@@ -144,6 +150,13 @@ public class DerivedUnit
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private final Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
+    @XmlElementWrapper(name = "OccurrenceStatuses")
+    @XmlElement(name = "OccurrenceStatus")
+    @OneToMany(fetch= FetchType.LAZY, mappedBy = "unit", orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+    @NotNull
+    @IndexedEmbedded(depth=1)
+    private Set<OccurrenceStatus> status = new HashSet<>();
 
 //*** attributes valid only for preserved specimen (PreservedSpecimen, Fossil, DnaSample)
 
@@ -368,6 +381,59 @@ public class DerivedUnit
 			specimenTypeDesignation.setTypeSpecimen(null);
 		}
 	}
+
+	//** Status **/
+
+    /**
+     * Returns the set of {@link OccurrenceStatus occurrence status} assigned
+     * to <i>this</i> unit.
+     * This includes the occurrence status type of the occurrence status.
+     *
+     * @see     OccurrenceStatus
+     */
+    public Set<OccurrenceStatus> getStatus() {
+        if(status == null) {
+            this.status = new HashSet<>();
+        }
+        return status;
+    }
+
+    /**
+     * Adds a new {@link OccurrenceStatus occurrence status}
+     * to <i>this</i> unit's set of occurrence status.
+     *
+     * @param  nomStatus  the occurrence status to be added
+     * @see               #getStatus()
+     */
+    public void addStatus(OccurrenceStatus occStatus) {
+        this.status.add(occStatus);
+        if (!this.equals(occStatus.getUnit())){
+            occStatus.setUnit(this);
+        }
+    }
+    public OccurrenceStatus addStatus(DefinedTerm statusType, Reference citation, String microCitation) {
+        OccurrenceStatus newStatus = OccurrenceStatus.NewInstance(statusType, citation, microCitation);
+        addStatus(newStatus);
+        return newStatus;
+    }
+
+    /**
+     * Removes one element from the set of occurrence status of <i>this</i> unit.
+     *
+     * @param  occStatus  the occurrence status of <i>this</i> unit which should be deleted
+     * @see               #getStatus()
+     */
+    public void removeStatus(OccurrenceStatus nomStatus) {
+        //TODO to be implemented?
+        logger.warn("not yet fully implemented?");
+        this.status.remove(nomStatus);
+    }
+
+    public void setStatus(Set<OccurrenceStatus> nomStatus) throws SetterAdapterException {
+        new EntityCollectionSetterAdapter<DerivedUnit, OccurrenceStatus>(DerivedUnit.class, OccurrenceStatus.class, "status", "addStatus", "removeStatus").setCollection(this, nomStatus);
+    }
+
+// ****************** METHODS ********************************************/
 
     public String getMostSignificantIdentifier() {
         if (isNotBlank(getAccessionNumber())) {
