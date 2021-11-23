@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.util.Arrays;
@@ -135,5 +134,4 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         Pager<Annotation> annotations = descriptionElementService.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
-
 }

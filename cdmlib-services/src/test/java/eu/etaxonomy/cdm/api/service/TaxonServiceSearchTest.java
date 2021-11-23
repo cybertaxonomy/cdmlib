@@ -87,6 +87,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
 
+    private static final int BENCHMARK_ROUNDS = 300;
+
     private static final UUID ABIES_BALSAMEA_UUID = UUID.fromString("f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8");
     private static final UUID ABIES_ALBA_UUID = UUID.fromString("7dbd5810-a3e5-44b6-b563-25152b8867f4");
     private static final UUID CLASSIFICATION_UUID = UUID.fromString("2a5ceebb-4830-4524-b330-78461bf8cb6b");
@@ -100,12 +102,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private static final UUID DESC_ABIES_ALBA_UUID = UUID.fromString("ec8bba03-d993-4c85-8472-18b14942464b");
     private static final UUID DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = UUID.fromString("e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1");
 
-
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 
     private boolean includeUnpublished = true;
-
-
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -127,15 +126,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private ICdmMassIndexer indexer;
 
-
-    private static final int BENCHMARK_ROUNDS = 300;
-
     private Set<Class<? extends CdmBase>> typesToIndex = null;
 
     private NamedArea germany;
-    private NamedArea france ;
-    private NamedArea russia ;
-    private NamedArea canada ;
+    private NamedArea france;
+    private NamedArea russia;
+    private NamedArea canada;
 
     @Before
     public void setUp() throws Exception {
@@ -157,7 +153,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         assertNotNull("taxonService should exist", taxonService);
         assertNotNull("nameService should exist", nameService);
     }
-
 
     @SuppressWarnings("rawtypes")
     @Test
@@ -183,7 +178,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 8
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
     }
-
 
     @SuppressWarnings("rawtypes")
     @Test
@@ -213,7 +207,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, subtree, null,
                 Arrays.asList(new Language[] { Language.RUSSIAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", 0, pager.getCount().intValue());
-
     }
 
     @SuppressWarnings("rawtypes")

@@ -92,6 +92,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 	private IDescriptionService descriptionService;
     @SpringBeanByType
     private IDescriptionElementService descriptionElementService;
+
 	// ............................................
 
 	@Before

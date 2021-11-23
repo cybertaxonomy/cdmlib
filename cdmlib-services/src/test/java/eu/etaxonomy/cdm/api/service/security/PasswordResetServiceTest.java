@@ -26,8 +26,6 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.subethamail.wiser.Wiser;
@@ -49,9 +47,9 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest {
 
-    private static final double maxRequestRate = 4.0;
+    private static final Logger logger = Logger.getLogger(PasswordResetServiceTest.class);
 
-    Logger logger = Logger.getLogger(PasswordResetServiceTest.class);
+    private static final double maxRequestRate = 4.0;
 
     private static final int rateLimiterTimeout = 200;
     private static final String userName = "pwdResetTestUser";
@@ -59,9 +57,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     private static final String newPWD = "NEW_123_new_456";
     private static final String userEmail = "pwdResetTestUser@cybertaxonomy.test";
 
-
     private static String base64UrlSaveCharClass = "[a-zA-Z0-9\\-_]";
-
 
     private static final String requestFormUrlTemplate = "http://cybertaxonomy.test/passwordReset?userName={%s}&sessID=f8d8sf8dsf";
 
@@ -76,9 +72,6 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
 
     @SpringBeanByType
     private JavaMailSender emailSender;
-
-    @Autowired
-    private Environment env;
 
     private Wiser wiser = null;
 
@@ -265,7 +258,6 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
                     resetTokenSendSignal.countDown();
                 });
 
-
         // -- wait for passwordResetService.emailResetToken() to complete
         resetTokenSendSignal.await();
 
@@ -300,8 +292,5 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     }
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // not needed
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

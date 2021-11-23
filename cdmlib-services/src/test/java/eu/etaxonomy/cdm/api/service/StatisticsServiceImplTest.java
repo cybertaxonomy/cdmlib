@@ -361,12 +361,10 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					// taxon.add(specimen);
 
 					no_of_descriptive_source_references += descriptiveElementsPerTaxon + 2 + 1;
-
 				}
 
 				// add taxon to classification
-				classifications.get(classiCounter).addChildTaxon(taxon, null,
-						null);
+				classifications.get(classiCounter).addChildTaxon(taxon, null, null);
 
 				// now if there are any left, we create a synonym for the taxon
 				if (synonymCounter < NO_OF_SYNONYMS) {

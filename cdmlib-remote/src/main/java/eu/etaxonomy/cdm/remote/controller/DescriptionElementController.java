@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
@@ -29,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -51,28 +49,18 @@ import io.swagger.annotations.Api;
  * @author a.kohlbecker
  * @since 24.03.2009
  */
-
 @Controller
 @Api("descriptionElement")
 @RequestMapping(value = {"/descriptionElement/{uuid}", "/descriptionElement/{uuid_list}"})
-public class DescriptionElementController
-{
+public class DescriptionElementController {
 
-    /**
-     *
-     */
     private static final List<String> STATE_INIT_STRATEGY = Arrays.asList( new String[]{
             "states.state.representations",
             "modifiers",
             "modifyingText"
             } );
 
-
     public static final Logger logger = Logger.getLogger(DescriptionElementController.class);
-
-
-    @Autowired
-    private ITermTreeService termTreeService;
 
     @Autowired
     private ITermService termService;
@@ -87,21 +75,14 @@ public class DescriptionElementController
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<MarkerType>(termService));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     public void setService(IDescriptionElementService service) {
         this.service = service;
     }
 
-    /**
-     * @return
-     */
     protected List<String> getInitializationStrategy() {
         return AbstractController.DEFAULT_INIT_STRATEGY;
     }
-
 
 //    @RequestMapping(method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
 //    public ModelAndView doGetDescriptionElement(
