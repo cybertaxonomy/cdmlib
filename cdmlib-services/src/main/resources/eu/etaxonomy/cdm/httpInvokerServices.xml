@@ -108,7 +108,7 @@
       <ref bean="descriptionElementServiceImpl" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IDescriptionService</value>
+      <value>eu.etaxonomy.cdm.api.service.IDescriptionElementService</value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
