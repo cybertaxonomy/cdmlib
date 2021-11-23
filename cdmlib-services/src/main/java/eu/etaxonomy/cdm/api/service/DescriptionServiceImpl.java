@@ -258,19 +258,6 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        long numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
-
-        List<Annotation> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = descriptionElementDao.getAnnotations(annotatedObj, status, pageSize, pageNumber, orderHints, propertyPaths);
-        }
-
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-
-    @Override
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Long numberOfResults = descriptionElementDao.countMedia(descriptionElement);
 
@@ -382,44 +369,6 @@ public class DescriptionServiceImpl
         }
 
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.find
-     */
-    @Override
-    public DescriptionElementBase getDescriptionElementByUuid(UUID uuid) {
-        return descriptionElementDao.findByUuid(uuid);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.load
-     */
-    @Override
-    public DescriptionElementBase loadDescriptionElement(UUID uuid,	List<String> propertyPaths) {
-        return descriptionElementDao.load(uuid, propertyPaths);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.save
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
-        return descriptionElementDao.save(descriptionElement).getUuid();
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.save
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements) {
-        return descriptionElementDao.saveAll(descriptionElements);
     }
 
     @Override
@@ -656,20 +605,6 @@ public class DescriptionServiceImpl
         }
 
         return result;
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.delete
-     */
-    @Override
-    public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement) {
-        return descriptionElementDao.delete(descriptionElement);
-    }
-
-    @Override
-    public UUID deleteDescriptionElement(UUID descriptionElementUuid) {
-        return deleteDescriptionElement(descriptionElementDao.load(descriptionElementUuid));
     }
 
     @Override

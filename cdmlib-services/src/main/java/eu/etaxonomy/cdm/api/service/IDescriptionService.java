@@ -10,14 +10,12 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -48,51 +46,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     @Deprecated
     public TermVocabulary<Feature> getDefaultFeatureVocabulary();
-
-    /**
-     * Gets a DescriptionElementBase instance matching the supplied uuid
-     *
-     * @param uuid the uuid of the DescriptionElement of interest
-     * @return a DescriptionElement, or null if the DescriptionElement does not exist
-     */
-    public DescriptionElementBase getDescriptionElementByUuid(UUID uuid);
-
-    /**
-     * Loads and existing DescriptionElementBase instance matching the supplied uuid,
-     * and recursively initializes all bean properties given in the
-     * <code>propertyPaths</code> parameter.
-     * <p>
-     * For detailed description and examples <b>please refer to:</b>
-     * {@link IBeanInitializer#initialize(Object, List)}
-     *
-     * @param uuid the uuid of the DescriptionElement of interest
-     * @return a DescriptionElement, or null if the DescriptionElement does not exist
-     */
-    public DescriptionElementBase loadDescriptionElement(UUID uuid,List<String> propertyPaths);
-
-    /**
-     * Persists a <code>DescriptionElementBase</code>
-     * @param descriptionElement
-     * @return
-     */
-    public UUID saveDescriptionElement(DescriptionElementBase descriptionElement);
-
-    /**
-     * Persists a collection of <code>DescriptionElementBase</code>
-     * @param descriptionElements
-     * @return
-     */
-    public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements);
-
-    /**
-     * Delete an existing description element
-     *
-     * @param descriptionElement the description element to be deleted
-     * @return the unique identifier of the deleted entity
-     */
-    public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement);
-
-    public UUID deleteDescriptionElement(UUID descriptionElementUuid);
 
     /**
      * List the descriptions of type <T>, filtered using the following parameters
@@ -238,18 +191,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return a List of DescriptionElementBase instances
      */
     public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-    /**
-     * Return a Pager containing Annotation entities belonging to the DescriptionElementBase instance supplied, optionally filtered by MarkerType
-     * @param annotatedObj The object that "owns" the annotations returned
-     * @param status Only return annotations which are marked with a Marker of this type (can be null to return all annotations)
-     * @param pageSize The maximum number of terms returned (can be null for all annotations)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param orderHints may be null
-     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-     * @return a Pager of Annotation entities
-     */
-    public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
     /**

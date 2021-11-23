@@ -90,7 +90,8 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 	private IReferenceService referenceService;
 	@SpringBeanByType
 	private IDescriptionService descriptionService;
-
+    @SpringBeanByType
+    private IDescriptionElementService descriptionElementService;
 	// ............................................
 
 	@Before
@@ -311,8 +312,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 						descriptionElement.addSource(descriptionElementSource);
 						taxonDescription.addElement(descriptionElement);
 						referenceService.save(article);
-						descriptionService
-								.saveDescriptionElement(descriptionElement);
+						descriptionElementService.save(descriptionElement);
 						System.out.println("Descriptive Src Ref for Taxon: "+article.getId()+" Taxon: "+taxon.getId()+" name: "+taxon.getTitleCache());
 
 					}

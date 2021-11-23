@@ -297,7 +297,7 @@ public abstract class MarkupImportBase  {
 		}else if (cdmBase.isInstanceOf(SpecimenOrObservationBase.class)){
 			docImport.getOccurrenceService().saveOrUpdate((SpecimenOrObservationBase<?>)cdmBase);
 		}else if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
-			docImport.getDescriptionService().saveDescriptionElement((DescriptionElementBase)cdmBase);
+			docImport.getDescriptionElementService().save((DescriptionElementBase)cdmBase);
 		}else if (cdmBase.isInstanceOf(Reference.class)){
 			docImport.getReferenceService().saveOrUpdate((Reference)cdmBase);
 		}else{

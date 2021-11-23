@@ -36,6 +36,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -98,6 +99,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     @SpringBeanByType
     private IDescriptionService descriptionService;
+
+    @SpringBeanByType
+    private IDescriptionElementService descriptionElementService;
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -373,7 +377,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         mn_distr.add(distrNative);
         addDistributions(T_LAPSANA_COMMUNIS_ALPINA_UUID, mn_distr);
 
-        Set<DescriptionElementSource> lca_yug_ko_sources = descriptionService.loadDescriptionElement(distributions_LCA.get(1).getUuid(), null).getSources();
+        Set<DescriptionElementSource> lca_yug_ko_sources = descriptionElementService.load(distributions_LCA.get(1).getUuid(), null).getSources();
         Assert.assertEquals(1, lca_yug_ko_sources.size());
         DescriptionElementSource lca_yug_ko_source = lca_yug_ko_sources.iterator().next();
         lca_yug_ko_source.setCitationMicroReference("2a");

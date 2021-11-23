@@ -193,6 +193,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	private IReferenceService referenceService;
 	@SpringBeanByType
 	private IDescriptionService descriptionService;
+    @SpringBeanByType
+    private IDescriptionElementService descriptionElementService;
 
 	// *************** more members: *****************+
 
@@ -338,9 +340,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						taxonDescription.addElement(descriptionElement);
 						referenceService.save(article);
 						(taxonContextCounter.descrSourceRef)++;
-						descriptionService
-								.saveDescriptionElement(descriptionElement);
-
+						descriptionElementService.save(descriptionElement);
 					}
 					descriptionService.save(taxonDescription);
 					(taxonContextCounter.descriptions)++;

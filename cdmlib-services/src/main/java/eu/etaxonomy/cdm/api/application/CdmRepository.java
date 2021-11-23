@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
@@ -122,6 +123,9 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	@Autowired
 	//@Qualifier("descriptionService")
 	private IDescriptionService descriptionService;
+	@Autowired
+	//@Qualifier("descriptionElementService")
+	private IDescriptionElementService descriptionElementService;
 	@Autowired
 	//@Qualifier("occurrenceService")
 	private IOccurrenceService occurrenceService;
@@ -280,6 +284,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	public IDescriptionService getDescriptionService(){
 		return this.descriptionService;
 	}
+
+    @Override
+    public IDescriptionElementService getDescriptionElementService(){
+        return this.descriptionElementService;
+    }
 
 	@Override
 	public IOccurrenceService getOccurrenceService(){

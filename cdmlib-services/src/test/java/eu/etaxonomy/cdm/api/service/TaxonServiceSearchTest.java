@@ -118,6 +118,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IDescriptionService descriptionService;
     @SpringBeanByType
+    private IDescriptionElementService descriptionElementService;
+    @SpringBeanByType
     private INameService nameService;
     @SpringBeanByType
     private ITaxonNodeService nodeService;
@@ -557,12 +559,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         String[] descriptionElementUuidStr = indexDocument.getValues("uuid");
         String[] inDescriptionUuidStr = indexDocument.getValues("inDescription.uuid");
         // is only one uuid!
-        DescriptionElementBase textData = descriptionService.getDescriptionElementByUuid(UUID.fromString(descriptionElementUuidStr[0]));
+        DescriptionElementBase textData = descriptionElementService.find(UUID.fromString(descriptionElementUuidStr[0]));
 
         ((TextData)textData).removeText(Language.GERMAN());
         ((TextData)textData).putText(Language.SPANISH_CASTILIAN(), "abeto bals"+UTF8.SMALL_A_ACUTE+"mico");
 
-        descriptionService.saveDescriptionElement(textData);
+        descriptionElementService.save(textData);
         commitAndStartNewTransaction(null);
 //        printDataSet(System.out, new String[] {
 //                "DESCRIPTIONELEMENTBASE", "LANGUAGESTRING", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING" }

@@ -27,11 +27,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -78,11 +77,7 @@ public class DescriptionElementController
     @Autowired
     private ITermService termService;
 
-
-    @Autowired
-    private IEditGeoService geoService;
-
-    private IDescriptionService service;
+    private IDescriptionElementService service;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -96,7 +91,7 @@ public class DescriptionElementController
      * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
      */
     @Autowired
-    public void setService(IDescriptionService service) {
+    public void setService(IDescriptionElementService service) {
         this.service = service;
     }
 
@@ -130,7 +125,7 @@ public class DescriptionElementController
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetDescriptionElementAnnotations() - " + request.getRequestURI());
-        DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
+        DescriptionElementBase annotatableEntity = service.load(uuid);
         if(annotatableEntity == null){
             HttpStatusMessage.UUID_INVALID.send(response);
             // method will exit here
@@ -150,7 +145,7 @@ public class DescriptionElementController
 
         ModelAndView mv = new ModelAndView();
 
-        DescriptionElementBase descriptionElement = service.loadDescriptionElement(uuid, STATE_INIT_STRATEGY);
+        DescriptionElementBase descriptionElement = service.load(uuid, STATE_INIT_STRATEGY);
         if(descriptionElement == null){
             HttpStatusMessage.UUID_INVALID.send(response);
             // method will exit here

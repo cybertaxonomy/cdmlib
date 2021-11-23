@@ -108,6 +108,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private IDescriptionService descriptionService;
 
     @SpringBeanByType
+    private IDescriptionElementService descriptionElementService;
+
+    @SpringBeanByType
     private IMarkerService markerService;
 
     @SpringBeanByType
@@ -1319,7 +1322,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //descriptionService.find(descrUUID);
         assertNull(descriptionService.find(descrUUID));
-        assertNull(descriptionService.getDescriptionElementByUuid(descrElementUUID));
+        assertNull(descriptionElementService.find(descrElementUUID));
         //assertNull(synName);
         assertNotNull(taxonName);
         assertNull(taxon);
@@ -1370,7 +1373,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //descriptionService.find(descrUUID);
         assertNull(descriptionService.find(descrUUID));
-        assertNull(descriptionService.getDescriptionElementByUuid(descrElementUUID));
+        assertNull(descriptionElementService.find(descrElementUUID));
         //assertNull(synName);
         assertNotNull(taxonName);
         assertNull(taxon);

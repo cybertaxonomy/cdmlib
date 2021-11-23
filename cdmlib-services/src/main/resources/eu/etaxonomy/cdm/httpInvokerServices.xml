@@ -91,11 +91,21 @@
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
-
   <bean id="httpDescriptionService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="descriptionServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.IDescriptionService</value>
+    </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
+  </bean>
+  
+  <bean id="httpDescriptionElementService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="descriptionElementServiceImpl" />
     </property>
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IDescriptionService</value>

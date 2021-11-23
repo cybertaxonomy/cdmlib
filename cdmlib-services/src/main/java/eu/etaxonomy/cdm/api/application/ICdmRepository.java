@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
@@ -93,6 +94,8 @@ public interface ICdmRepository extends ICdmImportSource {
 	public IAgentService getAgentService();
 
 	public IDescriptionService getDescriptionService();
+
+	public IDescriptionElementService getDescriptionElementService();
 
 	public IOccurrenceService getOccurrenceService();
 

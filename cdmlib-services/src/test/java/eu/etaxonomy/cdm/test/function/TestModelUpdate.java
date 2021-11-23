@@ -79,7 +79,7 @@ public class TestModelUpdate {
     		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
     		    TransactionStatus tx = appCtr.startTransaction(false);
-    		    TemporalData td = (TemporalData)appCtr.getDescriptionService().getDescriptionElementByUuid(
+    		    TemporalData td = (TemporalData)appCtr.getDescriptionElementService().find(
     		            UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));
     		    td.getFeature().setSupportsCategoricalData(true);
     		    appCtr.getTermService().saveOrUpdate(td.getFeature());
