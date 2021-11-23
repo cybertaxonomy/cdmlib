@@ -27,6 +27,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -397,7 +398,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         if(deleteCandidates.size() > 0){
             for(DescriptionElementBase descriptionElement : deleteCandidates) {
                 aggregationDescription.removeElement(descriptionElement);
-                getDescriptionService().deleteDescriptionElement(descriptionElement);
+                getDescriptionElementService().delete(descriptionElement);
                 if (descriptionElement.isPersited()){
                     getResult().addDeletedObject(descriptionElement);
                 }
@@ -555,6 +556,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     protected IDescriptionService getDescriptionService(){
         return repository.getDescriptionService();
+    }
+
+    protected IDescriptionElementService getDescriptionElementService(){
+        return repository.getDescriptionElementService();
     }
 
     protected IDescriptiveDataSetService getDescriptiveDatasetService() {
