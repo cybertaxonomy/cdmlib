@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.sdd.in;
 
 import java.io.File;
@@ -143,7 +142,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<>();
 	private Set<VersionableEntity> featureData = new HashSet<>();
-	private Set<TermTree> featureTrees = new HashSet<>();
+	private Set<TermTree<Feature>> featureTrees = new HashSet<>();
 	private Set<Classification> classifications = new HashSet<>();
 
 	private final UUID uuidAnnotationTypeLocation = UUID.fromString("a3737e07-72e3-46d2-986d-fa4cf5de0b63");
@@ -676,8 +675,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			getReferenceService().save(source);
 		}
 
-		for (TermTree featureTree : featureTrees) {
-			getFeatureTreeService().save(featureTree);
+		for (TermTree<Feature> featureTree : featureTrees) {
+		    getTermTreeService().save(featureTree);
 		}
 		getDescriptiveDataSetService().save(descriptiveDataSet);
 		for (Classification classification : classifications) {

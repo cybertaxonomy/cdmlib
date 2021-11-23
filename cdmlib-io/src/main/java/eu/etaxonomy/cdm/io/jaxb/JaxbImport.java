@@ -314,13 +314,12 @@ public class JaxbImport
 		}
 		//commitTransaction(txStatus);
 
-
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
 				if ((featureTrees = dataSet.getTermTrees()).size() > 0) {
 					logger.info("Feature data: " + featureTrees.size());
-					getFeatureTreeService().saveOrUpdate(featureTrees);
+					getTermTreeService().saveOrUpdate(featureTrees);
 				}
 			}
 		} catch (Exception ex) {
@@ -328,7 +327,6 @@ public class JaxbImport
 			success = false;
 		}
 		//commitTransaction(txStatus);
-
 
 		//txStatus = startTransaction();
 		try {

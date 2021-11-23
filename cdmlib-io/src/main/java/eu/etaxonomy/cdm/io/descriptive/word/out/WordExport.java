@@ -19,15 +19,14 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
- *
  * @author pplitzner
  * @since Oct 18, 2018
- *
  */
 @Component
 public class WordExport extends CdmExportBase<WordExportConfigurator, WordExportState, IExportTransformer, File> {
@@ -44,9 +43,10 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
 
         TransactionStatus txStatus = startTransaction(true);
 
-        TermTree featureTree = state.getConfig().getFeatureTree();
-        featureTree = getFeatureTreeService().load(featureTree.getUuid());
-        TermNode rootNode = featureTree.getRoot();
+        @SuppressWarnings("unchecked")
+        TermTree<Feature> featureTree = state.getConfig().getFeatureTree();
+        featureTree = getTermTreeService().load(featureTree.getUuid());
+        TermNode<Feature> rootNode = featureTree.getRoot();
 
         try {
             exportStream = generateDocx4JDocument(rootNode);
@@ -56,11 +56,10 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
         }
 
         commitTransaction(txStatus);
-
         return;
     }
 
-    private ByteArrayOutputStream generateDocx4JDocument(TermNode rootNode) throws Exception {
+    private ByteArrayOutputStream generateDocx4JDocument(TermNode<?> rootNode) throws Exception {
         InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/io/word/out/template.docx");
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.load(resourceAsStream);
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
@@ -113,8 +112,8 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
     private void addChildNode(TermNode<?> node, MainDocumentPart mainDocumentPart, int indent) throws Exception{
         String styleId = "Heading"+indent;
 
-        for (TermNode childNode : node.getChildNodes()) {
-            DefinedTermBase term = childNode.getTerm();
+        for (TermNode<?> childNode : node.getChildNodes()) {
+            DefinedTermBase<?> term = childNode.getTerm();
             mainDocumentPart.addStyledParagraphOfText(styleId, term.getLabel());
             if(term.getDescription()!=null){
                 mainDocumentPart.addParagraphOfText("Description: "+term.getDescription());

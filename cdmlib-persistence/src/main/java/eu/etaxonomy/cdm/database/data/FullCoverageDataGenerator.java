@@ -176,6 +176,8 @@ public class FullCoverageDataGenerator {
 
 		createAgents(cdmBases);
 
+        createReference(cdmBases);
+
 		createDescriptions(cdmBases);
 
 		createMedia(cdmBases);
@@ -185,8 +187,6 @@ public class FullCoverageDataGenerator {
 		createTaxonName(cdmBases);
 
 		createOccurrence(cdmBases);
-
-		createReference(cdmBases);
 
 		createTaxon(cdmBases);
 
@@ -767,7 +767,8 @@ public class FullCoverageDataGenerator {
 
 
 	private void createOccurrence(List<CdmBase> cdmBases) {
-		//Collection
+
+	    //Collection
 		Collection collection = Collection.NewInstance();
 		Collection subCollection = Collection.NewInstance();
 		subCollection.setSuperCollection(collection);
@@ -811,7 +812,6 @@ public class FullCoverageDataGenerator {
 		gatheringEvent.setDistanceToWaterSurfaceText("distance to water text");
 		handleAnnotatableEntity(gatheringEvent);
 		handleEventBase(gatheringEvent);
-
 
 		//Derived Unit
 		MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);

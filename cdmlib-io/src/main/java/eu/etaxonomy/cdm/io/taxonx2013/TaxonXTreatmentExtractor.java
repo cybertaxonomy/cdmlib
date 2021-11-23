@@ -304,9 +304,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     private void buildFeatureTree() {
         logger.info("buildFeatureTree");
-        TermTree proibiospheretree = importer.getFeatureTreeService().find(proIbioTreeUUID);
+        TermTree<?> proibiospheretree = importer.getTermTreeService().find(proIbioTreeUUID);
         if (proibiospheretree == null){
-            List<TermTree> trees = importer.getFeatureTreeService().list(TermTree.class, null, null, null, null);
+            List<TermTree> trees = importer.getTermTreeService().list(TermTree.class, null, null, null, null);
             if (trees.size()==1) {
                 TermTree<Feature> ft = trees.get(0);
                 if (featuresMap==null) {
@@ -331,16 +331,14 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }catch(Exception e){logger.warn("Can't remove child from FeatureTree "+e);}
                 nbChildren --;
             }
-
         }
 
         for (Feature feature:featuresMap.values()) {
             root2.addChild(feature);
         }
-        importer.getFeatureTreeService().saveOrUpdate(proibiospheretree);
+        importer.getTermTreeService().saveOrUpdate(proibiospheretree);
 
     }
-
 
     /**
      * @param keys

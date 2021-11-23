@@ -100,8 +100,7 @@ public class SDDCdmExporter
 		File fy = new File(fileName);
 
 
-		if ( fy.exists() )
-		{
+		if ( fy.exists() ){
 			logger.warn("LORNA FILE EXISTS");
 
 		  if(fy.canWrite()) {
@@ -164,11 +163,8 @@ public class SDDCdmExporter
 			e.printStackTrace();
 		}
 		commitTransaction(txStatus);
-
 		return;
-
 	}
-
 
 	private void retrieveData (IExportConfigurator config, SDDDataSet sddDataSet) {
 
@@ -311,10 +307,9 @@ public class SDDCdmExporter
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
 			sddDataSet.setFeatureData(getTermNodeService().list(TermType.Feature,null,null,null,null));
-			sddDataSet.addFeatureData(getFeatureTreeService().list(null,null,null,null,null));
+			sddDataSet.addFeatureData(getTermTreeService().list(TermType.Feature,null,null,null,null));
 		}
 	}
-
 
 	@Override
 	protected boolean doCheck(SDDExportState state) {
@@ -323,13 +318,8 @@ public class SDDCdmExporter
 		return result;
 	}
 
-
 	@Override
 	protected boolean isIgnore(SDDExportState state) {
 		return false;
 	}
-
-
-
-
 }

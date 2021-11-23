@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * @author a.mueller
  * @since 16.09.2010
- *
  */
 public class TableCreator extends AuditedSchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(TableCreator.class);
@@ -31,7 +30,6 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 	private static final boolean IS_LIST = true;
 	private static final boolean IS_1_TO_M = true;
 	private static final boolean IS_M_TO_M = false;
-
 
 	private final List<String> columnNames;
 	private final List<String> columnTypes;
@@ -146,7 +144,6 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 
 	/**
 	 * fills the mnTablesStepList
-	 * @param mnTablesStepList, String tableName
 	 */
 	public static void makeMnTables(List<ISchemaUpdaterStep> mnTablesStepList, String tableName, boolean includeAnnotatable, boolean includeIdentifiable) {
 
@@ -191,6 +188,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 			stepName = stepName.replace("@tableName", tableName);
 			MnTableCreator.NewMnInstance(mnTablesStepList, stepName, tableName, null, "RightsInfo", null, "rights", SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_M_TO_M);
 		}
+
 	}
 
 
@@ -379,11 +377,6 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 
 	/**
 	 * Determines if the tables and the database support foreign keys. If determination is not possible true is returned as default.
-	 * @param datasource
-	 * @param monitor
-	 * @param tableName
-	 * @param referencedTable
-	 * @return
 	 */
 	private static boolean supportsForeignKeys(ICdmDataSource datasource, IProgressMonitor monitor, String tableName, String referencedTable) {
 		boolean result = true;

@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * @author a.babadshanjan
@@ -262,14 +263,13 @@ public class JaxbExport
         if (jaxbExpConfig.isDoFeatureData() == true) {
             if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
             logger.info("# Feature Tree, Feature Node");
-            List<TermTree> featureTrees = new ArrayList<>();
-            featureTrees= getFeatureTreeService().list(null,featureDataRows, 0, null, null);
+            List<TermTree> featureTrees= getTermTreeService().list(TermType.Feature, featureDataRows, 0, null, null);
             List<TermTree> taxTreesdeproxy = new ArrayList<>();
-            for (TermTree featureTree : featureTrees){
+            for (TermTree<?> featureTree : featureTrees){
                 HibernateProxyHelper.deproxy(featureTree);
                 taxTreesdeproxy.add(featureTree);
             }
-            dataSet.setFeatureTrees(getFeatureTreeService().list(null,null,null,null,null));
+            dataSet.setFeatureTrees(getTermTreeService().list(TermType.Feature,null,null,null,null));
         }
         if (jaxbExpConfig.isDoClassificationData() == true) {
             if (classificationDataRows == 0) { classificationDataRows = MAX_ROWS; }

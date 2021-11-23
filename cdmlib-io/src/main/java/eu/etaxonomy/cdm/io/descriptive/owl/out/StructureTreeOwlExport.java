@@ -48,7 +48,7 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
                 break;
             }
             state.getConfig().getProgressMonitor().worked(1);
-            TermTree<Feature> featureTree = getFeatureTreeService().load(uuid);
+            TermTree<Feature> featureTree = getTermTreeService().load(uuid);
             Resource featureTreeResource = OwlExportUtil.createFeatureTreeResource(featureTree, this, state);
         }
 

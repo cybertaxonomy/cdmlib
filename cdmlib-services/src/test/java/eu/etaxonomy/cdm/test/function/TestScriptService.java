@@ -261,7 +261,7 @@ public class TestScriptService {
 //
 //		ft1.getRoot().addChild(fn3, 0);
 //		appCtr.getFeatureNodeService().saveOrUpdate(fn3);
-//		appCtr.getFeatureTreeService().saveOrUpdate(ft1);
+//		appCtr.getTermTreeService().saveOrUpdate(ft1);
 //	}
 
 	private void testDatabaseChange() throws DataSourceNotFoundException{

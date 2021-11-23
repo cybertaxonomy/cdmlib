@@ -80,7 +80,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 		}
 	}
 
-	   /**
+	/**
      * Creates a new empty {@link DefinedTerm} instance.
      *
      * @see #NewInstance(String, String, String)

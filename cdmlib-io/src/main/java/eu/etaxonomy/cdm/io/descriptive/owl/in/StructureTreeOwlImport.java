@@ -67,7 +67,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
                 Resource rootNode = treeResource.getProperty(OwlUtil.propHasRootNode).getResource();
                 rootNode.listProperties(OwlUtil.propHasSubStructure).forEachRemaining(prop->createNode(featureTree.getRoot(), prop, featureTree.getTitleCache(), state.getModel(), state));
 
-                getFeatureTreeService().saveOrUpdate(featureTree);
+                getTermTreeService().saveOrUpdate(featureTree);
             }
         }
     }
