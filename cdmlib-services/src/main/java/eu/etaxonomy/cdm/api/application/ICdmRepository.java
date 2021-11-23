@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IEventBaseService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -137,12 +136,6 @@ public interface ICdmRepository extends ICdmImportSource {
 	public ICollectionService getCollectionService();
 
 	public ILongRunningTasksService getLongRunningTasksService();
-
-	/**
-	 * @deprecated use {@link #getTermTreeService()} instead
-	 */
-	@Deprecated
-    public IFeatureTreeService getFeatureTreeService();
 
     public ITermTreeService getTermTreeService();
 
