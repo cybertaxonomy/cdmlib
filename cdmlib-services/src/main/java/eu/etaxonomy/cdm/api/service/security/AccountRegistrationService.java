@@ -49,12 +49,11 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
 
     @Autowired
     @Qualifier("accountCreationRequestTokenStore")
-    private IAbstractRequestTokenStore<AccountCreationRequest> accountRegistrationTokenStore;
+    private IAbstractRequestTokenStore<AccountCreationRequest, Object> accountRegistrationTokenStore;
 
     @Override
     @Async
-    public ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress,
-            String userName, String password, String accountCreationRequestFormUrlTemplate) throws MailException, AddressException, AccountSelfManagementException {
+    public ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress, String accountCreationRequestFormUrlTemplate) throws MailException, AddressException, AccountSelfManagementException {
 
         if(logger.isTraceEnabled()) {
             logger.trace("emailAccountRegistrationConfirmation() trying to aquire from rate limiter [rate: " + emailResetToken_rateLimiter.getRate() + ", timeout: " + getRateLimiterTimeout().toMillis() + "ms]");
@@ -63,20 +62,14 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
             logger.trace("emailAccountRegistrationConfirmation() allowed by rate limiter");
             try {
                 emailAddressValidAndUnused(emailAddress);
-                if(userNameExists(userName)) {
-                    throw new AccountSelfManagementException(USER_NAME_EXISTS_MSG);
-                }
-                User user = User.NewInstance(userName, password);
-                user.setEmailAddress(emailAddress);
-                AbstractRequestToken resetRequest = accountRegistrationTokenStore.create(user);
+                AbstractRequestToken resetRequest = accountRegistrationTokenStore.create(emailAddress, null);
                 String passwordRequestFormUrl = String.format(accountCreationRequestFormUrlTemplate, resetRequest.getToken());
                 Map<String, String> additionalValues = new HashMap<>();
                 additionalValues.put("linkUrl", passwordRequestFormUrl);
-                sendEmail(user.getEmailAddress(), user.getUsername(),
+                sendEmail(emailAddress, null,
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_SUBJECT_TEMPLATE,
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_BODY_TEMPLATE, additionalValues);
-                logger.info("An account creartion request has been send to "
-                        + user.getEmailAddress());
+                logger.info("An account creation request has been send to " + emailAddress);
                 return new AsyncResult<Boolean>(true);
             } catch (MailException e) {
                 throw e;
@@ -90,28 +83,29 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
     @Override
     @Async
     @Transactional(readOnly = false)
-    public ListenableFuture<Boolean> createUserAccount(String token, String givenName, String familyName, String prefix)
+    public ListenableFuture<Boolean> createUserAccount(String token, String userName, String password, String givenName, String familyName, String prefix)
             throws MailException, AccountSelfManagementException, AddressException {
 
         if (resetPassword_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
 
-            Optional<AccountCreationRequest> creationRequest = accountRegistrationTokenStore.findResetRequest(token);
+            Optional<AccountCreationRequest> creationRequest = accountRegistrationTokenStore.findRequest(token);
             if (creationRequest.isPresent()) {
                 try {
                     // check again if the email address is still unused
                     emailAddressValidAndUnused(creationRequest.get().getUserEmail());
-                    if(userNameExists(creationRequest.get().getUserName())) {
+                    if(userNameExists(userName)) {
                         throw new AccountSelfManagementException(USER_NAME_EXISTS_MSG);
                     }
-                    User newUser = User.NewInstance(creationRequest.get().getUserName(), creationRequest.get().getEncryptedPassword());
+                    User newUser = User.NewInstance(userName, password);
+                    userService.encodeUserPassword(newUser, password);
                     userDao.saveOrUpdate(newUser);
                     accountRegistrationTokenStore.remove(token);
-                    sendEmail(creationRequest.get().getUserEmail(), creationRequest.get().getUserName(),
+                    sendEmail(creationRequest.get().getUserEmail(), userName,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_BODY_TEMPLATE, null);
                     return new AsyncResult<Boolean>(true);
                 } catch (DataAccessException e) {
-                    String message = "Failed to create a new user [userName: " + creationRequest.get().getUserName() + ", email: " + creationRequest.get().getUserEmail() + "]";
+                    String message = "Failed to create a new user [userName: " + userName + ", email: " + creationRequest.get().getUserEmail() + "]";
                     logger.error(message, e);
                     throw new AccountSelfManagementException(message);
                 }

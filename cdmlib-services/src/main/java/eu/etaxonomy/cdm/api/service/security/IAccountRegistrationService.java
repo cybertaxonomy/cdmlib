@@ -55,7 +55,7 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      * @throws AccountSelfManagementException
      *             in case the user name is already being used.
      */
-    ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress, String userName, String password,
+    ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress,
             String passwordRequestFormUrlTemplate)
             throws MailException, AddressException, AccountSelfManagementException;
 
@@ -63,6 +63,10 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      *
      * @param token
      *            the token string
+     * @param userName
+     *            The user name (login name) for the new account
+     * @param password
+     *            The password
      * @param givenName
      *            The new password to set - <b>required</b>
      * @param familyName
@@ -82,8 +86,8 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      *             {@link AccountCreationRequest} identified by the
      *             <code>token</code> not valid
      */
-    ListenableFuture<Boolean> createUserAccount(String token, String givenName, String familyName, String prefix)
-            throws MailException, AccountSelfManagementException, AddressException;
+    ListenableFuture<Boolean> createUserAccount(String token, String userName, String password, String givenName,
+            String familyName, String prefix) throws MailException, AccountSelfManagementException, AddressException;
 
     boolean userNameExists(String userName);
 

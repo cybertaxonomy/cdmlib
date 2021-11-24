@@ -68,7 +68,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     private IPasswordResetService passwordResetService;
 
     @SpringBeanByName
-    private IAbstractRequestTokenStore<PasswordResetRequest> passwordResetTokenStore;
+    private IAbstractRequestTokenStore<PasswordResetRequest, User> passwordResetTokenStore;
 
     @SpringBeanByType
     private JavaMailSender emailSender;

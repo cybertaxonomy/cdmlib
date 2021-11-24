@@ -10,17 +10,15 @@ package eu.etaxonomy.cdm.api.security;
 
 import java.util.Optional;
 
-import eu.etaxonomy.cdm.model.permission.User;
-
 /**
  * @author a.kohlbecker
  * @since Nov 3, 2021
  */
-public interface IAbstractRequestTokenStore<T extends AbstractRequestToken> {
+public interface IAbstractRequestTokenStore<T extends AbstractRequestToken, X extends Object> {
 
     public static final int TOKEN_LIFETIME_MINUTES_DEFAULT = 60 * 6;
 
-    public T create(User user);
+    public T create(String userEmailAddress, X additionalData);
 
     /**
      * Removes the corresponding <code>AbstractRequestToken</code> from the
@@ -50,11 +48,11 @@ public interface IAbstractRequestTokenStore<T extends AbstractRequestToken> {
      * @return the valid <code>AbstractRequestToken</code> or an empty
      *         <code>Optional</code>
      */
-    public Optional<T> findResetRequest(String token);
+    public Optional<T> findRequest(String token);
 
 
     public void setTokenLifetimeMinutes(int tokenLifetimeMinutes);
 
-    public T createNewToken(User user, String randomToken, int tokenLifetimeMinutes);
+    public T createNewToken(String userEmailAddress, X additionalData, String randomToken, int tokenLifetimeMinutes);
 
 }

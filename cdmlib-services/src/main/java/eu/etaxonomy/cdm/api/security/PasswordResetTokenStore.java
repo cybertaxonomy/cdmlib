@@ -17,11 +17,11 @@ import eu.etaxonomy.cdm.model.permission.User;
  * @since Nov 3, 2021
  */
 @Component
-public class PasswordResetTokenStore extends AbstractRequestTokenStore<PasswordResetRequest> {
+public class PasswordResetTokenStore extends AbstractRequestTokenStore<PasswordResetRequest, User> {
 
     @Override
-    public PasswordResetRequest createNewToken(User user, String randomToken, int tokenLifetimeMinutes) {
-        PasswordResetRequest token = new PasswordResetRequest(user.getUsername(), user.getEmailAddress(), randomToken, tokenLifetimeMinutes);
+    public PasswordResetRequest createNewToken(String userEmailAddress, User user, String randomToken, int tokenLifetimeMinutes) {
+        PasswordResetRequest token = new PasswordResetRequest(user.getUsername(), userEmailAddress, randomToken, tokenLifetimeMinutes);
         return token;
     }
 

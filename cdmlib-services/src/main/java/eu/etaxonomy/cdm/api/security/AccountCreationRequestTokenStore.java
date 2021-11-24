@@ -12,22 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IUserService;
-import eu.etaxonomy.cdm.model.permission.User;
 
 /**
  * @author a.kohlbecker
  * @since Nov 3, 2021
  */
 @Component
-public class AccountCreationRequestTokenStore extends AbstractRequestTokenStore<AccountCreationRequest> {
+public class AccountCreationRequestTokenStore extends AbstractRequestTokenStore<AccountCreationRequest, Object> {
 
     @Autowired
     private IUserService userService;
 
     @Override
-    public AccountCreationRequest createNewToken(User user, String randomToken, int tokenLifetimeMinutes) {
-        userService.encodeUserPassword(user, user.getPassword());
-        AccountCreationRequest token = new AccountCreationRequest(user.getUsername(), user.getPassword(), user.getEmailAddress(), randomToken, tokenLifetimeMinutes);
+    public AccountCreationRequest createNewToken(String userEmailAddress, Object unused, String randomToken, int tokenLifetimeMinutes) {
+        AccountCreationRequest token = new AccountCreationRequest(userEmailAddress, randomToken, tokenLifetimeMinutes);
         return token;
     }
 

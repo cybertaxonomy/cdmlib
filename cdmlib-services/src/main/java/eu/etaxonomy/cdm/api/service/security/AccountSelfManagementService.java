@@ -66,7 +66,7 @@ public abstract class AccountSelfManagementService implements IRateLimitedServic
      * @param userEmail
      *  The TO-address
      * @param userName
-     *  Used to set the value for <code>${userName}</code>
+     *  Used to set the value for <code>${userName}</code>. Optional, may be null.
      * @param subjectTemplate
      *  A {@link StringSubstitutor} template for the email subject
      * @param bodyTemplate
@@ -85,7 +85,9 @@ public abstract class AccountSelfManagementService implements IRateLimitedServic
         if(supportEmailAddress != null) {
             additionalValuesMap.put("supportEmailAddress", supportEmailAddress);
         }
-        additionalValuesMap.put("userName", userName);
+        if(userName != null) {
+            additionalValuesMap.put("userName", userName);
+        }
         additionalValuesMap.put("dataBase", dataSourceBeanId);
         StringSubstitutor substitutor = new StringSubstitutor(additionalValuesMap);
 

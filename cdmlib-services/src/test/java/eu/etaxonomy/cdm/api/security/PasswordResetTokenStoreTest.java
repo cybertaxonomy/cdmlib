@@ -36,7 +36,7 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
     private static final String USER_NAME = "dummy";
 
     @SpringBeanByName
-    private IAbstractRequestTokenStore<PasswordResetRequest> passwordResetTokenStore;
+    private IAbstractRequestTokenStore<PasswordResetRequest, User> passwordResetTokenStore;
 
     private User testUser;
 
@@ -49,9 +49,9 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
 
     @Test
     public void testTokenStillValid() {
-        String token = passwordResetTokenStore.create(testUser).getToken();
+        String token = passwordResetTokenStore.create(USER_EMAIL, testUser).getToken();
         assertTrue(passwordResetTokenStore.isEligibleToken(token));
-        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(token);
+        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(token);
         assertTrue(resetRequest.isPresent());
         assertEquals(USER_NAME, resetRequest.get().getUserName());
         assertEquals(USER_EMAIL, resetRequest.get().getUserEmail());
@@ -61,9 +61,9 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
     @Test
     public void testTokenExpired() {
         passwordResetTokenStore.setTokenLifetimeMinutes(-10);
-        String token = passwordResetTokenStore.create(testUser).getToken();
+        String token = passwordResetTokenStore.create(USER_EMAIL, testUser).getToken();
         assertFalse(passwordResetTokenStore.isEligibleToken(token));
-        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(token);
+        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(token);
         assertTrue(!resetRequest.isPresent());
     }
 
@@ -71,7 +71,7 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
     public void testTokenUnknown() {
         String unknownToken = "un-known-token";
         assertFalse(passwordResetTokenStore.isEligibleToken(unknownToken));
-        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(unknownToken);
+        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(unknownToken);
         assertTrue(!resetRequest.isPresent());
     }
 
@@ -79,19 +79,19 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
     public void testTokenNull() {
         String nullToken = null;
         assertFalse(passwordResetTokenStore.isEligibleToken(nullToken));
-        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(nullToken);
+        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(nullToken);
         assertTrue(!resetRequest.isPresent());
     }
 
 
     @Test
     public void testTokenRemove() {
-        String token = passwordResetTokenStore.create(testUser).getToken();
+        String token = passwordResetTokenStore.create(USER_EMAIL, testUser).getToken();
         assertTrue(passwordResetTokenStore.isEligibleToken(token));
-        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(token);
+        Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(token);
         assertTrue(resetRequest.isPresent());
         passwordResetTokenStore.remove(token);
-        resetRequest = passwordResetTokenStore.findResetRequest(token);
+        resetRequest = passwordResetTokenStore.findRequest(token);
         assertFalse("Expecing false since the token has been removed", resetRequest.isPresent());
     }
 

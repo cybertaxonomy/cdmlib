@@ -43,7 +43,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
 
     @Autowired
     @Qualifier("passwordResetTokenStore")
-    IAbstractRequestTokenStore<PasswordResetRequest> passwordResetTokenStore;
+    IAbstractRequestTokenStore<PasswordResetRequest, User> passwordResetTokenStore;
 
     /**
      * Create a request token and send it to the user via email.
@@ -86,7 +86,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
             logger.trace("emailResetToken allowed by rate limiter");
             try {
                 User user = findUser(userNameOrEmail);
-                AbstractRequestToken resetRequest = passwordResetTokenStore.create(user);
+                AbstractRequestToken resetRequest = passwordResetTokenStore.create(user.getEmailAddress(), user);
                 String passwordRequestFormUrl = String.format(passwordRequestFormUrlTemplate, resetRequest.getToken());
                 Map<String, String> additionalValues = new HashMap<>();
                 additionalValues.put("linkUrl", passwordRequestFormUrl);
@@ -128,7 +128,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
 
        if (resetPassword_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
 
-           Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(token);
+           Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(token);
            if (resetRequest.isPresent()) {
                try {
                    UserDetails user = userService.loadUserByUsername(resetRequest.get().getUserName());

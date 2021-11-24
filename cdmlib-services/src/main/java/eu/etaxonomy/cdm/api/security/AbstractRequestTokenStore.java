@@ -18,15 +18,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.permission.User;
 
 /**
  * @author a.kohlbecker
  * @since Nov 18, 2021
  */
-public abstract class AbstractRequestTokenStore<T extends AbstractRequestToken>  implements IAbstractRequestTokenStore<T> {
+public abstract class AbstractRequestTokenStore<T extends AbstractRequestToken, X extends Object>  implements IAbstractRequestTokenStore<T, X> {
 
     public static final int TOKEN_LENGTH = 50;
     protected static Logger logger = Logger.getLogger(AbstractRequestTokenStore.class);
@@ -35,13 +34,12 @@ public abstract class AbstractRequestTokenStore<T extends AbstractRequestToken> 
 
 
     @Override
-    public T create(User user) {
+    public T create(String userEmailAddress, X additionalData) {
         clearExpiredTokens();
-        assert user != null;
-        assert !user.getEmailAddress().isEmpty();
+        assert StringUtils.isNotBlank(userEmailAddress);
         String randomToken = generateRandomToken();
         int tokenLifetimeMinutes = getTokenLifetimeMinutes();
-        T token = createNewToken(user, randomToken, tokenLifetimeMinutes);
+        T token = createNewToken(userEmailAddress, additionalData, randomToken, tokenLifetimeMinutes);
         tokenList.put(token.getToken(), token);
         return token;
     }
@@ -56,7 +54,7 @@ public abstract class AbstractRequestTokenStore<T extends AbstractRequestToken> 
     }
 
     @Override
-    public Optional<T> findResetRequest(String token) {
+    public Optional<T> findRequest(String token) {
         clearExpiredTokens();
         T resetRequest = tokenList.get(token);
         if(isEligibleResetRequest(resetRequest)) {

@@ -68,7 +68,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     private IAccountRegistrationService accountRegistrationService;
 
     @SpringBeanByName
-    private IAbstractRequestTokenStore<AccountCreationRequest> accountCreationRequestTokenStore;
+    private IAbstractRequestTokenStore<AccountCreationRequest, Object> accountCreationRequestTokenStore;
 
     @SpringBeanByType
     private JavaMailSender emailSender;
@@ -127,7 +127,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
         createRequestTokenSendSignal = new CountDownLatch(1);
         accountCreatedSignal = new CountDownLatch(1);
 
-        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, userName, userPWD, requestFormUrlTemplate);
+        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, requestFormUrlTemplate);
         emailResetFuture.addCallback(
                 requestSuccessVal -> {
                     createRequestTokenSendSignal.countDown();
@@ -162,7 +162,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
         assertEquals(AbstractRequestTokenStore.TOKEN_LENGTH + 17, m.group(1).length());
 
         // -- change password
-        ListenableFuture<Boolean> createAccountFuture = accountRegistrationService.createUserAccount(m.group(1), "Testor", "Nutzer", "Dr.");
+        ListenableFuture<Boolean> createAccountFuture = accountRegistrationService.createUserAccount(m.group(1), userName, userPWD, "Testor", "Nutzer", "Dr.");
         createAccountFuture.addCallback(requestSuccessVal -> {
             accountCreatedSignal.countDown();
         }, futureException -> {
@@ -188,7 +188,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
         createRequestTokenSendSignal = new CountDownLatch(1);
 
         accountRegistrationService.setRateLimiterTimeout(Duration.ofMillis(1)); // as should as possible to allow the fist call to be successful (with 1ns the fist call fails!)
-        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest("not-a-valid-email@#address#", userName, userPWD, requestFormUrlTemplate);
+        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest("not-a-valid-email@#address#", requestFormUrlTemplate);
         emailResetFuture.addCallback(
                 requestSuccessVal -> {
                     createRequestTokenSendSignal.countDown();
@@ -214,7 +214,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
         accountCreatedSignal = new CountDownLatch(1);
 
         // -- change password
-        ListenableFuture<Boolean> resetPasswordFuture = accountRegistrationService.createUserAccount("IUER9843URIO--INVALID-TOKEN--UWEUR89EUWWEOIR", userName, null, null);
+        ListenableFuture<Boolean> resetPasswordFuture = accountRegistrationService.createUserAccount("IUER9843URIO--INVALID-TOKEN--UWEUR89EUWWEOIR", userName, userPWD, null, null, null);
         resetPasswordFuture.addCallback(requestSuccessVal -> {
             accountCreatedSignal.countDown();
         }, futureException -> {
@@ -237,7 +237,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
 
         createRequestTokenSendSignal = new CountDownLatch(1);
 
-        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, "admin", userPWD, requestFormUrlTemplate);
+        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, requestFormUrlTemplate);
         emailResetFuture.addCallback(
                 requestSuccessVal -> {
                     createRequestTokenSendSignal.countDown();
@@ -248,6 +248,19 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
 
         // -- wait for passwordResetService.emailResetToken() to complete
         createRequestTokenSendSignal.await();
+
+        accountCreatedSignal = new CountDownLatch(1);
+
+        // -- change password
+        ListenableFuture<Boolean> resetPasswordFuture = accountRegistrationService.createUserAccount(userEmail, "admin", userPWD, null, null, null);
+        resetPasswordFuture.addCallback(requestSuccessVal -> {
+            accountCreatedSignal.countDown();
+        }, futureException -> {
+            assyncError =  futureException;
+            accountCreatedSignal.countDown();
+        });
+        // -- wait for passwordResetService.resetPassword to complete
+        accountCreatedSignal.await();
 
         assertNotNull(assyncError);
         assertEquals(AccountSelfManagementException.class, assyncError.getClass());
