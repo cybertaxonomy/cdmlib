@@ -455,7 +455,7 @@ public class DescriptiveDataSetService
     public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid){
 
         SpecimenOrObservationBase<?> specimen = occurrenceService.load(specimenUuid);
-        DescriptionBaseDto specimenDescription = findSpecimenDescription(descriptiveDataSetUuid, specimen, true);
+        DescriptionBaseDto specimenDescription = findSpecimenDescription(descriptiveDataSetUuid, specimen);
         return createSpecimenRowWrapper(specimenDescription, taxonNodeUuid, descriptiveDataSetUuid);
     }
 
@@ -676,7 +676,7 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly=false)
-    public DescriptionBaseDto findSpecimenDescription(UUID descriptiveDataSetUuid, SpecimenOrObservationBase specimen, boolean addDatasetSource){
+    public DescriptionBaseDto findSpecimenDescription(UUID descriptiveDataSetUuid, SpecimenOrObservationBase specimen){
         DescriptiveDataSetBaseDto dataSet = this.getDescriptiveDataSetDtoByUuid(descriptiveDataSetUuid);
 //        SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
 
