@@ -151,7 +151,8 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
 //        engine.setBatchMinFreeHeap(100 * 1024 * 1024);
         monitor = DefaultProgressMonitor.NewInstance();
     }
-    @Ignore
+
+    @Ignore // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
