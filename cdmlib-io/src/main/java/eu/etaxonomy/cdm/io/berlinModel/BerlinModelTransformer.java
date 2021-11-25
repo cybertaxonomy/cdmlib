@@ -998,10 +998,10 @@ public class BerlinModelTransformer {
 				}
 			}
 			try {
-				result = Rank.getRankByNameOrIdInVoc(abbrev);
+				result = Rank.getRankByLatinNameOrIdInVoc(abbrev);
 			} catch (UnknownCdmTypeException e) {
 				try {
-					result = Rank.getRankByNameOrIdInVoc(rankName);
+					result = Rank.getRankByLatinNameOrIdInVoc(rankName);
 				} catch (UnknownCdmTypeException e1) {
 					switch (rankId){
 						case 0: return null;

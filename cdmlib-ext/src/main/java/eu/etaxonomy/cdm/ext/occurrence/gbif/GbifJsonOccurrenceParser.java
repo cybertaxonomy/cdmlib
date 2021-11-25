@@ -225,7 +225,7 @@ public class GbifJsonOccurrenceParser {
                     if (record.has(TAXON_RANK)){
                         string= record.getString(TAXON_RANK);
                         try {
-                            rank = Rank.getRankByName(string);
+                            rank = Rank.getRankByLatinName(string);
                         } catch (UnknownCdmTypeException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();

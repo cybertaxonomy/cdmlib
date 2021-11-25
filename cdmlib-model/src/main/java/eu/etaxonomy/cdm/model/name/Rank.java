@@ -591,8 +591,8 @@ public class Rank extends OrderedTermBase<Rank> {
      * @param	strRank	the string identifying the rank
      * @return  		the rank
      */
-    public static Rank getRankByNameOrIdInVoc(String strRank) throws UnknownCdmTypeException{
-        return getRankByNameOrIdInVoc(strRank, false);
+    public static Rank getRankByLatinNameOrIdInVoc(String strRank) throws UnknownCdmTypeException{
+        return getRankByLatinNameOrIdInVoc(strRank, false);
     }
 
     /**
@@ -604,8 +604,8 @@ public class Rank extends OrderedTermBase<Rank> {
      * @param   nc      the nomenclatural code
      * @return  		the rank
      */
-    public static Rank getRankByNameOrIdInVoc(String strRank, NomenclaturalCode nc) throws UnknownCdmTypeException{
-        return getRankByNameOrIdInVoc(strRank, nc, false);
+    public static Rank getRankByLatinNameOrIdInVoc(String strRank, NomenclaturalCode nc) throws UnknownCdmTypeException{
+        return getRankByLatinNameOrIdInVoc(strRank, nc, false);
     }
 
     // TODO
@@ -620,12 +620,12 @@ public class Rank extends OrderedTermBase<Rank> {
      * 			unknown or not yet implemented
      * @return  		the rank
      */
-    public static Rank getRankByNameOrIdInVoc(String strRank, boolean useUnknown) throws UnknownCdmTypeException{
+    public static Rank getRankByLatinNameOrIdInVoc(String strRank, boolean useUnknown) throws UnknownCdmTypeException{
         try {
             strRank = strRank.replace("prol.", "proles");
             return getRankByIdInVoc(strRank);
         } catch (UnknownCdmTypeException e) {
-            return getRankByName(strRank, useUnknown);
+            return getRankByLatinName(strRank, useUnknown);
         }
     }
 
@@ -642,12 +642,12 @@ public class Rank extends OrderedTermBase<Rank> {
      * 			unknown or not yet implemented
      * @return  		the rank
      */
-    public static Rank getRankByNameOrIdInVoc(String strRank, NomenclaturalCode nc, boolean useUnknown)
+    public static Rank getRankByLatinNameOrIdInVoc(String strRank, NomenclaturalCode nc, boolean useUnknown)
             throws UnknownCdmTypeException{
         try {
             return getRankByIdInVoc(strRank, nc);
         } catch (UnknownCdmTypeException e) {
-            return getRankByName(strRank, nc, useUnknown);
+            return getRankByLatinName(strRank, nc, useUnknown);
         }
     }
 
@@ -813,8 +813,8 @@ public class Rank extends OrderedTermBase<Rank> {
      * @param	rankName	the string for the name of the rank
      * @return  			the rank
      */
-    public static Rank getRankByName(String rankName) throws UnknownCdmTypeException{
-        return getRankByName(rankName, false);
+    public static Rank getRankByLatinName(String rankName) throws UnknownCdmTypeException{
+        return getRankByLatinName(rankName, false);
     }
 
 
@@ -829,8 +829,8 @@ public class Rank extends OrderedTermBase<Rank> {
      * @param	nc	        the nomenclatural code
      * @return  			the rank
      */
-    public static Rank getRankByName(String rankName, NomenclaturalCode nc) throws UnknownCdmTypeException{
-        return getRankByName(rankName, nc, false);
+    public static Rank getRankByLatinName(String rankName, NomenclaturalCode nc) throws UnknownCdmTypeException{
+        return getRankByLatinName(rankName, nc, false);
     }
 
     /**
@@ -843,7 +843,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * 			unknown or not yet implemented
      * @return  			the rank
      */
-    public static Rank getRankByName(String rankName, boolean useUnknown)
+    public static Rank getRankByLatinName(String rankName, boolean useUnknown)
             throws UnknownCdmTypeException{
         if (rankName.equalsIgnoreCase("Regnum")){ return Rank.KINGDOM();
         }else if (rankName.equalsIgnoreCase("Subregnum")){ return Rank.SUBKINGDOM();
@@ -955,8 +955,10 @@ public class Rank extends OrderedTermBase<Rank> {
         }
     }
 
-
-    public static Rank getRankByName(String rankName, NomenclaturalCode nc, boolean useUnknown)
+    /**
+     * Preliminary implementation for name parser.
+     */
+    public static Rank getRankByLatinName(String rankName, NomenclaturalCode nc, boolean useUnknown)
         throws UnknownCdmTypeException {
 
         if (nc.equals(NomenclaturalCode.ICZN)) {
@@ -964,7 +966,7 @@ public class Rank extends OrderedTermBase<Rank> {
             }else if (rankName.equalsIgnoreCase("Subsectio")) { return Rank.SUBSECTION_ZOOLOGY();
             }
         }
-        return getRankByName(rankName, useUnknown);
+        return getRankByLatinName(rankName, useUnknown);
     }
 
     /**

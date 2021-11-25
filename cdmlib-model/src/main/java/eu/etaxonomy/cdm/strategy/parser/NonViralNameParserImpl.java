@@ -1044,7 +1044,7 @@ public class NonViralNameParserImpl
 				    String infraSpecRankMarker = epi[2];
 	                String infraSpecEpi = epi[3];
 
-	                Rank infraSpecificRank = Rank.getRankByNameOrIdInVoc(infraSpecRankMarker);
+	                Rank infraSpecificRank = Rank.getRankByLatinNameOrIdInVoc(infraSpecRankMarker);
 	                nameToBeFilled.setRank(infraSpecificRank);
 	                nameToBeFilled.setGenusOrUninomial(epi[0]);
 	                nameToBeFilled.setSpecificEpithet(epi[1]);
