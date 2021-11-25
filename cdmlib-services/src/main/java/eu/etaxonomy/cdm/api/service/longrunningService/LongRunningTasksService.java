@@ -111,7 +111,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult updateResult = descriptiveDataSetService.addRowWrapperToDataset(wrapper, datasetUuid);
+                UpdateResult updateResult = descriptiveDataSetService.addRowWrapperToDataset(wrapper, datasetUuid, true);
                 for(Exception e : updateResult.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }
