@@ -151,7 +151,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
 //        engine.setBatchMinFreeHeap(100 * 1024 * 1024);
         monitor = DefaultProgressMonitor.NewInstance();
     }
-
+    @Ignore
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
