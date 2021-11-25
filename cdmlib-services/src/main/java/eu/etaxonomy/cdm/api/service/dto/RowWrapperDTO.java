@@ -186,7 +186,8 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         BigDecimal size = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.SAMPLE_SIZE().getUuid());
         String typicalValues = "";
         if (low != null || high != null){
-            typicalValues += low!= null?low.toString():""+"-"+high!= null?high.toString():"";
+            typicalValues += low!= null?low.toString():"";
+            typicalValues += high!= null? "-"+ high.toString():"";
         }
         if(min!=null||max!=null){
             if (min!= null && max != null && min.intValue() == max.intValue()){
@@ -195,7 +196,8 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 if (StringUtils.isBlank(typicalValues)){
                     displayData += "("+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+") ";
                 }else{
-                    displayData += "("+(min!=null?min.toString():"?")+typicalValues+(max!=null?max.toString():"?")+") ";
+                    displayData += "("+(min!=null?min.toString():"?")+ "-)"+typicalValues;
+                    displayData += "(-"+(max!=null?max.toString():"?")+") ";
                 }
             }
         }

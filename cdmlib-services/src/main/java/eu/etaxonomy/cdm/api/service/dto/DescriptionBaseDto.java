@@ -99,7 +99,7 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
         String sqlJoinString =  " LEFT JOIN a.taxon as t "
                 + " LEFT JOIN a.describedSpecimenOrObservation as s ";
 
-        String sqlWhereString = " WHERE a.uuid = :uuid";
+        String sqlWhereString = " WHERE a.uuid in (:uuid)";
 
         String[] result = new String[4];
         result[0] = sqlSelectString;
@@ -116,9 +116,6 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
     }
 
     private static String[] createSqlPartsForTaxon() {
-
-
-
         String sqlSelectString = ""
                 + "select a.uuid, "
                 + "a.id, "
