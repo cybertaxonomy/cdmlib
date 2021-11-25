@@ -573,10 +573,9 @@ public interface IOccurrenceService
      * Returns the most significant identifier for the given {@link DerivedUnit}.
      * @param derivedUnit the derived unit to check
      * @return the identifier string
-     * @deprecated use {@link DerivedUnit#getMostSignificantIdentifier()} instead
      */
-    @Deprecated
-    public String getMostSignificantIdentifier(DerivedUnit derivedUnit);
+
+    public String getMostSignificantIdentifier(UUID derivedUnit);
 
     /**
      * Returns the number of specimens that match the given parameters

@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -495,6 +496,17 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public DeleteResult isDeletable(UUID descriptionUuid);
 
     public DescriptionBaseDto loadDto(UUID descriptionUuid);
+    public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuid);
 
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid);
+
+
+    /**
+     * find the taxon node for the taxon associated to the specimen in classification with classificationUuid
+     * @param specimenUuid
+     * @param classificationUuid
+     * @return
+     */
+    TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid);
+
 }

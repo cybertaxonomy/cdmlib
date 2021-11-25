@@ -145,7 +145,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * will be added to the description <b>if</b> a new one is created
      * @return either the found specimen description or a newly created one
      */
-    public DescriptionBaseDto findSpecimenDescription(UUID descriptiveDataSetUuid, SpecimenOrObservationBase specimenUuid, boolean addDatasetSource);
+    public DescriptionBaseDto findSpecimenDescription(UUID descriptiveDataSetUuid, SpecimenOrObservationBase specimenUuid);
 
     /**
      * Returns all states for all supportedCategoricalEnumeration of this categorical feature

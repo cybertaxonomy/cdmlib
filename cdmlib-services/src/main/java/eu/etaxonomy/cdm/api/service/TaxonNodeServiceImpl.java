@@ -111,8 +111,8 @@ public class TaxonNodeServiceImpl
     @Autowired
     private ITaxonService taxonService;
 
-    @Autowired
-    private IReferenceService referenceService;
+//    @Autowired
+//    private IReferenceService referenceService;
 
     @Autowired
     private IDescriptiveDataSetService dataSetService;
@@ -280,11 +280,7 @@ public class TaxonNodeServiceImpl
         if (taxonNodeUuid == null){
             return null;
         }
-        TaxonNode taxonNode = dao.load(taxonNodeUuid);
-        if (taxonNode != null){
-            return new TaxonNodeDto(taxonNode);
-        }
-        return null;
+        return dao.getTaxonNodeDto(taxonNodeUuid);
     }
 
     @Override
@@ -925,7 +921,7 @@ public class TaxonNodeServiceImpl
                 }
                 Reference sec = null;
                 if (taxonDto.getSecUuid() != null ){
-                    sec = referenceService.load(taxonDto.getSecUuid());
+                    sec = referenceDao.load(taxonDto.getSecUuid());
                 }
                 if (name != null && !name.isPersited()){
                     for (HybridRelationship rel : name.getHybridChildRelations()){
@@ -947,7 +943,7 @@ public class TaxonNodeServiceImpl
                     source = (NamedSource) sourceDao.load(source.getUuid());
                 }
                 if (source.getCitation() != null){
-                    source.setCitation(referenceService.load(source.getCitation().getUuid()));
+                    source.setCitation(referenceDao.load(source.getCitation().getUuid()));
                 }
                 if (source.getNameUsedInSource() !=null){
                     source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
@@ -1022,7 +1018,7 @@ public class TaxonNodeServiceImpl
 
         Reference newSec = null;
         if (config.getNewSecundum() != null){
-            newSec = referenceService.load(config.getNewSecundum().getUuid());
+            newSec = referenceDao.load(config.getNewSecundum().getUuid());
             if (newSec == null){
                 result.setError();
                 result.addException(new NullPointerException("New secundum reference does not exist"));
@@ -1445,4 +1441,6 @@ public class TaxonNodeServiceImpl
     public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
         return dao.getTaxonNodeDtos(nodeUuids);
     }
+
+
 }

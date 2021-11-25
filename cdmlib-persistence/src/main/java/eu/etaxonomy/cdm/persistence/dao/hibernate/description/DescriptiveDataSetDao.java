@@ -246,14 +246,11 @@ public class DescriptiveDataSetDao
 
     private List<UUID> getDescriptionUuidsForDescriptiveDataSet(UUID uuid) {
         Session session = getSession();
-
         String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.descriptions as t WHERE a.uuid = :uuid";
-
 
         Query query;
         query = session.createQuery(queryString);
         query.setParameter("uuid", uuid);
-
 
         @SuppressWarnings("unchecked")
         List<UUID> result = query.list();
@@ -261,9 +258,10 @@ public class DescriptiveDataSetDao
         for(UUID object : result){
             list.add(object);
         }
-
         return list;
     }
+
+
 
 
 

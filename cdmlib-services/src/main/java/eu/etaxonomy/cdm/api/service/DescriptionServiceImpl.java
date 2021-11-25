@@ -94,6 +94,8 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -668,6 +670,8 @@ public class DescriptionServiceImpl
         return deleteDescription(dao.load(descriptionUuid));
     }
 
+
+
     @Override
     public DeleteResult isDeletable(UUID descriptionUuid){
         DeleteResult result = new DeleteResult();
@@ -1079,7 +1083,9 @@ public class DescriptionServiceImpl
     public DescriptionBaseDto loadDto(UUID descriptionUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
         Query query =  getSession().createQuery(sqlSelect);
-        query.setParameter("uuid", descriptionUuid);
+        List<UUID> uuids = new ArrayList<UUID>();
+        uuids.add(descriptionUuid);
+        query.setParameterList("uuid", uuids);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
@@ -1120,6 +1126,50 @@ public class DescriptionServiceImpl
         }
 
     }
+    @Override
+    public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuids) {
+        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
+        Query query =  getSession().createQuery(sqlSelect);
+        query.setParameterList("uuid", descriptionUuids);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
+
+        for (DescriptionBaseDto dto: list){
+
+            //get categorical data
+            sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid", dto.getDescriptionUuid());
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultCat = query.list();
+            List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
+
+            List<UUID> featureUuids = new ArrayList<>();
+            for (CategoricalDataDto catDto: listCategorical){
+                featureUuids.add(catDto.getFeatureUuid());
+            }
+            Map<UUID, TermDto> featureDtos = termService.findFeatureByUUIDsAsDtos(featureUuids);
+            for (CategoricalDataDto catDto: listCategorical){
+                FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
+                catDto.setFeatureDto(featuredto);
+            }
+            dto.getElements().addAll(listCategorical);
+            //get quantitative data
+            sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid",  dto.getDescriptionUuid());
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultQuant = query.list();
+            List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
+            dto.getElements().addAll(listQuant);
+
+        }
+        return list;
+
+    }
 
     @Override
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid) {
@@ -1135,6 +1185,31 @@ public class DescriptionServiceImpl
         return list;
 
     }
+
+    @Override
+    public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid) {
+      //get specimen used in description
+      //get individial associations with this specimen
+      //get taxon node for the classification
+      @SuppressWarnings("unchecked")
+      List<SortableTaxonNodeQueryResult> result =  dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
+
+      if (!result.isEmpty()){
+         List<TaxonNodeDto> dtos = taxonNodeDao.createNodeDtos(result);
+         if (dtos.size() == 1){
+             return dtos.get(0);
+         }else{
+             logger.debug("There is more than one taxon associated to the specimen with uuid: " + specimenUuid + " return the first in the list");
+             return dtos.get(0);
+         }
+      }
+
+
+
+        return null;
+    }
+
+
 
 
 }

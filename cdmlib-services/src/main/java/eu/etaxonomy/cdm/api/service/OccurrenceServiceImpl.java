@@ -420,9 +420,9 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    @Deprecated
-    public String getMostSignificantIdentifier(DerivedUnit derivedUnit) {
-        return derivedUnit.getMostSignificantIdentifier();
+
+    public String getMostSignificantIdentifier(UUID derivedUnitUuid) {
+        return dao.findMostSignificantIdentifier(derivedUnitUuid);
     }
 
     /**

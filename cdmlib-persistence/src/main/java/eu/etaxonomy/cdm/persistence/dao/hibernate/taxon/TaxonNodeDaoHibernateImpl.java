@@ -1225,7 +1225,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * @param result
      * @param list
      */
-    private List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
+    @Override
+    public List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
         List<TaxonNodeDto> nodeDtos = new ArrayList<>();
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         for(SortableTaxonNodeQueryResult queryDTO : result){
