@@ -352,7 +352,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
      @Ignore
      public void testRankByNameConsistency_issue824() throws UnknownCdmTypeException{
          Rank subfamily_1 = Rank.SUBFAMILY();
-         Rank subfamily2 = Rank.getRankByName(subfamily_1.getLabel());
+         Rank subfamily2 = Rank.getRankByLatinName(subfamily_1.getLabel());
          assertEquals(subfamily_1, subfamily2);
      }
 

@@ -543,8 +543,8 @@ public class RankTest extends EntityTestBase {
 			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByLatinName("Sectio", false));
 			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByLatinName("Sectio", bot));
 			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByLatinName("Sectio", zoo));
-			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio", bot, false));
-			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByName("Sectio", zoo, false));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByLatinName("Sectio", bot, false));
+			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByLatinName("Sectio", zoo, false));
 
 			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByLatinNameOrIdInVoc("Subsectio"));
 			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByLatinNameOrIdInVoc("subsect."));
