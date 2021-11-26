@@ -49,15 +49,12 @@ import io.swagger.annotations.Api;
 @Controller
 @Api(value = "typeDesignation")
 @RequestMapping(value = {"/typedesignation/{uuid}"})
-/* can not use BaseController since the getMethod needs to call service.loadTypeDesignatio() which is generically not possible */
+/* can not use BaseController since the getMethod needs to call service.loadTypeDesignation() which is generically not possible */
 public class TypeDesignationController extends AbstractController<TaxonName, INameService>  {
 
 
     private static final Logger logger = Logger.getLogger(TypeDesignationController.class);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Autowired
     public void setService(INameService service) {
