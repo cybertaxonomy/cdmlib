@@ -144,7 +144,7 @@
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
-    <url>http://int.e-taxonomy.eu/jenkins</url>
+    <url>https://int.e-taxonomy.eu/jenkins</url>
   </ciManagement>
   <!-- **** REPOSITORIES **** -->
   <profiles>
