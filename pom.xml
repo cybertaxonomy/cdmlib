@@ -11,9 +11,9 @@
   <packaging>pom</packaging>
   <modules>
     <module>cdmlib-commons</module>
-    
     <module>cdmlib-model</module>
-	<module>cdmlib-db</module>
+	<module>cdmlib-api</module>
+    <module>cdmlib-db</module>
     <module>cdmlib-test</module>
     <module>cdmlib-persistence</module>
     <module>cdmlib-services</module>
@@ -610,6 +610,11 @@
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>eu.etaxonomy</groupId>
+        <artifactId>cdmlib-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
