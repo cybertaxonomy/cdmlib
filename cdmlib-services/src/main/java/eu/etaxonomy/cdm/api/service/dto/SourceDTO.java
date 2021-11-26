@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 
 /**
@@ -18,6 +19,8 @@ import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
  * @since Aug 31, 2018
  */
 public class SourceDTO implements Serializable{
+
+    private static final long serialVersionUID = -3314135226037542122L;
 
     private UUID uuid;
     String citationDetail;
@@ -33,6 +36,18 @@ public class SourceDTO implements Serializable{
         dto.citationDetail = entity.getCitationMicroReference();
         return dto;
     }
+
+    public static SourceDTO fromIdentifiableSource(IdentifiableSource entity) {
+        if(entity == null) {
+            return null;
+        }
+        SourceDTO dto = new SourceDTO();
+        dto.uuid = entity.getUuid();
+        dto.citation = ReferenceDTO.fromReference(entity.getCitation());
+        dto.citationDetail = entity.getCitationMicroReference();
+        return dto;
+    }
+
 
     public UUID getUuid() {
         return uuid;
