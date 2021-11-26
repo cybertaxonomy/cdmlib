@@ -26,7 +26,6 @@ import org.hibernate.Hibernate;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -36,7 +35,6 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -49,7 +47,6 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -320,42 +317,29 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
         List<DefinedTerm> languages = this.dao.listByTermType(TermType.Language, null, null, null, null);
         Assert.assertNotNull(languages);
         Assert.assertEquals(485, languages.size());
-	 }
+	}
 
-     @Test
-     @DataSets({
+    @Test
+    @DataSets({
             @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
             @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-     )
-	 public void testListByVoc(){
-         TermVocabulary<?> voc = this.vocabularyDao.findByUuid(NamedArea.uuidTdwgAreaVocabulary);
-         List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
-         Assert.assertEquals("Expected no area", 0, namedAreas.size());
+    )
+	public void testListByVoc(){
+        TermVocabulary<?> voc = this.vocabularyDao.findByUuid(NamedArea.uuidTdwgAreaVocabulary);
+        List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        Assert.assertEquals("Expected no area", 0, namedAreas.size());
 
-         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Ger", MatchMode.BEGINNING);
-         Assert.assertEquals("Expected GER-OO, GER", 2, namedAreas.size());
-         namedAreas.get(0).addRepresentation(Representation.NewInstance("Deutschland", "Deutschland", "DE", Language.GERMAN()));
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Ger", MatchMode.BEGINNING);
+        Assert.assertEquals("Expected GER-OO, GER", 2, namedAreas.size());
+        namedAreas.get(0).addRepresentation(Representation.NewInstance("Deutschland", "Deutschland", "DE", Language.GERMAN()));
 
-         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
-         Assert.assertEquals("Expected 1 area for 'Deu'", 1, namedAreas.size());
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        Assert.assertEquals("Expected 1 area for 'Deu'", 1, namedAreas.size());
 
-         voc = this.vocabularyDao.findByUuid(NamedArea.uuidContinentVocabulary);
-         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
-         Assert.assertEquals("Expected no area", 0, namedAreas.size());
-	 }
-
-     @Test
-     @DataSets({
-             @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-             @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-     )
-     @Ignore
-     public void testRankByNameConsistency_issue824() throws UnknownCdmTypeException{
-         Rank subfamily_1 = Rank.SUBFAMILY();
-         Rank subfamily2 = Rank.getRankByLatinName(subfamily_1.getLabel());
-         assertEquals(subfamily_1, subfamily2);
-     }
-
+        voc = this.vocabularyDao.findByUuid(NamedArea.uuidContinentVocabulary);
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        Assert.assertEquals("Expected no area", 0, namedAreas.size());
+	}
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
