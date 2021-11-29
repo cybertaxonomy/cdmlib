@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.referenceris.in;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -137,6 +139,60 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 		        Assert.fail("Only an article and a journal should exist");
 		    }
 		}
+	}
+
+	@Test
+	public void testChapter() throws IOException{
+        String inputFileLong = "/eu/etaxonomy/cdm/io/reference/ris/in/Arias2012.ris";
+        URL urlLong = this.getClass().getResource(inputFileLong);
+        configurator = RisReferenceImportConfigurator.NewInstance(urlLong, null);
+
+        ImportResult result = defaultImport.invoke(configurator);
+        String report = result.createReport().toString();
+        Assert.assertTrue(report.contains("Reference: 2"));
+        Assert.assertEquals(0, result.getErrors().size() + result.getExceptions().size() + result.getWarnings().size());
+
+        Integer expected = 2;
+        Assert.assertEquals(expected, result.getNewRecords(Reference.class));
+
+        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
+        Assert.assertEquals("There should be 3 references, the book-section, the book and the source reference",
+                3, list.size());
+
+        //book section
+        Reference bookSection = list.stream().filter(r->r.getType() == ReferenceType.BookSection).findFirst().get();
+        //... title
+        Assert.assertEquals("Cactaceae", bookSection.getTitle());
+        //... author
+        TeamOrPersonBase<?> author = bookSection.getAuthorship();
+        Assert.assertNotNull(author);
+        Team team = CdmBase.deproxy(author, Team.class);
+        Assert.assertEquals(4, team.getTeamMembers().size());
+        Person firstPerson = CdmBase.deproxy(team.getTeamMembers().get(0));
+        //this may change in future depending on the correct formatting strategy
+        Assert.assertEquals("Arias, S." , firstPerson.getTitleCache());
+        Assert.assertEquals("Arias" , firstPerson.getFamilyName());
+        Assert.assertNull(firstPerson.getGivenName());
+        Assert.assertEquals("S." , firstPerson.getInitials());
+        Person secondPerson = CdmBase.deproxy(team.getTeamMembers().get(1));
+        Assert.assertEquals("Gama-L\u00F3pez, S." , secondPerson.getTitleCache());
+        VerbatimTimePeriod date = bookSection.getDatePublished();
+        Assert.assertEquals(Integer.valueOf(2012), date.getStartYear());
+        //TODO correct?
+        Assert.assertEquals("1-235", bookSection.getPages());
+
+        //book
+        Reference book = list.stream().filter(r->r.getType() == ReferenceType.Book).findFirst().get();
+        //... title
+        Assert.assertEquals("Flora del Valle de Tehuac\u00E1n-Cuicatl\u00E1n", book.getTitle());
+        Assert.assertEquals("Fasc\u00EDculo 95", book.getVolume());
+        Assert.assertEquals("M\u00E9xico D. F.", book.getPlacePublished());
+        Assert.assertEquals("Instituto de Biolog\u00EDa, Universidad Nacional Aut\u00F3noma de M\u00E9xico", book.getPublisher());
+
+        //source reference
+        Reference sourceRef = list.stream().filter(r->r.equals(configurator.getSourceReference())).findFirst().get();
+        Assert.assertNotNull(sourceRef);
+        //TODO cont.
 
 	}
 
