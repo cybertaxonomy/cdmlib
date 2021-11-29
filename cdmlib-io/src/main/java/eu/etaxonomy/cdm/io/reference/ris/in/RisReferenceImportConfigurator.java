@@ -11,12 +11,12 @@ package eu.etaxonomy.cdm.io.reference.ris.in;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @since 11.05.2017
- *
  */
 public class RisReferenceImportConfigurator
         extends ExcelImportConfiguratorBase{
@@ -33,32 +32,17 @@ public class RisReferenceImportConfigurator
     private static final long serialVersionUID = -5982826645441621962L;
 //    private static IInputTransformer defaultTransformer = null;
 
-    /**
-     * @param uri
-     * @param object
-     * @return
-     * @throws IOException
-     * @throws MalformedURLException
-     */
-    public static RisReferenceImportConfigurator NewInstance(URI uri, ICdmDataSource cdm) throws MalformedURLException, IOException {
+    public static RisReferenceImportConfigurator NewInstance(URI uri, ICdmDataSource cdm) {
         RisReferenceImportConfigurator result = new RisReferenceImportConfigurator(uri, cdm);
         return result;
     }
-
-    /**
-     * @param uri
-     * @param object
-     * @return
-     * @throws IOException
-     * @throws MalformedURLException
-     */
 
     public static RisReferenceImportConfigurator NewInstance(URL url, ICdmDataSource cdm) throws IOException {
         InputStream stream = url.openStream();
         InputStreamReader reader = new InputStreamReader(stream, "UTF8");
 
         RisReferenceImportConfigurator result = new RisReferenceImportConfigurator();
-        result.setStream(IOUtils.toByteArray(reader));
+        result.setStream(IOUtils.toByteArray(reader, Charset.defaultCharset()));
         return result;
     }
 
@@ -68,11 +52,6 @@ public class RisReferenceImportConfigurator
         return result;
     }
 
-
-
-    /**
-     * @param transformer
-     */
     protected RisReferenceImportConfigurator() {
         super(null,null);
     }
@@ -81,19 +60,12 @@ public class RisReferenceImportConfigurator
         super(uri, cdm, null);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public RisReferenceImportState getNewState() {
         return new RisReferenceImportState(this);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
+    @SuppressWarnings("unchecked")
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{
@@ -101,10 +73,6 @@ public class RisReferenceImportConfigurator
             };
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Reference getSourceReference() {
         if (this.sourceReference == null){

@@ -107,19 +107,11 @@ public enum RisReferenceTag {
         this.description2 = description2;
     }
 
-    /**
-     * @return the description
-     */
     public String getDescription() {
         return description;
     }
 
-    /**
-     * @return the description2
-     */
     public String getDescription2() {
         return description2;
     }
-
-
 }

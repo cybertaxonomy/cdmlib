@@ -68,7 +68,7 @@ public class RisReferenceImport
                 String location = "";
                 try {
                     location = recordLocation(state, next);
-                    ref = makeReference(state, next);
+                    ref = handleSingleReference(state, next);
                     referencesToSave.add(ref);
                     if (ref.getInReference() != null){
                         referencesToSave.add(ref.getInReference());
@@ -98,7 +98,7 @@ public class RisReferenceImport
         }
     }
 
-    private Reference makeReference(RisReferenceImportState state,
+    private Reference handleSingleReference(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record) {
 
         //type
@@ -113,7 +113,7 @@ public class RisReferenceImport
             inRef = ReferenceFactory.newReference(inRefType);
             ref.setInReference(inRef);
         }
-        Reference higherRef = inRef == null ? ref : inRef;
+        Reference higherRef = (inRef == null) ? ref : inRef;
 
         //titles
         handleTitle(state, record, ref, inRef, higherRef);
@@ -225,11 +225,6 @@ public class RisReferenceImport
         return ref;
     }
 
-    /**
-     * @param state
-     * @param record
-     * @param ref
-     */
     private void handleDoi(RisReferenceImportState state, Map<RisReferenceTag, List<RisValue>> record, Reference ref) {
         RisValue doiVal = getSingleValue(state, record, RisReferenceTag.DO); //Doi
         if (doiVal != null){
@@ -248,13 +243,6 @@ public class RisReferenceImport
         }
     }
 
-    /**
-     * @param state
-     * @param record
-     * @param ref
-     * @param inRef
-     * @param higherRef
-     */
     private void handleTitle(RisReferenceImportState state, Map<RisReferenceTag, List<RisValue>> record, Reference ref,
             Reference inRef, Reference higherRef) {
         //Title
@@ -366,6 +354,10 @@ public class RisReferenceImport
         }
     }
 
+    /**
+     * If val1 and val2 are both <code>not null</code> and not equal a warning is logged.
+     * @return val1 if val1 is not null, val2 otherwise
+     */
     private RisValue assertEqual(RisReferenceImportState state, String meaning, RisValue val1, RisValue val2) {
         if (val1 != null && val2 != null && !val1.value.equals(val2.value)){
             String message = "The tags '%s' and '%s' are not equal but have a similar meaning ('%s'). "
@@ -473,6 +465,7 @@ public class RisReferenceImport
     private RisValue getSingleValue(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record,
             RisReferenceTag tag, boolean remove) {
+
         List<RisValue> list = record.get(tag);
         if (list == null){
             return null;
@@ -486,6 +479,7 @@ public class RisReferenceImport
 
     private List<RisValue> getListValue(Map<RisReferenceTag, List<RisValue>> record,
             RisReferenceTag tag) {
+
         List<RisValue> list = record.get(tag);
         record.remove(tag);
         if (list == null){

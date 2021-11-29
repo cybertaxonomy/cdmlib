@@ -85,7 +85,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 		ImportResult result = defaultImport.invoke(configurator);
 		String report = result.createReport().toString();
 		Assert.assertTrue(report.length() > 0);
-		System.out.println(report);
+//		System.out.println(report);
 
 		Integer expected = 2;
 		Assert.assertEquals(expected, result.getNewRecords(Reference.class));
@@ -108,18 +108,18 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 		        Assert.assertTrue(author.isInstanceOf(Person.class));
 		        Person person = CdmBase.deproxy(author, Person.class);
 		        //this may change in future depending on the correct formatting strategy
-		        Assert.assertEquals("Jongkind, C.C.H." ,person.getTitleCache());
-		        Assert.assertEquals("Jongkind" ,person.getFamilyName());
-		        Assert.assertEquals("Carel C. H." ,person.getGivenName());
+		        Assert.assertEquals("Jongkind, C.C.H.", person.getTitleCache());
+		        Assert.assertEquals("Jongkind", person.getFamilyName());
+		        Assert.assertEquals("Carel C. H.", person.getGivenName());
 		        //date
 		        VerbatimTimePeriod date = ref.getDatePublished();
-		        Assert.assertEquals(Integer.valueOf(2017) ,date.getStartYear());
+		        Assert.assertEquals(Integer.valueOf(2017), date.getStartYear());
 		        //vol
-		        Assert.assertEquals("47(1)" ,ref.getVolume());
-                Assert.assertEquals("43-47" ,ref.getPages());
+		        Assert.assertEquals("47(1)", ref.getVolume());
+                Assert.assertEquals("43-47", ref.getPages());
 
                 //doi
-                //Assert.assertEquals(DOI.fromString("10.3372/wi.47.47105"),ref.getDoi());
+                //Assert.assertEquals(DOI.fromString("10.3372/wi.47.47105"), ref.getDoi());
 
                 //Abstract
                 Assert.assertEquals("Abstract: A new species of Violaceae, Decorsella arborea Jongkind, is described and illustrated. The new species differs from the only other species in the genus, D. paradoxa A. Chev., by the larger size of the plants, smaller leaves, more slender flowers, and stamen filaments that are free for a much larger part. Both species are from the Guineo-Congolian forest of tropical Africa. The differences between Decorsella and Rinorea are discussed. Confirming recent reports, some species of Rinorea can have zygomorphic flowers and some of these can be almost equal in shape to Decorsella flowers. Citation: Jongkind C. C. H. 2017: Decorsella arborea, a second species in Decorsella (Violaceae), and Decorsella versus Rinorea. ? Willdenowia 47: 43?47. doi: https://doi.org/10.3372/wi.47.47105 Version of record first published online on 13 February 2017 ahead of inclusion in April 2017 issue.",
@@ -195,6 +195,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         //TODO cont.
 
 	}
+
 
 	@Test
 	//@Ignore
