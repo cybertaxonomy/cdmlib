@@ -111,7 +111,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     public ImportDeduplicationHelper(ICdmRepository repository, STATE state) {
          this.repository = repository;
          if (repository == null){
-             logger.warn("Repository is null. Deduplication does not work against database");
+             logger.warn("Repository is null. Deduplication does not work against database.");
          }
          if (state == null){
              logger.warn("State is null. Deduplication works without state.");
@@ -166,6 +166,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
 
     private <T extends ICdmBase> Map<String, Set<T>> refreshSetMap(Map<String, Set<T>> oldMap,
             IService<T> service, ImportResult importResult) {
+
         Map<String, Set<T>> newMap = new HashMap<>();
         logger.debug("Start loading map");  //TODO debug only
         //create UUID set
@@ -205,7 +206,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
         return newMap;
     }
-
 
 //************************ PUTTER / GETTER *****************************/
 
@@ -626,7 +626,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             }
             copyrightMapIsInitialized = true;
         }
-
     }
 
     private void putCopyright(String key, Rights right) {
@@ -636,7 +635,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             copyrightMap.put(key, rights);
         }
         rights.add(CdmBase.deproxy(right));
-
     }
 
     private String makeCopyrightKey(Rights right) {
@@ -649,4 +647,5 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             return right.getUuid().toString();
         }
     }
+
 }

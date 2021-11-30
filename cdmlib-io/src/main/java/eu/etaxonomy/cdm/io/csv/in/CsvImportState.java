@@ -39,7 +39,6 @@ public class CsvImportState<CONFIG extends CsvImportConfiguratorBase>
         this.sourceReference = null;
     }
 
-
     /**
      * Map representation of the current line.
      * @return The String map representing the current line in the csv.

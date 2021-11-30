@@ -87,10 +87,6 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
     private Map<String,TaxonName> nameMap;
     private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void handleSingleLine(STATE state) {
         TaxonName name = makeName(state);

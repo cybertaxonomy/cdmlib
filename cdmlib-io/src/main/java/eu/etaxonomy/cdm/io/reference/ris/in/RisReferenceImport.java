@@ -81,6 +81,7 @@ public class RisReferenceImport
                 next = risReader.readRecord();
             }
 
+
             getReferenceService().saveOrUpdate(referencesToSave);
             state.getResult().addNewRecords(Reference.class.getSimpleName(), referencesToSave.size());
 

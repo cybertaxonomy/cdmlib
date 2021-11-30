@@ -193,9 +193,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         Reference sourceRef = list.stream().filter(r->r.equals(configurator.getSourceReference())).findFirst().get();
         Assert.assertNotNull(sourceRef);
         //TODO cont.
-
 	}
-
 
 	@Test
 	//@Ignore
@@ -265,7 +263,6 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 //                Assert.fail("Only an article and a journal should exist");
 //            }
 //        }
-
     }
 
     private boolean hasId(Reference ref, String idStr, boolean getInRef) {

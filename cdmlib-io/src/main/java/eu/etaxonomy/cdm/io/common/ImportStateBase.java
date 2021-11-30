@@ -49,10 +49,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 
-
     private boolean success = true;
 
-	//States
 	private boolean isCheck;
 
     private ImportDeduplicationHelper<ImportStateBase<CONFIG,?>> deduplicationHelper;
@@ -111,12 +109,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 //			}
 			setTransformer(newTransformer);
 		}
-
 	}
 
 	/**
 	 * Resets (empties) all maps which map a uuid to a {@link DefinedTermBase term}.
-	 * This is usually needed when a a new transaction is opened and user defined terms are reused.
+	 * This is usually needed when a new transaction is opened and user defined terms are reused.
 	 */
 	public void resetUuidTermMaps(){
 		extensionTypeMap = new HashMap<>();
@@ -141,7 +138,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	}
 
 	//different type of stores that are used by the known imports
-	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
+	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<>();
 
 	public Map<String, MapWrapper<? extends CdmBase>> getStores() {
 		return stores;
@@ -179,7 +176,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public int countTreeUuids(){
 		return treeUuidMap.size();
 	}
-
 
 	/**
 	 * Adds a classification uuid to the classification uuid map,
@@ -418,7 +414,5 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
         super.setCurrentIO(currentIO);
         this.deduplicationHelper.reset();
         this.deduplicationHelper = ImportDeduplicationHelper.NewInstance(currentIO, this);
-
     }
-
 }

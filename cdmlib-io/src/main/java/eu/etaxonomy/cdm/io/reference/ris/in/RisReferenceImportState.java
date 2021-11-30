@@ -16,17 +16,12 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 /**
  * @author a.mueller
  * @since 11.05.2017
- *
  */
 public class RisReferenceImportState
         extends ImportStateBase<RisReferenceImportConfigurator, RisReferenceImport>{
 
     private Map<RisReferenceTag, Integer> unhandled = new HashMap<>();
 
-
-    /**
-     * @param config
-     */
     protected RisReferenceImportState(RisReferenceImportConfigurator config) {
         super(config);
     }
