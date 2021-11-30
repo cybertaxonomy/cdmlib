@@ -57,6 +57,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
 
     private ICdmRepository repository;
 
+    private STATE state;
+
     boolean referenceMapIsInitialized = false;
     boolean nameMapIsInitialized = false;
     boolean agentMapIsInitialized = false;
@@ -73,6 +75,18 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     private Map<String, Set<Rights>> copyrightMap = new HashMap<>();
     private Map<String, Set<Collection>> collectionMap = new HashMap<>();
 
+    /**
+     * Clears all internal maps.
+     */
+    public void reset() {
+        refMap.clear();
+        teamMap.clear();
+        personMap.clear();
+        institutionMap.clear();
+        nameMap.clear();
+        copyrightMap.clear();
+        collectionMap.clear();
+    }
 
     private IMatchStrategyEqual referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
 //    private IMatchStrategy collectionMatcher = DefaultMatchStrategy.NewInstance(Collection.class);
@@ -83,40 +97,32 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
 
  // ************************** FACTORY *******************************/
 
-     public static ImportDeduplicationHelper<?> NewInstance(ICdmRepository repository){
-         return new ImportDeduplicationHelper<>(repository);
-     }
-
-     public static ImportDeduplicationHelper<?> NewStandaloneInstance(){
-         return new ImportDeduplicationHelper<>(null);
-     }
-
      /**
       * @param repository
       * @param state not used, only for correct casting of generics
       * @return
       */
      public static <STATE extends ImportStateBase<?,?>> ImportDeduplicationHelper<STATE> NewInstance(ICdmRepository repository, STATE state){
-         return new ImportDeduplicationHelper<>(repository);
+         return new ImportDeduplicationHelper<>(repository, state);
      }
 
  // ************************ CONSTRUCTOR *****************************/
 
-     public ImportDeduplicationHelper(ICdmRepository repository) {
+    public ImportDeduplicationHelper(ICdmRepository repository, STATE state) {
          this.repository = repository;
          if (repository == null){
              logger.warn("Repository is null. Deduplication does not work against database");
          }
+         if (state == null){
+             logger.warn("State is null. Deduplication works without state.");
+         }
+         this.state = state;
          try {
              referenceMatcher.setMatchMode("title", MatchMode.EQUAL);
              teamMatcher.setMatchMode("nomenclaturalTitleCache", MatchMode.EQUAL_OR_SECOND_NULL);
          } catch (MatchException e) {
              throw new RuntimeException(e);  //should not happen
          }
-     }
-
-    public ImportDeduplicationHelper() {
-        this(null);
     }
 
     public void restartSession(){

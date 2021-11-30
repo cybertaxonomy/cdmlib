@@ -1152,7 +1152,7 @@ public abstract class MarkupImportBase  {
 	NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
     protected TeamOrPersonBase<?> createAuthor(MarkupImportState state, String authorTitle) {
 		TeamOrPersonBase<?> result = parser.author(authorTitle);
-		return state.getDeduplicationHelper(docImport).getExistingAuthor(state, result);
+		return state.getDeduplicationHelper().getExistingAuthor(state, result);
 	}
 
 	protected String getAndRemoveMapKey(Map<String, String> map, String key) {
@@ -2100,7 +2100,7 @@ public abstract class MarkupImportBase  {
                 String details = refMap.get(DETAILS);
 //              String label = makeLabel(state, refMap, next);
                 Reference ref = createReference(state, refMap, next);
-                ref = state.getDeduplicationHelper(docImport).getExistingReference(state, ref);
+                ref = state.getDeduplicationHelper().getExistingReference(state, ref);
 
                 String label2 = ref.getTitleCache(); //TODO preliminary for debugging and testing
                 result.content.add(new LabeledReference(ref, details, label));

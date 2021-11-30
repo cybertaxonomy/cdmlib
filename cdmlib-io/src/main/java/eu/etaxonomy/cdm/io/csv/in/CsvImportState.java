@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.csv.in;
 import java.util.Map;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -29,7 +28,6 @@ public class CsvImportState<CONFIG extends CsvImportConfiguratorBase>
     private Map<String, String> currentRecord;
     private int row;
 
-    private ImportDeduplicationHelper<CsvImportState> dedupHelper;
     private Reference sourceReference;
 
     protected CsvImportState(CONFIG config) {
@@ -37,7 +35,7 @@ public class CsvImportState<CONFIG extends CsvImportConfiguratorBase>
     }
 
     public void resetSession(){
-        getDedupHelper().restartSession(getCurrentIO(), this.getResult());
+        getDeduplicationHelper().restartSession(getCurrentIO(), this.getResult());
         this.sourceReference = null;
     }
 
@@ -73,20 +71,6 @@ public class CsvImportState<CONFIG extends CsvImportConfiguratorBase>
     public String getLine(){
         return String.valueOf(row);
     }
-
-
-    public ImportDeduplicationHelper<CsvImportState> getDedupHelper() {
-        if (this.dedupHelper == null){
-            this.dedupHelper = ImportDeduplicationHelper.NewInstance(getCurrentIO(), this);
-        }
-        return dedupHelper;
-    }
-
-
-    public void setDedupHelper(ImportDeduplicationHelper<CsvImportState> dedupHelper) {
-        this.dedupHelper = dedupHelper;
-    }
-
 
     public Reference getSourceReference() {
         return sourceReference;

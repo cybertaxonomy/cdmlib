@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -53,6 +54,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	//States
 	private boolean isCheck;
+
+    private ImportDeduplicationHelper<ImportStateBase<CONFIG,?>> deduplicationHelper;
 
 	private Map<Object,Classification> treeMap = new HashMap<>();
 
@@ -401,6 +404,21 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
      */
     public byte[] getReportAsByteArray() {
         return null;
+    }
+
+    public ImportDeduplicationHelper<ImportStateBase<CONFIG,?>> getDeduplicationHelper() {
+        return deduplicationHelper;
+    }
+    public void setDeduplicationHelper(ImportDeduplicationHelper<ImportStateBase<CONFIG,?>> deduplicationHelper) {
+        this.deduplicationHelper = deduplicationHelper;
+    }
+
+    @Override
+    public void setCurrentIO(IO currentIO) {
+        super.setCurrentIO(currentIO);
+        this.deduplicationHelper.reset();
+        this.deduplicationHelper = ImportDeduplicationHelper.NewInstance(currentIO, this);
+
     }
 
 }
