@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
-import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.io.media.in.MediaExcelImportConfigurator.MediaTitleEnum;
@@ -62,8 +61,6 @@ public class MediaExcelImport
     private static final String COL_COPYRIGHT = "copyright";
     private static final String COL_ARTIST = "artist";
     private static final String COL_DATE = "date";
-
-    private ImportDeduplicationHelper<MediaExcelImportState> deduplicationHelper;
 
     @Override
     protected void analyzeRecord(Map<String, String> record, MediaExcelImportState state) {
@@ -112,7 +109,7 @@ public class MediaExcelImport
         if (isNotBlank(copyright)){
             AgentBase<?> agent = makePerson(state, copyright, line);
             Rights right = Rights.NewInstance(RightsType.COPYRIGHT(), agent);
-            right = getDeduplicationHelper(state).getExistingCopyright(state, right);
+            right = state.getDeduplicationHelper().getExistingCopyright(right);
             media.addRights(right);
         }
 
@@ -265,13 +262,6 @@ public class MediaExcelImport
         return list;
     }
 
-    private ImportDeduplicationHelper<MediaExcelImportState> getDeduplicationHelper(MediaExcelImportState state) {
-        if (this.deduplicationHelper == null){
-            this.deduplicationHelper = ImportDeduplicationHelper.NewInstance(this, state);
-        }
-        return deduplicationHelper;
-    }
-
     private Person makePerson(MediaExcelImportState state, String artist, String line) {
         Person person = Person.NewInstance();
         artist = artist.trim();
@@ -296,7 +286,7 @@ public class MediaExcelImport
 
         }
 
-        Person result = getDeduplicationHelper(state).getExistingAuthor(null, person);
+        Person result = state.getDeduplicationHelper().getExistingAuthor(person);
         return result;
     }
 

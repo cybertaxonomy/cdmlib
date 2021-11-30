@@ -52,12 +52,13 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  * @author a.mueller
  * @since 11.02.2017
  */
-public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
+public class ImportDeduplicationHelper {
+
     private static final Logger logger = Logger.getLogger(ImportDeduplicationHelper.class);
 
     private ICdmRepository repository;
 
-    private STATE state;
+    private ImportStateBase<?,?> state;
 
     boolean referenceMapIsInitialized = false;
     boolean nameMapIsInitialized = false;
@@ -99,16 +100,16 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
 
      /**
       * @param repository
-      * @param state not used, only for correct casting of generics
+      * @param state
       * @return
       */
-     public static <STATE extends ImportStateBase<?,?>> ImportDeduplicationHelper<STATE> NewInstance(ICdmRepository repository, STATE state){
-         return new ImportDeduplicationHelper<>(repository, state);
+     public static <STATE extends ImportStateBase<?,?>> ImportDeduplicationHelper NewInstance(ICdmRepository repository, STATE state){
+         return new ImportDeduplicationHelper(repository, state);
      }
 
  // ************************ CONSTRUCTOR *****************************/
 
-    public ImportDeduplicationHelper(ICdmRepository repository, STATE state) {
+    private ImportDeduplicationHelper(ICdmRepository repository, ImportStateBase<?,?> state) {
          this.repository = repository;
          if (repository == null){
              logger.warn("Repository is null. Deduplication does not work against database.");
@@ -384,44 +385,43 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
      * @param state the import state
      * @param name the name with authors and references to replace
      */
-    public void replaceAuthorNamesAndNomRef(STATE state,
-            INonViralName name) {
+    public void replaceAuthorNamesAndNomRef(INonViralName name) {
+
         TeamOrPersonBase<?> combAuthor = name.getCombinationAuthorship();
-        name.setCombinationAuthorship(getExistingAuthor(state, combAuthor));
+        name.setCombinationAuthorship(getExistingAuthor(combAuthor));
 
         TeamOrPersonBase<?> exAuthor = name.getExCombinationAuthorship();
-        name.setExCombinationAuthorship(getExistingAuthor(state, exAuthor));
+        name.setExCombinationAuthorship(getExistingAuthor(exAuthor));
 
         TeamOrPersonBase<?> basioAuthor = name.getBasionymAuthorship();
-        name.setBasionymAuthorship(getExistingAuthor(state, basioAuthor));
+        name.setBasionymAuthorship(getExistingAuthor(basioAuthor));
 
         TeamOrPersonBase<?> exBasioAuthor = name.getExBasionymAuthorship();
-        name.setExBasionymAuthorship(getExistingAuthor(state, exBasioAuthor));
+        name.setExBasionymAuthorship(getExistingAuthor(exBasioAuthor));
 
         INomenclaturalReference nomRef = name.getNomenclaturalReference();
         if (nomRef != null){
             TeamOrPersonBase<?> refAuthor = nomRef.getAuthorship();
-            nomRef.setAuthorship(getExistingAuthor(state, refAuthor));
+            nomRef.setAuthorship(getExistingAuthor(refAuthor));
 
-            Reference existingRef = getExistingReference(state, (Reference)nomRef);
+            Reference existingRef = getExistingReference((Reference)nomRef);
             if (existingRef != null){
                 name.setNomenclaturalReference(existingRef);
             }
         }
     }
 
-    public <T extends TeamOrPersonBase<?>> T getExistingAuthor(STATE state,
-            T author) {
+    public <T extends TeamOrPersonBase<?>> T getExistingAuthor(T author) {
         if (author == null){
             return null;
         }else{
-            initAgentMap(state);
+            initAgentMap();
             initAuthorTitleCaches(author);
             T result = getTeamOrPerson(author);
             if (result == null){
                 putAgentBase(author.getTitleCache(), author);
                 if (author.isInstanceOf(Team.class)){
-                    handleTeam(state, CdmBase.deproxy(author, Team.class));
+                    handleTeam(CdmBase.deproxy(author, Team.class));
                 }
                 result = author;
             }
@@ -454,14 +454,13 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         ref.getTitleCache();
    }
 
-    public AgentBase<?> getExistingAgent(STATE state,
-            AgentBase<?> agent) {
+    public AgentBase<?> getExistingAgent(AgentBase<?> agent) {
         if (agent == null){
             return null;
         } else if (agent.isInstanceOf(TeamOrPersonBase.class)){
-            return getExistingAuthor(state, CdmBase.deproxy(agent, TeamOrPersonBase.class));
+            return getExistingAuthor(CdmBase.deproxy(agent, TeamOrPersonBase.class));
         }else{
-            initAgentMap(state);
+            initAgentMap();
             Institution result = institutionMap.get(agent.getTitleCache());
             if (result == null){
                 putAgentBase(agent.getTitleCache(), agent);
@@ -472,7 +471,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     }
 
     @SuppressWarnings("rawtypes")
-    private void initAgentMap(STATE state) {
+    private void initAgentMap() {
         if (!agentMapIsInitialized && repository != null){
             List<String> propertyPaths = Arrays.asList("");
             List<AgentBase> existingAgents = repository.getAgentService().list(null, null, null, null, propertyPaths);
@@ -483,7 +482,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    private void handleTeam(STATE state, Team team) {
+    private void handleTeam(Team team) {
         List<Person> members = team.getTeamMembers();
         for (int i =0; i< members.size(); i++){
             Person person = CdmBase.deproxy(members.get(i));
@@ -496,11 +495,11 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    public Collection getExistingCollection(STATE state, Collection collection) {
+    public Collection getExistingCollection(Collection collection) {
         if (collection == null){
             return null;
         }else{
-            initCollectionMap(state);
+            initCollectionMap();
             Collection result = getMatchingCollections(collection).orElse(null);
             if (result == null){
                 result = collection;
@@ -514,7 +513,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    private void initCollectionMap(STATE state) {
+    private void initCollectionMap() {
         if (!collectionMapIsInitialized && repository != null){
             List<String> propertyPaths = Arrays.asList("");
             List<Collection> existingCollections = repository.getCollectionService().list(null, null, null, null, propertyPaths);
@@ -525,18 +524,18 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-   public Reference getExistingReference(STATE state, Reference ref) {
+   public Reference getExistingReference(Reference ref) {
        if (ref == null){
            return null;
        }else{
-           initRerenceMap(state);
+           initRerenceMap();
            initReferenceCaches(ref);
            Reference result = getMatchingReference(ref).orElse(null);
            if (result == null){
                result = ref;
                Reference inRef = result.getInReference();
                if (inRef != null){
-                   result.setInReference(getExistingReference(state, result.getInReference()));
+                   result.setInReference(getExistingReference(result.getInReference()));
                }
                putReference(result.getTitleCache(), result);
            }else{
@@ -548,7 +547,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-   private void initRerenceMap(STATE state) {
+   private void initRerenceMap() {
        if (!referenceMapIsInitialized && repository != null){
            List<String> propertyPaths = Arrays.asList("");
            List<Reference> existingReferences = repository.getReferenceService().list(null, null, null, null, propertyPaths);
@@ -559,11 +558,11 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-   public <NAME extends INonViralName> NAME getExistingName(STATE state, NAME name) {
+   public <NAME extends INonViralName> NAME getExistingName(NAME name) {
        if (name == null){
            return null;
        }else{
-           initNameMap(state);
+           initNameMap();
            @SuppressWarnings("unchecked")
            NAME result = (NAME)getMatchingName(name).orElse(null);
            if (result == null){
@@ -572,7 +571,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
                for (HybridRelationship rel : parentRelations){
                    INonViralName parent = rel.getParentName();
                    if (parent != null){
-                       rel.setParentName(getExistingName(state, parent));
+                       rel.setParentName(getExistingName(parent));
                    }
                }
                putName(result.getTitleCache(), result);
@@ -585,7 +584,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-   private void initNameMap(STATE state) {
+   private void initNameMap() {
        if (!nameMapIsInitialized && repository != null){
            List<String> propertyPaths = Arrays.asList("");
            List<TaxonName> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
@@ -596,12 +595,11 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-   public Rights getExistingCopyright(STATE state,
-           Rights right) {
+   public Rights getExistingCopyright(Rights right) {
        if (right == null || !RightsType.COPYRIGHT().equals(right.getType())){
            return null;
        }else{
-           initCopyrightMap(state);
+           initCopyrightMap();
            String key = makeCopyrightKey(right);
            Set<Rights> set = copyrightMap.get(key);
            if (set == null || set.isEmpty()){
@@ -615,7 +613,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-    private void initCopyrightMap(STATE state) {
+    private void initCopyrightMap() {
         if (!copyrightMapIsInitialized && repository != null){
             List<String> propertyPaths = Arrays.asList("");
             List<Rights> existingRights = repository.getRightsService().list(null, null, null, null, propertyPaths);

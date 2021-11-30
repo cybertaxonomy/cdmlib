@@ -242,7 +242,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 					fillName(state, nameMap, name, misappliedRelation, next);
 				}
 				handleNomText(state, parentEvent, text, isNameType);
-				state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(state, name);
+				state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(name);
 				handleNameStatus(state, name, next);
 				state.setNameStatus(null);
 		        return name;
@@ -663,7 +663,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			String classValue, TaxonRelationship misappliedRel,
 			Reference reference, String microCitation,
 			XMLEvent parentEvent) {
-	    reference = state.getDeduplicationHelper().getExistingReference(state, reference);
+	    reference = state.getDeduplicationHelper().getExistingReference(reference);
 	    if (misappliedRel != null){
 	        if (!PUBLICATION.equalsIgnoreCase(classValue)){
                 fireWarningEvent("'Usage' not handled correctly for misidentifications", parentEvent, 4);

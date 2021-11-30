@@ -100,7 +100,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         testAlwaysEmptyFields(state);
 
 
-        state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(state, name);
+        state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(name);
 
         if (!name.isPersited()){
             state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);

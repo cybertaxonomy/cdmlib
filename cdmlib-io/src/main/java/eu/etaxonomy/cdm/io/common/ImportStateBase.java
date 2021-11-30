@@ -53,7 +53,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	private boolean isCheck;
 
-    private ImportDeduplicationHelper<ImportStateBase<CONFIG,?>> deduplicationHelper;
+    private ImportDeduplicationHelper deduplicationHelper;
 
 	private Map<Object,Classification> treeMap = new HashMap<>();
 
@@ -402,17 +402,19 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
         return null;
     }
 
-    public ImportDeduplicationHelper<ImportStateBase<CONFIG,?>> getDeduplicationHelper() {
+    public ImportDeduplicationHelper getDeduplicationHelper() {
         return deduplicationHelper;
     }
-    public void setDeduplicationHelper(ImportDeduplicationHelper<ImportStateBase<CONFIG,?>> deduplicationHelper) {
+    public void setDeduplicationHelper(ImportDeduplicationHelper deduplicationHelper) {
         this.deduplicationHelper = deduplicationHelper;
     }
 
     @Override
     public void setCurrentIO(IO currentIO) {
         super.setCurrentIO(currentIO);
-        this.deduplicationHelper.reset();
+        if (this.deduplicationHelper != null){
+            this.deduplicationHelper.reset();
+        }
         this.deduplicationHelper = ImportDeduplicationHelper.NewInstance(currentIO, this);
     }
 }
