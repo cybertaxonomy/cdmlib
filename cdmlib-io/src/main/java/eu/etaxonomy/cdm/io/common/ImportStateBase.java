@@ -415,6 +415,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
         if (this.deduplicationHelper != null){
             this.deduplicationHelper.reset();
         }
-        this.deduplicationHelper = ImportDeduplicationHelper.NewInstance(currentIO, this);
+        this.deduplicationHelper = currentIO.createDeduplicationHelper(this);
     }
 }

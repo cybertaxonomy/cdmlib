@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -1645,5 +1646,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             getNameService().saveOrUpdate(rel.getFromName());
             getNameService().saveOrUpdate(rel.getToName());
         }
+    }
+
+    public ImportDeduplicationHelper createDeduplicationHelper(STATE state){
+        return ImportDeduplicationHelper.NewInstance(this, state);
     }
 }
