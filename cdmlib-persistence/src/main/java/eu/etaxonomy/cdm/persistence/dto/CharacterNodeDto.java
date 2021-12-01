@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,7 +60,26 @@ public class CharacterNodeDto extends TermNodeDto {
         }
         dto.setChildren(children);
         dto.setOnlyApplicableIf(child.getOnlyApplicableIf());
+        if (!dto.getOnlyApplicableIf().isEmpty()){
+            for (FeatureStateDto stateDto:dto.getOnlyApplicableIf()){
+                if (!treeDto.getOnlyApplicable().containsKey(dto.getTerm().getUuid())){
+                    treeDto.getOnlyApplicable().put(dto.getTerm().getUuid(), new HashSet<>());
+                }
+
+                treeDto.getOnlyApplicable().get(dto.getTerm().getUuid()).add(stateDto);
+            }
+        }
         dto.setInapplicableIf(child.getInapplicableIf());
+        if (!dto.getInapplicableIf().isEmpty()){
+            for (FeatureStateDto stateDto:dto.getInapplicableIf()){
+                if (!treeDto.getInapplicableMap().containsKey(dto.getTerm().getUuid())){
+                    treeDto.getInapplicableMap().put(dto.getTerm().getUuid(), new HashSet<>());
+                }
+
+                treeDto.getInapplicableMap().get(dto.getTerm().getUuid()).add(stateDto);
+            }
+        }
+
 
         dto.setTermType(child.getTermType());
 

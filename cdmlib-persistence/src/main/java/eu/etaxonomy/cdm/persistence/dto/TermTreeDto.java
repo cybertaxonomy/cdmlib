@@ -31,6 +31,9 @@ public class TermTreeDto extends TermCollectionDto {
     private static final long serialVersionUID = -7223363599985320531L;
 
     private TermNodeDto root;
+    private Map<UUID, Set<FeatureStateDto>> inapplicableMap = new HashMap<>(); //a map <uuid of the parent feature, uuid of child feature, state> shows for a parent feature which features are inapplicable for specific state
+    private Map<UUID, Set<FeatureStateDto>> onlyApplicableMap = new HashMap<>();
+
 
     public static TermTreeDto fromTree(TermTree tree){
         TermTreeDto dto = new TermTreeDto(tree.getUuid(), tree.getRepresentations(), tree.getTermType(), tree.getRoot(), tree.getTitleCache(), tree.isAllowDuplicates(), tree.isOrderRelevant(), tree.isFlat() );
@@ -171,5 +174,33 @@ public class TermTreeDto extends TermCollectionDto {
             }
         }
         return result;
+    }
+
+    /**
+     * @return the inapplicableMap
+     */
+    public Map<UUID, Set<FeatureStateDto>> getInapplicableMap() {
+        return inapplicableMap;
+    }
+
+    /**
+     * @param inapplicableMap the inapplicableMap to set
+     */
+    public void setInapplicableMap(Map<UUID, Set<FeatureStateDto>> inapplicableMap) {
+        this.inapplicableMap = inapplicableMap;
+    }
+
+    /**
+     * @return the onlyApplicable
+     */
+    public Map<UUID, Set<FeatureStateDto>> getOnlyApplicable() {
+        return onlyApplicableMap;
+    }
+
+    /**
+     * @param onlyApplicable the onlyApplicable to set
+     */
+    public void setOnlyApplicable(Map<UUID, Set<FeatureStateDto>> onlyApplicable) {
+        this.onlyApplicableMap = onlyApplicable;
     }
 }
