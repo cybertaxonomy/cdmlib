@@ -45,7 +45,7 @@ public class CharacterDto extends FeatureDto {
     private TermNodeDto ratioTo;
 
     public CharacterDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, //Set<Representation> vocRepresentations,
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,
             boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence,
             String titleCache, TermNodeDto structure, TermDto structureModifier, TermNodeDto property,
             TermDto propertyModifier, TermNodeDto ratioTo, boolean isSupportCategoricalData, boolean isSupportsQuantitativeData, Set<TermVocabularyDto> supportedCategoricalEnumerations, Set<TermVocabularyDto> recommendedModifierEnumeration,  Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures) {

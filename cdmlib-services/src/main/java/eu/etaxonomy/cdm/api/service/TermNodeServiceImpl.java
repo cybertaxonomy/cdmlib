@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,9 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -42,6 +45,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.CharacterDto;
 import eu.etaxonomy.cdm.persistence.dto.CharacterNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.FeatureStateDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermNodeDto;
@@ -248,20 +252,117 @@ public class TermNodeServiceImpl
 
                 if (dto.getUuid().equals(node.getUuid())){
     //                only node changes, everything else will be handled by the operations/service methods
-                    if (!dto.getInapplicableIf().equals(node.getInapplicableIf())){
-                        node.getInapplicableIf().clear();
-                        node.getInapplicableIf().addAll(dto.getInapplicableIf());
-                    }
-                    if (!dto.getOnlyApplicableIf().equals(node.getOnlyApplicableIf())){
-                        node.getOnlyApplicableIf().clear();
-                        node.getOnlyApplicableIf().addAll(dto.getOnlyApplicableIf());
-                    }
+                    updateFeatureStates(node, dto, true);
+                    updateFeatureStates(node, dto, false);
+
                 }
                 MergeResult<TermNode> mergeResult = dao.merge(node, true);
                 result.addUpdatedObject(mergeResult.getMergedEntity());
             }
         }
         return result;
+    }
+
+    /**
+     * @param node
+     * @param dto
+     */
+    private void updateFeatureStates(TermNode<?> node, TermNodeDto dto, boolean inApplicable) {
+        Map<FeatureState, FeatureStateDto> changeState = new HashMap<>();
+        Set<FeatureStateDto> newStates = new HashSet<>();
+        Set<FeatureState> deleteState = new HashSet<>();
+        boolean stillExist = false;
+        Set<FeatureState> setToUpdate = null;
+        Set<FeatureStateDto> setForUpdate = null;
+        if (inApplicable){
+            setToUpdate = node.getInapplicableIf();
+            setForUpdate = dto.getInapplicableIf();
+        }else{
+            setToUpdate = node.getOnlyApplicableIf();
+            setForUpdate = dto.getOnlyApplicableIf();
+        }
+        for (FeatureState featureState: setToUpdate){
+            stillExist = false;
+            for (FeatureStateDto featureStateDto: setForUpdate){
+                if (featureStateDto.getUuid() != null && featureStateDto.getUuid().equals(featureState.getUuid())){
+                    stillExist = true;
+                    if (featureStateDto.getFeature().getUuid().equals(featureState.getFeature().getUuid()) && featureStateDto.getState().getUuid().equals(featureState.getState().getUuid())){
+                        //do nothing
+                    }else{
+                        changeState.put(featureState, featureStateDto);
+                    }
+                    break;
+                }
+            }
+            if (!stillExist){
+                deleteState.add(featureState);
+            }
+
+        }
+
+        for (FeatureStateDto featureStateDto: setForUpdate){
+            stillExist = false;
+            if (featureStateDto.getUuid() == null){
+                newStates.add(featureStateDto);
+            }else{
+                for (FeatureState featureState: setToUpdate){
+                    if (featureStateDto.getUuid() != null && featureStateDto.getUuid().equals(featureState.getUuid())){
+                        stillExist = true;
+                        break;
+                    }
+                }
+                if (!stillExist){
+                    newStates.add(featureStateDto);
+                }
+            }
+
+        }
+        if (inApplicable){
+            node.getInapplicableIf().removeAll(deleteState);
+        }else{
+            node.getOnlyApplicableIf().removeAll(deleteState);
+        }
+        for (Entry<FeatureState, FeatureStateDto> change: changeState.entrySet()){
+            if (!change.getKey().getFeature().getUuid().equals(change.getValue().getFeature().getUuid())){
+                DefinedTermBase term = termService.load(change.getValue().getFeature().getUuid());
+                if (term instanceof Feature){
+                    Feature feature = HibernateProxyHelper.deproxy(term, Feature.class);
+                    change.getKey().setFeature(feature);
+                }
+
+            }
+            if (!change.getKey().getState().getUuid().equals(change.getValue().getState().getUuid())){
+                DefinedTermBase term = termService.load(change.getValue().getState().getUuid());
+                if (term instanceof State){
+                    State state = HibernateProxyHelper.deproxy(term, State.class);
+                    change.getKey().setState(state);
+                }
+
+            }
+            if (inApplicable){
+                node.getInapplicableIf().add(change.getKey());
+            }else{
+                node.getOnlyApplicableIf().add(change.getKey());
+            }
+        }
+        for (FeatureStateDto stateDto: newStates){
+            Feature feature = null;
+            State state = null;
+            DefinedTermBase term = termService.load(stateDto.getFeature().getUuid());
+            if (term instanceof Feature){
+                feature = HibernateProxyHelper.deproxy(term, Feature.class);
+            }
+            term = termService.load(stateDto.getState().getUuid());
+            if (term instanceof State){
+                state = HibernateProxyHelper.deproxy(term, State.class);
+            }
+            FeatureState newState = FeatureState.NewInstance(feature, state);
+            if (inApplicable){
+                node.getInapplicableIf().add(newState);
+            }else{
+                node.getOnlyApplicableIf().add(newState);
+            }
+        }
     }
 
     @Override
@@ -277,15 +378,16 @@ public class TermNodeServiceImpl
             for (CharacterNodeDto dto: dtos){
     //            TermNodeDto dto = dtoIterator.next();
                 if (dto.getUuid().equals(node.getUuid())){
-
-                    if (!dto.getInapplicableIf().equals(node.getInapplicableIf())){
-                        node.getInapplicableIf().clear();
-                        node.getInapplicableIf().addAll(dto.getInapplicableIf());
-                    }
-                    if (!dto.getOnlyApplicableIf().equals(node.getOnlyApplicableIf())){
-                        node.getOnlyApplicableIf().clear();
-                        node.getOnlyApplicableIf().addAll(dto.getOnlyApplicableIf());
-                    }
+                    updateFeatureStates(node, dto, true);
+                    updateFeatureStates(node, dto, false);
+//                    if (!dto.getInapplicableIf().equals(node.getInapplicableIf())){
+//                        node.getInapplicableIf().clear();
+//                        node.getInapplicableIf().addAll(dto.getInapplicableIf());
+//                    }
+//                    if (!dto.getOnlyApplicableIf().equals(node.getOnlyApplicableIf())){
+//                        node.getOnlyApplicableIf().clear();
+//                        node.getOnlyApplicableIf().addAll(dto.getOnlyApplicableIf());
+//                    }
 
                     Character character = null;
                     CharacterDto characterDto = (CharacterDto) dto.getTerm();

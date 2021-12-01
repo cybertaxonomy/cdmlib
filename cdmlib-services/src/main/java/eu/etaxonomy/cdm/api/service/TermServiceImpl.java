@@ -635,10 +635,15 @@ public class TermServiceImpl
 
     @Override
     public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList){
+        if (uuidList == null || uuidList.isEmpty()){
+            return null;
+        }
         Collection<TermDto> col = dao.findFeatureByUUIDsAsDto(uuidList);
         Map<UUID, TermDto> result = new HashMap<>();
-        for (TermDto dto: col){
-            result.put(dto.getUuid(), dto);
+        if (col != null){
+            for (TermDto dto: col){
+                result.put(dto.getUuid(), dto);
+            }
         }
         return result;
     }

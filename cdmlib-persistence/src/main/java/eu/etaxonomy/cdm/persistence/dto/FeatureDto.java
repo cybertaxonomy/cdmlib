@@ -50,7 +50,7 @@ public class FeatureDto extends TermDto {
     Set<TermVocabularyDto> recommendedModifierEnumeration = new HashSet<>();
 
     public FeatureDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, //Set<Representation> vocRepresentations,
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,
             boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence, String titleCache, boolean isSupportsCategoricalData, boolean isSupportsQuantitativeData,
             Set<TermVocabularyDto> supportedCategoricalEnumerations, Set<TermVocabularyDto> recommendedModifierEnumeration,  Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures){
         super(uuid, representations, TermType.Feature, partOfUuid, kindOfUuid,
@@ -389,7 +389,7 @@ public class FeatureDto extends TermDto {
                 if (o instanceof StatisticalMeasure){
                     recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm((StatisticalMeasure)o));
                 }else if (o instanceof Set){
-                    Set<StatisticalMeasure> recommendedStatisticalMeasures = (Set<StatisticalMeasure>) o;
+                    Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet((Set<StatisticalMeasure>) o);
                     if (recommendedStatisticalMeasures != null) {
                         for (StatisticalMeasure term: recommendedStatisticalMeasures){
                             recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm(term));
