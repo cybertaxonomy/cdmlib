@@ -348,13 +348,14 @@ public class TermNodeServiceImpl
         for (FeatureStateDto stateDto: newStates){
             Feature feature = null;
             State state = null;
-            DefinedTermBase term = termService.load(stateDto.getFeature().getUuid());
-            if (term instanceof Feature){
-                feature = HibernateProxyHelper.deproxy(term, Feature.class);
+            DefinedTermBase term = termService.find(stateDto.getFeature().getUuid());
+            term = HibernateProxyHelper.deproxy(term);
+            if (term instanceof Character){
+                feature = HibernateProxyHelper.deproxy(term, Character.class);
             }
-            term = termService.load(stateDto.getState().getUuid());
-            if (term instanceof State){
-                state = HibernateProxyHelper.deproxy(term, State.class);
+            DefinedTermBase termState = termService.load(stateDto.getState().getUuid());
+            if (termState instanceof State){
+                state = HibernateProxyHelper.deproxy(termState, State.class);
             }
             FeatureState newState = FeatureState.NewInstance(feature, state);
             if (inApplicable){
