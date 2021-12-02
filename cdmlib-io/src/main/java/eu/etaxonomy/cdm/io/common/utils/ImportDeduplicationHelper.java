@@ -88,7 +88,7 @@ public class ImportDeduplicationHelper {
         USE_REPO;
     }
 
-    private class DedupInfo<S extends IdentifiableEntity>{
+    private class DedupInfo<S extends IMatchable>{
         Class<S> clazz;
         IMatchStrategyEqual matcher;
         Map<String, Set<S>> map = new HashMap<>();
@@ -98,7 +98,7 @@ public class ImportDeduplicationHelper {
         private DedupInfo(Class<S> clazz, DedupMap dedupMap){
             this.clazz = clazz;
             if (IMatchable.class.isAssignableFrom(clazz)) {
-                matcher = DefaultMatchStrategy.NewInstance((Class<IMatchable>)clazz);
+                matcher = DefaultMatchStrategy.NewInstance(clazz);
             }
             dedupMap.put(clazz, this);
         }
@@ -108,7 +108,7 @@ public class ImportDeduplicationHelper {
         }
     }
 
-    private class DedupMap<T extends IdentifiableEntity> extends HashMap<Class<T>, DedupInfo<T>>{
+    private class DedupMap<T extends IMatchable> extends HashMap<Class<T>, DedupInfo<T>>{
         private static final long serialVersionUID = 3757206594833330646L;
     }
     private DedupMap<? extends IdentifiableEntity> dedupMap = new DedupMap<>();
@@ -119,6 +119,7 @@ public class ImportDeduplicationHelper {
     private DedupInfo<TaxonName> nameDedupInfo = new DedupInfo<>(TaxonName.class, dedupMap);
 
 
+    @SuppressWarnings("unused")
     private Status institutionStatus = Status.NOT_INIT;
     private Status copyrightStatus = Status.NOT_INIT;
     private Status collectionStatus = Status.NOT_INIT;
@@ -183,7 +184,7 @@ public class ImportDeduplicationHelper {
 
         nameDedupInfo.map = refreshSetMap(nameDedupInfo.map, (IService)repository.getNameService(), importResult);
         collectionMap = refreshSetMap(collectionMap, (IService)repository.getCollectionService(), importResult);
-        //TODO copyright ?
+        copyrightMap = refreshSetMap(copyrightMap, (IService)repository.getRightsService(), importResult);
     }
 
     //maybe this was used for Institution before
@@ -213,7 +214,6 @@ public class ImportDeduplicationHelper {
             IService<T> service, ImportResult importResult) {
 
         Map<String, Set<T>> newMap = new HashMap<>();
-        logger.debug("Start loading map");  //TODO debug only
         //create UUID set
         Set<UUID> uuidSet = new HashSet<>();
         for (String key : oldMap.keySet()){
@@ -264,11 +264,11 @@ public class ImportDeduplicationHelper {
         entitySet.add(CdmBase.deproxy(entity));
     }
 
-    private <S extends IdentifiableEntity> Set<S> getEntityByTitle(String title, DedupInfo<S> dedupInfo){
+    private <S extends IMatchable> Set<S> getEntityByTitle(String title, DedupInfo<S> dedupInfo){
         return dedupInfo.map.get(title);
     }
 
-    private <S extends IdentifiableEntity> Optional<S> getMatchingEntity(S entityOrig, DedupInfo<S> dedupInfo){
+    private <S extends IMatchable> Optional<S> getMatchingEntity(S entityOrig, DedupInfo<S> dedupInfo){
         S entity = CdmBase.deproxy(entityOrig);
         Predicate<S> matchFilter = reference ->{
             try {
@@ -277,7 +277,8 @@ public class ImportDeduplicationHelper {
                 throw new RuntimeException(e);
             }
         };
-        Optional<S> result = Optional.ofNullable(getEntityByTitle(entity.getTitleCache(), dedupInfo))
+        //TODO casting
+        Optional<S> result = Optional.ofNullable(getEntityByTitle(((IdentifiableEntity<?>)entity).getTitleCache(), dedupInfo))
                 .orElse(new HashSet<>())
                 .stream()
                 .filter(matchFilter)
@@ -286,7 +287,7 @@ public class ImportDeduplicationHelper {
             return result;
         }else {
             try {
-                return (Optional<S>)repository.getCommonService().findMatching((IMatchable)entity, dedupInfo.matcher).stream().findFirst();
+                return (Optional)repository.getCommonService().findMatching((IMatchable)entity, dedupInfo.matcher).stream().findFirst();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
@@ -391,7 +392,6 @@ public class ImportDeduplicationHelper {
         if (author == null){
             return null;
         }else{
-            //TODO
             init(personDedupInfo);
             init(teamDedupInfo);
             initAuthorTitleCaches(author);
@@ -427,7 +427,7 @@ public class ImportDeduplicationHelper {
 
     private void initReferenceCaches(Reference ref) {
         ////TODO better do via matching strategy  (newReference might have caches == null)
-        //more or less copy from CdmPreDataChangeListener
+        //the below is more or less a copy from CdmPreDataChangeListener
         ref.getAbbrevTitleCache();
         ref.getTitleCache();
    }
@@ -448,23 +448,25 @@ public class ImportDeduplicationHelper {
         }
     }
 
-    private <S extends IdentifiableEntity<?>> void init(DedupInfo<S> dedupInfo) {
+    private <S extends IMatchable> void init(DedupInfo<S> dedupInfo) {
         dedupInfo.status = init(dedupInfo.clazz, dedupInfo.status, dedupInfo.map);
     }
 
-    private <S extends IdentifiableEntity<?>> Status init(Class<S> clazz, Status status, Map<String,Set<S>> map) {
+    private <S extends IMatchable> Status init(Class<S> clazz, Status status, Map<String,Set<S>> map) {
 
+        Class<IdentifiableEntity> entityClass = (Class<IdentifiableEntity>)clazz;
         if (status == Status.NOT_INIT && repository != null){
             if (maxCountFullLoad != NEVER_USE_MAP){
                 long nExisting = -2;
                 if (maxCountFullLoad != ALWAYS_USE_MAP){
-                    nExisting = repository.getCommonService().count(clazz);
+                    nExisting = repository.getCommonService().count(entityClass);
                 }
                 if (nExisting <= maxCountFullLoad ){
                     List<String> propertyPaths = Arrays.asList("");
-                    List<S> existingEntities = repository.getCommonService().list(clazz, null, null, null, propertyPaths);
-                    for (S ref : existingEntities){
-                        putEntity(ref.getTitleCache(), ref, map);
+                    List<IdentifiableEntity> existingEntities = repository.getCommonService().list(entityClass, null, null, null, propertyPaths);
+                    for (IdentifiableEntity<?> entity : existingEntities){
+                        //TODO casting
+                        putEntity(entity.getTitleCache(), entity, (Map)map);
                     }
                     return Status.USE_MAP;
                 }else{
@@ -509,7 +511,15 @@ public class ImportDeduplicationHelper {
     }
 
     private void initCollectionMap() {
-        collectionStatus = init(Collection.class, collectionStatus, collectionMap);
+        if (collectionStatus == Status.NOT_INIT && repository != null){
+            List<String> propertyPaths = Arrays.asList("");
+            List<Collection> existingCollections = repository.getCollectionService().list(null, null, null, null, propertyPaths);
+            for (Collection collection : existingCollections){
+                putEntity(collection.getTitleCache(), collection, collectionMap);
+            }
+        }
+        collectionStatus = Status.USE_MAP;
+//      collectionStatus = init(Collection.class, collectionStatus, collectionMap); //for future, once Collection becomes IMatchable
     }
 
    public Reference getExistingReference(Reference ref) {
