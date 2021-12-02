@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -22,15 +23,18 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 //import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisReferenceImportConfigurator;
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -48,32 +52,11 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private IReferenceService referenceService;
 
-	private RisReferenceImportConfigurator configurator;
-    private RisReferenceImportConfigurator configLong;
+	@SpringBeanByType
+    private IAgentService agentService;
 
 	@Before
-	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/reference/ris/in/RisReferenceImportTest-input.ris";
-
-        try {
-            URL url = this.getClass().getResource(inputFile);
-            assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-            String inputFileLong = "/eu/etaxonomy/cdm/io/reference/ris/in/Acantholimon.ris";
-            URL urlLong = this.getClass().getResource(inputFileLong);
-            assertNotNull("URL for the test file '" + inputFileLong + "' does not exist", urlLong);
-
-			configurator = RisReferenceImportConfigurator.NewInstance(url, null);
-			configLong = RisReferenceImportConfigurator.NewInstance(urlLong, null);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
-		assertNotNull("Configurator could not be created", configurator);
-	    assertNotNull("Configurator could not be created", configLong);
-	    assertNotNull("nameService should not be null", referenceService);
-	}
+	public void setUp() {}
 
 //***************************** TESTS *************************************//
 
@@ -81,7 +64,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	//@Ignore
     public void testShort() {
-
+	    RisReferenceImportConfigurator configurator = getConfigurator("RisReferenceImportTest-input.ris");
 		ImportResult result = defaultImport.invoke(configurator);
 		String report = result.createReport().toString();
 		Assert.assertTrue(report.length() > 0);
@@ -142,10 +125,9 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void testChapter() throws IOException{
-        String inputFileLong = "/eu/etaxonomy/cdm/io/reference/ris/in/Arias2012.ris";
-        URL urlLong = this.getClass().getResource(inputFileLong);
-        configurator = RisReferenceImportConfigurator.NewInstance(urlLong, null);
+	public void testChapter() {
+
+	    final RisReferenceImportConfigurator configurator = getConfigurator("Arias2012.ris");
 
         ImportResult result = defaultImport.invoke(configurator);
         String report = result.createReport().toString();
@@ -155,12 +137,12 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         Integer expected = 2;
         Assert.assertEquals(expected, result.getNewRecords(Reference.class));
 
-        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
+        List<Reference> referenceList = referenceService.list(Reference.class, null, null, null, null);
         Assert.assertEquals("There should be 3 references, the book-section, the book and the source reference",
-                3, list.size());
+                3, referenceList.size());
 
         //book section
-        Reference bookSection = list.stream().filter(r->r.getType() == ReferenceType.BookSection).findFirst().get();
+        Reference bookSection = referenceList.stream().filter(r->r.getType() == ReferenceType.BookSection).findFirst().get();
         //... title
         Assert.assertEquals("Cactaceae", bookSection.getTitle());
         //... author
@@ -182,7 +164,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("1-235", bookSection.getPages());
 
         //book
-        Reference book = list.stream().filter(r->r.getType() == ReferenceType.Book).findFirst().get();
+        Reference book = referenceList.stream().filter(r->r.getType() == ReferenceType.Book).findFirst().get();
         //... title
         Assert.assertEquals("Flora del Valle de Tehuac\u00E1n-Cuicatl\u00E1n", book.getTitle());
         Assert.assertEquals("Fasc\u00EDculo 95", book.getVolume());
@@ -190,30 +172,100 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Instituto de Biolog\u00EDa, Universidad Nacional Aut\u00F3noma de M\u00E9xico", book.getPublisher());
 
         //source reference
-        Reference sourceRef = list.stream().filter(r->r.equals(configurator.getSourceReference())).findFirst().get();
+        Reference sourceRef = referenceList.stream().filter(r->r.equals(configurator.getSourceReference())).findFirst().get();
         Assert.assertNotNull(sourceRef);
         //TODO cont.
+
+        List<Person> personList = agentService.list(Person.class, null, null, null, null);
+        Assert.assertEquals("There should be 5 persons", 5, personList.size());
+
+        List<Team> teamList = agentService.list(Team.class, null, null, null, null);
+        Assert.assertEquals("There should be 1 team", 1, teamList.size());
+
+
+        //test deduplication by running it again
+        result = defaultImport.invoke(configurator);
+        report = result.createReport().toString();
+        Assert.assertTrue(report.contains("Reference: 0"));
+        Assert.assertEquals(0, result.getErrors().size() + result.getExceptions().size() + result.getWarnings().size());
+        referenceList = referenceService.list(Reference.class, null, null, null, null);
+        Assert.assertEquals("There should still be 3 references, the book-section, the book and the source reference",
+                3, referenceList.size());
+
+        personList = agentService.list(Person.class, null, null, null, null);
+        Assert.assertEquals("There should still be 5 persons", 5, personList.size());
+
+        teamList = agentService.list(Team.class, null, null, null, null);
+        Assert.assertEquals("There should still be 1 team", 1, teamList.size());
+
+        //test deduplication by running another chapter
+        RisReferenceImportConfigurator configurator2 = getConfigurator("Arias2012_2.ris");
+        result = defaultImport.invoke(configurator2);
+        report = result.createReport().toString();
+//        Assert.assertTrue(report.contains("Reference: 0"));
+        Assert.assertEquals(0, result.getErrors().size() + result.getExceptions().size() + result.getWarnings().size());
+        referenceList = referenceService.list(Reference.class, null, null, null, null);
+        Assert.assertEquals("There should be 5 references, 2 book-sections, the book and 2 source references",
+                5, referenceList.size());
+
+        personList = agentService.list(Person.class, null, null, null, null);
+        Assert.assertEquals("There should be 6 persons now", 6, personList.size());
+
+        teamList = agentService.list(Team.class, null, null, null, null);
+        Assert.assertEquals("There should be 2 teams now", 2, teamList.size());
+
 	}
 
-	@Test
-	//@Ignore
+    private RisReferenceImportConfigurator getConfigurator(String fileName) {
+        String inputFile = "/eu/etaxonomy/cdm/io/reference/ris/in/" + fileName;
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        try {
+            RisReferenceImportConfigurator result = RisReferenceImportConfigurator.NewInstance(url, null);
+            result.setDeduplicationMaxCountForFullLoad(1);
+            return result;
+        } catch (IOException e) {
+            Assert.fail("IOException while creating configurator: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Test
     public void testLongFile() {
-        ImportResult result = defaultImport.invoke(configLong);
+
+        RisReferenceImportConfigurator configurator = getConfigurator("Acantholimon.ris");
+        ImportResult result = defaultImport.invoke(configurator);
+
+        @SuppressWarnings("unused")
         String report = result.createReport().toString();
-        System.out.println(report);
+//        System.out.println(report);
 
-        Integer expected = 118;  //did not count yet
-        Assert.assertEquals(expected, result.getNewRecords(Reference.class));
+//        Integer expectedWithoutDeduplication = 118;  //did not count yet
+        Integer expectedDeduplicated = 104;  //did not count yet
+        Assert.assertEquals(expectedDeduplicated, result.getNewRecords(Reference.class));
+//        System.out.println("Person: "+ result.getNewRecords(Person.class));
+//        System.out.println("Team: "+ result.getNewRecords(Team.class));
 
-        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
-//        Assert.assertEquals("There should be 119 references (still need to count them)", 119, list.size());
-        //TODO deduplication
+        List<Reference> refList = referenceService.list(Reference.class, null, null, null, null);
+//        Assert.assertEquals("There should be 119 references (still need to count them)", 119, refList.size());
+        Collections.sort(refList, (r1,r2) -> r1.getTitleCache().compareTo(r2.getTitleCache()));
+        printList(refList);
+        List<Person> personList = agentService.list(Person.class, null, null, null, null);
+        printList(personList);
+        Assert.assertEquals(99, personList.size());
+        List<Team> teamList = agentService.list(Team.class, null, null, null, null);
+        printList(teamList);
+        Assert.assertEquals(33, teamList.size());
+        List<Institution> institutionList = agentService.list(Institution.class, null, null, null, null);
+        printList(institutionList);
+        Assert.assertEquals(0, institutionList.size());
 
-        Reference ref58 = list.stream().filter(r->hasId(r, "58", false)).findFirst().get();
+
+        Reference ref58 = refList.stream().filter(r->hasId(r, "58", false)).findFirst().get();
         Assert.assertNotNull("", ref58);
         Assert.assertEquals((Integer)2003, ref58.getDatePublished().getStartYear());
 
-        Reference ref53 = list.stream().filter(r->hasId(r, "53", false)).findFirst().get();
+        Reference ref53 = refList.stream().filter(r->hasId(r, "53", false)).findFirst().get();
         Assert.assertNotNull("", ref53);
         Assert.assertEquals(ReferenceType.BookSection, ref53.getType());
         Assert.assertNotNull("", ref53.getInReference());
@@ -263,6 +315,15 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 //                Assert.fail("Only an article and a journal should exist");
 //            }
 //        }
+    }
+
+    private void printList(List<? extends IdentifiableEntity<?>> list) {
+        if (!logger.isDebugEnabled()){
+            return;
+        }
+        System.out.println(list.size());
+        Collections.sort(list, (p1,p2) -> p1.getTitleCache().compareTo(p2.getTitleCache()));
+        list.stream().forEach(r->System.out.println(r.getTitleCache()));
     }
 
     private boolean hasId(Reference ref, String idStr, boolean getInRef) {

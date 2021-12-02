@@ -32,6 +32,10 @@ public class RisReferenceImportConfigurator
     private static final long serialVersionUID = -5982826645441621962L;
 //    private static IInputTransformer defaultTransformer = null;
 
+    private int deduplicationMaxCountForFullLoad = 200;
+
+//********************************** FACTORY ***********************************/
+
     public static RisReferenceImportConfigurator NewInstance(URI uri, ICdmDataSource cdm) {
         RisReferenceImportConfigurator result = new RisReferenceImportConfigurator(uri, cdm);
         return result;
@@ -41,7 +45,7 @@ public class RisReferenceImportConfigurator
         InputStream stream = url.openStream();
         InputStreamReader reader = new InputStreamReader(stream, "UTF8");
 
-        RisReferenceImportConfigurator result = new RisReferenceImportConfigurator();
+        RisReferenceImportConfigurator result = new RisReferenceImportConfigurator(null, cdm);
         result.setStream(IOUtils.toByteArray(reader, Charset.defaultCharset()));
         return result;
     }
@@ -52,14 +56,24 @@ public class RisReferenceImportConfigurator
         return result;
     }
 
-    protected RisReferenceImportConfigurator() {
-        super(null,null);
-    }
+//************************ CONSTRUCTOR ****************************************/
 
-    protected RisReferenceImportConfigurator(URI uri, ICdmDataSource cdm) {
+    private RisReferenceImportConfigurator(URI uri, ICdmDataSource cdm) {
         super(uri, cdm, null);
     }
 
+// ************************* GETTER / SETTER *************************************/
+
+    public int getDeduplicationMaxCountForFullLoad() {
+        return deduplicationMaxCountForFullLoad;
+    }
+    public void setDeduplicationMaxCountForFullLoad(int deduplicationMaxCountForFullLoad) {
+        this.deduplicationMaxCountForFullLoad = deduplicationMaxCountForFullLoad;
+    }
+
+//********************** METHODS ********************************************/
+
+    @SuppressWarnings("unchecked")
     @Override
     public RisReferenceImportState getNewState() {
         return new RisReferenceImportState(this);
@@ -90,6 +104,5 @@ public class RisReferenceImportConfigurator
     public boolean isValid(){
         return true;
     }
-
 
 }

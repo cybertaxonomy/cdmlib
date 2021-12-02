@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisRecordReader.RisValue;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -69,9 +70,16 @@ public class RisReferenceImport
                 try {
                     location = recordLocation(state, next);
                     ref = handleSingleReference(state, next);
-                    referencesToSave.add(ref);
-                    if (ref.getInReference() != null){
-                        referencesToSave.add(ref.getInReference());
+
+                    Reference existingRef = state.getDeduplicationHelper().getExistingReference(ref);
+                    if (existingRef == ref){ //reference does not yet exist so the identical reference has been returned
+                        state.getDeduplicationHelper().replaceReferenceRelatedData(ref);
+                        referencesToSave.add(ref);
+                        if (ref.getInReference() != null){
+                            referencesToSave.add(ref.getInReference());
+                        }
+                    }else{
+                        //merge ?
                     }
                 } catch (Exception e) {
                     String message = "Unexpected exception during RIS Reference Import";
@@ -508,6 +516,13 @@ public class RisReferenceImport
         RisRecordType type = RisRecordType.valueOf(typeStr);
         ReferenceType cdmType = type.getCdmReferenceType();
         return cdmType;
+    }
+
+    @Override
+    public ImportDeduplicationHelper createDeduplicationHelper(RisReferenceImportState state){
+        ImportDeduplicationHelper result = super.createDeduplicationHelper(state);
+        result.setMaxCountFullLoad(state.getConfig().getDeduplicationMaxCountForFullLoad());
+        return result;
     }
 
     @Override
