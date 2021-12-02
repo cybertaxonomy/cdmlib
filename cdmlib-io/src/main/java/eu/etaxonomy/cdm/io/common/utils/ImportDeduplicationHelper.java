@@ -454,7 +454,8 @@ public class ImportDeduplicationHelper {
 
     private <S extends IMatchable> Status init(Class<S> clazz, Status status, Map<String,Set<S>> map) {
 
-        Class<IdentifiableEntity> entityClass = (Class<IdentifiableEntity>)clazz;
+        //FIXME cast
+        Class<IdentifiableEntity> entityClass = (Class)clazz;
         if (status == Status.NOT_INIT && repository != null){
             if (maxCountFullLoad != NEVER_USE_MAP){
                 long nExisting = -2;
