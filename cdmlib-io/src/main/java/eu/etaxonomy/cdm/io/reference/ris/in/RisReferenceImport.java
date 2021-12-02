@@ -332,7 +332,7 @@ public class RisReferenceImport
         String start = typeTag == null ? "??" : typeTag.location;
         String end = erTag == null ? "??" : erTag.location;
 
-        String result = "line " + CdmUtils.concat(" - ", start, end);
+        String result = CdmUtils.concat(" - ", start, end);
 
         return result;
     }
