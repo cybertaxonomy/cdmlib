@@ -296,14 +296,14 @@ public class RisReferenceImport
             Reference ref, Reference inRef) {
         List<RisValue> authorList = getListValue(record, RisReferenceTag.AU);
         if (!authorList.isEmpty()){
-            TeamOrPersonBase<?> author = makeAuthor(state, authorList);
+            TeamOrPersonBase<?> author = makeAuthor(state, authorList, record);
             ref.setAuthorship(author);
         }
         List<RisValue> secondaryAuthorList = getListValue(record, RisReferenceTag.A2);
         if (!secondaryAuthorList.isEmpty()){
             if (inRef != null){
                 if (inRef.getType() != ReferenceType.Journal){
-                    TeamOrPersonBase<?> secAuthor = makeAuthor(state, secondaryAuthorList);
+                    TeamOrPersonBase<?> secAuthor = makeAuthor(state, secondaryAuthorList, record);
                     inRef.setAuthorship(secAuthor);
                 }else{
                     String message = "The tag %s ('%s') exists but the in-reference type is 'journal' which typically has no author."
@@ -420,19 +420,25 @@ public class RisReferenceImport
         }
     }
 
-    private TeamOrPersonBase<?> makeAuthor(RisReferenceImportState state, List<RisValue> list) {
+    private TeamOrPersonBase<?> makeAuthor(RisReferenceImportState state, List<RisValue> list, Map<RisReferenceTag, List<RisValue>> record) {
         if (list.size() == 1){
-            return makePerson(state, list.get(0));
+            return makePerson(state, list.get(0), record);
         }else{
             Team team = Team.NewInstance();
+
             for (RisValue value : list){
-                team.addTeamMember(makePerson(state, value));
+                team.addTeamMember(makePerson(state, value, record));
             }
+
+            //source
+            String recordLocation = recordLocation(state, record);
+            team.addImportSource(null, null, state.getConfig().getSourceReference(), recordLocation);
+
             return team;
         }
     }
 
-    private Person makePerson(RisReferenceImportState state, RisValue risValue) {
+    private Person makePerson(RisReferenceImportState state, RisValue risValue, Map<RisReferenceTag, List<RisValue>> record) {
         Person person = Person.NewInstance();
         String[] split = risValue.value.split(",");
         if (split.length >= 1){
@@ -449,6 +455,10 @@ public class RisReferenceImport
         if (split.length >= 3){
             person.setSuffix(split[2].trim());
         }
+
+        //source
+        String recordLocation = recordLocation(state, record);
+        person.addImportSource(null, null, state.getConfig().getSourceReference(), recordLocation);
 
         return person;
     }
