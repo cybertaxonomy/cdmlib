@@ -89,9 +89,22 @@ public class RisReferenceImport
                 next = risReader.readRecord();
             }
 
-
-            getReferenceService().saveOrUpdate(referencesToSave);
+            //TODO handle result counts more generic
             state.getResult().addNewRecords(Reference.class.getSimpleName(), referencesToSave.size());
+            for (Reference ref : referencesToSave){
+                if (ref.getAuthorship() != null && !ref.getAuthorship().isPersited()){
+                    TeamOrPersonBase<?> newAuthor = ref.getAuthorship();
+                    state.getResult().addNewRecord(newAuthor);
+                    if (newAuthor instanceof Team){
+                        for (Person member : ((Team)newAuthor).getTeamMembers()){
+                            if (!member.isPersited()){
+                                state.getResult().addNewRecord(member);
+                            }
+                        }
+                    }
+                }
+            }
+            getReferenceService().saveOrUpdate(referencesToSave);
 
         } catch (Exception e) {
             String message = "Unexpected exception during RIS Reference Import";

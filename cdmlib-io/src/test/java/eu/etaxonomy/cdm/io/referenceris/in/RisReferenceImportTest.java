@@ -132,6 +132,9 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         ImportResult result = defaultImport.invoke(configurator);
         String report = result.createReport().toString();
         Assert.assertTrue(report.contains("Reference: 2"));
+        Assert.assertTrue(report.contains("Team: 1"));
+        Assert.assertTrue(report.contains("Person: 5"));
+
         Assert.assertEquals(0, result.getErrors().size() + result.getExceptions().size() + result.getWarnings().size());
 
         Integer expected = 2;
