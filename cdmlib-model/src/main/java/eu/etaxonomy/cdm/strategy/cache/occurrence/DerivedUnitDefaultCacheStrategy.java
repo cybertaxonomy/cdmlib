@@ -12,12 +12,14 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -94,9 +96,11 @@ public class DerivedUnitDefaultCacheStrategy
         result = CdmUtils.concat("; ", result, exsiccatum);
 
         //Herbarium & identifier
-        String barcode = getSpecimenLabel(specimen);
-        if (isNotBlank(barcode)) {
-            result = (result + " (" +  barcode + ")").trim();
+        String collectionAndNumber = getSpecimenLabel(specimen);
+        String specimenStatusStr = getSpecimenStatusStr(specimen);
+        collectionAndNumber = CdmUtils.concat(", ", collectionAndNumber, specimenStatusStr);
+        if (isNotBlank(collectionAndNumber)) {
+            result = (result + " (" +  collectionAndNumber + ")").trim();
         }
 
         //result
@@ -109,6 +113,21 @@ public class DerivedUnitDefaultCacheStrategy
         if (addTrailingDot){
             result = CdmUtils.addTrailingDotIfNotExists(result);
         }
+        return result;
+    }
+
+    private String getSpecimenStatusStr(DerivedUnit specimen) {
+        String result = null;
+       // if (!specimen.getStatus().isEmpty()){
+            result = specimen.getStatus()
+                    .stream()
+                    .map(s->s.getType())
+                    .filter(t->t != null)
+                    .map(t->t.getPreferredRepresentation(Language.DEFAULT()).getLabel())
+                    .sorted((s1,s2)->s1.compareTo(s2))
+                    .collect(Collectors.joining(", "));
+
+//        }
         return result;
     }
 
