@@ -17,7 +17,6 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 public interface IPasswordResetService extends IRateLimitedService {
 
-
     /**
      * Create a request token and send it to the user via email.
      *
@@ -42,30 +41,32 @@ public interface IPasswordResetService extends IRateLimitedService {
      * @return A <code>Future</code> for a <code>Boolean</code> flag. The
      *         boolean value will be <code>false</code> in case the max access
      *         rate for this method has been exceeded and a time out has
-     *         occurred. Internal error states that may
-     *         expose sensitive information are intentionally hidden this way
-     *         (see above link to the Forgot_Password_Cheat_Sheet).
+     *         occurred. Internal error states that may expose sensitive
+     *         information are intentionally hidden this way (see above link to
+     *         the Forgot_Password_Cheat_Sheet).
+     * @throws MailException
+     *             in case sending the email has failed
+     * @throws EmailAddressNotFoundException
+     *             in case the provided email address is unknown
+     */
+    ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate)
+            throws MailException, EmailAddressNotFoundException;
+
+    /**
+     *
+     * @param token
+     *            the token string
+     * @param newPassword
+     *            The new password to set
+     * @return A <code>Future</code> for a <code>Boolean</code> flag. The
+     *         boolean value will be <code>false</code> in case the max access
+     *         rate for this method has been exceeded and a time out has
+     *         occurred.
+     * @throws AccountSelfManagementException
+     *             in case an invalid token has been used
      * @throws MailException
      *             in case sending the email has failed
      */
-    ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException;
-
-    /**
-    *
-    * @param token
-    *            the token string
-    * @param newPassword
-    *            The new password to set
-    * @return A <code>Future</code> for a <code>Boolean</code> flag. The
-    *         boolean value will be <code>false</code> in case the max access
-    *         rate for this method has been exceeded and a time out has
-    *         occurred.
-    * @throws AccountSelfManagementException
-    *             in case an invalid token has been used
-    * @throws MailException
-    *             in case sending the email has failed
-    */
     ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException;
-
 
 }
