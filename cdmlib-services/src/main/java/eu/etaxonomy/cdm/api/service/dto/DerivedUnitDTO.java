@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -153,13 +152,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         setPreferredStableUri(derivedUnit.getPreferredStableUri());
 
         // label
-        Collection<FieldUnit> fieldUnits = derivedUnit.collectRootUnits(FieldUnit.class);
-        if (fieldUnits.size() == 1) {
-            setSummaryLabel(fieldUnits.iterator().next().getTitleCache());
-        }
-        else{
-            setSummaryLabel("No Citation available. This specimen either has no or multiple field units.");
-        }
+        setSummaryLabel(derivedUnit.getTitleCache());
 
         // character state data
         if(derivedUnit.characterData() != null) {
