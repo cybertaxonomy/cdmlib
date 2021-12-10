@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,6 +96,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      * @return
      *  The DTO
      */
+    @SuppressWarnings("rawtypes")
     public static DerivedUnitDTO fromEntity(DerivedUnit entity, Integer maxDepth,
             EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter){
 
@@ -111,7 +113,29 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         //      this data is is often only required for clients in order to show the details of the derivation tree
         dto.addAllDerivatives(dto.assembleDerivatives(entity, maxDepth, specimenOrObservationTypeFilter));
 
+        // ---- annotations
+        dto.collectOriginals(entity, new HashSet<SpecimenOrObservationBase>())
+            .forEach(o -> o.getAnnotations()
+                    .forEach(a -> dto.addAnnotation(AnnotationDTO.fromEntity(a))
+                            )
+                    );
         return dto;
+    }
+
+    /**
+     * Collects all originals from the given <code>entity</code> to the root of the
+     * derivation graph including the <code>entity</code> itself.
+     *
+     * @param entity
+     *            The DerivedUnit to start the collecting walk
+     */
+    private Set<SpecimenOrObservationBase> collectOriginals(SpecimenOrObservationBase entity, Set<SpecimenOrObservationBase> originalsToRoot) {
+        originalsToRoot.add(entity);
+        SpecimenOrObservationBase entityDeproxied = HibernateProxyHelper.deproxy(entity);
+        if (entityDeproxied instanceof DerivedUnit) {
+            ((DerivedUnit)entityDeproxied).getOriginals().forEach(o -> collectOriginals(o, originalsToRoot));
+        }
+        return originalsToRoot;
     }
 
     /**

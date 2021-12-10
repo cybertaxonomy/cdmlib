@@ -11,8 +11,11 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * @author a.kohlbecker
@@ -23,8 +26,9 @@ public class SourceDTO implements Serializable{
     private static final long serialVersionUID = -3314135226037542122L;
 
     private UUID uuid;
+    protected String label;
     String citationDetail;
-    ReferenceDTO citation;
+    TypedEntityReference<Reference> citation;
 
     public static SourceDTO fromDescriptionElementSource(NamedSourceBase entity) {
         if(entity == null) {
@@ -32,7 +36,8 @@ public class SourceDTO implements Serializable{
         }
         SourceDTO dto = new SourceDTO();
         dto.uuid = entity.getUuid();
-        dto.citation = ReferenceDTO.fromReference(entity.getCitation());
+        dto.label = OriginalSourceFormatter.INSTANCE.format(entity);
+        dto.citation = TypedEntityReference.fromEntity(entity.getCitation(), false);
         dto.citationDetail = entity.getCitationMicroReference();
         return dto;
     }
@@ -58,12 +63,12 @@ public class SourceDTO implements Serializable{
         this.uuid = uuid;
     }
 
-    public ReferenceDTO getCitation() {
+    public TypedEntityReference<Reference> getCitation() {
         return citation;
     }
 
 
-    public void setCitation(ReferenceDTO citation) {
+    public void setCitation(TypedEntityReference<Reference> citation) {
         this.citation = citation;
     }
 
