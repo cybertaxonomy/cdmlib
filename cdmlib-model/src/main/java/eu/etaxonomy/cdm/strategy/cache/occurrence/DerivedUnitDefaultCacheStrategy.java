@@ -48,7 +48,10 @@ public class DerivedUnitDefaultCacheStrategy
 
     private boolean skipFieldUnit = false;
     private boolean addTrailingDot = false;
+    //according to #6865 deduplication is usually not wanted
     private boolean deduplicateCollectionCodeInNumber = false;
+    private String collectionAccessionSeperator = ": ";
+
 
     private static final FieldUnitDefaultCacheStrategy fieldUnitCacheStrategy
         = FieldUnitDefaultCacheStrategy.NewInstance(false, false);
@@ -59,7 +62,13 @@ public class DerivedUnitDefaultCacheStrategy
 
     public static DerivedUnitDefaultCacheStrategy NewInstance(boolean skipFieldUnit, boolean addTrailingDot,
             boolean deduplicateCollectionCodeInNumber){
-        return new DerivedUnitDefaultCacheStrategy(skipFieldUnit, addTrailingDot, deduplicateCollectionCodeInNumber);
+        return new DerivedUnitDefaultCacheStrategy(skipFieldUnit, addTrailingDot, deduplicateCollectionCodeInNumber, null);
+    }
+
+    public static DerivedUnitDefaultCacheStrategy NewInstance(boolean skipFieldUnit, boolean addTrailingDot,
+            boolean deduplicateCollectionCodeInNumber, String collectionAccessionSeperator){
+        return new DerivedUnitDefaultCacheStrategy(skipFieldUnit, addTrailingDot, deduplicateCollectionCodeInNumber,
+                collectionAccessionSeperator);
     }
 
 //******************************* CONSTRUCTOR *******************************************/
@@ -69,10 +78,13 @@ public class DerivedUnitDefaultCacheStrategy
 
 
     private DerivedUnitDefaultCacheStrategy(boolean skipFieldUnit, boolean addTrailingDot,
-            boolean deduplicateCollectionCodeInNumber) {
+            boolean deduplicateCollectionCodeInNumber, String collectionAccessionSeperator) {
         this.skipFieldUnit = skipFieldUnit;
         this.addTrailingDot = addTrailingDot;
         this.deduplicateCollectionCodeInNumber = deduplicateCollectionCodeInNumber;
+        if (collectionAccessionSeperator != null){
+            this.collectionAccessionSeperator = collectionAccessionSeperator;
+        }
     }
 
 //******************************* METHODS ***************************************************/
@@ -118,7 +130,7 @@ public class DerivedUnitDefaultCacheStrategy
 
     private String getSpecimenStatusStr(DerivedUnit specimen) {
         String result = null;
-       // if (!specimen.getStatus().isEmpty()){
+        if (!specimen.getStatus().isEmpty()){
             result = specimen.getStatus()
                     .stream()
                     .map(s->s.getType())
@@ -126,8 +138,7 @@ public class DerivedUnitDefaultCacheStrategy
                     .map(t->t.getPreferredRepresentation(Language.DEFAULT()).getLabel())
                     .sorted((s1,s2)->s1.compareTo(s2))
                     .collect(Collectors.joining(", "));
-
-//        }
+        }
         return result;
     }
 
@@ -180,12 +191,11 @@ public class DerivedUnitDefaultCacheStrategy
      * accession number or barcode.
      */
     public String getSpecimenLabel(DerivedUnit derivedUnit) {
-        String code = getCode(derivedUnit);
+        String code = getCollectionCode(derivedUnit);
         String identifier = getUnitNumber(derivedUnit /*, code*/);
-        String collectionData = CdmUtils.concat(": ", code, identifier);
+        String collectionData = CdmUtils.concat(collectionAccessionSeperator, code, identifier);
         return collectionData;
     }
-
 
     /**
      * Computes the unit number which might be an accession number, barcode, catalogue number, ...
@@ -203,7 +213,7 @@ public class DerivedUnitDefaultCacheStrategy
             result = derivedUnit.getCatalogNumber();
         }
         if(deduplicateCollectionCodeInNumber){
-            String code = getCode(derivedUnit);
+            String code = getCollectionCode(derivedUnit);
             if(result != null){
                 result = result.trim();
                 if(isNotBlank(code) && result.startsWith(code + " ")){
@@ -214,7 +224,7 @@ public class DerivedUnitDefaultCacheStrategy
         return result;
     }
 
-    private String getCode(DerivedUnit derivedUnit) {
+    private String getCollectionCode(DerivedUnit derivedUnit) {
         String code = "";
         if(derivedUnit.getCollection() != null){
             code = derivedUnit.getCollection().getCode();

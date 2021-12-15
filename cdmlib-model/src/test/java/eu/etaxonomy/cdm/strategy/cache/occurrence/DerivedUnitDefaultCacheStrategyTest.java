@@ -35,7 +35,10 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.OccurrenceStatus;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
@@ -174,6 +177,18 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         collection.setCode(null);
         collection.setName("Herbarium Berolinense");
         Assert.assertEquals(correctCache.replace("B: 8909756", "Herbarium Berolinense: 8909756"), specimen.getTitleCache());
+
+        //test status
+        collection.setCode("B");
+        Reference statusSource = ReferenceFactory.newBook(); //TODO not yet handled in cache strategy as we do not have tagged text here
+        statusSource.setTitle("Status test");
+        specimen.addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
+        Assert.assertEquals(correctCache.replace("8909756", "8909756, destroyed"), specimen.getTitleCache());
+
+        //test 2 status
+        specimen.addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidLost), statusSource, "335"));
+        Assert.assertEquals(correctCache.replace("8909756", "8909756, destroyed, lost"), specimen.getTitleCache());
+
     }
 
     @Test
