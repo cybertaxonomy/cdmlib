@@ -60,9 +60,9 @@ public class TypeDesignationSetFormatter {
     private static final String POST_STATUS_SEPARATOR = ": ";
     private static final String POST_NAME_SEPARTOR = UTF8.EN_DASH_SPATIUM.toString();
 
-    boolean withCitation;
-    boolean withStartingTypeLabel;
-    boolean withNameIfAvailable;
+    private boolean withCitation;
+    private boolean withStartingTypeLabel;
+    private boolean withNameIfAvailable;
 
     public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable) {
@@ -152,7 +152,6 @@ public class TypeDesignationSetFormatter {
         finalBuilder.addAll(workingsetBuilder);
         return;
     }
-
 
     /**
      * Checks if the baseType is the same as the (only?) type in the type designation workingset.
@@ -339,7 +338,6 @@ public class TypeDesignationSetFormatter {
 
     private static void buildTaggedTextForSpecimenTypeDesignation(SpecimenTypeDesignation td, boolean useTitleCache,
             TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntity) {
-
 
         if(useTitleCache){
             String typeDesigTitle = "";

@@ -170,6 +170,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 
     @Test
     public void testNameTypeDesignationTaggedText() throws RegistrationValidationException {
+
         @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> tds = new ArrayList<>();
         tds.add(ntd);
