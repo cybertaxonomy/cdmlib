@@ -1206,7 +1206,8 @@ public class OccurrenceServiceImpl
                 if (derivationEvent.getDerivatives().contains(specimen) && specimen.isInstanceOf(DerivedUnit.class)) {
                     derivationEvent.removeDerivative(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
                     if (derivationEvent.getDerivatives().isEmpty()) {
-                        Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
+                        Set<SpecimenOrObservationBase> originals = new HashSet<>();
+                        originals.addAll(derivationEvent.getOriginals());
                         for (SpecimenOrObservationBase specimenOrObservationBase : originals) {
                             specimenOrObservationBase.removeDerivationEvent(derivationEvent);
                             deleteResult.addUpdatedObject(specimenOrObservationBase);
