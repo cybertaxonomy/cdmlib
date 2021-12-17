@@ -421,7 +421,7 @@ public class ManifestComposer {
             }
             if (part.getUri() != null) {
                 try {
-                    CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(part.getUri());
+                    CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfo(part.getUri(), true);
                     Map<String, String> result = cdmImageInfo.getMetaData();
                     if(result != null){
                         for (String key : result.keySet()) {

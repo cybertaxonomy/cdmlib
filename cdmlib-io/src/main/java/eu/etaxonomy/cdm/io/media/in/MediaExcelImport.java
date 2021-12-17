@@ -223,7 +223,7 @@ public class MediaExcelImport
             CdmImageInfo cdmImageInfo = null;
             try {
                 if (state.getConfig().isReadMediaData()){
-                    cdmImageInfo = getMediaInfoFactory().cdmImageInfo(uri);
+                    cdmImageInfo = getMediaInfoFactory().cdmImageInfo(uri, false);
                 }
             } catch (Exception e) {
                 String message = "An error occurred when trying to read image meta data for %s. Image was created but without metadata.";

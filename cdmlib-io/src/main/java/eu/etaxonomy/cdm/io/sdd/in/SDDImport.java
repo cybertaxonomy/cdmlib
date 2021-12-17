@@ -1599,7 +1599,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 							try{
 								URL url = new URL(href);
 
-								imageMetaData = getMediaInfoFactory().cdmImageInfo(URI.fromUrl(url));
+								imageMetaData = getMediaInfoFactory().cdmImageInfo(URI.fromUrl(url), false);
 								image = ImageFile.NewInstance(URI.fromUrl(url), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
@@ -1612,7 +1612,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 							File parent = f.getParentFile();
 							String fi = parent.toString() + File.separator + href;
 							File file = new File(fi);
-							imageMetaData = getMediaInfoFactory().cdmImageInfo(new URI(fi)); //file
+							imageMetaData = getMediaInfoFactory().cdmImageInfo(new URI(fi), false); //file
 							image = ImageFile.NewInstance(URI.fromFile(file), null, imageMetaData);
 						}
 						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);

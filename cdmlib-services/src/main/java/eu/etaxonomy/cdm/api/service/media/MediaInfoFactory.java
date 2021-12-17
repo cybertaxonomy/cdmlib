@@ -42,7 +42,7 @@ public class MediaInfoFactory implements IMediaInfoFactory {
      * the image metadata from the file itself.
      */
     @Override
-    public CdmImageInfo cdmImageInfoWithMetaData(URI imageUri) throws IOException, HttpException {
+    public CdmImageInfo cdmImageInfo(URI imageUri, boolean forceMetaData) throws IOException, HttpException {
 
         List<URI> metadataServiceURIs = applyURITransformations(imageUri);
         if(!metadataServiceURIs.isEmpty()) {
@@ -52,10 +52,10 @@ public class MediaInfoFactory implements IMediaInfoFactory {
                     .getCdmImageInfo();
         } else {
             // :-( need to use the files reader
-            return new MediaInfoFileReader(imageUri)
-                   .readBaseInfo()
-                   .readMetaData()
-                   .getCdmImageInfo();
+            MediaInfoFileReader mediaReader = new MediaInfoFileReader(imageUri)
+                   .readBaseInfo();
+            AbstactMediaMetadataReader reader = forceMetaData ? mediaReader.readMetaData() : mediaReader;
+            return reader.getCdmImageInfo();
         }
     }
 
@@ -64,22 +64,5 @@ public class MediaInfoFactory implements IMediaInfoFactory {
         processor.addAll(mediaInfoService_1_0_Transformations);
         List<URI> metadataServiceURIs = processor.applyTo(imageUri);
         return metadataServiceURIs;
-    }
-
-    @Override
-    public CdmImageInfo cdmImageInfo(URI imageUri) throws IOException, HttpException {
-
-        List<URI> metadataServiceURIs = applyURITransformations(imageUri);
-        // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
-        if(!metadataServiceURIs.isEmpty()) {
-            return new MediaInfoServiceReader(imageUri, metadataServiceURIs.get(0))
-                    .read()
-                    .getCdmImageInfo();
-        } else {
-            // :-( need to use the files reader
-            return new MediaInfoFileReader(imageUri)
-                   .readBaseInfo()
-                   .getCdmImageInfo();
-        }
     }
 }

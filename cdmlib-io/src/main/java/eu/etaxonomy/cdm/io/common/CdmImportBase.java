@@ -1435,7 +1435,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         try {
         	if (readMediaData){
         		logger.info("Read media data from: " + uri);
-        		cdmImageInfo = getMediaInfoFactory().cdmImageInfo(uri);
+        		cdmImageInfo = getMediaInfoFactory().cdmImageInfo(uri, false);
         	}
         } catch (Exception e) {
         	String message = "An error occurred when trying to read image meta data for " + uri.toString() + ": " +  e.getMessage();

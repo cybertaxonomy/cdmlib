@@ -51,7 +51,7 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
     @Test
     public void readMediaInfoViaFileReader() throws IOException, HttpException {
         assertTrue(((MediaInfoFactory)mediaInfoFactory).applyURITransformations(notTransformableURI).isEmpty());
-        CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(notTransformableURI);
+        CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfo(notTransformableURI, true);
         assertNotNull(cdmImageInfo);
         assertEquals(225, cdmImageInfo.getHeight());
         assertEquals(300, cdmImageInfo.getWidth());
@@ -61,7 +61,7 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
     public void readMediaInfoViaServiceReaderScalerAPI() throws IOException, HttpException, URISyntaxException {
         assertEquals(1, ((MediaInfoFactory)mediaInfoFactory).applyURITransformations(transformableURI_ScalerAPI).size());
         if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
-            CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(transformableURI_ScalerAPI);
+            CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfo(transformableURI_ScalerAPI, true);
             assertNotNull(cdmImageInfo);
             assertEquals(954, cdmImageInfo.getHeight());
             assertEquals(1400, cdmImageInfo.getWidth());
@@ -85,7 +85,7 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
     public void readMediaInfoViaServiceReaderIIIF_API() throws IOException, HttpException, URISyntaxException {
         assertEquals(1, ((MediaInfoFactory)mediaInfoFactory).applyURITransformations(transformableURI_IIIF_API).size());
         if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
-            CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(transformableURI_IIIF_API);
+            CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfo(transformableURI_IIIF_API, true);
             assertNotNull(cdmImageInfo);
             assertEquals(2592, cdmImageInfo.getHeight());
             assertEquals(3456, cdmImageInfo.getWidth());

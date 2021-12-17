@@ -22,12 +22,12 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 public interface IMediaInfoFactory {
 
     /**
-     * This method only exists due to performance issues for cases when
-     * the {@link MediaInfoFileReader} to reduce the overhead imposed by reading
-     * the image metadata from the file itself.
+     * Reads the image metadata by first trying to read it first from a metadata service.
+     * If this is not possible it reads it by downloading the file.
+     *
+     * @param imageUri the image uri
+     * @param forceMetaData if true reading metadata additional metadata reading is forced even if not performant
      */
-    public CdmImageInfo cdmImageInfoWithMetaData(URI imageUri) throws IOException, HttpException;
-
-    public CdmImageInfo cdmImageInfo(URI imageUri) throws IOException, HttpException;
+    public CdmImageInfo cdmImageInfo(URI imageUri, boolean forceMetaData) throws IOException, HttpException;
 
 }
