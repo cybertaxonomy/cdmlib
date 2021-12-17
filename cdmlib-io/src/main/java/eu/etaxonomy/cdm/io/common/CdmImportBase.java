@@ -1427,12 +1427,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 	}
 
-    /**
-     * @param uriString
-     * @param readMediaData
-     * @return
-     * @throws URISyntaxException
-     */
     private MediaRepresentation makeMediaRepresentation(String uriString, boolean readMediaData) throws URISyntaxException {
         uriString = uriString.replace(" ", "%20");  //replace whitespace
         CdmImageInfo cdmImageInfo = null;

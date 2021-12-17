@@ -1567,7 +1567,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 		if (elMediaObjects != null) {
 			// <MediaObject id="m1">
-			List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
 			int j = 0;
 			for (Element elMO : listMediaObjects){
 

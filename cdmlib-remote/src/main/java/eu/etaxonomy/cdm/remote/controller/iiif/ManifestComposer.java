@@ -442,7 +442,6 @@ public class ManifestComposer {
         List<MetadataEntry> metadata = new ArrayList<>();
         List<Language> languages = LocaleContext.getLanguages();
 
-
         if(media.getTitle() != null){
             // TODO get localized titleCache
             metadata.add(new MetadataEntry("Title", media.getTitleCache()));

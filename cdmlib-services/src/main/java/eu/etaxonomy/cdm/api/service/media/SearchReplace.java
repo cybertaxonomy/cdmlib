@@ -63,4 +63,11 @@ public class SearchReplace {
         return searchPattern;
     }
 
+    @Override
+    public String toString() {
+        return "SearchReplace [replace=" + replace + ", search=" + search + ", searchPattern=" + searchPattern + "]";
+    }
+
+
+
 }

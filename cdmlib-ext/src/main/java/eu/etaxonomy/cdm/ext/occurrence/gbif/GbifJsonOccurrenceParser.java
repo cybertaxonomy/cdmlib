@@ -410,16 +410,12 @@ public class GbifJsonOccurrenceParser {
                     //http://ww2.bgbm.org/herbarium/images/B/-W/08/53/B_-W_08537%20-00%201__3.jpg
                     JSONArray multimediaArray = record.getJSONArray(MULTIMEDIA);
                     JSONObject mediaRecord;
-                    Media media;
-                    URI uri = null;
-                    CdmImageInfo imageInf = null;
-                    MediaRepresentation representation = null;
                     SpecimenOrObservationType type = null;
                     for(Object object:multimediaArray){
                         //parse every record
-                       media = Media.NewInstance();
-                       uri = null;
-                       imageInf = null;
+                        Media media = Media.NewInstance();
+                        URI uri = null;
+                        CdmImageInfo imageInf = null;
 
                         if(object instanceof JSONObject){
                             mediaRecord = (JSONObject) object;
@@ -449,7 +445,7 @@ public class GbifJsonOccurrenceParser {
                             }
                         }
                         ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInf);
-                        representation = MediaRepresentation.NewInstance();
+                        MediaRepresentation representation = MediaRepresentation.NewInstance();
 
                         representation.addRepresentationPart(imageFile);
                         media.addRepresentation(representation);
