@@ -23,10 +23,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-    <dependency>
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>
       <!-- classifier required as json-lib exists on maven central as json-lib-2.4-jdk15.jar and xxx-jdk13.jar, see 9887 -->
