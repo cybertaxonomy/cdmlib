@@ -41,14 +41,14 @@
     <httpcomponents.version>4.5.13</httpcomponents.version>
     <doxia.version>1.9.1</doxia.version>                <!-- checked 2020-08 -->
     <poi.version>4.1.2</poi.version>                    <!-- checked 2020-08 -->
-    <jackson.version>2.11.2</jackson.version>           <!-- checked 2020-08 -->
+    <jackson.version>2.13.1</jackson.version>           <!-- checked 2021-12 -->
 	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2020-08 -->
 	<slf4j.version>1.7.30</slf4j.version>               <!-- checked 2020-08 -->
 	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
 	<cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.6</aspectj.version>            <!-- checked 2020-08 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
-    <dozer.version>6.5.0</dozer.version>                <!-- checked 2021-02 -->
+    <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
     <javax.mail.version>1.5.6</javax.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
     <javadoc.opts>-Xdoclint:none</javadoc.opts>         
   </properties>
@@ -1217,7 +1217,7 @@
       <dependency> <!-- required by cdmlib-print -->
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>fop</artifactId>
-        <version>2.5</version>
+        <version>2.6</version>
       </dependency>
       <dependency>
         <groupId>org.odftoolkit</groupId>
@@ -1228,7 +1228,7 @@
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>29.0-jre</version>
+          <version>31.0.1-jre</version>
       </dependency>
       <!-- last jdom 1.x version -->
 	  <dependency>
@@ -1536,7 +1536,7 @@
       <dependency>
         <groupId>com.itextpdf</groupId>
         <artifactId>itextpdf</artifactId>
-        <version>5.5.13.1</version>
+        <version>5.5.13.2</version>
         <scope>compile</scope>
       </dependency>
       <!-- AptView -->
