@@ -100,7 +100,7 @@
       <name>Andreas Kohlbecker</name>
       <email>a.kohlbecker [at] bgbm.org</email>
       <organization>Botanical Garden Botanical Museum Berlin</organization>
-      <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+      <organizationUrl>https://www.bgbm.org/en/biodiversity-informatics</organizationUrl>
       <timezone>+1</timezone>
       <roles>
         <role>Architect</role>
@@ -114,7 +114,7 @@
       <name>Katja Luther</name>
       <email>k.luther [at] bgbm.org</email>
       <organization>Botanical Garden Botanical Museum Berlin</organization>
-      <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+      <organizationUrl>https://www.bgbm.org/en/biodiversity-informatics</organizationUrl>
       <timezone>+1</timezone>
       <roles>
         <role>Java Developer</role>
@@ -126,7 +126,7 @@
       <name>Andreas Müller</name>
       <email>a.mueller [at] bgbm.org</email>
       <organization>Botanical Garden Botanical Museum Berlin</organization>
-      <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+      <organizationUrl>https://www.bgbm.org/en/biodiversity-informatics</organizationUrl>
       <timezone>+1</timezone>
       <roles>
         <role>Architect</role>
