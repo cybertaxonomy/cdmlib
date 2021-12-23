@@ -68,7 +68,7 @@ public class RegistrationDTO {
 
     private Set<TypedEntityReference<Registration>> blockedBy;
 
-    private List<TaggedText> summaryTaggedText;
+    private List<TaggedText> summaryTaggedText = new ArrayList<>();
 
     private String nomenclaturalCitationString;
 
@@ -100,21 +100,22 @@ public class RegistrationDTO {
             citationDetail = publishedUnit.getCitationMicroReference();
         }
 
-        switch(registrationType) {
+        switch (registrationType) {
         case EMPTY:
             summary = "BLANK REGISTRATION";
-            summaryTaggedText = Arrays.asList(new TaggedText(TagEnum.label, summary));
+            summaryTaggedText.addAll(Arrays.asList(new TaggedText(TagEnum.label, summary)));
             break;
         case NAME:
             summary = reg.getName().getTitleCache();
-            summaryTaggedText = reg.getName().getTaggedName();
+            summaryTaggedText.addAll(reg.getName().getTaggedName());
             break;
         case NAME_AND_TYPIFICATION:
         case TYPIFICATION:
         default:
             try {
                 typeDesignationManager = new TypeDesignationSetManager(reg.getTypeDesignations());
-                summaryTaggedText = new TypeDesignationSetFormatter(false, true, true).toTaggedText(typeDesignationManager);
+                summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true)
+                        .toTaggedText(typeDesignationManager));
                 summary = TaggedCacheHelper.createString(summaryTaggedText);
             } catch (RegistrationValidationException e) {
                 validationProblems.add("Validation errors: " + e.getMessage());
