@@ -39,7 +39,7 @@
 	<unitils.version>3.4.6</unitils.version>
     <hsqldb.version>2.5.1</hsqldb.version>
     <httpcomponents.version>4.5.13</httpcomponents.version>
-    <doxia.version>1.11.1</doxia.version>                <!-- checked 2020-08 -->
+    <doxia.version>1.11.1</doxia.version>                <!-- checked 2021-12 -->
     <poi.version>4.1.2</poi.version>                    <!-- checked 2020-08 -->
     <jackson.version>2.13.1</jackson.version>           <!-- checked 2021-12 -->
 	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2020-08 -->
