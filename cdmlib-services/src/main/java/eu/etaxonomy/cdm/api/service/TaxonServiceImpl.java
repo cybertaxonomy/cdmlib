@@ -1591,6 +1591,8 @@ public class TaxonServiceImpl
 
         result.addUpdatedObject(oldTaxon);
         result.addUpdatedObject(newTaxon);
+        result.addUpdatedObject(homotypicGroup);
+        result.addUpdatedObject(synonym);
         saveOrUpdate(oldTaxon);
         saveOrUpdate(newTaxon);
 
