@@ -1206,6 +1206,9 @@ public class TaxonNodeServiceImpl
         TaxonNodeDto commonParent = null;
         List<String> treePath = null;
         for (TaxonNodeDto nodeDto : nodes) {
+            if (nodeDto == null){
+                continue;
+            }
             String nodeTreeIndex = nodeDto.getTreeIndex();
             nodeTreeIndex = nodeTreeIndex.replaceFirst("#", "");
             String[] split = nodeTreeIndex.split("#");
