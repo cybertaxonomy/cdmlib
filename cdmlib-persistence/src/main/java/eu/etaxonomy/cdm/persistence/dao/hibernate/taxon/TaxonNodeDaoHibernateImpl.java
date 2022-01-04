@@ -233,7 +233,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     private Query createQueryForUuidAndTitleCache(Integer limit, UUID classificationUuid, String pattern, boolean includeDoubtful){
         String doubtfulPattern = "";
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + " node.uuid, node.id, t.titleCache, rank, parent.uuid"
+                + " node.uuid, node.id, node.treeIndex, t.uuid, t.titleCache, rank, parent.uuid"
                 + ") "
                 + " FROM TaxonNode AS node "
                 + "   JOIN node.taxon as t " // FIXME why not inner join here?
@@ -1176,9 +1176,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid) {
 
         String queryString = getTaxonNodeDtoQuery();
-        queryString += " WHERE t.uuid LIKE :uuid ";
+        queryString += " WHERE tn.uuid = :uuid ";
         Query query =  getSession().createQuery(queryString);
-        query.setParameter("uuid", nodeUuid.toString());
+        query.setParameter("uuid", nodeUuid);
 
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
@@ -1192,7 +1192,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     private String getTaxonNodeDtoQuery() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, t.titleCache, name.titleCache, rank, p.uuid "
+                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid "
                 + ") "
                 + " FROM TaxonNode tn "
                 + "   INNER JOIN tn.taxon AS t "
@@ -1230,7 +1230,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         List<TaxonNodeDto> nodeDtos = new ArrayList<>();
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         for(SortableTaxonNodeQueryResult queryDTO : result){
-            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex(), queryDTO.getParentNodeUuid());
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex(), queryDTO.getParentNodeUuid());
             nodeDtos.add(nodeDto);
         }
         return nodeDtos;
