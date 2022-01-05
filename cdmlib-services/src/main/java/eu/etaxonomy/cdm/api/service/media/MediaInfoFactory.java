@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpException;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -24,6 +25,8 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
  */
 @Component
 public class MediaInfoFactory implements IMediaInfoFactory {
+
+    private static final Logger logger = Logger.getLogger(MediaInfoFactory.class);
 
     /**
      * TODO needs to be managed in CDM PREFERENCES per service and version.
@@ -47,16 +50,21 @@ public class MediaInfoFactory implements IMediaInfoFactory {
         List<URI> metadataServiceURIs = applyURITransformations(imageUri);
         if(!metadataServiceURIs.isEmpty()) {
             // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
-            return new MediaInfoServiceReader(imageUri, metadataServiceURIs.get(0))
-                    .read()
-                    .getCdmImageInfo();
-        } else {
-            // :-( need to use the files reader
-            MediaInfoFileReader mediaReader = new MediaInfoFileReader(imageUri)
-                   .readBaseInfo();
-            AbstactMediaMetadataReader reader = forceMetaData ? mediaReader.readMetaData() : mediaReader;
-            return reader.getCdmImageInfo();
+            try {
+                return new MediaInfoServiceReader(imageUri, metadataServiceURIs.get(0))
+                        .read()
+                        .getCdmImageInfo();
+            } catch (Exception e) {
+                logger.warn("Meta data could not be read from meta data service: " + imageUri.toString());
+                //if an exception occurs read data from original file
+            }
         }
+
+        // :-( need to use the files reader
+        MediaInfoFileReader mediaReader = new MediaInfoFileReader(imageUri).readBaseInfo();
+        AbstactMediaMetadataReader reader = forceMetaData ? mediaReader.readMetaData() : mediaReader;
+        return reader.getCdmImageInfo();
+
     }
 
     protected List<URI> applyURITransformations(URI imageUri) {
