@@ -77,9 +77,7 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             // multiple values for XResolution concatenated
             assertEquals("300; 72", cdmImageInfo.getMetaData().get("XResolution"));
         }
-
     }
-
 
     @Test
     public void readMediaInfoViaServiceReaderIIIF_API() throws IOException, HttpException, URISyntaxException {
@@ -106,12 +104,10 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             assertEquals("23.8.2009", cdmImageInfo.getMetaData().get("Date"));
             assertEquals("N. Kilian", cdmImageInfo.getMetaData().get("Photographer"));
         }
-
     }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // not needed
     }
-
 }
