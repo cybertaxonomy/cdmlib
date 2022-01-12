@@ -69,8 +69,8 @@ public class DistributionAggregationConfiguration
     private DistributionAggregationConfiguration(List<AggregationMode> aggregationModes, List<UUID> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor) {
         super(filter, monitor, aggregationModes);
-        setWithinTaxonSourceMode(AggregationSourceMode.ALL_SAMEVALUE);  //default mode for distribution descriptions
-        setToParentSourceMode(AggregationSourceMode.DESCRIPTION);  //default mode for structured descriptions
+        setWithinTaxonSourceMode(AggregationSourceMode.ALL_SAMEVALUE);  //default mode for distribution aggregations
+        setToParentSourceMode(AggregationSourceMode.NONE);  //default mode for distribution aggregations
 
         this.superAreasUuids = superAreas;
     }
