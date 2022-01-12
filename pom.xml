@@ -37,7 +37,7 @@
     <hibernate-search.version>5.5.2.Final</hibernate-search.version>
     <lucene.version>5.4.1</lucene.version>
 	<unitils.version>3.4.6</unitils.version>
-    <hsqldb.version>2.5.1</hsqldb.version>
+    <hsqldb.version>2.5.1</hsqldb.version>  <!-- upgrade to 2.6.1 "cannot access Server" in LocalHsqldb during compile time -->
     <httpcomponents.version>4.5.13</httpcomponents.version>
     <doxia.version>1.11.1</doxia.version>                <!-- checked 2021-12 -->
     <poi.version>4.1.2</poi.version>                    <!-- checked 2020-08 -->
