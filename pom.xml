@@ -1082,7 +1082,7 @@
         org.docx4j:docx4j:6.0.1 and org.apache.xmlgraphics:fop:1.1 -->
       	<groupId>org.apache.xmlgraphics</groupId>
       	<artifactId>xmlgraphics-commons</artifactId>
-      	<version>2.4</version>
+      	<version>2.6</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
