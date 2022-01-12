@@ -46,7 +46,7 @@
 	<slf4j.version>1.7.30</slf4j.version>               <!-- checked 2020-08 -->
 	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
 	<cglib.version>3.3.0</cglib.version>
-	<aspectj.version>1.9.6</aspectj.version>            <!-- checked 2020-08 -->
+	<aspectj.version>1.9.7</aspectj.version>            <!-- checked 2022-01 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
     <javax.mail.version>1.5.6</javax.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
