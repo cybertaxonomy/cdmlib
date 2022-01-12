@@ -276,6 +276,13 @@ public class NomenclaturalSourceFormatterTest {
         //#6496 don't show pages in nom.ref. citations
         bookSection1.setPages("35-39");
         Assert.assertEquals("in TT., My book, ser. 2: 55. 1975", formatter.format((Reference)bookSection1, detail1));
+        //separator if not a number only
+        // ... letter
+        book1.setSeriesPart("S\u00E9r. 2");
+        Assert.assertEquals("in TT., My book S\u00E9r. 2: 55. 1975", formatter.format((Reference)bookSection1, detail1));
+        // ... not a letter
+        book1.setSeriesPart("-abc2");
+        Assert.assertEquals("in TT., My book-abc2: 55. 1975", formatter.format((Reference)bookSection1, detail1));
     }
 
     @Test

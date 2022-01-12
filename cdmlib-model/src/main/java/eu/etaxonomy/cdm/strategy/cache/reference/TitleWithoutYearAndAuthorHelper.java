@@ -172,9 +172,11 @@ public class TitleWithoutYearAndAuthorHelper {
             seriesPart = refSeriesPart;
             if (isNumeric(refSeriesPart)){
                 seriesPart = prefixBookSeries + blank + seriesPart;
-            }
-            if (needsComma){
+            }else if (needsComma){
                 seriesPart = comma + seriesPart;
+            }else if (seriesPart.matches("^\\p{L}.*")){ //
+                //for characters we expect a space
+                seriesPart = " " + seriesPart;
             }
             needsComma = true;
         }
