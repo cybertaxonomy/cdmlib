@@ -175,7 +175,7 @@ public class TitleWithoutYearAndAuthorHelper {
             }else if (needsComma){
                 seriesPart = comma + seriesPart;
             }else if (seriesPart.matches("^\\p{L}.*")){ //
-                //for characters we expect a space
+                //for characters at first position we expect a space
                 seriesPart = " " + seriesPart;
             }
             needsComma = true;
