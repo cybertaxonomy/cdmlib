@@ -18,7 +18,7 @@ import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.log4j.Logger;
-import org.hsqldb.Server;
+import org.hsqldb.server.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
