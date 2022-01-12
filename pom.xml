@@ -1555,8 +1555,8 @@
         <!-- managing version of plexus-utils to avoid multiple versions (3.0.15, 1.4.5) of the artifact -->
       	<groupId>org.codehaus.plexus</groupId>
       	<artifactId>plexus-utils</artifactId>
-      	<version>3.3.0</version>
-        <!-- checked 2020-08 -->
+      	<version>3.4.1</version>
+        <!-- checked 2022-01 -->
       </dependency>
       <!-- swagger (rest service doc) -->
       <dependency>
