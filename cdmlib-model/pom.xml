@@ -11,79 +11,112 @@
   <description>The domain model java implementation of EDIT's Common Data Model</description>
 
   <build>
-	<pluginManagement>
-	    <plugins>
-	      <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-antrun-plugin</artifactId>
-	        <executions>
-	          <execution>
-	            <id>aspectj-main</id>
-	            <phase>process-sources</phase>
-	            <goals>
-	              <goal>run</goal>
-	            </goals>
-	            <configuration>
-	              <target>
-	                <path id="aspectPath" location="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
-	                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
-	                  <classpath refid="maven.plugin.classpath" />
-	                </taskdef>
-	                <iajc verbose="false" source="${java.codelevel}" destDir="target/classes" aspectPathRef="aspectPath">
-	                <!--  see https://www.eclipse.org/aspectj/doc/released/devguide/antTasks-iajc.html#antTasks-iajc-paths -->
-	                <classpath>
-	                    <path refid="maven.compile.classpath" />
-	                    <path refid="maven.plugin.classpath" />
-	                </classpath>
-	                  <sourceroots>
-	                    <pathelement location="src/main/java" />
-	                  </sourceroots>
-	                </iajc>
-	              </target>
-	            </configuration>
-	          </execution>
-	          <execution>
-	            <id>aspectj-test</id>
-	            <phase>process-test-sources</phase>
-	            <goals>
-	              <goal>run</goal>
-	            </goals>
-	            <configuration>
-	              <target>
-	                <path id="aspectPath" location="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
-	                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
-	                  <classpath refid="maven.plugin.classpath" />
-	                </taskdef>
-	                <iajc verbose="false" source="${java.codelevel}" destDir="target/test-classes" aspectPathRef="aspectPath">
-	                <!--  see https://www.eclipse.org/aspectj/doc/released/devguide/antTasks-iajc.html#antTasks-iajc-paths -->
-	                  <classpath>
-	                    <path refid="maven.compile.classpath" />
-	                    <path refid="maven.plugin.classpath" />
-	                    <path refid="maven.test.classpath" />
-	                </classpath>
-	                  <sourceroots>
-	                    <pathelement location="src/test/java" />
-	                  </sourceroots>
-	                </iajc>
-	              </target>
-	          </configuration>
-	        </execution>
-	      </executions>
-	        <dependencies>
-	          <dependency>
-	            <groupId>org.aspectj</groupId>
-	            <artifactId>aspectjtools</artifactId>
-	            <version>${aspectj.version}</version>
-	          </dependency>
-	          <dependency>
-	            <groupId>org.aspectj</groupId>
-	            <artifactId>aspectjrt</artifactId>
-	            <version>${aspectj.version}</version>
-	          </dependency>
-	      </dependencies>
-	      </plugin>
-	    </plugins>
-	</pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>aspectj-main</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <path id="aspectPath" location="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
+                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
+                  <classpath refid="maven.plugin.classpath" />
+                </taskdef>
+                <iajc verbose="false" source="${java.codelevel}" destDir="target/classes" aspectPathRef="aspectPath">
+                <!--  see https://www.eclipse.org/aspectj/doc/released/devguide/antTasks-iajc.html#antTasks-iajc-paths -->
+                <classpath>
+                    <path refid="maven.compile.classpath" />
+                    <path refid="maven.plugin.classpath" />
+                </classpath>
+                  <sourceroots>
+                    <pathelement location="src/main/java" />
+                  </sourceroots>
+                </iajc>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>aspectj-test</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <path id="aspectPath" location="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
+                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
+                  <classpath refid="maven.plugin.classpath" />
+                </taskdef>
+                <iajc verbose="false" source="${java.codelevel}" destDir="target/test-classes" aspectPathRef="aspectPath">
+                <!--  see https://www.eclipse.org/aspectj/doc/released/devguide/antTasks-iajc.html#antTasks-iajc-paths -->
+                  <classpath>
+                    <path refid="maven.compile.classpath" />
+                    <path refid="maven.plugin.classpath" />
+                    <path refid="maven.test.classpath" />
+                </classpath>
+                  <sourceroots>
+                    <pathelement location="src/test/java" />
+                  </sourceroots>
+                </iajc>
+              </target>
+          </configuration>
+        </execution>
+      </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>${aspectj.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
+          </dependency>
+      </dependencies>
+      </plugin>
+    </plugins>
+  	<pluginManagement>
+  		<plugins>
+  			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+  			<plugin>
+  				<groupId>org.eclipse.m2e</groupId>
+  				<artifactId>lifecycle-mapping</artifactId>
+  				<version>1.0.0</version>
+  				<configuration>
+  					<lifecycleMappingMetadata>
+  						<pluginExecutions>
+  							<pluginExecution>
+  								<pluginExecutionFilter>
+  									<groupId>
+  										org.apache.maven.plugins
+  									</groupId>
+  									<artifactId>
+  										maven-antrun-plugin
+  									</artifactId>
+  									<versionRange>
+  										[3.0.0,)
+  									</versionRange>
+  									<goals>
+  										<goal>run</goal>
+  									</goals>
+  								</pluginExecutionFilter>
+  								<action>
+  									<ignore></ignore>
+  								</action>
+  							</pluginExecution>
+  						</pluginExecutions>
+  					</lifecycleMappingMetadata>
+  				</configuration>
+  			</plugin>
+  		</plugins>
+  	</pluginManagement>
   </build>
   <dependencies>
     <dependency>
