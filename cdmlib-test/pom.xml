@@ -13,47 +13,49 @@
   <description>EDIT CDM library integration test layer. Some base classes and resources for CDM Library integration testing</description>
 
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                  <!-- Generate DDL for test -->
-                  <!-- Alternatives: http://jpdigital.github.io/hibernate5-ddl-maven-plugin/usage.html, 
-                                     https://webdev.jhuep.com/~jcs/ejava-javaee/coursedocs/content/html/jpa-entitymgrex-dbschemagen.html -->
-                  <!-- manual execution of the below ant task:  -->
-                  <!-- mvn antrun:run@generate-ddl-create       -->
-                  <id>generate-ddl-create</id>
-                  <phase>process-classes</phase>
-                  <goals>
-                      <goal>run</goal>
-                  </goals>
-                  <configuration>
-                      <target>
-                          <delete file="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
-                          <!-- copy template file -->
-                          <copy file="${basedir}/src/main/resources/dbscripts/001-cdm.h2.template.sql" tofile="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
-                                <!-- for directory shortcuts: https://stackoverflow.com/questions/13354531/maven-project-build-directory   but a short cut to /src/main/resources did not work for me -->
-                          <!-- run DdlCreator -->
-                          <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator" fork="false" failonerror="true" classpathref="maven.compile.classpath" /> 
-                      </target>
-                  </configuration>
-              </execution>
-          </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+	<pluginManagement>
+	    <plugins>
+	      <plugin>
+	        <artifactId>maven-antrun-plugin</artifactId>
+	            <executions>
+	              <execution>
+	                  <!-- Generate DDL for test -->
+	                  <!-- Alternatives: http://jpdigital.github.io/hibernate5-ddl-maven-plugin/usage.html, 
+	                                     https://webdev.jhuep.com/~jcs/ejava-javaee/coursedocs/content/html/jpa-entitymgrex-dbschemagen.html -->
+	                  <!-- manual execution of the below ant task:  -->
+	                  <!-- mvn antrun:run@generate-ddl-create       -->
+	                  <id>generate-ddl-create</id>
+	                  <phase>process-classes</phase>
+	                  <goals>
+	                      <goal>run</goal>
+	                  </goals>
+	                  <configuration>
+	                      <target>
+	                          <delete file="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
+	                          <!-- copy template file -->
+	                          <copy file="${basedir}/src/main/resources/dbscripts/001-cdm.h2.template.sql" tofile="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
+	                                <!-- for directory shortcuts: https://stackoverflow.com/questions/13354531/maven-project-build-directory   but a short cut to /src/main/resources did not work for me -->
+	                          <!-- run DdlCreator -->
+	                          <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator" fork="false" failonerror="true" classpathref="maven.compile.classpath" /> 
+	                      </target>
+	                  </configuration>
+	              </execution>
+	          </executions>
+	      </plugin>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-jar-plugin</artifactId>
+	        <version>3.2.0</version>
+	        <executions>
+	          <execution>
+	            <goals>
+	              <goal>test-jar</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	      </plugin>
+	    </plugins>
+	</pluginManagement>
   </build>
   <dependencies>
     <dependency>
