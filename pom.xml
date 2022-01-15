@@ -209,7 +209,8 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-		<version>3.0</version> 
+		<!-- TODO #9919 upgrading to 3.x leads to test failures in model etc. -->
+		<version>2.5.1</version> 
         <configuration>
           <source>${java.codelevel}</source>
           <target>${java.codelevel}</target>
