@@ -512,7 +512,7 @@
           of your source code -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.2</version>
+        <version>3.3.1</version>
       </plugin>
       <plugin>
         <!-- if you use @todo tags to remind you of things to be done (which 
