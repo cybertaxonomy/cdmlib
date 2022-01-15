@@ -258,33 +258,6 @@
     </resources>
     <plugins>
       <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.16</version>
-        <!-- configuration per maven profile -->
-        
-<!--         <configuration> -->
-<!--           <forkCount>3</forkCount> -->
-<!--           <reuseForks>true</reuseForks> -->
-<!--         </configuration> -->
-<!--         <executions> -->
-<!--           <execution> -->
-<!--             <id>default</id> -->
-<!--             <goals> -->
-<!--               <goal>integration-test</goal> -->
-<!--               <goal>verify</goal> -->
-<!--             </goals> -->
-<!--             <configuration> -->
-<!--               <systemPropertyVariables> -->
-<!--                 <cdm.datasource>h2_cdmTest</cdm.datasource> -->
-<!--               </systemPropertyVariables> -->
-<!--               <excludes> -->
-<!--                 <exclude>**/ForceSchemaCreateIT.java</exclude> -->
-<!--               </excludes> -->
-<!--             </configuration> -->
-<!--           </execution> -->
-<!--         </executions> -->
-      </plugin>
-      <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>9.4.15.v20190215</version>
