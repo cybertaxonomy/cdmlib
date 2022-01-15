@@ -21,7 +21,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>5.1.1</version>   <!-- updated 2020-09 -->
+        <version>5.1.4</version>   <!-- updated 2022-01 -->
         <extensions>true</extensions>
         <configuration>
           <instructions>
