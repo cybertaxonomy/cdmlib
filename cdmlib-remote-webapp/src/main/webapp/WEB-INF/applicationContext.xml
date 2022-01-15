@@ -12,7 +12,7 @@
     NOTE: 
     For a detailed overview on the spring MVC and application context configuration and 
     bootstrapping of this web application see: 
-    http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
+    https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
   -->
   
   <context:annotation-config />

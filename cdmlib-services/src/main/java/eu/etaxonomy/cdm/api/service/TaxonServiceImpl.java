@@ -1771,7 +1771,7 @@ public class TaxonServiceImpl
      * Uses org.apache.lucene.search.join.JoinUtil for query time joining, alternatively
      * the BlockJoinQuery could be used. The latter might be more memory save but has the
      * drawback of requiring to do the join an indexing time.
-     * see  http://dev.e-taxonomy.eu/trac/wiki/LuceneNotes#JoinsinLucene for more information on this.
+     * see  https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/LuceneNotes#JoinsinLucene for more information on this.
      *
      * Joins TaxonRelationShip with Taxon depending on the direction of the given edge:
      * <ul>

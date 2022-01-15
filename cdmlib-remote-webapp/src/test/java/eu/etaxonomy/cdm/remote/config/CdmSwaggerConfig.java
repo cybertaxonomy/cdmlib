@@ -23,19 +23,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
+import eu.etaxonomy.cdm.model.CdmAssignableTypeFilter;
+import eu.etaxonomy.cdm.model.CdmTypeScanner;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import eu.etaxonomy.cdm.model.CdmAssignableTypeFilter;
-import eu.etaxonomy.cdm.model.CdmTypeScanner;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * <h3>NOTE:</h3>
  *  For a detailed overview on the spring MVC and application context configuration and
  *  bootstrapping of this web application see:
- *  {@link http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
+ *  {@link https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
  *
  *
  */

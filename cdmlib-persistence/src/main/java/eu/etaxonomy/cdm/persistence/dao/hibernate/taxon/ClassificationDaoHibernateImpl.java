@@ -98,8 +98,8 @@ public class ClassificationDaoHibernateImpl
     }
 
     /**
-     * See <a href="http://dev.e-taxonomy.eu/trac/wiki/CdmClassificationRankSpecificRootnodes">
-     * http://dev.e-taxonomy.eu/trac/wiki/CdmClassificationRankSpecificRootnodes</a>
+     * See <a href="https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmClassificationRankSpecificRootnodes">
+     * https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmClassificationRankSpecificRootnodes</a>
      *
      * @param classification
      * @param rank

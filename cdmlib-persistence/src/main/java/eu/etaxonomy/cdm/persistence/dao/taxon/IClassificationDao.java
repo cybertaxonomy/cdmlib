@@ -36,7 +36,7 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      * associated with the next lower Rank is taken as root node. If the
      * <code>rank</code> is null the absolute root nodes will be returned.
      * <p>
-     * See <a href="http://dev.e-taxonomy.eu/trac/wiki/CdmClassificationRankSpecificRootnodes">http://dev.e-taxonomy.eu/trac/wiki/CdmClassificationRankSpecificRootnodes</a>
+     * See <a href="https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmClassificationRankSpecificRootnodes">https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmClassificationRankSpecificRootnodes</a>
      * <p>
      * Since this method is using two queries which need to be run sequentially
      * the handling of limit and start is more complex and requires the total
