@@ -528,7 +528,7 @@
           quality -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.7</version>
         <!-- <executions> <execution> <id>clean</id> <phase>clean</phase> 
           <goals> <goal>clean</goal> </goals> </execution> </executions> -->
       </plugin>
@@ -954,7 +954,7 @@
       <dependency>
           <groupId>org.checkerframework</groupId>
           <artifactId>checker-qual</artifactId>
-          <version>3.6.0</version>
+          <version>3.21.1</version>
       </dependency>
       <!-- only for version management, poi currently requires 1.6, commons-logging 
         1.1.1 requires 1.6, so we update here to the latest version -->
