@@ -20,7 +20,6 @@
    <dependency>
       <groupId>com.mchange</groupId>
       <artifactId>c3p0</artifactId>
-<!--       <version>0.9.5.5</version> -->
     </dependency>
     <dependency>
         <groupId>com.mchange</groupId>
@@ -74,12 +73,10 @@
 <!--     <dependency> -->
 <!--       <groupId>oracle</groupId> -->
 <!--       <artifactId>ojdbc14</artifactId> -->
-<!--       <version>10.2.0.4.0</version> -->
 <!--     </dependency> -->
     <!-- <dependency>
 		<groupId>ojdbc</groupId>
 		<artifactId>ojdbc</artifactId>
-		<version>14</version>
 	</dependency>   -->
 
   </dependencies>
