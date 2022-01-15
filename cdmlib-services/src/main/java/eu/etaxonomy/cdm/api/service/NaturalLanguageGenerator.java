@@ -36,19 +36,20 @@ import eu.etaxonomy.cdm.model.term.TermNode;
  */
 @Component
 public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NaturalLanguageGenerator.class);
 
 	private String firstSeparator = ",";
 	private String secondSeparator = ".";
-	private List<Integer> levels = new ArrayList<Integer>();
+	private List<Integer> levels = new ArrayList<>();
 
 	private DescriptionBuilder<QuantitativeData> quantitativeDescriptionBuilder = new DefaultQuantitativeDescriptionBuilder();
 	private DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder = new DefaultCategoricalDescriptionBuilder();
 
 	private TextData previousTextData;
 
-	DeltaTextDataProcessor deltaTextDataProcessor = new DeltaTextDataProcessor();
+	private DeltaTextDataProcessor deltaTextDataProcessor = new DeltaTextDataProcessor();
 
 	private Map<String, INaturalLanguageTextDataProcessor> elementProcessors;
 
