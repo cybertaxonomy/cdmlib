@@ -429,7 +429,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>enforce</id>
@@ -897,6 +897,13 @@
         <version>7.0.0</version>
       </dependency>
       <dependency>
+		 <groupId>org.osgi</groupId>
+		 <!-- for those dependencies linking to the old structure 
+			TODO better use exclusion but need to check if this is possible here -->
+         <artifactId>org.osgi.core</artifactId>
+		 <version>6.0.0</version>
+	  </dependency>
+      <dependency>
         <groupId>cglib</groupId>
         <artifactId>cglib-nodep</artifactId>
         <version>${cglib.version}</version>
@@ -974,6 +981,11 @@
         <version>3.4.1.Final</version>
         <!-- checked 2020-08 -->
       </dependency>
+	  <dependency>
+	      <groupId>org.jboss.logging</groupId>
+	      <artifactId>jboss-logging-annotations</artifactId>
+	      <version>2.2.1.Final</version>
+	  </dependency>
 <!-- 	  <dependency> -->
 <!-- 	    see note in cdmib-persistence pom  -->
 <!--         <groupId>javax.transaction</groupId> -->
@@ -1232,6 +1244,11 @@
           <artifactId>guava</artifactId>
           <version>31.0.1-jre</version>
       </dependency>
+	  <dependency>
+	      <groupId>com.google.code.findbugs</groupId>
+	      <artifactId>jsr305</artifactId>
+	      <version>3.0.2</version>
+	  </dependency>
       <!-- last jdom 1.x version -->
 	  <dependency>
         <groupId>org.jdom</groupId>
@@ -1473,6 +1490,14 @@
         <version>4.0.1</version>
         <!-- checked 2020-08 -->
       </dependency>
+      <dependency>
+          <!-- management needed for some older dependencies -->
+          <!-- TODO check if possible to use exclusions -->
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+          <version>2.5</version>
+      </dependency>
+
 
       <!-- yourkit profiler api controller (used in ..) -->
       <dependency>
