@@ -34,7 +34,6 @@
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-test</artifactId>
         <scope>test</scope>
-        <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
