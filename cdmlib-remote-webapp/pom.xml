@@ -134,7 +134,7 @@
       <exclusions>
         <!-- exclude all jdbc drivers from the war. Jdbc drivers must only 
           be added to {APPLICATION_CONTAINER}/lib see https://dev.e-taxonomy.eu/redmine/issues/4955 
-          and http://stackoverflow.com/questions/6981564/why-must-the-jdbc-driver-be-put-in-tomcat-home-lib-folder -->
+          and https://stackoverflow.com/questions/6981564/why-must-the-jdbc-driver-be-put-in-tomcat-home-lib-folder -->
         <exclusion>
           <groupId>eu.etaxonomy</groupId>
           <artifactId>cdmlib-db</artifactId>
