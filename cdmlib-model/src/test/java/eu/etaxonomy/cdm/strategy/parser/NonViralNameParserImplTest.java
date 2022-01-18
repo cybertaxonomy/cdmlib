@@ -1239,7 +1239,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals(strEmpty, nameEmpty.getFullTitleCache());
         assertNull(nameEmpty.getNomenclaturalMicroReference());
 
-
         //Whitespaces
         String strFullWhiteSpcaceAndDot = "Abies alba Mill.,  Sp.   Pl.  4:  455 .  1987 .";
         INonViralName namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, rankSpecies);
@@ -1304,7 +1303,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
         //SoftArticle - having "," on position > 4
         String journalTitle = "Bull. Soc. Bot.France. Louis., Roi";
         String yearPart = " 1987 - 1989";
-        String parsedYear = "1987-1989";
         String parsedYearFormatted = "1987"+SEP+"1989";
         String fullReferenceWithoutYear = "Abies alba Mill. in " + journalTitle + " 4(6): 455.";
         fullReference = fullReferenceWithoutYear + yearPart;
@@ -1700,13 +1698,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
     }
 
-
-
-    /**
-     * @param testParsable
-     * @param icbn
-     * @return
-     */
     private List<ParserProblem> getProblems(String string, NomenclaturalCode code) {
         List<ParserProblem> result = parser.parseReferencedName(string, code, null).getParsingProblems();
         return result;
