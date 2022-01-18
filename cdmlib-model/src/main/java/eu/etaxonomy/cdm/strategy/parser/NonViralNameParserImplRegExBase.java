@@ -19,13 +19,12 @@ import eu.etaxonomy.cdm.common.UTF8;
 /**
  * This class is a base class that separates regex parts of the parser from methods
  * @author a.mueller
- *
  */
 public abstract class NonViralNameParserImplRegExBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImplRegExBase.class);
 
-	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
+	// good regex intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 
     //splitter
     protected static String epiSplitter = "(\\s+|\\(|\\))"; //( ' '+| '(' | ')' )
@@ -181,8 +180,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String detail = pDetailAlternatives;
 
     //reference
-    protected static String bracketVolume = nr4 + "[A-Za-z]?" + "([-\u2013]" + nr4 + ")?\\))?" + "(\\(((\\d{1,2},\\s*)?(Suppl|Beibl|App|Beil|Misc|Vorabdr|Erg|Bih|(Sess\\.\\s*)?Extr|Reimpr|Bibl|Polypet|Litt|Phys|Orchid)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4}|Extra)";
-    protected static String volume =     nr4 + "([-\u2013]"+nr4+")?" + "[A-Za-z]?" + fWs + "(\\("+ bracketVolume + "\\))?";
+    protected static String bracketVolume = "(" + nr4 + "[A-Za-z]?" + "([-\u2013,]\\s*" + nr4 + ")?|" + "((\\d{1,2},\\s*)?(Suppl|Beibl|App|Beil|Misc|Vorabdr|Erg|Bih|(Sess\\.\\s*)?Extr|Reimpr|Bibl|Polypet|Litt|Phys|Orchid)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4}|Extra)){1,2}";
+    protected static String volume =  nr4 + "([-\u2013]"+nr4+")?" + "[A-Za-z]?" + fWs + "(\\("+ bracketVolume + "\\))?";
 //    protected static String volume_old = nr4 + "[A-Za-z]?" + fWs + "(\\("+ nr4 + "[A-Za-z]?" + "([-\u2013]" + nr4 + ")?\\)|[-\u2013]"+nr4+")?" + "(\\(((\\d{1,2},\\s*)?(Suppl|Beibl|App|Beil|Misc|Vorabdr|Erg)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4})\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/redmine/issues/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + "|" +oWs + "&" + oWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters

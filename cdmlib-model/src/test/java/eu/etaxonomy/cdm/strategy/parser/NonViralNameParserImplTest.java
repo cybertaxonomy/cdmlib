@@ -1647,6 +1647,10 @@ public class NonViralNameParserImplTest extends TermTestBase {
         testParsable = "Cichorium intybus subsp. glaucum (Hoffmanns. & Link) Tzvelev in Komarov, Fl. SSSR 29: 17. 1964";
         assertTrue("Reference containing a word in uppercase is not parsable", isParsable(testParsable, ICNAFP));
 
+        testParsable = "Silene broussonetiana Schott ex Webb & Berthel., Hist. Nat. Iles Canaries 3(2,1): 141. 1840";
+        assertTrue("Reference with volume with 2 number in brackets is not parsable", isParsable(testParsable, ICNAFP));
+        testParsable = "Silene broussonetiana Schott ex Webb & Berthel., Hist. Nat. Iles Canaries 3(2, 1): 141. 1840";
+        assertTrue("Reference with volume with 2 number in brackets is not parsable", isParsable(testParsable, ICNAFP));
 
     }
 
