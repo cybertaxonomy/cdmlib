@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -66,7 +67,6 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
@@ -1091,7 +1091,7 @@ public class TaxonServiceImpl
     }
 
     private List<Media> deduplicateMedia(List<Media> taxonMedia) {
-        return CdmUtils.removeIdentical(taxonMedia);
+        return taxonMedia.stream().distinct().collect(Collectors.toList());
     }
 
     @Override

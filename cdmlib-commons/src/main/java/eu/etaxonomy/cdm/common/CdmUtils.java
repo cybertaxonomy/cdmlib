@@ -555,20 +555,4 @@ public class CdmUtils {
         return userFriendlyCamelCase(clazz.getSimpleName());
     }
 
-    public static <T extends Object> List<T> removeIdentical(List<T> list) {
-        if (list == null){
-            return null;
-        }
-        List<T> result = new ArrayList<>();
-        for(T obj : list){
-            if (result.indexOf(obj) >= 0){
-                T existing = result.get(result.indexOf(obj));
-                if (existing == obj){
-                    continue;
-                }
-            }
-            result.add(obj);
-        }
-        return result;
-    }
 }
