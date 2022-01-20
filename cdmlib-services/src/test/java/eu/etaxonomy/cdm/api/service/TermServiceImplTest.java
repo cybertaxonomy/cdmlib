@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.description.TextDataTest;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -255,7 +254,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
      * The HashMap used to implement the MultilanguageText failed in jre1.6_11 b03 win32 to
      * to find existing Language keys.
      * <p>
-     * Initially this test was implemented in {@link TextDataTest#testPreferredLanguageString()} but
+     * Initially this test was implemented in <code>TextDataTest#testPreferredLanguageString()</code> but
      * failed to reproduce the bug in this environment. Therefore it has been additionally implemented as
      * integration test.
      * <p>
