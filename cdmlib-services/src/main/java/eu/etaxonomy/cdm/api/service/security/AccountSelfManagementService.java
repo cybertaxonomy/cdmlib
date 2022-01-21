@@ -83,7 +83,7 @@ public abstract class AccountSelfManagementService implements IRateLimitedServic
             additionalValuesMap = new HashedMap<>();
         }
         if(supportEmailAddress != null) {
-            additionalValuesMap.put("supportEmailAddress", supportEmailAddress);
+            additionalValuesMap.put(CdmConfigurationKeys.MAIL_ADDRESS_SUPPORT, supportEmailAddress);
         }
         if(userName != null) {
             additionalValuesMap.put("userName", userName);
