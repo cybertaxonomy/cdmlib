@@ -29,6 +29,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 
 
 /**
+ * See https://dev.e-taxonomy.eu/redmine/issues/9862
+ *
  * @author a.kohlbecker
  * @since Nov 12, 2021
  */

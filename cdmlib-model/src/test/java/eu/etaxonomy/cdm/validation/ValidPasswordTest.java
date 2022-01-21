@@ -23,6 +23,8 @@ import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.validation.constraint.ValidPasswordValidator;
 
 /**
+ * See https://dev.e-taxonomy.eu/redmine/issues/9862
+ *
  * @author a.mueller
  * @date 21.01.2022
  */
