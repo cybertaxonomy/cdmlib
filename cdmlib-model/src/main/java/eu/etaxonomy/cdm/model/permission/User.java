@@ -48,6 +48,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "User", propOrder = {
@@ -114,6 +116,7 @@ public class User extends CdmBase implements UserDetails {
      */
     @XmlElement(name = "Password")
     @NotAudited
+    @ValidPassword(groups=Level2.class)
     protected String password;
 
 

@@ -20,14 +20,14 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import eu.etaxonomy.cdm.validation.constraint.PasswordConstraintValidator;
+import eu.etaxonomy.cdm.validation.constraint.ValidPasswordValidator;
 
 /**
  * @author a.kohlbecker
  * @since Nov 12, 2021
  */
 @Documented
-@Constraint(validatedBy = PasswordConstraintValidator.class)
+@Constraint(validatedBy = ValidPasswordValidator.class)
 @Target({ TYPE, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
 public  @interface ValidPassword {
