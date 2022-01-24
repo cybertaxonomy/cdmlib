@@ -690,7 +690,7 @@ public class DescriptionDaoImpl
 
     @Override
     public List<SortableTaxonNodeQueryResult> getNodeOfIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid){
-        String selectString = " new " +SortableTaxonNodeQueryResult.class.getName()+"(n.uuid, n.id, t.titleCache, t.name.titleCache, t.name.rank, n.parent.uuid) ";
+        String selectString = " new " +SortableTaxonNodeQueryResult.class.getName()+"(n.uuid, n.id, n.treeIndex, t.uuid, t.titleCache, t.name.titleCache, t.name.rank, n.parent.uuid) ";
         Query query = prepareGetIndividualAssociationForSpecimen(specimenUuid, classificationUuid, selectString);
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> results = query.list();
