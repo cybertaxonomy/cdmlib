@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailException;
+import org.springframework.mail.MailPreparationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -62,15 +63,19 @@ public class PasswordResetService extends AccountSelfManagementService implement
             logger.trace("emailResetToken allowed by rate limiter");
             try {
                 User user = findUser(userNameOrEmail);
-                AbstractRequestToken resetRequest = passwordResetTokenStore.create(user.getEmailAddress(), user);
+                String emailAddress = user.getEmailAddress();
+                if(emailAddress == null) {
+                    throw new MailPreparationException("no email address found for " + userNameOrEmail);
+                }
+                AbstractRequestToken resetRequest = passwordResetTokenStore.create(emailAddress, user);
                 String passwordRequestFormUrl = String.format(passwordRequestFormUrlTemplate, resetRequest.getToken());
                 Map<String, String> additionalValues = new HashMap<>();
                 additionalValues.put("linkUrl", passwordRequestFormUrl);
-                sendEmail(user.getEmailAddress(), user.getUsername(),
+                sendEmail(emailAddress, user.getUsername(),
                         UserAccountEmailTemplates.RESET_REQUEST_EMAIL_SUBJECT_TEMPLATE,
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_BODY_TEMPLATE, additionalValues);
                 logger.info("A password reset request for  " + user.getUsername() + " has been send to "
-                        + user.getEmailAddress());
+                        + emailAddress);
             } catch (EmailAddressNotFoundException e) {
                 throw e;
             } catch (UsernameNotFoundException e) {
