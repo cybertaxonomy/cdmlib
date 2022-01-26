@@ -61,7 +61,6 @@ public class MatchResult {
         public String toString() {
             return "NonMatching [path=" + path + ", matchMode=" + matchMode + "]";
         }
-
     }
 
     private String currentPath = "";

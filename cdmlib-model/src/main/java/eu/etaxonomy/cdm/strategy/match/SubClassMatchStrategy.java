@@ -191,7 +191,7 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
     }
 
     @Override
-    public <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond, boolean failAll)
+    public <U extends IMatchable> MatchResult invoke(U matchFirst, U matchSecond, boolean failAll)
             throws MatchException {
         MatchResult matchResult = new MatchResult();
         invoke(matchFirst, matchSecond, matchResult, false);
