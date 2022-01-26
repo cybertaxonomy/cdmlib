@@ -55,6 +55,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultative '.' at the end
     protected static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultative '.' at the end
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
+    protected static String dashDotWord = dotWord +"([-\\u2013]" + dotWord +")?"; //dotWord with optional separation by "-"
 
     //Words used in an epithet/name part for a TaxonName
     protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\u00FC\\-]+";   //a-z + diaeresis for ieou
@@ -193,11 +194,11 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pSeriesPart = fWs + ",?" + fWs + "(([sS][e\u00E9]r|сер)("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|(Pt|Sect)\\.\\s*\\d{1,2}),?";  //Pt. (Part) and Sect. (Section) currently handled as series part, which is part of title, may be handled different later
 
     protected static String authorPrefix = "(Da(lla)?|Van|La|De)" + oWs; //should not include words allowed in first part of reference title
-    protected static String firstTitleWord = "(?!"+authorPrefix+")" + word + "('\\p{javaLowerCase}*|[-\u2013]"+word+")?"; //word with optional apostrophe in between
+    protected static String firstTitleWord = "(?!"+authorPrefix+")" + word + "('\\p{javaLowerCase}*|\\.?[-\u2013]"+dotWord+")?"; //word with optional apostrophe in between
 
     protected static String singleJournalTitles = "PhytoKeys|PLoS ONE";
     protected static String referenceTitleFirstPart = "(" + firstTitleWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
-    protected static String referenceTitleBase = "("+ referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + quotations + ")"
+    protected static String referenceTitleBase = "("+ referenceTitleFirstPart + "*" + "("+ dashDotWord + "|" + uppercaseWord + "|" + quotations + ")"
                     + "|" +singleJournalTitles + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
     protected static String referenceTitleBaseWithSeries = referenceTitleBase + "("+ pSeriesPart + ")?";
     protected static String referenceTitle = "("+referenceTitleBaseWithSeries +")";

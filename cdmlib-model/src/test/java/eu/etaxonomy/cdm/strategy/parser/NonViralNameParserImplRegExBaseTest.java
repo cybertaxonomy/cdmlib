@@ -47,4 +47,18 @@ public class NonViralNameParserImplRegExBaseTest {
         Assert.assertTrue("2(Suppl.)".matches(volume));
     }
 
+    @Test
+    public void testReferenceTitleBase() {
+        String refTitleBase = "Canad. Field-Naturalist";
+        refTitleBase = NonViralNameParserImplRegExBase.referenceTitleBase;
+
+        Assert.assertTrue("Canad.", "Canad.".matches(refTitleBase));
+        Assert.assertTrue("Canad. Field", "Canad. Field.".matches(refTitleBase));
+        Assert.assertTrue("Canad. Field-Naturalist", "Canad. Field-Naturalist".matches(refTitleBase));
+        Assert.assertTrue("Ann. Hist.-Nat. Mus. Natl. Hung.", "Ann. Hist.-Nat. Mus. Natl. Hung.".matches(refTitleBase));
+
+        Assert.assertFalse("2(Suppl.)".matches(refTitleBase));
+
+    }
+
 }
