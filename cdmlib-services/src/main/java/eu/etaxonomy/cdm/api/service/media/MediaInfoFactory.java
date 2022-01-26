@@ -55,7 +55,7 @@ public class MediaInfoFactory implements IMediaInfoFactory {
                         .read()
                         .getCdmImageInfo();
             } catch (Exception e) {
-                logger.warn("Meta data could not be read from meta data service: " + imageUri.toString());
+                logger.warn("Meta data could not be read from meta data service ("+e.getMessage()+"): " + imageUri.toString());
                 //if an exception occurs read data from original file
             }
         }
