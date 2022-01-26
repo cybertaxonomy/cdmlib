@@ -422,6 +422,9 @@ public class ImportDeduplicationHelper {
     }
 
     private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T teamOrPerson) {
+        if (teamOrPerson == null) {
+            return;
+        }
         //NOTE: this is more or less redundant copy from CdmPreDataChangeListener
         if (teamOrPerson.isInstanceOf(Team.class)){
             Team team = CdmBase.deproxy(teamOrPerson, Team.class);
@@ -431,6 +434,11 @@ public class ImportDeduplicationHelper {
             if (!team.isProtectedCollectorTitleCache()){
                 team.setCollectorTitleCache(null, false);
             }
+            //not redundant part
+            for (Person member : team.getTeamMembers()) {
+                initAuthorTitleCaches(member);
+            }
+            //end not redundant part
         }
         teamOrPerson.getNomenclaturalTitleCache();
         teamOrPerson.getCollectorTitleCache();
@@ -440,10 +448,16 @@ public class ImportDeduplicationHelper {
     }
 
     private void initReferenceCaches(Reference ref) {
+        if (ref == null) {
+            return;
+        }
         ////TODO better do via matching strategy  (newReference might have caches == null)
-        //the below is more or less a copy from CdmPreDataChangeListener
+        //the below is more or less a copy from CdmPreDataChangeListener (except for inReference handling)
         ref.getAbbrevTitleCache();
         ref.getTitleCache();
+
+        initAuthorTitleCaches(ref.getAuthorship());
+        initReferenceCaches(ref.getInReference());
    }
 
     public AgentBase<?> getExistingAgent(AgentBase<?> agent, boolean parsed) {
