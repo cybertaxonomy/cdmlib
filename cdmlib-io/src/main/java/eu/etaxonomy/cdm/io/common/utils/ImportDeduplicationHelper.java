@@ -42,10 +42,12 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 
 /**
  * Helper class for deduplicating authors, references, names, etc.
@@ -90,7 +92,8 @@ public class ImportDeduplicationHelper {
 
     private class DedupInfo<S extends IMatchable>{
         Class<S> clazz;
-        IMatchStrategyEqual matcher;
+        IMatchStrategyEqual defaultMatcher;
+        IMatchStrategy parsedMatcher;
         Map<String, Set<S>> map = new HashMap<>();
         Status status = Status.NOT_INIT;
 
@@ -98,13 +101,20 @@ public class ImportDeduplicationHelper {
         private DedupInfo(Class<S> clazz, DedupMap dedupMap){
             this.clazz = clazz;
             if (IMatchable.class.isAssignableFrom(clazz)) {
-                matcher = DefaultMatchStrategy.NewInstance(clazz);
+                defaultMatcher = DefaultMatchStrategy.NewInstance(clazz);
+                if (Reference.class.isAssignableFrom(clazz)) {
+                    parsedMatcher = MatchStrategyFactory.NewParsedReferenceInstance();
+                }else if (TeamOrPersonBase.class.isAssignableFrom(clazz)) {
+                    parsedMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
+//                }else if (TaxonName.class.isAssignableFrom(clazz)){
+//                    parsedMatcher = MatchStrategyFactory.NewParsedTaxonNameInstance();
+                }
             }
             dedupMap.put(clazz, this);
         }
         @Override
         public String toString() {
-            return clazz.getSimpleName() + ":" + status.name()+":mapsize=" + map.size()+":"+ (matcher == null?"without":"with") + " matcher";
+            return clazz.getSimpleName() + ":" + status.name()+":mapsize=" + map.size()+":"+ (defaultMatcher == null?"without":"with") + " defaultMatcher" + (parsedMatcher == null? "" : " and with parsedMatcher");
         }
     }
 
@@ -159,8 +169,8 @@ public class ImportDeduplicationHelper {
          }
          this.state = state;
          try {
-             dedupMap.get(Reference.class).matcher.setMatchMode("title", MatchMode.EQUAL);
-             dedupMap.get(Team.class).matcher.setMatchMode("nomenclaturalTitleCache", MatchMode.EQUAL_OR_SECOND_NULL);
+             dedupMap.get(Reference.class).defaultMatcher.setMatchMode("title", MatchMode.EQUAL);
+             dedupMap.get(Team.class).defaultMatcher.setMatchMode("nomenclaturalTitleCache", MatchMode.EQUAL);
          } catch (MatchException e) {
              throw new RuntimeException(e);  //should not happen
          }
@@ -268,11 +278,14 @@ public class ImportDeduplicationHelper {
         return dedupInfo.map.get(title);
     }
 
-    private <S extends IMatchable> Optional<S> getMatchingEntity(S entityOrig, DedupInfo<S> dedupInfo){
+    private <S extends IMatchable> Optional<S> getMatchingEntity(S entityOrig, DedupInfo<S> dedupInfo, boolean parsed){
         S entity = CdmBase.deproxy(entityOrig);
-        Predicate<S> matchFilter = reference ->{
+        //choose matcher depending on the type of matching required. If matching of a parsed entity is required
+        //   try to use the parsed matcher (if it exists)
+        IMatchStrategy matcher = parsed && dedupInfo.parsedMatcher != null ? dedupInfo.parsedMatcher : dedupInfo.defaultMatcher;
+        Predicate<S> matchFilter = persistedEntity ->{
             try {
-                return dedupInfo.matcher.invoke((IMatchable)reference, (IMatchable)entity).isSuccessful();
+                return matcher.invoke((IMatchable)entity, (IMatchable)persistedEntity).isSuccessful();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
@@ -283,11 +296,11 @@ public class ImportDeduplicationHelper {
                 .stream()
                 .filter(matchFilter)
                 .findAny();
-        if (result.isPresent() || dedupInfo.status == Status.USE_MAP  || repository == null){
+        if (result.isPresent() || dedupInfo.status == Status.USE_MAP || repository == null){
             return result;
         }else {
             try {
-                return (Optional)repository.getCommonService().findMatching((IMatchable)entity, dedupInfo.matcher).stream().findFirst();
+                return (Optional)repository.getCommonService().findMatching((IMatchable)entity, matcher).stream().findFirst();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
@@ -305,12 +318,12 @@ public class ImportDeduplicationHelper {
         }
     }
 
-    private <T extends TeamOrPersonBase<?>> T getTeamOrPerson(T agent){
+    private <T extends TeamOrPersonBase<?>> T getTeamOrPerson(T agent, boolean parsed){
         T result = agent;
         if (agent.isInstanceOf(Person.class)){
-            result = (T)getMatchingEntity(CdmBase.deproxy(agent, Person.class), personDedupInfo).orElse(null) ; // personMap.get(title);
+            result = (T)getMatchingEntity(CdmBase.deproxy(agent, Person.class), personDedupInfo, parsed).orElse(null) ; // personMap.get(title);
         }else if (agent.isInstanceOf(Team.class)) {
-            result = (T)getMatchingEntity(CdmBase.deproxy(agent, Team.class), teamDedupInfo).orElse(null); // teamMap.get(title);
+            result = (T)getMatchingEntity(CdmBase.deproxy(agent, Team.class), teamDedupInfo, parsed).orElse(null); // teamMap.get(title);
         }
         return result;
     }
@@ -355,24 +368,25 @@ public class ImportDeduplicationHelper {
      */
     public void replaceAuthorNamesAndNomRef(INonViralName name) {
 
+        boolean parsed = true;
         TeamOrPersonBase<?> combAuthor = name.getCombinationAuthorship();
-        name.setCombinationAuthorship(getExistingAuthor(combAuthor));
+        name.setCombinationAuthorship(getExistingAuthor(combAuthor, parsed));
 
         TeamOrPersonBase<?> exAuthor = name.getExCombinationAuthorship();
-        name.setExCombinationAuthorship(getExistingAuthor(exAuthor));
+        name.setExCombinationAuthorship(getExistingAuthor(exAuthor, parsed));
 
         TeamOrPersonBase<?> basioAuthor = name.getBasionymAuthorship();
-        name.setBasionymAuthorship(getExistingAuthor(basioAuthor));
+        name.setBasionymAuthorship(getExistingAuthor(basioAuthor, parsed));
 
         TeamOrPersonBase<?> exBasioAuthor = name.getExBasionymAuthorship();
-        name.setExBasionymAuthorship(getExistingAuthor(exBasioAuthor));
+        name.setExBasionymAuthorship(getExistingAuthor(exBasioAuthor, parsed));
 
         INomenclaturalReference nomRef = name.getNomenclaturalReference();
         if (nomRef != null){
             TeamOrPersonBase<?> refAuthor = nomRef.getAuthorship();
-            nomRef.setAuthorship(getExistingAuthor(refAuthor));
+            nomRef.setAuthorship(getExistingAuthor(refAuthor, parsed));
 
-            Reference existingRef = getExistingReference((Reference)nomRef);
+            Reference existingRef = getExistingReference((Reference)nomRef, parsed);
             //TODO AM: why do we need to check null here (we don't do this for authors, maybe because it is an original source?)
             if (existingRef != null){
                 name.setNomenclaturalReference(existingRef);
@@ -380,26 +394,26 @@ public class ImportDeduplicationHelper {
         }
     }
 
-    public void replaceReferenceRelatedData(Reference ref) {
+    public void replaceReferenceRelatedData(Reference ref, boolean parsed) {
 
         TeamOrPersonBase<?> author = ref.getAuthorship();
-        ref.setAuthorship(getExistingAuthor(author));
+        ref.setAuthorship(getExistingAuthor(author, parsed));
 
-        ref.setInReference(getExistingReference(ref.getInReference()));
+        ref.setInReference(getExistingReference(ref.getInReference(), parsed));
     }
 
-    public <T extends TeamOrPersonBase<?>> T getExistingAuthor(T author) {
+    public <T extends TeamOrPersonBase<?>> T getExistingAuthor(T author, boolean parsed) {
         if (author == null){
             return null;
         }else{
             init(personDedupInfo);
             init(teamDedupInfo);
             initAuthorTitleCaches(author);
-            T result = getTeamOrPerson(author);
+            T result = getTeamOrPerson(author, parsed);
             if (result == null){
                 putAgentBase(author.getTitleCache(), author);
                 if (author.isInstanceOf(Team.class)){
-                    handleTeam(CdmBase.deproxy(author, Team.class));
+                    handleTeam(CdmBase.deproxy(author, Team.class), parsed);
                 }
                 result = author;
             }
@@ -432,11 +446,11 @@ public class ImportDeduplicationHelper {
         ref.getTitleCache();
    }
 
-    public AgentBase<?> getExistingAgent(AgentBase<?> agent) {
+    public AgentBase<?> getExistingAgent(AgentBase<?> agent, boolean parsed) {
         if (agent == null){
             return null;
         } else if (agent.isInstanceOf(TeamOrPersonBase.class)){
-            return getExistingAuthor(CdmBase.deproxy(agent, TeamOrPersonBase.class));
+            return getExistingAuthor(CdmBase.deproxy(agent, TeamOrPersonBase.class), parsed);
         }else{
             throw new RuntimeException("Institution matching not yet implemented");
 //            initInstitutionMap();
@@ -480,11 +494,11 @@ public class ImportDeduplicationHelper {
         return status;
     }
 
-    private void handleTeam(Team team) {
+    private void handleTeam(Team team, boolean parsed) {
         List<Person> members = team.getTeamMembers();
         for (int i =0; i< members.size(); i++){
             Person person = CdmBase.deproxy(members.get(i));
-            Person existingPerson = getMatchingEntity(person, personDedupInfo).orElse(null);
+            Person existingPerson = getMatchingEntity(person, personDedupInfo, parsed).orElse(null);
             if (existingPerson != null){
                 members.set(i, existingPerson);
             }else{
@@ -523,18 +537,18 @@ public class ImportDeduplicationHelper {
 //      collectionStatus = init(Collection.class, collectionStatus, collectionMap); //for future, once Collection becomes IMatchable
     }
 
-   public Reference getExistingReference(Reference ref) {
+   public Reference getExistingReference(Reference ref, boolean parsed) {
        if (ref == null){
            return null;
        }else{
            init(referenceDedupInfo);
            initReferenceCaches(ref);
-           Reference result = getMatchingEntity(ref, referenceDedupInfo).orElse(null);
+           Reference result = getMatchingEntity(ref, referenceDedupInfo, parsed).orElse(null);
            if (result == null){
                result = ref;
                Reference inRef = result.getInReference();
                if (inRef != null){
-                   result.setInReference(getExistingReference(result.getInReference()));
+                   result.setInReference(getExistingReference(result.getInReference(), parsed));
                }
                putEntity(result.getTitleCache(), result, referenceDedupInfo.map);
            }else{
@@ -544,19 +558,19 @@ public class ImportDeduplicationHelper {
        }
    }
 
-   public TaxonName getExistingName(TaxonName name) {
+   public TaxonName getExistingName(TaxonName name, boolean parsed) {
        if (name == null){
            return null;
        }else{
            init(nameDedupInfo);
-           TaxonName result = getMatchingEntity(name, nameDedupInfo).orElse(null);
+           TaxonName result = getMatchingEntity(name, nameDedupInfo, parsed).orElse(null);
            if (result == null){
                result = name;
                Set<HybridRelationship> parentRelations = result.getHybridChildRelations();
                for (HybridRelationship rel : parentRelations){
                    TaxonName parent = rel.getParentName();
                    if (parent != null){
-                       rel.setParentName(getExistingName(parent));
+                       rel.setParentName(getExistingName(parent, parsed));
                    }
                }
                putEntity(result.getTitleCache(), result, nameDedupInfo.map);

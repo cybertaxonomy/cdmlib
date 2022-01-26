@@ -663,7 +663,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			String classValue, TaxonRelationship misappliedRel,
 			Reference reference, String microCitation,
 			XMLEvent parentEvent) {
-	    reference = state.getDeduplicationHelper().getExistingReference(reference);
+	    reference = state.getDeduplicationHelper().getExistingReference(reference, true);
 	    if (misappliedRel != null){
 	        if (!PUBLICATION.equalsIgnoreCase(classValue)){
                 fireWarningEvent("'Usage' not handled correctly for misidentifications", parentEvent, 4);

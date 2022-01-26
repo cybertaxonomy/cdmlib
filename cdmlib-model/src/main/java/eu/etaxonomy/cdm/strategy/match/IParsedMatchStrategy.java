@@ -14,9 +14,9 @@ package eu.etaxonomy.cdm.strategy.match;
  */
 public interface IParsedMatchStrategy extends IMatchStrategy{
 
-    public static MatchMode DEFAULT_PARSED_MATCH_MODE = MatchMode.EQUAL_OR_SECOND_NULL;
+    public static MatchMode DEFAULT_PARSED_MATCH_MODE = MatchMode.EQUAL_OR_FIRST_NULL;
     public static MatchMode DEFAULT_PARSED_COLLECTION_MATCH_MODE = MatchMode.IGNORE;
-    public static MatchMode DEFAULT_PARSED_MATCH_MATCH_MODE = MatchMode.MATCH_OR_SECOND_NULL;
+    public static MatchMode DEFAULT_PARSED_MATCH_MATCH_MODE = MatchMode.MATCH_OR_FIRST_NULL;
 
 
 	/**

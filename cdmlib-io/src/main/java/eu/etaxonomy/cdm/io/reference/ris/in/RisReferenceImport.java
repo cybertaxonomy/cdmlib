@@ -71,9 +71,9 @@ public class RisReferenceImport
                     location = recordLocation(state, next);
                     ref = handleSingleReference(state, next);
 
-                    Reference existingRef = state.getDeduplicationHelper().getExistingReference(ref);
+                    Reference existingRef = state.getDeduplicationHelper().getExistingReference(ref, false);
                     if (existingRef == ref){ //reference does not yet exist so the identical reference has been returned
-                        state.getDeduplicationHelper().replaceReferenceRelatedData(ref);
+                        state.getDeduplicationHelper().replaceReferenceRelatedData(ref, false);
                         referencesToSave.add(ref);
                         if (ref.getInReference() != null){
                             referencesToSave.add(ref.getInReference());

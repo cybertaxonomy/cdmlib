@@ -283,10 +283,9 @@ public class MediaExcelImport
             String message = "A name of a person can not be atomized: %s";
             message = String.format(message, artist);
             state.getResult().addWarning(message, null, line);
-
         }
 
-        Person result = state.getDeduplicationHelper().getExistingAuthor(person);
+        Person result = state.getDeduplicationHelper().getExistingAuthor(person, false);
         return result;
     }
 

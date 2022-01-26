@@ -25,7 +25,7 @@ public class MatchStrategyFactory {
         return new DefaultMatchStrategy(matchClass);
     }
 
-    public static IParsedMatchStrategy NewParsedInstance(Class<? extends IMatchable> matchClass){
+    private static IParsedMatchStrategy NewParsedInstance(Class<? extends IMatchable> matchClass){
         IParsedMatchStrategy parsedMatchStrategy = new ParsedBaseMatchStrategy(matchClass);
         return parsedMatchStrategy;
     }
