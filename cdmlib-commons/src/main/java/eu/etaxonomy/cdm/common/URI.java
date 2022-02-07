@@ -112,18 +112,13 @@ public class URI
                     if (url.getQuery() != null){
                         encodedUri = encodedUri.replace(url.getQuery(), UrlUtf8Coder.encode(url.getQuery()));
                     }
-                    String[] fragmentElements =  uriString.split("#");
-                    
-                    for (int i = 1; i < fragmentElements.length; ++i){
-                    	String fragmentElement = fragmentElements[i];
-                        if(fragmentElement.contains("\\")){
+                    String fragmentElement =  uriString.substring(uriString.indexOf("#")+1,uriString.length());
+                    if(fragmentElement.contains("\\")){
                             //TODO needs discussion if backslash should be converted to slash instead, for now we keep it more strict
-                            throw new URISyntaxException(uriString, "URI path must not contain backslash ('\')");
-                        }
-                        String replacement = UrlUtf8Coder.encode(fragmentElement);
-                        encodedUri = encodedUri.replace(fragmentElement, replacement);
+                    	throw new URISyntaxException(uriString, "URI path must not contain backslash ('\')");
                     }
-                    
+                    String replacement = UrlUtf8Coder.encode(fragmentElement);
+                    encodedUri = encodedUri.replace(fragmentElement, replacement);
 
                     url = new URL(encodedUri);
 

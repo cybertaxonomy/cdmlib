@@ -41,5 +41,28 @@ public class UriTest {
         }
 
     }
+    
+    @Test
+    public void testFragment() {
+        try {
+            //see example in #9111
+            URI uri = new URI("https://max:muster@www.example.com:8080/index.html?p1=A&p2=B#ressource");
+            Assert.assertEquals(
+                    "ressource",
+                    uri.getFragment());
+
+        } catch (URISyntaxException e) {
+            Assert.fail("Parsing example URI should find fragment");
+        }
+
+        try {
+            //see example in #9111
+            URI uri = new URI("http:\\www.fail.de");
+            Assert.fail("Using backslash in URI instead of slash should fail");
+        } catch (URISyntaxException e) {
+            //OK
+        }
+
+    }
 
 }
