@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
@@ -59,6 +58,11 @@ import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
  *
  * @author a.mueller
  * @since 11.02.2017
+ */
+/**
+ * @author a.mueller
+ * @date 27.01.2022
+ *
  */
 public class ImportDeduplicationHelper {
 
@@ -371,35 +375,73 @@ public class ImportDeduplicationHelper {
         boolean parsed = true;
         TeamOrPersonBase<?> combAuthor = name.getCombinationAuthorship();
         name.setCombinationAuthorship(getExistingAuthor(combAuthor, parsed));
+        if (combAuthor == name.getCombinationAuthorship()) {
+            replaceTeamMembers(combAuthor, parsed);
+        }
 
         TeamOrPersonBase<?> exAuthor = name.getExCombinationAuthorship();
         name.setExCombinationAuthorship(getExistingAuthor(exAuthor, parsed));
+        if (exAuthor == name.getExCombinationAuthorship()) {
+            replaceTeamMembers(exAuthor, parsed);
+        }
 
         TeamOrPersonBase<?> basioAuthor = name.getBasionymAuthorship();
         name.setBasionymAuthorship(getExistingAuthor(basioAuthor, parsed));
+        if (basioAuthor == name.getBasionymAuthorship()) {
+            replaceTeamMembers(basioAuthor, parsed);
+        }
 
         TeamOrPersonBase<?> exBasioAuthor = name.getExBasionymAuthorship();
         name.setExBasionymAuthorship(getExistingAuthor(exBasioAuthor, parsed));
+        if (exBasioAuthor == name.getExBasionymAuthorship()) {
+            replaceTeamMembers(exBasioAuthor, parsed);
+        }
 
-        INomenclaturalReference nomRef = name.getNomenclaturalReference();
-        if (nomRef != null){
-            TeamOrPersonBase<?> refAuthor = nomRef.getAuthorship();
-            nomRef.setAuthorship(getExistingAuthor(refAuthor, parsed));
-
-            Reference existingRef = getExistingReference((Reference)nomRef, parsed);
-            //TODO AM: why do we need to check null here (we don't do this for authors, maybe because it is an original source?)
-            if (existingRef != null){
-                name.setNomenclaturalReference(existingRef);
+        Reference newNomRef = name.getNomenclaturalReference();
+        Reference newOrExistingNomRef = getExistingReference(newNomRef, parsed);
+        if (newNomRef != null) {
+            if (newOrExistingNomRef == newNomRef){
+                replaceReferenceRelatedData(newNomRef, parsed);
+            }else {
+                name.setNomenclaturalReference(newOrExistingNomRef);
             }
         }
     }
 
     public void replaceReferenceRelatedData(Reference ref, boolean parsed) {
 
-        TeamOrPersonBase<?> author = ref.getAuthorship();
-        ref.setAuthorship(getExistingAuthor(author, parsed));
+        //author
+        TeamOrPersonBase<?> newAuthor = ref.getAuthorship();
+        TeamOrPersonBase<?> newOrExistingAuthor = getExistingAuthor(newAuthor, parsed);
+        if (newAuthor != null) {
+            if (newOrExistingAuthor == newAuthor) {
+                replaceTeamMembers(newAuthor, parsed);
+            }else {
+                ref.setAuthorship(newOrExistingAuthor);
+            }
+        }
 
-        ref.setInReference(getExistingReference(ref.getInReference(), parsed));
+        //in-ref
+        Reference newInRef = ref.getInReference();
+        Reference newOrExistingInRef = getExistingReference(newInRef, parsed);
+        if (newInRef != null) {
+            if (newOrExistingInRef == newInRef){
+                replaceReferenceRelatedData(newInRef, parsed);
+            }else {
+                ref.setInReference(newOrExistingInRef);
+            }
+        }
+    }
+
+    private void replaceTeamMembers(TeamOrPersonBase<?> teamOrPerson, boolean parsed) {
+        if (teamOrPerson != null && teamOrPerson.isInstanceOf(Team.class)) {
+            Team team = CdmBase.deproxy(teamOrPerson, Team.class);
+
+            for (int i = 0; i < team.getTeamMembers().size(); i++) {
+                Person person = team.getTeamMembers().get(i);
+                team.getTeamMembers().set(i, getExistingAuthor(person, parsed));
+            }
+        }
     }
 
     public <T extends TeamOrPersonBase<?>> T getExistingAuthor(T author, boolean parsed) {
@@ -551,6 +593,14 @@ public class ImportDeduplicationHelper {
 //      collectionStatus = init(Collection.class, collectionStatus, collectionMap); //for future, once Collection becomes IMatchable
     }
 
+   /**
+     * Returns an existing matching persistend reference or the the given reference
+     * if no matching reference exists.
+     * @param ref given reference
+     * @param parsed if <code>true</code> use matching strategy for parsed references,
+     *               the default matching strategy otherwise
+     * @return matching reference
+     */
    public Reference getExistingReference(Reference ref, boolean parsed) {
        if (ref == null){
            return null;
