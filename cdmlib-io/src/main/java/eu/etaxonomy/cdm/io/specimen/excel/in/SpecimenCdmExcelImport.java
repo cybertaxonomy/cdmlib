@@ -474,7 +474,7 @@ public class SpecimenCdmExcelImport
 		//rank
 		Rank rank;
 		try {
-			rank = isBlank(commonDetermination.rank) ? null : Rank.getRankByNameOrIdInVoc(commonDetermination.rank, true);
+			rank = isBlank(commonDetermination.rank) ? null : Rank.getRankByLatinNameOrIdInVoc(commonDetermination.rank, true);
 		} catch (UnknownCdmTypeException e) {
 			rank = null;
 		}
