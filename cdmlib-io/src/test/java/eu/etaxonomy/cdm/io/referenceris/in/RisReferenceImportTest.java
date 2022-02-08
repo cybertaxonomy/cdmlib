@@ -255,7 +255,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         printList(refList);
         List<Person> personList = agentService.list(Person.class, null, null, null, null);
         printList(personList);
-        Assert.assertEquals(99, personList.size());
+        Assert.assertEquals(97, personList.size());
         List<Team> teamList = agentService.list(Team.class, null, null, null, null);
         printList(teamList);
         Assert.assertEquals(33, teamList.size());
