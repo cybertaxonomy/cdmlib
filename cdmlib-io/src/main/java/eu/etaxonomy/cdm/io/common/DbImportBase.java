@@ -261,10 +261,19 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	}
 
 	/**
-	 * Returns true if i is a multiple of recordsPerTransaction
-	 * @param i
-	 * @param recordsPerTransaction
-	 * @return
+     * Reads a uuid field from the result set and adds its value to the idSet.
+     */
+    protected void handleForeignUuidKey(ResultSet rs, Set<UUID> idSet, String attributeName)
+            throws SQLException {
+        String idObj = rs.getString(attributeName);
+        if (idObj != null){
+            UUID uuid  = UUID.fromString(idObj);
+            idSet.add(uuid);
+        }
+    }
+
+	/**
+	 * Returns <code>true</code> if <code>i</code> is a multiple of recordsPerTransaction
 	 */
 	protected boolean loopNeedsHandling(int i, int recordsPerLoop) {
 		startTransaction();
