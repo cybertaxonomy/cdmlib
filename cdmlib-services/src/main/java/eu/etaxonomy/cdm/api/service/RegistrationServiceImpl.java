@@ -215,19 +215,12 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return assureIsPersisted(newInstance);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UUID saveOrUpdate(Registration transientObject) {
         transientObject = assureIsPersisted(transientObject);
         return super.saveOrUpdate(transientObject);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Map<UUID, Registration> save(Collection<Registration> newInstances) {
         Map<UUID, Registration> regs = new HashMap<>();
@@ -238,9 +231,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return regs;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Map<UUID, Registration> saveOrUpdate(Collection<Registration> transientInstances) {
         Map<UUID, Registration> regs = new HashMap<>();

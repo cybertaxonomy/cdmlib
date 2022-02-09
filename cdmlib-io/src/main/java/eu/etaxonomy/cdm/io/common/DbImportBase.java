@@ -85,55 +85,26 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 			return;
 	}
 
-
-	/**
-	 * @return
-	 */
 	protected abstract String getRecordQuery(CONFIG config);
 
-	/**
-	 * @return
-	 */
 	protected abstract String getIdQuery(STATE state);
 
-
-	/**
-	 * @return
-	 */
 	protected String getTableName() {
 		return dbTableName;
 	}
-
 
 	@Override
     public String getPluralString() {
 		return pluralString;
 	}
 
-
-	/**
-	 * @param state
-	 * @param sourceable
-	 * @param id
-	 * @param namespace
-	 * @return
-	 */
 	protected boolean doId(STATE state, ISourceable sourceable, long id, String namespace) {
 		return ImportHelper.setOriginalSource(sourceable, state.getTransactionalSourceReference(), id, namespace);
 	}
 
-	/**
-	 * @param state
-	 * @param sourceable
-	 * @param id
-	 * @param namespace
-	 * @return
-	 */
 	protected boolean doId(STATE state, ISourceable sourceable, String id, String namespace) {
 		return ImportHelper.setOriginalSource(sourceable, state.getTransactionalSourceReference(), id, namespace);
 	}
-
-
 
 	/**
 	 * Adds a note to the annotatable entity.
@@ -157,7 +128,6 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 		return null;
 	}
 
-
 	protected User getUser(STATE state, String userString){
 		if (StringUtils.isBlank(userString)){
 			return null;
@@ -180,12 +150,6 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 		return user;
 	}
 
-    /**
-     * @param state
-     * @param userString
-     * @param user
-     * @return
-     */
     protected User getExistingUser(STATE state, String userString, User user) {
         List<User> list = getUserService().listByUsername(userString, MatchMode.EXACT, null, null, null, null, null);
         if (!list.isEmpty()){
@@ -241,7 +205,6 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 		}
 	}
 
-
 	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){
 		String strQuery = "SELECT  Count(t.id) as n " +
 				" FROM sysobjects AS t " +
@@ -259,17 +222,11 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 			e.printStackTrace();
 			return false;
 		}
-
 	}
-
-
 
 	/**
 	 * Returns a map that holds all values of a ResultSet. This is needed if a value needs to
 	 * be accessed twice
-	 * @param rs
-	 * @return
-	 * @throws SQLException
 	 */
 	protected Map<String, Object> getValueMap(ResultSet rs) throws SQLException{
 		try{
@@ -317,10 +274,4 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	protected void doLogPerLoop(int count, int recordsPerLog, String pluralString){
 		if ((count % recordsPerLog ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
 	}
-
-
-
-
-
-
 }

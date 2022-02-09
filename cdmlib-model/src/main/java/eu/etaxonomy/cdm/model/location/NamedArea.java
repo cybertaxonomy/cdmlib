@@ -147,7 +147,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 
     /**
      * Factory method
-     * @return
      */
     public static NamedArea NewInstance(String description, String label, String labelAbbrev){
         return new NamedArea(description, label, labelAbbrev);
