@@ -222,7 +222,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     }
 
     @Override
-    public Map<UUID, Registration> save(Collection<Registration> newInstances) {
+    public Map<UUID, Registration> save(Collection<? extends Registration> newInstances) {
         Map<UUID, Registration> regs = new HashMap<>();
         for(Registration newInstance : newInstances) {
             Registration reg = save(newInstance);

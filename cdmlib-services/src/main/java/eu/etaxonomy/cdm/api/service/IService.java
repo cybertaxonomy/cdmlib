@@ -310,7 +310,7 @@ public interface IService<T extends ICdmBase>{
      * @return A Map containing the new entities, keyed using the generated UUID's
      *         of those entities
      */
-    public Map<UUID,T> save(Collection<T> newInstances);
+    public Map<UUID,T> save(Collection<? extends T> newInstances);
 
     /**
      * Save a new entity (persists the entity)

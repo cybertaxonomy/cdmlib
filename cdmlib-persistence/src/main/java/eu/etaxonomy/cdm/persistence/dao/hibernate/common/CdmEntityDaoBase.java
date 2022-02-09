@@ -136,7 +136,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     // TODO: why does this use saveCdmObject_ which actually savesOrUpdateds
     // data ?
     @Override
-    public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) {
+    public Map<UUID, T> saveAll(Collection<? extends T> cdmObjCollection) {
         int types = cdmObjCollection.getClass().getTypeParameters().length;
         if (types > 0) {
             if (logger.isDebugEnabled()) {
@@ -145,7 +145,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         }
 
         Map<UUID, T> resultMap = new HashMap<>();
-        Iterator<T> iterator = cdmObjCollection.iterator();
+        Iterator<? extends T> iterator = cdmObjCollection.iterator();
         int i = 0;
         while (iterator.hasNext()) {
             if (((i % 2000) == 0) && (i > 0)) {

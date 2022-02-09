@@ -281,7 +281,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = false)
-    public Map<UUID, T> save(Collection<T> newInstances) {
+    public Map<UUID, T> save(Collection<? extends T> newInstances) {
         return dao.saveAll(newInstances);
     }
 

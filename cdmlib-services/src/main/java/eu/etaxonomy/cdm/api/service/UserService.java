@@ -310,7 +310,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public Map<UUID, User> save(Collection<User> newInstances) {
+    public Map<UUID, User> save(Collection<? extends User> newInstances) {
         Map<UUID, User> users = new HashMap<UUID, User>();
     	for (User user: newInstances){
         	createUser(user);
