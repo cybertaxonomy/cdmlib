@@ -597,6 +597,12 @@ public class Language extends DefinedTermBase<Language> {
         return new Language(term, label, labelAbbrev);
     }
 
+    public static Language NewInstance(String term, String label, String labelAbbrev, Language language){
+        Language result = new Language(term, label, labelAbbrev);
+        result.getRepresentations().iterator().next().setLanguage(language);
+        return result;
+    }
+
     public static Language NewInstance(UUID uuid, String label, String iso639_2){
         Language result = Language.NewInstance(label, label, iso639_2);
         result.setUuid(uuid);

@@ -103,6 +103,12 @@ public class State extends OrderedTermBase<State> {
 		return new State(term, label, labelAbbrev);
 	}
 
+	public static State NewInstance(String term, String label, String labelAbbrev, Language language){
+        State result = new State(term, label, labelAbbrev);
+        result.getRepresentations().iterator().next().setLanguage(language);
+        return result;
+    }
+
 //************************** METHODS ********************************
 
 	@Override

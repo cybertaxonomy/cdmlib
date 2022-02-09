@@ -152,6 +152,12 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
         return new NamedArea(description, label, labelAbbrev);
     }
 
+    public static NamedArea NewInstance(String description, String label, String labelAbbrev, Language language){
+        NamedArea result = new NamedArea(description, label, labelAbbrev);
+        result.getRepresentations().iterator().next().setLanguage(language);
+        return result;
+    }
+
 //**************************** VARIABLES *******************************/
 
     //description of time valid context of this area. e.g. year range
