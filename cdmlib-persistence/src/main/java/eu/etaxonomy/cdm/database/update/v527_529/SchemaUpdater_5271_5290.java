@@ -60,7 +60,7 @@ public class SchemaUpdater_5271_5290 extends SchemaUpdaterBase {
 		tableName = "OccurrenceStatus";
 		String[] columnNames = new String[]{"unit_id","type_id"};
         String[] columnTypes = new String[]{"int","int"};
-        String[] referencedTables = new String[]{"SpecimenAndObservationBase","DefinedTermBase"};
+        String[] referencedTables = new String[]{"SpecimenOrObservationBase","DefinedTermBase"};
 		TableCreator.NewSingleSourcedInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
 
         return stepList;
