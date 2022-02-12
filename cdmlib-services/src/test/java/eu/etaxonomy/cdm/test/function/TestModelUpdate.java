@@ -147,7 +147,7 @@ public class TestModelUpdate {
      * Requires that the local path to the database is adapted
      */
     private void updateVaadinH2(){
-        String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
+        String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin2\\";
         updateH2(pathToProject);
     }
 
