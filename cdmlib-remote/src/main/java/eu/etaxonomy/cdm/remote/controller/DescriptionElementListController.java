@@ -181,18 +181,6 @@ public class DescriptionElementListController {
         return pager;
     }
 
-    /**
-    *
-    * @param queryString
-    * @param type
-    * @param pageSize
-    * @param pageIndex
-    * @param matchMode
-    * @param request
-    * @param response
-    * @return
-    * @throws IOException
-    */
    @RequestMapping(value = "find", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
    public Pager<? extends DescriptionElementBase> doFindDescriptionElements(
            @RequestParam(value = "query", required = true) String queryString,
