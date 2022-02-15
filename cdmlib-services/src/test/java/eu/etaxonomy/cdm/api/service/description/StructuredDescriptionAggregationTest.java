@@ -26,6 +26,7 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
@@ -36,7 +37,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -171,11 +171,13 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         // 1st aggregation
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 4, 0);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
 
+        //update data
         addSomeDataToFirstAggregation();
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config).setWithAddedData());
@@ -183,17 +185,18 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         // 2nd aggregation => should be same as originally as data was only added to aggregation to see if it is correctly deleted
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 0, 3);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
 
-        // reaggregate with an element having a feature not yet in the existing descriptions
+        // re-aggregate with an element having a feature not yet in the existing descriptions
         addNewFeature();
         commitAndStartNewTransaction();
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 0, 3);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config).setWithFeature());
-
     }
 
     private void addSomeDataToFirstAggregation() {
@@ -223,18 +226,23 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     public void testDeleteTest() {
+
+        //create test data
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
 
-        StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
-
         // 1st aggregation
-        UpdateResult result = engine.invoke(config, repository);
+        StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
+        DeleteResult result = engine.invoke(config, repository);
+
+        //verify
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 4, 0);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
 
+        //remove data
         removeSomeDataFromFirstAggregation();
         commitAndStartNewTransaction();
         Assert.assertEquals("Should have 3 specimen desc, 1 literature desc, 2 individual association holder, "
@@ -244,6 +252,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         // 2nd aggregation
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 0, 3);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config).setWithRemoved());
     }
@@ -265,6 +274,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     public void testIncompleteQuantitativeData() {
+
+        //create test data
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
@@ -284,11 +295,13 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         dataSet.setDescriptiveSystem(descriptiveSystem);
         commitAndStartNewTransaction();
 
+        //aggregate
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
+        DeleteResult result = engine.invoke(config, repository);
 
-        UpdateResult result = engine.invoke(config, repository);
+        //verify
         verifyStatusOk(result);
-
+        verifyUpdatedObjects(result, 3, 0);
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
         verifyQuantitativeData(uuidFeatureLeafLength, null, new BigDecimal("0.0"), new BigDecimal("7.0"), null, aggrDescLapsanaCommunisAlpina);
@@ -322,12 +335,13 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //aggregate
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
 
         //test aggregation with categorical data without states (empty categorical data)
         verifyStatusOk(result);
-        Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         //if no state at all exists in description even the description is not created (this was different before but changed with 9b8a8049439 / #9804)
+        verifyUpdatedObjects(result, 0, 0);
+        Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         verifyNumberTaxonDescriptions(taxLapsanaCommunisAlpina, 0);
 
         //add data for another feature
@@ -336,6 +350,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         commitAndStartNewTransaction();
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 3, 0);
         taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
         verifyNumberDescriptionElements(aggrDescLapsanaCommunisAlpina, uuidFeatureLeafColor, 0);  //we don't expect empty categorical data anymore #9804
@@ -348,6 +363,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         result = engine.invoke(config, repository);
 
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 0, 3);
         taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, 2);  //for leafPA and for color
         List<StateData> sdAlpinaLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina, false);
@@ -371,8 +387,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setToParentSourceMode(AggregationSourceMode.NONE);
 
         // 1st aggregation
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 4, 0);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
 
@@ -380,6 +397,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setToParentSourceMode(AggregationSourceMode.NONE);
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 0, 2); //"Only the 2 subspecies aggregations should be updated"
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
 
@@ -387,6 +405,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 0, 4);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
 
@@ -394,6 +413,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setToParentSourceMode(AggregationSourceMode.TAXON);
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 0, 4);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
 
@@ -401,6 +421,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setToParentSourceMode(AggregationSourceMode.TAXON);
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
+        verifyUpdatedObjects(result, 0, 2);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
 
@@ -442,27 +463,29 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     public void testAggregation() {
+
+        //create test data
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
 
+        //aggregate
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
-
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         verifyStatusOk(result);
         verifyAggregatedDescription(new TestConfig(config));
 
+        //aggregate again with literature (also tests re-aggregation issues)
         config.setIncludeLiterature(true);
-
         result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         verifyStatusOk(result);
         verifyAggregatedDescription(new TestConfig(config));
     }
 
-    private void verifyStatusOk(UpdateResult result) {
-        if (result.getStatus() != UpdateResult.Status.OK){
+    private void verifyStatusOk(DeleteResult result) {
+        if (result.getStatus() != DeleteResult.Status.OK){
             Assert.fail("Aggregation should have status OK but was " + result.toString());
             for (Exception ex : result.getExceptions()){
                 ex.printStackTrace();
@@ -470,8 +493,13 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         }
     }
 
-    private void verifyStatusError(UpdateResult result, String expectedMessage) {
-        if (result.getStatus() != UpdateResult.Status.ERROR){
+    private void verifyUpdatedObjects(DeleteResult result, int nInserted, int nUpdated) {
+        Assert.assertEquals(nInserted, result.getInsertedUuids(TaxonDescription.class).size());
+        Assert.assertEquals(nUpdated, result.getUpdatedUuids(TaxonDescription.class).size());
+    }
+
+    private void verifyStatusError(DeleteResult result, String expectedMessage) {
+        if (result.getStatus() != DeleteResult.Status.ERROR){
             Assert.fail("Aggregation should fail with status error " + result.toString());
         }
         if (result.getExceptions().isEmpty()){

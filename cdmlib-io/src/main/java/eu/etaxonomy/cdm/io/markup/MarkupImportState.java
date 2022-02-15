@@ -19,11 +19,9 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -44,9 +42,6 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, MarkupDocumentImport>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportState.class);
-
-	private ImportDeduplicationHelper<MarkupImportState> deduplicationHelper;
-
 
 	private UnmatchedLeads unmatchedLeads;
 	private boolean onlyNumberedTaxaExist; //attribute in <key>
@@ -478,16 +473,6 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
     }
     public void setFirstSpecimenInFacade(boolean firstSpecimenInFacade) {
         this.firstSpecimenInFacade = firstSpecimenInFacade;
-    }
-
-    public ImportDeduplicationHelper<MarkupImportState> getDeduplicationHelper(ICdmRepository repository) {
-        if (this.deduplicationHelper == null){
-            this.deduplicationHelper = new ImportDeduplicationHelper<>(repository);
-        }
-        return deduplicationHelper;
-    }
-    public void setDeduplicationHelper(ImportDeduplicationHelper<MarkupImportState> deduplicationHelper) {
-        this.deduplicationHelper = deduplicationHelper;
     }
 
     public void setNameStatus(String nameStatus) {

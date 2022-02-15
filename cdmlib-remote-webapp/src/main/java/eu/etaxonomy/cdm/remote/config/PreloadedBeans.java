@@ -30,7 +30,7 @@ public class PreloadedBeans {
     }
 
     /**
-     * This is only uses for Converters so far
+     * This is only used for Converters so far
      */
     @Bean
     public ObjectMapper objectMapper() {

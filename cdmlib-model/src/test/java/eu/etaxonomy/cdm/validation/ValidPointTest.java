@@ -25,9 +25,10 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 /**
  * @author a.mueller
  */
-@SuppressWarnings("unused")
 public class ValidPointTest extends ValidationTestBase{
-	private static final Logger logger = Logger.getLogger(ValidPointTest.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(ValidPointTest.class);
 
 	private GatheringEvent gatheringEvent;
 	private Point point = new Point();

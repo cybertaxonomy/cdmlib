@@ -401,7 +401,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            taxonName.setSpecificEpithet(NB(getFromMap(atomisedMap, "FirstEpithet")));
 	            taxonName.setInfraSpecificEpithet(NB(getFromMap(atomisedMap, "InfraSpeEpithet")));
 	            try {
-	                taxonName.setRank(Rank.getRankByName(getFromMap(atomisedMap, "Rank")));
+	                taxonName.setRank(Rank.getRankByLatinName(getFromMap(atomisedMap, "Rank")));
 	            } catch (Exception e) {
 	                if (taxonName.getInfraSpecificEpithet() != null){
 	                    taxonName.setRank(Rank.SUBSPECIES());
@@ -1146,7 +1146,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	                designation.setTypeStatus(specimenTypeDesignationstatus);
 	                designation.setTypeSpecimen(state.getDerivedUnitBase());
-	                name.addTypeDesignation(designation, true);
+	                name.addTypeDesignation(designation, false);
 	            }
 	        }
 	        save(state.getDerivedUnitBase(), state);

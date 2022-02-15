@@ -317,29 +317,29 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
         List<DefinedTerm> languages = this.dao.listByTermType(TermType.Language, null, null, null, null);
         Assert.assertNotNull(languages);
         Assert.assertEquals(485, languages.size());
-	 }
+	}
 
-     @Test
-     @DataSets({
+    @Test
+    @DataSets({
             @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
             @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-     )
-	 public void testListByVoc(){
-         TermVocabulary<?> voc = this.vocabularyDao.findByUuid(NamedArea.uuidTdwgAreaVocabulary);
-         List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
-         Assert.assertEquals("Expected no area", 0, namedAreas.size());
+    )
+	public void testListByVoc(){
+        TermVocabulary<?> voc = this.vocabularyDao.findByUuid(NamedArea.uuidTdwgAreaVocabulary);
+        List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        Assert.assertEquals("Expected no area", 0, namedAreas.size());
 
-         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Ger", MatchMode.BEGINNING);
-         Assert.assertEquals("Expected GER-OO, GER", 2, namedAreas.size());
-         namedAreas.get(0).addRepresentation(Representation.NewInstance("Deutschland", "Deutschland", "DE", Language.GERMAN()));
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Ger", MatchMode.BEGINNING);
+        Assert.assertEquals("Expected GER-OO, GER", 2, namedAreas.size());
+        namedAreas.get(0).addRepresentation(Representation.NewInstance("Deutschland", "Deutschland", "DE", Language.GERMAN()));
 
-         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
-         Assert.assertEquals("Expected 1 area for 'Deu'", 1, namedAreas.size());
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        Assert.assertEquals("Expected 1 area for 'Deu'", 1, namedAreas.size());
 
-         voc = this.vocabularyDao.findByUuid(NamedArea.uuidContinentVocabulary);
-         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
-         Assert.assertEquals("Expected no area", 0, namedAreas.size());
-	 }
+        voc = this.vocabularyDao.findByUuid(NamedArea.uuidContinentVocabulary);
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        Assert.assertEquals("Expected no area", 0, namedAreas.size());
+	}
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

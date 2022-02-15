@@ -47,7 +47,7 @@ public class TestModelUpdate {
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm523" : "cdm527");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm527" : "cdm529");
 //		database = "cdm_test1";
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
@@ -79,7 +79,7 @@ public class TestModelUpdate {
     		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
     		    TransactionStatus tx = appCtr.startTransaction(false);
-    		    TemporalData td = (TemporalData)appCtr.getDescriptionService().getDescriptionElementByUuid(
+    		    TemporalData td = (TemporalData)appCtr.getDescriptionElementService().find(
     		            UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));
     		    td.getFeature().setSupportsCategoricalData(true);
     		    appCtr.getTermService().saveOrUpdate(td.getFeature());
@@ -147,7 +147,7 @@ public class TestModelUpdate {
      * Requires that the local path to the database is adapted
      */
     private void updateVaadinH2(){
-        String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
+        String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin2\\";
         updateH2(pathToProject);
     }
 

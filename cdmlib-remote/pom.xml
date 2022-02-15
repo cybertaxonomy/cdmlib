@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.28.0</version>
+    <version>5.29.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -25,7 +25,8 @@
     <plugins>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.7</version>
+		<!-- TODO upgrading to 3.2.0 shows an exception, needs further research -->
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>copy-resources</id>
@@ -57,7 +58,6 @@
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-test</artifactId>
         <scope>test</scope>
-        <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -127,11 +127,6 @@
     <dependency>
         <groupId>com.github.dozermapper</groupId>
         <artifactId>dozer-spring4</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.json-lib</groupId>
-      <artifactId>json-lib</artifactId>
-      <classifier>jdk15</classifier>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>

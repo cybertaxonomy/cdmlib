@@ -214,8 +214,9 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize,
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
+
         List<Media> media = new ArrayList<>();
         //media specimens
         if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
@@ -242,7 +243,7 @@ public class OccurrenceServiceImpl
             DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(rootOccurence, DerivedUnit.class);
             for (DerivationEvent derivationEvent : derivedUnit.getDerivationEvents()) {
                 for (DerivedUnit childDerivative : derivationEvent.getDerivatives()) {
-                    media.addAll(getMediainHierarchy(childDerivative, pageSize, pageNumber, propertyPaths).getRecords());
+                    media.addAll(getMediaInHierarchy(childDerivative, pageSize, pageNumber, propertyPaths).getRecords());
                 }
             }
         }
@@ -419,9 +420,9 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    @Deprecated
-    public String getMostSignificantIdentifier(DerivedUnit derivedUnit) {
-        return derivedUnit.getMostSignificantIdentifier();
+
+    public String getMostSignificantIdentifier(UUID derivedUnitUuid) {
+        return dao.findMostSignificantIdentifier(derivedUnitUuid);
     }
 
     /**
@@ -1026,7 +1027,7 @@ public class OccurrenceServiceImpl
     @Override
     public DeleteResult isDeletable(UUID specimenUuid, DeleteConfiguratorBase config) {
         DeleteResult deleteResult = new DeleteResult();
-        SpecimenOrObservationBase specimen = this.load(specimenUuid);
+        SpecimenOrObservationBase<?> specimen = this.load(specimenUuid);
         SpecimenDeleteConfigurator specimenDeleteConfigurator = (SpecimenDeleteConfigurator) config;
 
         // check elements found by super method
@@ -1114,15 +1115,11 @@ public class OccurrenceServiceImpl
         return deleteResult;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Transactional(readOnly = false)
     @Override
     public DeleteResult delete(UUID specimenUuid, SpecimenDeleteConfigurator config) {
         return delete(load(specimenUuid), config);
     }
-
 
     @Transactional(readOnly = false)
     @Override
@@ -1147,14 +1144,12 @@ public class OccurrenceServiceImpl
                     DerivedUnit unit = it.next();
                     derivativesToDelete.add(unit);
                 }
-                for (DerivedUnit unit:derivativesToDelete){
-                    deleteResult.includeResult(delete(unit, config));
+                for (DerivedUnit unit: derivativesToDelete){
+                    DeleteResult derivedDeleteResult = delete(unit, config);
+                    deleteResult.includeResult(derivedDeleteResult);
                 }
             }
         }
-
-
-
 
         // check related objects
         Set<CdmBase> relatedObjects = deleteResult.getRelatedObjects();
@@ -1211,7 +1206,8 @@ public class OccurrenceServiceImpl
                 if (derivationEvent.getDerivatives().contains(specimen) && specimen.isInstanceOf(DerivedUnit.class)) {
                     derivationEvent.removeDerivative(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
                     if (derivationEvent.getDerivatives().isEmpty()) {
-                        Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
+                        Set<SpecimenOrObservationBase> originals = new HashSet<>();
+                        originals.addAll(derivationEvent.getOriginals());
                         for (SpecimenOrObservationBase specimenOrObservationBase : originals) {
                             specimenOrObservationBase.removeDerivationEvent(derivationEvent);
                             deleteResult.addUpdatedObject(specimenOrObservationBase);

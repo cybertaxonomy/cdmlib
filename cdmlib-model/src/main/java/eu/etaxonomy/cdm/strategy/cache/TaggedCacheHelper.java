@@ -146,6 +146,21 @@ public class TaggedCacheHelper {
         return result.toString();
     }
 
+    /**
+     * tries to find a tagged text elements that matches the <code>type</code> and <code>textRegex</code> and
+     * returns all preceding elements as sublist.
+     */
+    public static List<? extends TaggedText> cropAt(List<? extends TaggedText> tags, TagEnum type, String textRegex) {
+        int pos = 0;
+        for (TaggedText taggedText : tags) {
+            if(type.equals(taggedText.getType()) && taggedText.getText().matches(textRegex)) {
+                break;
+            }
+            pos++;
+        }
+        return tags.subList(0, pos);
+    }
+
 
     private static void closeHtml(StringBuffer result, Stack<String> htmlStack, int index) {
         while (htmlStack.size() > index){

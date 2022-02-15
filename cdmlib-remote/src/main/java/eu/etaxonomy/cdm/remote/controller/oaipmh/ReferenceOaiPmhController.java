@@ -65,10 +65,6 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
         this.service = service;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.AbstractOaiPmhController#finishModelAndView(eu.etaxonomy.cdm.model.common.LSID, eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix, org.springframework.web.servlet.ModelAndView)
-     */
     @Override
     protected void finishModelAndView(LSID identifier,
             MetadataPrefix metadataPrefix, ModelAndView modelAndView)
@@ -82,12 +78,6 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
         }
     }
 
-    /**
-     * @param identifier
-     * @param metadataPrefix
-     * @return
-     * @throws IdDoesNotExistException
-     */
     private  List<TaxonBase> obtainCoveredTaxaList(
             LSID identifier, MetadataPrefix metadataPrefix)
             throws IdDoesNotExistException {
@@ -97,7 +87,4 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
         List<TaxonBase> list = service.listCoveredTaxa(reference, true, TAXON_INIT_STRATEGY);
         return list;
     }
-
-
-
 }

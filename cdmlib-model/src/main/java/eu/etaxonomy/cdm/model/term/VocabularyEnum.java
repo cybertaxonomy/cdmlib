@@ -92,7 +92,8 @@ public enum VocabularyEnum {
 	MediaSpecimenKindOfUnit("56f47c83-8d42-404a-88fc-03c57b560f6d", DefinedTerm.class),
 	IdentifierType("67d91839-484e-4183-8b4c-6a4a80dfc066", DefinedTerm.class),
 	DnaQualityType("55746f7b-78a8-4e5f-8e70-ee9ce047c835", OrderedTerm.class),
-	TaxonNodeAgentRelationType("0aa8e0c6-c7b5-42dd-91b7-0bd273a64b2c", DefinedTerm.class)
+	TaxonNodeAgentRelationType("0aa8e0c6-c7b5-42dd-91b7-0bd273a64b2c", DefinedTerm.class),
+	OccurrenceStatusType("6d06b750-4f48-42de-85b5-220256e4e5ba", DefinedTerm.class),
 	;
 
 	private UUID uuid;

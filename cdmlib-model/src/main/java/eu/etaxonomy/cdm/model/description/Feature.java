@@ -224,6 +224,12 @@ public class Feature extends AvailableForTermBase<Feature> {
 		return new Feature(description, label, labelAbbrev);
 	}
 
+    public static Feature NewInstance(String description, String label, String labelAbbrev, Language language){
+        Feature result = new Feature(description, label, labelAbbrev);
+        result.getRepresentations().iterator().next().setLanguage(language);
+        return result;
+    }
+
 // ********************** CONSTRUCTOR ************************/
 
     //for hibernate use only

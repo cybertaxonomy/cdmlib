@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -688,6 +689,15 @@ public class DescriptionDaoImpl
     }
 
     @Override
+    public List<SortableTaxonNodeQueryResult> getNodeOfIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid){
+        String selectString = " new " +SortableTaxonNodeQueryResult.class.getName()+"(n.uuid, n.id, n.treeIndex, t.uuid, t.titleCache, t.name.titleCache, t.name.rank, n.parent.uuid) ";
+        Query query = prepareGetIndividualAssociationForSpecimen(specimenUuid, classificationUuid, selectString);
+        @SuppressWarnings("unchecked")
+        List<SortableTaxonNodeQueryResult> results = query.list();
+        return results;
+    }
+
+    @Override
     public <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(
             UUID taxonUuid, Set<Feature> features,
             Class<T> type, Integer pageSize,
@@ -748,6 +758,37 @@ public class DescriptionDaoImpl
                 query.setFirstResult(pageNumber * pageSize);
             }
         }
+        return query;
+    }
+
+    private Query prepareGetIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid, String selectString) {
+
+        String queryString = "SELECT " + selectString + " FROM DescriptionElementBase AS de" +
+                " LEFT JOIN de.inDescription AS d" +
+                " LEFT JOIN d.taxon AS t" +
+                " LEFT JOIN t.taxonNodes AS n" +
+                " LEFT JOIN de.associatedSpecimenOrObservation AS specimen ";
+        String classificationString = "";
+        if (classificationUuid != null){
+            classificationString = " LEFT JOIN n.classification AS c ";
+        }
+        String whereString = " WHERE specimen.uuid = :specimen_uuid";
+        if (classificationUuid != null){
+            whereString = whereString + " AND c.uuid = :classifcationUuid";
+        }
+
+
+
+//      System.out.println(queryString);
+        Query query = getSession().createQuery(queryString + classificationString + whereString);
+
+        query.setParameter("specimen_uuid", specimenUuid);
+        if (classificationUuid != null){
+            query.setParameter("classifcationUuid", classificationUuid);
+        }
+
+
+
         return query;
     }
 
@@ -914,6 +955,8 @@ public class DescriptionDaoImpl
 
         return dtoList;
     }
+
+
 
 
 

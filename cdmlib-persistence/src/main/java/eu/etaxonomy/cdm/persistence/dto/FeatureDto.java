@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -49,7 +50,7 @@ public class FeatureDto extends TermDto {
     Set<TermVocabularyDto> recommendedModifierEnumeration = new HashSet<>();
 
     public FeatureDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, //Set<Representation> vocRepresentations,
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,
             boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence, String titleCache, boolean isSupportsCategoricalData, boolean isSupportsQuantitativeData,
             Set<TermVocabularyDto> supportedCategoricalEnumerations, Set<TermVocabularyDto> recommendedModifierEnumeration,  Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures){
         super(uuid, representations, TermType.Feature, partOfUuid, kindOfUuid,
@@ -72,7 +73,8 @@ public class FeatureDto extends TermDto {
     static public FeatureDto fromFeature(Feature term) {
         UUID partOfUuid = term.getPartOf() != null? term.getPartOf().getUuid(): null;
         UUID kindOfUuid = term.getKindOf() != null? term.getKindOf().getUuid(): null;
-        UUID vocUuid =  term.getVocabulary() != null? term.getVocabulary().getUuid(): null;
+        TermVocabulary<?> vocabulary = HibernateProxyHelper.deproxy(term.getVocabulary());
+        UUID vocUuid =  vocabulary != null? vocabulary.getUuid(): null;
         Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
         for (TermVocabulary<State> stateVoc:term.getSupportedCategoricalEnumerations()){
             supportedCategoricalEnumerations.add(TermVocabularyDto.fromVocabulary(stateVoc));
@@ -387,7 +389,7 @@ public class FeatureDto extends TermDto {
                 if (o instanceof StatisticalMeasure){
                     recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm((StatisticalMeasure)o));
                 }else if (o instanceof Set){
-                    Set<StatisticalMeasure> recommendedStatisticalMeasures = (Set<StatisticalMeasure>) o;
+                    Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet((Set<StatisticalMeasure>) o);
                     if (recommendedStatisticalMeasures != null) {
                         for (StatisticalMeasure term: recommendedStatisticalMeasures){
                             recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm(term));

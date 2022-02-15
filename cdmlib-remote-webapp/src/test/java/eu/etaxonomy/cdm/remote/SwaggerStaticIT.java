@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.remote;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -51,26 +52,21 @@ public class SwaggerStaticIT extends WebServiceTestBase {
             try {
                 File targetFile = new File(staticResourcesFolder + path + StaticSwaggerApiDoc.JSON);
                 new File(targetFile.getParent()).mkdirs();
-                FileUtils.write(targetFile, response);
+                FileUtils.write(targetFile, response, Charset.defaultCharset());
                 logger.info(response.length() + " characters of swagger-resources written to " + targetFile.getAbsolutePath());
             } catch (IOException e) {
                 logger.error(e);
             }
         }
-
     }
-
 
     @Test
     public void fetchSwaggerGroups(){
 
         String swagger2Endpoint= "/v2/api-docs";
-
-
         String staticApiDocFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/api-docs/";
 
         staticApiDocFolder = staticApiDocFolder.replace("/", File.separator);
-
 
         for(SwaggerGroupsConfig group : SwaggerGroupsConfig.values()) {
             logger.info(group.groupName());
@@ -78,7 +74,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
             response = response.replaceAll(",\"host\":\"([^\"]*)", ",\"host\":\"" + StaticSwaggerApiDoc.HOST);
             response = response.replaceAll(",\"basePath\":\"([^\"]*)", ",\"basePath\":\"" + StaticSwaggerApiDoc.BASE_PATH);
             try {
-                FileUtils.write(new File(staticApiDocFolder + group.name() + StaticSwaggerApiDoc.JSON), response);
+                FileUtils.write(new File(staticApiDocFolder + group.name() + StaticSwaggerApiDoc.JSON), response, Charset.defaultCharset());
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -88,5 +84,4 @@ public class SwaggerStaticIT extends WebServiceTestBase {
 //        File pwd = new File("pom.xml");
 //        System.err.println(pwd.getAbsolutePath());
     }
-
 }

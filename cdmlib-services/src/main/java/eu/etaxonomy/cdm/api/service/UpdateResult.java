@@ -10,13 +10,17 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 
@@ -45,6 +49,9 @@ public class UpdateResult implements Serializable{
     private final Set<CdmBase> unchangedObjects = new HashSet<>();
 
     private CdmBase cdmEntity;
+
+    private Map<Class<? extends CdmBase>, Set<UUID>> insertedUuids = new HashMap<>();
+    private Map<Class<? extends CdmBase>, Set<UUID>> updatedUuids = new HashMap<>();
 
     public enum Status {
         OK(0),
@@ -90,10 +97,48 @@ public class UpdateResult implements Serializable{
         this.exceptions.addAll(exceptions);
     }
 
-    /**
-     * Related objects that prevent the delete action to take place.
-     * @return
-     */
+    //inserted object UUIDs
+    public Map<Class<? extends CdmBase>, Set<UUID>> getInsertedUuids(){
+        return this.insertedUuids;
+    }
+    public void addInsertedUuid(CdmBase cdmBase) {
+        Class<? extends CdmBase> clazz = CdmBase.deproxy(cdmBase).getClass();
+        initClassRecord(insertedUuids, clazz);
+        this.insertedUuids.get(clazz).add(cdmBase.getUuid());
+    }
+    public Set<UUID> getInsertedUuids(Class<? extends CdmBase> clazz){
+        return byMapKey(this.insertedUuids, clazz);
+    }
+
+    //updated object UUIDs
+    public Map<Class<? extends CdmBase>, Set<UUID>> getUpdatedUuids(){
+        return this.updatedUuids;
+    }
+    public void addUpdatedUuid(CdmBase cdmBase) {
+        Class<? extends CdmBase> clazz = CdmBase.deproxy(cdmBase).getClass();
+        initClassRecord(updatedUuids, clazz);
+        this.updatedUuids.get(clazz).add(cdmBase.getUuid());
+    }
+    public Set<UUID> getUpdatedUuids(Class<? extends CdmBase> clazz){
+        return byMapKey(this.updatedUuids, clazz);
+    }
+
+    public Set<UUID> getInsertedOrUpdatedUuids(Class<? extends CdmBase> clazz){
+        HashSet<UUID> result = new HashSet<UUID>(getUpdatedUuids(clazz));
+        result.addAll(getInsertedUuids(clazz));
+        return result;
+    }
+
+    private void initClassRecord(Map<Class<? extends CdmBase>, Set<UUID>> map, Class<? extends CdmBase> clazz){
+        if (map.get(clazz) == null){
+            map.put(clazz, new HashSet<>());
+        }
+    }
+    private Set<UUID> byMapKey(Map<Class<? extends CdmBase>, Set<UUID>> map, Class<? extends CdmBase> clazz){
+        return map.get(clazz) == null ? new HashSet<>() : map.get(clazz);
+    }
+
+    //updated CDM id-s
     public Set<CdmEntityIdentifier> getUpdatedCdmIds() {
         return updatedCdmIds;
     }
@@ -103,16 +148,39 @@ public class UpdateResult implements Serializable{
     public void addUpdatedCdmIds(Set<CdmEntityIdentifier> updatedCdmIds) {
         this.updatedCdmIds.addAll(updatedCdmIds);
     }
+    public void addUpdatedCdmId(CdmBase updatedObject) {
+        this.updatedCdmIds.add(CdmEntityIdentifier.NewInstance(updatedObject));
+    }
 
-
+    //updated objects
     public Set<CdmBase> getUpdatedObjects() {
         return updatedObjects;
     }
     public void addUpdatedObject(CdmBase relatedObject) {
             this.updatedObjects.add(relatedObject);
-        }
+    }
     public void addUpdatedObjects(Set<? extends CdmBase> updatedObjects) {
         this.updatedObjects.addAll(updatedObjects);
+    }
+
+
+    //cdmEntity
+    public void setCdmEntity(CdmBase cdmBase) {
+        this.cdmEntity = cdmBase;
+    }
+    public CdmBase getCdmEntity(){
+        return cdmEntity;
+    }
+
+    //unchanged objects
+    public Set<CdmBase> getUnchangedObjects() {
+        return unchangedObjects;
+    }
+    public void addUnchangedObjects(Set<? extends CdmBase> unchangedObjects) {
+        this.unchangedObjects.addAll(unchangedObjects);
+    }
+    public void addUnChangedObject(CdmBase unchangedObject) {
+        this.unchangedObjects.add(unchangedObject);
     }
 
     //****************** CONVENIENCE *********************************************/
@@ -146,9 +214,15 @@ public class UpdateResult implements Serializable{
     }
 
     public void includeResult(UpdateResult includedResult){
+        includeResult(includedResult, false);
+    }
 
-        this.setMaxStatus(includedResult.getStatus());
-        this.addExceptions(includedResult.getExceptions());
+    public void includeResult(UpdateResult includedResult, boolean excludeStatusAndException){
+
+        if (!excludeStatusAndException){
+            this.setMaxStatus(includedResult.getStatus());
+            this.addExceptions(includedResult.getExceptions());
+        }
         this.addUpdatedObjects(includedResult.getUpdatedObjects());
         this.addUpdatedCdmIds(includedResult.getUpdatedCdmIds());
         //also add cdm entity of included result to updated objects
@@ -169,6 +243,7 @@ public class UpdateResult implements Serializable{
         return this.status == Status.ERROR;
     }
 
+// *********************************** TO STRING ***************************************/
     @Override
     public String toString(){
         String separator = ", ";
@@ -179,39 +254,40 @@ public class UpdateResult implements Serializable{
         if(exceptionString.endsWith(separator)){
             exceptionString = exceptionString.substring(0, exceptionString.length()-separator.length());
         }
-        String relatedObjectString = "";
-        for (CdmBase upatedObject: updatedObjects) {
-            if(upatedObject instanceof IIdentifiableEntity){
-                relatedObjectString += ((IIdentifiableEntity) upatedObject).getTitleCache()+separator;
-            }
-            else{
-                relatedObjectString += upatedObject.toString()+separator;
-            }
-        }
-        if(relatedObjectString.endsWith(separator)){
-            relatedObjectString = relatedObjectString.substring(0, relatedObjectString.length()-separator.length());
-        }
+        String updatedObjectString = toStringObjectsString(separator, updatedObjects);
+        String unchangedObjectString = toStringObjectsString(separator, unchangedObjects);
         return "[UpdateResult]\n" +
             "Status: " + status.toString()+"\n" +
             "Exceptions: " + exceptionString+"\n" +
-            "Related Objects: "+relatedObjectString;
-    }
-    public void setCdmEntity(CdmBase cdmBase) {
-        this.cdmEntity = cdmBase;
-    }
-
-    public CdmBase getCdmEntity(){
-        return cdmEntity;
+            "Updated objects: " + updatedObjectString+"\n" +
+            "Updated objects IDs: " + toStringIdsString(separator, updatedCdmIds)+"\n" +
+            "Unchanged objects: " + unchangedObjectString
+            ;
     }
 
-    public Set<CdmBase> getUnchangedObjects() {
-        return unchangedObjects;
+    private String toStringIdsString(String separator, Set<CdmEntityIdentifier> cdmIds) {
+        String result = "";
+        for (CdmEntityIdentifier id : cdmIds){
+            result = CdmUtils.concat(separator, result, id.toString());
+        }
+        return result;
     }
-
-    public void addUnchangedObjects(Set<? extends CdmBase> unchangedObjects) {
-        this.unchangedObjects.addAll(unchangedObjects);
-    }
-    public void addUnChangedObject(CdmBase unchangedObject) {
-        this.unchangedObjects.add(unchangedObject);
+    /**
+     * Serializes the CdmBase collection
+     */
+    protected static String toStringObjectsString(String separator, Set<CdmBase> cdmBases) {
+        String cdmBasesString = "";
+        for (CdmBase cdmBase: cdmBases) {
+            if(cdmBase instanceof IIdentifiableEntity){
+                cdmBasesString += ((IIdentifiableEntity) cdmBase).getTitleCache()+separator;
+            }
+            else{
+                cdmBasesString += cdmBase.toString()+separator;
+            }
+        }
+        if(cdmBasesString.endsWith(separator)){
+            cdmBasesString = cdmBasesString.substring(0, cdmBasesString.length()-separator.length());
+        }
+        return cdmBasesString;
     }
 }

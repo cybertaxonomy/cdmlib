@@ -31,10 +31,18 @@ public interface IUserDao extends ICdmEntityDao<User> {
      */
     public User findUserByUsername(String username);
 
+    /**
+     * Find the user having the supplied email address
+     * @param emailAddress
+     * @return The user or null
+     */
+    public User findByEmailAddress(String emailAddress);
+
      /**
      * Return a List of users matching the given query string, optionally filtered by class, optionally with a particular MatchMode
      *
-     * @param queryString the query string to filter by
+     * @par@Override
+    am queryString the query string to filter by
      * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
      * @param criteria extra restrictions to apply
      * @param pageSize The maximum number of rights returned (can be null for all rights)
@@ -61,6 +69,16 @@ public interface IUserDao extends ICdmEntityDao<User> {
      * @see {@link IIdentifiableDao#countByTitle(Class, String, MatchMode, List)}
      */
     public long countByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria);
+
+    /**
+     * Checks if the <code>username</code> exists in the database.
+     */
+    public boolean userNameExists(String username);
+
+    /**
+     * Checks if the <code>emailAddress</code> exists in the database.
+     */
+    boolean emailAddressExists(String emailAddress);
 
 
 }

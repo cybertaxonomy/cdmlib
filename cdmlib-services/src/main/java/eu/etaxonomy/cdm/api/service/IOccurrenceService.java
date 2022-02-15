@@ -157,7 +157,7 @@ public interface IOccurrenceService
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of media instances
      */
-    public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a count of determinations that have been made for a given occurence and for a given taxon concept
@@ -573,10 +573,9 @@ public interface IOccurrenceService
      * Returns the most significant identifier for the given {@link DerivedUnit}.
      * @param derivedUnit the derived unit to check
      * @return the identifier string
-     * @deprecated use {@link DerivedUnit#getMostSignificantIdentifier()} instead
      */
-    @Deprecated
-    public String getMostSignificantIdentifier(DerivedUnit derivedUnit);
+
+    public String getMostSignificantIdentifier(UUID derivedUnit);
 
     /**
      * Returns the number of specimens that match the given parameters

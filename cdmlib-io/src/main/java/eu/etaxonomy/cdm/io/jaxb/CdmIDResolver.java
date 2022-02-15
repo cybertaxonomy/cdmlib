@@ -15,7 +15,6 @@ import com.sun.xml.bind.IDResolver;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -23,6 +22,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -42,31 +42,32 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 public class CdmIDResolver extends IDResolver {
-	private static final Logger logger = Logger.getLogger(CdmIDResolver.class);
 
-	IUserService userService;
+    private static final Logger logger = Logger.getLogger(CdmIDResolver.class);
 
-	IAgentService agentService;
+    private IUserService userService;
 
-	ITermService termService;
+    private IAgentService agentService;
 
-	IVocabularyService vocabularyService;
+    private ITermService termService;
 
-	IDescriptionService descriptionService;
+    private IVocabularyService vocabularyService;
 
-	IFeatureTreeService featureTreeService;
+    private IDescriptionService descriptionService;
 
-	IMediaService mediaService;
+    private ITermTreeService termTreeService;
 
-	INameService nameService;
+    private IMediaService mediaService;
 
-	IOccurrenceService occurrenceService;
+    private INameService nameService;
 
-	ICollectionService collectionService;
+    private IOccurrenceService occurrenceService;
 
-	IReferenceService referenceService;
+    private ICollectionService collectionService;
 
-	ITaxonService taxonService;
+    private IReferenceService referenceService;
+
+    private ITaxonService taxonService;
 
 	@Autowired
 	public void setUserService(IUserService userService) {
@@ -94,8 +95,8 @@ public class CdmIDResolver extends IDResolver {
 	}
 
 	@Autowired
-	public void setFeatureTreeService(IFeatureTreeService featureTreeService) {
-		this.featureTreeService = featureTreeService;
+	public void setTermTreeService(ITermTreeService termTreeService) {
+		this.termTreeService = termTreeService;
 	}
 
 	@Autowired
@@ -140,7 +141,7 @@ public class CdmIDResolver extends IDResolver {
 	@Override
 	public void bind(String id, Object obj) throws SAXException {
 		if(idmap==null) {
-			idmap = new HashMap<String,Object>();
+			idmap = new HashMap<>();
 		}
 		idmap.put(id,obj);
 	}
@@ -169,7 +170,7 @@ public class CdmIDResolver extends IDResolver {
 				  } else if(DescriptionBase.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, descriptionService);
 				  } else if(TermTree.class.isAssignableFrom(targetType)) {
-					  return resolveObject(uuid, targetType, featureTreeService);
+					  return resolveObject(uuid, targetType, termTreeService);
 				  } else if(Media.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, mediaService);
 				  } else if(TaxonName.class.isAssignableFrom(targetType)) {

@@ -282,5 +282,11 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
     public Country getCountryByIso(String iso639);
 
     public List<Country> getCountryByName(String name);
+    /**
+     * Returns a map of {@link UUID} and {@link TermDto} of terms with uuid matches one of uuids in list
+     * @param uuidList
+     * @return
+     */
+    public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList);
 
 }

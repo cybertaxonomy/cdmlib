@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.pilotOutputHtml;
 
 import java.io.File;
@@ -112,11 +111,8 @@ public class PilotOutputExporter
 			e.printStackTrace();
 		}
 		commitTransaction(txStatus);
-
 		return;
-
 	}
-
 
 	private void retrieveData (IExportConfigurator config, SDDDataSet sddDataSet) {
 
@@ -241,10 +237,9 @@ public class PilotOutputExporter
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
 			sddDataSet.setFeatureData(getTermNodeService().list(TermType.Feature,null,null,null,null));
-			sddDataSet.addFeatureData(getFeatureTreeService().list(null,null,null,null,null));
+			sddDataSet.addFeatureData(getTermTreeService().list(TermType.Feature,null,null,null,null));
 		}
 	}
-
 
 	@Override
 	protected boolean doCheck(PilotOutputExportState state) {
@@ -253,21 +248,14 @@ public class PilotOutputExporter
 		return result;
 	}
 
-
 	@Override
 	protected boolean isIgnore(PilotOutputExportState state) {
 		return false;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public byte[] getByteArray() {
         // TODO Auto-generated method stub
         return null;
     }
-
-
-
 }

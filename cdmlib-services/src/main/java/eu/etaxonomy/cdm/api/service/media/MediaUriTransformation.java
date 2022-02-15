@@ -32,12 +32,7 @@ public class MediaUriTransformation {
     Integer height = null;
     boolean isMaxExtend = false;
 
-    /**
-     *
-     */
-    public MediaUriTransformation() {
-
-    }
+    public MediaUriTransformation() {}
 
     public SearchReplace getScheme() {
         return scheme;

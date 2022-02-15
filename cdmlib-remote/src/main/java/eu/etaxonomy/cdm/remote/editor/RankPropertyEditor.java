@@ -18,7 +18,7 @@ public class RankPropertyEditor extends PropertyEditorSupport {
 	
 	public void setAsText(String name) {
 		try {
-			setValue(Rank.getRankByName(name));
+			setValue(Rank.getRankByLatinName(name));
 		} catch (UnknownCdmTypeException e) {
 			throw new IllegalArgumentException("Unknown Rank "+name);
 		}

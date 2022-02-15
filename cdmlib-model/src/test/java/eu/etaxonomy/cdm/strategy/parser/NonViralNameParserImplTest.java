@@ -1239,7 +1239,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals(strEmpty, nameEmpty.getFullTitleCache());
         assertNull(nameEmpty.getNomenclaturalMicroReference());
 
-
         //Whitespaces
         String strFullWhiteSpcaceAndDot = "Abies alba Mill.,  Sp.   Pl.  4:  455 .  1987 .";
         INonViralName namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, rankSpecies);
@@ -1304,7 +1303,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
         //SoftArticle - having "," on position > 4
         String journalTitle = "Bull. Soc. Bot.France. Louis., Roi";
         String yearPart = " 1987 - 1989";
-        String parsedYear = "1987-1989";
         String parsedYearFormatted = "1987"+SEP+"1989";
         String fullReferenceWithoutYear = "Abies alba Mill. in " + journalTitle + " 4(6): 455.";
         fullReference = fullReferenceWithoutYear + yearPart;
@@ -1647,6 +1645,10 @@ public class NonViralNameParserImplTest extends TermTestBase {
         testParsable = "Cichorium intybus subsp. glaucum (Hoffmanns. & Link) Tzvelev in Komarov, Fl. SSSR 29: 17. 1964";
         assertTrue("Reference containing a word in uppercase is not parsable", isParsable(testParsable, ICNAFP));
 
+        testParsable = "Silene broussonetiana Schott ex Webb & Berthel., Hist. Nat. Iles Canaries 3(2,1): 141. 1840";
+        assertTrue("Reference with volume with 2 number in brackets is not parsable", isParsable(testParsable, ICNAFP));
+        testParsable = "Silene broussonetiana Schott ex Webb & Berthel., Hist. Nat. Iles Canaries 3(2, 1): 141. 1840";
+        assertTrue("Reference with volume with 2 number in brackets is not parsable", isParsable(testParsable, ICNAFP));
 
     }
 
@@ -1696,13 +1698,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
     }
 
-
-
-    /**
-     * @param testParsable
-     * @param icbn
-     * @return
-     */
     private List<ParserProblem> getProblems(String string, NomenclaturalCode code) {
         List<ParserProblem> result = parser.parseReferencedName(string, code, null).getParsingProblems();
         return result;
@@ -1710,7 +1705,20 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
     private boolean isParsable(String string, NomenclaturalCode code){
         INonViralName name = parser.parseReferencedName(string, code, null);
-        return ! name.hasProblem();
+        if (name.hasProblem()) {
+            return false;
+        }else if (name.getNomenclaturalReference() != null) {
+            //not really neccessary as "problem" is for fulltitlecache and therefore also
+            Reference nomRef = name.getNomenclaturalReference();
+            if (nomRef.hasProblem()) {
+                return false;
+            }else if (nomRef.getInReference() != null) {
+                if (nomRef.getInReference().hasProblem()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void assertFullRefNameStandard(INonViralName name){
@@ -2739,8 +2747,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
     @Test
     public final void testExistingProblems(){
+
+        INonViralName name;
+        String str = "Cerastium nutans var. occidentale Boivin in Canad. Field-Naturalist 65: 5. 1951";
+        name = parser.parseReferencedName(str);
+        Assert.assertTrue(isParsable(str, NomenclaturalCode.ICNAFP));
+
         //Canabio, issue with space
-        INonViralName name = parser.parseReferencedName("Machaonia erythrocarpa var. hondurensis (Standl.) Borhidi"
+        name = parser.parseReferencedName("Machaonia erythrocarpa var. hondurensis (Standl.) Borhidi"
                 + " in Acta Bot. Hung. 46 (1-2): 30. 2004");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
@@ -3158,6 +3172,18 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
         Assert.assertEquals("Edwards's Bot. Reg.", ref.getInReference().getAbbrevTitle());
+
+        // #9014 ... in Sitzungsber. Math.-Phys. Cl. Königl. Bayer. Akad. Wiss. München 14: 489. 1884
+        nameStr = "Daphnopsis cuneata Radlk. in Sitzungsber. Math.-Phys. Cl. Königl. Bayer. Akad. Wiss. München 14: 489. 1884";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertTrue(isParsable(nameStr, ICNAFP));
+        Assert.assertEquals("489", name.getNomenclaturalMicroReference());
+        ref = name.getNomenclaturalReference();
+        Assert.assertEquals(ReferenceType.Article, ref.getType());
+        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
+        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
+        Assert.assertEquals("Sitzungsber. Math.-Phys. Cl. Königl. Bayer. Akad. Wiss. München", ref.getInReference().getAbbrevTitle());
+        Assert.assertEquals("14", ref.getVolume());
 
     }
 

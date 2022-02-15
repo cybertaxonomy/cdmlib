@@ -33,8 +33,8 @@ public class TermNodeDto implements Serializable{
     private UUID parentUuid;
     private String treeIndex;
     private List<TermNodeDto> children;
-    private Set<FeatureState> onlyApplicableIf = new HashSet<>();
-    private Set<FeatureState> inapplicableIf = new HashSet<>();
+    private Set<FeatureStateDto> onlyApplicableIf = new HashSet<>();
+    private Set<FeatureStateDto> inapplicableIf = new HashSet<>();
     private UUID uuid;
     private TermDto term;
     private TermType type;
@@ -47,11 +47,12 @@ public class TermNodeDto implements Serializable{
         if (treeDto != null){
             treeDto.addTerm(term);
         }
+
         TermNodeDto dto = new TermNodeDto(term, node.getParent() != null? node.getParent().getIndex(node): 0, treeDto != null? treeDto: TermTreeDto.fromTree((TermTree)node.getGraph()), node.getUuid(), node.treeIndex(), node.getPath());
         if (node.getParent() != null){
             dto.setParentUuid(node.getParent().getUuid());
         }
-
+        
         List<TermNodeDto> children = new ArrayList<>();
         for (Object o: node.getChildNodes()){
             if (o instanceof TermNode){
@@ -152,20 +153,39 @@ public class TermNodeDto implements Serializable{
         this.children = children;
     }
 
-    public Set<FeatureState> getOnlyApplicableIf() {
+    public Set<FeatureStateDto> getOnlyApplicableIf() {
         return onlyApplicableIf;
     }
 
-    public void setOnlyApplicableIf(Set<FeatureState> onlyApplicableIf) {
+    public void setOnlyApplicableIfDto(Set<FeatureStateDto> onlyApplicableIf) {
         this.onlyApplicableIf = onlyApplicableIf;
     }
+    public void setOnlyApplicableIf(Set<FeatureState> onlyApplicableIf) {
+        if (this.onlyApplicableIf == null){
+            this.onlyApplicableIf = new HashSet<>();
+        }
+        for (FeatureState state: onlyApplicableIf){
+            this.onlyApplicableIf.add(new FeatureStateDto(state.getUuid(), FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(state.getState())));
+        }
 
-    public Set<FeatureState> getInapplicableIf() {
+    }
+
+    public Set<FeatureStateDto> getInapplicableIf() {
         return inapplicableIf;
     }
 
-    public void setInapplicableIf(Set<FeatureState> inapplicableIf) {
+    public void setInapplicableIfDto(Set<FeatureStateDto> inapplicableIf) {
         this.inapplicableIf = inapplicableIf;
+    }
+
+    public void setInapplicableIf(Set<FeatureState> inApplicableIf) {
+        if (this.inapplicableIf == null){
+            this.inapplicableIf = new HashSet<>();
+        }
+        for (FeatureState state: inApplicableIf){
+            this.inapplicableIf.add( new FeatureStateDto(state.getUuid(),FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(state.getState())));
+        }
+
     }
 
     public UUID getUuid() {

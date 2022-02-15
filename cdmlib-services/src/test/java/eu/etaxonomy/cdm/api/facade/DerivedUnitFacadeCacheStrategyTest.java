@@ -166,19 +166,19 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 
 	@Test
 	public void testGetTitleCache() {
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue.";
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
         collection.setCode(null);
         collection.setName("Herbarium Berolinense");
-        Assert.assertEquals(correctCache.replace("B 8909756", "Herbarium Berolinense 8909756"), specimenFacade.getTitleCache());
+        Assert.assertEquals(correctCache.replace("B: 8909756", "Herbarium Berolinense: 8909756"), specimenFacade.getTitleCache());
 	}
 
     @Test
     public void testGetTitleCacheWithEtAl() {
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue.";
         collector.setHasMoreMembers(true);
         specimenFacade.setEcology(ecology);
         specimenFacade.setPlantDescription(plantDescription);
@@ -192,13 +192,13 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
         //Note: Collection Code B might be deduplicated in future
         specimenFacade.setPlantDescription(plantDescription);
         collection.setCode("B");
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue.";
         Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
         specimenFacade.setAccessionNumber(null);
-        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B B12345678); flowers blue.";
+        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: B12345678); flowers blue.";
         Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
         specimenFacade.setBarcode(null);
-        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B UU879873590); flowers blue.";
+        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: UU879873590); flowers blue.";
         Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
     }
 }

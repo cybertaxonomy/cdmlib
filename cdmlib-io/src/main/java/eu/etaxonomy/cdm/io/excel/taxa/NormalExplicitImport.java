@@ -277,7 +277,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			    if (taxonDataHolder.getInfraSpecies() != null){
 			        if (taxonDataHolder.getInfraSpecies_Rank() !=  null || !StringUtils.isBlank(taxonDataHolder.getInfraSpecies_Rank()) ){
 			            try {
-                            rank = Rank.getRankByNameOrIdInVoc(taxonDataHolder.getInfraSpecies_Rank());
+                            rank = Rank.getRankByLatinNameOrIdInVoc(taxonDataHolder.getInfraSpecies_Rank());
                         } catch (UnknownCdmTypeException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -297,7 +297,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 				// Rank
 				try {
 				    if (!StringUtils.isBlank(rankStr)) {
-                        rank = Rank.getRankByNameOrIdInVoc(rankStr);
+                        rank = Rank.getRankByLatinNameOrIdInVoc(rankStr);
                         }
 				} catch (UnknownCdmTypeException ex) {
 					try {

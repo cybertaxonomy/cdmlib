@@ -44,6 +44,9 @@ public class DerivedUnitFacadeCacheStrategy
 	private boolean includeEmptySeconds = false;
 	private boolean includeReferenceSystem = true;
 
+	private String collectionAccessionSeperator = ": ";
+
+
 	@Override
     public String getTitleCache(DerivedUnit derivedUnit) {
 	    return getTitleCache(derivedUnit, false, true);
@@ -104,7 +107,7 @@ public class DerivedUnitFacadeCacheStrategy
     public String getSpecimenLabel(DerivedUnitFacade facade) {
         String code = getCode(facade);
         String identifier = getUnitNumber(facade /*, code*/);
-        String collectionData = CdmUtils.concat(" ", code, identifier);
+        String collectionData = CdmUtils.concat(collectionAccessionSeperator, code, identifier);
         return collectionData;
     }
 

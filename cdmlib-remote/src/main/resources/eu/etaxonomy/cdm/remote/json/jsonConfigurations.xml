@@ -484,6 +484,9 @@
                 <property name="replaceMultilanguageText" value="true" />
             </bean>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.common.ExtendedTimePeriod">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ExtendedTimePeriodBeanProcessor" />
+        </entry>
         <entry key="eu.etaxonomy.cdm.model.description.StateData">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.StateDataBeanProcessor">
                 <property name="replaceMultilanguageText" value="true" />

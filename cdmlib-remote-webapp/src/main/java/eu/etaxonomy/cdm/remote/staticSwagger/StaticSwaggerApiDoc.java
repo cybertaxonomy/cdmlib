@@ -33,19 +33,15 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
  * <p>
  * The static api doc files are created by the integration test class <code>SwaggerStaticIT</code>.
  * <p>
- * For more details see {@link http://dev.e-taxonomy.eu/trac/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
+ * For more details see {@link https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
  *
  * @author a.kohlbecker
  * @since Feb 22, 2016
- *
  */
-
 @Controller
 public class StaticSwaggerApiDoc {
 
-
     public static final Logger logger = Logger.getLogger(StaticSwaggerApiDoc.class);
-
 
     public static final String SWAGGER_STATIC = "swagger-static";
     public static final String JSON = ".json";
@@ -128,5 +124,4 @@ public class StaticSwaggerApiDoc {
             }
         }
     }
-
 }

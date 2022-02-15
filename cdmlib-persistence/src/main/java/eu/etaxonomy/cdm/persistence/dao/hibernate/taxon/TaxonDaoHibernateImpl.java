@@ -632,15 +632,6 @@ public class TaxonDaoHibernateImpl
         MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished) {
 
         boolean doCount = true;
-        /*
-        boolean doTaxa = true;
-        boolean doSynonyms = true;
-        if (clazz.equals(Taxon.class)){
-            doSynonyms = false;
-        } else if (clazz.equals(Synonym.class)){
-            doTaxa = false;
-        }
-        */
         String searchField = doIncludeAuthors ? "titleCache": "nameCache";
 
         Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
@@ -1012,17 +1003,6 @@ public class TaxonDaoHibernateImpl
             if(! includeUnpublished) {
                 query.setBoolean("publish",Boolean.TRUE);
             }
-
-
-//            if(type == null) {
-//                query = getSession().createQuery(
-//                        "select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship."+direction+" = :relatedTaxon");
-//            } else {
-//                query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship."+direction+" = :relatedTaxon and taxonRelationship.type = :type");
-//                query.setParameter("type",type);
-//            }
-//            query.setParameter("relatedTaxon", taxon);
-
             return (Long)query.uniqueResult();
         } else {
           //TODO unpublished
@@ -1099,32 +1079,6 @@ public class TaxonDaoHibernateImpl
                 query.setBoolean("publish",Boolean.TRUE);
             }
             setPagingParameter(query, pageSize, pageNumber);
-
-//            Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
-//
-//            if(direction != null) {
-//                criteria.add(Restrictions.eq(direction.name(), taxon));
-//            } else {
-//                criteria.add(Restrictions.or(
-//                        Restrictions.eq(Direction.relatedFrom.name(), taxon),
-//                        Restrictions.eq(Direction.relatedTo.name(), taxon))
-//                    );
-//            }
-//
-//            if(type != null) {
-//                criteria.add(Restrictions.eq("type", type));
-//            }
-//
-//            addOrder(criteria,orderHints);
-//
-//            if(pageSize != null) {
-//                criteria.setMaxResults(pageSize);
-//                if(pageNumber != null) {
-//                    criteria.setFirstResult(pageNumber * pageSize);
-//                } else {
-//                    criteria.setFirstResult(0);
-//                }
-//            }
 
             @SuppressWarnings("unchecked")
             List<TaxonRelationship> result = query.list();
@@ -1938,7 +1892,7 @@ public class TaxonDaoHibernateImpl
         return results;
     }
 
-   
+
 
 
     @Override

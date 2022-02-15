@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.application;
 
 import org.springframework.security.authentication.ProviderManager;
@@ -20,13 +19,12 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IEventBaseService;
-import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -54,6 +52,8 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
+import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.persistence.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
@@ -77,7 +77,6 @@ public interface ICdmRepository extends ICdmImportSource {
 
 	public Object getBean(String string);
 
-
     public IAnnotationService getAnnotationService();
 
 	public INameService getNameService();
@@ -90,9 +89,13 @@ public interface ICdmRepository extends ICdmImportSource {
 
 	public IReferenceService getReferenceService();
 
+    public IAccountRegistrationService getAccountRegistrationService();
+
 	public IAgentService getAgentService();
 
 	public IDescriptionService getDescriptionService();
+
+	public IDescriptionElementService getDescriptionElementService();
 
 	public IOccurrenceService getOccurrenceService();
 
@@ -136,23 +139,8 @@ public interface ICdmRepository extends ICdmImportSource {
 
 	public ILongRunningTasksService getLongRunningTasksService();
 
-	/**
-	 * @deprecated use {@link #getTermTreeService()} instead
-	 */
-	@Deprecated
-    public IFeatureTreeService getFeatureTreeService();
-
     public ITermTreeService getTermTreeService();
 
-	/**
-     * @deprecated use {@link #getTermNodeService()} instead
-	 */
-	@Deprecated
-    public IFeatureNodeService getFeatureNodeService();
-
-    /**
-     * @return
-     */
     public ITermNodeService getTermNodeService();
 
 	public IVocabularyService getVocabularyService();
@@ -178,6 +166,8 @@ public interface ICdmRepository extends ICdmImportSource {
 	 *         {@link CdmPermissionEvaluator}
 	 */
 	public ICdmPermissionEvaluator getPermissionEvaluator();
+
+	public IPasswordResetService getPasswordResetService();
 
 	public MediaInfoFactory getMediaInfoFactory(); // FIXME define and use interface
 

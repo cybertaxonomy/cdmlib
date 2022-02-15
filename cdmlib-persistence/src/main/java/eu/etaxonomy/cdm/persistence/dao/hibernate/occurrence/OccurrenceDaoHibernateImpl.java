@@ -1023,4 +1023,30 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
+    @Override
+    public String findMostSignificantIdentifier(UUID derivedUnitUuid) {
+
+        String queryString = "SELECT du.catalogNumber, du.accessionNumber, du.barcode FROM DerivedUnit du"
+                + " WHERE du.uuid LIKE :derivedUnitUuid";
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("derivedUnitUuid", derivedUnitUuid);
+        @SuppressWarnings("unchecked")
+        List<String[]> results = query.list();
+        if (results.isEmpty()){
+            return null;
+        }
+        Object[] stringResult = results.get(0);
+        if (stringResult[1] != null && stringResult[1] instanceof String){
+            return (String)stringResult[1];
+        }
+        if (stringResult[2] != null && stringResult[2] instanceof String){
+            return (String)stringResult[2];
+        }
+        if (stringResult[0] != null && stringResult[0] instanceof String){
+            return (String)stringResult[0];
+        }
+
+        return null;
+    }
+
 }

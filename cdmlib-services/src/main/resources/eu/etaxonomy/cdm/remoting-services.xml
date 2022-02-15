@@ -24,6 +24,7 @@
       <!-- The configuration of the services is imported from httpInvokerServices.xml -->
       <props>
         <!-- services from cdmlib-services project -->
+        <prop key="/remoting/accountregistrationservice.service">httpAccountRegistrationService</prop>
         <prop key="/remoting/agent.service">httpAgentService</prop>
         <prop key="/remoting/amplification.service">httpAmplificationService</prop>
         <prop key="/remoting/annotation.service">httpAnnotationService</prop>
@@ -34,9 +35,8 @@
         <prop key="/remoting/common.service">httpCommonService</prop>
         <prop key="/remoting/database.service">httpDatabaseService</prop>
         <prop key="/remoting/description.service">httpDescriptionService</prop>
-        <prop key="/remoting/featurenode.service">httpFeatureNodeService</prop>
+        <prop key="/remoting/descriptionelement.service">httpDescriptionElementService</prop>
         <prop key="/remoting/termnode.service">httpTermNodeService</prop>
-        <prop key="/remoting/featuretree.service">httpFeatureTreeService</prop>
         <prop key="/remoting/termtree.service">httpTermTreeService</prop>
         <prop key="/remoting/grantedauthority.service">httpGrantedAuthorityService</prop>
         <prop key="/remoting/group.service">httpGroupService</prop>
@@ -49,6 +49,7 @@
         <prop key="/remoting/media.service">httpMediaService</prop>
         <prop key="/remoting/name.service">httpNameService</prop>
         <prop key="/remoting/occurrence.service">httpOccurrenceService</prop>
+        <prop key="/remoting/passwordreset.service">httpPasswordResetService</prop>
         <prop key="/remoting/polytomouskeynode.service">httpPolytomousKeyNodeService</prop>
         <prop key="/remoting/polytomouskey.service">httpPolytomousKeyService</prop>
         <prop key="/remoting/primer.service">httpPrimerService</prop>

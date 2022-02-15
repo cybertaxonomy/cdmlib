@@ -26,7 +26,7 @@ public enum CondensedDistributionRecipe implements IKeyLabel{
      * For reference see:
      * <ul>
      *   <li>{@link http://ww2.bgbm.org/EuroPlusMed/explanations.asp}</li>
-     *   <li>{@link http://dev.e-taxonomy.eu/trac/ticket/3907}</li>
+     *   <li>{@link https://dev.e-taxonomy.eu/redmine/issues/3907}</li>
      * </ul>
      */
     EuroPlusMed("EuroPlusMed", "Euro + Med"),

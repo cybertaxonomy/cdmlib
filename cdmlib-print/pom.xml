@@ -3,7 +3,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.28.0</version>
+    <version>5.29.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -24,12 +24,11 @@
       <organization>
 				Botanic Garden Botanical Museum Berlin
 			</organization>
-      <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+      <organizationUrl>https://www.bgbm.org/en/biodiversity-informatics</organizationUrl>
       <timezone>+1</timezone>
       <roles>
         <role>Java Developer</role>
       </roles>
-      <url>http://www.bgbm.org/bgbm/staff/wiss/HoffmannN/default.htm</url>
     </developer>
   </developers>
   <dependencies>

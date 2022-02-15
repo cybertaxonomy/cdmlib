@@ -43,6 +43,13 @@ public abstract class OccurrenceCacheStrategyBase<T extends SpecimenOrObservatio
         return getTitleCache(specimen, false);
     }
 
+    /**
+     * Returns the title cache for the given specimen.
+     *
+     * @param emptyIfBlank if <code>true</code> a blank result will be returned as empty string. Otherwise
+     * the toString() result is returned.
+     * @return the title cache
+     */
     public String getTitleCache(T specimen, boolean emptyIfBlank) {
         if (specimen == null){
             return null;
@@ -58,7 +65,21 @@ public abstract class OccurrenceCacheStrategyBase<T extends SpecimenOrObservatio
         return result;
     }
 
+    public String getIdentityCache(T specimen){
+        boolean emptyIfBlank = true;  //for future
+        if (specimen == null){
+            return null;
+        }
+        String result = doGetIdentityCache(specimen);
+        if (isBlank(result)){
+            return getTitleCache(specimen, emptyIfBlank);
+        }
+        return result;
+    }
+
     protected abstract String doGetTitleCache(T occurrence);
+
+    protected abstract String doGetIdentityCache(T occurrence);
 
     protected String getCollectionAndAccession(T occurrence){
         if (occurrence.isInstanceOf(FieldUnit.class)){

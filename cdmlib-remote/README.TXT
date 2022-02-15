@@ -1,6 +1,6 @@
-The project uses Maven2 and AspectJ.
+The project uses Maven3 and AspectJ.
 
-Please see http://dev.e-taxonomy.eu/trac/wiki/CdmLibrary for details on installation and usage
+Please see https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmLibrary for details on installation and usage
 
 ***Deploying to Application Server***
 The POM contains deployment plugins for TOMCAT and also JETTY.

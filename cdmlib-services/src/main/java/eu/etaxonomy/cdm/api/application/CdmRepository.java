@@ -39,13 +39,12 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IEventBaseService;
-import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -73,6 +72,8 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
+import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 
 /**
@@ -107,6 +108,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	//@Qualifier("referenceService")
 	private IReferenceService referenceService;
 	@Autowired
+	private IAccountRegistrationService accountRegistrationService;
+	@Autowired
 	//@Qualifier("agentService")
 	private IAgentService agentService;
 	@Autowired
@@ -120,6 +123,9 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	@Autowired
 	//@Qualifier("descriptionService")
 	private IDescriptionService descriptionService;
+	@Autowired
+	//@Qualifier("descriptionElementService")
+	private IDescriptionElementService descriptionElementService;
 	@Autowired
 	//@Qualifier("occurrenceService")
 	private IOccurrenceService occurrenceService;
@@ -162,10 +168,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	@Autowired
 	private ICollectionService collectionService;
 	@Autowired
-	private IFeatureTreeService featureTreeService;
-	@Autowired
-	private IFeatureNodeService featureNodeService;
-	@Autowired
 	private ITermTreeService termTreeService;
 	@Autowired
 	private ITermNodeService termNodeService;
@@ -199,9 +201,10 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     private MediaInfoFactory mediaInfoFactory; // FIXME define and use interface
 	@Autowired
     private SessionFactory factory;
-
 	@Autowired
 	private IDescriptiveDataSetService descriptiveDataSetService;
+    @Autowired
+    private IPasswordResetService passwordResetService;
 
 	//********************** CONSTRUCTOR *********************************************************/
 
@@ -220,6 +223,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	public Object getBean(String name){
 	    return this.applicationContext.getBean(name);
 	}
+
+    @Override
+    public IAccountRegistrationService getAccountRegistrationService() {
+        return accountRegistrationService;
+    }
 
 	@Override
 	public IAnnotationService getAnnotationService(){
@@ -276,6 +284,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	public IDescriptionService getDescriptionService(){
 		return this.descriptionService;
 	}
+
+    @Override
+    public IDescriptionElementService getDescriptionElementService(){
+        return this.descriptionElementService;
+    }
 
 	@Override
 	public IOccurrenceService getOccurrenceService(){
@@ -367,18 +380,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	}
 
 	@Override
-	public IFeatureTreeService getFeatureTreeService(){
-		return featureTreeService;
-	}
-
-	@Override
 	public ITermTreeService getTermTreeService(){
 	    return termTreeService;
-	}
-
-	@Override
-	public IFeatureNodeService getFeatureNodeService(){
-		return featureNodeService;
 	}
 
     @Override
@@ -441,8 +444,29 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		return permissionEvaluator;
 	}
 
+    @Override
     public MediaInfoFactory getMediaInfoFactory() { // FIXME define and use interface
         return mediaInfoFactory;
+    }
+
+    @Override
+    public IRightsService getRightsService() {
+        return rightsService;
+    }
+
+    @Override
+    public IRegistrationService getRegistrationService() {
+        return registrationService;
+    }
+
+    @Override
+    public IPasswordResetService getPasswordResetService() {
+        return passwordResetService;
+    }
+
+    @Override
+    public ILongRunningTasksService getLongRunningTasksService() {
+        return longRunningTasksService;
     }
 
 	@Override
@@ -497,21 +521,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		context.setAuthentication(authentication);
 	}
 
-    @Override
-    public IRightsService getRightsService() {
-        return rightsService;
-    }
-
-    @Override
-    public IRegistrationService getRegistrationService() {
-        return registrationService;
-    }
-
-    @Override
-	public ILongRunningTasksService getLongRunningTasksService() {
-		return longRunningTasksService;
-	}
-
     public SessionFactory getSessionFactory() {
         return factory;
     }
@@ -537,5 +546,4 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
             // no current session: nothing to clear!
         }
     }
-
 }

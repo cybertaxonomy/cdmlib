@@ -2,7 +2,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.28.0</version>
+    <version>5.29.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -82,6 +82,41 @@
       </dependencies>
       </plugin>
     </plugins>
+  	<pluginManagement>
+  		<plugins>
+  			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+  			<plugin>
+  				<groupId>org.eclipse.m2e</groupId>
+  				<artifactId>lifecycle-mapping</artifactId>
+  				<version>1.0.0</version>
+  				<configuration>
+  					<lifecycleMappingMetadata>
+  						<pluginExecutions>
+  							<pluginExecution>
+  								<pluginExecutionFilter>
+  									<groupId>
+  										org.apache.maven.plugins
+  									</groupId>
+  									<artifactId>
+  										maven-antrun-plugin
+  									</artifactId>
+  									<versionRange>
+  										[3.0.0,)
+  									</versionRange>
+  									<goals>
+  										<goal>run</goal>
+  									</goals>
+  								</pluginExecutionFilter>
+  								<action>
+  									<ignore />
+  								</action>
+  							</pluginExecution>
+  						</pluginExecutions>
+  					</lifecycleMappingMetadata>
+  				</configuration>
+  			</plugin>
+  		</plugins>
+  	</pluginManagement>
   </build>
   <dependencies>
     <dependency>
@@ -169,7 +204,7 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
-<!-- these 2 are also required for hibernate validator according to http://hibernate.org/validator/documentation/getting-started/
+<!-- these 2 are also required for hibernate validator according to https://hibernate.org/validator/documentation/getting-started/
      but cdmlib-model tests require only for javax.el -->
     <dependency>
        <groupId>org.glassfish.web</groupId>
@@ -197,6 +232,10 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-  </dependency>
+    </dependency>
+    <dependency>
+      <groupId>org.passay</groupId>
+      <artifactId>passay</artifactId>
+    </dependency>
   </dependencies>
 </project>

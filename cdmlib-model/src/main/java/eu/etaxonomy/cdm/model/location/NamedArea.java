@@ -147,10 +147,15 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 
     /**
      * Factory method
-     * @return
      */
     public static NamedArea NewInstance(String description, String label, String labelAbbrev){
         return new NamedArea(description, label, labelAbbrev);
+    }
+
+    public static NamedArea NewInstance(String description, String label, String labelAbbrev, Language language){
+        NamedArea result = new NamedArea(description, label, labelAbbrev);
+        result.getRepresentations().iterator().next().setLanguage(language);
+        return result;
     }
 
 //**************************** VARIABLES *******************************/

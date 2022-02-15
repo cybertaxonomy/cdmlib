@@ -21,7 +21,6 @@ import net.sf.ehcache.config.DiskStoreConfiguration;
 /**
  * @author a.kohlbecker
  * @since Feb 1, 2017
- *
  */
 @Configuration
 public class EhCacheDiskStoreConfiguration {

@@ -61,4 +61,15 @@ public class MediaSpecimenDefaultCacheStrategy
 
 		return result;
 	}
+
+	//NOTE: this is a first implementation, it may be adapted in future
+    @Override
+    protected String doGetIdentityCache(MediaSpecimen mediaSpecimen) {
+        String collectionAndAccession = getCollectionAndAccession(mediaSpecimen);
+        if (isBlank(collectionAndAccession)){
+            return getTitleCache(mediaSpecimen);
+        }else{
+            return collectionAndAccession;
+        }
+    }
 }

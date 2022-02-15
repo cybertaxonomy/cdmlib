@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.sdd.in;
 
 import java.io.File;
@@ -143,7 +142,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<>();
 	private Set<VersionableEntity> featureData = new HashSet<>();
-	private Set<TermTree> featureTrees = new HashSet<>();
+	private Set<TermTree<Feature>> featureTrees = new HashSet<>();
 	private Set<Classification> classifications = new HashSet<>();
 
 	private final UUID uuidAnnotationTypeLocation = UUID.fromString("a3737e07-72e3-46d2-986d-fa4cf5de0b63");
@@ -676,8 +675,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			getReferenceService().save(source);
 		}
 
-		for (TermTree featureTree : featureTrees) {
-			getFeatureTreeService().save(featureTree);
+		for (TermTree<Feature> featureTree : featureTrees) {
+		    getTermTreeService().save(featureTree);
 		}
 		getDescriptiveDataSetService().save(descriptiveDataSet);
 		for (Classification classification : classifications) {
@@ -1568,7 +1567,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 		if (elMediaObjects != null) {
 			// <MediaObject id="m1">
-			List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
 			int j = 0;
 			for (Element elMO : listMediaObjects){
 
@@ -1599,7 +1599,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 							try{
 								URL url = new URL(href);
 
-								imageMetaData = getMediaInfoFactory().cdmImageInfo(URI.fromUrl(url));
+								imageMetaData = getMediaInfoFactory().cdmImageInfo(URI.fromUrl(url), false);
 								image = ImageFile.NewInstance(URI.fromUrl(url), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
@@ -1612,7 +1612,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 							File parent = f.getParentFile();
 							String fi = parent.toString() + File.separator + href;
 							File file = new File(fi);
-							imageMetaData = getMediaInfoFactory().cdmImageInfo(new URI(fi)); //file
+							imageMetaData = getMediaInfoFactory().cdmImageInfo(new URI(fi), false); //file
 							image = ImageFile.NewInstance(URI.fromFile(file), null, imageMetaData);
 						}
 						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);

@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Profile;
 
 /**
  * Activate this profile by setting the
- * <code>spring.profiles.active=swagger</code> either as system property as the
- * web application argument
+ * <code>spring.profiles.active=swagger</code> either as system property or
+ * as the web application argument
  *
  * @author a.kohlbecker
  * @since Feb 22, 2016

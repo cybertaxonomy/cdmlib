@@ -104,7 +104,6 @@
         <entry key="constantConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.ConstantConverter"/>
         </entry>
-
       </map>
     </property>
   </bean>

@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Audited
 @Configurable
 public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Institution>> {
+
 	private static final long serialVersionUID = -951321271656955808L;
 	public static final Logger logger = Logger.getLogger(Institution.class);
 

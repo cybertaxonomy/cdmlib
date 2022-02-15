@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisRecordReader.RisValue;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -68,10 +69,17 @@ public class RisReferenceImport
                 String location = "";
                 try {
                     location = recordLocation(state, next);
-                    ref = makeReference(state, next);
-                    referencesToSave.add(ref);
-                    if (ref.getInReference() != null){
-                        referencesToSave.add(ref.getInReference());
+                    ref = handleSingleReference(state, next);
+
+                    Reference existingRef = state.getDeduplicationHelper().getExistingReference(ref, false);
+                    if (existingRef == ref){ //reference does not yet exist so the identical reference has been returned
+                        state.getDeduplicationHelper().replaceReferenceRelatedData(ref, false);
+                        referencesToSave.add(ref);
+                        if (ref.getInReference() != null){
+                            referencesToSave.add(ref.getInReference());
+                        }
+                    }else{
+                        //merge ?
                     }
                 } catch (Exception e) {
                     String message = "Unexpected exception during RIS Reference Import";
@@ -81,8 +89,22 @@ public class RisReferenceImport
                 next = risReader.readRecord();
             }
 
-            getReferenceService().saveOrUpdate(referencesToSave);
+            //TODO handle result counts more generic
             state.getResult().addNewRecords(Reference.class.getSimpleName(), referencesToSave.size());
+            for (Reference ref : referencesToSave){
+                if (ref.getAuthorship() != null && !ref.getAuthorship().isPersited()){
+                    TeamOrPersonBase<?> newAuthor = ref.getAuthorship();
+                    state.getResult().addNewRecord(newAuthor);
+                    if (newAuthor instanceof Team){
+                        for (Person member : ((Team)newAuthor).getTeamMembers()){
+                            if (!member.isPersited()){
+                                state.getResult().addNewRecord(member);
+                            }
+                        }
+                    }
+                }
+            }
+            getReferenceService().saveOrUpdate(referencesToSave);
 
         } catch (Exception e) {
             String message = "Unexpected exception during RIS Reference Import";
@@ -98,7 +120,7 @@ public class RisReferenceImport
         }
     }
 
-    private Reference makeReference(RisReferenceImportState state,
+    private Reference handleSingleReference(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record) {
 
         //type
@@ -113,43 +135,13 @@ public class RisReferenceImport
             inRef = ReferenceFactory.newReference(inRefType);
             ref.setInReference(inRef);
         }
-        Reference higherRef = inRef == null ? ref : inRef;
+        Reference higherRef = (inRef == null) ? ref : inRef;
 
-        //Title
-        RisValue t1 = getSingleValue(state, record, RisReferenceTag.T1);
-        RisValue ti = getSingleValue(state, record, RisReferenceTag.TI);
-        RisValue value = assertEqual(state, "title", t1, ti);
-        if (value != null){
-            ref.setTitle(value.value);
-        }
+        //titles
+        handleTitle(state, record, ref, inRef, higherRef);
 
-        //Journal title
-        RisValue t2 = getSingleValue(state, record, RisReferenceTag.T2); //Secondary Title (journal title, if applicable)
-
-        if (higherRef.getType() == ReferenceType.Journal){
-            RisValue jf = getSingleValue(state, record, RisReferenceTag.JF); //Journal/Periodical name: full format. This is an alphanumeric field of up to 255 characters.
-            RisValue jo = getSingleValue(state, record, RisReferenceTag.JO); //Journal/Periodical name: full format. This is an alphanumeric field of up to 255 characters.
-            RisValue x = assertEqual(state, "Journal/Periodical name: full format", jf, jo);
-            x = assertEqual(state, "Journal title", t2, x);
-            if (x != null){
-                higherRef.setTitle(x.value);
-            }
-        }else{
-            //TODO
-        }
-
-        //ST  (remove as same as TI or T1), not handled otherwise
-        RisValue st = getSingleValue(state, record, RisReferenceTag.ST, false); //Short title
-        if (st != null && st.value.equals(ref.getTitle())){
-            record.remove(RisReferenceTag.ST);
-        }
-
-        //Author
-        List<RisValue> list = getListValue(record, RisReferenceTag.AU);
-        if (!list.isEmpty()){
-            TeamOrPersonBase<?> author = makeAuthor(state, list);
-            ref.setAuthorship(author);
-        }
+        //authors
+        handleAuthors(state, record, ref, inRef);
 
         //Date
 //        RisValue y1 = getSingleValue(state, record, RisReferenceTag.Y1); //Primary Date
@@ -169,21 +161,7 @@ public class RisReferenceImport
         }
 
         //DOI
-        RisValue doiVal = getSingleValue(state, record, RisReferenceTag.DO); //Doi
-        if (doiVal != null){
-            DOI doi;
-            try {
-                String doiStr = doiVal.value;
-                if (doiStr.toLowerCase().startsWith("doi ")){
-                    doiStr = doiStr.substring(4).trim();
-                }
-                doi = DOI.fromString(doiStr);
-                ref.setDoi(doi);
-            } catch (IllegalArgumentException e) {
-                String message = "DOI could not be recognized: " + doiVal.value;
-                state.getResult().addWarning(message, null, doiVal.location);
-            }
-        }
+        handleDoi(state, record, ref);
 
         //UR
         RisValue ur = getSingleValue(state, record, RisReferenceTag.UR); //URL
@@ -208,8 +186,12 @@ public class RisReferenceImport
         //Volume
         RisValue vl = getSingleValue(state, record, RisReferenceTag.VL);
         RisValue is = getSingleValue(state, record, RisReferenceTag.IS);
-        String vol = vl == null? "": vl.value + (is != null ? "("+ is.value + ")": "");
-        ref.setVolume(vol);
+        String vol = (vl == null)? "": vl.value + (is != null ? "("+ is.value + ")": "");
+        if (inRef != null && inRef.getType() == ReferenceType.Book){
+            inRef.setVolume(vol);
+        }else{
+            ref.setVolume(vol);
+        }
 
         //Publisher
         RisValue pb = getSingleValue(state, record, RisReferenceTag.PB);
@@ -265,6 +247,92 @@ public class RisReferenceImport
         return ref;
     }
 
+    private void handleDoi(RisReferenceImportState state, Map<RisReferenceTag, List<RisValue>> record, Reference ref) {
+        RisValue doiVal = getSingleValue(state, record, RisReferenceTag.DO); //Doi
+        if (doiVal != null){
+            DOI doi;
+            try {
+                String doiStr = doiVal.value;
+                if (doiStr.toLowerCase().startsWith("doi ")){
+                    doiStr = doiStr.substring(4).trim();
+                }
+                doi = DOI.fromString(doiStr);
+                ref.setDoi(doi);
+            } catch (IllegalArgumentException e) {
+                String message = "DOI could not be recognized: " + doiVal.value;
+                state.getResult().addWarning(message, null, doiVal.location);
+            }
+        }
+    }
+
+    private void handleTitle(RisReferenceImportState state, Map<RisReferenceTag, List<RisValue>> record, Reference ref,
+            Reference inRef, Reference higherRef) {
+        //Title
+        RisValue t1 = getSingleValue(state, record, RisReferenceTag.T1);
+        RisValue ti = getSingleValue(state, record, RisReferenceTag.TI);
+        RisValue title = assertEqual(state, "title", t1, ti);
+        if (title != null){
+            ref.setTitle(title.value);
+        }
+
+        //Journal title
+        RisValue t2 = getSingleValue(state, record, RisReferenceTag.T2); //Secondary Title (journal title, if applicable)
+
+        if (higherRef.getType() == ReferenceType.Journal){
+            RisValue jf = getSingleValue(state, record, RisReferenceTag.JF); //Journal/Periodical name: full format. This is an alphanumeric field of up to 255 characters.
+            RisValue jo = getSingleValue(state, record, RisReferenceTag.JO); //Journal/Periodical name: full format. This is an alphanumeric field of up to 255 characters.
+            RisValue jf_jo = assertEqual(state, "Journal/Periodical name: full format", jf, jo);
+            RisValue journalTitle = assertEqual(state, "Journal title", t2, jf_jo);
+            if (journalTitle != null){
+                higherRef.setTitle(journalTitle.value);
+            }
+        }else if (t2 != null && inRef != null){
+            inRef.setTitle(t2.value);
+        }else if (t2 != null){
+            String message = "The tag %s ('%s') exists but the reference type usually has no in-reference."
+                    + "This part of the title was neglected: %s";
+            message = String.format(message, t2.tag.name(), t2.tag.getDescription(), t2.value);
+            state.getResult().addWarning(message, null, t2.location);
+        }else if (inRef != null){
+            String message = "The reference type typically has an inreference but no secondary title (tag T2) was given.";
+            state.getResult().addWarning(message, null, (title != null)? title.location : null);
+        }
+
+        //ST  (remove as same as TI or T1), not handled otherwise
+        RisValue st = getSingleValue(state, record, RisReferenceTag.ST, false); //Short title
+        if (st != null && st.value.equals(ref.getTitle())){
+            record.remove(RisReferenceTag.ST);
+        }
+    }
+
+    private void handleAuthors(RisReferenceImportState state, Map<RisReferenceTag, List<RisValue>> record,
+            Reference ref, Reference inRef) {
+        List<RisValue> authorList = getListValue(record, RisReferenceTag.AU);
+        if (!authorList.isEmpty()){
+            TeamOrPersonBase<?> author = makeAuthor(state, authorList, record);
+            ref.setAuthorship(author);
+        }
+        List<RisValue> secondaryAuthorList = getListValue(record, RisReferenceTag.A2);
+        if (!secondaryAuthorList.isEmpty()){
+            if (inRef != null){
+                if (inRef.getType() != ReferenceType.Journal){
+                    TeamOrPersonBase<?> secAuthor = makeAuthor(state, secondaryAuthorList, record);
+                    inRef.setAuthorship(secAuthor);
+                }else{
+                    String message = "The tag %s ('%s') exists but the in-reference type is 'journal' which typically has no author."
+                            + "The secondary author(s) was/were neglected: %s";
+                    message = String.format(message, RisReferenceTag.AU.name(), RisReferenceTag.AU.getDescription(), secondaryAuthorList.toString());
+                    state.getResult().addWarning(message, null, secondaryAuthorList.get(0).location);
+                }
+            }else{
+                String message = "The tag %s ('%s') exists but the reference type usually has no in-reference."
+                        + "The secondary author(s) was/were neglected: %s";
+                message = String.format(message, RisReferenceTag.AU.name(), RisReferenceTag.AU.getDescription(), secondaryAuthorList.toString());
+                state.getResult().addWarning(message, null, secondaryAuthorList.get(0).location);
+            }
+        }
+    }
+
     private boolean hasInRef(Reference ref) {
         return ref.getType() == ReferenceType.BookSection || ref.getType() == ReferenceType.Article ;
     }
@@ -277,7 +345,7 @@ public class RisReferenceImport
         String start = typeTag == null ? "??" : typeTag.location;
         String end = erTag == null ? "??" : erTag.location;
 
-        String result = "line " + CdmUtils.concat(" - ", start, end);
+        String result = CdmUtils.concat(" - ", start, end);
 
         return result;
     }
@@ -308,6 +376,10 @@ public class RisReferenceImport
         }
     }
 
+    /**
+     * If val1 and val2 are both <code>not null</code> and not equal a warning is logged.
+     * @return val1 if val1 is not null, val2 otherwise
+     */
     private RisValue assertEqual(RisReferenceImportState state, String meaning, RisValue val1, RisValue val2) {
         if (val1 != null && val2 != null && !val1.value.equals(val2.value)){
             String message = "The tags '%s' and '%s' are not equal but have a similar meaning ('%s'). "
@@ -361,30 +433,45 @@ public class RisReferenceImport
         }
     }
 
-    private TeamOrPersonBase<?> makeAuthor(RisReferenceImportState state, List<RisValue> list) {
+    private TeamOrPersonBase<?> makeAuthor(RisReferenceImportState state, List<RisValue> list, Map<RisReferenceTag, List<RisValue>> record) {
         if (list.size() == 1){
-            return makePerson(state, list.get(0));
+            return makePerson(state, list.get(0), record);
         }else{
             Team team = Team.NewInstance();
+
             for (RisValue value : list){
-                team.addTeamMember(makePerson(state, value));
+                team.addTeamMember(makePerson(state, value, record));
             }
+
+            //source
+            String recordLocation = recordLocation(state, record);
+            team.addImportSource(null, null, state.getConfig().getSourceReference(), recordLocation);
+
             return team;
         }
     }
 
-    private Person makePerson(RisReferenceImportState state, RisValue risValue) {
+    private Person makePerson(RisReferenceImportState state, RisValue risValue, Map<RisReferenceTag, List<RisValue>> record) {
         Person person = Person.NewInstance();
         String[] split = risValue.value.split(",");
         if (split.length >= 1){
             person.setFamilyName(split[0].trim());
         }
         if (split.length >= 2){
-            person.setGivenName(split[1].trim());
+            String givenNameOrInitial = split[1].trim();
+            if (givenNameOrInitial.matches("[A-Za-z]\\.(\\s*[A-Za-z]\\.)*")){
+                person.setInitials(givenNameOrInitial);
+            }else{
+                person.setGivenName(givenNameOrInitial);
+            }
         }
         if (split.length >= 3){
             person.setSuffix(split[2].trim());
         }
+
+        //source
+        String recordLocation = recordLocation(state, record);
+        person.addImportSource(null, null, state.getConfig().getSourceReference(), recordLocation);
 
         return person;
     }
@@ -410,6 +497,7 @@ public class RisReferenceImport
     private RisValue getSingleValue(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record,
             RisReferenceTag tag, boolean remove) {
+
         List<RisValue> list = record.get(tag);
         if (list == null){
             return null;
@@ -423,6 +511,7 @@ public class RisReferenceImport
 
     private List<RisValue> getListValue(Map<RisReferenceTag, List<RisValue>> record,
             RisReferenceTag tag) {
+
         List<RisValue> list = record.get(tag);
         record.remove(tag);
         if (list == null){
@@ -450,6 +539,13 @@ public class RisReferenceImport
         RisRecordType type = RisRecordType.valueOf(typeStr);
         ReferenceType cdmType = type.getCdmReferenceType();
         return cdmType;
+    }
+
+    @Override
+    public ImportDeduplicationHelper createDeduplicationHelper(RisReferenceImportState state){
+        ImportDeduplicationHelper result = super.createDeduplicationHelper(state);
+        result.setMaxCountFullLoad(state.getConfig().getDeduplicationMaxCountForFullLoad());
+        return result;
     }
 
     @Override

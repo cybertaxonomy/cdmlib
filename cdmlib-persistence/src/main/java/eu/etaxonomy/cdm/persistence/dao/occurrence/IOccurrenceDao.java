@@ -435,4 +435,10 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return
      */
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
+
+    /**
+     * @param derivedUnitUuid
+     * @return
+     */
+    String findMostSignificantIdentifier(UUID derivedUnitUuid);
 }

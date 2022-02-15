@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.util.Arrays;
@@ -26,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -101,6 +101,9 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     @Autowired
     private ITermService termService;
 
+    @Autowired
+    private IDescriptionElementService descriptionElementService;
+
     public DescriptionPortalController() {
         super();
         setInitializationStrategy(DESCRIPTION_INIT_STRATEGY.getPropertyPaths());
@@ -127,9 +130,8 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             HttpServletRequest request,
             HttpServletResponse response) {
         logger.info("getAnnotations() - " + requestPathAndQuery(request) );
-        DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
-        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
+        DescriptionElementBase annotatableEntity = descriptionElementService.find(uuid);
+        Pager<Annotation> annotations = descriptionElementService.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
-
 }

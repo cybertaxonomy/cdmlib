@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.RemoveDescriptionsFromDescriptiveDataSetConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -88,7 +89,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param datasetUuid the target dataset
      * @return the result of the operation
      */
-    public UpdateResult addRowWrapperToDataset(Collection<SpecimenRowWrapperDTO> wrapper, UUID datasetUuid);
+    public UpdateResult addRowWrapperToDataset(Collection<SpecimenRowWrapperDTO> wrapper, UUID datasetUuid, boolean addDatasetSource);
 
     /**
      * Creates a specimen row wrapper object for the given description
@@ -96,7 +97,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptiveDataSetUuid the data set it should be used in
      * @return the created row wrapper
      */
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, UUID descriptiveDataSetUuid);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid);
 
     /**
      * Creates a specimen row wrapper object for the given description
@@ -114,7 +115,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptionType the {@link DescriptionType} that the description should have
      * @return the found taxon description or <code>null</code>
      */
-    public TaxonDescription findTaxonDescriptionByDescriptionType(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
+//    public DescriptionBaseDto findTaxonDescriptionByDescriptionType(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
 
     /**
      * Creates a taxon row wrapper object for the given description
@@ -122,7 +123,16 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptiveDataSet the data set it should be used in
      * @return the created row wrapper
      */
-    public TaxonRowWrapperDTO createTaxonRowWrapper(TaxonDescription taxonDescription, UUID descriptiveDataSetUuid);
+    public TaxonRowWrapperDTO createTaxonRowWrapper(DescriptionBaseDto taxonDescription, UUID descriptiveDataSetUuid);
+
+    /**
+     * Creates a taxon row wrapper object for the given description UUID
+     * @param taxonDescriptionUUID the taxon description for which the wrapper should be created
+     * @param descriptiveDataSetUUID the data set it should be used in
+     * @return the created row wrapper
+     */
+    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid);
+
 
     /**
      * Returns a {@link SpecimenDescription} for a given specimen with corresponding
@@ -135,7 +145,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * will be added to the description <b>if</b> a new one is created
      * @return either the found specimen description or a newly created one
      */
-    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, SpecimenOrObservationBase specimenUuid, boolean addDatasetSource);
+    public DescriptionBaseDto findSpecimenDescription(UUID descriptiveDataSetUuid, SpecimenOrObservationBase specimenUuid);
 
     /**
      * Returns all states for all supportedCategoricalEnumeration of this categorical feature
@@ -179,7 +189,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param dataSetUuid the data set
      * @return the first found default description or <code>null</code>
      */
-    public TaxonDescription findDefaultDescription(UUID specimenDescriptionUuid, UUID dataSetUuid);
+    public DescriptionBaseDto findDefaultDescription(UUID specimenDescriptionUuid, UUID dataSetUuid);
 
     public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid);
 
@@ -213,5 +223,14 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return
      */
     DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid);
+
+    /**
+     * @param dataSet
+     * @param taxonUuid
+     * @param descriptionType
+     * @return
+     */
+    public DescriptionBaseDto getTaxonDescriptionForDescriptiveDataSetAndType(DescriptiveDataSetBaseDto dataSet,
+            UUID taxonUuid, DescriptionType descriptionType);
 
 }

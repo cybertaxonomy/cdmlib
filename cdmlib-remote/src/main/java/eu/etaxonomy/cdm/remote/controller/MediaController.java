@@ -90,7 +90,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
                    result = service.readResourceMetadataFiltered(mediaRepresentation);
                 } else {
                     uri = mediaRepresentation.getParts().get(0).getUri();
-                    CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(uri);
+                    CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfo(uri, true);
                     result = cdmImageInfo.getMetaData();
                 }
             } catch (IOException | HttpException e) {

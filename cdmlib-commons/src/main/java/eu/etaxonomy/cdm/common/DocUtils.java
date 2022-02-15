@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.common;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -65,9 +64,7 @@ public class DocUtils {
         Reader reader;
         try {
             reader = ReaderFactory.newReader( aptFile, "UTF-8" );
-        } catch (FileNotFoundException e) {
-            return "Error in generating documentation : " + e.getMessage();
-        } catch (UnsupportedEncodingException e) {
+        } catch (IOException e) {
             return "Error in generating documentation : " + e.getMessage();
         }
 

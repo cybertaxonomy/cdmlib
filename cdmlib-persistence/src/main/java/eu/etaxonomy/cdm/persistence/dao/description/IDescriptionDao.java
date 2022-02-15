@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -303,4 +304,11 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @return
      */
     List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber);
+
+    /**
+     * @param specimenUuid
+     * @param classificationUuid
+     * @return
+     */
+    List<SortableTaxonNodeQueryResult> getNodeOfIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid);
 }

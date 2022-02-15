@@ -85,7 +85,6 @@ import io.swagger.annotations.Api;
  *
  * @author a.kohlbecker
  * @since 20.07.2009
- *
  */
 @Controller
 @Api("portal_taxon")
@@ -561,21 +560,6 @@ public class TaxonPortalController extends TaxonController{
     }
 
     /**
-     * @param uuid
-     * @param type
-     * @param mimeTypes
-     * @param relationshipUuids
-     * @param relationshipInversUuids
-     * @param includeTaxonDescriptions
-     * @param includeOccurrences
-     * @param includeTaxonNameDescriptions
-     * @param widthOrDuration
-     * @param height
-     * @param size
-     * @param response
-     * @param initStrategy
-     * @return
-     * @throws IOException
      * @Deprecated To be replaced by other loadMediaForTaxonAndRelated method
      */
     @Deprecated
@@ -588,24 +572,7 @@ public class TaxonPortalController extends TaxonController{
                 includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, response, taxonInitStrategy, null);
     }
 
-    /**
-     * @param uuid
-     * @param type
-     * @param mimeTypes
-     * @param relationshipUuids
-     * @param relationshipInversUuids
-     * @param includeTaxonDescriptions
-     * @param includeOccurrences
-     * @param includeTaxonNameDescriptions
-     * @param widthOrDuration
-     * @param height
-     * @param size
-     * @param response
-     * @param initStrategy
-     * @return
-     * @throws IOException
-     */
-    public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID uuid,
+    public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID taxonUuid,
             UuidList relationshipUuids, UuidList relationshipInversUuids,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
             HttpServletResponse response,
@@ -613,8 +580,7 @@ public class TaxonPortalController extends TaxonController{
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, taxonInitStrategy);
+        Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, taxonInitStrategy);
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
@@ -622,7 +588,7 @@ public class TaxonPortalController extends TaxonController{
         List<Media> media = listMediaForTaxon(taxon, includeRelationships,
                 includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, mediaInitStrategy);
 
-        EntityMediaContext<Taxon> entityMediaContext = new EntityMediaContext<Taxon>(taxon, media);
+        EntityMediaContext<Taxon> entityMediaContext = new EntityMediaContext<>(taxon, media);
 
         return entityMediaContext;
     }
@@ -643,7 +609,6 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "height", required = false) Integer height,
             @RequestParam(value = "size", required = false) Integer size,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
@@ -667,14 +632,6 @@ public class TaxonPortalController extends TaxonController{
         return mediafilteredForPreferredRepresentations;
     }
 
-    /**
-     * @param includeTaxonDescriptions
-     * @param includeOccurrences
-     * @param includeTaxonNameDescriptions
-     * @param taxon
-     * @param includeRelationships
-     * @param media
-     */
     public List<Media> addTaxonomicChildrenMedia(Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeTaxonNameDescriptions, Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             List<Media> media) {
@@ -704,17 +661,6 @@ public class TaxonPortalController extends TaxonController{
         return media;
     }
 
-    /**
-     *
-     * @param taxon
-     * @param includeRelationships
-     * @param type
-     * @param mimeTypes
-     * @param widthOrDuration
-     * @param height
-     * @param size
-     * @return
-     */
     private List<Media> listMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
@@ -724,26 +670,23 @@ public class TaxonPortalController extends TaxonController{
         return media;
     }
 
-
     public class EntityMediaContext<T extends IdentifiableEntity> {
 
-        T entity;
-        List<Media> media;
-        /**
-         * @param entity
-         * @param media
-         */
-        public EntityMediaContext(T entity, List<Media> media) {
+        private T entity;
+        private List<Media> media;
 
+        public EntityMediaContext(T entity, List<Media> media) {
             this.entity = HibernateProxyHelper.deproxy(entity);
             this.media = media;
         }
+
         public T getEntity() {
             return entity;
         }
         public List<Media> getMedia() {
             return media;
         }
+
         /**
          * @param addTaxonomicChildrenMedia
          */
@@ -751,9 +694,6 @@ public class TaxonPortalController extends TaxonController{
             this.media = media;
 
         }
-
-
-
     }
 
 // ---------------------- code snippet preserved for possible later use --------------------

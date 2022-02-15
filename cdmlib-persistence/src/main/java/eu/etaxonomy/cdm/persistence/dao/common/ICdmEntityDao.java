@@ -106,7 +106,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public Session getSession() throws DataAccessException;
 
-    public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) throws DataAccessException;
+    public Map<UUID, T> saveAll(Collection<? extends T> cdmObjCollection) throws DataAccessException;
 
     public Map<UUID, T> saveOrUpdateAll(Collection<T> cdmObjCollection);
 

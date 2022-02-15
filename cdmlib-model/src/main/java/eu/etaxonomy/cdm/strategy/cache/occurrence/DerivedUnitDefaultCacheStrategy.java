@@ -12,12 +12,14 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -45,10 +47,47 @@ public class DerivedUnitDefaultCacheStrategy
     protected UUID getUuid() {return uuid;}
 
     private boolean skipFieldUnit = false;
-    private boolean addTrailingDot = true;
+    private boolean addTrailingDot = false;
+    //according to #6865 deduplication is usually not wanted
+    private boolean deduplicateCollectionCodeInNumber = false;
+    private String collectionAccessionSeperator = ": ";
+
 
     private static final FieldUnitDefaultCacheStrategy fieldUnitCacheStrategy
         = FieldUnitDefaultCacheStrategy.NewInstance(false, false);
+
+    public static DerivedUnitDefaultCacheStrategy NewInstance(){
+        return new DerivedUnitDefaultCacheStrategy();
+    }
+
+    public static DerivedUnitDefaultCacheStrategy NewInstance(boolean skipFieldUnit, boolean addTrailingDot,
+            boolean deduplicateCollectionCodeInNumber){
+        return new DerivedUnitDefaultCacheStrategy(skipFieldUnit, addTrailingDot, deduplicateCollectionCodeInNumber, null);
+    }
+
+    public static DerivedUnitDefaultCacheStrategy NewInstance(boolean skipFieldUnit, boolean addTrailingDot,
+            boolean deduplicateCollectionCodeInNumber, String collectionAccessionSeperator){
+        return new DerivedUnitDefaultCacheStrategy(skipFieldUnit, addTrailingDot, deduplicateCollectionCodeInNumber,
+                collectionAccessionSeperator);
+    }
+
+//******************************* CONSTRUCTOR *******************************************/
+
+    //default value constructor
+    private DerivedUnitDefaultCacheStrategy() {}
+
+
+    private DerivedUnitDefaultCacheStrategy(boolean skipFieldUnit, boolean addTrailingDot,
+            boolean deduplicateCollectionCodeInNumber, String collectionAccessionSeperator) {
+        this.skipFieldUnit = skipFieldUnit;
+        this.addTrailingDot = addTrailingDot;
+        this.deduplicateCollectionCodeInNumber = deduplicateCollectionCodeInNumber;
+        if (collectionAccessionSeperator != null){
+            this.collectionAccessionSeperator = collectionAccessionSeperator;
+        }
+    }
+
+//******************************* METHODS ***************************************************/
 
     @Override
     protected String doGetTitleCache(DerivedUnit specimen) {
@@ -69,9 +108,11 @@ public class DerivedUnitDefaultCacheStrategy
         result = CdmUtils.concat("; ", result, exsiccatum);
 
         //Herbarium & identifier
-        String barcode = getSpecimenLabel(specimen);
-        if (isNotBlank(barcode)) {
-            result = (result + " (" +  barcode + ")").trim();
+        String collectionAndNumber = getSpecimenLabel(specimen);
+        String specimenStatusStr = getSpecimenStatusStr(specimen);
+        collectionAndNumber = CdmUtils.concat(", ", collectionAndNumber, specimenStatusStr);
+        if (isNotBlank(collectionAndNumber)) {
+            result = (result + " (" +  collectionAndNumber + ")").trim();
         }
 
         //result
@@ -81,11 +122,23 @@ public class DerivedUnitDefaultCacheStrategy
             }
         }
 
-
         if (addTrailingDot){
             result = CdmUtils.addTrailingDotIfNotExists(result);
         }
+        return result;
+    }
 
+    private String getSpecimenStatusStr(DerivedUnit specimen) {
+        String result = null;
+        if (!specimen.getStatus().isEmpty()){
+            result = specimen.getStatus()
+                    .stream()
+                    .map(s->s.getType())
+                    .filter(t->t != null)
+                    .map(t->t.getPreferredRepresentation(Language.DEFAULT()).getLabel())
+                    .sorted((s1,s2)->s1.compareTo(s2))
+                    .collect(Collectors.joining(", "));
+        }
         return result;
     }
 
@@ -114,21 +167,35 @@ public class DerivedUnitDefaultCacheStrategy
         };
     }
 
-    /**
-     * Produces the collection barcode which is the combination of the collection code and
-     * accession number.
-     *
-     * @param result
-     * @param derivedUnit
-     * @return
-     */
-    public String getSpecimenLabel(DerivedUnit derivedUnit) {
-        String code = getCode(derivedUnit);
-        String identifier = getUnitNumber(derivedUnit /*, code*/);
-        String collectionData = CdmUtils.concat(" ", code, identifier);
-        return collectionData;
+
+    //NOTE still need to discuss, if the identity cache for derived units
+    //should also include the identity cache for field units (see also #5951).
+    //This may make sense for searching, but is less comfortable in
+    //tree representations.
+    //For search it might be not so urgent if showing both the identity cache
+    //followed by the titleCache whcih includes field unit information.
+    @Override
+    protected String doGetIdentityCache(DerivedUnit derivedUnit) {
+        String specimenLabel = getSpecimenLabel(derivedUnit);
+        if (isBlank(specimenLabel)){
+            return getTitleCache(derivedUnit);
+        }else{
+            //NOTE: in future we may add further information if not both data are given
+            //      collection code/label AND unit number
+            return specimenLabel;
+        }
     }
 
+    /**
+     * Produces the collection code and number which is the combination of the collection code and
+     * accession number or barcode.
+     */
+    public String getSpecimenLabel(DerivedUnit derivedUnit) {
+        String code = getCollectionCode(derivedUnit);
+        String identifier = getUnitNumber(derivedUnit /*, code*/);
+        String collectionData = CdmUtils.concat(collectionAccessionSeperator, code, identifier);
+        return collectionData;
+    }
 
     /**
      * Computes the unit number which might be an accession number, barcode, catalogue number, ...
@@ -145,17 +212,19 @@ public class DerivedUnitDefaultCacheStrategy
         }else{
             result = derivedUnit.getCatalogNumber();
         }
-        String code = getCode(derivedUnit);
-        if(result != null){
-            result = result.trim();
-            if(isNotBlank(code) && result.startsWith(code + " ")){
-                result = result.replaceAll("^" + code + "\\s", "");
+        if(deduplicateCollectionCodeInNumber){
+            String code = getCollectionCode(derivedUnit);
+            if(result != null){
+                result = result.trim();
+                if(isNotBlank(code) && result.startsWith(code + " ")){
+                    result = result.replaceAll("^" + code + "\\s", "");
+                }
             }
         }
         return result;
     }
 
-    private String getCode(DerivedUnit derivedUnit) {
+    private String getCollectionCode(DerivedUnit derivedUnit) {
         String code = "";
         if(derivedUnit.getCollection() != null){
             code = derivedUnit.getCollection().getCode();

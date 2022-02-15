@@ -49,9 +49,8 @@ public class DefaultTermInitializer implements ITermInitializer {
 		}
 	}
 
-	protected void setDefinedTerms(Class<? extends DefinedTermBase<?>> clazz, TermVocabulary<?> vocabulary) {
-		DefinedTermBase newInstance;
-		newInstance = getInstance(clazz);
+	protected <S extends DefinedTermBase<S>> void setDefinedTerms(Class<? extends DefinedTermBase<?>> clazz, TermVocabulary<S> vocabulary) {
+		DefinedTermBase<S> newInstance = getInstance(clazz);
 		newInstance.setDefaultTerms(vocabulary);
 	}
 

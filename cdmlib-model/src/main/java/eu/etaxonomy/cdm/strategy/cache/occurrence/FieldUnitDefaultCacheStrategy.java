@@ -56,7 +56,7 @@ public class FieldUnitDefaultCacheStrategy
     private boolean includeReferenceSystem = true;
 
     private boolean includePlantDescription = true;
-    private boolean addTrailingDot = true;
+    private boolean addTrailingDot = false;
 
     public static FieldUnitDefaultCacheStrategy NewInstance(){
         return new FieldUnitDefaultCacheStrategy(null, null, null, null);
@@ -93,6 +93,21 @@ public class FieldUnitDefaultCacheStrategy
             result = CdmUtils.addTrailingDotIfNotExists(result);
         }
         return result;
+    }
+
+    @Override
+    protected String doGetIdentityCache(FieldUnit fieldUnit) {
+        if (fieldUnit == null){
+            return null;
+        }
+        String collectorAndFieldNumber = getCollectorAndFieldNumber(fieldUnit);
+        if (isBlank(collectorAndFieldNumber)){
+            return this.doGetTitleCache(fieldUnit);
+        }else{
+            //NOTE: in future we may decide to return further information if
+            //not both information is available collector AND fieldNumber.
+            return collectorAndFieldNumber;
+        }
     }
 
     private String getFieldData(FieldUnit fieldUnit) {

@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,6 +29,7 @@ import com.ibm.lsid.server.LSIDServerException;
 import eu.etaxonomy.cdm.api.service.lsid.LSIDDataService;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * Controller which accepts requests for the data representation of an object
@@ -75,30 +74,31 @@ public class DataController {
                                 @RequestParam("start") Integer start,
                                 @RequestParam("length") Integer length,
                                 HttpServletResponse response) throws LSIDServerException, IOException  {
-        //FIXME #3811 fix null pointer access of "out" reference
-//		OutputStream out = null;
-//		InputStream data = null;
-//		try {
-//			data = lsidDataService.getDataByRange(lsid,start,length);
-//		    if(data != null) {
-//		    	response.setContentType("application/octet-stream");
-//		    	byte[] bytes = new byte[1024];
-//		    	int numbytes = data.read(bytes);
-//		    	while (numbytes != -1) {
-//		    		out.write(bytes,0,numbytes);
-//		    		numbytes = data.read(bytes);
-//		    	}
-//		    	out.flush();
-//		    }
-//		} finally {
-//			if (out != null) {
-//				out.close();
-//			}
-//
-//			if (data != null) {
-//				data.close();
-//			}
-//		}
+
+		OutputStream out = null;
+		InputStream data = null;
+		try {
+			data = lsidDataService.getDataByRange(lsid,start,length);
+		    if(data != null) {
+		    	response.setContentType("application/octet-stream");
+		    	out = response.getOutputStream();
+		    	byte[] bytes = new byte[1024];
+		    	int numbytes = data.read(bytes);
+		    	while (numbytes != -1) {
+		    		out.write(bytes,0,numbytes);
+		    		numbytes = data.read(bytes);
+		    	}
+		    	out.flush();
+		    }
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+
+			if (data != null) {
+				data.close();
+			}
+		}
         return null;
     }
 

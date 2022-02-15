@@ -108,7 +108,12 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      *
      * @see AbstractWebApplicationConfigurer#findProperty(String, boolean)
      *
-     * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code>
+     * see also :
+     *
+     * <ul>
+     * <li><code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code></li>
+     * <li>{@link CdmConfigurationKeys#CDM_DATA_SOURCE_ID}</li>
+     * </ul>
      *
      */
     protected static final String ATTRIBUTE_DATASOURCE_NAME = "cdm.datasource";

@@ -62,9 +62,9 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 
-public class Datasource {
-	private static final Logger logger = Logger.getLogger(Datasource.class);
+public class TestScriptService {
 
+    private static final Logger logger = Logger.getLogger(TestScriptService.class);
 
 	private void testNewConfigControler(){
 
@@ -81,28 +81,26 @@ public class Datasource {
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-//		server = "localhost";
-//		database = "cdm_test";
-////		database = "cdm_production_edaphobase";
-//		username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-//		server = "160.45.63.171";
-//		database = "xxx";
-//		username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-
-		server = "test.e-taxonomy.eu";
-		database = "cdm_rem_conf_am";
+		server = "localhost";
+		database = "cdm_bupleurum";
+//		database = "cdm_production_edaphobase";
 		username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+//		server = "160.45.63.171";
+//		database = "cdm_production_salvador";
+//		username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+//		server = "test.e-taxonomy.eu";
+//		database = "cdm_rem_conf_am";
+//		username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		String server = "localhost";
 //		String database = "testCDM";
 //		String username = "postgres";
 //		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
-
 
 //		//SQLServer
 //		server = "BGBM-PESISQL";
@@ -130,13 +128,15 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
-//		appCtr.getOccurrenceService().findRootUnitDTOs(UUID.fromString("2debf5ee-cb57-40bc-af89-173d1d17cefe"));
-//		aggregateDDS(appCtr);
-		aggregateDistribution(appCtr);
+		doTemporary(appCtr);
 
 		appCtr.close();
 		System.exit(0);
 	}
+
+    private void doTemporary(CdmApplicationController appCtr) {
+        //xx
+    }
 
     private void aggregateDistribution(CdmApplicationController app){
 
@@ -249,7 +249,7 @@ public class Datasource {
 //		TermTree<Feature> ft1 = TermTree.NewInstance();
 //		FeatureNode fn1 = TermNode.NewInstance((Feature)null);
 //		ft1.getRoot().addChild(fn1);
-//		appCtr.getFeatureNodeService().save(fn1);
+//		appCtr.getTermNodeService().save(fn1);
 //
 //		TermNode fn2 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2);
@@ -257,11 +257,11 @@ public class Datasource {
 //		TermNode fn3 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2, 0);
 //
-//		appCtr.getFeatureNodeService().saveOrUpdate(fn1);
+//		appCtr.getTermNodeService().saveOrUpdate(fn1);
 //
 //		ft1.getRoot().addChild(fn3, 0);
-//		appCtr.getFeatureNodeService().saveOrUpdate(fn3);
-//		appCtr.getFeatureTreeService().saveOrUpdate(ft1);
+//		appCtr.getTermNodeService().saveOrUpdate(fn3);
+//		appCtr.getTermTreeService().saveOrUpdate(ft1);
 //	}
 
 	private void testDatabaseChange() throws DataSourceNotFoundException{
@@ -499,7 +499,7 @@ public class Datasource {
 	 * @param args
 	 */
 	public static void  main(String[] args) {
-		Datasource cc = new Datasource();
+	    TestScriptService cc = new TestScriptService();
     	cc.test();
 	}
 

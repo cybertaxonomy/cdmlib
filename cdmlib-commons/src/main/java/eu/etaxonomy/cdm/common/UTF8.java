@@ -29,8 +29,9 @@ public enum UTF8 {
 	NO_BREAK_SPACE("\u00A0"),
 	POLISH_L("\u0142"),
 	SMALL_A_ACUTE("\u00E1"),
+	SMALL_E_ACUTE("\u00E9"),
+	SMALL_I_ACUTE("\u00ED"),
     SMALL_O_ACUTE("\u00F3"),
-    SMALL_E_ACUTE("\u00E9"),
     REGEX_NOT("U+005E"),   //Circumflex Accent, used in regular expression for negation (e.g not a: [^a]
     QUOT_SINGLE_LEFT_HIGH("\u2018"), // Left hight single quotation mark
     QUOT_SINGLE_RIGHT("\u2019"), // Right single quotation mark

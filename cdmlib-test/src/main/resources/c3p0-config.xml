@@ -6,7 +6,7 @@
 	This property causes problems in tests as the table
 	is not found in the test database. Maybe we can fix 
 	this one day.
-	see also http://dev.e-taxonomy.eu/trac/ticket/3344
+	see also https://dev.e-taxonomy.eu/redmine/issues/3344
 	 -->
 	
 	<!--

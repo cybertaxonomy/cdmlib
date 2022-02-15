@@ -143,7 +143,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
                     ICdmIO cdmIo = applicationContext.getBean(ioBeanName, ICdmIO.class);
                     if (cdmIo != null){
                         registerObservers(config, cdmIo);
-                        state.setCurrentIO(cdmIo);
+                        state.setCurrentIO((CdmImportBase)cdmIo);
                         result &= cdmIo.check(state);
                         unRegisterObservers(config, cdmIo);
                     }else{
@@ -217,7 +217,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
                 ICdmImport cdmIo = applicationContext.getBean(ioBeanName, ICdmImport.class);
                 if (cdmIo != null){
                     registerObservers(config, cdmIo);
-                    state.setCurrentIO(cdmIo);
+                    state.setCurrentIO((CdmImportBase) cdmIo);
                     cdmIo.invoke(state);
                     result.addReport(state.getReportAsByteArray());
                     unRegisterObservers(config, cdmIo);

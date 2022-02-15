@@ -681,6 +681,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern){
         Session session = getSession();
+        if (clazz == null){
+            clazz = (Class)this.type;
+        }
+
         Query query = session.createQuery(
                 "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
                 + " uuid, id, titleCache "

@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -1426,12 +1427,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 	}
 
-    /**
-     * @param uriString
-     * @param readMediaData
-     * @return
-     * @throws URISyntaxException
-     */
     private MediaRepresentation makeMediaRepresentation(String uriString, boolean readMediaData) throws URISyntaxException {
         uriString = uriString.replace(" ", "%20");  //replace whitespace
         CdmImageInfo cdmImageInfo = null;
@@ -1440,7 +1435,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         try {
         	if (readMediaData){
         		logger.info("Read media data from: " + uri);
-        		cdmImageInfo = getMediaInfoFactory().cdmImageInfo(uri);
+        		cdmImageInfo = getMediaInfoFactory().cdmImageInfo(uri, false);
         	}
         } catch (Exception e) {
         	String message = "An error occurred when trying to read image meta data for " + uri.toString() + ": " +  e.getMessage();
@@ -1645,5 +1640,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             getNameService().saveOrUpdate(rel.getFromName());
             getNameService().saveOrUpdate(rel.getToName());
         }
+    }
+
+    public ImportDeduplicationHelper createDeduplicationHelper(STATE state){
+        return ImportDeduplicationHelper.NewInstance(this, state);
     }
 }

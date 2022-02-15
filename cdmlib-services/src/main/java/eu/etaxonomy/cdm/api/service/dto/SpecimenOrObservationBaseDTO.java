@@ -63,6 +63,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private String collectorsString;
     private String individualCount;
     private Set<DerivedUnitDTO> derivatives;
+    private Set<AnnotationDTO> annotations = new HashSet<>();
 
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
@@ -435,5 +436,13 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     public void setDeterminations(List<DeterminationEventDTO> determinations) {
         this.determinations = determinations;
+    }
+
+    public Set<AnnotationDTO> getAnnotations() {
+        return annotations;
+    }
+
+    protected void addAnnotation(AnnotationDTO annotation) {
+        this.annotations.add(annotation);
     }
 }

@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.database;
 
@@ -23,9 +23,9 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
  * A simple RoutingDataSource.
- * Bean definitions must set the key of the default datasource to "default" 
+ * Bean definitions must set the key of the default datasource to "default"
  * This String is defined in the contant <code>DEFAULT_DATASOURCE_KEY</code> and will
- * be used when the RoutingDataSource is beeing updated with a new <code>Map</code> 
+ * be used when the RoutingDataSource is beeing updated with a new <code>Map</code>
  * of data sources.
  * <p>
  * <b>Example of bean definition:</b>
@@ -39,20 +39,20 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
    		&lt;property name="defaultTargetDataSource" ref="defaultDataSource"/&gt;
    &lt;/bean&gt;
    </pre>
- * 
+ *
  * @author a.kohlbecker
- * @deprecated<b>NOTICE:</b> 
- * <em>This class is related to the switchable database infrastructure which allows to serve 
- * multiple databases with only a single instance of the cdm-remote-webapp. 
+ * @deprecated<b>NOTICE:</b>
+ * <em>This class is related to the switchable database infrastructure which allows to serve
+ * multiple databases with only a single instance of the cdm-remote-webapp.
  * This concept however is deprecated due to several problems of which the most severe is the term loading issue.
- * This class should however not deleted since we once might wish to switch back to this concept when we are 
- * able to deal with the implicated issues. 
- * 
- * See http://dev.e-taxonomy.eu/trac/wiki/CdmServerSwitchableDataSources for more information.</em>
+ * This class should however not deleted since we once might wish to switch back to this concept when we are
+ * able to deal with the implicated issues.
+ *
+ * See https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmServerSwitchableDataSources for more information.</em>
  */
 @Deprecated
 public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
-	
+
 
 	private String defaultDatasourceName = "default";
 
@@ -60,26 +60,26 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	protected Object determineCurrentLookupKey() {
 		return NamedContextHolder.getContextKey();
 	}
-	
+
 	@Override
 	public void afterPropertiesSet() {
 		updateDataSources();
 		// super.afterPropertiesSet() is called by updateRoutingDataSource()
 	}
-	
+
 	public void setDefaultDatasourceName(String name){
 		this.defaultDatasourceName = name;
 	}
-	
-	
 
-	
+
+
+
 	public Map<String, DataSourceInfo> updateDataSources() {
-		
+
 		logger.info("loading & testing datasources .. ");
 		Map<String,SimpleDriverDataSource> dataSources = loadDataSources();
 		Map<String, DataSourceInfo> dataSourceInfos = testDataSources(dataSources);
-		
+
 		setTargetDataSources((Map)dataSources);
 		DataSource defaultDatasource = dataSources.get(defaultDatasourceName);
 		if(defaultDatasource == null) {
@@ -87,10 +87,10 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 		}
 		setDefaultTargetDataSource(defaultDatasource);
 		super.afterPropertiesSet();
-		
+
 		return dataSourceInfos;
 	}
-	
+
 	protected Map<String, SimpleDriverDataSource> loadDataSources(){
 		return DataSourceBeanLoader.loadDataSources(SimpleDriverDataSource.class);
 	}
@@ -100,7 +100,7 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	 * @return
 	 */
 	protected Map<String, DataSourceInfo> testDataSources(Map<String, SimpleDriverDataSource> dataSources) {
-		
+
 		Map<String, DataSourceInfo> dataSourceInfos = new HashMap<String, DataSourceInfo>();
 
 		for(String key : dataSources.keySet()){
@@ -121,12 +121,13 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 			logger.info("    /" + key + " => "+ datasource.getUrl() + "[ "+(sqlerror == null ? "OK" : "ERROR: " + sqlerror) + " ]");
 			dataSourceInfos.put(key, dsi);
 		}
-		
+
 		return dataSourceInfos;
 	}
 
 	// added for compatibility with Java 7
-	public Logger getParentLogger() /* throws SQLFeatureNotSupportedException (is not compatibel with parent class in Java 6)*/  {
+	@Override
+    public Logger getParentLogger() /* throws SQLFeatureNotSupportedException (is not compatibel with parent class in Java 6)*/  {
 		// TODO Auto-generated method stub
 		return null;
 	}

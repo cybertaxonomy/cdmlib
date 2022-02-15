@@ -29,7 +29,6 @@ public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
 
     /**
      * Immutable singleton instance.
-     * @return
      */
     public static ParsedReferenceMatchStrategy INSTANCE(){
         if (instance == null){

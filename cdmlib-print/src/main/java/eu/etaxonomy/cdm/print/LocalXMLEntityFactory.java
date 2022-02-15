@@ -56,7 +56,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     private final JsonView xmlView;
 
     @Autowired
-    private final ICdmRepository applicationConfiguration;
+    private final ICdmRepository repository;
 
     @Autowired
     private JsonConfig jsonConfig;
@@ -88,15 +88,10 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
     private final IProgressMonitor monitor;
 
-    /**
-     *
-     * @param applicationConfiguration
-     * @param monitor
-     */
     protected LocalXMLEntityFactory(
             ICdmRepository applicationConfiguration,
             IProgressMonitor monitor) {
-        this.applicationConfiguration = applicationConfiguration;
+        this.repository = applicationConfiguration;
         this.monitor = monitor;
         this.xmlView = new JsonView();
         xmlView.setType(Type.XML);
@@ -104,39 +99,33 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         initJsonConfigs();
     }
 
-    /**
-     *
-     */
     private void initControllers() {
-    	classificationListController = (ClassificationListController) applicationConfiguration
+    	classificationListController = (ClassificationListController) repository
     			.getBean("classificationListController");
-    	classificationController = (ClassificationController) applicationConfiguration
+    	classificationController = (ClassificationController) repository
     			.getBean("classificationController");
-    	taxonNodePrintAppController = (TaxonNodePrintAppController) applicationConfiguration
+    	taxonNodePrintAppController = (TaxonNodePrintAppController) repository
     			.getBean("taxonNodePrintAppController");
 
-    	nameController = (NameController) applicationConfiguration
+    	nameController = (NameController) repository
     			.getBean("nameController");
 
-    	featureTreeListController = (TermTreeListController) applicationConfiguration
+    	featureTreeListController = (TermTreeListController) repository
     			.getBean("featureTreeListController");
-    	featureTreeController = (TermTreeController) applicationConfiguration
+    	featureTreeController = (TermTreeController) repository
     			.getBean("featureTreeController");
-    	termNodeController = (TermNodeController) applicationConfiguration
+    	termNodeController = (TermNodeController) repository
     			.getBean("featureNodeController");
 
-    	taxonPortalController = (TaxonPortalController) applicationConfiguration
+    	taxonPortalController = (TaxonPortalController) repository
     			.getBean("taxonPortalController");
 
-    	polytomousKeyNodeDtoController = (PolytomousKeyNodeDtoController) applicationConfiguration.getBean("polytomousKeyNodeDtoController");
+    	polytomousKeyNodeDtoController = (PolytomousKeyNodeDtoController) repository.getBean("polytomousKeyNodeDtoController");
     }
 
-    /**
-     *
-     */
     private void initJsonConfigs() {
-        jsonConfig = (JsonConfig) applicationConfiguration.getBean("jsonConfig");
-        jsonConfigPortal = (JsonConfig) applicationConfiguration
+        jsonConfig = (JsonConfig) repository.getBean("jsonConfig");
+        jsonConfigPortal = (JsonConfig) repository
                 .getBean("jsonConfigPortal");
     }
 

@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * @author a.mueller
  * @since 21.10.2018
- *
  */
 public class MatchResult {
 
@@ -61,7 +60,6 @@ public class MatchResult {
         public String toString() {
             return "NonMatching [path=" + path + ", matchMode=" + matchMode + "]";
         }
-
     }
 
     private String currentPath = "";

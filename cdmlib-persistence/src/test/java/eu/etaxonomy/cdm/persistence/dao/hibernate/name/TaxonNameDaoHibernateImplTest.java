@@ -308,7 +308,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
         Rank rank = null;
         try {
-			rank = Rank.getRankByName(acherontiaLachesis.getRank().getLabel());
+			rank = Rank.getRankByLatinName(acherontiaLachesis.getRank().getLabel());
         } catch (UnknownCdmTypeException e) {
             e.printStackTrace();
         }

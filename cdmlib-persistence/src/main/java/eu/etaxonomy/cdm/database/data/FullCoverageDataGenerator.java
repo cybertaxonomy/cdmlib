@@ -176,6 +176,8 @@ public class FullCoverageDataGenerator {
 
 		createAgents(cdmBases);
 
+        createReference(cdmBases);
+
 		createDescriptions(cdmBases);
 
 		createMedia(cdmBases);
@@ -185,8 +187,6 @@ public class FullCoverageDataGenerator {
 		createTaxonName(cdmBases);
 
 		createOccurrence(cdmBases);
-
-		createReference(cdmBases);
 
 		createTaxon(cdmBases);
 
@@ -767,7 +767,8 @@ public class FullCoverageDataGenerator {
 
 
 	private void createOccurrence(List<CdmBase> cdmBases) {
-		//Collection
+
+	    //Collection
 		Collection collection = Collection.NewInstance();
 		Collection subCollection = Collection.NewInstance();
 		subCollection.setSuperCollection(collection);
@@ -812,7 +813,6 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(gatheringEvent);
 		handleEventBase(gatheringEvent);
 
-
 		//Derived Unit
 		MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
 		mediaSpecimen.setCollection(collection);
@@ -828,6 +828,7 @@ public class FullCoverageDataGenerator {
 		preservation.setTemperature(22.4);
 		mediaSpecimen.setPreservation(preservation);
 		mediaSpecimen.setOriginalLabelInfo("Original Label Info");
+		mediaSpecimen.addStatus(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), getReference(), "123");
 		handleIdentifiableEntity(mediaSpecimen);
 
 		//DerivationEvent

@@ -35,6 +35,8 @@ public class MediaDTO extends TypedEntityReference<Media> {
 
     private Integer size;
 
+    private List<SourceDTO> sources = new ArrayList<>();
+
     /**
      * Creates a list of DTOs from the Media entity.
      * For each MediaRepresentationPart a single MediaDTO is being created.
@@ -44,14 +46,18 @@ public class MediaDTO extends TypedEntityReference<Media> {
     public static List<MediaDTO> fromEntity(Media entity) {
         List<MediaDTO> dtos = new ArrayList<>();
         entity.getAllTitles(); // initialize all titles!!!
+        MediaDTO dto = new MediaDTO(entity.getUuid());
         for (MediaRepresentation rep :entity.getRepresentations()){
             for(MediaRepresentationPart p : rep.getParts()){
                 if(p.getUri() != null){
-                    MediaDTO dto = new MediaDTO(entity.getUuid());
                     dto.setUri(p.getUri().toString());
-                    dtos.add(dto);
+                    break;
                 }
             }
+        }
+        entity.getSources().stream().forEach(s -> dto.getSources().add(SourceDTO.fromIdentifiableSource(s)));
+        if(dto.getUri() != null || !dto.getSources().isEmpty()) {
+            dtos.add(dto);
         }
         return dtos;
     }
@@ -91,5 +97,10 @@ public class MediaDTO extends TypedEntityReference<Media> {
     public void setSize(Integer size) {
         this.size = size;
     }
+
+    public List<SourceDTO> getSources() {
+        return sources;
+    }
+
 
 }

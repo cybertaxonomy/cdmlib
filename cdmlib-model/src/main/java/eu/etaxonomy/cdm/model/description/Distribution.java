@@ -26,6 +26,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -192,6 +193,9 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
         String result = "null";
         if (this.area != null){
             result = area.getTitleCache();
+        }
+        if (this.status != null){
+            result = CdmUtils.concat(":", result, this.status.getTitleCache());
         }
         return result;
     }

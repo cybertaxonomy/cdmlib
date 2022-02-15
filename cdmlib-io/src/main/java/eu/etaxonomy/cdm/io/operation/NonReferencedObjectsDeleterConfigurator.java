@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.operation.config;
+package eu.etaxonomy.cdm.io.operation;
 
 import org.apache.log4j.Logger;
 
@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.operation.NonReferencedObjectsDeleter;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -36,6 +35,9 @@ public class NonReferencedObjectsDeleterConfigurator
 	private boolean isKeepReferencesWithTitle = false;
 	private boolean isKeepRisSources = false;
 
+	//if true, records are not deleted but only reported (later this will be part of the analyzing step
+	private boolean doOnlyReport = false;
+
 	public NonReferencedObjectsDeleterConfigurator() {
 		super(null);
 	}
@@ -52,7 +54,8 @@ public class NonReferencedObjectsDeleterConfigurator
 		return result;
 	}
 
-	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
 	public <STATE extends ImportStateBase> STATE getNewState() {
 		return (STATE) new DefaultImportState(this);
 	}
@@ -91,6 +94,14 @@ public class NonReferencedObjectsDeleterConfigurator
     }
     public void setKeepRisSources(boolean isKeepRisSources) {
         this.isKeepRisSources = isKeepRisSources;
+    }
+
+    //doOnlyReport
+    public boolean isDoOnlyReport() {
+        return doOnlyReport;
+    }
+    public void setDoOnlyReport(boolean doOnlyReport) {
+        this.doOnlyReport = doOnlyReport;
     }
 
     @Override

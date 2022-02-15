@@ -109,7 +109,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         if (record.get(OUTPUT_COLLATION) != null){
             //ignore
         }
-        state.getDedupHelper().replaceAuthorNamesAndNomRef(state, name);
+        state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(name);
 
         getNameService().saveOrUpdate(name);
         state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);

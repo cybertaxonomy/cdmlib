@@ -92,9 +92,11 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     }
 
-    public TaxonNodeDto(UUID uuid, Integer id, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex) {
+    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid) {
         super(uuid, id, nameTitleCache, taxonTitleCache);
         this.rankOrderIndex = rankOrderIndex;
+        this.parentUUID = parentUuid;
+        this.treeIndex = treeIndex;
     }
 
     public TaxonNodeDto(UUID uuid, Integer id, String titleCache, Integer rankOrderIndex) {
@@ -104,16 +106,25 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     public TaxonNodeDto(Class<? extends ITaxonTreeNode> type, ITaxonTreeNode taxonTreeNode) {
         super(type, taxonTreeNode.getUuid(), taxonTreeNode.getId(), null);
+
         Taxon taxon = null;
         TaxonNode taxonNode = null;
         Classification classification = null;
+
+        //taxonNode, taxon, classification
         if (taxonTreeNode instanceof TaxonNode){
             taxonNode = (TaxonNode)taxonTreeNode;
+            classification = taxonNode.getClassification();
             taxon = taxonNode.getTaxon();
         }else if (taxonTreeNode instanceof Classification){
             classification = (Classification) taxonTreeNode;
+            taxonNode = classification.getRootNode();
+            //taxon should always be null for rootnode therefore no assignment here
+        }else{
+            throw new IllegalStateException("Class not yet handled: " +  taxonTreeNode.getClass().getName());
         }
 
+        //taxon or titleCache
         if (taxon != null){
             setTitleCache(taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache());
             secUuid = taxon.getSec() != null ? taxon.getSec().getUuid() : null;
@@ -124,40 +135,34 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
             taxonIsPublish = taxon.isPublish();
         }else{
-            if (taxonNode != null && taxonNode.getClassification() != null){
-                setTitleCache(taxonNode.getClassification().getTitleCache());
-            } else if (classification != null){
+            if (classification != null){
                 setTitleCache(classification.getTitleCache());
             }
             rankOrderIndex = null;
         }
-        if (taxonNode != null || classification != null){
-            if (classification != null){
-                taxonNode = classification.getRootNode();
-            }
-            taxonomicChildrenCount = taxonNode.getCountChildren();
-            status = taxonNode.getStatus();
-
-            for(Language lang : taxonNode.getStatusNote().keySet()) {
-                statusNote.put(lang, taxonNode.getStatusNote(lang));
-            }
-
-            treeIndex = taxonNode.treeIndex();
-            if(taxonNode.getParent() != null) {
-                parentUUID = taxonNode.getParent().getUuid();
-            } else {
-                parentUUID = null;
-            }
-
-            sortIndex = taxonNode.getSortIndex();
-            if(taxonNode.getClassification() != null) {
-                classificationUUID = taxonNode.getClassification().getUuid();
-            } else if (classification != null){
-                classificationUUID = classification.getUuid();
-            }
-
-        }
         taxonStatus = TaxonStatus.Accepted;
+
+        //taxonNode
+        taxonomicChildrenCount = taxonNode.getCountChildren();
+        status = taxonNode.getStatus();
+
+        for(Language lang : taxonNode.getStatusNote().keySet()) {
+            statusNote.put(lang, taxonNode.getStatusNote(lang));
+        }
+
+        treeIndex = taxonNode.treeIndex();
+        if(taxonNode.getParent() != null) {
+            parentUUID = taxonNode.getParent().getUuid();
+        } else {
+            parentUUID = null;
+        }
+
+        sortIndex = taxonNode.getSortIndex();
+
+        //classification
+        if (classification != null){
+            classificationUUID = classification.getUuid();
+        }
     }
 
     public TaxonNodeDto(Synonym synonym, boolean isHomotypic) {

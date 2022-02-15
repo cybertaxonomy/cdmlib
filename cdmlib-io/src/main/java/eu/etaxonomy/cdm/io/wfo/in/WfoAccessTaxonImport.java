@@ -87,10 +87,6 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
     private Map<String,TaxonName> nameMap;
     private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void handleSingleLine(STATE state) {
         TaxonName name = makeName(state);
@@ -104,7 +100,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         testAlwaysEmptyFields(state);
 
 
-        state.getDedupHelper().replaceAuthorNamesAndNomRef(state, name);
+        state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(name);
 
         if (!name.isPersited()){
             state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);

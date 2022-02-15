@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 
+import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.DefaultValueProcessor;
 import net.sf.json.processors.DefaultValueProcessorMatcher;
@@ -90,7 +91,7 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 	 *             retrieve the object graph in question with an appropriate
 	 *             initialization strategy.</li>
 	 *             </ol>
-	 * <strong>please see also http://dev.e-taxonomy.eu/trac/wiki/CdmEntityInitalization</strong>
+	 * <strong>please see also https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmEntityInitalization</strong>
 	 *
 	 * @param ignoreJPATransient
 	 */

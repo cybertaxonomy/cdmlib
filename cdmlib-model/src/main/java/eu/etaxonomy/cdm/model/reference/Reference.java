@@ -1204,7 +1204,7 @@ public class Reference
                newAbbrevTitleCache = getCacheStrategy().getTitleCache(this);
            }
 
-           if ( oldAbbrevTitleCache == null   || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){
+           if ( oldAbbrevTitleCache == null || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){
                 this.setAbbrevTitleCache(null, false);
                 String newCache = this.getAbbrevTitleCache();
 

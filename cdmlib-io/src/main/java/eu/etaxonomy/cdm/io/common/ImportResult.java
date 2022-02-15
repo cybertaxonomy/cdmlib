@@ -27,6 +27,7 @@ public class ImportResult extends IoResultBase {
     private static final long serialVersionUID = -7299667532720042100L;
 
     private List<byte[]> reports = new ArrayList<>();
+    //map with simple class name and count
     private Map<String, Integer> newRecords = new HashMap<>();
     private Map<String, Integer> updatedRecords = new HashMap<>();
     private Map<String, Integer> deletedRecords = new HashMap<>();

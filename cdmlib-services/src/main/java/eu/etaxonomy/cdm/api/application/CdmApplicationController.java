@@ -38,13 +38,12 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
 import eu.etaxonomy.cdm.api.service.IEventBaseService;
-import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -72,6 +71,8 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
+import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
@@ -131,8 +132,6 @@ public class CdmApplicationController implements ICdmRepository {
 	/**
 	 * Constructor, opens an spring ApplicationContext by using the according data source
 	 * and the default database schema validation type
-	 *
-	 * @param dataSource
 	 */
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource){
 		return CdmApplicationController.NewInstance(null, dataSource, defaultDbSchemaValidation, false);
@@ -142,7 +141,6 @@ public class CdmApplicationController implements ICdmRepository {
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation){
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
-
 
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, omitTermLoading);
@@ -171,42 +169,18 @@ public class CdmApplicationController implements ICdmRepository {
 	//		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor,listeners);
 	//	}
 
-	/**
-	 * @return
-	 */
 	protected static ClassPathResource getClasspathResource(){
 		return new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
 	}
 
-
-	/**
-	 * @return
-	 * @throws DataSourceNotFoundException
-	 */
 	protected static CdmPersistentDataSource getDefaultDatasource() throws DataSourceNotFoundException{
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		return dataSource;
 	}
 
-
-	/**
-	 *
-	 * FIXME:Remoting this constructor is added only to allow extension of this cntroller
-	 * class. and should be removed after refactoring
-	 */
-	protected CdmApplicationController(){
-		applicationContextResource = null;
-		progressMonitor = null;
-	}
-
-
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data
 	 * source
-	 *
-	 * @param dataSource
-	 * @param dbSchemaValidation
-	 * @param omitTermLoading
 	 */
 	protected CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation,
 	        HibernateConfiguration hibernateConfig,
@@ -222,6 +196,15 @@ public class CdmApplicationController implements ICdmRepository {
 		setNewDataSource(dataSource, dbSchemaValidation, hibernateConfig, omitTermLoading, listeners);
 	}
 
+	/**
+    *
+    * FIXME:Remoting this constructor is added only to allow extension of this controller
+    * class and should be removed after re-factoring
+    */
+   protected CdmApplicationController(){
+       applicationContextResource = null;
+       progressMonitor = null;
+   }
 
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the
@@ -514,12 +497,15 @@ public class CdmApplicationController implements ICdmRepository {
 		return configuration.getTermService();
 	}
 
-
 	@Override
 	public final IDescriptionService getDescriptionService(){
 		return configuration.getDescriptionService();
 	}
 
+    @Override
+    public final IDescriptionElementService getDescriptionElementService(){
+        return configuration.getDescriptionElementService();
+    }
 
 	@Override
 	public final IOccurrenceService getOccurrenceService(){
@@ -596,12 +582,6 @@ public class CdmApplicationController implements ICdmRepository {
 		return configuration.getCollectionService();
 	}
 
-
-	@Override
-	public final IFeatureTreeService getFeatureTreeService(){
-		return configuration.getFeatureTreeService();
-	}
-
     @Override
     public final ITermTreeService getTermTreeService(){
         return configuration.getTermTreeService();
@@ -612,56 +592,40 @@ public class CdmApplicationController implements ICdmRepository {
 	    return configuration.getPreferenceService();
 	}
 
-
-	@Override
-	public final IFeatureNodeService getFeatureNodeService(){
-		return configuration.getFeatureNodeService();
-	}
-
     @Override
     public final ITermNodeService getTermNodeService(){
         return configuration.getTermNodeService();
     }
-
 
 	@Override
 	public final IVocabularyService getVocabularyService(){
 		return configuration.getVocabularyService();
 	}
 
-
 	@Override
 	public final IIdentificationKeyService getIdentificationKeyService(){
 		return configuration.getIdentificationKeyService();
 	}
-
 
 	@Override
 	public final IPolytomousKeyService getPolytomousKeyService(){
 		return configuration.getPolytomousKeyService();
 	}
 
-
 	@Override
 	public final IPolytomousKeyNodeService getPolytomousKeyNodeService(){
 		return configuration.getPolytomousKeyNodeService();
 	}
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProgressMonitorService getProgressMonitorService() {
         return configuration.getProgressMonitorService();
     }
 
-
 	@Override
 	public IEntityValidationService getEntityValidationService(){
 		return configuration.getEntityValidationService();
 	}
-
 
 	@Override
 	public IEntityConstraintViolationService getEntityConstraintViolationService(){
@@ -673,13 +637,36 @@ public class CdmApplicationController implements ICdmRepository {
 		return configuration.getDescriptiveDataSetService();
 	}
 
-
 	@Override
 	public final ConversationHolder NewConversation(){
 		//return (ConversationHolder)applicationContext.getBean("conversationHolder");
 		return configuration.NewConversation();
 	}
 
+    @Override
+    public IRightsService getRightsService() {
+        return configuration.getRightsService();
+    }
+
+    @Override
+    public IRegistrationService getRegistrationService() {
+        return configuration.getRegistrationService();
+    }
+
+    @Override
+    public MediaInfoFactory getMediaInfoFactory() {
+        return configuration.getMediaInfoFactory();
+    }
+
+    @Override
+    public IPasswordResetService getPasswordResetService() {
+        return configuration.getPasswordResetService();
+    }
+
+    @Override
+    public IAccountRegistrationService getAccountRegistrationService() {
+        return configuration.getAccountRegistrationService();
+    }
 
 	/* **** Security ***** */
 
@@ -695,7 +682,6 @@ public class CdmApplicationController implements ICdmRepository {
 	public final ProviderManager getAuthenticationManager(){
 		return configuration.getAuthenticationManager();
 	}
-
 
 	@Override
 	public ICdmPermissionEvaluator getPermissionEvaluator(){
@@ -715,18 +701,15 @@ public class CdmApplicationController implements ICdmRepository {
 		return getPermissionEvaluator().hasPermission(context.getAuthentication(), targetDomainObject, permission);
 	}
 
-
 	@Override
 	public final PlatformTransactionManager getTransactionManager(){
 		return configuration.getTransactionManager();
 	}
 
-
 	@Override
 	public final Object getBean(String name){
 		return this.applicationContext.getBean(name);
 	}
-
 
 	/*
 	 * OLD TRANSACTION STUFF
@@ -738,17 +721,14 @@ public class CdmApplicationController implements ICdmRepository {
 		sf.getCurrentSession().flush();
 	}
 
-
 	public SessionFactory getSessionFactory(){
 		return (SessionFactory) applicationContext.getBean("sessionFactory");
 	}
-
 
 	@Override
 	public TransactionStatus startTransaction(){
 		return startTransaction(false);
 	}
-
 
 	@Override
 	public TransactionStatus startTransaction(Boolean readOnly){
@@ -769,20 +749,4 @@ public class CdmApplicationController implements ICdmRepository {
         return;
     }
 
-    @Override
-    public IRightsService getRightsService() {
-        return configuration.getRightsService();
-    }
-
-    @Override
-    public IRegistrationService getRegistrationService() {
-        return configuration.getRegistrationService();
-    }
-
-    @Override
-    public MediaInfoFactory getMediaInfoFactory() {
-        return configuration.getMediaInfoFactory();
-    }
-
 }
-

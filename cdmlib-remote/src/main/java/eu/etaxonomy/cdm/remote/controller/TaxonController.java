@@ -105,6 +105,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             "taxonNodes.parent",
             "taxonNodes.taxon.name",
             "taxonNodes.taxon.secSource.citation",
+            "taxonNodes.statusNote",
             "acceptedTaxon.taxonNodes.classification"
     }));
 
@@ -270,19 +271,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return TAXONNODE_INIT_STRATEGY;
     }
 
-    /**
-    *
+   /**
     * See also {@link AgentController#doGetTaxonNodeAgentRelations(UUID, UUID, Integer, Integer, HttpServletRequest, HttpServletResponse)}
-    *
-    * @param uuid
-    * @param classificationUuid
-    * @param pageIndex
-    * @param pageSize
-    * @param request
-    * @param response
-    * @return
-    * @throws IOException
-    *
     */
     @RequestMapping(value = "taxonNodeAgentRelations/{classification_uuid}", method = RequestMethod.GET)
     public Pager<TaxonNodeAgentRelation>  doGetTaxonNodeAgentRelations(
@@ -307,7 +297,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public StringResultDTO doCountSpecimensOrObservations(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
         List<OrderHint> orderHints = new ArrayList<>();
@@ -319,7 +309,6 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     /**
-     *
      * @deprecated replaced by rootUnitDTOs
      */
     @Deprecated
@@ -327,7 +316,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public List<SpecimenOrObservationBaseDTO> doListFieldUnitDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
 
         List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
@@ -338,7 +327,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public List<SpecimenOrObservationBaseDTO> doListRooUnitDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("rootUnitDTOs() - " + request.getRequestURI());
 
         List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
@@ -410,15 +399,6 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
      * The result also returns the path to these taxa represented by the uuids of the taxon relationships types and doubtful information.
      * If classificationUuids is set only taxa of classifications are returned which are included in the given classifications.
      * Also the path to these taxa may not include taxa from other classifications.
-     *
-     * @param taxonUUIDString
-     * @param classificationStringList
-     * @param includeDoubtful
-     * @param onlyCongruent
-     * @param response
-     * @param request
-     * @return
-     * @throws IOException
      */
     @RequestMapping(value = { "includedTaxa" }, method = { RequestMethod.GET })
     public IncludedTaxaDTO doGetIncludedTaxa(
@@ -427,7 +407,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
             @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
             HttpServletResponse response,
-            HttpServletRequest request) throws IOException {
+            HttpServletRequest request) {
 
 
         if(request != null){

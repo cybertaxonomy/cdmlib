@@ -19,13 +19,12 @@ import eu.etaxonomy.cdm.common.UTF8;
 /**
  * This class is a base class that separates regex parts of the parser from methods
  * @author a.mueller
- *
  */
 public abstract class NonViralNameParserImplRegExBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImplRegExBase.class);
 
-	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
+	// good regex intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 
     //splitter
     protected static String epiSplitter = "(\\s+|\\(|\\))"; //( ' '+| '(' | ')' )
@@ -56,6 +55,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultative '.' at the end
     protected static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultative '.' at the end
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
+    protected static String dashDotWord = dotWord +"([-\\u2013]" + dotWord +")?"; //dotWord with optional separation by "-"
 
     //Words used in an epithet/name part for a TaxonName
     protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\u00FC\\-]+";   //a-z + diaeresis for ieou
@@ -181,8 +181,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String detail = pDetailAlternatives;
 
     //reference
-    protected static String bracketVolume = nr4 + "[A-Za-z]?" + "([-\u2013]" + nr4 + ")?\\))?" + "(\\(((\\d{1,2},\\s*)?(Suppl|Beibl|App|Beil|Misc|Vorabdr|Erg|Bih|(Sess\\.\\s*)?Extr|Reimpr|Bibl|Polypet|Litt|Phys|Orchid)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4}|Extra)";
-    protected static String volume =     nr4 + "([-\u2013]"+nr4+")?" + "[A-Za-z]?" + fWs + "(\\("+ bracketVolume + "\\))?";
+    protected static String bracketVolume = "(" + nr4 + "[A-Za-z]?" + "([-\u2013,]\\s*" + nr4 + ")?|" + "((\\d{1,2},\\s*)?(Suppl|Beibl|App|Beil|Misc|Vorabdr|Erg|Bih|(Sess\\.\\s*)?Extr|Reimpr|Bibl|Polypet|Litt|Phys|Orchid)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4}|Extra)){1,2}";
+    protected static String volume =  nr4 + "([-\u2013]"+nr4+")?" + "[A-Za-z]?" + fWs + "(\\("+ bracketVolume + "\\))?";
 //    protected static String volume_old = nr4 + "[A-Za-z]?" + fWs + "(\\("+ nr4 + "[A-Za-z]?" + "([-\u2013]" + nr4 + ")?\\)|[-\u2013]"+nr4+")?" + "(\\(((\\d{1,2},\\s*)?(Suppl|Beibl|App|Beil|Misc|Vorabdr|Erg)\\.(\\s*\\d{1,4})?|Heft\\s*\\d{1,4})\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/redmine/issues/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + "|" +oWs + "&" + oWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
@@ -194,11 +194,11 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pSeriesPart = fWs + ",?" + fWs + "(([sS][e\u00E9]r|сер)("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|(Pt|Sect)\\.\\s*\\d{1,2}),?";  //Pt. (Part) and Sect. (Section) currently handled as series part, which is part of title, may be handled different later
 
     protected static String authorPrefix = "(Da(lla)?|Van|La|De)" + oWs; //should not include words allowed in first part of reference title
-    protected static String firstTitleWord = "(?!"+authorPrefix+")" + word + "('\\p{javaLowerCase}*|[-\u2013]"+word+")?"; //word with optional apostrophe in between
+    protected static String firstTitleWord = "(?!"+authorPrefix+")" + word + "('\\p{javaLowerCase}*|\\.?[-\u2013]"+dotWord+")?"; //word with optional apostrophe in between
 
     protected static String singleJournalTitles = "PhytoKeys|PLoS ONE";
     protected static String referenceTitleFirstPart = "(" + firstTitleWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
-    protected static String referenceTitleBase = "("+ referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + quotations + ")"
+    protected static String referenceTitleBase = "("+ referenceTitleFirstPart + "*" + "("+ dashDotWord + "|" + uppercaseWord + "|" + quotations + ")"
                     + "|" +singleJournalTitles + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
     protected static String referenceTitleBaseWithSeries = referenceTitleBase + "("+ pSeriesPart + ")?";
     protected static String referenceTitle = "("+referenceTitleBaseWithSeries +")";

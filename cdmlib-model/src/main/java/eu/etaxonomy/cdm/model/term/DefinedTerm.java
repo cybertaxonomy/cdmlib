@@ -69,10 +69,18 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	public static final UUID uuidLastScrutiny = UUID.fromString("b4495910-28e9-4a49-86cf-a0476c78f460");
     public static final UUID uuidAuthorOfSubtree = UUID.fromString("c2c7e9b7-d6a7-48a0-b13f-a7a2e2a9b8c9");
 
+    //Occurrence status type
+    public static final UUID uuidNotExtant = UUID.fromString("6b4888d8-194a-45c3-a16a-e5b5465a8f3d");
+    public static final UUID uuidDestroyed = UUID.fromString("d41cce17-9e68-47f8-904f-fcea1b0029bc");
+    public static final UUID uuidLost = UUID.fromString("9d82974f-9535-432d-af5b-f233016abe51");
+    public static final UUID uuidNotFound = UUID.fromString("c7df83c2-6e4b-42e8-8fa7-c07720a78e2b");
+    public static final UUID uuidNotSeen = UUID.fromString("44f5f025-8814-49dd-b1ef-17557a13ea3e");
+    public static final UUID uuidNotPreserved = UUID.fromString("87447824-06d8-4449-abe6-0c11ed77fdc9");
+    public static final UUID uuidDriedOut = UUID.fromString("01fe0283-0da6-46a5-a050-22f9be338461");
+
 	protected static Map<UUID, DefinedTerm> termMap = null;
 
-
-	protected static DefinedTerm getTermByUuid(UUID uuid){
+	public static DefinedTerm getTermByUuid(UUID uuid){
 	    if (termMap == null || termMap.isEmpty()){
             return getTermByClassAndUUID(DefinedTerm.class, uuid);
         } else{
@@ -80,7 +88,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 		}
 	}
 
-	   /**
+	/**
      * Creates a new empty {@link DefinedTerm} instance.
      *
      * @see #NewInstance(String, String, String)

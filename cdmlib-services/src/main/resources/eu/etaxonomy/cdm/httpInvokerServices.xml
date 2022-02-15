@@ -13,6 +13,17 @@
 
   <bean id="remoteInvocationExecutor" class="eu.etaxonomy.cdm.api.remoting.DebuggingRemoteInvocationExecutor"
     scope="prototype" />
+    
+  <bean id="httpAccountRegistrationService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="accountRegistrationService" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService</value>
+    </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
+  </bean>
 
   <bean id="httpAgentService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
@@ -80,7 +91,6 @@
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
-
   <bean id="httpDescriptionService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -91,14 +101,14 @@
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-
-  <bean id="httpFeatureNodeService"
+  
+  <bean id="httpDescriptionElementService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
-      <ref bean="featureNodeServiceImpl" />
+      <ref bean="descriptionElementServiceImpl" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IFeatureNodeService</value>
+      <value>eu.etaxonomy.cdm.api.service.IDescriptionElementService</value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
@@ -110,17 +120,6 @@
     </property>
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ITermNodeService</value>
-    </property>
-    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
-  </bean>
-
-  <bean id="httpFeatureTreeService"
-    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-    <property name="service">
-      <ref bean="featureTreeServiceImpl" />
-    </property>
-    <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IFeatureTreeService</value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
@@ -255,6 +254,17 @@
     </property>
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IPreferenceService</value>
+    </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
+  </bean>
+  
+  <bean id="httpPasswordResetService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="passwordResetService" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.security.IPasswordResetService</value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>

@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.28.0</version>
+    <version>5.29.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -19,7 +19,7 @@
             <executions>
               <execution>
                   <!-- Generate DDL for test -->
-                  <!-- Alternatives: http://jpdigital.github.io/hibernate5-ddl-maven-plugin/usage.html, 
+                  <!-- Alternatives: https://jpdigital.github.io/hibernate5-ddl-maven-plugin/usage.html, 
                                      https://webdev.jhuep.com/~jcs/ejava-javaee/coursedocs/content/html/jpa-entitymgrex-dbschemagen.html -->
                   <!-- manual execution of the below ant task:  -->
                   <!-- mvn antrun:run@generate-ddl-create       -->
@@ -32,7 +32,7 @@
                       <target>
                           <delete file="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
                           <!-- copy template file -->
-                          <copy file="${basedir}/src/main/resources/dbscripts/001-cdm.h2.sql" tofile="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
+                          <copy file="${basedir}/src/main/resources/dbscripts/001-cdm.h2.template.sql" tofile="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
                                 <!-- for directory shortcuts: https://stackoverflow.com/questions/13354531/maven-project-build-directory   but a short cut to /src/main/resources did not work for me -->
                           <!-- run DdlCreator -->
                           <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator" fork="false" failonerror="true" classpathref="maven.compile.classpath" /> 
@@ -44,7 +44,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.2</version>
         <executions>
           <execution>
             <goals>
@@ -54,6 +54,41 @@
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+    	<plugins>
+    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+    		<plugin>
+    			<groupId>org.eclipse.m2e</groupId>
+    			<artifactId>lifecycle-mapping</artifactId>
+    			<version>1.0.0</version>
+    			<configuration>
+    				<lifecycleMappingMetadata>
+    					<pluginExecutions>
+    						<pluginExecution>
+    							<pluginExecutionFilter>
+    								<groupId>
+    									org.apache.maven.plugins
+    								</groupId>
+    								<artifactId>
+    									maven-antrun-plugin
+    								</artifactId>
+    								<versionRange>
+    									[3.0.0,)
+    								</versionRange>
+    								<goals>
+    									<goal>run</goal>
+    								</goals>
+    							</pluginExecutionFilter>
+    							<action>
+    								<ignore />
+    							</action>
+    						</pluginExecution>
+    					</pluginExecutions>
+    				</lifecycleMappingMetadata>
+    			</configuration>
+    		</plugin>
+    	</plugins>
+    </pluginManagement>
   </build>
   <dependencies>
     <dependency>

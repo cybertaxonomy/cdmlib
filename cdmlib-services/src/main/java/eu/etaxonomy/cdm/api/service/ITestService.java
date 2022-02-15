@@ -20,10 +20,8 @@ import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
  *
  * @author cmathew
  * @since 26 Jun 2015
- *
  */
 public interface ITestService {
-
 
     public void waitFor(long timeToWaitInMs) throws InterruptedException ;
 
@@ -33,21 +31,8 @@ public interface ITestService {
 
     public UpdateResult addChild(CdmEntityIdentifier taxonNodeCei);
 
-
-    /**
-     * @param monitor
-     * @return
-     */
     public String longRunningMethod(IRemotingProgressMonitor monitor, RuntimeException ex, List<String> feedbacks, long feedbackWaitTimeout);
 
-
-    /**
-     * @return
-     */
     public UUID monitLongRunningMethod(RuntimeException ex, List<String> feedbacks, long feedbackWaitTimeout);
-
-
-
-
 
 }

@@ -92,7 +92,10 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -123,6 +126,7 @@ public class DescriptionServiceImpl
     protected IOccurrenceDao occurrenceDao;
     protected ITaxonNodeDao taxonNodeDao;
     protected IDescriptiveDataSetDao dataSetDao;
+    protected ITermService termService;
 
     //TODO change to Interface
     private NaturalLanguageGenerator naturalLanguageGenerator;
@@ -151,6 +155,12 @@ public class DescriptionServiceImpl
     protected void setDefinedTermDao(IDefinedTermDao definedTermDao) {
         this.definedTermDao = definedTermDao;
     }
+
+    @Autowired
+    protected void setTermService(ITermService definedTermService) {
+        this.termService = definedTermService;
+    }
+
 
     @Autowired
     protected void statisticalMeasurementValueDao(IStatisticalMeasurementValueDao statisticalMeasurementValueDao) {
@@ -248,19 +258,6 @@ public class DescriptionServiceImpl
 
         return listDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
     }
-
-    @Override
-    public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        long numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
-
-        List<Annotation> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = descriptionElementDao.getAnnotations(annotatedObj, status, pageSize, pageNumber, orderHints, propertyPaths);
-        }
-
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
 
     @Override
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
@@ -374,44 +371,6 @@ public class DescriptionServiceImpl
         }
 
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.find
-     */
-    @Override
-    public DescriptionElementBase getDescriptionElementByUuid(UUID uuid) {
-        return descriptionElementDao.findByUuid(uuid);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.load
-     */
-    @Override
-    public DescriptionElementBase loadDescriptionElement(UUID uuid,	List<String> propertyPaths) {
-        return descriptionElementDao.load(uuid, propertyPaths);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.save
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
-        return descriptionElementDao.save(descriptionElement).getUuid();
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.save
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements) {
-        return descriptionElementDao.saveAll(descriptionElements);
     }
 
     @Override
@@ -650,20 +609,6 @@ public class DescriptionServiceImpl
         return result;
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.delete
-     */
-    @Override
-    public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement) {
-        return descriptionElementDao.delete(descriptionElement);
-    }
-
-    @Override
-    public UUID deleteDescriptionElement(UUID descriptionElementUuid) {
-        return deleteDescriptionElement(descriptionElementDao.load(descriptionElementUuid));
-    }
-
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteDescription(DescriptionBase<?> description) {
@@ -724,6 +669,8 @@ public class DescriptionServiceImpl
     public DeleteResult deleteDescription(UUID descriptionUuid) {
         return deleteDescription(dao.load(descriptionUuid));
     }
+
+
 
     @Override
     public DeleteResult isDeletable(UUID descriptionUuid){
@@ -1136,7 +1083,9 @@ public class DescriptionServiceImpl
     public DescriptionBaseDto loadDto(UUID descriptionUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
         Query query =  getSession().createQuery(sqlSelect);
-        query.setParameter("uuid", descriptionUuid);
+        List<UUID> uuids = new ArrayList<UUID>();
+        uuids.add(descriptionUuid);
+        query.setParameterList("uuid", uuids);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
@@ -1144,17 +1093,89 @@ public class DescriptionServiceImpl
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
 
         if (list.size()== 1){
-            return list.get(0);
+            DescriptionBaseDto dto = list.get(0);
+            //get categorical data
+            sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid", descriptionUuid);
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultCat = query.list();
+            List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
+
+            List<UUID> featureUuids = new ArrayList<>();
+            for (CategoricalDataDto catDto: listCategorical){
+                featureUuids.add(catDto.getFeatureUuid());
+            }
+            Map<UUID, TermDto> featureDtos = termService.findFeatureByUUIDsAsDtos(featureUuids);
+            for (CategoricalDataDto catDto: listCategorical){
+                FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
+                catDto.setFeatureDto(featuredto);
+            }
+            dto.getElements().addAll(listCategorical);
+            //get quantitative data
+            sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid", descriptionUuid);
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultQuant = query.list();
+            List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
+            dto.getElements().addAll(listQuant);
+            return dto;
         }else{
             return null;
         }
 
     }
+    @Override
+    public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuids) {
+        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
+        Query query =  getSession().createQuery(sqlSelect);
+        query.setParameterList("uuid", descriptionUuids);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
+
+        for (DescriptionBaseDto dto: list){
+
+            //get categorical data
+            sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid", dto.getDescriptionUuid());
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultCat = query.list();
+            List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
+
+            List<UUID> featureUuids = new ArrayList<>();
+            for (CategoricalDataDto catDto: listCategorical){
+                featureUuids.add(catDto.getFeatureUuid());
+            }
+            Map<UUID, TermDto> featureDtos = termService.findFeatureByUUIDsAsDtos(featureUuids);
+            for (CategoricalDataDto catDto: listCategorical){
+                FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
+                catDto.setFeatureDto(featuredto);
+            }
+            dto.getElements().addAll(listCategorical);
+            //get quantitative data
+            sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid",  dto.getDescriptionUuid());
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultQuant = query.list();
+            List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
+            dto.getElements().addAll(listQuant);
+
+        }
+        return list;
+
+    }
 
     @Override
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid) {
-        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect(taxonUuid);
+        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect();
         Query query =  getSession().createQuery(sqlSelect);
+        query.setParameter("uuid", taxonUuid);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
@@ -1164,6 +1185,31 @@ public class DescriptionServiceImpl
         return list;
 
     }
+
+    @Override
+    public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid) {
+      //get specimen used in description
+      //get individial associations with this specimen
+      //get taxon node for the classification
+      @SuppressWarnings("unchecked")
+      List<SortableTaxonNodeQueryResult> result =  dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
+
+      if (!result.isEmpty()){
+         List<TaxonNodeDto> dtos = taxonNodeDao.createNodeDtos(result);
+         if (dtos.size() == 1){
+             return dtos.get(0);
+         }else{
+             logger.debug("There is more than one taxon associated to the specimen with uuid: " + specimenUuid + " return the first in the list");
+             return dtos.get(0);
+         }
+      }
+
+
+
+        return null;
+    }
+
+
 
 
 }

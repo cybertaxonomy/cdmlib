@@ -554,4 +554,5 @@ public class CdmUtils {
     public static String userFriendlyClassName(Class<?> clazz){
         return userFriendlyCamelCase(clazz.getSimpleName());
     }
+
 }

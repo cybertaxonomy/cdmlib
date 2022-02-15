@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.3.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+<!-- Until now this is mostly a quick and dirty copy of cdmlib-remote-webapp applicationContext.xml to 
+   make debugging from commandline possible in cdmlib-remote  -->
+
+  <!-- 
+    NOTE: 
+    For a detailed overview on the spring MVC and application context configuration and 
+    bootstrapping of this web application see: 
+    http://dev.e-taxonomy.eu/redmine/projects/edit/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
+  -->
+  
+  <context:annotation-config />
+
+  <!-- include default application context and customization -->
+  <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml" />
+  <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+    <property name="omit" value="false" />
+  </bean>
+  <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
+
+  <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
+  <context:component-scan base-package="eu/etaxonomy/cdm/io"/>
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="properties">
+      <props>
+        <prop key="eu.etaxonomy.cdm.base.path">${user.home}/.cdmLibrary/</prop>
+        <prop key="eu.etaxonomy.cdm.search.index.path">${user.home}/.cdmLibrary/index/</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- enable the configuration of transactional behavior based on annotations -->
+  <tx:annotation-driven transaction-manager="transactionManager" />
+
+  <!-- import additional beans into the root context -->
+<!--   <import resource="applicationContext.views.xml" /> -->
+
+  <!-- import configuration of the datasource bean -->
+<!--   <import resource="datasources/configurable.xml" /> -->
+  
+  <!-- bootstrap the Web Configuration -->
+  <bean class="eu.etaxonomy.cdm.remote.config.MultiWebSecurityConfiguration" />
+  
+<!--   <bean class="eu.etaxonomy.cdm.opt.config.LoggingConfigurer" /> -->
+  
+<!--   <bean class="eu.etaxonomy.cdm.opt.config.EhCacheDiskStoreConfiguration" /> -->
+
+  <!-- OAI-PMH TODO externalize? -->
+  <bean name="taxonOaiPmhController"
+    class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
+    <property name="cachingModel" ref="taxonOaiPmhCacheMapping" />
+  </bean>
+
+  <bean name="taxonOaiPmhCacheMapping"
+    class="org.springmodules.cache.provider.ehcache.EhCacheCachingModel">
+    <property name="cacheName"
+      value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken" />
+  </bean>
+
+  <bean id="serializableFactory" class="org.springmodules.cache.serializable.XStreamSerializableFactory" />
+
+  <bean id="cacheProviderFacade" class="org.springmodules.cache.provider.ehcache.EhCacheFacade">
+    <!-- 
+        the cacheManager is provided by the eu.etaxonomy.cdm.api.config.EhCacheConfiguration
+        in cdmlib-services
+     -->
+    <property name="cacheManager" ref="cacheManager" />
+    <property name="serializableFactory" ref="serializableFactory" />
+  </bean>
+  
+  
+
+<!--     <context:property-override location="classpath:eu/etaxonomy/cdm/override.properties"/> -->
+   
+    <!-- 
+        This applicationContext is not a full cdm application context. It only covers the remote components 
+        without service and persistence. The cacheManager is usually provided via a Java config class in
+        eu/etaxonomy/cdm/service/api/conf which cannot be used in this context. Therefore we are 
+        using the EhCacheManagerFactoryBean here to initialize the cacheManager bean.
+     -->
+<!--     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"> -->
+<!--       <property name="configLocation" value="classpath:/eu/etaxonomy/cdm/remote/ehcache.xml"/> -->
+<!--       <property name="shared" value="true"/> -->
+<!--     </bean>  -->
+
+    <context:component-scan base-package="eu/etaxonomy/cdm/remote/controller"/> 
+</beans>

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -977,7 +978,7 @@ public class TaxonServiceImpl
     //    logger.setLevel(Level.TRACE);
 //        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
-        logger.trace("listMedia() - START");
+        if (logger.isTraceEnabled()){logger.trace("listMedia() - START");}
 
         Set<Taxon> taxa = new HashSet<>();
         List<Media> taxonMedia = new ArrayList<>();
@@ -989,14 +990,14 @@ public class TaxonServiceImpl
 
         // --- resolve related taxa
         if (includeRelationships != null && ! includeRelationships.isEmpty()) {
-            logger.trace("listMedia() - resolve related taxa");
+            if (logger.isTraceEnabled()){logger.trace("listMedia() - resolve related taxa");}
             taxa = listRelatedTaxa(taxon, includeRelationships, null, includeUnpublished, null, null, null);
         }
 
         taxa.add((Taxon) dao.load(taxon.getUuid()));
 
         if(includeTaxonDescriptions != null && includeTaxonDescriptions){
-            logger.trace("listMedia() - includeTaxonDescriptions");
+            if (logger.isTraceEnabled()){logger.trace("listMedia() - includeTaxonDescriptions");}
             List<TaxonDescription> taxonDescriptions = new ArrayList<>();
             // --- TaxonDescriptions
             for (Taxon t : taxa) {
@@ -1022,7 +1023,7 @@ public class TaxonServiceImpl
 
 
         if(includeOccurrences != null && includeOccurrences) {
-            logger.trace("listMedia() - includeOccurrences");
+            if (logger.isTraceEnabled()){logger.trace("listMedia() - includeOccurrences");}
             @SuppressWarnings("rawtypes")
             Set<SpecimenOrObservationBase> specimensOrObservations = new HashSet<>();
             // --- Specimens
@@ -1056,16 +1057,16 @@ public class TaxonServiceImpl
                     }
                 }
                 //media in hierarchy
-                taxonMedia.addAll(occurrenceService.getMediainHierarchy(occurrence, null, null, propertyPath).getRecords());
+                taxonMedia.addAll(occurrenceService.getMediaInHierarchy(occurrence, null, null, propertyPath).getRecords());
             }
         }
 
         if(includeTaxonNameDescriptions != null && includeTaxonNameDescriptions) {
-            logger.trace("listMedia() - includeTaxonNameDescriptions");
+            if (logger.isTraceEnabled()){logger.trace("listMedia() - includeTaxonNameDescriptions");}
             // --- TaxonNameDescription
             Set<TaxonNameDescription> nameDescriptions = new HashSet<>();
             for (Taxon t : taxa) {
-                nameDescriptions .addAll(t.getName().getDescriptions());
+                nameDescriptions.addAll(t.getName().getDescriptions());
             }
             for(TaxonNameDescription nameDescription: nameDescriptions){
                 if (!limitToGalleries || nameDescription.isImageGallery()) {
@@ -1079,12 +1080,18 @@ public class TaxonServiceImpl
             }
         }
 
-        logger.trace("listMedia() - initialize");
+        taxonMedia = deduplicateMedia(taxonMedia);
+
+        if (logger.isTraceEnabled()){logger.trace("listMedia() - initialize");}
         beanInitializer.initializeAll(taxonMedia, propertyPath);
 
-        logger.trace("listMedia() - END");
+        if (logger.isTraceEnabled()){logger.trace("listMedia() - END");}
 
         return taxonMedia;
+    }
+
+    private List<Media> deduplicateMedia(List<Media> taxonMedia) {
+        return taxonMedia.stream().distinct().collect(Collectors.toList());
     }
 
     @Override
@@ -1584,6 +1591,8 @@ public class TaxonServiceImpl
 
         result.addUpdatedObject(oldTaxon);
         result.addUpdatedObject(newTaxon);
+        result.addUpdatedObject(homotypicGroup);
+        result.addUpdatedObject(synonym);
         saveOrUpdate(oldTaxon);
         saveOrUpdate(newTaxon);
 
@@ -1762,7 +1771,7 @@ public class TaxonServiceImpl
      * Uses org.apache.lucene.search.join.JoinUtil for query time joining, alternatively
      * the BlockJoinQuery could be used. The latter might be more memory save but has the
      * drawback of requiring to do the join an indexing time.
-     * see  http://dev.e-taxonomy.eu/trac/wiki/LuceneNotes#JoinsinLucene for more information on this.
+     * see  https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/LuceneNotes#JoinsinLucene for more information on this.
      *
      * Joins TaxonRelationShip with Taxon depending on the direction of the given edge:
      * <ul>

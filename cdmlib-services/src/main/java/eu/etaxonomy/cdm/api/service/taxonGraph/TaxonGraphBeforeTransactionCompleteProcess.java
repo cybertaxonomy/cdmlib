@@ -224,7 +224,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                 }
             } else if(eventType.equals(EventType.DELETE)) {
                 if(taxonName != null) {
-                    // handling this case explicitly should not be needed as this is expectd to be done by orphan removal in
+                    // handling this case explicitly should not be needed as this is expected to be done by orphan removal in
                     // hibernate
                     Reference reference =  (Reference)oldState[Arrays.binarySearch(propertyNames, TAXONNAME_NOMENCLATURALSOURCE)];
                     if(reference != null) {

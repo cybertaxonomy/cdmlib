@@ -86,4 +86,25 @@ public class DnaSampleDefaultCacheStrategy
 
 		return result;
 	}
+
+	//NOTE: this is a first implementation, it may be adapted in future
+    @Override
+    protected String doGetIdentityCache(DnaSample dnaSample) {
+        String result = getCollectionAndAccession(dnaSample);
+        //sample designation
+        if (isBlank(result)){
+            result = dnaSample.getIdentifierString(DefinedTerm.uuidSampleDesignation);
+        }
+        //any other identifier
+        if (isBlank(result)){
+            if (!dnaSample.getIdentifiers().isEmpty()){
+                result = dnaSample.getIdentifiers().get(0).getIdentifier();
+            }
+        }
+        if (isBlank(result)){
+            return doGetTitleCache(dnaSample);
+        }else{
+            return result;
+        }
+    }
 }

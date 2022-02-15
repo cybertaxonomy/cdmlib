@@ -40,4 +40,13 @@ public class TaxonRowWrapperDTO extends RowWrapperDTO<TaxonDescription> {
         this.taxonDescriptions = taxonDescriptions;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TaxonRowWrapperDTO){
+            return ((TaxonRowWrapperDTO)obj).getDescription().getDescriptionUuid().equals(this.getDescription().getDescriptionUuid());
+        } else {
+            return false;
+        }
+    }
+
 }

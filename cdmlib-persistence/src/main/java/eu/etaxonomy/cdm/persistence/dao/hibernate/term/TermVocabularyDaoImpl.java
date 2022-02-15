@@ -398,7 +398,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         String queryString = TermVocabularyDto.getTermCollectionDtoSelect();
 
         if (!termTypeWithSubType.isEmpty()){
-            queryString += " where a.termType in (:termTypes) ";
+            queryString += " WHERE a.termType in (:termTypes) ";
             if (pattern != null){
                 queryString += " AND a.titleCache like :pattern";
             }

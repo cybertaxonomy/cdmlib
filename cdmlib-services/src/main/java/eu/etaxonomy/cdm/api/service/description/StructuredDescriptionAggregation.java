@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -139,24 +140,31 @@ public class StructuredDescriptionAggregation
     }
 
     @Override
-    protected void addAggregationResultToDescription(TaxonDescription targetDescription,
+    protected boolean mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder) {
 
         StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        mergeDescriptionElements(targetDescription, structuredResultHolder.categoricalMap, CategoricalData.class);
-        mergeDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap, QuantitativeData.class);
-        addAggregationSources(targetDescription, structuredResultHolder);
+        boolean updated = mergeDescriptionElements(targetDescription, structuredResultHolder.categoricalMap, CategoricalData.class);
+        updated |= mergeDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap, QuantitativeData.class);
+        updated |= mergeDescriptionSources(targetDescription, structuredResultHolder);
 
         if(!targetDescription.getElements().isEmpty()){
             dataSet.addDescription(targetDescription);
         }else{
             dataSet.removeDescription(targetDescription);
         }
+        return updated;
     }
 
-    private <T extends DescriptionBase<?>> void addAggregationSources(TaxonDescription targetDescription,
+    @Override
+    protected boolean isRelevantDescriptionElement(DescriptionElementBase deb){
+        return deb.isInstanceOf(CategoricalData.class) || deb.isInstanceOf(QuantitativeData.class);
+    }
+
+    private <T extends DescriptionBase<?>> boolean mergeDescriptionSources(TaxonDescription targetDescription,
                 StructuredDescriptionResultHolder structuredResultHolder) {
 
+        boolean updated = false;
         //Remove sources from description
         Set<IdentifiableSource> sourcesToRemove = targetDescription.getSources().stream()
                 .filter(source->source.getType().equals(OriginalSourceType.Aggregation))
@@ -167,8 +175,9 @@ public class StructuredDescriptionAggregation
             IdentifiableSource mergeSourceCandidate = findSourceCandidate(targetDescription, newSource);
             if (mergeSourceCandidate == null){
                 addNewSource(targetDescription, newSource);
+                updated = true;
             }else{
-                mergeSource(mergeSourceCandidate, newSource);
+                updated |= mergeSource(mergeSourceCandidate, newSource);
                 sourcesToRemove.remove(mergeSourceCandidate);
             }
         }
@@ -176,6 +185,7 @@ public class StructuredDescriptionAggregation
         //remove remaining sources-to-be-removed
         for (IdentifiableSource sourceToRemove : sourcesToRemove) {
             targetDescription.removeSource(sourceToRemove);
+            updated |= sourceToRemove.isPersited();
             ICdmBase target = CdmBase.deproxy(sourceToRemove.getCdmSource());
             if (target != null){
                 sourceToRemove.setCdmSource(null); //workaround for missing orphan removal #9801
@@ -184,17 +194,18 @@ public class StructuredDescriptionAggregation
                     T descriptionToDelete = (T)target;
                     if (descriptionToDelete.isCloneForSource()){
                         //TODO maybe this is not really needed as it is later done anyway with .deltedDescription
-                        //but currently this still leads to an re-saved by cascade exception
+                        //but currently this still leads to a re-saved by cascade exception
                         ((IDescribable<T>)descriptionToDelete.describedEntity()).removeDescription(descriptionToDelete);
                         structuredResultHolder.descriptionsToDelete.add(descriptionToDelete);
                     }
-                }else if (target.isInstanceOf(Taxon.class)){
+                } else if (target.isInstanceOf(Taxon.class)){
                     //nothing to do for now
                 } else {
                     throw new AggregationException("CdmLink target type not yet supported: " + target.getClass().getSimpleName());
                 }
             }
         }
+        return updated;
     }
 
     private <T extends DescriptionBase<?>> void addNewSource(TaxonDescription targetDescription,
@@ -214,8 +225,9 @@ public class StructuredDescriptionAggregation
     }
 
     //mergeablity has been checked before
-    private <T extends DescriptionBase<?>> void mergeSource(IdentifiableSource mergeCandidate, IdentifiableSource newSource) {
+    private <T extends DescriptionBase<?>> boolean mergeSource(IdentifiableSource mergeCandidate, IdentifiableSource newSource) {
 
+        boolean updated = false;
         ICdmBase newTarget = newSource.getCdmSource();
         if (newTarget != null){
             newTarget = CdmBase.deproxy(newTarget);
@@ -224,7 +236,7 @@ public class StructuredDescriptionAggregation
                 T newTargetDesc = (T)newTarget;
                 @SuppressWarnings("unchecked")
                 T existingTargetDesc = CdmBase.deproxy((T)mergeCandidate.getCdmSource());
-                mergeSourceDescription(existingTargetDesc, newTargetDesc);
+                updated |= mergeSourceDescription(existingTargetDesc, newTargetDesc);
                 ((IDescribable<T>)existingTargetDesc.describedEntity()).addDescription(existingTargetDesc);
                 if (!existingTargetDesc.equals(newTargetDesc)){
                     ((IDescribable<T>)newTargetDesc.describedEntity()).removeDescription(newTargetDesc);
@@ -237,10 +249,12 @@ public class StructuredDescriptionAggregation
         }else{
             throw new AggregationException("Sources not linking to another CdmBase instance currently not yet supported.");
         }
+        return updated;
     }
 
-    private <T extends DescriptionBase<?>> void mergeSourceDescription(T existingSourceDescription, T newSourceDescription) {
+    private <T extends DescriptionBase<?>> boolean mergeSourceDescription(T existingSourceDescription, T newSourceDescription) {
 
+        boolean updated = false;
         Set<DescriptionElementBase> elementsToRemove = new HashSet<>(existingSourceDescription.getElements());
         Set<DescriptionElementBase> newElements = new HashSet<>(newSourceDescription.getElements());
 
@@ -251,28 +265,32 @@ public class StructuredDescriptionAggregation
                         && e.getFeature().equals(newElementClone.getFeature()))
                     .findFirst();
             if (matchingElement.isPresent()){
-                mergeDescriptionElement(matchingElement.get(), newElementClone);
+                updated |= mergeDescriptionElement(matchingElement.get(), newElementClone);
                 elementsToRemove.remove(matchingElement.get());
             }else{
                 existingSourceDescription.addElement(newElementClone);
+                updated = true;
             }
         }
-        addSourceDescriptionToDescribedEntity(newSourceDescription);
+        updated |= addSourceDescriptionToDescribedEntity(newSourceDescription);
         existingSourceDescription.setTitleCache(newSourceDescription.getTitleCache(), true);
 
         for (DescriptionElementBase debToRemove : elementsToRemove){
             existingSourceDescription.removeElement(debToRemove);
+            updated |= debToRemove.isPersited();
         }
-
+        return updated;
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends DescriptionBase<?>> void addSourceDescriptionToDescribedEntity(T sourceDescription) {
-        ((IDescribable<T>)sourceDescription.describedEntity()).addDescription(sourceDescription);
-    }
-    @SuppressWarnings("unchecked")
-    private <T extends DescriptionBase<?>> void removeSourceDescriptionFromDescribedEntity(T sourceDescription) {
-        ((IDescribable<T>)sourceDescription.describedEntity()).removeDescription(sourceDescription);
+    private <T extends DescriptionBase<?>> boolean addSourceDescriptionToDescribedEntity(T sourceDescription) {
+        boolean updated = false;
+        IDescribable<T> describedEntity = ((IDescribable<T>)sourceDescription.describedEntity());
+        if (describedEntity.getDescriptions().contains(sourceDescription)){
+            describedEntity.addDescription(sourceDescription);
+            updated = true;
+        }
+        return updated;
     }
 
     private IdentifiableSource findSourceCandidate(TaxonDescription targetDescription, IdentifiableSource newSource) {
@@ -330,73 +348,50 @@ public class StructuredDescriptionAggregation
         return clonedDescription;
     }
 
-    private <S extends DescriptionElementBase> void mergeDescriptionElements(TaxonDescription targetDescription,
-            Map<Feature, ? extends DescriptionElementBase> newElementsMap, Class<? extends DescriptionElementBase> debClass) {
+    @Override
+    protected <S extends DescriptionElementBase> boolean mergeDescriptionElement(S targetElement,
+            S newElement) {
 
-        Set<DescriptionElementBase> elementsToRemove = new HashSet<>(
-                targetDescription.getElements().stream()
-                    .filter(el->el.isInstanceOf(debClass))
-                    .collect(Collectors.toSet()));
-
-        //for each character in "characters of new elements"
-        for (Feature characterNew : newElementsMap.keySet()) {
-
-            //if elements for this character exist in old data, remember any of them to keep (in clean data there should be only max. 1
-            DescriptionElementBase elementToStay = null;
-            for (DescriptionElementBase existingDeb : elementsToRemove) {
-                if(existingDeb.getFeature().equals(characterNew)){
-                    elementToStay = existingDeb;
-                    elementsToRemove.remove(existingDeb);
-                    break;
-                }
-            }
-
-            //if there is no element for this character in old data, add the new element for this character to the target description (otherwise reuse old element)
-            if (elementToStay == null){
-                targetDescription.addElement(newElementsMap.get(characterNew));
-            }else{
-                mergeDescriptionElement(elementToStay, newElementsMap.get(characterNew));
-            }
-        }
-
-        //remove all elements not needed anymore
-        for(DescriptionElementBase elementToRemove : elementsToRemove){
-            targetDescription.removeElement(elementToRemove);
-        }
-    }
-
-    private void mergeDescriptionElement(DescriptionElementBase targetElement,
-            DescriptionElementBase newElement) {
-
+        boolean updated = false;
         targetElement = CdmBase.deproxy(targetElement);
         newElement = CdmBase.deproxy(newElement);
         if (targetElement instanceof CategoricalData){
-            mergeDescriptionElement((CategoricalData)targetElement, (CategoricalData)newElement);
+            updated |= mergeDescriptionElement((CategoricalData)targetElement, (CategoricalData)newElement);
         }else if (targetElement.isInstanceOf(QuantitativeData.class)){
-            mergeDescriptionElement((QuantitativeData)targetElement, (QuantitativeData)newElement);
+            updated |= mergeDescriptionElement((QuantitativeData)targetElement, (QuantitativeData)newElement);
         }else{
             throw new AggregationException("Class not supported: " + targetElement.getClass().getName());
         }
+        return updated;
     }
 
-    private void mergeDescriptionElement(CategoricalData elementToStay,
+    private boolean mergeDescriptionElement(CategoricalData elementToStay,
             CategoricalData newElement) {
-        List<StateData> oldData = new ArrayList<>(elementToStay.getStateData());
+
+        boolean updated = false;
+        List<StateData> dataToRemove = new ArrayList<>(elementToStay.getStateData());
         List<StateData> newData = new ArrayList<>(newElement.getStateData());
         for (StateData newStateData : newData){
             State state = newStateData.getState();
-            StateData oldStateData = firstByState(state, oldData);
+            StateData oldStateData = firstByState(state, dataToRemove);
             if (oldStateData != null){
                 //for now only state and count is used for aggregation, below code needs to be adapted if this changes
-                oldStateData.setCount(newStateData.getCount());
-                oldData.remove(oldStateData);
+                if (!CdmUtils.nullSafeEqual(oldStateData.getCount(), newStateData.getCount())){
+                    oldStateData.setCount(newStateData.getCount());
+//                  getResult().addUpdatedUuid(oldStateData);
+                    updated = true;
+                }
+                dataToRemove.remove(oldStateData);
             }else{
                 elementToStay.addStateData(newStateData);
+                updated = true;
             }
         }
-        for (StateData stateDataToRemove : oldData){
+        for (StateData stateDataToRemove : dataToRemove){
             elementToStay.removeStateData(stateDataToRemove);
+            updated |= stateDataToRemove.isPersited();
         }
+        return updated;
     }
 
     private StateData firstByState(State state, List<StateData> oldData) {
@@ -411,8 +406,11 @@ public class StructuredDescriptionAggregation
         return null;
     }
 
-    private void mergeDescriptionElement(QuantitativeData elementToStay,
+    private boolean mergeDescriptionElement(QuantitativeData elementToStay,
             QuantitativeData newElement) {
+
+        boolean updated = false;
+
         Set<StatisticalMeasurementValue> oldValues = new HashSet<>(elementToStay.getStatisticalValues());
         Set<StatisticalMeasurementValue> newValues = new HashSet<>(newElement.getStatisticalValues());
         for (StatisticalMeasurementValue newValue : newValues){
@@ -420,15 +418,21 @@ public class StructuredDescriptionAggregation
             StatisticalMeasurementValue oldValue = firstValueByType(type, oldValues);
             if (oldValue != null){
                 //for now only state and count is used for aggregation, below code needs to be adapted if this changes
-                oldValue.setValue(newValue.getValue());
+                if (!CdmUtils.nullSafeEqual(oldValue.getValue(), newValue.getValue())){
+                    oldValue.setValue(newValue.getValue());
+                    updated = true;
+                }
                 oldValues.remove(oldValue);
             }else{
                 elementToStay.addStatisticalValue(newValue);
+                updated = true;
             }
         }
         for (StatisticalMeasurementValue valueToRemove : oldValues){
             elementToStay.removeStatisticalValue(valueToRemove);
+            updated |= valueToRemove.isPersited();
         }
+        return updated;
     }
 
     private StatisticalMeasurementValue firstValueByType(StatisticalMeasure type, Set<StatisticalMeasurementValue> oldValues) {
@@ -630,8 +634,8 @@ public class StructuredDescriptionAggregation
     }
 
     /**
-     * Computes all specimen attached to the given taxon within the given dataSet.
-     * For these secimen it returns all attache
+     * Computes all specimens attached to the given taxon within the given dataSet.
+     * For these secimens it returns all attache
      * */
     private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
         Set<SpecimenDescription> result = new HashSet<>();

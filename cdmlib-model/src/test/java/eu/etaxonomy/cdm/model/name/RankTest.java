@@ -530,7 +530,7 @@ public class RankTest extends EntityTestBase {
 		NomenclaturalCode zoo = NomenclaturalCode.ICZN;
 		try {
 			assertEquals(Rank.VARIETY(), Rank.getRankByIdInVoc("var."));
-			assertEquals(Rank.GENUS(), Rank.getRankByName("genus"));
+			assertEquals(Rank.GENUS(), Rank.getRankByLatinName("genus"));
 
 			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByIdInVoc("sect."));
 			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByIdInVoc("sect.", false));
@@ -539,21 +539,21 @@ public class RankTest extends EntityTestBase {
 			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByIdInVoc("sect.", bot, false));
 			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByIdInVoc("sect.", zoo, false));
 
-			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio"));
-			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio", false));
-			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio", bot));
-			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByName("Sectio", zoo));
-			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio", bot, false));
-			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByName("Sectio", zoo, false));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByLatinName("Sectio"));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByLatinName("Sectio", false));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByLatinName("Sectio", bot));
+			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByLatinName("Sectio", zoo));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByLatinName("Sectio", bot, false));
+			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByLatinName("Sectio", zoo, false));
 
-			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrIdInVoc("Subsectio"));
-			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrIdInVoc("subsect."));
-			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrIdInVoc("Subsectio", false));
-			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrIdInVoc("subsect.", false));
-			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrIdInVoc("Subsectio", bot));
-			assertEquals(Rank.SUBSECTION_ZOOLOGY(), Rank.getRankByNameOrIdInVoc("subsect.", zoo));
-			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrIdInVoc("Subsectio", bot, false));
-			assertEquals(Rank.SUBSECTION_ZOOLOGY(), Rank.getRankByNameOrIdInVoc("subsect.", zoo, false));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByLatinNameOrIdInVoc("Subsectio"));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByLatinNameOrIdInVoc("subsect."));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByLatinNameOrIdInVoc("Subsectio", false));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByLatinNameOrIdInVoc("subsect.", false));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByLatinNameOrIdInVoc("Subsectio", bot));
+			assertEquals(Rank.SUBSECTION_ZOOLOGY(), Rank.getRankByLatinNameOrIdInVoc("subsect.", zoo));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByLatinNameOrIdInVoc("Subsectio", bot, false));
+			assertEquals(Rank.SUBSECTION_ZOOLOGY(), Rank.getRankByLatinNameOrIdInVoc("subsect.", zoo, false));
 
 		} catch (UnknownCdmTypeException e) {
 			fail();
@@ -574,7 +574,7 @@ public class RankTest extends EntityTestBase {
 	@Test
 	public void testGetRankByName() {
 		try {
-			assertEquals(Rank.SPECIES(), Rank.getRankByName("species"));
+			assertEquals(Rank.SPECIES(), Rank.getRankByLatinName("species"));
 			// TODO: Cleanup Rank label names and rank to name mapping
 			//assertEquals(Rank.SUBFAMILY(), Rank.getRankByName("subfamily"));
 		} catch (UnknownCdmTypeException e) {

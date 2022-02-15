@@ -14,6 +14,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,6 +32,8 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -243,6 +249,24 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNotNull(termBase);
     }
 
+    /**
+     * This test has been implemented to reproduce a potential bug in java runtime.
+     * The HashMap used to implement the MultilanguageText failed in jre1.6_11 b03 win32 to
+     * to find existing Language keys.
+     * <p>
+     * Initially this test was implemented in <code>TextDataTest#testPreferredLanguageString()</code> but
+     * failed to reproduce the bug in this environment. Therefore it has been additionally implemented as
+     * integration test.
+     * <p>
+     * see https://dev.e-taxonomy.eu/redmine/issues/804
+     */
+    @Test
+    public void testPreferredLanguageString() {
+        TextData textData = TextData.NewInstance("testText", Language.DEFAULT(), TextFormat.NewInstance());
+        List<Locale> locales = Arrays.asList(Locale.GERMAN, Locale.ENGLISH);
+        List<Language> languages = termService.getLanguagesByLocale(Collections.enumeration(locales));
+        assertNotNull(textData.getPreferredLanguageString(languages));
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

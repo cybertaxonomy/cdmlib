@@ -51,6 +51,16 @@ public interface IUserService extends IService<User>, UserDetailsManager {
      */
     public List<User> listByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
+    /**
+     * make new password salt, encode and set it
+     *
+     * @param user
+     *  The user to set the new password for.
+     * @param newPassword
+     *  the new password to be encoded and set for the <code>user</code>
+     */
+    void encodeUserPassword(User user, String newPassword);
+
 
 
 }

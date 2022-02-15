@@ -99,7 +99,7 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
         String sqlJoinString =  " LEFT JOIN a.taxon as t "
                 + " LEFT JOIN a.describedSpecimenOrObservation as s ";
 
-        String sqlWhereString = " WHERE a.uuid = :uuid";
+        String sqlWhereString = " WHERE a.uuid in (:uuid)";
 
         String[] result = new String[4];
         result[0] = sqlSelectString;
@@ -109,16 +109,13 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
         return result;
     }
 
-    public static String getDescriptionBaseDtoForTaxonSelect(UUID uuidTaxon ){
-        String[] result = createSqlPartsForTaxon(uuidTaxon);
+    public static String getDescriptionBaseDtoForTaxonSelect(){
+        String[] result = createSqlPartsForTaxon();
 
         return result[0]+result[1]+result[2];
     }
 
-    private static String[] createSqlPartsForTaxon(UUID uuidTaxon) {
-
-
-
+    private static String[] createSqlPartsForTaxon() {
         String sqlSelectString = ""
                 + "select a.uuid, "
                 + "a.id, "
@@ -135,7 +132,7 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
 
         String sqlJoinString =  " LEFT JOIN a.taxon as t ";
 
-        String sqlWhereString = " WHERE a.taxon.uuid like "+ uuidTaxon.toString();
+        String sqlWhereString = " WHERE a.taxon.uuid = :uuid";
 
         String[] result = new String[4];
         result[0] = sqlSelectString;
@@ -237,7 +234,7 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
         for (Object element: desc.getElements()){
             if (element instanceof CategoricalData){
                 Feature feature = ((CategoricalData) element).getFeature();
-                FeatureDto featureDto = FeatureDto.fromFeature(feature);
+//                FeatureDto featureDto = FeatureDto.fromFeature(feature);
                 CategoricalDataDto dto = CategoricalDataDto.fromCategoricalData((CategoricalData)element);
                 elements.add(dto);
             }

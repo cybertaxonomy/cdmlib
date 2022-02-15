@@ -65,7 +65,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
     private ITermService termService;
 
     @SpringBeanByType
-    private ITermTreeService featureTreeService;
+    private ITermTreeService termTreeServcie;
 
     @SpringBeanByType
     private IVocabularyService vocabularyService;
@@ -93,11 +93,11 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         this.endTransaction();
 
         String treeLabel = "test_structures";
-        List<TermTree> trees = featureTreeService.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
+        List<TermTree> trees = termTreeServcie.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
         nodeProperties.add("term.media");
-        TermTree<Feature> tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        TermTree<Feature> tree = termTreeServcie.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
         assertNotNull("featureTree should not be null", tree);
 
         assertEquals("Tree has wrong term type", TermType.Structure, tree.getTermType());
@@ -180,10 +180,10 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         this.endTransaction();
 
         String treeLabel = "properties 1.0";
-        List<TermTree> trees = featureTreeService.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
+        List<TermTree> trees = termTreeServcie.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
-        TermTree tree = featureTreeService.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        TermTree tree = termTreeServcie.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
         assertNotNull("featureTree should not be null", tree);
 
         assertEquals("Tree has wrong term type", TermType.Property, tree.getTermType());

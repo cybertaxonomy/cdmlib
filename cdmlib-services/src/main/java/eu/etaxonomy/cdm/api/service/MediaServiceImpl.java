@@ -295,7 +295,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         Map<String, String> metadata = new HashMap<>();
 
         for(MediaRepresentationPart part : representation.getParts()) {
-            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfoWithMetaData(part.getUri());
+            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(part.getUri(), true);
             if(iInfo.getMetaData() != null) {
                 metadata.putAll(iInfo.getMetaData());
             }

@@ -85,16 +85,10 @@ public enum RisRecordType {
         this.refType = refType;
     }
 
-    /**
-     * @return the description
-     */
     public String getDescription() {
         return description;
     }
 
-    /**
-     * @return
-     */
     public ReferenceType getCdmReferenceType() {
         return refType;
     }

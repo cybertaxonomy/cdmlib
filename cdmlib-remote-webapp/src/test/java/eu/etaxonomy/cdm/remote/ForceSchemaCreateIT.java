@@ -13,7 +13,6 @@ import org.junit.Test;
 /**
  * @author a.kohlbecker
  * @date May 18, 2020
- *
  */
 public class ForceSchemaCreateIT extends WebServiceTestBase {
 
@@ -25,5 +24,4 @@ public class ForceSchemaCreateIT extends WebServiceTestBase {
         assertTrue(response.contains("DB_CREATE_DATE"));
         // TODO check for DB_CREATE_DATE value no older than 5 minutes
     }
-
 }

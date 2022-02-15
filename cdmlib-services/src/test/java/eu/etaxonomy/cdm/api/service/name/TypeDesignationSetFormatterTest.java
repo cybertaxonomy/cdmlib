@@ -28,14 +28,17 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
+import eu.etaxonomy.cdm.model.occurrence.OccurrenceStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -100,7 +103,9 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         std_HT = SpecimenTypeDesignation.NewInstance();
         std_HT.setId(1);
         DerivedUnit specimen_HT = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-        specimen_HT.setTitleCache("OHA", true);
+        Collection collection_OHA = Collection.NewInstance("OHA", null);
+        specimen_HT.setCollection(collection_OHA);
+        specimen_HT.setAccessionNumber("OHA 1234");
         createDerivationEvent(fu_1, specimen_HT);
         specimen_HT.getOriginals().add(fu_1);
         std_HT.setTypeSpecimen(specimen_HT);
@@ -170,6 +175,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 
     @Test
     public void testNameTypeDesignationTaggedText() throws RegistrationValidationException {
+
         @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> tds = new ArrayList<>();
         tds.add(ntd);
@@ -200,5 +206,44 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         Assert.assertEquals("fourth entry should be the name type titleCache",
                 new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(3)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
         Assert.assertEquals("there should be 4 tags only", 4, taggedText.size());
+    }
+
+    @Test
+    public void testSpecimenTypeDesignationTaggedTextWithStatus() throws RegistrationValidationException {
+
+        @SuppressWarnings("rawtypes")
+        List<TypeDesignationBase> tds = new ArrayList<>();
+        tds.add(std_HT);
+
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+
+        typifiedName.addTypeDesignation(std_HT, false);
+        Reference statusSource = ReferenceFactory.newBook(); //TODO not yet handled in cache strategy as we do not have tagged text here
+        statusSource.setTitle("Status test");
+        std_HT.getTypeSpecimen().addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
+
+        TypeDesignationSetManager manager = new TypeDesignationSetManager(tds);
+        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
+
+        String text = formatter.format(manager);
+        Assert.assertEquals("Prionus coriatius L.\u202F\u2013\u202FType: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA 1234, destroyed)", text);
+
+        List<TaggedText> taggedText = formatter.toTaggedText(manager);
+        Assert.assertEquals("first entry should be the typified name",
+                new TaggedText(TagEnum.name, "Prionus coriatius L.",TypedEntityReference.fromEntity(typifiedName, false)), taggedText.get(0));
+//        Assert.assertEquals("fourth entry should be the name type nameCache",
+//                new TaggedText(TagEnum.name, "Prionus"), taggedText.get(3));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+//        Assert.assertEquals("fourth entry should be the name type nameCache",
+//                new TaggedText(TagEnum.name, "coriatius"), taggedText.get(4)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+//        Assert.assertEquals("fifth entry should be the name type authorship cache",
+//                new TaggedText(TagEnum.authors, "L."), taggedText.get(5));
+//
+//        //protected titleCache
+//        ntd.getTypeName().setTitleCache("Prionus coriatius L.", true);
+//        taggedText = formatter.toTaggedText(manager);
+//        Assert.assertEquals("fourth entry should be the name type titleCache",
+//                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(3)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+//        Assert.assertEquals("there should be 4 tags only", 4, taggedText.size());
     }
 }

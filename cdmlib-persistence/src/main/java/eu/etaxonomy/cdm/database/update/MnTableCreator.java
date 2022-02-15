@@ -102,7 +102,7 @@ public class MnTableCreator extends TableCreator {
 		super(stepList, stepName, makeAlias(firstTableName, firstTableAlias) + "_" + makeAlias(secondTableName, secondTableAlias),
 		        Arrays.asList(columnNames), Arrays.asList(columnTypes), defaultValues,
 		        isNull,	new ArrayList<>(), includeAudTable,
-		        includeCdmBaseAttributes, includeAnnotatableEntity, includeIdentifiableEntity, false);
+		        includeCdmBaseAttributes, includeAnnotatableEntity, includeIdentifiableEntity, false, false);
 		this.firstTableName = firstTableName;
 		this.secondTableName = secondTableName;
 		this.firstTableAlias = makeAlias(firstTableName, firstTableAlias) ;

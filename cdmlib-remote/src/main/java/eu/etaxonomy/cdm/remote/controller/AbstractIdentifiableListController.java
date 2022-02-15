@@ -98,18 +98,6 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
 
     /**
      * List IdentifiableEntity objects by identifiers
-     *
-     * @param type
-     * @param identifierType
-     * @param identifier
-     * @param pageIndex
-     * @param pageSize
-     * @param matchMode
-     * @param request
-     * @param response
-     * @param includeEntity
-     * @return
-     * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
     public  Pager<IdentifiedEntityDTO<T>> doFindByIdentifier(

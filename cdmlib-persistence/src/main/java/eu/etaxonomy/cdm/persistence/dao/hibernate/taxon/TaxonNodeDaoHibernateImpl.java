@@ -233,11 +233,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     private Query createQueryForUuidAndTitleCache(Integer limit, UUID classificationUuid, String pattern, boolean includeDoubtful){
         String doubtfulPattern = "";
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + " node.uuid, node.id, t.titleCache, rank"
+                + " node.uuid, node.id, node.treeIndex, t.uuid, t.titleCache, rank, parent.uuid"
                 + ") "
                 + " FROM TaxonNode AS node "
                 + "   JOIN node.taxon as t " // FIXME why not inner join here?
                 + "   INNER JOIN t.name AS name "
+                + "   LEFT OUTER JOIN node.parent as parent"
                 + "   LEFT OUTER JOIN name.rank AS rank "
                 + " WHERE ";
 
@@ -247,28 +248,28 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
       if (pattern == null){
           pattern = "*";
       }
-      if (pattern != null){
-          if (pattern.equals("?")){
-              limit = null;
-          } else{
-              if (!pattern.endsWith("*")){
-                  pattern += "%";
-              }
-              pattern = pattern.replace("*", "%");
-              pattern = pattern.replace("?", "%");
-              if (classificationUuid != null){
-                  queryString = queryString + " AND ";
-              }
-              queryString = queryString + " (t.titleCache LIKE (:pattern) " ;
-              doubtfulPattern = "?" + pattern;
-              if (includeDoubtful){
-                  queryString = queryString + " OR t.titleCache LIKE (:doubtfulPattern))";
-              }else{
-                  queryString = queryString + ")";
-              }
-          }
 
+      if (pattern.equals("?")){
+          limit = null;
+      } else{
+          if (!pattern.endsWith("*")){
+              pattern += "%";
+          }
+          pattern = pattern.replace("*", "%");
+          pattern = pattern.replace("?", "%");
+          if (classificationUuid != null){
+              queryString = queryString + " AND ";
+          }
+          queryString = queryString + " (t.titleCache LIKE (:pattern) " ;
+          doubtfulPattern = "?" + pattern;
+          if (includeDoubtful){
+              queryString = queryString + " OR t.titleCache LIKE (:doubtfulPattern))";
+          }else{
+              queryString = queryString + ")";
+          }
       }
+
+
 
       Query query =  getSession().createQuery(queryString);
       if (pattern != null){
@@ -1102,9 +1103,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
          if (searchForClassifications){
              String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                     + " node.uuid, node.id, node.classification.titleCache"
+                     + " node.uuid, node.id, node.classification.titleCache, parent.uuid"
                      + ") "
                      + " FROM TaxonNode AS node "
+                     + " LEFT OUTER JOIN node.parent as parent"
                      + " WHERE node.classification.id = " + classification.getId() +
                           " AND node.taxon IS NULL";
              if (pattern != null){
@@ -1174,9 +1176,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid) {
 
         String queryString = getTaxonNodeDtoQuery();
-        queryString += " WHERE t.uuid LIKE :uuid ";
+        queryString += " WHERE tn.uuid = :uuid ";
         Query query =  getSession().createQuery(queryString);
-        query.setParameter("uuid", nodeUuid.toString());
+        query.setParameter("uuid", nodeUuid);
 
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
@@ -1190,10 +1192,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      */
     private String getTaxonNodeDtoQuery() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, t.titleCache, name.titleCache, rank "
+                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid "
                 + ") "
                 + " FROM TaxonNode tn "
                 + "   INNER JOIN tn.taxon AS t "
+                + "   INNER JOIN tn.parent AS p"
                 + "   INNER JOIN t.name AS name "
                 + "   LEFT OUTER JOIN name.rank AS rank ";
 
@@ -1222,11 +1225,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
      * @param result
      * @param list
      */
-    private List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
+    @Override
+    public List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
         List<TaxonNodeDto> nodeDtos = new ArrayList<>();
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         for(SortableTaxonNodeQueryResult queryDTO : result){
-            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex());
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex(), queryDTO.getParentNodeUuid());
             nodeDtos.add(nodeDto);
         }
         return nodeDtos;

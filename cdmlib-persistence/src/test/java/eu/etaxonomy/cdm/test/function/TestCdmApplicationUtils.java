@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.function;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 /**
  * @author a.mueller
  * @since 20.11.2008
- * @version 1.0
  */
 public class TestCdmApplicationUtils {
 
@@ -29,9 +27,6 @@ public class TestCdmApplicationUtils {
 		return true;
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		TestCdmApplicationUtils me = new TestCdmApplicationUtils();
 		try {

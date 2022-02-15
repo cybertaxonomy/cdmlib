@@ -474,7 +474,7 @@ public class SpecimenCdmExcelImport
 		//rank
 		Rank rank;
 		try {
-			rank = StringUtils.isBlank(commonDetermination.rank) ? null : Rank.getRankByNameOrIdInVoc(commonDetermination.rank, true);
+			rank = isBlank(commonDetermination.rank) ? null : Rank.getRankByLatinNameOrIdInVoc(commonDetermination.rank, true);
 		} catch (UnknownCdmTypeException e) {
 			rank = null;
 		}
@@ -641,7 +641,7 @@ public class SpecimenCdmExcelImport
 
 		try {
 			if (StringUtils.isNotBlank(determinationLight.rank) ){
-				name.setRank(Rank.getRankByNameOrIdInVoc(determinationLight.rank, nc, true));
+				name.setRank(Rank.getRankByLatinNameOrIdInVoc(determinationLight.rank, nc, true));
 			}
 		} catch (UnknownCdmTypeException e) {
 			String message = "Rank not found: %s: ";

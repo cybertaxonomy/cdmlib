@@ -79,7 +79,7 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         return new TypedEntityReference<>(subType, getUuid());
     }
 
-    public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
+    public static <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
         return TypedEntityReference.fromEntity(entity, true);
     }
 

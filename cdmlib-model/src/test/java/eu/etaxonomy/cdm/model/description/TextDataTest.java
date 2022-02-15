@@ -31,8 +31,8 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @author a.mueller
  * @since 23.04.2008
  */
-public class TextDataTest extends EntityTestBase {
 
+public class TextDataTest extends EntityTestBase {
     @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(TextDataTest.class);
 
@@ -97,14 +97,17 @@ public class TextDataTest extends EntityTestBase {
 	}
 
 	/**
-	 * This test reproduces a bug in java runtime.
-	 * The HashMap used to implement the MultilanguageText fails in jre1.6_11 b03 win32 to
+	 * This test has been implemented to reproduce a potential bug in java runtime.
+	 * The HashMap used to implement the MultilanguageText failed in jre1.6_11 b03 win32 to
 	 * to find existing Language keys.
-	 * FIXME this test fails to reproduce the bug -> integration test needed?
+	 * <p>
+	 * The test, however, failed to reproduce the bug in this environment. Therefore it has been additionally implemented as
+	 * integration test: {@link TermServiceImplTest#testPreferredLanguageString()}
+	 * <p>
+	 * see https://dev.e-taxonomy.eu/redmine/issues/804
 	 */
 	@Test
 	public void testPreferredLanguageString() {
-		//FIXME move to integration test: List<Language> languages = termService.getLanguagesByLocale(locales.elements());
 		List<Language> preferredLanguages = Arrays.asList(new Language[]{Language.DEFAULT()});
 		assertNotNull(textData1.getPreferredLanguageString(preferredLanguages));
 	}

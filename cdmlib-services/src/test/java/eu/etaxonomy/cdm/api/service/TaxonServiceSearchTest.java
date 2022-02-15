@@ -87,6 +87,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
 
+    private static final int BENCHMARK_ROUNDS = 300;
+
     private static final UUID ABIES_BALSAMEA_UUID = UUID.fromString("f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8");
     private static final UUID ABIES_ALBA_UUID = UUID.fromString("7dbd5810-a3e5-44b6-b563-25152b8867f4");
     private static final UUID CLASSIFICATION_UUID = UUID.fromString("2a5ceebb-4830-4524-b330-78461bf8cb6b");
@@ -100,12 +102,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private static final UUID DESC_ABIES_ALBA_UUID = UUID.fromString("ec8bba03-d993-4c85-8472-18b14942464b");
     private static final UUID DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = UUID.fromString("e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1");
 
-
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 
     private boolean includeUnpublished = true;
-
-
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -118,6 +117,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IDescriptionService descriptionService;
     @SpringBeanByType
+    private IDescriptionElementService descriptionElementService;
+    @SpringBeanByType
     private INameService nameService;
     @SpringBeanByType
     private ITaxonNodeService nodeService;
@@ -125,15 +126,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private ICdmMassIndexer indexer;
 
-
-    private static final int BENCHMARK_ROUNDS = 300;
-
     private Set<Class<? extends CdmBase>> typesToIndex = null;
 
     private NamedArea germany;
-    private NamedArea france ;
-    private NamedArea russia ;
-    private NamedArea canada ;
+    private NamedArea france;
+    private NamedArea russia;
+    private NamedArea canada;
 
     @Before
     public void setUp() throws Exception {
@@ -155,7 +153,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         assertNotNull("taxonService should exist", taxonService);
         assertNotNull("nameService should exist", nameService);
     }
-
 
     @SuppressWarnings("rawtypes")
     @Test
@@ -181,7 +178,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 8
         Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
     }
-
 
     @SuppressWarnings("rawtypes")
     @Test
@@ -211,7 +207,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, subtree, null,
                 Arrays.asList(new Language[] { Language.RUSSIAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", 0, pager.getCount().intValue());
-
     }
 
     @SuppressWarnings("rawtypes")
@@ -557,12 +552,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         String[] descriptionElementUuidStr = indexDocument.getValues("uuid");
         String[] inDescriptionUuidStr = indexDocument.getValues("inDescription.uuid");
         // is only one uuid!
-        DescriptionElementBase textData = descriptionService.getDescriptionElementByUuid(UUID.fromString(descriptionElementUuidStr[0]));
+        DescriptionElementBase textData = descriptionElementService.find(UUID.fromString(descriptionElementUuidStr[0]));
 
         ((TextData)textData).removeText(Language.GERMAN());
         ((TextData)textData).putText(Language.SPANISH_CASTILIAN(), "abeto bals"+UTF8.SMALL_A_ACUTE+"mico");
 
-        descriptionService.saveDescriptionElement(textData);
+        descriptionElementService.save(textData);
         commitAndStartNewTransaction(null);
 //        printDataSet(System.out, new String[] {
 //                "DESCRIPTIONELEMENTBASE", "LANGUAGESTRING", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING" }
@@ -1573,11 +1568,105 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     /**
+     *
+     */
+    private void refreshLuceneIndex() {
+
+//        commitAndStartNewTransaction(null);
+        commit();
+        endTransaction();
+        indexer.purge(DefaultProgressMonitor.NewInstance());
+        indexer.reindex(typesToIndex, DefaultProgressMonitor.NewInstance());
+        startNewTransaction();
+//        commitAndStartNewTransaction(null);
+    }
+
+    /**
+     * @param numberOfNew
+     *
+     */
+    private void createRandomTaxonWithCommonName(int numberOfNew) {
+
+        logger.debug(String.format("creating %1$s random taxan with CommonName", numberOfNew));
+
+        commitAndStartNewTransaction(null);
+
+        Reference sec = ReferenceFactory.newBook();
+        referenceService.save(sec);
+
+        for (int i = numberOfNew; i < numberOfNew; i++) {
+            RandomStringUtils.randomAlphabetic(10);
+            String radomName = RandomStringUtils.randomAlphabetic(5) + " " + RandomStringUtils.randomAlphabetic(10);
+            String radomCommonName = RandomStringUtils.randomAlphabetic(10);
+
+            IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            name.setNameCache(radomName, true);
+            Taxon taxon = Taxon.NewInstance(name, sec);
+            taxonService.save(taxon);
+
+            TaxonDescription description = TaxonDescription.NewInstance(taxon);
+            description.addElement(CommonTaxonName.NewInstance(radomCommonName, Language.GERMAN()));
+            descriptionService.save(description);
+        }
+
+        commitAndStartNewTransaction(null);
+    }
+
+    private <T extends CdmBase> void logFreeTextSearchResults(Pager<SearchResult<T>> pager, Level level, String[] docFields){
+        if(level == null){
+            level = Level.DEBUG;
+        }
+        if(logger.isEnabledFor(level)){
+            StringBuilder b = new StringBuilder();
+            b.append("\n");
+            int i = 0;
+            for(SearchResult<?> sr : pager.getRecords()){
+
+                b.append(" ").append(i++).append(" - ");
+                b.append("score:").append(sr.getScore()).append(", ");
+
+                if(docFields != null){
+                    b.append("docs : ");
+                    for(Document doc : sr.getDocs()) {
+                        b.append("<");
+                        for(String f : docFields){
+                            b.append(f).append(":").append(Arrays.toString(doc.getValues(f)));
+                        }
+                        b.append(">");
+                    }
+                }
+
+                CdmBase entity = sr.getEntity();
+                if(entity == null){
+                    b.append("NULL");
+                } else {
+                    b.append(entity.getClass().getSimpleName()).
+                        append(" [").append(entity.getId()).
+                        append(" | ").append(entity.getUuid()).append("] : ").
+                        append(entity.toString());
+
+                }
+                b.append("\n");
+            }
+            logger.log(level, b);
+        }
+    }
+
+    private Set<UUID> getTaxonUuidSet(@SuppressWarnings("rawtypes") Pager<SearchResult<TaxonBase>> pager) {
+        Set<UUID> result = new HashSet<>();
+        for (@SuppressWarnings("rawtypes") SearchResult<TaxonBase> searchResult : pager.getRecords()){
+            result.add(searchResult.getEntity().getUuid());
+        }
+        return result;
+    }
+
+
+    /**
      * uncomment @Test annotation to create the dataset for this test
      */
     @Override
-    //    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
+//    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
     public final void createTestDataSet() throws FileNotFoundException {
 
         Classification europeanAbiesClassification = Classification.NewInstance("European Abies");
@@ -1718,104 +1807,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             });
 
-    }
-
-    /**
-     *
-     */
-    private void refreshLuceneIndex() {
-
-//        commitAndStartNewTransaction(null);
-        commit();
-        endTransaction();
-        indexer.purge(DefaultProgressMonitor.NewInstance());
-        indexer.reindex(typesToIndex, DefaultProgressMonitor.NewInstance());
-        startNewTransaction();
-//        commitAndStartNewTransaction(null);
-    }
-
-    /**
-     * @param numberOfNew
-     *
-     */
-    private void createRandomTaxonWithCommonName(int numberOfNew) {
-
-        logger.debug(String.format("creating %1$s random taxan with CommonName", numberOfNew));
-
-        commitAndStartNewTransaction(null);
-
-        Reference sec = ReferenceFactory.newBook();
-        referenceService.save(sec);
-
-        for (int i = numberOfNew; i < numberOfNew; i++) {
-            RandomStringUtils.randomAlphabetic(10);
-            String radomName = RandomStringUtils.randomAlphabetic(5) + " " + RandomStringUtils.randomAlphabetic(10);
-            String radomCommonName = RandomStringUtils.randomAlphabetic(10);
-
-            IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-            name.setNameCache(radomName, true);
-            Taxon taxon = Taxon.NewInstance(name, sec);
-            taxonService.save(taxon);
-
-            TaxonDescription description = TaxonDescription.NewInstance(taxon);
-            description.addElement(CommonTaxonName.NewInstance(radomCommonName, Language.GERMAN()));
-            descriptionService.save(description);
-        }
-
-        commitAndStartNewTransaction(null);
-    }
-
-    private <T extends CdmBase> void logFreeTextSearchResults(Pager<SearchResult<T>> pager, Level level, String[] docFields){
-        if(level == null){
-            level = Level.DEBUG;
-        }
-        if(logger.isEnabledFor(level)){
-            StringBuilder b = new StringBuilder();
-            b.append("\n");
-            int i = 0;
-            for(SearchResult<?> sr : pager.getRecords()){
-
-                b.append(" ").append(i++).append(" - ");
-                b.append("score:").append(sr.getScore()).append(", ");
-
-                if(docFields != null){
-                    b.append("docs : ");
-                    for(Document doc : sr.getDocs()) {
-                        b.append("<");
-                        for(String f : docFields){
-                            b.append(f).append(":").append(Arrays.toString(doc.getValues(f)));
-                        }
-                        b.append(">");
-                    }
-                }
-
-                CdmBase entity = sr.getEntity();
-                if(entity == null){
-                    b.append("NULL");
-                } else {
-                    b.append(entity.getClass().getSimpleName()).
-                        append(" [").append(entity.getId()).
-                        append(" | ").append(entity.getUuid()).append("] : ").
-                        append(entity.toString());
-
-                }
-                b.append("\n");
-            }
-            logger.log(level, b);
-        }
-    }
-
-
-    /**
-     * @param pager
-     * @return
-     */
-    private Set<UUID> getTaxonUuidSet(@SuppressWarnings("rawtypes") Pager<SearchResult<TaxonBase>> pager) {
-        Set<UUID> result = new HashSet<>();
-        for (@SuppressWarnings("rawtypes") SearchResult<TaxonBase> searchResult : pager.getRecords()){
-            result.add(searchResult.getEntity().getUuid());
-        }
-        return result;
     }
 
 }

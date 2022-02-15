@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet.TypeDesignationWorkingSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -40,6 +39,7 @@ import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -60,9 +60,9 @@ public class TypeDesignationSetFormatter {
     private static final String POST_STATUS_SEPARATOR = ": ";
     private static final String POST_NAME_SEPARTOR = UTF8.EN_DASH_SPATIUM.toString();
 
-    boolean withCitation;
-    boolean withStartingTypeLabel;
-    boolean withNameIfAvailable;
+    private boolean withCitation;
+    private boolean withStartingTypeLabel;
+    private boolean withNameIfAvailable;
 
     public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable) {
@@ -152,7 +152,6 @@ public class TypeDesignationSetFormatter {
         finalBuilder.addAll(workingsetBuilder);
         return;
     }
-
 
     /**
      * Checks if the baseType is the same as the (only?) type in the type designation workingset.
@@ -340,7 +339,6 @@ public class TypeDesignationSetFormatter {
     private static void buildTaggedTextForSpecimenTypeDesignation(SpecimenTypeDesignation td, boolean useTitleCache,
             TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntity) {
 
-
         if(useTitleCache){
             String typeDesigTitle = "";
             if(td.getTypeSpecimen() != null){
@@ -381,8 +379,8 @@ public class TypeDesignationSetFormatter {
                             }
                         }
                     } else {
-                        DerivedUnitFacadeCacheStrategy cacheStrategy = new DerivedUnitFacadeCacheStrategy();
-                        String titleCache = cacheStrategy.getTitleCache(du, true, false);
+                        DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, " ");
+                        String titleCache = cacheStrategy.getTitleCache(du, true);
                         // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                         titleCache = titleCache.replaceAll("[\\(\\)]", "");
                         typeSpecimenTitle += titleCache;

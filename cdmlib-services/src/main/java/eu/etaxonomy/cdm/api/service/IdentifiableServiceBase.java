@@ -271,7 +271,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		}
 		UpdateResult result = new UpdateResult();
 		long count = dao.count(clazz);
-		long countUpdated = 0;
 
 		int worked = 0;
 		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet<>();
@@ -284,17 +283,17 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
 			switchOnOldAutoInitializer(oldAutoInit);
 
-			List<T> entitiesToUpdate = new ArrayList<>();
 			for (T entity : list){
 				entity = HibernateProxyHelper.deproxy(entity);
 			    if (entity.updateCaches(cacheStrategy)){
-			        countUpdated++;
-			        updatedCdmIds.add(new CdmEntityIdentifier(entity.getId(), clazz));
+			        updatedCdmIds.add(CdmEntityIdentifier.NewInstance(entity.getId(), clazz));
 			    }
 				worked++;
 				subMonitor.internalWorked(1);
 			}
-
+			getSession().flush();
+			//still causes LIE during hibernate search indexing (but not when running from command line)
+//			getSession().clear();
 			if (subMonitor.isCanceled()){
 				break;
 			}

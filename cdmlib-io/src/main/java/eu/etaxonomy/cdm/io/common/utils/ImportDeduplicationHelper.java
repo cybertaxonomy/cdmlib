@@ -32,113 +32,179 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 
 /**
  * Helper class for deduplicating authors, references, names, etc.
  * during import.
  *
+ * Note 2021: Was originally used as fast deduplication tool for commandline imports
+ * into empty databases. Currently it is transformed into a deduplication tool that
+ * can be used during application based imports.
+ *
  * @author a.mueller
  * @since 11.02.2017
  */
-public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
+/**
+ * @author a.mueller
+ * @date 27.01.2022
+ *
+ */
+public class ImportDeduplicationHelper {
+
     private static final Logger logger = Logger.getLogger(ImportDeduplicationHelper.class);
 
     private ICdmRepository repository;
 
-    boolean referenceMapIsInitialized = false;
-    boolean nameMapIsInitialized = false;
-    boolean agentMapIsInitialized = false;
-    boolean copyrightMapIsInitialized = false;
-    boolean collectionMapIsInitialized = false;
+    //for possible future use
+    @SuppressWarnings("unused")
+    private ImportStateBase<?,?> state;
+
+    public static final int NEVER_USE_MAP = 0;
+    public static final int ALWAYS_USE_MAP = -1;
+    //should deduplication use maps indexing the full database content? If yes, what is the maximum number of records for this.
+    //If more records exist deduplication is done on the fly.
+    //0 = never use map
+    //-1 = always use map
+    private int maxCountFullLoad = ALWAYS_USE_MAP;
+    public int getMaxCountFullLoad() {
+        return maxCountFullLoad;
+    }
+    public void setMaxCountFullLoad(int maxCountFullLoad) {
+        this.maxCountFullLoad = maxCountFullLoad;
+    }
+
+    private enum Status{
+        NOT_INIT,
+        USE_MAP,
+        USE_REPO;
+    }
+
+    private class DedupInfo<S extends IMatchable>{
+        Class<S> clazz;
+        IMatchStrategyEqual defaultMatcher;
+        IMatchStrategy parsedMatcher;
+        Map<String, Set<S>> map = new HashMap<>();
+        Status status = Status.NOT_INIT;
+
+        @SuppressWarnings("unchecked")
+        private DedupInfo(Class<S> clazz, DedupMap dedupMap){
+            this.clazz = clazz;
+            if (IMatchable.class.isAssignableFrom(clazz)) {
+                defaultMatcher = DefaultMatchStrategy.NewInstance(clazz);
+                if (Reference.class.isAssignableFrom(clazz)) {
+                    parsedMatcher = MatchStrategyFactory.NewParsedReferenceInstance();
+                }else if (TeamOrPersonBase.class.isAssignableFrom(clazz)) {
+                    parsedMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
+//                }else if (TaxonName.class.isAssignableFrom(clazz)){
+//                    parsedMatcher = MatchStrategyFactory.NewParsedTaxonNameInstance();
+                }
+            }
+            dedupMap.put(clazz, this);
+        }
+        @Override
+        public String toString() {
+            return clazz.getSimpleName() + ":" + status.name()+":mapsize=" + map.size()+":"+ (defaultMatcher == null?"without":"with") + " defaultMatcher" + (parsedMatcher == null? "" : " and with parsedMatcher");
+        }
+    }
+
+    private class DedupMap<T extends IMatchable> extends HashMap<Class<T>, DedupInfo<T>>{
+        private static final long serialVersionUID = 3757206594833330646L;
+    }
+    private DedupMap<? extends IdentifiableEntity> dedupMap = new DedupMap<>();
+
+    private DedupInfo<Reference> referenceDedupInfo = new DedupInfo<>(Reference.class, dedupMap);
+    private DedupInfo<Person> personDedupInfo = new DedupInfo<>(Person.class, dedupMap);
+    private DedupInfo<Team> teamDedupInfo = new DedupInfo<>(Team.class, dedupMap);
+    private DedupInfo<TaxonName> nameDedupInfo = new DedupInfo<>(TaxonName.class, dedupMap);
 
 
-    private Map<String, Set<Reference>> refMap = new HashMap<>();
-    private Map<String, Set<Team>> teamMap = new HashMap<>();
-    private Map<String, Set<Person>> personMap = new HashMap<>();
-    private Map<String, Institution> institutionMap = new HashMap<>();
+    @SuppressWarnings("unused")
+    private Status institutionStatus = Status.NOT_INIT;
+    private Status copyrightStatus = Status.NOT_INIT;
+    private Status collectionStatus = Status.NOT_INIT;
+
+    private Map<String, Set<Institution>> institutionMap = new HashMap<>();
     //using titleCache
-    private Map<String, Set<INonViralName>> nameMap = new HashMap<>();
     private Map<String, Set<Rights>> copyrightMap = new HashMap<>();
     private Map<String, Set<Collection>> collectionMap = new HashMap<>();
 
+    /**
+     * Clears all internal maps.
+     */
+    public void reset() {
+        dedupMap.values().forEach(di->di.map.clear());
+        institutionMap.clear();
+        copyrightMap.clear();
+        collectionMap.clear();
+    }
 
-    private IMatchStrategyEqual referenceMatcher = DefaultMatchStrategy.NewInstance(Reference.class);
 //    private IMatchStrategy collectionMatcher = DefaultMatchStrategy.NewInstance(Collection.class);
-    private IMatchStrategyEqual nameMatcher = DefaultMatchStrategy.NewInstance(TaxonName.class);
-    private IMatchStrategyEqual personMatcher = DefaultMatchStrategy.NewInstance(Person.class);
-    private IMatchStrategyEqual teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
-
 
  // ************************** FACTORY *******************************/
 
-     public static ImportDeduplicationHelper<?> NewInstance(ICdmRepository repository){
-         return new ImportDeduplicationHelper<>(repository);
-     }
-
-     public static ImportDeduplicationHelper<?> NewStandaloneInstance(){
-         return new ImportDeduplicationHelper<>(null);
-     }
-
-     /**
-      * @param repository
-      * @param state not used, only for correct casting of generics
-      * @return
-      */
-     public static <STATE extends ImportStateBase<?,?>> ImportDeduplicationHelper<STATE> NewInstance(ICdmRepository repository, STATE state){
-         return new ImportDeduplicationHelper<>(repository);
+     public static <STATE extends ImportStateBase<?,?>> ImportDeduplicationHelper NewInstance(ICdmRepository repository, STATE state){
+         return new ImportDeduplicationHelper(repository, state);
      }
 
  // ************************ CONSTRUCTOR *****************************/
 
-     public ImportDeduplicationHelper(ICdmRepository repository) {
+    private ImportDeduplicationHelper(ICdmRepository repository, ImportStateBase<?,?> state) {
          this.repository = repository;
          if (repository == null){
-             logger.warn("Repository is null. Deduplication does not work against database");
+             logger.warn("Repository is null. Deduplication does not work against database.");
          }
+         if (state == null){
+             logger.warn("State is null. Deduplication works without state.");
+         }
+         this.state = state;
          try {
-             referenceMatcher.setMatchMode("title", MatchMode.EQUAL);
-             teamMatcher.setMatchMode("nomenclaturalTitleCache", MatchMode.EQUAL_OR_SECOND_NULL);
+             dedupMap.get(Reference.class).defaultMatcher.setMatchMode("title", MatchMode.EQUAL);
+             dedupMap.get(Team.class).defaultMatcher.setMatchMode("nomenclaturalTitleCache", MatchMode.EQUAL);
          } catch (MatchException e) {
              throw new RuntimeException(e);  //should not happen
          }
-     }
-
-    public ImportDeduplicationHelper() {
-        this(null);
     }
 
     public void restartSession(){
         restartSession(repository, null);
     }
 
+    /**
+     * Clears all internal maps and loads them with same data as before but in current session.
+     */
     public void restartSession(ICdmRepository repository, ImportResult importResult){
         if (repository == null){
             return;
         }
-        refMap = refreshSetMap(refMap, (IService)repository.getReferenceService(), importResult);
-        personMap = refreshSetMap(personMap, (IService)repository.getAgentService(), importResult);
-        teamMap = refreshSetMap(teamMap, (IService)repository.getAgentService(), importResult);
-        institutionMap = refreshMap(institutionMap, (IService)repository.getAgentService(), importResult);
+        referenceDedupInfo.map = refreshSetMap(referenceDedupInfo.map, (IService)repository.getReferenceService(), importResult);
+        personDedupInfo.map = refreshSetMap(personDedupInfo.map, (IService)repository.getAgentService(), importResult);
+        teamDedupInfo.map = refreshSetMap(teamDedupInfo.map, (IService)repository.getAgentService(), importResult);
+        institutionMap = refreshSetMap(institutionMap, (IService)repository.getAgentService(), importResult);
 
-        nameMap = refreshSetMap(nameMap, (IService)repository.getNameService(), importResult);
+        nameDedupInfo.map = refreshSetMap(nameDedupInfo.map, (IService)repository.getNameService(), importResult);
         collectionMap = refreshSetMap(collectionMap, (IService)repository.getCollectionService(), importResult);
-        //TODO copyright ?
+        copyrightMap = refreshSetMap(copyrightMap, (IService)repository.getRightsService(), importResult);
     }
 
+    //maybe this was used for Institution before
     private <T extends ICdmBase> Map<String, T> refreshMap(Map<String, T> oldMap,
             IService<T> service, ImportResult importResult) {
+
         Map<String, T> newMap = new HashMap<>();
         for (String key : oldMap.keySet()){
             T old = oldMap.get(key);
@@ -160,8 +226,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
 
     private <T extends ICdmBase> Map<String, Set<T>> refreshSetMap(Map<String, Set<T>> oldMap,
             IService<T> service, ImportResult importResult) {
+
         Map<String, Set<T>> newMap = new HashMap<>();
-        logger.debug("Start loading map");  //TODO debug only
         //create UUID set
         Set<UUID> uuidSet = new HashSet<>();
         for (String key : oldMap.keySet()){
@@ -200,147 +266,73 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         return newMap;
     }
 
-
 //************************ PUTTER / GETTER *****************************/
 
-    //REFERENCES
-    private void putReference(String title, Reference ref){
-        Set<Reference> refs = refMap.get(title);
-        if (refs == null){
-            refs = new HashSet<>();
-            refMap.put(title, refs);
+    //ENTITY
+    private <S extends IdentifiableEntity<?>> void putEntity(String title, S entity, Map<String,Set<S>> map){
+        Set<S> entitySet = map.get(title);
+        if (entitySet == null){
+            entitySet = new HashSet<>();
+            map.put(title, entitySet);
         }
-        refs.add(CdmBase.deproxy(ref));
-    }
-    private Set<Reference> getReferences(String title){
-        return refMap.get(title);
+        entitySet.add(CdmBase.deproxy(entity));
     }
 
-    private Optional<Reference> getMatchingReference(Reference newReference){
-        Predicate<Reference> matchFilter = reference ->{
+    private <S extends IMatchable> Set<S> getEntityByTitle(String title, DedupInfo<S> dedupInfo){
+        return dedupInfo.map.get(title);
+    }
+
+    private <S extends IMatchable> Optional<S> getMatchingEntity(S entityOrig, DedupInfo<S> dedupInfo, boolean parsed){
+        S entity = CdmBase.deproxy(entityOrig);
+        //choose matcher depending on the type of matching required. If matching of a parsed entity is required
+        //   try to use the parsed matcher (if it exists)
+        IMatchStrategy matcher = parsed && dedupInfo.parsedMatcher != null ? dedupInfo.parsedMatcher : dedupInfo.defaultMatcher;
+        Predicate<S> matchFilter = persistedEntity ->{
             try {
-                return referenceMatcher.invoke(reference, newReference).isSuccessful();
+                return matcher.invoke((IMatchable)entity, (IMatchable)persistedEntity).isSuccessful();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
         };
-        return Optional.ofNullable(getReferences(newReference.getTitleCache()))
+        //TODO casting
+        Optional<S> result = Optional.ofNullable(getEntityByTitle(((IdentifiableEntity<?>)entity).getTitleCache(), dedupInfo))
                 .orElse(new HashSet<>())
                 .stream()
                 .filter(matchFilter)
                 .findAny();
+        if (result.isPresent() || dedupInfo.status == Status.USE_MAP || repository == null){
+            return result;
+        }else {
+            try {
+                return (Optional)repository.getCommonService().findMatching((IMatchable)entity, matcher).stream().findFirst();
+            } catch (MatchException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     // AGENTS
     private void putAgentBase(String title, AgentBase<?> agent){
         if (agent.isInstanceOf(Person.class) ){
-            putAgent(title, CdmBase.deproxy(agent, Person.class), personMap);
+            putEntity(title, CdmBase.deproxy(agent, Person.class), personDedupInfo.map);
         }else if (agent.isInstanceOf(Team.class)){
-            putAgent(title, CdmBase.deproxy(agent, Team.class), teamMap);
+            putEntity(title, CdmBase.deproxy(agent, Team.class), teamDedupInfo.map);
         }else{
-//            putAgent(title, CdmBase.deproxy(agent, Institution.class), institutionMap);
-            institutionMap.put(title, CdmBase.deproxy(agent, Institution.class));
+            putEntity(title, CdmBase.deproxy(agent, Institution.class), institutionMap);
         }
     }
-    //put agent
-    private <T extends AgentBase> void putAgent(String title, T agent, Map<String, Set<T>> map){
-        Set<T> items = map.get(title);
-        if (items == null){
-            items = new HashSet<>();
-            map.put(title, items);
-        }
-        items.add(CdmBase.deproxy(agent));
-    }
 
-    private Optional<Person> getMatchingPerson(Person newPerson){
-        Person newPersonDeproxy = CdmBase.deproxy(newPerson);
-        Predicate<Person> matchFilter = (person) ->{
-            try {
-                return personMatcher.invoke(person, newPersonDeproxy).isSuccessful();
-            } catch (MatchException e) {
-                throw new RuntimeException(e);
-            }
-        };
-
-        return Optional.ofNullable(getPersons(newPerson.getTitleCache()))
-                .orElse(new HashSet<>())
-                .stream()
-                .filter(matchFilter)
-                .findAny();
-    }
-
-    private <T extends TeamOrPersonBase<?>> T getTeamOrPerson(T agent){
+    private <T extends TeamOrPersonBase<?>> T getTeamOrPerson(T agent, boolean parsed){
         T result = agent;
         if (agent.isInstanceOf(Person.class)){
-            result = (T)getMatchingPerson(CdmBase.deproxy(agent, Person.class)).orElse(null) ; // personMap.get(title);
+            result = (T)getMatchingEntity(CdmBase.deproxy(agent, Person.class), personDedupInfo, parsed).orElse(null) ; // personMap.get(title);
         }else if (agent.isInstanceOf(Team.class)) {
-            result = (T)getMatchingTeam(CdmBase.deproxy(agent, Team.class)).orElse(null); // teamMap.get(title);
+            result = (T)getMatchingEntity(CdmBase.deproxy(agent, Team.class), teamDedupInfo, parsed).orElse(null); // teamMap.get(title);
         }
         return result;
     }
 
-    private Optional<Team> getMatchingTeam(Team newTeam){
-        Team newTeamDeproxy = CdmBase.deproxy(newTeam);
-        Predicate<Team> matchFilter = (team) ->{
-            try {
-                return teamMatcher.invoke(team, newTeamDeproxy).isSuccessful();
-            } catch (MatchException e) {
-                throw new RuntimeException(e);
-            }
-        };
-        //TODO better adapt matching strategy
-//        newTeam.getNomenclaturalTitle();
-        return Optional.ofNullable(getTeams(newTeam.getTitleCache()))
-                .orElse(new HashSet<>())
-                .stream()
-                .filter(matchFilter)
-                .findAny();
-    }
-    private Set<Person> getPersons(String title){
-        return personMap.get(title);
-    }
-    private Set<Team> getTeams(String title){
-        return teamMap.get(title);
-    }
-
-    //NAMES
-    private void putName(String title, INonViralName name){
-        Set<INonViralName> names = nameMap.get(title);
-        if (names == null){
-            names = new HashSet<>();
-            nameMap.put(title, names);
-        }
-        names.add(CdmBase.deproxy(name));
-    }
-    private Set<INonViralName> getNames(String title){
-        return nameMap.get(title);
-    }
-
-    private Optional<INonViralName> getMatchingName(INonViralName existing){
-        Predicate<INonViralName> matchFilter = name ->{
-            try {
-                return nameMatcher.invoke(name, existing).isSuccessful();
-            } catch (MatchException e) {
-                throw new RuntimeException(e);
-            }
-        };
-        return Optional.ofNullable(getNames(existing.getTitleCache()))
-                .orElse(new HashSet<>())
-                .stream()
-                .filter(matchFilter)
-                .findAny();
-    }
-
     //COLLECTIONS
-    private void putCollection(String title, Collection collection){
-        Set<Collection> collections = collectionMap.get(title);
-        if (collections == null){
-            collections = new HashSet<>();
-            collectionMap.put(title, collections);
-        }
-        collections.add(CdmBase.deproxy(collection));
-    }
-
     private Set<Collection> getCollections(String title){
         return collectionMap.get(title);
     }
@@ -378,44 +370,92 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
      * @param state the import state
      * @param name the name with authors and references to replace
      */
-    public void replaceAuthorNamesAndNomRef(STATE state,
-            INonViralName name) {
+    public void replaceAuthorNamesAndNomRef(INonViralName name) {
+
+        boolean parsed = true;
         TeamOrPersonBase<?> combAuthor = name.getCombinationAuthorship();
-        name.setCombinationAuthorship(getExistingAuthor(state, combAuthor));
+        name.setCombinationAuthorship(getExistingAuthor(combAuthor, parsed));
+        if (combAuthor == name.getCombinationAuthorship()) {
+            replaceTeamMembers(combAuthor, parsed);
+        }
 
         TeamOrPersonBase<?> exAuthor = name.getExCombinationAuthorship();
-        name.setExCombinationAuthorship(getExistingAuthor(state, exAuthor));
+        name.setExCombinationAuthorship(getExistingAuthor(exAuthor, parsed));
+        if (exAuthor == name.getExCombinationAuthorship()) {
+            replaceTeamMembers(exAuthor, parsed);
+        }
 
         TeamOrPersonBase<?> basioAuthor = name.getBasionymAuthorship();
-        name.setBasionymAuthorship(getExistingAuthor(state, basioAuthor));
+        name.setBasionymAuthorship(getExistingAuthor(basioAuthor, parsed));
+        if (basioAuthor == name.getBasionymAuthorship()) {
+            replaceTeamMembers(basioAuthor, parsed);
+        }
 
         TeamOrPersonBase<?> exBasioAuthor = name.getExBasionymAuthorship();
-        name.setExBasionymAuthorship(getExistingAuthor(state, exBasioAuthor));
+        name.setExBasionymAuthorship(getExistingAuthor(exBasioAuthor, parsed));
+        if (exBasioAuthor == name.getExBasionymAuthorship()) {
+            replaceTeamMembers(exBasioAuthor, parsed);
+        }
 
-        INomenclaturalReference nomRef = name.getNomenclaturalReference();
-        if (nomRef != null){
-            TeamOrPersonBase<?> refAuthor = nomRef.getAuthorship();
-            nomRef.setAuthorship(getExistingAuthor(state, refAuthor));
-
-            Reference existingRef = getExistingReference(state, (Reference)nomRef);
-            if (existingRef != null){
-                name.setNomenclaturalReference(existingRef);
+        Reference newNomRef = name.getNomenclaturalReference();
+        Reference newOrExistingNomRef = getExistingReference(newNomRef, parsed);
+        if (newNomRef != null) {
+            if (newOrExistingNomRef == newNomRef){
+                replaceReferenceRelatedData(newNomRef, parsed);
+            }else {
+                name.setNomenclaturalReference(newOrExistingNomRef);
             }
         }
     }
 
-    public <T extends TeamOrPersonBase<?>> T getExistingAuthor(STATE state,
-            T author) {
+    public void replaceReferenceRelatedData(Reference ref, boolean parsed) {
+
+        //author
+        TeamOrPersonBase<?> newAuthor = ref.getAuthorship();
+        TeamOrPersonBase<?> newOrExistingAuthor = getExistingAuthor(newAuthor, parsed);
+        if (newAuthor != null) {
+            if (newOrExistingAuthor == newAuthor) {
+                replaceTeamMembers(newAuthor, parsed);
+            }else {
+                ref.setAuthorship(newOrExistingAuthor);
+            }
+        }
+
+        //in-ref
+        Reference newInRef = ref.getInReference();
+        Reference newOrExistingInRef = getExistingReference(newInRef, parsed);
+        if (newInRef != null) {
+            if (newOrExistingInRef == newInRef){
+                replaceReferenceRelatedData(newInRef, parsed);
+            }else {
+                ref.setInReference(newOrExistingInRef);
+            }
+        }
+    }
+
+    private void replaceTeamMembers(TeamOrPersonBase<?> teamOrPerson, boolean parsed) {
+        if (teamOrPerson != null && teamOrPerson.isInstanceOf(Team.class)) {
+            Team team = CdmBase.deproxy(teamOrPerson, Team.class);
+
+            for (int i = 0; i < team.getTeamMembers().size(); i++) {
+                Person person = team.getTeamMembers().get(i);
+                team.getTeamMembers().set(i, getExistingAuthor(person, parsed));
+            }
+        }
+    }
+
+    public <T extends TeamOrPersonBase<?>> T getExistingAuthor(T author, boolean parsed) {
         if (author == null){
             return null;
         }else{
-            initAgentMap(state);
+            init(personDedupInfo);
+            init(teamDedupInfo);
             initAuthorTitleCaches(author);
-            T result = getTeamOrPerson(author);
+            T result = getTeamOrPerson(author, parsed);
             if (result == null){
                 putAgentBase(author.getTitleCache(), author);
                 if (author.isInstanceOf(Team.class)){
-                    handleTeam(state, CdmBase.deproxy(author, Team.class));
+                    handleTeam(CdmBase.deproxy(author, Team.class), parsed);
                 }
                 result = author;
             }
@@ -424,6 +464,9 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     }
 
     private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T teamOrPerson) {
+        if (teamOrPerson == null) {
+            return;
+        }
         //NOTE: this is more or less redundant copy from CdmPreDataChangeListener
         if (teamOrPerson.isInstanceOf(Team.class)){
             Team team = CdmBase.deproxy(teamOrPerson, Team.class);
@@ -433,6 +476,11 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             if (!team.isProtectedCollectorTitleCache()){
                 team.setCollectorTitleCache(null, false);
             }
+            //not redundant part
+            for (Person member : team.getTeamMembers()) {
+                initAuthorTitleCaches(member);
+            }
+            //end not redundant part
         }
         teamOrPerson.getNomenclaturalTitleCache();
         teamOrPerson.getCollectorTitleCache();
@@ -442,46 +490,71 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
     }
 
     private void initReferenceCaches(Reference ref) {
+        if (ref == null) {
+            return;
+        }
         ////TODO better do via matching strategy  (newReference might have caches == null)
-        //more or less copy from CdmPreDataChangeListener
+        //the below is more or less a copy from CdmPreDataChangeListener (except for inReference handling)
         ref.getAbbrevTitleCache();
         ref.getTitleCache();
+
+        initAuthorTitleCaches(ref.getAuthorship());
+        initReferenceCaches(ref.getInReference());
    }
 
-    public AgentBase<?> getExistingAgent(STATE state,
-            AgentBase<?> agent) {
+    public AgentBase<?> getExistingAgent(AgentBase<?> agent, boolean parsed) {
         if (agent == null){
             return null;
         } else if (agent.isInstanceOf(TeamOrPersonBase.class)){
-            return getExistingAuthor(state, CdmBase.deproxy(agent, TeamOrPersonBase.class));
+            return getExistingAuthor(CdmBase.deproxy(agent, TeamOrPersonBase.class), parsed);
         }else{
-            initAgentMap(state);
-            Institution result = institutionMap.get(agent.getTitleCache());
-            if (result == null){
-                putAgentBase(agent.getTitleCache(), agent);
-                result = CdmBase.deproxy(agent, Institution.class);
-            }
-            return result;
+            throw new RuntimeException("Institution matching not yet implemented");
+//            initInstitutionMap();
+//            Set<Institution> result = institutionMap.get(agent.getTitleCache());
+//            if (result == null){
+//                result = putEntity(agent.getTitleCache(), CdmBase.deproxy(agent, Institution.class), institutionMap);
+//            }
+//            return result;
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    private void initAgentMap(STATE state) {
-        if (!agentMapIsInitialized && repository != null){
-            List<String> propertyPaths = Arrays.asList("");
-            List<AgentBase> existingAgents = repository.getAgentService().list(null, null, null, null, propertyPaths);
-            for (AgentBase agent : existingAgents){
-                putAgentBase(agent.getTitleCache(), CdmBase.deproxy(agent));
-            }
-            agentMapIsInitialized = true;
-        }
+    private <S extends IMatchable> void init(DedupInfo<S> dedupInfo) {
+        dedupInfo.status = init(dedupInfo.clazz, dedupInfo.status, dedupInfo.map);
     }
 
-    private void handleTeam(STATE state, Team team) {
+    private <S extends IMatchable> Status init(Class<S> clazz, Status status, Map<String,Set<S>> map) {
+
+        //FIXME cast
+        Class<IdentifiableEntity> entityClass = (Class)clazz;
+        if (status == Status.NOT_INIT && repository != null){
+            if (maxCountFullLoad != NEVER_USE_MAP){
+                long nExisting = -2;
+                if (maxCountFullLoad != ALWAYS_USE_MAP){
+                    nExisting = repository.getCommonService().count(entityClass);
+                }
+                if (nExisting <= maxCountFullLoad ){
+                    List<String> propertyPaths = Arrays.asList("");
+                    List<IdentifiableEntity> existingEntities = repository.getCommonService().list(entityClass, null, null, null, propertyPaths);
+                    for (IdentifiableEntity<?> entity : existingEntities){
+                        //TODO casting
+                        putEntity(entity.getTitleCache(), entity, (Map)map);
+                    }
+                    return Status.USE_MAP;
+                }else{
+                    return Status.USE_REPO;
+                }
+            }else{
+                return Status.USE_REPO;
+            }
+        }
+        return status;
+    }
+
+    private void handleTeam(Team team, boolean parsed) {
         List<Person> members = team.getTeamMembers();
         for (int i =0; i< members.size(); i++){
             Person person = CdmBase.deproxy(members.get(i));
-            Person existingPerson = getMatchingPerson(person).orElse(null);
+            Person existingPerson = getMatchingEntity(person, personDedupInfo, parsed).orElse(null);
             if (existingPerson != null){
                 members.set(i, existingPerson);
             }else{
@@ -490,15 +563,15 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    public Collection getExistingCollection(STATE state, Collection collection) {
+    public Collection getExistingCollection(Collection collection) {
         if (collection == null){
             return null;
         }else{
-            initCollectionMap(state);
+            initCollectionMap();
             Collection result = getMatchingCollections(collection).orElse(null);
             if (result == null){
                 result = collection;
-                putCollection(result.getTitleCache(), result);
+                putEntity(result.getTitleCache(), result, collectionMap);
             }else{
                 if(logger.isDebugEnabled()) {
                     logger.debug("Matches");
@@ -508,68 +581,63 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    private void initCollectionMap(STATE state) {
-        if (!collectionMapIsInitialized && repository != null){
+    private void initCollectionMap() {
+        if (collectionStatus == Status.NOT_INIT && repository != null){
             List<String> propertyPaths = Arrays.asList("");
             List<Collection> existingCollections = repository.getCollectionService().list(null, null, null, null, propertyPaths);
             for (Collection collection : existingCollections){
-                putCollection(collection.getTitleCache(), collection);
+                putEntity(collection.getTitleCache(), collection, collectionMap);
             }
-            collectionMapIsInitialized = true;
         }
+        collectionStatus = Status.USE_MAP;
+//      collectionStatus = init(Collection.class, collectionStatus, collectionMap); //for future, once Collection becomes IMatchable
     }
 
-   public Reference getExistingReference(STATE state, Reference ref) {
+   /**
+     * Returns an existing matching persistend reference or the the given reference
+     * if no matching reference exists.
+     * @param ref given reference
+     * @param parsed if <code>true</code> use matching strategy for parsed references,
+     *               the default matching strategy otherwise
+     * @return matching reference
+     */
+   public Reference getExistingReference(Reference ref, boolean parsed) {
        if (ref == null){
            return null;
        }else{
-           initRerenceMap(state);
+           init(referenceDedupInfo);
            initReferenceCaches(ref);
-           Reference result = getMatchingReference(ref).orElse(null);
+           Reference result = getMatchingEntity(ref, referenceDedupInfo, parsed).orElse(null);
            if (result == null){
                result = ref;
                Reference inRef = result.getInReference();
                if (inRef != null){
-                   result.setInReference(getExistingReference(state, result.getInReference()));
+                   result.setInReference(getExistingReference(result.getInReference(), parsed));
                }
-               putReference(result.getTitleCache(), result);
+               putEntity(result.getTitleCache(), result, referenceDedupInfo.map);
            }else{
-               if(logger.isDebugEnabled()) {
-                   logger.debug("Matches");
-                }
+               if(logger.isDebugEnabled()) {logger.debug("Matches");}
            }
            return result;
        }
    }
 
-   private void initRerenceMap(STATE state) {
-       if (!referenceMapIsInitialized && repository != null){
-           List<String> propertyPaths = Arrays.asList("");
-           List<Reference> existingReferences = repository.getReferenceService().list(null, null, null, null, propertyPaths);
-           for (Reference ref : existingReferences){
-               putReference(ref.getTitleCache(), ref);
-           }
-           referenceMapIsInitialized = true;
-       }
-   }
-
-   public <NAME extends INonViralName> NAME getExistingName(STATE state, NAME name) {
+   public TaxonName getExistingName(TaxonName name, boolean parsed) {
        if (name == null){
            return null;
        }else{
-           initNameMap(state);
-           @SuppressWarnings("unchecked")
-           NAME result = (NAME)getMatchingName(name).orElse(null);
+           init(nameDedupInfo);
+           TaxonName result = getMatchingEntity(name, nameDedupInfo, parsed).orElse(null);
            if (result == null){
                result = name;
                Set<HybridRelationship> parentRelations = result.getHybridChildRelations();
                for (HybridRelationship rel : parentRelations){
-                   INonViralName parent = rel.getParentName();
+                   TaxonName parent = rel.getParentName();
                    if (parent != null){
-                       rel.setParentName(getExistingName(state, parent));
+                       rel.setParentName(getExistingName(parent, parsed));
                    }
                }
-               putName(result.getTitleCache(), result);
+               putEntity(result.getTitleCache(), result, nameDedupInfo.map);
            }else{
                if(logger.isDebugEnabled()) {
                    logger.debug("Matches");
@@ -579,23 +647,11 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-   private void initNameMap(STATE state) {
-       if (!nameMapIsInitialized && repository != null){
-           List<String> propertyPaths = Arrays.asList("");
-           List<TaxonName> existingNames = repository.getNameService().list(null, null, null, null, propertyPaths);
-           for (TaxonName name : existingNames){
-               putName(name.getTitleCache(), name);
-           }
-          nameMapIsInitialized = true;
-       }
-   }
-
-   public Rights getExistingCopyright(STATE state,
-           Rights right) {
+   public Rights getExistingCopyright(Rights right) {
        if (right == null || !RightsType.COPYRIGHT().equals(right.getType())){
            return null;
        }else{
-           initCopyrightMap(state);
+           initCopyrightMap();
            String key = makeCopyrightKey(right);
            Set<Rights> set = copyrightMap.get(key);
            if (set == null || set.isEmpty()){
@@ -609,8 +665,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-    private void initCopyrightMap(STATE state) {
-        if (!copyrightMapIsInitialized && repository != null){
+    private void initCopyrightMap() {
+        if (copyrightStatus == Status.NOT_INIT && repository != null){
             List<String> propertyPaths = Arrays.asList("");
             List<Rights> existingRights = repository.getRightsService().list(null, null, null, null, propertyPaths);
             for (Rights right : existingRights){
@@ -618,9 +674,8 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
                     putCopyright(makeCopyrightKey(right), right);
                 }
             }
-            copyrightMapIsInitialized = true;
+            copyrightStatus = Status.USE_MAP;
         }
-
     }
 
     private void putCopyright(String key, Rights right) {
@@ -630,7 +685,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             copyrightMap.put(key, rights);
         }
         rights.add(CdmBase.deproxy(right));
-
     }
 
     private String makeCopyrightKey(Rights right) {
@@ -643,4 +697,5 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             return right.getUuid().toString();
         }
     }
+
 }

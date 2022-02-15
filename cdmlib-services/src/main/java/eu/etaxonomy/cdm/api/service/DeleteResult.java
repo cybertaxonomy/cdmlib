@@ -8,9 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -22,39 +20,20 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author a.mueller
  * @since 04.01.2012
- *
  */
 public class DeleteResult extends UpdateResult{
 
     private static final long serialVersionUID = 8856465763413085548L;
-
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteResult.class);
 
-
-
-	private final List<Exception> exceptions = new ArrayList();
-
-	private final Set<CdmBase> relatedObjects = new HashSet();
-
-	private Set<CdmBase> deletedObjects = new HashSet();
-
-//
-//	private Set<PersistPair> objectsToSave = new HashSet<>();
-
-//	protected class PersistPair{
-//		protected CdmBase objectToPersist;
-//		protected ICdmEntityDao<CdmBase> dao;
-//	}
-
-
+	private final Set<CdmBase> relatedObjects = new HashSet<>();
+	private Set<CdmBase> deletedObjects = new HashSet<>();
 
 //***************************** GETTER /SETTER /ADDER *************************/
 
-
 	/**
 	 * Related objects that prevent the delete action to take place.
-	 * @return
 	 */
 	public Set<CdmBase> getRelatedObjects() {
 		return relatedObjects;
@@ -66,18 +45,7 @@ public class DeleteResult extends UpdateResult{
 		this.relatedObjects.addAll(relatedObjects);
 	}
 
-
-	@Override
-	public void includeResult(UpdateResult includedResult){
-
-        this.setMaxStatus(includedResult.getStatus());
-        this.addExceptions(includedResult.getExceptions());
-        this.addUpdatedObjects(includedResult.getUpdatedObjects());
-        if (includedResult instanceof DeleteResult){
-            this.addDeletedObjects(((DeleteResult)includedResult).getDeletedObjects());
-        }
-
-    }
+	//deleted objects
     public Set<CdmBase> getDeletedObjects() {
         return deletedObjects;
     }
@@ -88,4 +56,27 @@ public class DeleteResult extends UpdateResult{
         this.deletedObjects.add(deletedObject);
     }
 
+// ******************* Methods *************************************************/
+
+    @Override
+    public void includeResult(UpdateResult includedResult, boolean excludeStatusAndException){
+        super.includeResult(includedResult, excludeStatusAndException);
+        if (includedResult instanceof DeleteResult){
+            DeleteResult includedDeleteResult = (DeleteResult)includedResult;
+            this.addDeletedObjects(includedDeleteResult.getDeletedObjects());
+            //Note: we do not include related objects as they loose there context, if needed in some cases in future it should be done parameterized
+        }
+    }
+
+// ******************* TO STRING ***********************************************/
+
+    @Override
+    public String toString() {
+        String separator = ", ";
+        String deletedObjectString = toStringObjectsString(separator, deletedObjects);
+        String relatedObjectString = toStringObjectsString(separator, relatedObjects);
+        return super.toString().replace("[UpdateResult]", "[DeleteResult]")+"\n"
+                + "Deleted objects: " + deletedObjectString +"\n"
+                + "Related objects: " + relatedObjectString;
+    }
 }

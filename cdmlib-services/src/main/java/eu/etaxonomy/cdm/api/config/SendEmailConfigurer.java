@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -19,7 +22,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 /**
  * This class replaces the {@code org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration} which can not
- * yet used in this project
+ * yet used in this project.
+ * <p>
+ * The configurations keys contained in here explicitly are not placed in {@link CdmConfigurationKeys} since this class here
+ * does only replace missing functionality which otherwise would be provided by the spring boot <code>MailSenderAutoConfiguration</code>.
  *
  * @author a.kohlbecker
  * @since Sep 14, 2021
@@ -51,12 +57,12 @@ public class SendEmailConfigurer {
     public static final String INT_TEST_SERVER = "mail.int-test-server";
 
     public SendEmailConfigurer() {
-        System.out.print(1);
     }
 
     @Bean
     public JavaMailSenderImpl mailSender() {
 
+        reportMailConfiguration();
         boolean disabled = false;
         try {
            disabled = Boolean.valueOf(env.getProperty(DISABLED));
@@ -97,6 +103,20 @@ public class SendEmailConfigurer {
             }
         }
         sender.setJavaMailProperties(smtpProperties);
+    }
+
+    private void reportMailConfiguration() {
+        logger.info("+-------------------------------------------");
+        logger.info("|          SendEmail Configuration            ");
+        configKeys().stream().forEach(key -> logger.info("| " + key + " : " + env.getProperty(key, "[NULL]")));
+        logger.info("+--------------------------------------------");
+
+    }
+
+    private List<String> configKeys() {
+        List<String> configKeys = new ArrayList<>(Arrays.asList(HOST, PORT, USERNAME, PASSWORD, DISABLED, FROM_ADDRESS, INT_TEST_SERVER));
+        configKeys.addAll(Arrays.asList(SMTP_PROPERTY_KEYS));
+        return configKeys;
     }
 
 }

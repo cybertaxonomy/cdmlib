@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
 /**
  * @author l.morris
  * @since Mar 7, 2013
- *
  */
 public class PubTest {
 
@@ -40,14 +39,8 @@ public class PubTest {
 
 	private static PublishConfigurator configurator;
 
-	private static Publisher publisher;
-
 	public static final String DEFAULT_PRINT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultPrintApplicationContext.xml";
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	public static void setUpBeforeClass() throws Exception {
 
 		ICdmDataSource dataSource = customDataSource();

@@ -503,6 +503,13 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("TermRelationType")
     TermRelationType(UUID.fromString("2541032f-3d24-4ce0-a414-f028054f98ef"), "Term relation type", "TERT", null),
 
+    //42
+    /**
+     * The type for occurrence status.
+     **/
+    @XmlEnumValue("OccurrenceStatusType")
+    OccurrenceStatusType(UUID.fromString("c50a977a-e697-4973-9514-08aeb0d05483"), "Occurrence status type", "OST", null),
+
     ;
 
 
