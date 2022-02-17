@@ -2063,7 +2063,7 @@ public class DerivedUnitFacade {
 	@Transient
 	public List<Media> getDerivedUnitMedia() {
 		if (! checkDerivedUnit()){
-			return new ArrayList<Media>();
+			return new ArrayList<>();
 		}
 		try {
 			List<Media> result = getMediaList(derivedUnit, false);

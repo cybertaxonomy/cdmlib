@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.model.media;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -85,7 +86,7 @@ public class MediaUtilsTest {
     @Test
     public void testFindPreferredMedia(){
 
-        ArrayList<Media> imageList = new ArrayList<>();
+        List<Media> imageList = new ArrayList<>();
         imageList.add(mediaImage1);
         imageList.add(mediaImage2);
         imageList.add(mediaImage3);
@@ -97,7 +98,7 @@ public class MediaUtilsTest {
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage2.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage3.getUuid()));
 
-        ArrayList<Media> mixedMediaList =  new ArrayList<>();
+        List<Media> mixedMediaList =  new ArrayList<>();
         mixedMediaList.add(mediaImage1);
         mixedMediaList.add(mediaImage2);
         mixedMediaList.add(mediaImage3);
