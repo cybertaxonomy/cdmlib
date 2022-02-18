@@ -10,6 +10,14 @@ package eu.etaxonomy.cdm.api.service;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 
+/**
+ * Service for description element based request/results.
+ *
+ * Note: methods in this service were copied from originally being in DescriptionService
+ *
+ * @author a.mueller
+ * @date 18.02.2022
+ */
 public interface IDescriptionElementService
         extends IAnnotatableService<DescriptionElementBase> {
 
