@@ -113,7 +113,7 @@ public class DescriptionElementController {
             return null;
         }
 
-        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
+        Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
 
