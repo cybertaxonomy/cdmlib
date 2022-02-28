@@ -42,7 +42,7 @@ public class Rdf {
     @XmlElements({
 	  @XmlElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#", type = TaxonConcept.class),
 	  @XmlElement(name = "SpeciesProfileModel", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#", type = SpeciesProfileModel.class),
-	  @XmlElement(name = "NameInformation", namespace = "http://cybertaxonomy.eu/cdm/ontology/voc/NameInformation#")
+	  @XmlElement(name = "NameInformation", namespace = "http://cybertaxonomy.org/cdm/ontology/voc/NameInformation#")
     })
     protected Set<BaseThing> things = new HashSet<BaseThing>();
 

@@ -48,10 +48,11 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	public static final String GEOGRAPHICALREGION_NAMESPACE = "http://rs.tdwg.org/ontology/voc/GeographicRegion#";
 	public static final String OAIPMH_NAMESPACE = "http://www.openarchives.org/OAI/2.0/";
 	public static final String OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/";
-	
-	public static final String CDM_NAMEINFORMATION_NAMESPACE = "http://cybertaxonomy.eu/cdm/ontology/voc/NameInformation#";
-	
-	public String getPreferredPrefix(String namespaceURI, String suggestion, boolean requirePrefix) {
+
+	public static final String CDM_NAMEINFORMATION_NAMESPACE = "http://cybertaxonomy.org/cdm/ontology/voc/NameInformation#";
+
+	@Override
+    public String getPreferredPrefix(String namespaceURI, String suggestion, boolean requirePrefix) {
 		String result = suggestion;
 
 		/**
