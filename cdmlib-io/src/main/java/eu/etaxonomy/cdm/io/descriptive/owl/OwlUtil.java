@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.model.Property;
  */
 public class OwlUtil {
 
-    public static final String BASE_URI = "http://cybertaxonomy.eu/";
+    public static final String BASE_URI = "http://cybertaxonomy.org/";
 
     /**
      * resource URIs
