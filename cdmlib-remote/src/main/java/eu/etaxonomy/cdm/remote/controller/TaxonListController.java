@@ -5,7 +5,6 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
@@ -213,7 +212,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         Set<PresenceAbsenceTerm> statusSet = null;
         if(status != null) {
-                statusSet = new HashSet<>(Arrays.asList(status));
+            statusSet = new HashSet<>(Arrays.asList(status));
         }
 
         return service.findTaxaAndNamesByFullText(searchModes, query,

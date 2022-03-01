@@ -1860,11 +1860,12 @@ public class TaxonServiceImpl
             Set<NamedArea> namedAreas, Set<PresenceAbsenceTerm> distributionStatus, List<Language> languages,
             boolean highlightFragments, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
-            throws IOException, LuceneParseException, LuceneMultiSearchException {
+                    throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         // FIXME: allow taxonomic ordering
-        //  hql equivalent:  order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
-        // this require building a special sort column by a special classBridge
+        //  hql equivalent:  order by t.name.genusOrUninomial, case when t.name.specificEpithet
+        // like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+        // this requires building a special sort column by a special classBridge
         if(highlightFragments){
             logger.warn("findTaxaAndNamesByFullText() : fragment highlighting is " +
                     "currently not fully supported by this method and thus " +
