@@ -464,15 +464,6 @@ public interface IService<T extends ICdmBase>{
     public <S extends T> Pager<S> pageByParamWithRestrictions(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
-    /**
-     * @param clazz
-     * @param restrictions
-     * @param pageSize
-     * @param pageIndex
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
     public <S extends T> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
