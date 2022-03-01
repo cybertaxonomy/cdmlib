@@ -158,6 +158,8 @@ public class TaxonPortalController extends TaxonController{
 //            "synonyms.name.homotypicalGroup.typifiedNames.$",
 //            "synonyms.name.homotypicalGroup.typifiedNames.taxonBases.$",
             "synonyms.name.combinationAuthorship.$",
+            "synonyms.secSource.citation.authorship.$",
+            "synonyms.secSource.citation.inReference.authorship.$",
 
             "name.typeDesignations",
 
