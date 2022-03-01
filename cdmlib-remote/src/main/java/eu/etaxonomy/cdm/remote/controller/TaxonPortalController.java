@@ -238,8 +238,6 @@ public class TaxonPortalController extends TaxonController{
             "acceptedTaxon.taxonNodes.classification",
     }));
 
-    private static final String termTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
-
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
             List<String> pathProperties) {

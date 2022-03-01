@@ -18,18 +18,16 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author a.kohlbecker
  * @since Nov 6, 2018
- *
  */
 public class EntityInitStrategy {
 
     private static final String DOT = ".";
 
-    List<String> propertyPaths = new ArrayList<>();
+    private List<String> propertyPaths = new ArrayList<>();
 
     public EntityInitStrategy(){
 
     }
-
 
     public EntityInitStrategy(List<String> propertyPaths){
         if(propertyPaths != null){
@@ -90,10 +88,6 @@ public class EntityInitStrategy {
         return this;
     }
 
-
-    /**
-     * @return
-     */
     public List<String> getPropertyPaths() {
         return propertyPaths;
     }

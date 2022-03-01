@@ -1,5 +1,10 @@
 /**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
  *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
  */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
@@ -39,17 +44,17 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
- * For now this is a test if we can improve performance for bean initializing
+ * Bean initializer with improved performance.
+
  * @author a.mueller
  * @since 2013-10-25
- *
  */
 public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanInitializer<CDM> {
 
     public static final Logger logger = Logger.getLogger(AdvancedBeanInitializer.class);
 
     @Autowired
-    ICdmGenericDao genericDao;
+    private ICdmGenericDao genericDao;
 
     @Override
     public void initialize(Object bean, List<String> propertyPaths) {

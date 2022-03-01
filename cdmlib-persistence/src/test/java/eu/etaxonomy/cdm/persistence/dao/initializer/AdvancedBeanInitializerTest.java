@@ -301,7 +301,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransac
         //    In turn of the autoflush the team.titleCache is generated which causes the teamMembers to be initialized
         //
         // members should not initialized since they where not included in the property path
-        assertFalse("members should not intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
+        assertFalse("members should not be intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
 
         // activate the teamAutoInitializer again
         AutoPropertyInitializer<CDM> teamAutoInitializer = deacivatedAutoIntitializers.get(TeamOrPersonBase.class);
