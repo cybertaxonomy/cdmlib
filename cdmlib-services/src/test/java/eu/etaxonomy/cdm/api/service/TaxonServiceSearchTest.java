@@ -884,6 +884,14 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findTaxaAndNamesByFullText(
                 taxaAndSynonyms, "Abies", classification, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("doTaxa & doSynonyms & unpublished", 8, pager.getCount().intValue());
+        TaxonBase<?> result3 = pager.getRecords().get(3).getEntity();
+
+        //test paging
+        pager = taxonService.findTaxaAndNamesByFullText(
+                taxaAndSynonyms, "Abies", classification, subtree, null, null, null, true, 2, 1, null, null);
+        Assert.assertEquals("doTaxa & doSynonyms & unpublished & second page & page size 2", 2, pager.getRecords().size());
+        TaxonBase<?> result1 = pager.getRecords().get(1).getEntity();
+        Assert.assertEquals("Second result in second page with size=2 must be the same as 4th result in full result", result3, result1);
 
         EnumSet<TaxaAndNamesSearchMode> taxaOnly = EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished);
 
