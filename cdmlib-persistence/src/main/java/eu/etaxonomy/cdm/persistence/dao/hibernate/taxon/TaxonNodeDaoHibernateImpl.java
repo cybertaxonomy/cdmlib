@@ -1183,6 +1183,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
         List<TaxonNodeDto> list = createNodeDtos(result);
+        if (list.isEmpty()) {
+        	return null;
+        }
         return list.get(0);
     }
 
