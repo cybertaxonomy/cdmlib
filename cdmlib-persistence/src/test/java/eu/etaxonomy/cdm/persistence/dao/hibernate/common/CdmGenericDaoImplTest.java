@@ -1218,7 +1218,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
-    @Test  //#9943 test find matching candidates
+    @Test  //#9905 test find matching candidates
     public void testFindMatchingNullSafe() {
         Person person1 = Person.NewInstance();
         Person person2 = Person.NewInstance();
@@ -1244,11 +1244,13 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
             Team teamAs1 = Team.NewInstance();
             teamAs1.addTeamMember(person1);
             teamAs1.addTeamMember(person2);
+            //match with single instance comparison after hql query
             List<Team> matchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, false);
             Assert.assertEquals(1, matchResult.size());
 
+            //test without single instance comparison after hql query
             List<Team> candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
-            //FIXME #9943
+            //FIXME #9905
 //          Assert.assertEquals(1, candidateMatchResult.size());
 
         } catch (IllegalArgumentException | MatchException e) {
