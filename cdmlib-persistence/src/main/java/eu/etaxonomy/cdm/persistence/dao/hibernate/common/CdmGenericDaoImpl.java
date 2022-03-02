@@ -625,9 +625,21 @@ public class CdmGenericDaoImpl
         }
     }
 
-	@Override
+    @Override
+    public <T extends IMatchable> List<T> findMatching(
+            T objectToMatch, IMatchStrategy matchStrategy) throws MatchException{
+        return findMatching(objectToMatch, matchStrategy, false);
+    }
+
+    /**
+     * Like {@link #findMatching(IMatchable, IMatchStrategy)} but with additional parameter
+     * for debugging.
+     *
+     * @param includeCandidates if <code>true</code> the list of match candidates (objects matching the hql query used) are included in the result.
+     *                         The parameter is mostly for debugging.
+     */
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
-			IMatchStrategy matchStrategy) throws MatchException {
+			IMatchStrategy matchStrategy, boolean includeCandidates) throws MatchException {
 
 		getSession().flush();
 		try {
@@ -638,7 +650,7 @@ public class CdmGenericDaoImpl
 			if (matchStrategy == null){
 				matchStrategy = DefaultMatchStrategy.NewInstance(objectToMatch.getClass());
 			}
-			result.addAll(findMatchingNullSafe(objectToMatch, matchStrategy));
+			result.addAll(findMatchingNullSafe(objectToMatch, matchStrategy, false));
 			return result;
 		} catch (IllegalArgumentException|IllegalAccessException e) {
 			throw new MatchException(e);
@@ -646,7 +658,7 @@ public class CdmGenericDaoImpl
 	}
 
 	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,
-	        IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+	        IMatchStrategy matchStrategy, boolean includeCandidates) throws IllegalArgumentException, IllegalAccessException, MatchException {
 
 	    List<T> result = new ArrayList<>();
 		Session session = getSession();
@@ -661,7 +673,7 @@ public class CdmGenericDaoImpl
             List<T> matchCandidates = criteria.list();
 			matchCandidates.remove(objectToMatch);
 			for (T matchCandidate : matchCandidates ){
-				if (matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
+				if (includeCandidates || matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
 					result.add(matchCandidate);
 				}else{
 					logger.info("Match candidate did not match: " + matchCandidate);

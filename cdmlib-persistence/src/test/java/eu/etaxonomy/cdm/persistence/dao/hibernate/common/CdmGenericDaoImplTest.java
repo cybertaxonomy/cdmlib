@@ -1218,6 +1218,45 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
+    @Test  //#9943 test find matching candidates
+    public void testFindMatchingNullSafe() {
+        Person person1 = Person.NewInstance();
+        Person person2 = Person.NewInstance();
+        Person person3 = Person.NewInstance();
+        person1.setFamilyName("FamName1");
+        person2.setFamilyName("FamName2");
+        person3.setFamilyName("FamName3");
+
+        Team team1 = Team.NewInstance();
+        Team team2 = Team.NewInstance();
+
+        team1.addTeamMember(person1);
+        team1.addTeamMember(person2);
+
+        team2.addTeamMember(person2);
+        team2.addTeamMember(person3);
+
+        cdmGenericDao.saveOrUpdate(team1);
+        cdmGenericDao.saveOrUpdate(team2);
+
+        IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
+        try {
+            Team teamAs1 = Team.NewInstance();
+            teamAs1.addTeamMember(person1);
+            teamAs1.addTeamMember(person2);
+            List<Team> matchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, false);
+            Assert.assertEquals(1, matchResult.size());
+
+            List<Team> candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
+            //FIXME #9943
+//          Assert.assertEquals(1, candidateMatchResult.size());
+
+        } catch (IllegalArgumentException | MatchException e) {
+            Assert.fail("No exception should be thrown");
+            e.printStackTrace();
+        }
+    }
+
 	@Test
 	public void testGetHqlResult() {
 		logger.warn("testGetHqlResult not yet implemented");
