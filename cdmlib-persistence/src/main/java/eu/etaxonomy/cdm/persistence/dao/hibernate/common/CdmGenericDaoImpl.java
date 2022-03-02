@@ -640,9 +640,7 @@ public class CdmGenericDaoImpl
 			}
 			result.addAll(findMatchingNullSafe(objectToMatch, matchStrategy));
 			return result;
-		} catch (IllegalArgumentException e) {
-			throw new MatchException(e);
-		} catch (IllegalAccessException e) {
+		} catch (IllegalArgumentException|IllegalAccessException e) {
 			throw new MatchException(e);
 		}
 	}
@@ -673,7 +671,18 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	private <T> boolean makeCriteria(T objectToMatch,
+	/**
+	 * Fills the criteria according to the object to match, the match strategy
+	 * and the classMetaData.
+	 *
+	 * @param objectToMatch the object to match
+	 * @param matchStrategy the match strategy used
+	 * @param classMetaData the precomputed class metadata
+	 * @param criteria the criteria to fill
+	 * @return <code>true</code> if definitely no matching object will be found,
+	 *         <code>false</code> if nothing is known on the existence of a matching result
+	 */
+	private boolean makeCriteria(Object objectToMatch,
 			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
 			Criteria criteria) throws IllegalAccessException, MatchException {
 
@@ -709,7 +718,7 @@ public class CdmGenericDaoImpl
 			String propertyName = fieldMatcher.getPropertyName();
 			Type propertyType = classMetaData.getPropertyType(propertyName);
 			Object value = fieldMatcher.getField().get(objectToMatch);
-			List<MatchMode> matchModes= new ArrayList<>();
+			List<MatchMode> matchModes = new ArrayList<>();
 			matchModes.add(fieldMatcher.getMatchMode());
 			if (replaceMatchers.get(propertyName) != null){
 				matchModes.addAll(replaceMatchers.get(propertyName));

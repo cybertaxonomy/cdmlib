@@ -14,16 +14,10 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.MappingException;
-import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.persister.collection.CollectionPersister;
-import org.hibernate.stat.Statistics;
-import org.hibernate.type.Type;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -153,7 +147,6 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -177,7 +170,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
     private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
 
 	@SpringBeanByType
-	private ICdmGenericDao cdmGenericDao;
+	private CdmGenericDaoImpl cdmGenericDao;
 
 	@SpringBeanByType
 	private ITaxonDao taxonDao;
@@ -1040,9 +1033,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		cdmGenericDao.saveOrUpdate((Reference)book3);
 
 		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
-
 		try {
-			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+		    List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertNotNull("Resultlist must not be null", matchResult);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
@@ -1226,27 +1218,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
-	//from original testing within class, can be removed if not needed anymore
-	private void test() {
-		SessionFactoryImpl factory = (SessionFactoryImpl)((CdmGenericDaoImpl)cdmGenericDao).getSession().getSessionFactory();
-		Type propType = factory.getReferencedPropertyType(TaxonName.class.getCanonicalName(), "titleCache");
-		Map<?,?> collMetadata = factory.getAllCollectionMetadata();
-		Object roles = factory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
-		CollectionPersister collPersister;
-		try {
-			collPersister = factory.getCollectionPersister(TaxonName.class.getCanonicalName()+".annotations");
-		} catch (MappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Statistics statistics = factory.getStatistics();
-		Map<?,?> allClassMetadata = factory.getAllClassMetadata();
-		logger.debug("");
-	}
-
 	@Test
 	public void testGetHqlResult() {
-		logger.warn("Not yet implemented");
+		logger.warn("testGetHqlResult not yet implemented");
 	}
 
     @Override
