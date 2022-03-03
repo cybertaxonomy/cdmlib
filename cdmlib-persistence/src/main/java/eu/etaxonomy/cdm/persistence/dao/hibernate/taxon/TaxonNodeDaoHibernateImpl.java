@@ -1144,7 +1144,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
              for (SortableTaxonNodeQueryResult resultDTO : result){
                  list.add(new UuidAndTitleCache<>(TaxonNode.class, resultDTO.getTaxonNodeUuid(), resultDTO.getTaxonNodeId(), resultDTO.getTaxonTitleCache()));
              }
-
              return list;
          }
     }
@@ -1189,10 +1188,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return list.get(0);
     }
 
-    /**
-     * @param nodeUuid
-     * @return
-     */
     private String getTaxonNodeDtoQuery() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
                 + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid "
@@ -1202,11 +1197,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                 + "   INNER JOIN tn.parent AS p"
                 + "   INNER JOIN t.name AS name "
                 + "   LEFT OUTER JOIN name.rank AS rank ";
-
         return queryString;
     }
-
-
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
@@ -1224,10 +1216,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return list;
     }
 
-    /**
-     * @param result
-     * @param list
-     */
     @Override
     public List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
         List<TaxonNodeDto> nodeDtos = new ArrayList<>();
@@ -1263,7 +1251,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return list;
     }
 
-
     @Override
     public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
         return getUuidAndTitleCache(limit, pattern, classificationUuid, false);
@@ -1274,5 +1261,4 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             Classification classification, Integer limit, String pattern, boolean searchForClassifications) {
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, limit, pattern, searchForClassifications, false);
     }
-
 }
