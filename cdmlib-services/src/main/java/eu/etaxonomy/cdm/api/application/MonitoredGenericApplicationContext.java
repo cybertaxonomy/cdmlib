@@ -37,11 +37,8 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
     private IProgressMonitor currentMonitor;
 
 
+// ************************************** CONSTRUCTOR ********************/
 
-    /**
-     * Constructor.
-     * @param progressMonitor
-     */
     public MonitoredGenericApplicationContext() {
 //		MonitoredListableBeanFactory beanFactory =
         super(new MonitoredListableBeanFactory());
@@ -51,6 +48,7 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
         ((MonitoredListableBeanFactory)getBeanFactory()).setAutowireCandidateResolver(new QualifierAnnotationAutowireCandidateResolver());
     }
 
+//******************************* *****************************************/
 
     public int countTasks(){
         return countTasks;

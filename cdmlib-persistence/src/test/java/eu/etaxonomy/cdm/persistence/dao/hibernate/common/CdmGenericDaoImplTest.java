@@ -14,16 +14,10 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.MappingException;
-import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.persister.collection.CollectionPersister;
-import org.hibernate.stat.Statistics;
-import org.hibernate.type.Type;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,6 +103,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -153,18 +148,20 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -177,7 +174,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
     private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
 
 	@SpringBeanByType
-	private ICdmGenericDao cdmGenericDao;
+	private CdmGenericDaoImpl cdmGenericDao;
 
 	@SpringBeanByType
 	private ITaxonDao taxonDao;
@@ -1040,9 +1037,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		cdmGenericDao.saveOrUpdate((Reference)book3);
 
 		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
-
 		try {
-			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+		    List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertNotNull("Resultlist must not be null", matchResult);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
@@ -1226,27 +1222,76 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
-	//from original testing within class, can be removed if not needed anymore
-	private void test() {
-		SessionFactoryImpl factory = (SessionFactoryImpl)((CdmGenericDaoImpl)cdmGenericDao).getSession().getSessionFactory();
-		Type propType = factory.getReferencedPropertyType(TaxonName.class.getCanonicalName(), "titleCache");
-		Map<?,?> collMetadata = factory.getAllCollectionMetadata();
-		Object roles = factory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
-		CollectionPersister collPersister;
-		try {
-			collPersister = factory.getCollectionPersister(TaxonName.class.getCanonicalName()+".annotations");
-		} catch (MappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Statistics statistics = factory.getStatistics();
-		Map<?,?> allClassMetadata = factory.getAllClassMetadata();
-		logger.debug("");
-	}
+    @Test  //#9905 test find matching candidates
+    public void testFindMatchingWithSubMatching() {
+        Person person1 = Person.NewInstance();
+        Person person2 = Person.NewInstance();
+        Person person3 = Person.NewInstance();
+        person1.setFamilyName("FamName1");
+        person1.setNomenclaturalTitle("NomTitle1");
+        person2.setFamilyName("FamName2");
+        person2.setNomenclaturalTitle("NomTitle2");
+        person3.setFamilyName("FamName3");
+        person3.setNomenclaturalTitle("NomTitle3");
+
+        Team team1 = Team.NewInstance();
+        Team team2 = Team.NewInstance();
+        Team team3 = Team.NewInstance();
+
+        team1.addTeamMember(person1);
+        team1.addTeamMember(person2);
+
+        team2.addTeamMember(person2);
+        team2.addTeamMember(person3);
+
+        team3.setTitleCache("ProtectedTeam", true);
+
+        cdmGenericDao.saveOrUpdate(team1);
+        cdmGenericDao.saveOrUpdate(team2);
+        commitAndStartNewTransaction();
+
+        IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
+        try {
+            Team teamAs1 = Team.NewInstance();
+            teamAs1.addTeamMember(person1);
+            teamAs1.addTeamMember(person2);
+            //match with single instance comparison after hql query
+            List<Team> matchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, false);
+            Assert.assertEquals(1, matchResult.size());
+
+            //test without single instance comparison after hql query
+            List<Team> candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
+            //FIXME #9905
+            Assert.assertEquals(1, candidateMatchResult.size());
+
+            person1.setNomenclaturalTitle("NomTitle1b");
+            candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
+            Assert.assertEquals(0, candidateMatchResult.size());
+            person1.setNomenclaturalTitle("NomTitle1");  //set back
+
+            Team teamDifferentOrder = Team.NewInstance();
+            teamDifferentOrder.addTeamMember(person2);
+            teamDifferentOrder.addTeamMember(person1);
+            candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
+            //TODO improve, should be 0 in best implementation
+            Assert.assertEquals(1, candidateMatchResult.size());
+
+            //test that reference.authorTeam.* still works without throwing exceptions
+            TaxonName name = NonViralNameParserImpl.NewInstance().parseReferencedName("Abies alba Nyffeler & Eggli in Taxon 59: 232. 2010", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+            Reference nomRef = name.getNomenclaturalReference();
+            IMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance(nomRef);
+            List<Reference> matching = cdmGenericDao.findMatching(nomRef, referenceMatcher);
+            Assert.assertEquals("We don't expect matchings, only tested that no exceptions are thrown", 0, matching.size());
+
+        } catch (IllegalArgumentException | MatchException e) {
+            Assert.fail("No exception should be thrown");
+            e.printStackTrace();
+        }
+    }
 
 	@Test
 	public void testGetHqlResult() {
-		logger.warn("Not yet implemented");
+		logger.warn("testGetHqlResult not yet implemented");
 	}
 
     @Override

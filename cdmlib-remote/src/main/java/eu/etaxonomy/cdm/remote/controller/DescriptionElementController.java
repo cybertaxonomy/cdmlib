@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import io.swagger.annotations.Api;
 
@@ -52,7 +51,8 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("descriptionElement")
 @RequestMapping(value = {"/descriptionElement/{uuid}", "/descriptionElement/{uuid_list}"})
-public class DescriptionElementController {
+public class DescriptionElementController
+        extends BaseController<DescriptionElementBase, IDescriptionElementService>{
 
     private static final List<String> STATE_INIT_STRATEGY = Arrays.asList( new String[]{
             "states.state.representations",
@@ -67,21 +67,19 @@ public class DescriptionElementController {
 
     private IDescriptionElementService service;
 
+    @Override
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
+        super.initBinder(binder);
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
         binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<MarkerType>(termService));
     }
 
+    @Override
     @Autowired
     public void setService(IDescriptionElementService service) {
         this.service = service;
-    }
-
-    protected List<String> getInitializationStrategy() {
-        return AbstractController.DEFAULT_INIT_STRATEGY;
     }
 
 //    @RequestMapping(method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
@@ -113,7 +111,7 @@ public class DescriptionElementController {
             return null;
         }
 
-        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
+        Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
 

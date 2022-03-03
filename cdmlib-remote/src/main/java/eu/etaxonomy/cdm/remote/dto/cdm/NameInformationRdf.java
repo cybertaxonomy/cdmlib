@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept.HasRelationship;
 		"typeStatus",
 		"hasRelationships"
 })
-@XmlRootElement(name = "NameInformation", namespace = "http://cybertaxonomy.eu/cdm/ontology/voc/NameInformation#")
+@XmlRootElement(name = "NameInformation", namespace = "http://cybertaxonomy.org/cdm/ontology/voc/NameInformation#")
 public class NameInformationRdf extends BaseThing {
 
 	@XmlElement(namespace = "http://rs.tdwg.org/dwc/terms/")

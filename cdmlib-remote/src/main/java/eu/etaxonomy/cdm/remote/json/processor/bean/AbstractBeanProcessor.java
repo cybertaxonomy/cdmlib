@@ -142,11 +142,7 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
                     json.element(key, value);
                 }
 
-            } catch (IllegalAccessException e) {
-                logger.error(e.getMessage(), e);
-            } catch (InvocationTargetException e) {
-                logger.error(e.getMessage(), e);
-            } catch (NoSuchMethodException e) {
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 logger.error(e.getMessage(), e);
             }
         }

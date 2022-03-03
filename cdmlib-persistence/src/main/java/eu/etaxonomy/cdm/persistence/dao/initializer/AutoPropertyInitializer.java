@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.kohlbecker
  * @since 30.07.2010
- *
  */
 public abstract class AutoPropertyInitializer<T extends CdmBase> {
 
@@ -38,8 +37,5 @@ public abstract class AutoPropertyInitializer<T extends CdmBase> {
      */
     public abstract void initialize(T bean);
 
-
 	public abstract Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias);
-
-
 }

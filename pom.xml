@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.29.0</version>
+  <version>5.30.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
-  <url>https://cybertaxonomy.eu/cdmlib/</url>
+  <url>https://cybertaxonomy.org/cdmlib/</url>
   <inceptionYear>2007</inceptionYear>
   <packaging>pom</packaging>
   <modules>
@@ -92,7 +92,7 @@
   </licenses>
   <organization>
     <name>EDIT</name>
-    <url>https://cybertaxonomy.eu/</url>
+    <url>https://cybertaxonomy.org/</url>
   </organization>
   <developers>
     <developer>
@@ -175,7 +175,7 @@
     <!-- the cdm internal repository -->
     <repository>
       <id>EditRepository</id>
-      <url>https://cybertaxonomy.eu/mavenrepo/</url>
+      <url>https://cybertaxonomy.org/mavenrepo/</url>
     </repository>
     <!-- apache incubating repository -->
     <repository>
@@ -377,7 +377,7 @@
           <fromDir>${project.build.directory}/docbkx/</fromDir>
           <includes>**/*</includes>
           <excludes />
-          <url>scpexe://cybertaxonomy.eu</url>
+          <url>scpexe://cybertaxonomy.org</url>
           <serverId>cybertaxonomy.eu</serverId>
           <toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${project.version}</toDir>
         </configuration>
@@ -586,13 +586,13 @@
     <site>
       <id>cybertaxonomy.eu</id>
       <name>CDM Library Website</name>
-      <url>scpexe://cybertaxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/</url>
+      <url>scpexe://cybertaxonomy.org/var/www/wp5.e-taxonomy.eu/cdmlib/</url>
     </site>
     <repository>
       <uniqueVersion>false</uniqueVersion>
       <id>cybertaxonomy.eu</id>
       <name>Edit Maven Repository</name>
-      <url>scpexe://cybertaxonomy.eu/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
+      <url>scpexe://cybertaxonomy.org/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
       <layout>default</layout>
     </repository>
   </distributionManagement>

@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.jaxb;
 
@@ -29,9 +29,9 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	private static final String GEOGRAPHICALREGION_PREFIX = "gr";
 	private static final String OAIPMH_PREFIX = "oai";
 	private static final String OAIDC_PREFIX = "oai_dc";
-	
+
 	private static final String CDM_NAMEINFO_PREFIX = "cdmni";
-		
+
 	public static final String XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 	public static final String RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	public static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
@@ -48,86 +48,87 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	public static final String GEOGRAPHICALREGION_NAMESPACE = "http://rs.tdwg.org/ontology/voc/GeographicRegion#";
 	public static final String OAIPMH_NAMESPACE = "http://www.openarchives.org/OAI/2.0/";
 	public static final String OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/";
-	
-	public static final String CDM_NAMEINFORMATION_NAMESPACE = "http://cybertaxonomy.eu/cdm/ontology/voc/NameInformation#";
-	
-	public String getPreferredPrefix(String namespaceURI, String suggestion, boolean requirePrefix) {
+
+	public static final String CDM_NAMEINFORMATION_NAMESPACE = "http://cybertaxonomy.org/cdm/ontology/voc/NameInformation#";
+
+	@Override
+    public String getPreferredPrefix(String namespaceURI, String suggestion, boolean requirePrefix) {
 		String result = suggestion;
-		
+
 		/**
 		 * Returning empty namespace prefix works if a SAXResult is used, but not
 		 * a DOMResult - see http://forums.java.net/jive/thread.jspa?messageID=217155
 		 * This has not been resolved yet, as far as I can tell
 		 */
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.RDF_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.RDF_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.DC_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.DC_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.DCTERMS_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.DCTERMS_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.DCTERMS_TDWG_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.DCTERMS_TDWG_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.OWL_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.OWL_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.TAXONNAME_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.TAXONNAME_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.TEAM_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.TEAM_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.TAXONCONCEPT_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.TAXONCONCEPT_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.COMMON_NAMESPACE)){
 			return TDWGNamespacePrefixMapper.COMMON_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.PERSON_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.PERSON_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.PUBLICATIONCITATION_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.PUBLICATIONCITATION_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.SPECIESPROFILEMODEL_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.SPECIESPROFILEMODEL_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.XML_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.XML_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.GEOGRAPHICALREGION_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.GEOGRAPHICALREGION_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.OAIPMH_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.OAIPMH_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.OAIDC_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.OAIDC_PREFIX;
 		}
-		
+
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.CDM_NAMEINFORMATION_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.CDM_NAMEINFO_PREFIX;
 		}
-		
+
 		return result;
 	}
 

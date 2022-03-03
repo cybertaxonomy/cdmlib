@@ -235,7 +235,7 @@ public class LuceneSearch {
         logger.info("final query: " + fullQuery.toString());
 
         int offset = pageNumber * pageSize;
-        int limit = (pageNumber + 1) * pageSize - 1 ;
+        int limit = (pageNumber + 1) * pageSize;
         logger.debug("start: " + offset + "; limit:" + limit);
 
         // sorting

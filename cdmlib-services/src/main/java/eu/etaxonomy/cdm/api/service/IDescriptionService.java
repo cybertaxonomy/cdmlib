@@ -417,11 +417,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
       * Generate a string representation of the structured <code>description</code> supplied in natural language
       * The <code>featureTree</code> will be used to structure the NaturalLanguageDescription.
       * This method does not require a initialization strategy so there is no <code>propertyPaths</code> parameter.
-      * @param featureTree
-      * @param description
-      * @param preferredLanguages
-      * @param separator
-      * @return
       */
     public String generateNaturalLanguageDescription(TermTree featureTree,TaxonDescription description, List<Language> preferredLanguages, String separator);
 
@@ -430,7 +425,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @deprecated The means of determining this fact may change soon, so this method is
                     annotated as being deprecated.
      * @param description
-     * @return
      */
     @Deprecated
     public boolean hasStructuredData(DescriptionBase<?> description);
@@ -500,13 +494,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid);
 
-
     /**
-     * find the taxon node for the taxon associated to the specimen in classification with classificationUuid
-     * @param specimenUuid
-     * @param classificationUuid
-     * @return
+     * Find the taxon node for the taxon associated to the specimen in classification with classificationUuid
      */
-    TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid);
+    public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid);
 
 }

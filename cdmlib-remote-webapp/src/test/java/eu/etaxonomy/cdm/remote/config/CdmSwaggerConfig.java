@@ -94,7 +94,7 @@ public class CdmSwaggerConfig {
                   + "to transfer CDM data to web based clients."
                   + "</p>"
                   + "<p>For more information like usage of this service please refer to "
-                  + "<a href=\"http://cybertaxonomy.eu/cdmlib/rest-api.html\">http://cybertaxonomy.eu/cdmlib/rest-api.html</a>"))
+                  + "<a href=\"https://cybertaxonomy.org/cdmlib/rest-api.html\">https://cybertaxonomy.org/cdmlib/rest-api.html</a>"))
           .ignoredParameterTypes(allCdmTpyes())
 //          .excludeAnnotations(Deprecated.class) // TODO
           ;
@@ -131,8 +131,8 @@ public class CdmSwaggerConfig {
                    + " but are suitabale for all applicatoins in which fast response times are crucial."
                    + " Additional detailed documentation of these services can also be found at:</p>"
                    + "<ul>"
-                   + "<li><a href=\"http://cybertaxonomy.eu/cdmlib/rest-api-name-catalogue.html\">Name Catalogue REST API</a>"
-                   + "<li><a href=\"http://cybertaxonomy.eu/cdmlib/rest-api-occurrence-catalogue.html\">Occurrence Catalogue REST API</a>"
+                   + "<li><a href=\"https://cybertaxonomy.org/cdmlib/rest-api-name-catalogue.html\">Name Catalogue REST API</a>"
+                   + "<li><a href=\"https://cybertaxonomy.org/cdmlib/rest-api-occurrence-catalogue.html\">Occurrence Catalogue REST API</a>"
                    + "</ul>"
                    ))
            .ignoredParameterTypes(allCdmTpyes());
@@ -151,7 +151,7 @@ public class CdmSwaggerConfig {
                   "OAI-PMH",
                   "<p>This is an automatcially created documentation on the OAI-PMH service which is atually dedicated to REST services."
                   + " Since OAI-PMH is not a REST service in the original sense, you may want to refer to"
-                  + " the more specific <a href=\"http://cybertaxonomy.eu/cdmlib/oai-pmh.html\">OAI-PMH documentation</a> or"
+                  + " the more specific <a href=\"https://cybertaxonomy.org/cdmlib/oai-pmh.html\">OAI-PMH documentation</a> or"
                   + " to the service endpoints them self, which also provide a good, comprehensive and selfexplanatory"
                   + " level of documentation:</p>"
                   + "<ul>"

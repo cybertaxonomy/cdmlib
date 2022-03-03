@@ -120,17 +120,14 @@ public interface ICdmGenericDao {
 	 */
 	public <T extends CdmBase> boolean  isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
 
-
 	/**
-	 * Returns a List of matching persistent objects according to the match strategy
-	 * @param <T>
-	 * @param objectToMatch
-	 * @param matchStrategy
-	 * @return
-	 * @throws MatchException
-	 */
-	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
-
+     * Returns a list of matching persistent objects according to the match strategy
+     * @param <T>
+     * @param objectToMatch
+     * @param matchStrategy
+     */
+    public <T extends IMatchable> List<T> findMatching(
+            T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
 
 	/**
 	 * A generic method to retrieve any CdmBase object by its id and class.<BR>

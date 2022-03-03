@@ -131,7 +131,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             HttpServletResponse response) {
         logger.info("getAnnotations() - " + requestPathAndQuery(request) );
         DescriptionElementBase annotatableEntity = descriptionElementService.find(uuid);
-        Pager<Annotation> annotations = descriptionElementService.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
+        Pager<Annotation> annotations = descriptionElementService.getAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
 }

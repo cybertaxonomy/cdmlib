@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.hibernate.ShiftUserType;
 import eu.etaxonomy.cdm.hibernate.URIUserType;
 import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
@@ -625,9 +626,21 @@ public class CdmGenericDaoImpl
         }
     }
 
-	@Override
+    @Override
+    public <T extends IMatchable> List<T> findMatching(
+            T objectToMatch, IMatchStrategy matchStrategy) throws MatchException{
+        return findMatching(objectToMatch, matchStrategy, false);
+    }
+
+    /**
+     * Like {@link #findMatching(IMatchable, IMatchStrategy)} but with additional parameter
+     * for debugging.
+     *
+     * @param includeCandidates if <code>true</code> the list of match candidates (objects matching the hql query used) are included in the result.
+     *                         The parameter is mostly for debugging.
+     */
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
-			IMatchStrategy matchStrategy) throws MatchException {
+			IMatchStrategy matchStrategy, boolean includeCandidates) throws MatchException {
 
 		getSession().flush();
 		try {
@@ -638,24 +651,22 @@ public class CdmGenericDaoImpl
 			if (matchStrategy == null){
 				matchStrategy = DefaultMatchStrategy.NewInstance(objectToMatch.getClass());
 			}
-			result.addAll(findMatchingNullSafe(objectToMatch, matchStrategy));
+			result.addAll(findMatchingNullSafe(objectToMatch, matchStrategy, false));
 			return result;
-		} catch (IllegalArgumentException e) {
-			throw new MatchException(e);
-		} catch (IllegalAccessException e) {
+		} catch (IllegalArgumentException|IllegalAccessException e) {
 			throw new MatchException(e);
 		}
 	}
 
 	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,
-	        IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+	        IMatchStrategy matchStrategy, boolean includeCandidates) throws IllegalArgumentException, IllegalAccessException, MatchException {
 
 	    List<T> result = new ArrayList<>();
 		Session session = getSession();
 		Class<?> matchClass = objectToMatch.getClass();
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
 		Criteria criteria = session.createCriteria(matchClass);
-		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria);
+		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria, 1);
 		if (logger.isDebugEnabled()){logger.debug(criteria);}
 		//session.flush();
 		if (noMatch == false){
@@ -663,7 +674,7 @@ public class CdmGenericDaoImpl
             List<T> matchCandidates = criteria.list();
 			matchCandidates.remove(objectToMatch);
 			for (T matchCandidate : matchCandidates ){
-				if (matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
+				if (includeCandidates || matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
 					result.add(matchCandidate);
 				}else{
 					logger.info("Match candidate did not match: " + matchCandidate);
@@ -673,9 +684,21 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	private <T> boolean makeCriteria(T objectToMatch,
+	/**
+	 * Fills the criteria according to the object to match, the match strategy
+	 * and the classMetaData.
+	 *
+	 * @param objectToMatch the object to match
+	 * @param matchStrategy the match strategy used
+	 * @param classMetaData the precomputed class metadata
+	 * @param criteria the criteria to fill
+	 * @param level recursion level
+	 * @return <code>true</code> if definitely no matching object will be found,
+	 *         <code>false</code> if nothing is known on the existence of a matching result
+	 */
+	private boolean makeCriteria(Object objectToMatch,
 			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
-			Criteria criteria) throws IllegalAccessException, MatchException {
+			Criteria criteria, int level) throws IllegalAccessException, MatchException {
 
 	    Matching matching = matchStrategy.getMatching((IMatchable)objectToMatch);
 		boolean noMatch = false;
@@ -709,7 +732,7 @@ public class CdmGenericDaoImpl
 			String propertyName = fieldMatcher.getPropertyName();
 			Type propertyType = classMetaData.getPropertyType(propertyName);
 			Object value = fieldMatcher.getField().get(objectToMatch);
-			List<MatchMode> matchModes= new ArrayList<>();
+			List<MatchMode> matchModes = new ArrayList<>();
 			matchModes.add(fieldMatcher.getMatchMode());
 			if (replaceMatchers.get(propertyName) != null){
 				matchModes.addAll(replaceMatchers.get(propertyName));
@@ -723,7 +746,7 @@ public class CdmGenericDaoImpl
 				if (propertyType.isComponentType()){
 					matchComponentType(criteria, fieldMatcher, propertyName, value, matchModes);
 				}else{
-					noMatch = matchNonComponentType(criteria, fieldMatcher, propertyName, value, matchModes, propertyType);
+					noMatch = matchNonComponentType(criteria, fieldMatcher, propertyName, value, matchModes, propertyType, level);
 				}
 			}
 			if (noMatch){
@@ -757,12 +780,15 @@ public class CdmGenericDaoImpl
 		}
 	}
 
+    /**
+     * @param level the recursion level
+     */
     private boolean matchNonComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher,
 			String propertyName,
 			Object value,
 			List<MatchMode> matchModes,
-			Type propertyType)
+			Type propertyType, int level)
 			throws HibernateException, DataAccessException, MatchException, IllegalAccessException{
 
 	    boolean noMatch = false;
@@ -774,10 +800,18 @@ public class CdmGenericDaoImpl
 		}else{
 			if (isMatch(matchModes)){
 				if (propertyType.isCollectionType()){
-					//TODO collection not yet handled for match
+				    if (value instanceof Collection) {
+				        //TODO fieldMatcher?
+	                    matchCollection(criteria, propertyName, (Collection<?>)value, level);
+
+				    }else if (value instanceof Map) {
+				        //TODO map not yet handled for match
+				    }else {
+				        //TODO not yet handled
+				    }
 				}else{
 					JoinType joinType = JoinType.INNER_JOIN;
-					if (! requiresSecondValue(matchModes,value)){
+					if (! requiresSecondValue(matchModes, value)){
 						joinType = JoinType.LEFT_OUTER_JOIN;
 					}
 					Criteria matchCriteria = criteria.createCriteria(propertyName, joinType).add(Restrictions.isNotNull("id"));
@@ -786,7 +820,7 @@ public class CdmGenericDaoImpl
 					if (IMatchable.class.isAssignableFrom(matchClass)){
 						IMatchStrategy valueMatchStrategy = fieldMatcher.getMatchStrategy() != null? fieldMatcher.getMatchStrategy() : DefaultMatchStrategy.NewInstance(matchClass);
 						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
-						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria);
+						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria, level+1);
 					}else{
 						logger.error("Class to match (" + matchClass + ") is not of type IMatchable");
 						throw new MatchException("Class to match (" + matchClass + ") is not of type IMatchable");
@@ -800,6 +834,63 @@ public class CdmGenericDaoImpl
 		}
 		return noMatch;
 	}
+
+    /**
+     * Add restrictions for collections matched by matchMode {@value MatchMode#MATCH}
+     *
+     * NOTE: current implementation is only a work around to handle #9905 by
+     * checking the collection size and if the collection contains instances of
+     * class Person it checks that there is at least 1 person matching in
+     * nomenclaturalTitle, no matter at which position.
+     * See #9905 and #9964
+     *
+     * @param level recursion level
+     */
+    private void matchCollection(Criteria criteria, String propertyName, Collection<?> collection, int level) {
+        int i = 0;
+        //this is a workaround to avoid handling TeamOrPersonBase e.g. in references.
+        //TeamOrPersonBase does not have a property 'teamMembers' and therefore an
+        //according restriction can not be added
+        if (level > 1) {
+            return;
+        }
+
+        criteria.add(Restrictions.sizeEq(propertyName, collection.size()));
+
+//        String propertyAlias = propertyName+"Alias";
+//        criteria.createAlias(propertyName, propertyAlias);
+        //In future (hibernate >5.1 JPA will allow using index joins: https://www.logicbig.com/tutorials/java-ee-tutorial/jpa/criteria-api-collection-operations.html
+//        Criteria subCriteria = criteria.createCriteria(propertyName+"[1]");
+
+        Criteria subCriteria = criteria.createCriteria(propertyName);
+
+        for (Object single : collection) {
+            Class<?> classOfSingle = CdmBase.deproxy(single).getClass();
+            if (classOfSingle.equals(Person.class)) {
+                Person person = ((Person)single);
+//	            DetachedCriteria subCriteria = DetachedCriteria.forClass(classOfSingle);
+//	            subCriteria.add(Property.forName("familyName").eq(person.getFamilyName()));
+//	            subCriteria.setProjection(Projections.property("id"));
+//	            Subqueries.propertyIn(propertyName, subCriteria);
+//	            criteria.add(detCrit);
+//              Criterion criterion = Restrictions.eqOrIsNull(propertyAlias+".familyName", person.getFamilyName());
+//              criteria.add(criterion);
+//              Criterion criterion2 = Restrictions.eqOrIsNull(propertyAlias+".nomenclaturalTitle", person.getNomenclaturalTitle());
+//              criteria.add(criterion2);
+
+                if (StringUtils.isNotBlank(person.getNomenclaturalTitle())) {
+                    subCriteria.add(Restrictions.eq("nomenclaturalTitle", person.getNomenclaturalTitle()));
+//                    subCriteria.add(Restrictions.eq("index()", i));
+                    i++;
+                }else {
+//                    subCriteria.add(Restrictions.isNull("nomenclaturalTitle"));
+                }
+            }
+            if (i>0) {
+                break;
+            }
+        }
+    }
 
 	private void createCriterion(Criteria criteria, String propertyName,
 			Object value, List<MatchMode> matchModes) throws MatchException {

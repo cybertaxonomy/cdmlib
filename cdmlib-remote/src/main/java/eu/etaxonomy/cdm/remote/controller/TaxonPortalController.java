@@ -158,6 +158,8 @@ public class TaxonPortalController extends TaxonController{
 //            "synonyms.name.homotypicalGroup.typifiedNames.$",
 //            "synonyms.name.homotypicalGroup.typifiedNames.taxonBases.$",
             "synonyms.name.combinationAuthorship.$",
+            "synonyms.secSource.citation.authorship.$",
+            "synonyms.secSource.citation.inReference.authorship.$",
 
             "name.typeDesignations",
 
@@ -237,8 +239,6 @@ public class TaxonPortalController extends TaxonController{
             "taxonNodes.source.citation.inReference.authorship",
             "acceptedTaxon.taxonNodes.classification",
     }));
-
-    private static final String termTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
 
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,

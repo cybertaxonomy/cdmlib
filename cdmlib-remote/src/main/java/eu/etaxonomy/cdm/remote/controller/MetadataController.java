@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2020 EDIT
 * European Distributed Institute of Taxonomy
@@ -24,7 +23,6 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @date May 19, 2020
- *
  */
 @RestController
 @Api("metadata")

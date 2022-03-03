@@ -2,7 +2,7 @@
 <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" 
 	xmlns:tn="http://rs.tdwg.org/ontology/voc/TaxonName#" 
 	xmlns:dwcterms="http://rs.tdwg.org/dwc/terms/" 
-	xmlns:cdmni="http://cybertaxonomy.eu/cdm/ontology/voc/NameInformation#" 
+	xmlns:cdmni="http://cybertaxonomy.org/cdm/ontology/voc/NameInformation#" 
 	xmlns:tp="http://rs.tdwg.org/ontology/voc/Person#" 
 	xmlns:spm="http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#" 
 	xmlns:tcom="http://rs.tdwg.org/ontology/voc/Common#" 

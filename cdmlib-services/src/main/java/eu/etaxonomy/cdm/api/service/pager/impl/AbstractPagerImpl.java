@@ -15,9 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 
@@ -27,7 +24,6 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 
     protected static Integer MAX_PAGE_LABELS = 3;
 	protected static String LABEL_DIVIDER = " - ";
-	private static Log log = LogFactory.getLog(DefaultPagerImpl.class);
 	protected Integer pagesAvailable;
 	protected Integer prevIndex;
 	protected Integer nextIndex;
@@ -107,12 +103,12 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
         }
 
         if(records == null) {
-            records = new ArrayList<T>(0);
+            records = new ArrayList<>(0);
         }
 
         this.pageSize = pageSize;
-		this.pageNumbers = new HashMap<Integer,String>();
-		indices = new ArrayList<Integer>();
+		this.pageNumbers = new HashMap<>();
+		indices = new ArrayList<>();
 		if(count == 0) {
 			pagesAvailable = 1;
 		} else if(pageSize != null && pageSize != 0) {
@@ -120,7 +116,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 				pagesAvailable = (int)( count / pageSize );
 
                 Integer labelsStart = 0;
-                if(this.currentIndex > DefaultPagerImpl.MAX_PAGE_LABELS) {
+                if(this.currentIndex > AbstractPagerImpl.MAX_PAGE_LABELS) {
                     labelsStart = this.currentIndex - DefaultPagerImpl.MAX_PAGE_LABELS ;
                 }
 

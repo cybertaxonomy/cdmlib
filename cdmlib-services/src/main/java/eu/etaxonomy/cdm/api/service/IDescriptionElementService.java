@@ -8,30 +8,17 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.List;
-
-import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
+/**
+ * Service for description element based request/results.
+ *
+ * Note: methods in this service were copied from originally being in DescriptionService
+ *
+ * @author a.mueller
+ * @date 18.02.2022
+ */
 public interface IDescriptionElementService
         extends IAnnotatableService<DescriptionElementBase> {
-
-    /**
-     * Return a Pager containing Annotation entities belonging to the DescriptionElementBase instance supplied, optionally filtered by MarkerType
-     * @param annotatedObj The object that "owns" the annotations returned
-     * @param status Only return annotations which are marked with a Marker of this type (can be null to return all annotations)
-     * @param pageSize The maximum number of terms returned (can be null for all annotations)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param orderHints may be null
-     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-     * @return a Pager of Annotation entities
-     */
-    //TODO check if this is in base service already, it was copied from DescriptionService
-    public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
 
 }
