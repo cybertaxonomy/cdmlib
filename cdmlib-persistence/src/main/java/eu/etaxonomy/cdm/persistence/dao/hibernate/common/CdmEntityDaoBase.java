@@ -1090,28 +1090,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 while (critIterator.hasNext()){
                     disjunction.add(critIterator.next());
                 }
-
                 criteria.add(disjunction);
-
             }else{
                 if (!criterions.isEmpty()){
                     criteria.add(criterions.iterator().next());
                 }
             }
-
         }
 
         addCriteria(criteria, criterion);
 
-        if (pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if (pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            } else {
-                criteria.setFirstResult(0);
-            }
-        }
-
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
         addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
@@ -1210,14 +1199,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         }
         Criteria criteria = createCriteria(clazz, allRestrictions, false);
 
-        if (pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if (pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            } else {
-                criteria.setFirstResult(0);
-            }
-        }
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
         addOrder(criteria, orderHints);
 
