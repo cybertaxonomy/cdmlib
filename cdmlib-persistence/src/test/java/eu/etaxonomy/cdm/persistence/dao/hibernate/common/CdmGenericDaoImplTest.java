@@ -103,6 +103,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -153,11 +154,14 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -1265,7 +1269,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
             Assert.assertEquals(0, candidateMatchResult.size());
             person1.setNomenclaturalTitle("NomTitle1");  //set back
 
-            //TODO should not match in future
             Team teamDifferentOrder = Team.NewInstance();
             teamDifferentOrder.addTeamMember(person2);
             teamDifferentOrder.addTeamMember(person1);
@@ -1273,6 +1276,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
             //TODO improve, should be 0 in best implementation
             Assert.assertEquals(1, candidateMatchResult.size());
 
+            //test that reference.authorTeam.* still works without throwing exceptions
+            TaxonName name = NonViralNameParserImpl.NewInstance().parseReferencedName("Abies alba Nyffeler & Eggli in Taxon 59: 232. 2010", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+            Reference nomRef = name.getNomenclaturalReference();
+            IMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance(nomRef);
+            List<Reference> matching = cdmGenericDao.findMatching(nomRef, referenceMatcher);
+            Assert.assertEquals("We don't expect matchings, only tested that no exceptions are thrown", 0, matching.size());
 
         } catch (IllegalArgumentException | MatchException e) {
             Assert.fail("No exception should be thrown");

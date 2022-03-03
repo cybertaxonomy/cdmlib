@@ -666,7 +666,7 @@ public class CdmGenericDaoImpl
 		Class<?> matchClass = objectToMatch.getClass();
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
 		Criteria criteria = session.createCriteria(matchClass);
-		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria);
+		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria, 1);
 		if (logger.isDebugEnabled()){logger.debug(criteria);}
 		//session.flush();
 		if (noMatch == false){
@@ -692,12 +692,13 @@ public class CdmGenericDaoImpl
 	 * @param matchStrategy the match strategy used
 	 * @param classMetaData the precomputed class metadata
 	 * @param criteria the criteria to fill
+	 * @param level recursion level
 	 * @return <code>true</code> if definitely no matching object will be found,
 	 *         <code>false</code> if nothing is known on the existence of a matching result
 	 */
 	private boolean makeCriteria(Object objectToMatch,
 			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
-			Criteria criteria) throws IllegalAccessException, MatchException {
+			Criteria criteria, int level) throws IllegalAccessException, MatchException {
 
 	    Matching matching = matchStrategy.getMatching((IMatchable)objectToMatch);
 		boolean noMatch = false;
@@ -745,7 +746,7 @@ public class CdmGenericDaoImpl
 				if (propertyType.isComponentType()){
 					matchComponentType(criteria, fieldMatcher, propertyName, value, matchModes);
 				}else{
-					noMatch = matchNonComponentType(criteria, fieldMatcher, propertyName, value, matchModes, propertyType);
+					noMatch = matchNonComponentType(criteria, fieldMatcher, propertyName, value, matchModes, propertyType, level);
 				}
 			}
 			if (noMatch){
@@ -779,12 +780,15 @@ public class CdmGenericDaoImpl
 		}
 	}
 
+    /**
+     * @param level the recursion level
+     */
     private boolean matchNonComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher,
 			String propertyName,
 			Object value,
 			List<MatchMode> matchModes,
-			Type propertyType)
+			Type propertyType, int level)
 			throws HibernateException, DataAccessException, MatchException, IllegalAccessException{
 
 	    boolean noMatch = false;
@@ -798,7 +802,7 @@ public class CdmGenericDaoImpl
 				if (propertyType.isCollectionType()){
 				    if (value instanceof Collection) {
 				        //TODO fieldMatcher?
-	                    matchCollection(criteria, propertyName, (Collection<?>)value);
+	                    matchCollection(criteria, propertyName, (Collection<?>)value, level);
 
 				    }else if (value instanceof Map) {
 				        //TODO map not yet handled for match
@@ -816,7 +820,7 @@ public class CdmGenericDaoImpl
 					if (IMatchable.class.isAssignableFrom(matchClass)){
 						IMatchStrategy valueMatchStrategy = fieldMatcher.getMatchStrategy() != null? fieldMatcher.getMatchStrategy() : DefaultMatchStrategy.NewInstance(matchClass);
 						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
-						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria);
+						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria, level+1);
 					}else{
 						logger.error("Class to match (" + matchClass + ") is not of type IMatchable");
 						throw new MatchException("Class to match (" + matchClass + ") is not of type IMatchable");
@@ -839,9 +843,17 @@ public class CdmGenericDaoImpl
      * class Person it checks that there is at least 1 person matching in
      * nomenclaturalTitle, no matter at which position.
      * See #9905 and #9964
+     *
+     * @param level recursion level
      */
-    private void matchCollection(Criteria criteria, String propertyName, Collection<?> collection) {
+    private void matchCollection(Criteria criteria, String propertyName, Collection<?> collection, int level) {
         int i = 0;
+        //this is a workaround to avoid handling TeamOrPersonBase e.g. in references.
+        //TeamOrPersonBase does not have a property 'teamMembers' and therefore an
+        //according restriction can not be added
+        if (level > 1) {
+            return;
+        }
 
         criteria.add(Restrictions.sizeEq(propertyName, collection.size()));
 
@@ -849,6 +861,7 @@ public class CdmGenericDaoImpl
 //        criteria.createAlias(propertyName, propertyAlias);
         //In future (hibernate >5.1 JPA will allow using index joins: https://www.logicbig.com/tutorials/java-ee-tutorial/jpa/criteria-api-collection-operations.html
 //        Criteria subCriteria = criteria.createCriteria(propertyName+"[1]");
+
         Criteria subCriteria = criteria.createCriteria(propertyName);
 
         for (Object single : collection) {
