@@ -1219,16 +1219,20 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
     @Test  //#9905 test find matching candidates
-    public void testFindMatchingNullSafe() {
+    public void testFindMatchingWithSubMatching() {
         Person person1 = Person.NewInstance();
         Person person2 = Person.NewInstance();
         Person person3 = Person.NewInstance();
         person1.setFamilyName("FamName1");
+        person1.setNomenclaturalTitle("NomTitle1");
         person2.setFamilyName("FamName2");
+        person2.setNomenclaturalTitle("NomTitle2");
         person3.setFamilyName("FamName3");
+        person3.setNomenclaturalTitle("NomTitle3");
 
         Team team1 = Team.NewInstance();
         Team team2 = Team.NewInstance();
+        Team team3 = Team.NewInstance();
 
         team1.addTeamMember(person1);
         team1.addTeamMember(person2);
@@ -1236,8 +1240,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         team2.addTeamMember(person2);
         team2.addTeamMember(person3);
 
+        team3.setTitleCache("ProtectedTeam", true);
+
         cdmGenericDao.saveOrUpdate(team1);
         cdmGenericDao.saveOrUpdate(team2);
+        commitAndStartNewTransaction();
 
         IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
         try {
@@ -1251,7 +1258,21 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
             //test without single instance comparison after hql query
             List<Team> candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
             //FIXME #9905
-//          Assert.assertEquals(1, candidateMatchResult.size());
+            Assert.assertEquals(1, candidateMatchResult.size());
+
+            person1.setNomenclaturalTitle("NomTitle1b");
+            candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
+            Assert.assertEquals(0, candidateMatchResult.size());
+            person1.setNomenclaturalTitle("NomTitle1");  //set back
+
+            //TODO should not match in future
+            Team teamDifferentOrder = Team.NewInstance();
+            teamDifferentOrder.addTeamMember(person2);
+            teamDifferentOrder.addTeamMember(person1);
+            candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
+            //TODO improve, should be 0 in best implementation
+            Assert.assertEquals(1, candidateMatchResult.size());
+
 
         } catch (IllegalArgumentException | MatchException e) {
             Assert.fail("No exception should be thrown");
