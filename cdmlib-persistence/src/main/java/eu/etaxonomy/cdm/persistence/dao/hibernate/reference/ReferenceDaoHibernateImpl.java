@@ -398,7 +398,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
         Query query = null;
         if (pattern != null){
             query = session.createQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
-            +" as r where r.authorship.nomenclaturalTitle like :pattern  ");
+            +" as r where r.authorship.nomenclaturalTitleCache like :pattern  ");
 
             query.setParameter("pattern", pattern);
         } else {
@@ -416,6 +416,27 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
     }
 
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID, ReferenceType refType) {
+        Session session = getSession();
+
+        Query query = null;
+        if (authorID != null){
+            query = session.createQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
+            +" as r where r.authorship.id = :authorID  ");
+
+            query.setParameter("authorID", authorID);
+        } else {
+            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() );
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        
+        return getUuidAndAbbrevTitleCache(query);
+
+    }
+    
     @Override
     public List<Reference> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<String> params = new HashSet<>();
