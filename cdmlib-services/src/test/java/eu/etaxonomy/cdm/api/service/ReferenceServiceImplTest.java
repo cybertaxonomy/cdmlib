@@ -76,9 +76,9 @@ public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("Expecting nameCache to be updated", "Sp. Pl.", abbrevCacheField.get(ref1));
 
         assertEquals("Expecting titleCache to be updated", "Reference2", titleCacheField.get(ref2));
-        assertEquals("Expecting nameCache to not be updated", "ref. 2", abbrevCacheField.get(ref2));
+        assertEquals("Expecting nameCache to not be updated", "L., ref. 2", abbrevCacheField.get(ref2));
 
-        assertEquals("Expecting titleCache to be updated", "Reference three", titleCacheField.get(ref3));
+        assertEquals("Expecting titleCache to be updated", "Linnaeus, C.: Reference three", titleCacheField.get(ref3));
         assertEquals("Expecting nameCache to be updated", "Protec. ref.", abbrevCacheField.get(ref3));
 
         assertEquals("Expecting error message for self-referencing in-refererence", "-- invalid inreference (self-referencing) --", titleCacheField.get(ref4));
