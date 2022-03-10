@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -21,6 +22,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -80,6 +82,15 @@ public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("Expecting nameCache to be updated", "Protec. ref.", abbrevCacheField.get(ref3));
 
         assertEquals("Expecting error message for self-referencing in-refererence", "-- invalid inreference (self-referencing) --", titleCacheField.get(ref4));
+    }
+    
+    @Test  //7874 //8030
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ReferenceServiceImplTest.testUpdateCaches.xml")
+    public void testGetUuidAndAbbrevTitleCacheForAuthorID() {
+    	List<UuidAndTitleCache<Reference>> result = service.getUuidAndAbbrevTitleCacheForAuthorID(null, 1, null);
+    	assertEquals(1, result.size());
+    	result = service.getUuidAndAbbrevTitleCacheForAuthorID(null, 2, null);
+    	assertEquals(2, result.size());
     }
 
     @Override
