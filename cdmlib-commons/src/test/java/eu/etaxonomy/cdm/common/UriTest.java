@@ -50,7 +50,11 @@ public class UriTest {
             Assert.assertEquals(
                     "ressource",
                     uri.getFragment());
-
+            
+            uri = new URI("https://max:muster@www.example.com:8080/index.html?p1=A&p2=B#ressource&#another-frag?");
+            Assert.assertEquals(
+                    "ressource&#another-frag?",
+                    uri.getFragment());
         } catch (URISyntaxException e) {
             Assert.fail("Parsing example URI should find fragment");
         }
