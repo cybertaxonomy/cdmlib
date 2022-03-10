@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -476,8 +477,8 @@ public class DerivedUnitFacade {
 			throw new NullPointerException(
 					"Facade's derviedUnit must not be null to set cache strategy");
 		}else{
-			derivedUnit.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
-			setFieldUnitCacheStrategy();
+//			derivedUnit.setCacheStrategy(new DerivedUnitDefaultCacheStrategy());
+//			setFieldUnitCacheStrategy();
 		}
 	}
 
