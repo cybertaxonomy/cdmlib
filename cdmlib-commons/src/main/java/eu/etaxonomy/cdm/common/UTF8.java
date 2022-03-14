@@ -32,6 +32,12 @@ public enum UTF8 {
 	SMALL_E_ACUTE("\u00E9"),
 	SMALL_I_ACUTE("\u00ED"),
     SMALL_O_ACUTE("\u00F3"),
+    SMALL_U_ACUTE("\u00FA"),
+    CAPITAL_A_ACUTE("\u00C1"),
+    CAPITAL_E_ACUTE("\u00C9"),
+    CAPITAL_I_ACUTE("\u00CD"),
+    CAPITAL_O_ACUTE("\u00D3"),
+    CAPITAL_U_ACUTE("\u00DA"),
     REGEX_NOT("U+005E"),   //Circumflex Accent, used in regular expression for negation (e.g not a: [^a]
     QUOT_SINGLE_LEFT_HIGH("\u2018"), // Left hight single quotation mark
     QUOT_SINGLE_RIGHT("\u2019"), // Right single quotation mark
