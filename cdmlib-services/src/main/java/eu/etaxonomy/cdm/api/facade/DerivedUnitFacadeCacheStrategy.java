@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -45,14 +46,41 @@ public class DerivedUnitFacadeCacheStrategy
 	private boolean includeReferenceSystem = true;
 
 	private String collectionAccessionSeperator = ": ";
+	
+	private boolean addTrailingDot = false;
+ 
+	public static DerivedUnitFacadeCacheStrategy NewInstance(){
+        return new DerivedUnitFacadeCacheStrategy();
+	}
 
+    public static DerivedUnitFacadeCacheStrategy NewInstance(boolean addTrailingDot){
+        return new DerivedUnitFacadeCacheStrategy(addTrailingDot, null);
+    }
+
+    public static DerivedUnitFacadeCacheStrategy NewInstance( boolean addTrailingDot, String collectionAccessionSeperator){
+        return new DerivedUnitFacadeCacheStrategy(addTrailingDot, collectionAccessionSeperator);
+    }  
+
+	 
+//******************************* CONSTRUCTOR *******************************************/
+
+	 //default value constructor
+	 private DerivedUnitFacadeCacheStrategy() {}
+
+	 private DerivedUnitFacadeCacheStrategy(boolean addTrailingDot, String collectionAccessionSeperator) {
+		 this.addTrailingDot = addTrailingDot;
+	     if (collectionAccessionSeperator != null){
+	    	 this.collectionAccessionSeperator = collectionAccessionSeperator;
+	     }
+	 }
+	 
 
 	@Override
     public String getTitleCache(DerivedUnit derivedUnit) {
-	    return getTitleCache(derivedUnit, false, true);
+	    return getTitleCache(derivedUnit, false);
 	}
 
-	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit, boolean addTrailingDot) {
+	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
 
 	    String result = "";
 	    DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
@@ -176,6 +204,14 @@ public class DerivedUnitFacadeCacheStrategy
 
 	public boolean isIncludeReferenceSystem() {
 		return includeReferenceSystem;
+	}
+
+	public boolean isAddTrailingDot() {
+		return addTrailingDot;
+	}
+
+	public void setAddTrailingDot(boolean addTrailingDot) {
+		this.addTrailingDot = addTrailingDot;
 	}
 
 }
