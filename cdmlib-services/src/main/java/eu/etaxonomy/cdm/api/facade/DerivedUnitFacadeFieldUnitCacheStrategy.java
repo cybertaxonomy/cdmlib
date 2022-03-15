@@ -61,7 +61,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy
 		facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit, fieldUnit, config);
 		result = getFieldData(facade);
 		result = addPlantDescription(result, facade);
-		result = CdmUtils.addTrailingDotIfNotExists(result);
+//		result = CdmUtils.addTrailingDotIfNotExists(result);
 		facade.close();
 		return result;
 	}
