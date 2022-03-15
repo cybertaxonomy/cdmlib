@@ -481,8 +481,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testGetSetCountry() {
         assertEquals("Country must be same", Country.GERMANY(), specimenFacade.getCountry());
-        specimenFacade.setCountry(Country.FRANCEFRENCHREPUBLIC());
-        assertEquals("New country must be France", Country.FRANCEFRENCHREPUBLIC(), specimenFacade.getCountry());
+        specimenFacade.setCountry(Country.FRANCE());
+        assertEquals("New country must be France", Country.FRANCE(), specimenFacade.getCountry());
     }
 
     /**

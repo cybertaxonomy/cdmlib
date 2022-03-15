@@ -399,7 +399,7 @@ public class Country extends NamedArea {
 	public static final Country FALKLANDISLANDS () { return (Country)termMap.get(Country.uuidFalklandIslands );}
 	public static final Country FIJIREPUBLICOFTHEFIJIISLANDS () { return (Country)termMap.get(Country.uuidFijiRepublicoftheFijiIslands );}
 	public static final Country FINLANDREPUBLICOF () { return (Country)termMap.get(Country.uuidFinlandRepublicof );}
-	public static final Country FRANCEFRENCHREPUBLIC () { return (Country)termMap.get(Country.uuidFranceFrenchRepublic );}
+	public static final Country FRANCE () { return (Country)termMap.get(Country.uuidFranceFrenchRepublic );}
 	public static final Country FRENCHGUIANA () { return (Country)termMap.get(Country.uuidFrenchGuiana );}
 	public static final Country FRENCHPOLYNESIA () { return (Country)termMap.get(Country.uuidFrenchPolynesia );}
 	public static final Country FRENCHSOUTHERNTERRITORIES () { return (Country)termMap.get(Country.uuidFrenchSouthernTerritories );}
