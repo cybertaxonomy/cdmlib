@@ -72,16 +72,29 @@ public class BibliographicAuthorParserTest {
         team = (Team)parser.parse("Contreras C.L.E. & al.");
         Assert.assertTrue(team.isHasMoreMembers());
         Assert.assertEquals("Contreras, C.L.E. & al.", team.getTitleCache());
+
+        //
+        team = (Team)parser.parse("Maldonado, M. M. de L., Velazquez, M J de A & Nanez, J. S. de los");
+        Assert.assertEquals(3, team.getTeamMembers().size());
+        Assert.assertEquals("Maldonado", team.getTeamMembers().get(0).getFamilyName());
+        Assert.assertEquals("M. M. de L.", team.getTeamMembers().get(0).getInitials());
+        Assert.assertEquals("Velazquez", team.getTeamMembers().get(1).getFamilyName());
+        Assert.assertEquals("M J de A", team.getTeamMembers().get(1).getInitials());
+        Assert.assertEquals("Nanez", team.getTeamMembers().get(2).getFamilyName());
+        Assert.assertEquals("J. S. de los", team.getTeamMembers().get(2).getInitials());
+
     }
 
     @Test
     public void testParseTest() {
 
         //default
-        Team team = (Team)parser.parse("Ramos, M. M., Montoya, G. G. & Vásquez, S. M. Á.");
-        Assert.assertEquals(3, team.getTeamMembers().size());
-        Assert.assertEquals("Ramos", team.getTeamMembers().get(0).getFamilyName());
-        Assert.assertEquals("S. M. "+UTF8.CAPITAL_A_ACUTE+".", team.getTeamMembers().get(2).getInitials());
+//        Team team = (Team)parser.parse("Maldonado, M. M. de L., Velazquez, M J de A & Nanez, J. S.");
+//        Assert.assertEquals(3, team.getTeamMembers().size());
+//        Assert.assertEquals("Maldonado", team.getTeamMembers().get(0).getFamilyName());
+//        Assert.assertEquals("M. M. de L.", team.getTeamMembers().get(0).getInitials());
+//        Assert.assertEquals("M J de A", team.getTeamMembers().get(1).getInitials());
+
     }
 
 }
