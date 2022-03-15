@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.MediaKey;
@@ -169,6 +170,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         updatedObject = handleDeleteMedia(media, textData, description,
                                 (IDescribable)objectToUpdate);
                     } else {
+                    	
                         // this should not be happen, because it is not deletable. see isDeletable
                         result.setAbort();
                     }
@@ -181,6 +183,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                 }else if (ref instanceof MediaRepresentation){
                     continue;
                 }else {
+                	
                     result.setAbort();
                 }
 
@@ -222,9 +225,9 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         MediaDeletionConfigurator mediaConfig = (MediaDeletionConfigurator)config;
         CdmBase deleteFrom = mediaConfig.getDeleteFrom();
 
-        if (mediaConfig.isDeleteFromEveryWhere()){
-           return result;
-        }
+//        if (mediaConfig.isDeleteFromEveryWhere()){
+//           return result;
+//        }
         for (CdmBase ref: references){
             String message = null;
             if (ref instanceof MediaRepresentation){
@@ -263,7 +266,10 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                message = "The media can't be deleted from the database because it is referenced by a mediaspecimen. ("+((MediaSpecimen)ref).getTitleCache()+")";
                result.setAbort();
             }else {
-                message = "The media can't be completely deleted because it is referenced by another " + ref.getUserFriendlyTypeName() ;
+                message = "The media can't be completely deleted because it is referenced by a " + ref.getUserFriendlyTypeName();
+                if (ref instanceof IdentifiableEntity) {
+                	message += ": " + ((IdentifiableEntity)ref).getTitleCache();
+                }
                 result.setAbort();
             }
             if (message != null){
