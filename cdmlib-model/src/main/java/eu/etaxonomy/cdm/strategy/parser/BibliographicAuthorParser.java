@@ -29,6 +29,16 @@ public class BibliographicAuthorParser {
     private static final String etAl = "\\set\\s+al\\.?";
     private static final String team = ".+\\s*(&.+|"+etAl+")";
     private static final Pattern teamRe = Pattern.compile(team);
+    private static final String initialChars = "[A-Z"+UTF8.CAPITAL_A_ACUTE
+            + UTF8.CAPITAL_E_ACUTE
+            + UTF8.CAPITAL_I_ACUTE
+            + UTF8.CAPITAL_O_ACUTE
+            + UTF8.CAPITAL_U_ACUTE
+            + "]";
+    private static String initialsRe = "("+initialChars+"\\.?\\s?|(de|de la|de los)){1,4}";
+    private static String initialsStrictRe = "((?!"+initialsRe+"\\s).)*\\s+("+initialsRe+")";
+    private static Pattern pattern = Pattern.compile(initialsStrictRe);
+
 
     private static BibliographicAuthorParser singleton;
     public static final BibliographicAuthorParser Instance() {
@@ -72,24 +82,17 @@ public class BibliographicAuthorParser {
     }
 
     private List<Person> getMembers(String membersStr) {
-        String initChar = "[A-Z"+UTF8.CAPITAL_A_ACUTE
-                + UTF8.CAPITAL_E_ACUTE
-                + UTF8.CAPITAL_I_ACUTE
-                + UTF8.CAPITAL_O_ACUTE
-                + UTF8.CAPITAL_U_ACUTE
-                + "]";
+
 
         List<Person> result = new ArrayList<>();
         String[] split = membersStr.split(",");
-        String initialsRe = "("+initChar+"\\.?\\s?|(de|de la|de los)){1,4}";
+
         boolean isLast = false;
 //        boolean lastWasFamily;
         for (int i = 0; i<split.length; i++) {
             Person person = Person.NewInstance();
             isLast = i >= split.length-1;
             String str = split[i];
-            String regex = "((?!"+initialsRe+"\\s).)*\\s+("+initialsRe+")";
-            Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
                 //initials not separated by comma

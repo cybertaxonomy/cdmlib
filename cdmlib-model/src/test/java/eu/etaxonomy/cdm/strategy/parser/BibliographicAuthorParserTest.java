@@ -46,7 +46,7 @@ public class BibliographicAuthorParserTest {
         Assert.assertEquals("Pérez-Farrera", team.getTeamMembers().get(2).getFamilyName());
         Assert.assertEquals("M. "+UTF8.CAPITAL_A_ACUTE+".", team.getTeamMembers().get(2).getInitials());
 
-        //without comma
+        //without comma incorrect
         team = (Team)parser.parse("ContrerasC.L.E., Mariaca M. R. & P"+UTF8.SMALL_E_ACUTE+"rez-Farrera M. "+UTF8.CAPITAL_A_ACUTE+".");
         Assert.assertEquals(3, team.getTeamMembers().size());
         Assert.assertNull(team.getTeamMembers().get(0).getFamilyName());
