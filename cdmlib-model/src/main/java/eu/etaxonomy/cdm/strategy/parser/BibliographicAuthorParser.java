@@ -35,7 +35,7 @@ public class BibliographicAuthorParser {
             + UTF8.CAPITAL_O_ACUTE
             + UTF8.CAPITAL_U_ACUTE
             + "]";
-    private static String initialsRe = "("+initialChars+"\\.?\\s?|(de|de la|de los)){1,4}(?:\\s+"+initialChars+"\\.?)?";
+    private static String initialsRe = "("+initialChars+"\\.?\\s?|(del?|de la|de los|v[ao]n)\\s*){1,5}";
     private static String initialsStrictRe = "((?!"+initialsRe+"\\s).)*\\s+("+initialsRe+")";
     private static Pattern pattern = Pattern.compile(initialsStrictRe);
 

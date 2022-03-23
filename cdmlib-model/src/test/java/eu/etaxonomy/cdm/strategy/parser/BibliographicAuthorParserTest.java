@@ -74,14 +74,14 @@ public class BibliographicAuthorParserTest {
         Assert.assertEquals("Contreras, C.L.E. & al.", team.getTitleCache());
 
         //
-        team = (Team)parser.parse("Maldonado, M. M. de L., Velazquez, M J de A & Nanez, J. S. de los");
+        team = (Team)parser.parse("Maldonado, M. M. de L., Velazquez, M J de A & Borja, de la R. M. A.");
         Assert.assertEquals(3, team.getTeamMembers().size());
         Assert.assertEquals("Maldonado", team.getTeamMembers().get(0).getFamilyName());
         Assert.assertEquals("M. M. de L.", team.getTeamMembers().get(0).getInitials());
         Assert.assertEquals("Velazquez", team.getTeamMembers().get(1).getFamilyName());
         Assert.assertEquals("M J de A", team.getTeamMembers().get(1).getInitials());
-        Assert.assertEquals("Nanez", team.getTeamMembers().get(2).getFamilyName());
-        Assert.assertEquals("J. S. de los", team.getTeamMembers().get(2).getInitials());
+        Assert.assertEquals("Borja", team.getTeamMembers().get(2).getFamilyName());
+        Assert.assertEquals("de la R. M. A.", team.getTeamMembers().get(2).getInitials());
 
     }
 
