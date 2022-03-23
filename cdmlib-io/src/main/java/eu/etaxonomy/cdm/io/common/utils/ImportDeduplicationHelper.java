@@ -147,7 +147,7 @@ public class ImportDeduplicationHelper {
      * Clears all internal maps.
      */
     public void reset() {
-        dedupMap.values().forEach(di->di.map.clear());
+        dedupMap.values().forEach(di->{di.map.clear();di.status=Status.NOT_INIT;});
         institutionMap.clear();
         copyrightMap.clear();
         collectionMap.clear();
