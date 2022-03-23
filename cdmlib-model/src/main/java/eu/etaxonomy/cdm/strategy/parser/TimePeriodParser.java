@@ -479,7 +479,7 @@ public class TimePeriodParser {
 	    VerbatimTimePeriod timePeriod = VerbatimTimePeriod.NewVerbatimInstance();
 	    String strDateOnly = parseVerbatimPart(timePeriod, strPeriod);
 	    timePeriod = parseString(timePeriod, strDateOnly);
-	    if (timePeriod.getFreeText()!= null){
+	    if (timePeriod.getFreeText() != null){
 	        //if date could not be parsed, handle only as freetext
 	        timePeriod.setFreeText(strPeriod.trim());
 	    }

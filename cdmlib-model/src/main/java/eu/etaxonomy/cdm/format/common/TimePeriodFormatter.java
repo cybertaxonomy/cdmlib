@@ -36,7 +36,7 @@ public class TimePeriodFormatter {
 
     public String format (TimePeriod timePeriod){
         String result = null;
-        if ( StringUtils.isNotBlank(timePeriod.getFreeText())){
+        if (StringUtils.isNotBlank(timePeriod.getFreeText())){
             result = timePeriod.getFreeText();
         }else{
             result = getTimePeriod(timePeriod);
