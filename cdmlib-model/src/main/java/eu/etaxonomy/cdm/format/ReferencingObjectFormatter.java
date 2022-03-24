@@ -15,6 +15,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
+import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -28,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -37,6 +40,7 @@ import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -113,6 +117,8 @@ public class ReferencingObjectFormatter {
             resultString = ((LanguageStringBase) element).getText();
         }else if (element instanceof DescriptionElementBase) {
             resultString = getCache((DescriptionElementBase) element, defaultLanguage);
+        }else if (element instanceof StateData) {
+            resultString = getCache((StateData) element, defaultLanguage);
         }else if (element instanceof RelationshipBase<?, ?, ?>) {
             resultString = getCache((RelationshipBase<?, ?, ?>) element, defaultLanguage);
         }else if (element instanceof TypeDesignationBase<?>) {
@@ -445,10 +451,76 @@ public class ReferencingObjectFormatter {
     private static String getCache(DescriptionElementBase element,
             Language defaultLanguage) {
 
-        String mainElementLabel= null;
         DescriptionBase<?> descr = element.getInDescription();
         descr = CdmBase.deproxy(descr);
 
+        String mainElementLabel = mainElementLabel(descr);
+
+        String cache = null;
+        if (element instanceof TextData) {
+            LanguageString text = ((TextData) element).getPreferredLanguageString(defaultLanguage);
+            if (text != null) {
+                cache = text.getText();
+            }
+            cache = cache == null || isBlank(cache)? "empty" : StringUtils.truncate(cache, 20);
+        }else  if (element instanceof CommonTaxonName) {
+            cache = ((CommonTaxonName) element).getName();
+        }else if (element instanceof TaxonInteraction) {
+            Taxon taxon2 = ((TaxonInteraction) element).getTaxon2();
+            if(taxon2 != null && taxon2.getName() != null){
+                cache = taxon2.getName().getTitleCache();
+            }else{
+                cache = "No taxon chosen";
+            }
+        }else if (element instanceof Distribution) {
+            Distribution distribution = (Distribution) element;
+
+
+            NamedArea area = distribution.getArea();
+            if(area != null){
+                cache =  area.getLabel();
+
+                PresenceAbsenceTerm status = distribution.getStatus();
+                if (status == null){
+                    cache += ", no status";
+                }else {
+                    cache += ", " + status.getLabel();
+                }
+            }
+        }else if (element instanceof CategoricalData) {
+            CategoricalData categoricalData = (CategoricalData) element;
+
+            cache = CategoricalDataFormatter.NewInstance(new FormatKey[] {}).format(categoricalData);
+        }
+        String result = cache == null ? "" : cache;
+        result = concatWithMainElement(mainElementLabel, result);
+        return result;
+    }
+
+
+
+    private static String getCache(StateData stateData,
+            Language defaultLanguage) {
+        String cache = null;
+        if (stateData.getState()!= null) {
+            Representation rep = stateData.getState().getPreferredRepresentation(defaultLanguage);
+            if (rep != null) {
+                cache = rep.getLabel();
+            }
+        }
+        cache = isBlank(cache)? stateData.getUuid().toString() : cache;
+        DescriptionBase<?> desc = stateData.getCategoricalData() == null? null : stateData.getCategoricalData().getInDescription();
+        String mainElementLabel = mainElementLabel(desc);
+        return concatWithMainElement(mainElementLabel, cache);
+    }
+
+
+    /**
+     * Returns the label of the main element (taxon, specimen or name) for
+     * the given description.
+     */
+    private static String mainElementLabel(DescriptionBase<?> descr) {
+        String mainElementLabel = null;
         if (descr != null){
             if (descr.isInstanceOf(TaxonDescription.class)){
                 Taxon taxon = CdmBase.deproxy(descr, TaxonDescription.class).getTaxon();
@@ -467,43 +539,13 @@ public class ReferencingObjectFormatter {
                 }
             }
         }
+        return mainElementLabel;
+    }
 
-        String cache = null;
-        if (element instanceof TextData) {
-            //cache = ((TextData) element).getText(language);
-            cache = "Text Data";
-        }
-        if (element instanceof CommonTaxonName) {
-            cache = ((CommonTaxonName) element).getName();
-        }
-        if (element instanceof TaxonInteraction) {
-            Taxon taxon2 = ((TaxonInteraction) element).getTaxon2();
-            if(taxon2 != null && taxon2.getName() != null){
-                cache = taxon2.getName().getTitleCache();
-            }else{
-                cache = "No taxon chosen";
-            }
-        }
-        if (element instanceof Distribution) {
-            Distribution distribution = (Distribution) element;
-
-            NamedArea area = distribution.getArea();
-            if(area != null){
-                cache =  area.getLabel();
-
-                PresenceAbsenceTerm status = distribution.getStatus();
-                if (status == null){
-                    cache += ", no status";
-                }else {
-                    cache += ", " + status.getLabel();
-                }
-            }
-        }
-        String result = cache == null ? "" : cache;
+    private static String concatWithMainElement(String mainElementLabel, String result) {
         if (isNotBlank(mainElementLabel)){
             result = CdmUtils.concat(" ", result, "(" + mainElementLabel + ")");
         }
         return result;
     }
-
 }

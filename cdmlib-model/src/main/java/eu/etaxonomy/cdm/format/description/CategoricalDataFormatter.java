@@ -24,6 +24,10 @@ import eu.etaxonomy.cdm.model.description.StateData;
 public class CategoricalDataFormatter
         extends DesciptionElementFormatterBase<CategoricalData>{
 
+    public static final CategoricalDataFormatter NewInstance(FormatKey[] formatKeys) {
+        return new CategoricalDataFormatter(null, formatKeys);
+    }
+
     public CategoricalDataFormatter(Object object, FormatKey[] formatKeys) {
         super(object, formatKeys, CategoricalData.class);
     }

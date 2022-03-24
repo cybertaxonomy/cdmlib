@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -253,6 +254,18 @@ public class TextData
         }
     }
 
+    /**
+     * Convenience method to run {@link #getPreferredLanguageString(List)} for a
+     * single item list.
+     * @see #getPreferredLanguageString(List)
+     */
+    public LanguageString getPreferredLanguageString(Language language) {
+        List<Language> languages = new ArrayList<>();
+        if(language != null) {
+            languages.add(language);
+        }
+        return getPreferredLanguageString(languages);
+    }
 
     /**
      * Returns the LanguageString in the preferred language. Preferred languages
