@@ -9,12 +9,14 @@
 package eu.etaxonomy.cdm.api.facade;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
@@ -136,6 +138,8 @@ public class DerivedUnitFacadeCacheStrategy
         String code = getCode(facade);
         String identifier = getUnitNumber(facade /*, code*/);
         String collectionData = CdmUtils.concat(collectionAccessionSeperator, code, identifier);
+        String specimenStatusStr = getSpecimenStatusStr(facade.innerDerivedUnit());
+        collectionData = CdmUtils.concat(", " , collectionData, specimenStatusStr);
         return collectionData;
     }
 
@@ -187,6 +191,20 @@ public class DerivedUnitFacadeCacheStrategy
 		}
 		return code;
 	}
+	//copied from DerivedUnitDefaultCacheStrategy
+	 private String getSpecimenStatusStr(DerivedUnit specimen) {
+	        String result = null;
+	        if (!specimen.getStatus().isEmpty()){
+	            result = specimen.getStatus()
+	                    .stream()
+	                    .map(s->s.getType())
+	                    .filter(t->t != null)
+	                    .map(t->t.getPreferredRepresentation(Language.DEFAULT()).getLabel())
+	                    .sorted((s1,s2)->s1.compareTo(s2))
+	                    .collect(Collectors.joining(", "));
+	        }
+	        return result;
+	    }
 
 // ************************** GETTER / SETTER ******************************************************
 
