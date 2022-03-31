@@ -28,7 +28,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.codelevel>1.8</java.codelevel>
-    <spring.version>4.3.30.RELEASE</spring.version>                                 <!-- checked 2020-08, further upgrade possible -->
+    <spring.version>5.3.18</spring.version>                                 <!-- checked 2020-08, further upgrade possible -->
     <spring-security.version>4.2.20.RELEASE</spring-security.version>               <!-- checked 2020-08, further upgrade possible -->
     <spring-security-oauth2.version>2.5.1.RELEASE</spring-security-oauth2.version>  <!-- checked 2020-08 -->
     <spring-cloud.version>1.1.3.RELEASE</spring-cloud.version>
