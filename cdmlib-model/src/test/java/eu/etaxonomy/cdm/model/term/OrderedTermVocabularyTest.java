@@ -121,7 +121,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testOrderedTermVocabularyStringStringString() {
-		oVoc2 = new OrderedTermVocabulary<>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
+		oVoc2 = new OrderedTermVocabulary<>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"), null);
 		assertEquals("label", oVoc2.getLabel());
 	}
 

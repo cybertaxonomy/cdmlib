@@ -101,7 +101,7 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testTermVocabularyStringStringString() {
-		voc2 = new TermVocabulary<>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
+		voc2 = new TermVocabulary<>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"), null);
 		assertEquals("label", voc2.getLabel());
 	}
 
@@ -180,7 +180,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testGetTermSourceUri() {
 		assertEquals(null, voc1.getTermSourceUri());
-		voc2 = new TermVocabulary<>(TermType.Unknown,"term", "label", null, URI.create("http://term.Source.Uri"));
+		voc2 = new TermVocabulary<>(TermType.Unknown,"term", "label", null, URI.create("http://term.Source.Uri"), null);
 		assertEquals("http://term.Source.Uri", voc2.getTermSourceUri().toString());
 	}
 

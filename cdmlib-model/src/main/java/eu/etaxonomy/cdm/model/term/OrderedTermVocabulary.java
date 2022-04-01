@@ -59,26 +59,19 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 		return new OrderedTermVocabulary(type);
 	}
 
-
 	/**
-	 * @param type the {@link TermType term type}, must be the same as for all included terms
-	 * @param description the description of this vocabulary
-	 * @param label
-	 * @param labelAbbrev
-	 * @param termSourceUri
-	 * @return
-	 * @throws NullPointerException if type is <code>null</code>
-	 * @deprecated use {@link #NewOrderedInstance(TermType, Class, String, String, String, URI)} instead
-	 */
-	@Deprecated
-	public static OrderedTermVocabulary NewInstance(TermType type, String description, String label, String labelAbbrev, URI termSourceUri, Language lang){
-		return new OrderedTermVocabulary(type, description, label, labelAbbrev, termSourceUri, lang);
-	}
-
+     * @param type the {@link TermType term type}, must be the same as for all included terms
+     * @param class the parameter is only used for correct generics handling
+     * @param description the description of this vocabulary
+     * @param label
+     * @param labelAbbrev
+     * @param termSourceUri
+     * @return
+     * @throws NullPointerException if type is <code>null</code>
+     */
     public static <T extends OrderedTermBase<T>> OrderedTermVocabulary<T> NewOrderedInstance(TermType type, Class<T> clazz, String description, String label, String labelAbbrev, URI termSourceUri){
-        return new OrderedTermVocabulary<T>(type, description, label, labelAbbrev, termSourceUri);
+        return new OrderedTermVocabulary<T>(type, description, label, labelAbbrev, termSourceUri, null);
     }
-
 
 //************************ CONSTRUCTOR *****************************************************/
 
@@ -88,33 +81,13 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 		super();
 	}
 
-	/**
-	 * @param term
-	 * @param label
-	 * @param termSourceUri
-	 */
 	protected OrderedTermVocabulary(TermType type) {
 		super(type);
 	}
-	
 
-	/**
-	 * @param term
-	 * @param label
-	 * @param termSourceUri
-	 */
-	protected OrderedTermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
-		super(type, term, label, labelAbbrev, termSourceUri);
+	protected OrderedTermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri, Language language) {
+		super(type, term, label, labelAbbrev, termSourceUri, language);
 	}
-	/**
-	 * @param term
-	 * @param label
-	 * @param termSourceUri
-	 */
-	protected OrderedTermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri, Language lang) {
-		super(type, term, label, labelAbbrev, termSourceUri);
-	}
-
 
 //************************* METHODS **************************************/
 

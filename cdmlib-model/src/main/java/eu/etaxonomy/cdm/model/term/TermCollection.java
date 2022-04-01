@@ -77,8 +77,6 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
     protected TermCollection(TermType type){
         super(type);
     }
-    
-    
 
     protected TermCollection(TermType type, String term, String label, String labelAbbrev, Language lang) {
         super(type, term, label, labelAbbrev, lang);
