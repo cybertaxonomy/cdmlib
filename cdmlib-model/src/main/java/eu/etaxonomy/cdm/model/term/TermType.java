@@ -532,7 +532,7 @@ public enum TermType implements IEnumTerm<TermType>{
      *
      * @return a defined term base object
      */
-    public DefinedTermBase getEmptyDefinedTermBase() {
+    public DefinedTermBase getEmptyDefinedTermBase(Language lang) {
         String labelString = "_Untitled";
         switch(this) {
             case DeterminationModifier:
@@ -546,11 +546,11 @@ public enum TermType implements IEnumTerm<TermType>{
             case KindOfUnit:
             case IdentifierType:
             case DnaMarker:
-                return DefinedTerm.NewInstance(this, null, labelString, null);
+                return DefinedTerm.NewInstance(this, null, labelString, null, lang);
             case AnnotationType:
                 return eu.etaxonomy.cdm.model.common.AnnotationType.NewInstance(null, labelString, null);
             case Feature:
-                return eu.etaxonomy.cdm.model.description.Feature.NewInstance(null, labelString, null);
+                return eu.etaxonomy.cdm.model.description.Feature.NewInstance(null, labelString, null, lang);
             case Character:
                 return eu.etaxonomy.cdm.model.description.Character.NewInstance(null, null, null, labelString, null);
             case State:

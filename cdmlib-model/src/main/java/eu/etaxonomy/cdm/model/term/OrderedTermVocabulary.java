@@ -27,6 +27,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
@@ -70,8 +71,8 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	 * @deprecated use {@link #NewOrderedInstance(TermType, Class, String, String, String, URI)} instead
 	 */
 	@Deprecated
-	public static OrderedTermVocabulary NewInstance(TermType type, String description, String label, String labelAbbrev, URI termSourceUri){
-		return new OrderedTermVocabulary(type, description, label, labelAbbrev, termSourceUri);
+	public static OrderedTermVocabulary NewInstance(TermType type, String description, String label, String labelAbbrev, URI termSourceUri, Language lang){
+		return new OrderedTermVocabulary(type, description, label, labelAbbrev, termSourceUri, lang);
 	}
 
     public static <T extends OrderedTermBase<T>> OrderedTermVocabulary<T> NewOrderedInstance(TermType type, Class<T> clazz, String description, String label, String labelAbbrev, URI termSourceUri){
@@ -95,6 +96,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	protected OrderedTermVocabulary(TermType type) {
 		super(type);
 	}
+	
 
 	/**
 	 * @param term
@@ -102,6 +104,14 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	 * @param termSourceUri
 	 */
 	protected OrderedTermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
+		super(type, term, label, labelAbbrev, termSourceUri);
+	}
+	/**
+	 * @param term
+	 * @param label
+	 * @param termSourceUri
+	 */
+	protected OrderedTermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri, Language lang) {
 		super(type, term, label, labelAbbrev, termSourceUri);
 	}
 

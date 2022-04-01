@@ -95,6 +95,8 @@ public class TermVocabulary<T extends DefinedTermBase>
 	public static TermVocabulary NewInstance(TermType type){
 		return new TermVocabulary(type);
 	}
+	
+	
 
 	public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz){
 		return new TermVocabulary<T>(type);
@@ -111,6 +113,11 @@ public class TermVocabulary<T extends DefinedTermBase>
     public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz, String description, String label, String abbrev, URI termSourceUri){
         return new TermVocabulary<T>(type, description, label, abbrev, termSourceUri);
     }
+    
+    public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz, String description, String label, String abbrev, URI termSourceUri, Language lang){
+        return new TermVocabulary<T>(type, description, label, abbrev, termSourceUri, lang);
+    }
+
 
 // ************************* CONSTRUCTOR *************************************************
 
@@ -123,9 +130,14 @@ public class TermVocabulary<T extends DefinedTermBase>
 	protected TermVocabulary(TermType type) {
 		super(type);
 	}
-
+	
 	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
 		super(type, term, label, labelAbbrev);
+		setTermSourceUri(termSourceUri);
+	}
+
+	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri, Language lang) {
+		super(type, term, label, labelAbbrev, lang);
 		setTermSourceUri(termSourceUri);
 	}
 

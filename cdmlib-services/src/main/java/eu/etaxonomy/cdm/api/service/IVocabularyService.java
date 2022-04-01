@@ -153,7 +153,7 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * kindOf relation. Otherwise it will added via a partOf relation
      * @return the new term
      */
-    public TermDto addNewTerm(TermType termType, UUID vocabularyUUID);
+    public TermDto addNewTerm(TermType termType, UUID vocabularyUUID, Language lang);
 
     /**
      *

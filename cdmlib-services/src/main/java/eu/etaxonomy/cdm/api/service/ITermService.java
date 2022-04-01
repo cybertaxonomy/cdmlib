@@ -235,7 +235,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * kindOf relation. Otherwise it will added via a partOf relation
      * @return the new term
      */
-    public TermDto addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf);
+    public TermDto addNewTerm(TermType termType, UUID parentUuid, boolean isKindOf, Language lang);
 
 
     /**
