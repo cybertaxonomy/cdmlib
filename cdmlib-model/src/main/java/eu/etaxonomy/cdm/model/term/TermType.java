@@ -548,31 +548,40 @@ public enum TermType implements IEnumTerm<TermType>{
             case IdentifierType:
             case DnaMarker:
             	emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+            	break;
             case AnnotationType:
             	emptyTerm = eu.etaxonomy.cdm.model.common.AnnotationType.NewInstance(null, labelString, null);
+            	break;
             case Feature:
             	emptyTerm = eu.etaxonomy.cdm.model.description.Feature.NewInstance(null, labelString, null);
+            	break;
             case Character:
             	emptyTerm = eu.etaxonomy.cdm.model.description.Character.NewInstance(null, null, null, labelString, null);
+            	break;
             case State:
             	emptyTerm = eu.etaxonomy.cdm.model.description.State.NewInstance(null, labelString, null);
+            	break;
             case MarkerType:
             	emptyTerm = eu.etaxonomy.cdm.model.common.MarkerType.NewInstance(null, labelString, null);
+            	break;
             case ExtensionType:
             	emptyTerm = eu.etaxonomy.cdm.model.common.ExtensionType.NewInstance(null, labelString, null);
+            	break;
             case NamedArea:
             	emptyTerm = eu.etaxonomy.cdm.model.location.NamedArea.NewInstance(null, labelString, null);
+            	break;
             case NamedAreaLevel:
             	emptyTerm = eu.etaxonomy.cdm.model.location.NamedAreaLevel.NewInstance(null, labelString, null);
+            	break;
             case NamedAreaType:
             	emptyTerm = eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, labelString, null);
+            	break;
             case PresenceAbsenceTerm:
             	emptyTerm = eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, labelString, null);
+            	break;
             case Language:
-            	emptyTerm = eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);
-            default:
-            	emptyTerm = null;
-                
+            	emptyTerm = eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);    
+            	break;
                       
         }
         if (emptyTerm != null && lang != null) {
