@@ -534,6 +534,7 @@ public enum TermType implements IEnumTerm<TermType>{
      */
     public DefinedTermBase getEmptyDefinedTermBase(Language lang) {
         String labelString = "_Untitled";
+        DefinedTermBase emptyTerm = null;
         switch(this) {
             case DeterminationModifier:
             case StructureModifier:
@@ -546,32 +547,38 @@ public enum TermType implements IEnumTerm<TermType>{
             case KindOfUnit:
             case IdentifierType:
             case DnaMarker:
-                return DefinedTerm.NewInstance(this, null, labelString, null, lang);
+            	emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
             case AnnotationType:
-                return eu.etaxonomy.cdm.model.common.AnnotationType.NewInstance(null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.common.AnnotationType.NewInstance(null, labelString, null);
             case Feature:
-                return eu.etaxonomy.cdm.model.description.Feature.NewInstance(null, labelString, null, lang);
+            	emptyTerm = eu.etaxonomy.cdm.model.description.Feature.NewInstance(null, labelString, null);
             case Character:
-                return eu.etaxonomy.cdm.model.description.Character.NewInstance(null, null, null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.description.Character.NewInstance(null, null, null, labelString, null);
             case State:
-                return eu.etaxonomy.cdm.model.description.State.NewInstance(null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.description.State.NewInstance(null, labelString, null);
             case MarkerType:
-                return eu.etaxonomy.cdm.model.common.MarkerType.NewInstance(null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.common.MarkerType.NewInstance(null, labelString, null);
             case ExtensionType:
-                return eu.etaxonomy.cdm.model.common.ExtensionType.NewInstance(null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.common.ExtensionType.NewInstance(null, labelString, null);
             case NamedArea:
-                return eu.etaxonomy.cdm.model.location.NamedArea.NewInstance(null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.location.NamedArea.NewInstance(null, labelString, null);
             case NamedAreaLevel:
-                return eu.etaxonomy.cdm.model.location.NamedAreaLevel.NewInstance(null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.location.NamedAreaLevel.NewInstance(null, labelString, null);
             case NamedAreaType:
-                return eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, labelString, null);
             case PresenceAbsenceTerm:
-                return eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, labelString, null);
+            	emptyTerm = eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, labelString, null);
             case Language:
-                return eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);
+            	emptyTerm = eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);
             default:
-                return null;
+            	emptyTerm = null;
+                
+                      
         }
+        if (emptyTerm != null && lang != null) {
+        	emptyTerm.getRepresentations().iterator().next().setLanguage(lang);
+        }
+        return emptyTerm;
     }
 
 
