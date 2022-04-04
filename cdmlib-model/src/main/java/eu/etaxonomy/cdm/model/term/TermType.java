@@ -532,9 +532,9 @@ public enum TermType implements IEnumTerm<TermType>{
      *
      * @return a defined term base object
      */
-    public DefinedTermBase getEmptyDefinedTermBase(Language lang) {
+    public DefinedTermBase<?> getEmptyDefinedTermBase(Language lang) {
         String labelString = "_Untitled";
-        DefinedTermBase emptyTerm = null;
+        DefinedTermBase<?> emptyTerm = null;
         switch(this) {
             case DeterminationModifier:
             case StructureModifier:
@@ -582,6 +582,8 @@ public enum TermType implements IEnumTerm<TermType>{
             case Language:
             	emptyTerm = eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);    
             	break;
+		default:
+			break;
                       
         }
         if (emptyTerm != null && lang != null) {
