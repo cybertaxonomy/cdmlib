@@ -115,7 +115,6 @@ public class DerivationEvent extends EventBase {
 
 	/**
 	 * Factory method
-	 * @return
 	 */
 	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original,
 	        DerivedUnit derivative, DerivationEventType type){

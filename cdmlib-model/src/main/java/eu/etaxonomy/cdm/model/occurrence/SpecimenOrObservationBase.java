@@ -436,6 +436,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         }
     }
 
+    public DerivationEvent addDerivedUnit(DerivedUnit derivedUnit, DerivationEventType derivationType) {
+        return DerivationEvent.NewSimpleInstance(this, derivedUnit, derivationType);
+    }
+
+    //determination
+
     public Set<DeterminationEvent> getDeterminations() {
         if(determinations == null) {
             this.determinations = new HashSet<>();

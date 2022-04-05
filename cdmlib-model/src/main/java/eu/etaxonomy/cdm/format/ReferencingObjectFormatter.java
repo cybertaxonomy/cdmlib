@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
+import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -37,13 +38,17 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.IDescribable;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -119,6 +124,8 @@ public class ReferencingObjectFormatter {
             resultString = getCache((DescriptionElementBase) element, defaultLanguage);
         }else if (element instanceof StateData) {
             resultString = getCache((StateData) element, defaultLanguage);
+        }else if (element instanceof StatisticalMeasurementValue) {
+            resultString = getCache((StatisticalMeasurementValue) element, defaultLanguage);
         }else if (element instanceof RelationshipBase<?, ?, ?>) {
             resultString = getCache((RelationshipBase<?, ?, ?>) element, defaultLanguage);
         }else if (element instanceof TypeDesignationBase<?>) {
@@ -457,14 +464,17 @@ public class ReferencingObjectFormatter {
         String mainElementLabel = mainElementLabel(descr);
 
         String cache = null;
+        //TextData
         if (element instanceof TextData) {
             LanguageString text = ((TextData) element).getPreferredLanguageString(defaultLanguage);
             if (text != null) {
                 cache = text.getText();
             }
             cache = cache == null || isBlank(cache)? "empty" : StringUtils.truncate(cache, 20);
+        //CommonTaxonName
         }else  if (element instanceof CommonTaxonName) {
             cache = ((CommonTaxonName) element).getName();
+        //TaxonInteraction
         }else if (element instanceof TaxonInteraction) {
             Taxon taxon2 = ((TaxonInteraction) element).getTaxon2();
             if(taxon2 != null && taxon2.getName() != null){
@@ -472,9 +482,20 @@ public class ReferencingObjectFormatter {
             }else{
                 cache = "No taxon chosen";
             }
+         //IndividualsAssociation
+        }else if (element instanceof IndividualsAssociation) {
+            SpecimenOrObservationBase<?> unit = ((IndividualsAssociation) element).getAssociatedSpecimenOrObservation();
+            if(unit != null){
+                cache = unit.getIdentityCache();
+                if (isBlank(cache)) {
+                    cache = unit.getTitleCache();
+                }
+            }else{
+                cache = "No unit chosen";
+            }
+        //Distribution
         }else if (element instanceof Distribution) {
             Distribution distribution = (Distribution) element;
-
 
             NamedArea area = distribution.getArea();
             if(area != null){
@@ -487,11 +508,22 @@ public class ReferencingObjectFormatter {
                     cache += ", " + status.getLabel();
                 }
             }
+        //CategoricalData
         }else if (element instanceof CategoricalData) {
             CategoricalData categoricalData = (CategoricalData) element;
 
             cache = CategoricalDataFormatter.NewInstance(new FormatKey[] {}).format(categoricalData);
+        //QuantitativeData
+        }else if (element instanceof QuantitativeData) {
+            QuantitativeData quantitativeData = (QuantitativeData) element;
+
+            cache = QuantitativeDataFormatter.NewInstance(new FormatKey[] {}).format(quantitativeData);
+        //CategoricalData
+        }else if (element instanceof TemporalData) {
+            TemporalData temporalData = (TemporalData) element;
+            cache = temporalData.toString();
         }
+
         String result = cache == null ? "" : cache;
         result = concatWithMainElement(mainElementLabel, result);
         return result;
@@ -502,7 +534,7 @@ public class ReferencingObjectFormatter {
     private static String getCache(StateData stateData,
             Language defaultLanguage) {
         String cache = null;
-        if (stateData.getState()!= null) {
+        if (stateData.getState() != null) {
             Representation rep = stateData.getState().getPreferredRepresentation(defaultLanguage);
             if (rep != null) {
                 cache = rep.getLabel();
@@ -510,6 +542,21 @@ public class ReferencingObjectFormatter {
         }
         cache = isBlank(cache)? stateData.getUuid().toString() : cache;
         DescriptionBase<?> desc = stateData.getCategoricalData() == null? null : stateData.getCategoricalData().getInDescription();
+        String mainElementLabel = mainElementLabel(desc);
+        return concatWithMainElement(mainElementLabel, cache);
+    }
+
+    private static String getCache(StatisticalMeasurementValue smv, Language defaultLanguage) {
+        String cache = null;
+        if (smv.getType() != null) {
+            Representation rep = smv.getType().getPreferredRepresentation(defaultLanguage);
+            if (rep != null) {
+                cache = rep.getLabel();
+            }
+        }
+        cache = CdmUtils.concat("=", cache, smv.getValue().toString());
+        cache = isBlank(cache)? smv.getUuid().toString() : cache;
+        DescriptionBase<?> desc = smv.getQuantitativeData() == null? null : smv.getQuantitativeData().getInDescription();
         String mainElementLabel = mainElementLabel(desc);
         return concatWithMainElement(mainElementLabel, cache);
     }
