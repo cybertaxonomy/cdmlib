@@ -554,7 +554,9 @@ public class ReferencingObjectFormatter {
                 cache = rep.getLabel();
             }
         }
-        cache = CdmUtils.concat("=", cache, smv.getValue().toString());
+        if (smv.getValue() != null) {
+            cache = CdmUtils.concat("=", cache, smv.getValue().toString());
+        }
         cache = isBlank(cache)? smv.getUuid().toString() : cache;
         DescriptionBase<?> desc = smv.getQuantitativeData() == null? null : smv.getQuantitativeData().getInDescription();
         String mainElementLabel = mainElementLabel(desc);
