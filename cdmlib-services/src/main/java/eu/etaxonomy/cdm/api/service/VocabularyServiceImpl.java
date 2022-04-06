@@ -182,8 +182,8 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 
     @Transactional(readOnly = false)
     @Override
-    public TermDto addNewTerm(TermType termType, UUID vocabularyUUID) {
-        DefinedTermBase<?> term = termType.getEmptyDefinedTermBase();
+    public TermDto addNewTerm(TermType termType, UUID vocabularyUUID, Language lang) {
+        DefinedTermBase<?> term = termType.getEmptyDefinedTermBase(lang);
         termService.save(term);
         TermVocabulary vocabulary = dao.load(vocabularyUUID);
         vocabulary.addTerm(term);

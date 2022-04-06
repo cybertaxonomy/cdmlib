@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.Language;
+
 
 /**
  * @author a.mueller
@@ -108,8 +110,11 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	    return term;
 	}
 
+	public static DefinedTerm NewInstance(TermType termType, String description, String label, String labelAbbrev, Language lang){
+		return new DefinedTerm(termType, description, label, labelAbbrev, lang);
+	}
 	public static DefinedTerm NewInstance(TermType termType, String description, String label, String labelAbbrev){
-		return new DefinedTerm(termType, description, label, labelAbbrev);
+		return new DefinedTerm(termType, description, label, labelAbbrev, null);
 	}
 
 
@@ -159,6 +164,9 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 	    super(termType);
 	}
 
+	public DefinedTerm(TermType type, String description, String label, String labelAbbrev, Language lang) {
+		super(type, description, label, labelAbbrev, lang);
+	}
 	public DefinedTerm(TermType type, String description, String label, String labelAbbrev) {
 		super(type, description, label, labelAbbrev);
 	}

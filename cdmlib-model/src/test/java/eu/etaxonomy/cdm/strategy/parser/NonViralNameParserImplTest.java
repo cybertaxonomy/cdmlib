@@ -3335,4 +3335,18 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals( "Strid & Kit Tan", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         assertEquals( "Mount. Fl. Greece", nomRef.getInReference().getAbbrevTitle());
     }
+
+    //this is a slot for testing new string, once the Strings tested here work move the according test
+    //to one of the above methods (or remove it if not needed)
+    @Test
+    public final void testNew(){
+//        String nameStr = "Eclipta humilis Kunth, Nov. Gen. Sp. Pl. (folio ed.) 4. 1820 [1818]";
+//
+//        TaxonName name = parser.parseReferencedName(nameStr);
+//        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+//        Assert.assertFalse("Name should be parsable", name.isProtectedFullTitleCache());
+//        Assert.assertEquals("Eclipta humilis", name.getNameCache());
+//        Reference nomRef = name.getNomenclaturalReference();
+    }
+
 }

@@ -365,7 +365,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         taxonDescriptions.add(description1);
         Distribution distribution1 = Distribution.NewInstance(Country.GERMANY(), null);
         description1.addElement(distribution1);
-        Distribution distribution2 = Distribution.NewInstance(Country.FRANCEFRENCHREPUBLIC(), null);
+        Distribution distribution2 = Distribution.NewInstance(Country.FRANCE(), null);
         distribution2.setFeature(Feature.COMMON_NAME());
         description1.addElement(distribution2);
 

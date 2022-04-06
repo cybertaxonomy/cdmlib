@@ -208,6 +208,18 @@ public class CategoricalData extends DescriptionElementBase {
 // ********************* CONVENIENCE ******************************************/
 
     /**
+     * Convenience method to test the existence of a given state in the state data.
+     * Note: the method ignores modifiers so state data having the state may still be
+     * modified by its modifiers.
+     *
+     * @param state the given {@link State}
+     * @return <code>true</code> if the state exists
+     */
+    public boolean hasState(State state) {
+        return getStatesOnly().contains(state);
+    }
+
+    /**
      * Convenience method returning only the list of states. Leaving out modifiers and modifying text.
      */
     @Transient

@@ -25,7 +25,9 @@ import eu.etaxonomy.cdm.model.description.QuantitativeData;
 public class QuantitativeDataFormatter
             extends DesciptionElementFormatterBase<QuantitativeData> {
 
-    protected static final String MISSING_TERM_LABEL = "-no state-"; //TODO
+    public static final QuantitativeDataFormatter NewInstance(FormatKey[] formatKeys) {
+        return new QuantitativeDataFormatter(null, formatKeys);
+    }
 
     public QuantitativeDataFormatter(Object object, FormatKey[] formatKeys) {
         super(object, formatKeys, QuantitativeData.class);

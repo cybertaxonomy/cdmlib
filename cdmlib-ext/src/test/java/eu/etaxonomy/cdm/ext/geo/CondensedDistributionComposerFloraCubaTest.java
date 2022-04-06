@@ -191,7 +191,9 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         UUID cubaAreasVocabularyUuid = UUID.fromString("c81e3c7b-3c01-47d1-87cf-388de4b1908c");
         String label = "Cuba Areas";
         String abbrev = null;
-        cubaAreasVocabualary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, label, label, abbrev, null);
+
+        cubaAreasVocabualary = OrderedTermVocabulary.NewOrderedInstance(TermType.NamedArea, NamedArea.class, label, label, abbrev, null);
+
         cubaAreasVocabualary.setUuid(cubaAreasVocabularyUuid);
 
         //Cuba

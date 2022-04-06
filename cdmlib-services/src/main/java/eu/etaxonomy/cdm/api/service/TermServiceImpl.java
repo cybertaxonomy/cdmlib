@@ -598,8 +598,8 @@ public class TermServiceImpl
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Transactional(readOnly = false)
     @Override
-    public TermDto addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf) {
-        DefinedTermBase term = termType.getEmptyDefinedTermBase();
+    public TermDto addNewTerm(TermType termType, UUID parentUUID, boolean isKindOf, Language lang) {
+        DefinedTermBase term = termType.getEmptyDefinedTermBase(lang);
         dao.save(term);
         DefinedTermBase parent = dao.load(parentUUID);
         if(isKindOf){

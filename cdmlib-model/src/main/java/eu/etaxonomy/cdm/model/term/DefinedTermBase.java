@@ -206,8 +206,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
         super(type);
     }
 
+    public DefinedTermBase(TermType type, String description, String label, String labelAbbrev, Language lang) {
+        super(type, description, label, labelAbbrev, lang);
+    }
     public DefinedTermBase(TermType type, String description, String label, String labelAbbrev) {
-        super(type, description, label, labelAbbrev);
+        super(type, description, label, labelAbbrev, null);
     }
 
 //********************** GETTER /SETTER *************************************

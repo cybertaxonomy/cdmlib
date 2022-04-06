@@ -105,12 +105,19 @@ public class TermVocabulary<T extends DefinedTermBase>
 	 */
 	@Deprecated
 	public static TermVocabulary NewInstance(TermType type, String description, String label, String abbrev, URI termSourceUri){
-		return new TermVocabulary(type, description, label, abbrev, termSourceUri);
+		return new TermVocabulary(type, description, label, abbrev, termSourceUri, null);
 	}
 
-    public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz, String description, String label, String abbrev, URI termSourceUri){
-        return new TermVocabulary<T>(type, description, label, abbrev, termSourceUri);
+    public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz,
+            String description, String label, String abbrev, URI termSourceUri){
+        return new TermVocabulary<T>(type, description, label, abbrev, termSourceUri, null);
     }
+
+    public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz,
+            String description, String label, String abbrev, URI termSourceUri, Language language){
+        return new TermVocabulary<T>(type, description, label, abbrev, termSourceUri, language);
+    }
+
 
 // ************************* CONSTRUCTOR *************************************************
 
@@ -124,11 +131,10 @@ public class TermVocabulary<T extends DefinedTermBase>
 		super(type);
 	}
 
-	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
-		super(type, term, label, labelAbbrev);
+	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri, Language language) {
+		super(type, term, label, labelAbbrev, language);
 		setTermSourceUri(termSourceUri);
 	}
-
 
 	protected Set<T> newTermSet(){
 	    return new HashSet<>();

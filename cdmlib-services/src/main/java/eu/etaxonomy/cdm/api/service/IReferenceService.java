@@ -124,6 +124,15 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
      */
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
             ReferenceType type);
+    
+    /**
+     * @param limit
+     * @param authorID
+     * @param type
+     * @return
+     */
+    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID,
+			ReferenceType refType);
 
     /**
      * @param uuids

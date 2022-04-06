@@ -105,10 +105,15 @@ public abstract class TermBase
         	this.termType = type;
         }
     }
+    
+   
 
-    protected TermBase(TermType type, String term, String label, String labelAbbrev) {
+    protected TermBase(TermType type, String term, String label, String labelAbbrev, Language lang) {
         this(type);
-        this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
+        if (lang == null) {
+        	lang = Language.DEFAULT();
+        }
+        this.addRepresentation(new Representation(term, label, labelAbbrev, lang) );
     }
 
     @Override
@@ -224,6 +229,9 @@ public abstract class TermBase
             if (representations.size()>0){
                 return null;
             }else{
+            	if (this.getTitleCache() != null) {
+            		return this.getTitleCache();
+            	}
                 return super.getUuid().toString();
             }
         }

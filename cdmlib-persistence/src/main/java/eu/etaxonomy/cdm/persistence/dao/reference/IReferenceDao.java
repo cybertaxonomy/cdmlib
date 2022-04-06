@@ -137,5 +137,8 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
+	List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID,
+			ReferenceType refType);
+
 
 }

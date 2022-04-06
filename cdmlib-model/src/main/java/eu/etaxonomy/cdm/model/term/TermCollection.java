@@ -30,6 +30,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.model.common.Language;
+
 /**
  * @author a.mueller
  * @since 06.03.2019
@@ -76,10 +78,13 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
         super(type);
     }
 
-    protected TermCollection(TermType type, String term, String label, String labelAbbrev) {
-        super(type, term, label, labelAbbrev);
+    protected TermCollection(TermType type, String term, String label, String labelAbbrev, Language lang) {
+        super(type, term, label, labelAbbrev, lang);
     }
 
+    protected TermCollection(TermType type, String term, String label, String labelAbbrev) {
+        super(type, term, label, labelAbbrev, null);
+    }
 // ****************** GETTER / SETTER **********************************/
 
     public boolean isAllowDuplicates() {

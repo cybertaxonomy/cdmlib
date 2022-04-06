@@ -29,21 +29,16 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
  */
 public class MediaInfoServiceReaderTest  {
 
-
     public static final Logger logger = Logger.getLogger(MediaInfoServiceReaderTest.class);
 
-
-    private URI jpegImageUri, jpegMetadataUri;
-
     @Before
-    public void setUp() throws Exception {
-
-        jpegImageUri = new URI("https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file");
-        jpegMetadataUri = new URI("https://image.bgbm.org/metadata/info?file=Cyprus/Sisymbrium_aegyptiacum_C1.jpg");
-    }
+    public void setUp() throws Exception {}
 
     @Test
-    public void testJpeg() throws URISyntaxException, IOException, HttpException {
+    public void testJpegBgbmPictures() throws URISyntaxException, IOException, HttpException {
+        URI jpegImageUri = new URI("https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file");
+        URI jpegMetadataUri = new URI("https://image.bgbm.org/metadata/info?file=Cyprus/Sisymbrium_aegyptiacum_C1.jpg");
+
         if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
             CdmImageInfo imageInfo = new MediaInfoServiceReader(jpegImageUri, jpegMetadataUri).read().getCdmImageInfo();
             assertNotNull(imageInfo);
@@ -55,4 +50,19 @@ public class MediaInfoServiceReaderTest  {
         }
     }
 
+    @Test
+    public void testJpegBoMediahub() throws URISyntaxException, IOException, HttpException {
+        URI jpegImageUri = new URI("https://mediahub.bo.berlin/api/File/Original/1adb62d8-0b67-4128-927b-b713d164f98e/Sisymbrium_aegyptiacum_E1.JPG");
+        URI jpegMetadataUri = new URI("https://image.bgbm.org/metadata/info?file=mediacloud/org1/1adb62d8-0b67-4128-927b-b713d164f98e/original");
+
+        if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
+            CdmImageInfo imageInfo = new MediaInfoServiceReader(jpegImageUri, jpegMetadataUri).read().getCdmImageInfo();
+            assertNotNull(imageInfo);
+            assertEquals(937, imageInfo.getHeight());
+            assertEquals(1400, imageInfo.getWidth());
+
+        } else {
+            logger.warn("test testNewInstanceRemotePng() skipped, since server is not available");
+        }
+    }
 }

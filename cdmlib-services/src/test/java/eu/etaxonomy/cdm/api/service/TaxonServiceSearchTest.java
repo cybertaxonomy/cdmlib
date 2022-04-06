@@ -141,7 +141,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         typesToIndex.add(TaxonRelationship.class);
 
         germany =  Country.GERMANY();
-        france = Country.FRANCEFRENCHREPUBLIC();
+        france = Country.FRANCE();
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
 

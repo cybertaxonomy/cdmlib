@@ -120,6 +120,11 @@ public class DefaultMediaTransformations {
         MediaUriTransformation mutIIIFAPI_3segments = new MediaUriTransformation();
         mutIIIFAPI_3segments.setHost(new SearchReplace("pictures.bgbm.org", "image.bgbm.org"));
         mutIIIFAPI_3segments.setPathQueryFragment(new SearchReplace("digilib\\/Scaler\\/IIIF\\/([^\\/!]+)!([^\\/!]+)!([^\\/!]+)\\/full/.*", "metadata/info?file=$1/$2/$3"));
-        return Arrays.asList(mutScalerAPI, mutIIIFAPI_1segment, mutIIIFAPI_2segments, mutIIIFAPI_3segments);
+
+        MediaUriTransformation boMediahub = new MediaUriTransformation();
+        boMediahub.setHost(new SearchReplace("mediahub.bo.berlin", "image.bgbm.org"));
+        boMediahub.setPathQueryFragment(new SearchReplace("api\\/File\\/Original\\/([\\-0-9a-f]+)\\/(.*)", "metadata/info?file=mediacloud/org1/$1/original"));
+
+        return Arrays.asList(mutScalerAPI, mutIIIFAPI_1segment, mutIIIFAPI_2segments, mutIIIFAPI_3segments, boMediahub);
     }
 }
