@@ -281,7 +281,6 @@ public class TermTree <T extends DefinedTermBase>
     @Override
 	public TermTree<T> clone() {
 		try {
-		    @SuppressWarnings("unchecked")
 		    TermTree<T> result = (TermTree<T>)super.clone();
 		    result.root = this.getRoot().cloneDescendants();
 	        return result;
