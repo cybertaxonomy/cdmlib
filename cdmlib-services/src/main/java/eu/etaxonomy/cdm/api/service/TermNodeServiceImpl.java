@@ -164,9 +164,9 @@ public class TermNodeServiceImpl
              result.addException(new Exception("The parent node does not exist."));
              return result;
 	     }
-	     DefinedTermBase child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
+	     DefinedTermBase<?> child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
 
-	     if(node != null && node.getGraph() != null && !node.getGraph().isAllowDuplicates() && node.getGraph().getDistinctTerms().contains(child)){
+	     if(node.getGraph() != null && !node.getGraph().isAllowDuplicates() && node.getGraph().getDistinctTerms().contains(child)){
 	         result.setError();
 	         result.addException(new Exception("This term tree does not allow duplicate terms."));
 	         return result;
@@ -187,7 +187,7 @@ public class TermNodeServiceImpl
 
 	@Override
 	public DeleteResult isDeletable(UUID nodeUuid, TermNodeDeletionConfigurator config){
-	    TermNode<Feature> node = load(nodeUuid);
+	    TermNode<?> node = load(nodeUuid);
 	    DeleteResult result = new DeleteResult();
         if (node == null){
             result.addException(new DataChangeNoRollbackException("The object is not available anymore."));
@@ -200,7 +200,7 @@ public class TermNodeServiceImpl
 	            break;
 	        }
 	        if (ref instanceof TermTree){
-	            TermTree<Feature> refTree = HibernateProxyHelper.deproxy(ref, TermTree.class);
+	            TermTree<?> refTree = HibernateProxyHelper.deproxy(ref, TermTree.class);
 	            if (node.getGraph().equals((refTree))){
 	                break;
 	            }
@@ -218,7 +218,7 @@ public class TermNodeServiceImpl
         propertyPaths.add("parent");
         propertyPaths.add("parent.children");
         propertyPaths.add("children");
-        TermNode test = load(movedNodeUuid, propertyPaths);
+        TermNode<?> test = load(movedNodeUuid, propertyPaths);
         TermNode movedNode = CdmBase.deproxy(load(movedNodeUuid, propertyPaths), TermNode.class);
         TermNode<?> targetNode = CdmBase.deproxy(load(targetNodeUuid, propertyPaths));
         TermNode<?> parent = CdmBase.deproxy(movedNode.getParent());
@@ -263,10 +263,6 @@ public class TermNodeServiceImpl
         return result;
     }
 
-    /**
-     * @param node
-     * @param dto
-     */
     private void updateFeatureStates(TermNode<?> node, TermNodeDto dto, boolean inApplicable) {
         Map<FeatureState, FeatureStateDto> changeState = new HashMap<>();
         Set<FeatureStateDto> newStates = new HashSet<>();
@@ -297,7 +293,6 @@ public class TermNodeServiceImpl
             if (!stillExist){
                 deleteState.add(featureState);
             }
-
         }
 
         for (FeatureStateDto featureStateDto: setForUpdate){
@@ -315,7 +310,6 @@ public class TermNodeServiceImpl
                     newStates.add(featureStateDto);
                 }
             }
-
         }
         if (inApplicable){
             node.getInapplicableIf().removeAll(deleteState);
@@ -324,7 +318,7 @@ public class TermNodeServiceImpl
         }
         for (Entry<FeatureState, FeatureStateDto> change: changeState.entrySet()){
             if (!change.getKey().getFeature().getUuid().equals(change.getValue().getFeature().getUuid())){
-                DefinedTermBase term = termService.load(change.getValue().getFeature().getUuid());
+                DefinedTermBase<?> term = termService.load(change.getValue().getFeature().getUuid());
                 if (term instanceof Feature){
                     Feature feature = HibernateProxyHelper.deproxy(term, Feature.class);
                     change.getKey().setFeature(feature);
@@ -332,7 +326,7 @@ public class TermNodeServiceImpl
 
             }
             if (!change.getKey().getState().getUuid().equals(change.getValue().getState().getUuid())){
-                DefinedTermBase term = termService.load(change.getValue().getState().getUuid());
+                DefinedTermBase<?> term = termService.load(change.getValue().getState().getUuid());
                 if (term instanceof State){
                     State state = HibernateProxyHelper.deproxy(term, State.class);
                     change.getKey().setState(state);
@@ -348,12 +342,12 @@ public class TermNodeServiceImpl
         for (FeatureStateDto stateDto: newStates){
             Feature feature = null;
             State state = null;
-            DefinedTermBase term = termService.find(stateDto.getFeature().getUuid());
+            DefinedTermBase<?> term = termService.find(stateDto.getFeature().getUuid());
             term = HibernateProxyHelper.deproxy(term);
             if (term instanceof Character){
                 feature = HibernateProxyHelper.deproxy(term, Character.class);
             }
-            DefinedTermBase termState = termService.load(stateDto.getState().getUuid());
+            DefinedTermBase<?> termState = termService.load(stateDto.getState().getUuid());
             if (termState instanceof State){
                 state = HibernateProxyHelper.deproxy(termState, State.class);
             }
@@ -455,7 +449,7 @@ public class TermNodeServiceImpl
                     if (!uuids.isEmpty()){
                         terms = termService.load(uuids, null);
                         Set<MeasurementUnit> measurementUnits = new HashSet<>();
-                        for (DefinedTermBase term: terms){
+                        for (DefinedTermBase<?> term: terms){
                             if (term instanceof MeasurementUnit){
                                 measurementUnits.add((MeasurementUnit)term);
                             }
