@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -305,10 +306,13 @@ public class TextData
         //workaround for key problem
         if(! isHashMapHibernateBugFixed){
             HashMap<Language, LanguageString> tmp = new HashMap<>();
-            tmp.putAll(multilanguageText);
-            multilanguageText.clear();
-            multilanguageText.putAll(tmp);
-
+            try {
+	            tmp.putAll(multilanguageText);
+	            multilanguageText.clear();
+	            multilanguageText.putAll(tmp);
+            }catch(LazyInitializationException e) {
+            	//do nothing
+            }
             isHashMapHibernateBugFixed = true;
         }
     }

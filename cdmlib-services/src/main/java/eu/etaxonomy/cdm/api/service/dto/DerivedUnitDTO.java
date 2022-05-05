@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
+import eu.etaxonomy.cdm.model.occurrence.OccurrenceStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -68,6 +69,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     private String barcode;
 
     private String preservationMethod;
+    private List<DerivedUnitStatusDto> status; 
 
     /**
      * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and
@@ -119,6 +121,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
                     .forEach(a -> dto.addAnnotation(AnnotationDTO.fromEntity(a))
                             )
                     );
+        
         return dto;
     }
 
@@ -210,7 +213,19 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
             }
             addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }
-
+        Collection<OccurrenceStatus> occurrenceStatus = derivedUnit.getStatus();
+        
+        if (occurrenceStatus != null && !occurrenceStatus.isEmpty()) {
+        	this.status = new ArrayList<>();
+        
+	        for (OccurrenceStatus specimenStatus : occurrenceStatus) {
+	            DerivedUnitStatusDto dto = new DerivedUnitStatusDto(specimenStatus.getType().getLabel());
+	            dto.setStatusSource(SourceDTO.fromDescriptionElementSource(specimenStatus.getSource()) ) ;
+	            this.status.add(dto);
+	        }
+        }
+        
+        
         if(derivedUnit.getStoredUnder() != null) {
             storedUnder = TypedEntityReference.fromEntity(derivedUnit.getStoredUnder());
         }
@@ -358,7 +373,15 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         this.collection = collection;
     }
 
-    @Override
+    public List<DerivedUnitStatusDto> getStatus() {
+		return status;
+	}
+
+	public void setStatus(List<DerivedUnitStatusDto> status) {
+		this.status = status;
+	}
+
+	@Override
     protected void updateTreeDependantData() {
         // TODO DerivationTreeSummaryDTO should be updated here once it is refactored so that it can operate on dtos
     }
