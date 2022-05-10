@@ -98,7 +98,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     /** Taxonomic status 'accepted' string */
     public static final String ACCEPTED_NAME_STATUS = "accepted";
 
-    /** Taxonpmic status 'synonym' string */
+    /** Taxonomic status 'synonym' string */
     public static final String SYNONYM_STATUS = "synonym";
 
     /** Flag 'doubtful' strings */
@@ -392,8 +392,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
             // if search is successful then get related information , else return error
             if (nameSearchList != null && !nameSearchList.isEmpty()) {
-                NameSearch ns = new NameSearch();
-                ns.setRequest(query);
+                NameSearch nameSearch = new NameSearch();
+                nameSearch.setRequest(query);
 
                 for (DocumentSearchResult searchResult : nameSearchList) {
                     for(Document doc : searchResult.getDocs()) {
@@ -411,7 +411,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         }
                     }
                     // update name search object
-                    ns.addToResponseList(doc.getValues("titleCache")[0],
+                    nameSearch.addToResponseList(doc.getValues("titleCache")[0],
                             doc.getValues("nameCache")[0],
                             searchResult.getMaxScore(),
                             doc.getValues("uuid")[0].toString(),
@@ -419,7 +419,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                             mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon"+AcceptedTaxonBridge.DOC_KEY_UUID_SUFFIX)));
                     }
                 }
-                nsList.add(ns);
+                nsList.add(nameSearch);
 
             } else {
                 ErrorResponse er = new ErrorResponse();
