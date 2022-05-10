@@ -835,7 +835,6 @@ public class NameServiceImpl
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
-        @SuppressWarnings("rawtypes")
         List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
 
         return searchResults;
@@ -854,7 +853,6 @@ public class NameServiceImpl
         LuceneSearch luceneSearch = prepareFindByExactNameSearch(null, name, wildcard, languages, highlightFragments);
 
         // --- execute search
-
 
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
 

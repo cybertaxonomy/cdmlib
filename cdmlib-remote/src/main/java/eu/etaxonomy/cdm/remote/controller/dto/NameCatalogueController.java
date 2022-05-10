@@ -262,6 +262,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     public ModelAndView doGetNameSearchDocumentation(
             HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
         Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-default.apt");

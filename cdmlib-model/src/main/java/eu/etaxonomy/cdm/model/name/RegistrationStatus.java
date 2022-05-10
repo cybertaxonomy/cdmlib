@@ -22,10 +22,10 @@ import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
+ * Enumeration for the taxon name registration status.
  *
  * @author a.mueller
  * @since 13.03.2017
- *
  */
 @XmlEnum
 public enum RegistrationStatus implements IEnumTerm<RegistrationStatus>{
@@ -61,7 +61,6 @@ public enum RegistrationStatus implements IEnumTerm<RegistrationStatus>{
     REJECTED(UUID.fromString("0960e14a-a6b1-41b4-92a9-0d6d1b9e0159"), "Unknown unit type","REJ"),
     ;
 
-    @SuppressWarnings("unused")
     private final Logger logger = Logger.getLogger(RegistrationStatus.class);
 
 
