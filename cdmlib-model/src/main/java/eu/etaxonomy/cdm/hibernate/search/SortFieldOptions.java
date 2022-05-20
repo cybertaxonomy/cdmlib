@@ -29,7 +29,7 @@ import org.hibernate.search.bridge.LuceneOptions;
  */
 public class SortFieldOptions implements LuceneOptions {
 	private static final Logger logger = Logger.getLogger(SortFieldOptions.class);
-	
+
     @Override
     public Store getStore() {
         return Store.YES;
@@ -54,14 +54,12 @@ public class SortFieldOptions implements LuceneOptions {
 	public void addFieldToDocument(String arg0, String arg1, Document arg2) {
 		logger.warn("not yet implemented");
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void addNumericFieldToDocument(String arg0, Object arg1, Document arg2) {
 		logger.warn("not yet implemented");
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -77,5 +75,4 @@ public class SortFieldOptions implements LuceneOptions {
 		logger.warn("not yet implemented");
 		return false;
 	}
-
 }

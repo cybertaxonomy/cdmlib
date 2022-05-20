@@ -25,11 +25,10 @@ import org.hibernate.search.bridge.LuceneOptions;
  *
  * @author andreas
  * @since Sep 24, 2012
- *
  */
 public class IdFieldOptions implements LuceneOptions {
+
 	private static final Logger logger = Logger.getLogger(IdFieldOptions.class);
-	
 
     @Override
     public Store getStore() {
@@ -55,14 +54,12 @@ public class IdFieldOptions implements LuceneOptions {
 	public void addFieldToDocument(String arg0, String arg1, Document arg2) {
 		logger.warn("not yet implemented");
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void addNumericFieldToDocument(String arg0, Object arg1, Document arg2) {
 		logger.warn("not yet implemented");
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -78,5 +75,4 @@ public class IdFieldOptions implements LuceneOptions {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }
