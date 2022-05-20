@@ -33,7 +33,7 @@ public class BibliographicAuthorParserTest {
         Assert.assertEquals("C.L.E.", team.getTeamMembers().get(0).getInitials());
         Assert.assertEquals("Mariaca", team.getTeamMembers().get(1).getFamilyName());
         Assert.assertEquals("M. R.", team.getTeamMembers().get(1).getInitials());
-        Assert.assertEquals("Pérez-Farrera", team.getTeamMembers().get(2).getFamilyName());
+        Assert.assertEquals("P"+UTF8.SMALL_E_ACUTE+"rez-Farrera", team.getTeamMembers().get(2).getFamilyName());
         Assert.assertEquals("M. "+UTF8.CAPITAL_A_ACUTE+".", team.getTeamMembers().get(2).getInitials());
 
         //without comma
@@ -43,7 +43,7 @@ public class BibliographicAuthorParserTest {
         Assert.assertEquals("C.L.E.", team.getTeamMembers().get(0).getInitials());
         Assert.assertEquals("Mariaca", team.getTeamMembers().get(1).getFamilyName());
         Assert.assertEquals("M. R.", team.getTeamMembers().get(1).getInitials());
-        Assert.assertEquals("Pérez-Farrera", team.getTeamMembers().get(2).getFamilyName());
+        Assert.assertEquals("P"+UTF8.SMALL_E_ACUTE+"rez-Farrera", team.getTeamMembers().get(2).getFamilyName());
         Assert.assertEquals("M. "+UTF8.CAPITAL_A_ACUTE+".", team.getTeamMembers().get(2).getInitials());
 
         //without comma incorrect
