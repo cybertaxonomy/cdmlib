@@ -193,15 +193,18 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
-    public void emailResetTokenTimeoutTest() throws Throwable {
+    public void emailResetTokenRateLimiterTest() throws Throwable {
 
-        // Logger.getLogger(PasswordResetRequest.class).setLevel(Level.TRACE);
+//        Logger.getLogger(PasswordResetRequest.class).setLevel(Level.TRACE);
+//        Logger.getLogger(PasswordResetService.class).setLevel(Level.TRACE);
+//        Logger.getLogger(AccountSelfManagementService.class).setLevel(Level.TRACE);
 
         resetTokenSendSignal = new CountDownLatch(1);
         resetTokenSendSignal2 = new CountDownLatch(1);
+        CountDownLatch resetTokenSendSignal3 = new CountDownLatch(1);
 
-        passwordResetService.setRate(0.1);
-        passwordResetService.setRateLimiterTimeout(Duration.ofMillis(1)); // as should as possible to allow the fist call to be successful
+        passwordResetService.setRate(0.2);  //allow request every 5s
+        passwordResetService.setRateLimiterTimeout(Duration.ofMillis(1)); // as short as possible to allow the fist call to be successful
 
         logger.debug("1. request");
         ListenableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
@@ -216,6 +219,8 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
                 });
 
         logger.debug("2. request");
+        //wait 2 seconds to definitely have the first request as first
+        try {Thread.sleep(2000);} catch (InterruptedException e1) {}
         ListenableFuture<Boolean> emailResetFuture2 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
         emailResetFuture2.addCallback(
                 requestSuccessVal -> {
@@ -225,11 +230,28 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
                     logger.debug("error 2");
                     assyncError = futureException;
                     resetTokenSendSignal2.countDown();
-                });
+                }
+        );
+
+        logger.debug("3. request");
+        //wait another 4 seconds to totally wait 6s and therefore be allowed to request another token again
+        try {Thread.sleep(4000);} catch (InterruptedException e1) {}
+        ListenableFuture<Boolean> emailResetFuture3 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture3.addCallback(
+                requestSuccessVal -> {
+                    logger.debug("success 3");
+                    resetTokenSendSignal3.countDown();
+                }, futureException -> {
+                    logger.debug("error 3");
+                    assyncError = futureException;
+                    resetTokenSendSignal3.countDown();
+                }
+        );
 
         // -- wait for passwordResetService.emailResetToken() to complete
         resetTokenSendSignal.await();
         resetTokenSendSignal2.await();
+        resetTokenSendSignal3.await();
 
         logger.debug("all completed, testing assertions");
 
@@ -237,7 +259,10 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
             throw assyncError; // an error should not have been thrown
         }
         assertTrue("First request should have been successful", emailResetFuture.get());
-        assertFalse("Second request should have been rejecded", emailResetFuture2.get());
+        assertFalse("Second request should have been rejected", emailResetFuture2.get());
+        assertTrue("Third request should have been successful again", emailResetFuture.get());
+        //sleep 5 seconds to "cleanup" rate limiter before next test
+        try {Thread.sleep(5000);} catch (InterruptedException e1) {}
     }
 
     @Test

@@ -24,7 +24,6 @@ import com.google.common.util.concurrent.RateLimiter;
 
 import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
 import eu.etaxonomy.cdm.api.config.SendEmailConfigurer;
-import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 
@@ -34,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
  */
 public abstract class AccountSelfManagementService implements IRateLimitedService {
 
-    protected static Logger logger = Logger.getLogger(PasswordResetRequest.class);
+    private static Logger logger = Logger.getLogger(AccountSelfManagementService.class);
 
     public static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
 

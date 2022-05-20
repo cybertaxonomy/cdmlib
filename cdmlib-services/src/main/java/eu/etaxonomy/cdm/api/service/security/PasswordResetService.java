@@ -15,6 +15,7 @@ import java.util.Optional;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -41,6 +42,8 @@ import eu.etaxonomy.cdm.model.permission.User;
 @Service
 @Transactional(readOnly = false)
 public class PasswordResetService extends AccountSelfManagementService implements IPasswordResetService {
+
+    private static Logger logger = Logger.getLogger(PasswordResetService.class);
 
     @Autowired
     @Qualifier("passwordResetTokenStore")
