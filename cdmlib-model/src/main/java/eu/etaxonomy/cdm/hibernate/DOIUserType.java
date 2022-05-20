@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.common.DOI;
  * @author a.mueller
  * @since 05.09.2013
  */
-public class DOIUserType  extends AbstractUserType implements UserType {
+public class DOIUserType extends AbstractUserType implements UserType {
 
     private static final long serialVersionUID = 2227841000128722278L;
 
@@ -92,7 +92,7 @@ public class DOIUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		return DOI.class;
 	}
 

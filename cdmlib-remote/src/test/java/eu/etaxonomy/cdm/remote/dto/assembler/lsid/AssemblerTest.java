@@ -437,7 +437,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         }
 
         @Override
-        public Class getPersistentClass() {
+        public Class<?> getPersistentClass() {
             // TODO Auto-generated method stub
             return null;
         }
@@ -451,7 +451,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         @Override
         public void initialize() throws HibernateException {
             // TODO Auto-generated method stub
-
         }
 
         @Override
@@ -463,19 +462,16 @@ public class AssemblerTest extends UnitilsJUnit4 {
         @Override
         public void setIdentifier(Serializable arg0) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void setImplementation(Object arg0) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void setUnwrap(boolean arg0) {
             // TODO Auto-generated method stub
-
         }
 
 		@Override
@@ -501,7 +497,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
 		@Override
 		public void setReadOnly(boolean readOnly) {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
@@ -509,18 +504,11 @@ public class AssemblerTest extends UnitilsJUnit4 {
 				org.hibernate.engine.spi.SessionImplementor session)
 				throws HibernateException {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void unsetSession() {
 			// TODO Auto-generated method stub
-
 		}
-
     }
-
-
-
-
 }

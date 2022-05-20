@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
@@ -43,7 +42,6 @@ public class ShiftUserType  extends AbstractUserType implements UserType {
 	public Object deepCopy(Object o) throws HibernateException {
 		return o;  //do we need more?
 	}
-
 
 	@Override
 	public Serializable disassemble(Object value) throws HibernateException {

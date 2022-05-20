@@ -5,8 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
-
+*/
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Reader;
@@ -36,9 +35,9 @@ import com.ibm.wsdl.factory.WSDLFactoryImpl;
 import eu.etaxonomy.cdm.model.common.LSIDWSDLLocator;
 
 /**
- * UserType which allows persistence of a wsdl definition - used to persist the 
+ * UserType which allows persistence of a wsdl definition - used to persist the
  * wsdl definition of an LSIDAuthority
- * 
+ *
  * @author ben
  *
  * @see org.cateproject.model.lsid.PersistableLSIDAuthority
@@ -49,16 +48,17 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 	private static final long serialVersionUID = 186785968465961559L;
 	private static final int[] SQL_TYPES = { Types.CLOB };
 
-	public Object deepCopy(Object o) throws HibernateException {
-		
+	@Override
+    public Object deepCopy(Object o) throws HibernateException {
+
 		if (o == null) {
             return null;
         }
-		
+
 		Definition d = (Definition) o;
 
         try {
-        	WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
+        	WSDLFactory wsdlFactory = WSDLFactory.newInstance();
         	StringWriter stringWriter = new StringWriter();
     		WSDLWriter writer = wsdlFactory.newWSDLWriter();
     	    writer.writeWSDL(d, stringWriter);
@@ -72,12 +72,11 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 		}
 	}
 
-	
 	//not tested if this works with jadira.usertype
 	@Override
 	public Object assemble(Serializable cached, Object owner) throws HibernateException {
 		try {
-			WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
+			WSDLFactory wsdlFactory = WSDLFactory.newInstance();
 			WSDLReader wsdlReader = wsdlFactory.newWSDLReader();
 			Reader reader = new StringReader(cached.toString());
 			WSDLLocator locator = new LSIDWSDLLocator("wsdl",reader,Thread.currentThread().getContextClassLoader());
@@ -87,12 +86,12 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 			throw new HibernateException(e);
 		}
 	}
-	
+
 	//not tested if this works with jadira.usertype
 	@Override
 	public Serializable disassemble(Object value) throws HibernateException {
 		try {
-			WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
+			WSDLFactory wsdlFactory = WSDLFactory.newInstance();
 			Definition definition = (Definition) value;
 			StringWriter stringWriter = new StringWriter();
     		WSDLWriter writer = wsdlFactory.newWSDLWriter();
@@ -103,18 +102,15 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 		}
 	}
 
-
-
 	@Override
 	public Definition nullSafeGet(ResultSet rs, String[]names, SessionImplementor session, Object o)
 			throws HibernateException, SQLException {
 		Clob val = (Clob)StandardBasicTypes.CLOB.nullSafeGet(rs, names, session, o);
-//		Clob val = (Clob) rs.getClob(names[0]);
 		if(val == null) {
 			return null;
 		} else {
             try {
-            	WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
+            	WSDLFactory wsdlFactory = WSDLFactory.newInstance();
     			WSDLReader wsdlReader = wsdlFactory.newWSDLReader();
     			Reader reader = val.getCharacterStream();
     			WSDLLocator locator = new LSIDWSDLLocator("wsdl",reader,Thread.currentThread().getContextClassLoader());
@@ -126,39 +122,34 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 		}
 	}
 
-	
+
 
 	@Override
 	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) 
 			throws HibernateException, SQLException {
-		if (value == null) { 
-//            statement.setNull(index, Types.CLOB);   //old version
+		if (value == null) {
             StandardBasicTypes.CLOB.nullSafeSet(statement, value, index, session);
-        } else { 
+        } else {
 			try {
 				Definition definition = (Definition) value;
-				WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
+				WSDLFactory wsdlFactory = WSDLFactory.newInstance();
 				StringWriter stringWriter = new StringWriter();
 	    		WSDLWriter writer = wsdlFactory.newWSDLWriter();
 	    	    writer.writeWSDL(definition, stringWriter);
-//	    	    statement.setClob(index, Hibernate.createClob(stringWriter.getBuffer().toString()));  //old version
 	        	StandardBasicTypes.CLOB.nullSafeSet(statement, stringWriter.getBuffer().toString(), index, session);
 			} catch (WSDLException e) {
 				throw new HibernateException(e);
 			}
-			
         }
 	}
 
-	
-	public Class returnedClass() {
+	@Override
+    public Class<?> returnedClass() {
 		return Definition.class;
 	}
-
 
 	@Override
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
-
 }
