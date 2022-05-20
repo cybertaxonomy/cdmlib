@@ -92,7 +92,7 @@ public abstract class AccountSelfManagementService implements IRateLimitedServic
         StringSubstitutor substitutor = new StringSubstitutor(additionalValuesMap);
 
         // TODO use MimeMessages for better email layout?
-        // TODO user Thymeleaf instead for HTML support?
+        // TODO use Thymeleaf instead for HTML support?
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setFrom(from);

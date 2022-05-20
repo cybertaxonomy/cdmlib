@@ -51,7 +51,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
     public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException, EmailAddressNotFoundException {
 
         try {
-            // give calling methods an bit time to register the Listeners to the Future
+            // give calling methods a bit time to register the Listeners to the Future
             Thread.sleep(10);
         } catch (InterruptedException e1) {
             // IGNORE

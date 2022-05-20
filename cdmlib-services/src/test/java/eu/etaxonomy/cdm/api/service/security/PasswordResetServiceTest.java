@@ -78,7 +78,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     private CountDownLatch resetTokenSendSignal;
     private CountDownLatch resetTokenSendSignal2;
     private CountDownLatch passwordChangedSignal;
-    Throwable assyncError = null;
+    private Throwable assyncError = null;
 
     @Before
     public void startEmailServer() {
@@ -100,7 +100,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     }
 
     @Before
-    public void resetpasswordResetService() throws InterruptedException {
+    public void resetPasswordResetService() throws InterruptedException {
         logger.setLevel(Level.DEBUG);
         Logger.getLogger(PasswordResetRequest.class).setLevel(Level.TRACE);
         // speed up testing
@@ -256,7 +256,8 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
                 }, futureException -> {
                     assyncError = futureException;
                     resetTokenSendSignal.countDown();
-                });
+                }
+        );
 
         // -- wait for passwordResetService.emailResetToken() to complete
         resetTokenSendSignal.await();
@@ -264,7 +265,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         if(assyncError != null) {
             throw assyncError; // emailResetToken must be agnostic of the existence of user names
         }
-        assertTrue("The request should look like succesful even in the user does not exist.", emailResetFuture.get());
+        assertTrue("The request should look like succesful even if the user does not exist.", emailResetFuture.get());
     }
 
     @Test
