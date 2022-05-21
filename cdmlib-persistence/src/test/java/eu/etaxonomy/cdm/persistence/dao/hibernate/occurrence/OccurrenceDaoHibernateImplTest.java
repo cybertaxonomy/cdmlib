@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
 import java.io.FileNotFoundException;
@@ -5,10 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.h2.util.StringUtils;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -25,37 +32,15 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 
-	@SpringBeanByType
+    private static final Logger logger = Logger.getLogger(OccurrenceDaoHibernateImplTest.class);
+
+    @SpringBeanByType
 	private IOccurrenceDao dao;
-
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@Before
-	public void setUp() throws Exception {
-	}
 
 //**************** TESTS ************************************************
 
 	@Test
 	public void testRebuildIndex() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testOccurrenceDaoHibernateImpl() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testCountDerivationEvents() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testCountDeterminations() {
 		logger.warn("Not yet implemented");
 	}
 
@@ -112,41 +97,6 @@ public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
         unit.setMediaSpecimen(media2);
         Assert.assertEquals(2, dao.countMedia(unit));
     }
-
-	@Test
-	public void testGetDerivationEvents() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testGetDeterminations() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testCountClassOfQextendsSpecimenOrObservationBaseTaxonBase() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testListClassOfQextendsSpecimenOrObservationBaseTaxonBaseIntegerIntegerListOfOrderHintListOfString() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testGetDerivedUnitUuidAndTitleCache() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testGetFieldUnitUuidAndTitleCache() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
-	public void testListByAnyAssociation() {
-		logger.warn("Not yet implemented");
-	}
 
 	@Test
 	public void testSaveOriginalLabelData(){

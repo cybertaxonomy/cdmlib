@@ -21,10 +21,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 
-    public TaxonNodeNaturalComparator(){
-		super();
-	}
-
 	@SuppressWarnings("null")
     @Override
 	public int compare(TaxonNode node1, TaxonNode node2) {
@@ -56,10 +52,10 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 			return node1.getSortIndex().compareTo(node2.getSortIndex());
 		}
 		String lastEqualAncestorTreeIndex = "";
-		List<TaxonNode> ancestorAndNode= new ArrayList<>();
-		ancestorAndNode.add(node1);
-		ancestorAndNode.addAll(node1.getAncestorList());
-		java.util.Collections.sort(ancestorAndNode, new TreeIndexComparator());
+		List<TaxonNode> ancestorAndNode1= new ArrayList<>();
+		ancestorAndNode1.add(node1);
+		ancestorAndNode1.addAll(node1.getAncestorList());
+		java.util.Collections.sort(ancestorAndNode1, new TreeIndexComparator());
 
 
 		List<TaxonNode> ancestorAndNode2= new ArrayList<>();
@@ -73,7 +69,7 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 				if (lastEqualAncestorTreeIndex != null){
 					TaxonNode lastEqualTreeIndexAncestorNode1 = null;
 					TaxonNode lastEqualTreeIndexAncestorNode2 = null;
-					for (TaxonNode next1 :ancestorAndNode){
+					for (TaxonNode next1 :ancestorAndNode1){
 						if (next1.treeIndex().equals(lastEqualAncestorTreeIndex+"#"+splitNode1[i]+ "#") ){
 						    lastEqualTreeIndexAncestorNode1 = next1;
 						}

@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 @HibernateSessionFactory({"/eu/etaxonomy/cdm/hibernate.cfg.xml", "/eu/etaxonomy/cdm/hibernate-test.cfg.xml"})
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 
-    protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
+    private static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
     private static final String PROPERTY_H2_SERVER = "h2Server";
     private static final String H2_SERVER_RUNNING = "h2ServerIsRunning";

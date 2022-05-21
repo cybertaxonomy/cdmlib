@@ -107,7 +107,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 			throw new RuntimeException(
 					"Required check for SpecimenOrObservationBase_Media");
 		} else {
-			logger.warn("CHECKS for inconsistent data not running !!!!");
+			logger.info("CHECKS for inconsistent data not running !!!!");
 		}
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();

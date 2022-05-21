@@ -88,13 +88,11 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     public AbstractHibernateTaxonGraphProcessor taxonGraphProcessor(){
         AbstractHibernateTaxonGraphProcessor processor = new AbstractHibernateTaxonGraphProcessor() {
-
             @Override
             public Session getSession() {
                 return nameDao.getSession();
             }
         };
-
         return processor;
     }
 

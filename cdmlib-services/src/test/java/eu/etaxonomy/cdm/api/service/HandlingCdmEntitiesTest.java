@@ -15,7 +15,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
@@ -80,8 +79,6 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     };
 
     @Override
-    @Ignore
-    @Test
     @Transactional(TransactionMode.DISABLED)
     public final void createTestDataSet() {
         Team combAuthor = Team.NewTitledInstance("Avengers", "Avengers");

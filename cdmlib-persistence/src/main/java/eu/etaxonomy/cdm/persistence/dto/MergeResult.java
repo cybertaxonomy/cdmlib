@@ -25,20 +25,15 @@ public class MergeResult<T extends ICdmBase> implements Serializable {
     private Set<T> newEntities;
 
 
+
     public MergeResult(T mergedEntity, Set<T> newEntities) {
         this.mergedEntity = mergedEntity;
         this.newEntities = newEntities;
     }
 
-    /**
-     * @return the mergedEntity
-     */
     public T getMergedEntity() {
         return mergedEntity;
     }
-    /**
-     * @param mergedEntity the mergedEntity to set
-     */
     public void setMergedEntity(T mergedEntity) {
         this.mergedEntity = mergedEntity;
     }

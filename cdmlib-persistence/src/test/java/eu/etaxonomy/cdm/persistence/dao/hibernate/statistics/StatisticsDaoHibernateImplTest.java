@@ -560,15 +560,8 @@ public class StatisticsDaoHibernateImplTest
 		}
 		System.out.println();
 		System.out.println("end!");
-
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

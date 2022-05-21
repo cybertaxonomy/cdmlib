@@ -9,31 +9,17 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
-
 /**
  * @author a.mueller
  * @since 04.10.2016
- *
  */
 public class CdmPreDataChangeListenerTest /*extends CdmIntegrationTest*/ {
 
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
     }
@@ -47,9 +33,6 @@ public class CdmPreDataChangeListenerTest /*extends CdmIntegrationTest*/ {
         System.out.println(cache);
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
 //    @Override
 //    public void createTestDataSet() throws FileNotFoundException {}
 
