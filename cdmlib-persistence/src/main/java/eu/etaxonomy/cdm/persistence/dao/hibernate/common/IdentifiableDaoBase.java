@@ -542,7 +542,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 		//parameters
 		if (identifierType != null){
-        	query.setEntity("type", identifierType);
+        	query.setParameter("type", identifierType);
         }
 
         //paging

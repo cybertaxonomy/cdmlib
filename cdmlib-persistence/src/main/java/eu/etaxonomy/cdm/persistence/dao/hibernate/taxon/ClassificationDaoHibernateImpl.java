@@ -423,12 +423,11 @@ public class ClassificationDaoHibernateImpl
                 + "     AND tn.classification.uuid = :classificationUuid "
                 + "     AND t.uuid IN (:taxonUuids) "
                 ;
-        Query query =  getSession().createQuery(hql);
+        Query<Object[]> query =  getSession().createQuery(hql, Object[].class);
         query.setParameter("classificationUuid", classificationUuid);
         query.setParameterList("taxonUuids", taxonUuids);
 
         Map<UUID, UUID> result = new HashMap<>();
-        @SuppressWarnings("unchecked")
         List<Object[]> list = query.list();
         for (Object[] o : list){
             result.put((UUID)o[0], (UUID)o[1]);
