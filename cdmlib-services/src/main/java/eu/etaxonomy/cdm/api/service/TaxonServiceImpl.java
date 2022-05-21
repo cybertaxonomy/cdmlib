@@ -3370,7 +3370,7 @@ public class TaxonServiceImpl
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
         @SuppressWarnings("rawtypes")
         List<TaxonBase> taxonList = dao.getTaxaByName(true, config.isIncludeSynonyms(), false, false, false,
-                config.getTaxonNameTitle(), null, null, MatchMode.EXACT, null, config.isIncludeSynonyms(), null, 0, 0, config.getPropertyPath());
+                config.getTaxonNameTitle(), null, null, MatchMode.EXACT, null, config.isIncludeSynonyms(), null, null, null, config.getPropertyPath());
         return taxonList;
     }
 
