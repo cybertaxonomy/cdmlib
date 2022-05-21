@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
@@ -65,13 +65,13 @@ public class SeverityUserType implements UserType {
 
 
 	@Override
-	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException{
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException{
 		String severity = rs.getString(names[0]);
 		return rs.wasNull() ? null : Severity.forName(severity);
 	}
 
 	@Override
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException{
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException{
 		st.setString(index, value == null ? null : value.toString());
 	}
 

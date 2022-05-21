@@ -19,11 +19,11 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.spi.shared.AbstractUserType;
 
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
@@ -78,7 +78,7 @@ public class EnumSetUserType<E extends Enum<E>>
 	}
 
 	@Override
-	public EnumSet<E> nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+	public EnumSet<E> nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
         String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 
@@ -102,7 +102,7 @@ public class EnumSetUserType<E extends Enum<E>>
 	}
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
             StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);

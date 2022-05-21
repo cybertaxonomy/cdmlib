@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.List;
 
 import org.hibernate.collection.internal.PersistentMap;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 public class PersistentMultiLanguageText
             extends PersistentMap
@@ -19,7 +19,7 @@ public class PersistentMultiLanguageText
 
     private static final long serialVersionUID = -7104619652295153920L;
 
-	public PersistentMultiLanguageText(SessionImplementor sessionImplementor, MultilanguageText collection) {
+	public PersistentMultiLanguageText(SharedSessionContractImplementor sessionImplementor, MultilanguageText collection) {
 		super(sessionImplementor, collection);
 	}
 

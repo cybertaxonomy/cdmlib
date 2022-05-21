@@ -29,6 +29,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
@@ -476,7 +477,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
 		@Override
 		public Object getImplementation(
-				org.hibernate.engine.spi.SessionImplementor session)
+		        SharedSessionContractImplementor session)
 				throws HibernateException {
 			// TODO Auto-generated method stub
 			return null;
@@ -501,7 +502,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
 		@Override
 		public void setSession(
-				org.hibernate.engine.spi.SessionImplementor session)
+		        SharedSessionContractImplementor session)
 				throws HibernateException {
 			// TODO Auto-generated method stub
 		}

@@ -26,11 +26,10 @@ import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
-import com.ibm.wsdl.factory.WSDLFactoryImpl;
+import org.jadira.usertype.spi.shared.AbstractUserType;
 
 import eu.etaxonomy.cdm.model.common.LSIDWSDLLocator;
 
@@ -103,7 +102,7 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 	}
 
 	@Override
-	public Definition nullSafeGet(ResultSet rs, String[]names, SessionImplementor session, Object o)
+	public Definition nullSafeGet(ResultSet rs, String[]names, SharedSessionContractImplementor session, Object o)
 			throws HibernateException, SQLException {
 		Clob val = (Clob)StandardBasicTypes.CLOB.nullSafeGet(rs, names, session, o);
 		if(val == null) {
@@ -125,7 +124,7 @@ public class WSDLDefinitionUserType extends AbstractUserType implements UserType
 
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) 
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
             StandardBasicTypes.CLOB.nullSafeSet(statement, value, index, session);

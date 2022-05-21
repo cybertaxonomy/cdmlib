@@ -15,10 +15,10 @@ import java.sql.Types;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.spi.shared.AbstractUserType;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
@@ -44,7 +44,7 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 
 
 	@Override
-	public Partial nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+	public Partial nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		String partial = (String)StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 		Partial result = new Partial();
@@ -87,7 +87,7 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 
     @Override
 	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index,
-			SessionImplementor session) throws HibernateException, SQLException {
+	        SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		if (isEmptyOrNull((Partial)value)){
 			StandardBasicTypes.STRING.nullSafeSet(preparedStatement, null, index, session);
 		}else {
