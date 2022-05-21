@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.query.Query;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Repository;
 
@@ -33,44 +33,43 @@ public class AuditEventDao extends DaoBase implements IAuditEventDao {
 
 	@Override
     public long count() {
-		Query query = getSession().createQuery("select count(auditEvent) from AuditEvent auditEvent");
-
-		return (Long)query.uniqueResult();
+		Query<Long> query = getSession().createQuery("select count(auditEvent) from AuditEvent auditEvent", Long.class);
+		return query.uniqueResult();
 	}
 
 	@Override
     public boolean exists(UUID uuid) {
-		Query query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.uuid = :uuid");
+		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.uuid = :uuid", AuditEvent.class);
 		query.setParameter("uuid", uuid);
-		return null != (AuditEvent)query.uniqueResult();
+		return null != query.uniqueResult();
 	}
 
 	@Override
     public AuditEvent findById(Integer id) {
-		Query query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.id = :id");
+		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.id = :id", AuditEvent.class);
 		query.setParameter("id", id);
-		return (AuditEvent)query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
     public AuditEvent findByUuid(UUID uuid) {
-		Query query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.uuid = :uuid");
+		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.uuid = :uuid", AuditEvent.class);
 		query.setParameter("uuid", uuid);
-		return (AuditEvent)query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
     public AuditEvent getNextAuditEvent(AuditEvent auditEvent) {
-		Query query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.revisionNumber = :revisionNumber + 1");
+		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.revisionNumber = :revisionNumber + 1", AuditEvent.class);
 		query.setParameter("revisionNumber", auditEvent.getRevisionNumber());
-		return (AuditEvent) query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
     public AuditEvent getPreviousAuditEvent(AuditEvent auditEvent) {
-		Query query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.revisionNumber = :revisionNumber - 1");
+		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.revisionNumber = :revisionNumber - 1", AuditEvent.class);
 		query.setParameter("revisionNumber", auditEvent.getRevisionNumber());
-		return (AuditEvent) query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
@@ -79,23 +78,15 @@ public class AuditEventDao extends DaoBase implements IAuditEventDao {
 			sort = AuditEventSort.BACKWARDS;
 		}
 
-		Query query = null;
+		Query<AuditEvent> query = null;
 
 		if(sort.equals(AuditEventSort.FORWARDS)) {
-			query = getSession().createQuery("select auditEvent from AuditEvent auditEvent order by auditEvent.timestamp asc");
+			query = getSession().createQuery("select auditEvent from AuditEvent auditEvent order by auditEvent.timestamp asc", AuditEvent.class);
 		} else {
-			query = getSession().createQuery("select auditEvent from AuditEvent auditEvent order by auditEvent.timestamp desc");
+			query = getSession().createQuery("select auditEvent from AuditEvent auditEvent order by auditEvent.timestamp desc", AuditEvent.class);
 		}
 
-		if(pageSize != null) {
-		    query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		        query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
-		    }
-		}
-
+		this.addPageSizeAndNumber(query, pageSize, pageNumber);
 		return query.list();
 	}
 

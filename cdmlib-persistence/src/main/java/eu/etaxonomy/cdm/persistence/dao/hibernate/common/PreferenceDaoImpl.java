@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
@@ -69,9 +69,8 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
         String hql = "FROM CdmPreference pref "
                 + " WHERE pref.key.predicate = :predicate "
                 ;
-        Query query = getSession().createQuery(hql);
+        Query<CdmPreference> query = getSession().createQuery(hql, CdmPreference.class);
         query.setParameter("predicate", predicate.getKey());
-        @SuppressWarnings("unchecked")
         List<CdmPreference> allPreferences = query.list();
         return allPreferences;
     }
@@ -96,10 +95,9 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 	            + " WHERE pref.key.predicate = :predicate "
 	            + "    AND pref.key.subject IN :subject "
 	            ;
-	    Query query = getSession().createQuery(hql);
+	    Query<CdmPreference> query = getSession().createQuery(hql, CdmPreference.class);
 	    query.setParameter("predicate", predicate);
 	    query.setParameterList("subject", filterStrings);
-        @SuppressWarnings("unchecked")
         List<CdmPreference> allPreferences = query.list();
         CdmPreference result = null;
         for (CdmPreference pref : allPreferences){

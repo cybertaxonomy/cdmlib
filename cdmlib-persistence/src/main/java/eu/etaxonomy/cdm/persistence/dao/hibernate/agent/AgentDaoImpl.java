@@ -17,12 +17,12 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.Address;
@@ -76,9 +76,9 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
     public long countInstitutionalMemberships(Person person) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("select count(institutionalMembership) from InstitutionalMembership institutionalMembership where institutionalMembership.person = :person");
+		    Query<Long> query = getSession().createQuery("select count(institutionalMembership) from InstitutionalMembership institutionalMembership where institutionalMembership.person = :person", Long.class);
 		    query.setParameter("person", person);
-		    return (Long)query.uniqueResult();
+		    return query.uniqueResult();
 		} else {
 			AuditQuery query = makeAuditQuery(InstitutionalMembership.class, auditEvent);
 			query.add(AuditEntity.relatedId("person").eq(person.getId()));
@@ -90,16 +90,16 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	@Override
     public long countMembers(Team team) {
 		checkNotInPriorView("AgentDaoImpl.countMembers(Team team)");
-		Query query = getSession().createQuery("select count(teamMember) from Team team join team.teamMembers teamMember where team = :team");
+		Query<Long> query = getSession().createQuery("select count(teamMember) from Team team join team.teamMembers teamMember where team = :team", Long.class);
 		query.setParameter("team", team);
-		return (Long)query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
     public List<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("select institutionalMembership from InstitutionalMembership institutionalMembership left join fetch institutionalMembership.institute where institutionalMembership.person = :person");
+		    Query<InstitutionalMembership> query = getSession().createQuery("select institutionalMembership from InstitutionalMembership institutionalMembership left join fetch institutionalMembership.institute where institutionalMembership.person = :person", InstitutionalMembership.class);
 		    query.setParameter("person", person);
 		    setPagingParameter(query, pageSize, pageNumber);
 			return query.list();
@@ -114,7 +114,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	@Override
     public List<Person> getMembers(Team team, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("AgentDaoImpl.getMembers(Team team, Integer pageSize,	Integer pageNumber)");
-		Query query = getSession().createQuery("select teamMember from Team team join team.teamMembers teamMember where team = :team order by sortindex");
+		Query<Person> query = getSession().createQuery("select teamMember from Team team join team.teamMembers teamMember where team = :team order by sortindex", Person.class);
 		query.setParameter("team", team);
 		//query.addOrder( Order.asc("sortindex") );
 		setPagingParameter(query, pageSize, pageNumber);
@@ -126,15 +126,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	@Override
     public long countAddresses(AgentBase agent) {
 		checkNotInPriorView("AgentDaoImpl.countAddresses(AgentBase agent)");
-		Query query = getSession().createQuery("select count(address) from AgentBase agent join agent.contact.addresses address where agent = :agent");
+		Query<Long> query = getSession().createQuery("select count(address) from AgentBase agent join agent.contact.addresses address where agent = :agent", Long.class);
 		query.setParameter("agent", agent);
-		return (Long)query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
     public List<Address> getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber) {
 		checkNotInPriorView("AgentDaoImpl.getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber)");
-		Query query = getSession().createQuery("select address from AgentBase agent join agent.contact.addresses address where agent = :agent");
+		Query<Address> query = getSession().createQuery("select address from AgentBase agent join agent.contact.addresses address where agent = :agent", Address.class);
 		query.setParameter("agent", agent);
 		setPagingParameter(query, pageSize, pageNumber);
         @SuppressWarnings("unchecked")
@@ -148,10 +148,9 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		List<UuidAndTitleCache<Team>> list = new ArrayList<>();
 		Session session = getSession();
 
-		Query query = session.createQuery("select uuid, id, nomenclaturalTitleCache from " + type.getSimpleName() + " where dtype = 'Team'");
+		Query<Object[]> query = session.createQuery("select uuid, id, nomenclaturalTitleCache from " + type.getSimpleName() + " where dtype = 'Team'", Object[].class);
 
-		@SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+		List<Object[]> result = query.list();
 
 		for(Object[] object : result){
 			list.add(new UuidAndTitleCache<>(Team.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
@@ -167,20 +166,20 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
-        Query query = null;
+        Query<Object[]> query = null;
 
         if (pattern != null){
             String whereClause = " WHERE collectorTitleCache LIKE :pattern "
                      + " OR titleCache LIKE :pattern "
                      + " OR nomenclaturalTitleCache like :pattern ";
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -196,18 +195,18 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
-        Query query = null;
+        Query<Object[]> query = null;
 
         if (pattern != null){
             String whereClause = " WHERE titleCache LIKE :pattern";
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -224,7 +223,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
-        Query query = null;
+        Query<Object[]> query = null;
 
         if (pattern != null){
             String whereClause = " WHERE nomenclaturalTitleCache LIKE :pattern";
@@ -233,13 +232,13 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
                 whereClause += " OR collectorTitleCache LIKE :pattern";
             }
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -258,14 +257,12 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
-    protected <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Query query){
+    protected <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Query<Object[]> query){
         List<TeamOrPersonUuidAndTitleCache<T>> list = new ArrayList<>();
 
-        @SuppressWarnings("unchecked")
-        List<Object> result = query.list();
+        List<Object[]> result = query.list();
 
-        for(Object obj : result){
-          Object[] object = (Object[])obj;
+        for(Object[] object : result){
           list.add(new TeamOrPersonUuidAndTitleCache((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2], (String) object[4]));
         }
         return list;

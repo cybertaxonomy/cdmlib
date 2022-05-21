@@ -17,10 +17,10 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -83,12 +83,13 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 	@Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle(){
-		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
+		List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
 		Session session = getSession();
 
-		Query query = session.createQuery("select uuid, id, titleCache from " + type.getSimpleName());
+		Query<Object[]> query = session.createQuery(
+		        "select uuid, id, titleCache from " + type.getSimpleName(),
+		        Object[].class);
 
-		@SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
 		for(Object[] object : result){
@@ -153,12 +154,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		    }
 		}
 
-		Query query;
-		//if (pattern != null){
-		    query = session.createQuery(queryString);
-//		}else{
-//		    query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
-//		}
+		Query<Object[]> query = session.createQuery(queryString, Object[].class);
 
 		if (limit != null){
 		    query.setMaxResults(limit);
@@ -173,7 +169,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		    query.setParameter("type", refType);
 		   // query.setParameter("genericType", ReferenceType.Generic);
 		}
-		@SuppressWarnings("unchecked")
+
         List<Object[]> result = query.list();
 
 		for(Object[] object : result){
@@ -217,14 +213,12 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
         //order
         queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
 
-        Query query = getSession().createQuery(queryString);
+        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
 
         //parameters
         if (identifierType != null){
-            query.setEntity("type", identifierType);
+            query.setParameter("type", identifierType);
         }
-
-
 
         List<Object[]> results = query.list();
         //initialize
@@ -249,22 +243,23 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		@SuppressWarnings("unchecked")
         List<Reference> references = getSession().createQuery("select t.nomenclaturalReference from TaxonName t").list();
 		String queryString = "from Reference b where b not in (:referenceList) and b in (:publish)" ;
-		Query referenceQuery = getSession().createQuery(queryString).setParameterList("referenceList", references);
-		referenceQuery.setParameterList("publish", getAllReferencesForPublishing());
-		@SuppressWarnings("unchecked")
-        List<Reference> resultRefernces =referenceQuery.list();
+		Query<Reference> referenceQuery = getSession()
+		        .createQuery(queryString, Reference.class)
+		        .setParameterList("referenceList", references)
+		        .setParameterList("publish", getAllReferencesForPublishing());
 
-		return resultRefernces;
+        return referenceQuery.list();
 	}
 
 	// the result list held doubles therefore I put a "distinct" in the query string
 	@Override
     public List<Reference> getAllNomenclaturalReferences() {
-		@SuppressWarnings("unchecked")
+
         List<Reference> references = getSession().createQuery(
 				  " SELECT DISTINCT ns.citation "
 				+ " FROM TaxonName n"
-				+ " JOIN n.nomenclaturalSource ns ").list();
+				+ " JOIN n.nomenclaturalSource ns ", Reference.class)
+                .list();
 		return references;
 	}
 
@@ -275,10 +270,11 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		List<Reference> references = new ArrayList<>();
 		List<Reference> subordinateReferences = new ArrayList<>();
 
-		Query query = getSession().createQuery("select r from Reference r where r.inReference = (:reference)");
+		Query<Reference> query = getSession().createQuery(
+		        "select r from Reference r where r.inReference = (:reference)",
+		        Reference.class);
 		query.setParameter("reference", reference);
 
-		@SuppressWarnings("unchecked")
 	    List<Reference> list = query.list();
 	    references.addAll(list);
 		for(Reference ref : references){
@@ -349,7 +345,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		// name relations
 		// taxon relations
 
-		Query query = getSession().createQuery(taxonDescriptionSql.toString());
+		Query<TaxonBase> query = getSession().createQuery(taxonDescriptionSql.toString(), TaxonBase.class);
 		query.setParameterList("referenceBase_1", referenceSet);
 		query.setParameterList("referenceBase_2", referenceSet);
 		query.setParameterList("referenceBase_3", referenceSet);
@@ -357,7 +353,6 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		query.setParameterList("referenceBase_5", referenceSet);
 		query.setParameterList("referenceBase_6", referenceSet);
 
-		@SuppressWarnings("unchecked")
         List<TaxonBase> taxonBaseList = query.list();
 
 		defaultBeanInitializer.initializeAll(taxonBaseList, propertyPaths);
@@ -369,40 +364,39 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType refType) {
         Session session = getSession();
 
-        Query query = null;
+        Query<Object[]> query = null;
         if (pattern != null){
             if (pattern.startsWith("*")){
-                query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern OR titleCache like :pattern ");
+                query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern OR titleCache like :pattern ", Object[].class);
             }else{
-                query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern  ");
+                query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern ", Object[].class);
             }
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() );
+            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
         }
         if (limit != null){
            query.setMaxResults(limit);
         }
 
         return getUuidAndAbbrevTitleCache(query);
-
     }
 
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType refType) {
         Session session = getSession();
 
-        Query query = null;
+        Query<Object[]> query = null;
         if (pattern != null){
             query = session.createQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
-            +" as r where r.authorship.nomenclaturalTitleCache like :pattern  ");
+            +" as r where r.authorship.nomenclaturalTitleCache like :pattern  ", Object[].class);
 
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() );
+            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
         }
         if (limit != null){
            query.setMaxResults(limit);
@@ -420,21 +414,21 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID, ReferenceType refType) {
         Session session = getSession();
 
-        Query query = null;
+        Query<Object[]> query = null;
         if (authorID != null){
             query = session.createQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
-            +" as r where r.authorship.id = :authorID  ");
+            +" as r where r.authorship.id = :authorID  ",
+            Object[].class);
 
             query.setParameter("authorID", authorID);
         } else {
-            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() );
+            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
         }
         if (limit != null){
            query.setMaxResults(limit);
         }
-        
-        return getUuidAndAbbrevTitleCache(query);
 
+        return getUuidAndAbbrevTitleCache(query);
     }
     
     @Override

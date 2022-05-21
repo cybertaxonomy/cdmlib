@@ -12,9 +12,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -118,7 +118,7 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
 //                  //+ ")"
 //                  + " FROM Registration reg " + filter;
 
-            Query query = session.createQuery(hql);
+            Query<Object> query = session.createQuery(hql, Object.class);
 
             result = query.uniqueResult();
         } finally {

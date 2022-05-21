@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -37,6 +36,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.internal.NotNullAuditExpression;
 import org.hibernate.envers.query.internal.property.EntityPropertyName;
+import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -226,10 +226,12 @@ public class TaxonDaoHibernateImpl
         boolean doCount = false;
 
         String searchField = includeAuthors ? "titleCache" : "nameCache";
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished, searchField, queryString, classification, subtree, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
+        Query<TaxonBase> query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
+                searchField, queryString, classification, subtree, matchMode, namedAreas, order, pageSize, pageNumber, doCount,
+                TaxonBase.class);
 
         if (query != null){
-            @SuppressWarnings({ "unchecked", "rawtypes" })
+            @SuppressWarnings("rawtypes")
             List<TaxonBase> results = query.list();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -271,8 +273,8 @@ public class TaxonDaoHibernateImpl
         	}
         }
         String searchField = includeAuthors ? "titleCache" : "nameCache";
-        Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
-                searchField, queryString, classification, subtree, matchMode, namedAreas, doCount, order);
+        Query<Object[]> query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
+                searchField, queryString, classification, subtree, matchMode, namedAreas, doCount, order, Object[].class);
 
         if (query != null){
             List<Object[]> results = query.list();
@@ -306,9 +308,8 @@ public class TaxonDaoHibernateImpl
                MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
                Integer pageNumber, List<String> propertyPaths) {
         boolean doCount = false;
-        Query query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, false);
+        Query<Taxon> query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, false, Taxon.class);
         if (query != null){
-            @SuppressWarnings("unchecked")
             List<Taxon> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -330,14 +331,13 @@ public class TaxonDaoHibernateImpl
      * @param doCount
      * @return
      */
-    private Query prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
+    private <R extends Object> Query<R> prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean includeUnpublished, String searchField, String queryString, Classification classification, TaxonNode subtree,
-            MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, NameSearchOrder order) {
+            MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, NameSearchOrder order, Class<R> returnedClass) {
         return prepareByNameQuery(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
                 searchField, queryString,
-                classification, subtree, matchMode, namedAreas, order, doCount, true);
+                classification, subtree, matchMode, namedAreas, order, doCount, true, returnedClass);
     }
-
 
     /**
      * @param doTaxa
@@ -358,10 +358,10 @@ public class TaxonDaoHibernateImpl
      *            DTYPE in lowercase letters.
      * @return
      */
-    private Query prepareByNameQuery(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+    private <R extends Object> Query<R> prepareByNameQuery(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
                 boolean doCommonNames, boolean includeUnpublished, String searchField, String queryString,
                 Classification classification, TaxonNode subtree, MatchMode matchMode, Set<NamedArea> namedAreas,
-                NameSearchOrder order, boolean doCount, boolean returnIdAndTitle){
+                NameSearchOrder order, boolean doCount, boolean returnIdAndTitle, Class<R> returnedClass){
 
             boolean doProParteSynonyms = doSynonyms;  //we may distinguish in future
             boolean doConceptRelations = doMisappliedNames || doProParteSynonyms;
@@ -383,9 +383,9 @@ public class TaxonDaoHibernateImpl
             Set<NamedArea> areasExpanded = new HashSet<>();
             if(namedAreas != null && namedAreas.size() > 0){
                 // expand areas and restrict by distribution area
-                Query areaQuery = getSession().createQuery("SELECT childArea "
+                Query<NamedArea> areaQuery = getSession().createQuery("SELECT childArea "
                         + " FROM NamedArea AS childArea LEFT JOIN childArea.partOf as parentArea "
-                        + " WHERE parentArea = :area");
+                        + " WHERE parentArea = :area", NamedArea.class);
                 expandNamedAreas(namedAreas, areasExpanded, areaQuery);
             }
             boolean doAreaRestriction = areasExpanded.size() > 0;
@@ -413,7 +413,7 @@ public class TaxonDaoHibernateImpl
 
             if(doTaxa){
                 // find Taxa
-                Query subTaxon = getSearchQueryString(hqlQueryString, taxonSubselect, true);
+                Query<Integer> subTaxon = getSearchQueryString(hqlQueryString, taxonSubselect, true);
 
                 addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished,
                         namedAreasUuids, subTaxon);
@@ -422,12 +422,12 @@ public class TaxonDaoHibernateImpl
 
             if(doSynonyms){
                 // find synonyms
-                Query subSynonym = getSearchQueryString(hqlQueryString, synonymSubselect, true);
+                Query<Integer> subSynonym = getSearchQueryString(hqlQueryString, synonymSubselect, true);
                 addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished, namedAreasUuids,subSynonym);
                 synonymIDs = subSynonym.list();
             }
             if (doConceptRelations ){
-                Query subMisappliedNames = getSearchQueryString(hqlQueryString, conceptSelect, true);
+                Query<Integer> subMisappliedNames = getSearchQueryString(hqlQueryString, conceptSelect, true);
                 Set<TaxonRelationshipType> relTypeSet = new HashSet<>();
                 if (doMisappliedNames){
                     relTypeSet.addAll(TaxonRelationshipType.allMisappliedNameTypes());
@@ -442,7 +442,7 @@ public class TaxonDaoHibernateImpl
 
             if(doCommonNames){
                 // find Taxa
-                Query subCommonNames = getSearchQueryString(hqlQueryString, commonNameSubSelect, false);
+                Query<Integer> subCommonNames = getSearchQueryString(hqlQueryString, commonNameSubSelect, false);
                 addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished, namedAreasUuids, subCommonNames);
                 taxonIDs.addAll(subCommonNames.list());
             }
@@ -524,7 +524,7 @@ public class TaxonDaoHibernateImpl
             }
 
             if(logger.isDebugEnabled()){ logger.debug("hql: " + hql);}
-            Query query = getSession().createQuery(hql);
+            Query<R> query = getSession().createQuery(hql, returnedClass);
 
             // find taxa and synonyms
             if (taxonIDs.size()>0){
@@ -540,8 +540,8 @@ public class TaxonDaoHibernateImpl
             return query;
     }
 
-    protected Query getSearchQueryString(String hqlQueryString, String subselect, boolean includeProtectedTitle) {
-        Query result = getSession().createQuery(subselect);
+    protected Query<Integer> getSearchQueryString(String hqlQueryString, String subselect, boolean includeProtectedTitle) {
+        Query<Integer> result = getSession().createQuery(subselect, Integer.class);
         result.setParameter("queryString", hqlQueryString);
         if (includeProtectedTitle){
             result.setParameter("protectedTitleQueryString", hqlQueryString + "%");
@@ -550,7 +550,7 @@ public class TaxonDaoHibernateImpl
     }
 
     protected void addRestrictions(boolean doAreaRestriction, Classification classification, TaxonNode subtree, boolean includeUnpublished,
-            Set<UUID> namedAreasUuids, Query query) {
+            Set<UUID> namedAreasUuids, Query<Integer> query) {
         if(doAreaRestriction){
             query.setParameterList("namedAreasUuids", namedAreasUuids);
         }
@@ -561,7 +561,7 @@ public class TaxonDaoHibernateImpl
             query.setParameter("treeIndexLike", subtree.treeIndex() + "%");
         }
         if(!includeUnpublished){
-            query.setBoolean("publish", true);
+            query.setParameter("publish", true);
         }
     }
 
@@ -580,12 +580,13 @@ public class TaxonDaoHibernateImpl
      *
      * FIXME implement classification restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
      */
-    private Query prepareTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
+    private <R extends Object> Query<R> prepareTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,
             boolean doCommonNames, boolean includeUnpublished, String searchField, String queryString,
-            Classification classification, TaxonNode subtree, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, Integer pageSize, Integer pageNumber, boolean doCount) {
+            Classification classification, TaxonNode subtree, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order,
+            Integer pageSize, Integer pageNumber, boolean doCount, Class<R> returnClass) {
 
-        Query query = prepareByNameQuery(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
-                searchField, queryString, classification, subtree, matchMode, namedAreas, order, doCount, false);
+        Query<R> query = prepareByNameQuery(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
+                searchField, queryString, classification, subtree, matchMode, namedAreas, order, doCount, false, returnClass);
 
         if(pageSize != null && !doCount && query != null) {
             query.setMaxResults(pageSize);
@@ -597,9 +598,9 @@ public class TaxonDaoHibernateImpl
         return query;
     }
 
-    private Query prepareTaxaByCommonName(String queryString, Classification classification,
+    private <R extends Object> Query<R> prepareTaxaByCommonName(String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber,
-            boolean doCount, boolean returnIdAndTitle){
+            boolean doCount, boolean returnIdAndTitle, Class<R> returnClass){
 
         String what = "SELECT DISTINCT";
         if (returnIdAndTitle){
@@ -613,7 +614,7 @@ public class TaxonDaoHibernateImpl
 //            "join e.feature f " +
             "where e.class = 'CommonTaxonName' and e.name "+matchMode.getMatchOperator()+" :queryString";//and ls.text like 'common%'";
 
-        Query query = getSession().createQuery(hql);
+        Query<R> query = getSession().createQuery(hql, returnClass);
 
         query.setParameter("queryString", matchMode.queryStringFrom(queryString));
 
@@ -634,25 +635,19 @@ public class TaxonDaoHibernateImpl
         boolean doCount = true;
         String searchField = doIncludeAuthors ? "titleCache": "nameCache";
 
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
-                searchField, queryString, classification, subtree, matchMode, namedAreas, null, null, null, doCount);
+        Query<Long> query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
+                searchField, queryString, classification, subtree, matchMode, namedAreas, null, null, null, doCount, Long.class);
         if (query != null) {
-            return (Long)query.uniqueResult();
+            return query.uniqueResult();
         }else{
             return 0;
         }
     }
 
-    /**
-     * @param namedAreas
-     * @param areasExpanded
-     * @param areaQuery
-     */
-    private void expandNamedAreas(Collection<NamedArea> namedAreas, Set<NamedArea> areasExpanded, Query areaQuery) {
+    private void expandNamedAreas(Collection<NamedArea> namedAreas, Set<NamedArea> areasExpanded, Query<NamedArea> areaQuery) {
         for(NamedArea a : namedAreas){
             areasExpanded.add(a);
             areaQuery.setParameter("area", a);
-            @SuppressWarnings("unchecked")
             List<NamedArea> childAreas = areaQuery.list();
             if(childAreas.size() > 0){
                 areasExpanded.addAll(childAreas);
@@ -694,7 +689,7 @@ public class TaxonDaoHibernateImpl
     public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, boolean includeUnpublished, String queryString, Classification classification, TaxonNode subtree, MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
 
         boolean doCount = false;
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, false, false, includeUnpublished, "titleCache", queryString, classification, subtree, matchMode, namedAreas, order, pageSize, pageNumber, doCount);
+        Query<TaxonBase> query = prepareTaxaByName(doTaxa, doSynonyms, false, false, includeUnpublished, "titleCache", queryString, classification, subtree, matchMode, namedAreas, order, pageSize, pageNumber, doCount, TaxonBase.class);
         if (query != null){
             @SuppressWarnings({ "unchecked", "rawtypes" })
             List<TaxonBase> results = query.list();
@@ -794,17 +789,15 @@ public class TaxonDaoHibernateImpl
     public long countSynonyms(boolean onlyAttachedToTaxon) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query query = null;
-
             String queryStr =
                     " SELECT count(syn) "
                   + " FROM Synonym syn";
             if (onlyAttachedToTaxon){
                 queryStr += " WHERE syn.acceptedTaxon IS NOT NULL";
             }
-            query = getSession().createQuery(queryStr);
+            Query<Long> query = getSession().createQuery(queryStr, Long.class);
 
-            return (Long)query.uniqueResult();
+            return query.uniqueResult();
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
             if (onlyAttachedToTaxon){
@@ -995,15 +988,15 @@ public class TaxonDaoHibernateImpl
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
             String queryString = prepareTaxonRelationshipQuery(types, includeUnpublished, direction, true);
-            Query query = getSession().createQuery(queryString);
+            Query<Long> query = getSession().createQuery(queryString, Long.class);
             query.setParameter("relatedTaxon", taxon);
             if(types != null) {
                 query.setParameterList("types",types);
             }
             if(! includeUnpublished) {
-                query.setBoolean("publish",Boolean.TRUE);
+                query.setParameter("publish",Boolean.TRUE);
             }
-            return (Long)query.uniqueResult();
+            return query.uniqueResult();
         } else {
           //TODO unpublished
 
@@ -1070,17 +1063,16 @@ public class TaxonDaoHibernateImpl
 
             queryString += orderByClause("rel", orderHints);
 
-            Query query = getSession().createQuery(queryString);
+            Query<TaxonRelationship> query = getSession().createQuery(queryString, TaxonRelationship.class);
             query.setParameter("relatedTaxon", taxon);
             if(types != null) {
                 query.setParameterList("types",types);
             }
             if(! includeUnpublished) {
-                query.setBoolean("publish",Boolean.TRUE);
+                query.setParameter("publish",Boolean.TRUE);
             }
-            setPagingParameter(query, pageSize, pageNumber);
+            addPageSizeAndNumber(query, pageSize, pageNumber);
 
-            @SuppressWarnings("unchecked")
             List<TaxonRelationship> result = query.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
@@ -1227,17 +1219,14 @@ public class TaxonDaoHibernateImpl
 
         String hql = prepareListAcceptedTaxaFor(classificationFilter, false);
 
-        Query query = getSession().createQuery(hql);
+        Query<Taxon> query = getSession().createQuery(hql, Taxon.class);
         query.setParameter("synonym", synonym);
         if(classificationFilter != null){
             query.setParameter("classificationFilter", classificationFilter);
         }
 
-        @SuppressWarnings("unchecked")
         List<Taxon> result = query.list();
-
         defaultBeanInitializer.initializeAll(result, propertyPaths);
-
         return result.isEmpty()? null: result.get(0);
     }
 
@@ -1246,13 +1235,13 @@ public class TaxonDaoHibernateImpl
 
         String hql = prepareListAcceptedTaxaFor(classificationFilter, true);
 
-        Query query = getSession().createQuery(hql);
+        Query<Long> query = getSession().createQuery(hql, Long.class);
         query.setParameter("synonym", synonym);
         if(classificationFilter != null){
             query.setParameter("classificationFilter", classificationFilter);
         }
 
-        Long count = Long.parseLong(query.uniqueResult().toString());
+        Long count = query.uniqueResult();
         return count;
 
     }
@@ -1306,11 +1295,11 @@ public class TaxonDaoHibernateImpl
     @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
         //get all taxa, already in db
-        Query query = getSession().createQuery(
+        Query<TaxonName> query = getSession().createQuery(
                  " FROM TaxonName t "
-                +" WHERE t.nameCache IN (:taxonList)");
+                +" WHERE t.nameCache IN (:taxonList)",
+                TaxonName.class);
         query.setParameterList("taxonList", taxonNames);
-        @SuppressWarnings("unchecked")
         List<TaxonName> taxaInDB = query.list();
         //compare the original list with the result of the query
         for (TaxonName taxonName: taxaInDB){
@@ -1335,7 +1324,7 @@ public class TaxonDaoHibernateImpl
                         continue;  //just in case we have duplicates in the list
                     }
 
-                    Query query = getSession().createQuery(
+                    Query<String> query = getSession().createQuery(
                             " SELECT DISTINCT n1.nameCache "
                           + " FROM TaxonBase t1 JOIN t1.name n1 JOIN t1.sources s1 JOIN s1.citation ref1 "
                           +         " , TaxonBase t2 JOIN t2.name n2 JOIN t2.sources s2 JOIN s2.citation ref2 "
@@ -1345,7 +1334,8 @@ public class TaxonDaoHibernateImpl
                           + "       AND ref1.uuid <> ref2.uuid "
                           + "       AND n1.nameCache = n2.nameCache) "
                           + "       AND t1.publish = 1 AND t2.publish = 1) "
-                          + " ORDER BY n1.nameCache ");
+                          + " ORDER BY n1.nameCache ",
+                          String.class);
                     query.setParameter("sourceUuid1", sourceUuid1);
                     query.setParameter("sourceUuid2", sourceUuid2);
 
@@ -1357,13 +1347,13 @@ public class TaxonDaoHibernateImpl
 
             Map<UUID, List<TaxonName>> duplicates = new HashMap<>();
             for (UUID sourceUuid : sourceRefUuids){
-                Query query=getSession().createQuery("SELECT n "
+                Query<TaxonName> query=getSession().createQuery("SELECT n "
                         + " FROM TaxonBase t JOIN t.name n JOIN t.sources s JOIN s.citation ref "
                         + " WHERE ref.uuid = :sourceUuid AND n.nameCache IN (:nameCacheCandidates) AND t.publish = 1 "
-                        + " ORDER BY n.nameCache");
+                        + " ORDER BY n.nameCache",
+                        TaxonName.class);
                 query.setParameter("sourceUuid", sourceUuid);
                 query.setParameterList("nameCacheCandidates", nameCacheCandidates);
-                @SuppressWarnings("unchecked")
                 List<TaxonName> sourceDuplicates = query.list();
                 defaultBeanInitializer.initializeAll(sourceDuplicates, propertyPaths);
 
@@ -1394,11 +1384,11 @@ public class TaxonDaoHibernateImpl
             Classification classification, MatchMode matchMode,
             Set<NamedArea> namedAreas) {
         boolean doCount = true;
-        Query query = prepareTaxaByCommonName(searchString, classification, matchMode, namedAreas, null, null, doCount, false);
+        Query<Long> query = prepareTaxaByCommonName(searchString, classification, matchMode, namedAreas, null, null, doCount, false, Long.class);
         if (query != null && !query.list().isEmpty()) {
-            Object o = query.uniqueResult();
+            Long o = query.uniqueResult();
             if(o != null) {
-                return (Long)o;
+                return o;
             }
         }
         return 0;
@@ -1596,14 +1586,14 @@ public class TaxonDaoHibernateImpl
 	public List<UuidAndTitleCache<Taxon>> getTaxaByCommonNameForEditor(
 			String titleSearchStringSqlized, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas) {
-		Query query = prepareTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null, false, true);
+
+		Query<Object[]> query = prepareTaxaByCommonName(titleSearchStringSqlized, classification, matchMode, namedAreas, null, null, false, true, Object[].class);
         if (query != null){
-            @SuppressWarnings("unchecked")
-            List<Object> resultArray = query.list();
+            List<Object[]> resultArray = query.list();
             List<UuidAndTitleCache<Taxon>> returnResult = new ArrayList<>() ;
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
-            	result = (Object[]) resultArray.get(i);
+            	result = resultArray.get(i);
             	returnResult.add(new UuidAndTitleCache<>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
             }
             return returnResult;
@@ -1656,12 +1646,12 @@ public class TaxonDaoHibernateImpl
         	queryString += " AND ids.type = :type";
         }
 
-		Query query = getSession().createQuery(queryString);
+		Query<Long> query = getSession().createQuery(queryString, Long.class);
         if (identifierType != null){
-        	query.setEntity("type", identifierType);
+        	query.setParameter("type", identifierType);
         }
 
-		return (Long)query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
@@ -1705,11 +1695,11 @@ public class TaxonDaoHibernateImpl
         //order
         queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
 
-		Query query = getSession().createQuery(queryString);
+		Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
 
 		//parameters
 		if (identifierType != null){
-        	query.setEntity("type", identifierType);
+        	query.setParameter("type", identifierType);
         }
 
         //paging
@@ -1718,7 +1708,7 @@ public class TaxonDaoHibernateImpl
         List<Object[]> results = query.list();
         //initialize
         if (includeEntity){
-        	List<S> entities = new ArrayList<S>();
+        	List<S> entities = new ArrayList<>();
         	for (Object[] result : results){
         		entities.add((S)result[2]);
         	}
@@ -1770,15 +1760,13 @@ public class TaxonDaoHibernateImpl
             queryString += " AND mks.markerType = :type";
         }
 
-        Query query = getSession().createQuery(queryString);
-        if (markerType != null){
-            query.setEntity("type", markerType);
-        }
+        Query<Long> query = getSession().createQuery(queryString, Long.class);
+        query.setParameter("type", markerType);
         if (markerValue != null){
-            query.setBoolean("flag", markerValue);
+            query.setParameter("flag", markerValue);
         }
 
-        Long c = (Long)query.uniqueResult();
+        Long c = query.uniqueResult();
         return c;
     }
 
@@ -1828,12 +1816,12 @@ public class TaxonDaoHibernateImpl
         //order
         queryString +=" ORDER BY mks.markerType.uuid, mks.flag, c.uuid ";
 
-        Query query = getSession().createQuery(queryString);
+        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
 
         //parameters
-        query.setEntity("type", markerType);
+        query.setParameter("type", markerType);
         if (markerValue != null){
-            query.setBoolean("flag", markerValue);
+            query.setParameter("flag", markerValue);
         }
 
         //paging
@@ -1898,24 +1886,25 @@ public class TaxonDaoHibernateImpl
     @Override
     public  List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern){
         Session session = getSession();
-        Query query = null;
+        Query<SortableTaxonNodeQueryResult> query = null;
         if (pattern != null){
             query = session.createQuery(
                     "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
                   + " tb.uuid, tb.id, tb.titleCache, tb.name.rank "
                   + ") "
                   + " FROM TaxonBase as tb "
-                  + " WHERE tb.titleCache LIKE :pattern");
+                  + " WHERE tb.titleCache LIKE :pattern",
+                  SortableTaxonNodeQueryResult.class);
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         } else {
             query = session.createQuery(
-                    " SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                    +" tb.uuid, taxonBase.id, tb.titleCache, tb.name.rank "
-                    + ") "
-                  + " FROM TaxonBase AS tb");
+                    " SELECT new " + SortableTaxonNodeQueryResult.class.getName()
+                    + "       (tb.uuid, taxonBase.id, tb.titleCache, tb.name.rank) "
+                    + " FROM TaxonBase AS tb",
+                    SortableTaxonNodeQueryResult.class);
         }
         if (limit != null){
            query.setMaxResults(limit);

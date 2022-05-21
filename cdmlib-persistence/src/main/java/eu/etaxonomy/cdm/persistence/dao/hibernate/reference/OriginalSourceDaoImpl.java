@@ -15,11 +15,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -53,16 +53,15 @@ public class OriginalSourceDaoImpl
         if (clazz == null){
             clazz = (Class)SingleSourcedEntityBase.class;
         }
-        Query q = getSession().createQuery(
+        Query<S> q = getSession().createQuery(
                 "SELECT c " +
                 "FROM " + clazz.getName() + " AS c " +
                 "INNER JOIN c.source AS source " +
-                "WHERE source.id= :sourceId "
+                "WHERE source.id= :sourceId ", clazz
             );
-        q.setInteger("sourceId", sourceId);
+        q.setParameter("sourceId", sourceId);
 
-        @SuppressWarnings("unchecked")
-        S result = (S)q.uniqueResult();
+        S result = q.uniqueResult();
         return result;
     }
 
@@ -71,16 +70,15 @@ public class OriginalSourceDaoImpl
         if (clazz == null){
             clazz = (Class)IdentifiableEntity.class;
         }
-	    Query q = getSession().createQuery(
+	    Query<S> q = getSession().createQuery(
                 "SELECT c " +
                 "FROM " + clazz.getName() + " AS c " +
                 "INNER JOIN c.sources AS source " +
-                "WHERE source.id= :sourceId "
+                "WHERE source.id= :sourceId ", clazz
             );
-	    q.setInteger("sourceId", sourceId);
+	    q.setParameter("sourceId", sourceId);
 
-	    @SuppressWarnings("unchecked")
-        S result = (S)q.uniqueResult();
+        S result = q.uniqueResult();
 	    return result;
 	}
 
@@ -94,19 +92,19 @@ public class OriginalSourceDaoImpl
 		}
 		idInSourceString = "'"+ idInSourceString + "'";
 
-		Query q = session.createQuery(
+		Query<Object[]> q = session.createQuery(
                 "SELECT source.idInSource, c " +
                 "FROM " + clazz.getName() + " AS c " +
                 "INNER JOIN c.sources AS source " +
                 "WHERE source.idInSource IN ( " + idInSourceString + " )" +
-                	" AND source.idNamespace = :idNamespace"
+                	" AND source.idNamespace = :idNamespace",
+                	Object[].class
             );
-		q.setString("idNamespace", idNamespace);
+		q.setParameter("idNamespace", idNamespace);
 		//TODO integrate reference in where
 
 		Map<String, S> result = new HashMap<>();
 
-		@SuppressWarnings("unchecked")
         List<Object[]> list = q.list();
 		for (Object[] pair : list){
 			result.put((String)pair[0], (S)pair[1]);
@@ -118,16 +116,17 @@ public class OriginalSourceDaoImpl
 	@Override
     public <S extends ISourceable> List<S> findOriginalSourceByIdInSource(Class<S> clazz, String idInSource, String idNamespace) {
 		Session session = getSession();
-		Query q = session.createQuery(
+		Query<S> q = session.createQuery(
                 "SELECT c FROM " + clazz.getSimpleName() + " as c " +
                 "  INNER JOIN c.sources as source " +
                 "WHERE source.idInSource = :idInSource " +
-                	" AND source.idNamespace = :idNamespace"
+                	" AND source.idNamespace = :idNamespace",
+                	clazz
             );
-		q.setString("idInSource", idInSource);
-		q.setString("idNamespace", idNamespace);
+		q.setParameter("idInSource", idInSource);
+		q.setParameter("idNamespace", idNamespace);
 		//TODO integrate reference in where
-		@SuppressWarnings("unchecked")
+
         List<S> results = q.list();
 
 		return results;

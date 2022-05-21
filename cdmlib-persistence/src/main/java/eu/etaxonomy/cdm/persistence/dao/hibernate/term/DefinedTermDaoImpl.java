@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Disjunction;
@@ -31,6 +30,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.Query;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -137,11 +137,12 @@ public class DefinedTermDaoImpl
 		if ( sessionObject != null ) {//attache the object to the session, TODO needed?
 			session.update(sessionObject);
 		}
-		Query query = session.createQuery("SELECT term "
+		Query<DefinedTermBase> query = session.createQuery("SELECT term "
 		        + " FROM DefinedTermBase term JOIN FETCH term.representations representation "
-		        + " WHERE representation.label = :label");
+		        + " WHERE representation.label = :label",
+		        DefinedTermBase.class);
 		query.setParameter("label", queryString);
-		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@SuppressWarnings("rawtypes")
 		List<DefinedTermBase> result = deduplicateResult(query.list());
 		return result;
 	}
@@ -166,9 +167,9 @@ public class DefinedTermDaoImpl
 		if (StringUtils.isBlank(iso3166) || iso3166.length()<2 || iso3166.length()>3) { return null; }
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("from Country where iso3166_A2 = :isoCode OR idInVocabulary = :isoCode");
+		    Query<Country> query = getSession().createQuery("FROM Country WHERE iso3166_A2 = :isoCode OR idInVocabulary = :isoCode", Country.class);
 		    query.setParameter("isoCode", iso3166);
-		    return (Country) query.uniqueResult();
+		    return query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Country.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("iso3166_A2").eq(iso3166));
@@ -268,12 +269,12 @@ public class DefinedTermDaoImpl
 		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery(queryStr);
+		    Query<Language> query = getSession().createQuery(queryStr, Language.class);
 		    query.setParameter("isoCode", iso639);
 		    if (! isIso639_1){
 		    	query.setParameter("vocUuid", Language.uuidLanguageVocabulary);
 			}
-		    return (Language) query.uniqueResult();
+		    return query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Language.class,auditEvent.getRevisionNumber());
 			if (isIso639_1){
@@ -345,25 +346,28 @@ public class DefinedTermDaoImpl
 	@Override
     public long countMedia(DefinedTermBase definedTerm) {
 		checkNotInPriorView("DefinedTermDaoImpl.countMedia(DefinedTermBase definedTerm)");
-		Query query = getSession().createQuery("select count(media) from DefinedTermBase definedTerm join definedTerm.media media where definedTerm = :definedTerm");
+		Query<Long> query = getSession().createQuery("SELECT count(media) "
+		        + " FROM DefinedTermBase definedTerm JOIN definedTerm.media media "
+		        + " WHERE definedTerm = :definedTerm",
+		        Long.class);
 	    query.setParameter("definedTerm", definedTerm);
 
-		return (Long)query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
     public List<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber)");
-		Query query = getSession().createQuery(
+		Query<Media> query = getSession().createQuery(
 		           "SELECT media "
 		        + " FROM DefinedTermBase definedTerm "
-		        + " JOIN definedTerm.media media "
-		        + " WHERE definedTerm = :definedTerm");
+		        + "   JOIN definedTerm.media media "
+		        + " WHERE definedTerm = :definedTerm",
+		        Media.class);
 		query.setParameter("definedTerm", definedTerm);
 
 		addPageSizeAndNumber(query, pageSize, pageNumber);
 
-		@SuppressWarnings("unchecked")
         List<Media> result = query.list();
 		return result;
 	}
@@ -447,9 +451,13 @@ public class DefinedTermDaoImpl
     public <T extends DefinedTermBase> long countGeneralizationOf(T kindOf) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("select count(term) from DefinedTermBase term where term.kindOf = :kindOf");
+		    Query<Long> query = getSession().createQuery(
+		            "   SELECT count(term) "
+		            + " FROM DefinedTermBase term "
+		            + " WHERE term.kindOf = :kindOf",
+		            Long.class);
 		    query.setParameter("kindOf", kindOf);
-		    return (Long)query.uniqueResult();
+		    return query.uniqueResult();
 		} else {
             AuditQuery query = makeAuditQuery(DefinedTermBase.class,auditEvent);
 			query.add(AuditEntity.relatedId("kindOf").eq(kindOf.getId()));
@@ -465,9 +473,13 @@ public class DefinedTermDaoImpl
 		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-    		Query query = getSession().createQuery("select count(term) from DefinedTermBase term where term.partOf in (:partOf)");
+    		Query<Long> query = getSession().createQuery(
+    		        "   SELECT count(term) "
+    		        + " FROM DefinedTermBase term "
+    		        + " WHERE term.partOf in (:partOf)",
+    		        Long.class);
 	    	query.setParameterList("partOf", partOf);
-		    return (Long)query.uniqueResult();
+		    return query.uniqueResult();
 		} else {
 			long count = 0;
 			for(T t : partOf) {
@@ -484,14 +496,11 @@ public class DefinedTermDaoImpl
     public <T extends DefinedTermBase> List<T> getGeneralizationOf(T kindOf, Integer pageSize, Integer pageNumber) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("select term from DefinedTermBase term where term.kindOf = :kindOf");
+            Query<DefinedTermBase> query = getSession().createQuery("SELECT term FROM DefinedTermBase term WHERE term.kindOf = :kindOf", DefinedTermBase.class);
 		    query.setParameter("kindOf", kindOf);
 
 		    addPageSizeAndNumber(query, pageSize, pageNumber);
-
-		    @SuppressWarnings("unchecked")
-            List<T> result = deduplicateResult(query.list());
-		    return result;
+            return (List)deduplicateResult(query.list());
 		} else {
 			 AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
 			 query.add(AuditEntity.relatedId("kindOf").eq(kindOf.getId()));
@@ -511,13 +520,12 @@ public class DefinedTermDaoImpl
 		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-    		Query query = getSession().createQuery("select term from DefinedTermBase term where term.partOf in (:partOf)");
+            Query<DefinedTermBase> query = getSession().createQuery("SELECT term FROM DefinedTermBase term WHERE term.partOf in (:partOf)", DefinedTermBase.class);
     		query.setParameterList("partOf", partOf);
 
     		addPageSizeAndNumber(query, pageSize, pageNumber);
 
-		    @SuppressWarnings("unchecked")
-            List<T> results = deduplicateResult(query.list());
+            List<T> results = (List)deduplicateResult(query.list());
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		    return results;
 		} else {
@@ -537,20 +545,20 @@ public class DefinedTermDaoImpl
 	@Override
     public <T extends DefinedTermBase> long countPartOf(Set<T> definedTerms) {
 		checkNotInPriorView("DefinedTermDaoImpl.countPartOf(Set<T> definedTerms)");
-		Query query = getSession().createQuery("select count(distinct definedTerm) from DefinedTermBase definedTerm join definedTerm.includes included where included in (:definedTerms)");
+		Query<Long> query = getSession().createQuery("SELECT count(DISTINCT definedTerm) FROM DefinedTermBase definedTerm JOIN definedTerm.includes included WHERE included in (:definedTerms)", Long.class);
 		query.setParameterList("definedTerms", definedTerms);
-		return (Long)query.uniqueResult();
+		return query.uniqueResult();
 	}
 
 	@Override
     public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("DefinedTermDaoImpl.getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber)");
-		Query query = getSession().createQuery("select distinct definedTerm from DefinedTermBase definedTerm join definedTerm.includes included where included in (:definedTerms)");
+		@SuppressWarnings("unchecked")
+        Query<T> query = getSession().createQuery("select distinct definedTerm from DefinedTermBase definedTerm join definedTerm.includes included where included in (:definedTerms)");
 		query.setParameterList("definedTerms", definedTerms);
 
 		addPageSizeAndNumber(query, pageSize, pageNumber);
 
-		@SuppressWarnings("unchecked")
         List<T> r = query.list();
 		/**
 		 * For some weird reason, hibernate returns proxies (extending the superclass), not the actual class on this,
@@ -575,9 +583,9 @@ public class DefinedTermDaoImpl
     public DefinedTermBase findByUri(URI uri) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("select term from DefinedTermBase term where term.uri = :uri");
+		    Query<DefinedTermBase> query = getSession().createQuery("select term from DefinedTermBase term where term.uri = :uri", DefinedTermBase.class);
 		    query.setParameter("uri", uri);
-		    return (DefinedTermBase<?>)query.uniqueResult();
+		    return query.uniqueResult();
 		} else {
 			AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
 			query.add(AuditEntity.property("uri").eq(uri));
@@ -588,10 +596,10 @@ public class DefinedTermDaoImpl
 	@Override
 	public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start,
 	        List<OrderHint> orderHints, List<String> propertyPaths) {
-	    Query query = getSession().createQuery("SELECT term FROM DefinedTermBase term WHERE term.termType = :termType");
+	    @SuppressWarnings("unchecked")
+        Query<T> query = getSession().createQuery("SELECT term FROM DefinedTermBase term WHERE term.termType = :termType");
 	    query.setParameter("termType", termType);
 
-	    @SuppressWarnings("unchecked")
         List<T> result = deduplicateResult(query.list());
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
@@ -602,13 +610,10 @@ public class DefinedTermDaoImpl
     public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 //		checkNotInPriorView("DefinedTermDaoImpl.listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)");
 
-		Query query = getSession().createQuery("FROM " + clazz.getSimpleName());
-
-	    @SuppressWarnings("unchecked")
+        Query<TERM> query = getSession().createQuery("FROM " + clazz.getSimpleName(), clazz);
         List<TERM> result = deduplicateResult(query.list());
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
-
 	    return result;
 	}
 
@@ -750,10 +755,9 @@ public class DefinedTermDaoImpl
         }
         queryString = queryString
                 + "where a.partOf.uuid = :parentUuid";
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("parentUuid", parentTerm.getUuid());
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
@@ -770,10 +774,9 @@ public class DefinedTermDaoImpl
             queryString = TermDto.getTermDtoSelect();
         }
         queryString = queryString + "where a.kindOf.uuid = :parentUuid";
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("parentUuid", parentTerm.getUuid());
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
@@ -789,26 +792,24 @@ public class DefinedTermDaoImpl
                 + (termType!=null?" and a.termType = :termType ":"");
 
         title = title.replace("*", "%");
-        Query termQuery =  getSession().createQuery(termQueryString);
+        Query<Object[]> termQuery = getSession().createQuery(termQueryString, Object[].class);
         termQuery.setParameter("title", "%"+title+"%");
         if(termType!=null){
             termQuery.setParameter("termType", termType);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> termArrayResult = termQuery.list();
         List<TermDto> list = TermDto.termDtoListFrom(termArrayResult);
 
         //vocabularies
-        String vocQueryString = TermCollectionDto.getTermCollectionDtoSelect() + " where a.uuid = :uuid";
-        Query vocQuery = getSession().createQuery(vocQueryString);
+        String vocQueryString = TermCollectionDto.getTermCollectionDtoSelect() + " WHERE a.uuid = :uuid";
+        Query<Object[]> vocQuery = getSession().createQuery(vocQueryString, Object[].class);
         Map<UUID,TermVocabularyDto> vocMap = new HashMap<>();
         for (TermDto dto: list){
             UUID vocUuid = dto.getVocabularyUuid();
             TermVocabularyDto vocDto = vocMap.get(vocUuid);
             if (vocDto == null){
                 vocQuery.setParameter("uuid", dto.getVocabularyUuid());
-                @SuppressWarnings("unchecked")
                 List<Object[]> vocArrayResult = vocQuery.list();
                 List<TermVocabularyDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(vocArrayResult);
                 if (!vocs.isEmpty()){
@@ -826,13 +827,9 @@ public class DefinedTermDaoImpl
     public TermDto findByUUIDAsDto(UUID uuid) {
         String queryString = TermDto.getTermDtoSelect()
                 + " where a.uuid like :uuid ";
-
-
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("uuid", uuid);
 
-
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
@@ -851,12 +848,11 @@ public class DefinedTermDaoImpl
             return null;
         }
         String queryString = TermDto.getTermDtoSelect()
-                + " where a.termType = :termType ";
-        Query query =  getSession().createQuery(queryString);
+                + " WHERE a.termType = :termType ";
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
 
         query.setParameter("termType", termType);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
@@ -870,7 +866,7 @@ public class DefinedTermDaoImpl
                 + (termType!=null?" and a.termType = :termType ":"")
                 + (termLabel!=null?" and a.titleCache = :termLabel ":"")
                 ;
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("uri", uri.toString());
         if(termLabel!=null){
             query.setParameter("termLabel", "%"+termLabel+"%");
@@ -879,7 +875,6 @@ public class DefinedTermDaoImpl
             query.setParameter("termType", termType);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
@@ -895,9 +890,8 @@ public class DefinedTermDaoImpl
                     + "from DefinedTermBase t "
                     + "join t.supportedCategoricalEnumerations as cat "
                     + "where t.uuid = :featureUuid";
-            Query supportedCategoriesQuery =  getSession().createQuery(supportedCategoriesQueryString);
+            Query<UUID> supportedCategoriesQuery =  getSession().createQuery(supportedCategoriesQueryString, UUID.class);
             supportedCategoriesQuery.setParameter("featureUuid", featureUuid);
-            @SuppressWarnings("unchecked")
     		List<UUID> supportedCategories = supportedCategoriesQuery.list();
             if(supportedCategories.isEmpty()){
                 map.put(featureUuid, list);
@@ -907,10 +901,9 @@ public class DefinedTermDaoImpl
             String queryString = TermDto.getTermDtoSelect()
                     + "where v.uuid in (:supportedCategories) "
                     + "order by a.titleCache";
-            Query query =  getSession().createQuery(queryString);
+            Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
             query.setParameterList("supportedCategories", supportedCategories);
 
-            @SuppressWarnings("unchecked")
             List<Object[]> result = query.list();
 
             list = TermDto.termDtoListFrom(result);
@@ -927,14 +920,12 @@ public class DefinedTermDaoImpl
         }
 
         String queryString = TermDto.getTermDtoSelect()
-                + "where a.uuid in :uuidList "
-                + "order by a.titleCache";
-        Query query =  getSession().createQuery(queryString);
+                + " WHERE a.uuid in :uuidList "
+                + " ORDER by a.titleCache";
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameterList("uuidList", uuidList);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-
         list = TermDto.termDtoListFrom(result);
         return list;
     }
@@ -949,10 +940,9 @@ public class DefinedTermDaoImpl
         String queryString = FeatureDto.getTermDtoSelect()
                 + "where a.uuid in :uuidList "
                 + "order by a.titleCache";
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameterList("uuidList", uuidList);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         list = FeatureDto.termDtoListFrom(result);
@@ -966,14 +956,11 @@ public class DefinedTermDaoImpl
                 +  " and a.termType = :termType ";
 
         pattern = pattern.replace("*", "%");
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("title", "%"+pattern+"%");
         query.setParameter("termType", TermType.Feature);
 
-
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-
         List<TermDto> list = FeatureDto.termDtoListFrom(result);
         return list;
     }
@@ -983,13 +970,9 @@ public class DefinedTermDaoImpl
         String queryString = TermDto.getTermDtoSelect()
                 + " where a.uuid = :uuid ";
 
-
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("uuid", uuid);
 
-
-
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
         TermDto dto = null;
         List<TermDto> dtoList = TermDto.termDtoListFrom(result);

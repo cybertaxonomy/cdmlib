@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Amplification;
@@ -47,17 +47,16 @@ public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplificat
     public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache(Integer limit, String pattern) {
         List<UuidAndTitleCache<Amplification>> list = new ArrayList<UuidAndTitleCache<Amplification>>();
         Session session = getSession();
-        Query query;
+        Query<Object[]> query;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, labelCache from Amplification where labelCache like :pattern");
+            query = session.createQuery("select uuid, id, labelCache from Amplification where labelCache like :pattern", Object[].class);
             query.setParameter("pattern", pattern);
         }else{
-            query = session.createQuery("select uuid, id, labelCache from Amplification");
+            query = session.createQuery("select uuid, id, labelCache from Amplification", Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);
          }
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){

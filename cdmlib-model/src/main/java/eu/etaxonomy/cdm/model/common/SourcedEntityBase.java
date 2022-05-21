@@ -60,6 +60,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     //TODO should be Set<SOURCE> but this currently throws exception in DefaultMergeStrategyTest
+    //TODO once fixed, fix also IdentifiableDao.getSources() generics
     private Set<OriginalSourceBase> sources = new HashSet<>();
 
 // ************ CONSTRUCTOR ********************************************/

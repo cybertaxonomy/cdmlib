@@ -20,11 +20,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
@@ -33,6 +34,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.query.Query;
 import org.hibernate.sql.JoinType;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.CollectionType;
@@ -115,15 +117,15 @@ public class CdmGenericDaoImpl
     private List<ReferencingObjectDto> getCdmBasesByFieldAndClassDto(Class<? extends CdmBase> clazz, String propertyName,
             CdmBase referencedCdmBase, Integer limit){
 
-        Query query = getSession().createQuery("SELECT new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(this.uuid, this.id) "
+        Query<ReferencingObjectDto> query = getSession().createQuery("SELECT new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(this.uuid, this.id) "
                     + "FROM "+ clazz.getSimpleName() + " this "
-                    + "WHERE this." + propertyName +" = :referencedObject")
-                .setEntity("referencedObject", referencedCdmBase);
+                    + "WHERE this." + propertyName +" = :referencedObject",
+                    ReferencingObjectDto.class)
+                .setParameter("referencedObject", referencedCdmBase);
 
         if (limit != null){
             query.setMaxResults(limit);
         }
-        @SuppressWarnings("unchecked")
         List<ReferencingObjectDto> result = query.list();
         result.forEach(dto->dto.setType((Class<CdmBase>)clazz));
         return result;
@@ -146,12 +148,13 @@ public class CdmGenericDaoImpl
 
 	@Override
     public long getCountByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase){
-        Query query = getSession().createQuery("SELECT count(this) "
-                + "FROM "+ clazz.getSimpleName() + " this "
-                + "WHERE this." + propertyName +" = :referencedObject")
-                .setEntity("referencedObject", referencedCdmBase);
+        Query<Long> query = getSession().createQuery("SELECT count(this) "
+                + " FROM "+ clazz.getSimpleName() + " this "
+                + " WHERE this." + propertyName +" = :referencedObject",
+                Long.class)
+                .setParameter("referencedObject", referencedCdmBase);
 
-        long result =(Long)query.uniqueResult();
+        long result =query.uniqueResult();
         return result;
     }
 
@@ -161,11 +164,11 @@ public class CdmGenericDaoImpl
 
         String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName,
                 "new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(other.uuid, other.id)");
-        Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
+        Query<ReferencingObjectDto> query = getSession().createQuery(queryStr, ReferencingObjectDto.class)
+                .setParameter("referencedObject", item);
         if (limit != null){
             query.setMaxResults(limit);
         }
-        @SuppressWarnings("unchecked")
         List<ReferencingObjectDto> result = query.list();
         result.forEach(dto->dto.setType((Class)clazz));
         return result;
@@ -176,11 +179,11 @@ public class CdmGenericDaoImpl
 	        Class<?> clazz, String propertyName, CdmBase item, Integer limit){
 
 		String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "other");
-		Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
+		Query<CdmBase> query = getSession().createQuery(queryStr, CdmBase.class)
+		        .setParameter("referencedObject", item);
 		if (limit != null){
 		    query.setMaxResults(limit);
 		}
-		@SuppressWarnings("unchecked")
 		List<CdmBase> result = query.list();
 		return result;
 	}
@@ -199,8 +202,9 @@ public class CdmGenericDaoImpl
 
         String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "count(this)");
 
-        Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
-        long result =(Long)query.uniqueResult();
+        Query<Long> query = getSession().createQuery(queryStr, Long.class)
+                .setParameter("referencedObject", item);
+        long result =query.uniqueResult();
         return result;
     }
 
@@ -544,18 +548,17 @@ public class CdmGenericDaoImpl
 
 	@Override
 	public List<CdmBase> getHqlResult(String hqlQuery, Object[] params){
-		Query query = getSession().createQuery(hqlQuery);
+		Query<CdmBase> query = getSession().createQuery(hqlQuery, CdmBase.class);
 		for(int i = 0; i<params.length; i++){
 		    query.setParameter(String.valueOf(i), params[i]);  //for some reason using int, not String, throws exceptions, this seems to be a hibernate bug
 		}
-		@SuppressWarnings("unchecked")
         List<CdmBase> result = query.list();
 		return result;
 	}
 
 	@Override
-	public Query getHqlQuery(String hqlQuery){
-		Query query = getSession().createQuery(hqlQuery);
+	public Query<?> getHqlQuery(String hqlQuery){
+		Query<?> query = getSession().createQuery(hqlQuery);
 		return query;
 	}
 
@@ -1078,8 +1081,7 @@ public class CdmGenericDaoImpl
     @Override
     public List<UUID> listUuid(Class<? extends CdmBase> clazz) {
         String queryString = "SELECT uuid FROM " + clazz.getSimpleName();
-        Query query = getSession().createQuery(queryString);
-        @SuppressWarnings("unchecked")
+        Query<UUID> query = getSession().createQuery(queryString, UUID.class);
         List<UUID> list = query.list();
         return list;
     }

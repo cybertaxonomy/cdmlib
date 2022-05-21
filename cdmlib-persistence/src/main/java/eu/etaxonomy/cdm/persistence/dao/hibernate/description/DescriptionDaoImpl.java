@@ -19,13 +19,13 @@ import java.util.UUID;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -85,17 +85,17 @@ public class DescriptionDaoImpl
     @Override
     public long countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm status) {
         checkNotInPriorView("DescriptionDaoImpl.countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status)");
-        Query query = null;
+        Query<Long> query = null;
 
         if(status == null) {
-            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.descriptionElements element join element.area area where area in (:namedAreas)");
+            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.descriptionElements element join element.area area where area in (:namedAreas)", Long.class);
         } else {
-            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.descriptionElements element join element.area area  join element.status status where area in (:namedAreas) and status = :status");
+            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.descriptionElements element join element.area area  join element.status status where area in (:namedAreas) and status = :status", Long.class);
             query.setParameter("status", status);
         }
         query.setParameterList("namedAreas", namedAreas);
 
-        return (Long)query.uniqueResult();
+        return query.uniqueResult();
     }
 
     @Override
@@ -682,8 +682,7 @@ public class DescriptionDaoImpl
     public List<Integer> getIndividualAssociationSpecimenIDs(UUID taxonUuid,
             Set<Feature> features, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths){
-        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, IndividualsAssociation.class, pageSize, pageNumber, "de.associatedSpecimenOrObservation.id");
-        @SuppressWarnings("unchecked")
+        Query<Integer> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, IndividualsAssociation.class, pageSize, pageNumber, "de.associatedSpecimenOrObservation.id");
         List<Integer> results = query.list();
         return results;
     }
@@ -691,7 +690,7 @@ public class DescriptionDaoImpl
     @Override
     public List<SortableTaxonNodeQueryResult> getNodeOfIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid){
         String selectString = " new " +SortableTaxonNodeQueryResult.class.getName()+"(n.uuid, n.id, n.treeIndex, t.uuid, t.titleCache, t.name.titleCache, t.name.rank, n.parent.uuid) ";
-        Query query = prepareGetIndividualAssociationForSpecimen(specimenUuid, classificationUuid, selectString);
+        Query<SortableTaxonNodeQueryResult> query = prepareGetIndividualAssociationForSpecimen(specimenUuid, classificationUuid, selectString);
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> results = query.list();
         return results;
@@ -703,12 +702,10 @@ public class DescriptionDaoImpl
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
-
-        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, "de");
+//      Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+        Query<T> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, "de");
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
-        @SuppressWarnings("unchecked")
         List<T> results = query.list();
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize ...");}
         defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -722,12 +719,12 @@ public class DescriptionDaoImpl
     public <T extends DescriptionElementBase> long countDescriptionElementForTaxon(
             UUID taxonUuid, Set<Feature> features, Class<T> type) {
 
-        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, null, null, "count(de)");
+        Query<Long> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, null, null, "count(de)");
 
-        return (Long)query.uniqueResult();
+        return query.uniqueResult();
     }
 
-    private <T extends DescriptionElementBase> Query prepareGetDescriptionElementForTaxon(UUID taxonUuid,
+    private <T extends DescriptionElementBase, R extends Object> Query<R> prepareGetDescriptionElementForTaxon(UUID taxonUuid,
             Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, String selectString) {
 
         String queryString = "SELECT " + selectString + " FROM DescriptionElementBase AS de" +
@@ -741,8 +738,7 @@ public class DescriptionDaoImpl
         if (features != null && features.size() > 0){
             queryString += " and de.feature in (:features) ";
         }
-//		System.out.println(queryString);
-        Query query = getSession().createQuery(queryString);
+        Query<R> query = getSession().createQuery(queryString);
 
         query.setParameter("taxon_uuid", taxonUuid);
         if(type != null){
@@ -761,7 +757,7 @@ public class DescriptionDaoImpl
         return query;
     }
 
-    private Query prepareGetIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid, String selectString) {
+    private Query<SortableTaxonNodeQueryResult> prepareGetIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid, String selectString) {
 
         String queryString = "SELECT " + selectString + " FROM DescriptionElementBase AS de" +
                 " LEFT JOIN de.inDescription AS d" +
@@ -777,10 +773,7 @@ public class DescriptionDaoImpl
             whereString = whereString + " AND c.uuid = :classifcationUuid";
         }
 
-
-
-//      System.out.println(queryString);
-        Query query = getSession().createQuery(queryString + classificationString + whereString);
+        Query<SortableTaxonNodeQueryResult> query = getSession().createQuery(queryString + classificationString + whereString, SortableTaxonNodeQueryResult.class);
 
         query.setParameter("specimen_uuid", specimenUuid);
         if (classificationUuid != null){
@@ -810,7 +803,7 @@ public class DescriptionDaoImpl
 //	    						" ORDER BY index(media) "  //not functional
                     ;
 
-                Query query = getSession().createQuery(queryString);
+                Query<Media> query = getSession().createQuery(queryString, Media.class);
 
                 setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
 
@@ -839,9 +832,9 @@ public class DescriptionDaoImpl
                 getTaxonDescriptionMediaQueryString(
                     taxonUuid, limitToGalleries, markerTypes);
 
-            Query query = getSession().createQuery(queryString);
+            Query<Long> query = getSession().createQuery(queryString, Long.class);
             setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
-            return ((Long)query.uniqueResult()).intValue();
+            return query.uniqueResult().intValue();
         }else{
             throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid)");
         }
@@ -899,7 +892,7 @@ public class DescriptionDaoImpl
         StringBuilder queryString = new StringBuilder(
                 "SELECT DISTINCT a.id, a.partOf.id"
                 + " FROM Distribution AS d JOIN d.area AS a");
-        Query query = getSession().createQuery(queryString.toString());
+        Query<Object[]> query = getSession().createQuery(queryString.toString(), Object[].class);
 
         List<Object[]> areasInUse = query.list();
         List<Object[]> parentResults = new ArrayList<>();
@@ -910,7 +903,7 @@ public class DescriptionDaoImpl
             if(includeAllParents) {
                 // find all parent nodes
                 String allAreasQueryStr = "select a.id, a.partOf.id from NamedArea as a";
-                query = getSession().createQuery(allAreasQueryStr);
+                query = getSession().createQuery(allAreasQueryStr, Object[].class);
                 List<Object[]> allAreasResult = query.list();
                 Map<Object, Object> allAreasMap = ArrayUtils.toMap(allAreasResult.toArray());
 
@@ -941,7 +934,7 @@ public class DescriptionDaoImpl
             // rows for a term with multiple representations
             String parentAreasQueryStr = TermDto.getTermDtoSelect("NamedArea")
                     + "where a.id in (:allAreaIds) order by a.idInVocabulary";
-            query = getSession().createQuery(parentAreasQueryStr);
+            query = getSession().createQuery(parentAreasQueryStr, Object[].class);
             query.setParameterList("allAreaIds", allAreaIds);
             if(pageSize != null) {
                 query.setMaxResults(pageSize);

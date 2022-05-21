@@ -27,13 +27,10 @@ public class CdmAuthorityDaoImpl
 //	@Override
 //    public GrantedAuthorityImpl findAuthorityString(String authorityString){
 //	    GrantedAuthorityImpl result = null;
-//	    Query query = getSession().createQuery("select ga from GrantedAuthorityImpl ga where ga.authority = :authority");
+//	    Query<GrantedAuthorityImpl> query = getSession().createQuery("select ga from GrantedAuthorityImpl ga where ga.authority = :authority", GrantedAuthorityImpl.class);
 //        query.setParameter("authority",authorityString);
 //
-//        result = (GrantedAuthorityImpl)query.uniqueResult();
-//
-//
+//        result = query.uniqueResult();
 //        return result;
-//
 //	}
 }

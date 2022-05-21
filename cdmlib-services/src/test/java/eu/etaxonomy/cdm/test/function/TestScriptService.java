@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -381,12 +381,12 @@ public class TestScriptService {
 //				"";//" where e.area = :namedArea " ;
 			String hqlQuery = "Select t from Distribution e join e.inDescription d join d.taxon t join t.name n "+
 				" WHERE e.area in (:namedArea) AND n.nameCache = :nameCache ";
-			Query query = session.createQuery(hqlQuery);
+			Query<Taxon> query = session.createQuery(hqlQuery, Taxon.class);
 
 			//query.setEntity("namedArea", area1);
 			query.setParameter("nameCache", nameCache);
 			query.setParameterList("namedArea", areaList);
-			List resultList = query.list();
+			List<Taxon> resultList = query.list();
 			//List list = appCtr.getCommonService().getHqlResult(hqlQuery);
 
 			for (Object o:resultList){

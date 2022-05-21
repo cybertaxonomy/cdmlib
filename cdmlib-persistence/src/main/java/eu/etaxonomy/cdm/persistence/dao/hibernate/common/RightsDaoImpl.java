@@ -14,8 +14,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -59,11 +59,9 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
 //            queryString += " OR type.titleCache LIKE :pattern";
         }
 
-
-
-         Query query;
+        Query<Object[]> query;
         //if (pattern != null){
-            query = session.createQuery(queryString);
+            query = session.createQuery(queryString, Object[].class);
 //      }else{
 //          query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
 //      }
@@ -78,9 +76,7 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
               query.setParameter("pattern", pattern);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-
         for(Object[] object : result){
             if (object[2] == null && object[3] == null && object[4] == null &&  object[5] == null &&  object[6] == null){
                 continue;

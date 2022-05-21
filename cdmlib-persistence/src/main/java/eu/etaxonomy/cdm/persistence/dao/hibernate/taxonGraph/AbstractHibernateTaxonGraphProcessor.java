@@ -16,8 +16,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
@@ -120,14 +120,13 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      * is expected to be stored in the CDM perferences under the preference key
      * {@link TaxonGraphDaoHibernateImpl#CDM_PREF_KEY_SEC_REF_UUID}
      *
-     *
      * @return The reference for all taxa in the graph
      */
     public Reference secReference(){
         if(secReference == null){
-            Query q = getSession().createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid");
+            Query<Reference> q = getSession().createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid", Reference.class);
             q.setParameter("uuid", getSecReferenceUUID());
-            secReference = (Reference) q.uniqueResult();
+            secReference = q.uniqueResult();
             if(secReference == null){
                 Reference missingRef = ReferenceFactory.newGeneric();
                 UUID uuid = getSecReferenceUUID();
@@ -458,7 +457,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(specificEpithet != null){
             hql += " AND n.specificEpithet = :specificEpithet";
         }
-        Query q = getSession().createQuery(hql);
+        Query<TaxonName> q = getSession().createQuery(hql, TaxonName.class);
 
         q.setParameter("rank", rank);
         q.setParameter("genusOrUninomial", genusOrUninomial);
@@ -475,7 +474,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(specificEpithet != null){
             hql += " AND n.specificEpithet = :specificEpithet";
         }
-        Query q = getSession().createQuery(hql);
+        Query<TaxonName> q = getSession().createQuery(hql, TaxonName.class);
 
         q.setParameter("rankOrderIndex", rank.getOrderIndex());
         q.setParameter("genusOrUninomial", genusOrUninomial);
@@ -483,7 +482,6 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
             q.setParameter("specificEpithet", specificEpithet);
         }
 
-        @SuppressWarnings("unchecked")
         List<TaxonName> result = q.list();
         return result;
     }
@@ -503,13 +501,12 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(citation != null){
             hql += " AND rel.source.citation = :citation";
         }
-        Query q = getSession().createQuery(hql);
+        Query<TaxonRelationship> q = getSession().createQuery(hql, TaxonRelationship.class);
         q.setParameter("relatedTaxon", relatedTaxon);
         q.setParameter("type", type);
         if(citation != null){
             q.setParameter("citation", citation);
         }
-        @SuppressWarnings("unchecked")
         List<TaxonRelationship> rels = q.list();
         return rels;
     }

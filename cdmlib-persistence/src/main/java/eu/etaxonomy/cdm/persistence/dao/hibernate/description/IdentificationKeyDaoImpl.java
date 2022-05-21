@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -22,9 +22,8 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 
 	@Override
     public long count() {
-		Query query = getSession().createQuery("select count(key) from eu.etaxonomy.cdm.model.description.IIdentificationKey key");
+		Query<Long> query = getSession().createQuery("select count(key) from eu.etaxonomy.cdm.model.description.IIdentificationKey key", Long.class);
 
-		@SuppressWarnings("unchecked")
         List<Long> result = query.list();
 		long total = 0;
 		for(long l : result) {
@@ -35,11 +34,8 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 
 	@Override
     public List<IIdentificationKey> list(Integer limit,Integer start, List<String> propertyPaths) {
-		Query query = getSession().createQuery("select key from eu.etaxonomy.cdm.model.description.IIdentificationKey key order by created desc");
-
+		Query<IIdentificationKey> query = getSession().createQuery("select key from eu.etaxonomy.cdm.model.description.IIdentificationKey key order by created desc", IIdentificationKey.class);
 		addLimitAndStart(query, limit, start);
-
-		@SuppressWarnings("unchecked")
         List<IIdentificationKey> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
@@ -50,10 +46,10 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 	        UUID taxonUuid, Class<T> type, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
 
-		Query query = getSession().createQuery("select key from " + type.getCanonicalName() +" key join key.taxonomicScope ts where ts.uuid = (:taxon_uuid)");
-		query.setParameter("taxon_uuid", taxonUuid);
 		@SuppressWarnings("unchecked")
-        List<T> results = query.list();
+        Query<T> query = getSession().createQuery("select key from " + type.getCanonicalName() +" key join key.taxonomicScope ts where ts.uuid = (:taxon_uuid)");
+		query.setParameter("taxon_uuid", taxonUuid);
+		List<T> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
@@ -61,10 +57,9 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 	@Override
 	public <T extends IIdentificationKey> long countByTaxonomicScope(UUID taxonUuid, Class<T> type) {
 
-		Query query = getSession().createQuery("select count(key) from " + type.getCanonicalName() +" key join key.taxonomicScope ts where ts.uuid = (:taxon_uuid)");
+		Query<Long> query = getSession().createQuery("select count(key) from " + type.getCanonicalName() +" key join key.taxonomicScope ts where ts.uuid = (:taxon_uuid)", Long.class);
 		query.setParameter("taxon_uuid", taxonUuid);
-		@SuppressWarnings("unchecked")
-        List<Long> list = query.list();
+		List<Long> list = query.list();
 		long count = 0;
 		for(long perTypeCount : list){
 			count += perTypeCount;

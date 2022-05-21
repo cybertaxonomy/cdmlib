@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1082,12 +1082,11 @@ public class DescriptionServiceImpl
     @Override
     public DescriptionBaseDto loadDto(UUID descriptionUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
-        Query query =  getSession().createQuery(sqlSelect);
-        List<UUID> uuids = new ArrayList<UUID>();
+        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
+        List<UUID> uuids = new ArrayList<>();
         uuids.add(descriptionUuid);
         query.setParameterList("uuid", uuids);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
@@ -1129,10 +1128,9 @@ public class DescriptionServiceImpl
     @Override
     public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuids) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
-        Query query =  getSession().createQuery(sqlSelect);
+        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
         query.setParameterList("uuid", descriptionUuids);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
@@ -1141,9 +1139,8 @@ public class DescriptionServiceImpl
 
             //get categorical data
             sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
-            query =  getSession().createQuery(sqlSelect);
+            query = getSession().createQuery(sqlSelect, Object[].class);
             query.setParameter("uuid", dto.getDescriptionUuid());
-            @SuppressWarnings("unchecked")
             List<Object[]>  resultCat = query.list();
             List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
 
@@ -1159,10 +1156,9 @@ public class DescriptionServiceImpl
             dto.getElements().addAll(listCategorical);
             //get quantitative data
             sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
-            query =  getSession().createQuery(sqlSelect);
+            query = getSession().createQuery(sqlSelect, Object[].class);
             query.setParameter("uuid",  dto.getDescriptionUuid());
-            @SuppressWarnings("unchecked")
-            List<Object[]>  resultQuant = query.list();
+            List<Object[]> resultQuant = query.list();
             List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
             dto.getElements().addAll(listQuant);
 
@@ -1174,10 +1170,9 @@ public class DescriptionServiceImpl
     @Override
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect();
-        Query query =  getSession().createQuery(sqlSelect);
+        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
         query.setParameter("uuid", taxonUuid);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);

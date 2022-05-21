@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 import java.util.List;
 
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.permission.Group;
@@ -32,37 +32,37 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 
     @Override
     public User findUserByUsername(String username) {
-        Query query = getSession().createQuery("select user from User user where user.username = :username");
+        Query<User> query = getSession().createQuery("SELECT user FROM User user WHERE user.username = :username", User.class);
         query.setParameter("username", username);
 
-        User user = (User)query.uniqueResult(); // username is a @NaturalId
+        User user = query.uniqueResult(); // username is a @NaturalId
         return initializeUser(user);
     }
 
     @Override
     public boolean userNameExists(String username) {
-        Query query = getSession().createQuery("select count(user) from User user where user.username = :username");
+        Query<Long> query = getSession().createQuery("SELECT count(user) FROM User user WHERE user.username = :username", long.class);
         query.setParameter("username", username);
 
-        long count = (long)query.uniqueResult();
+        long count = query.uniqueResult();
         return count > 0;
     }
 
     @Override
     public boolean emailAddressExists(String emailAddress) {
-        Query query = getSession().createQuery("select count(user) from User user where user.emailAddress = :emailAddress");
+        Query<Long> query = getSession().createQuery("SELECT count(user) FROM User user WHERE user.emailAddress = :emailAddress", long.class);
         query.setParameter("emailAddress", emailAddress);
 
-        long count = (long)query.uniqueResult();
+        long count = query.uniqueResult();
         return count > 0;
     }
 
     @Override
     public User findByEmailAddress(String emailAddress) {
-        Query query = getSession().createQuery("select user from User user where user.emailAddress = :emailAddress");
+        Query<User> query = getSession().createQuery("SELECT user FROM User user where user.emailAddress = :emailAddress", User.class);
         query.setParameter("emailAddress", emailAddress);
 
-        User user = (User)query.uniqueResult(); // emailAddress to be unique, see https://dev.e-taxonomy.eu/redmine/issues/7276
+        User user = query.uniqueResult(); // emailAddress to be unique, see https://dev.e-taxonomy.eu/redmine/issues/7276
         return initializeUser(user);
     }
 

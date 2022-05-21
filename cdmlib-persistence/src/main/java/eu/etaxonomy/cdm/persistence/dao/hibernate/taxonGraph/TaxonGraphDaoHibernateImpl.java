@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +76,9 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
     public List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex) {
 
-        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, false);
+        Query<TaxonGraphEdgeDTO> query = prepareTaxonGraphEdgeDTOs(
+                fromTaxonUuid, toTaxonUuid, type, includeUnpublished, false, TaxonGraphEdgeDTO.class);
+
 
         if(pageSize != null) {
             query.setMaxResults(pageSize);
@@ -87,9 +89,7 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
             }
         }
 
-        @SuppressWarnings("unchecked")
         List<TaxonGraphEdgeDTO> result = query.list();
-
         return result;
     }
 
@@ -97,20 +97,14 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
     public long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished) {
 
-        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true);
-        Long count = (Long) query.uniqueResult();
+        Query<Long> query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true, Long.class);
+        Long count = query.uniqueResult();
         return count;
     }
 
-    /**
-     * @param fromTaxonUuid
-     * @param toTaxonUuid
-     * @param type
-     * @param includeUnpublished
-     * @return
-     */
-    protected Query prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
-            boolean includeUnpublished, boolean doCount) {
+    protected <R extends Object> Query<R> prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished, boolean doCount, Class<R> returnedClass) {
+
         Session session = getSession();
         String hql = "";
         if(doCount){
@@ -151,7 +145,7 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
             }
         }
 
-        Query query = session.createQuery(hql);
+        Query<R> query = session.createQuery(hql, returnedClass);
         query.setParameter("reltype", type);
         query.setParameter("regStatus", RegistrationStatus.PUBLISHED);
         if(fromTaxonUuid != null){

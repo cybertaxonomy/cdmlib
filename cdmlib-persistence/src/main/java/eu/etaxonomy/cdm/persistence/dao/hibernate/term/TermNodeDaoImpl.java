@@ -9,12 +9,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -72,14 +71,13 @@ public class TermNodeDaoImpl
 	@Override
 	public List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(Integer limit, String pattern){
 	    Session session = getSession();
-        Query query = session.createQuery(
-
-                "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + " uuid, id, titleCache "
-                + ") "
+        Query<SortableTaxonNodeQueryResult> query = session.createQuery(
+                "SELECT new " + SortableTaxonNodeQueryResult.class.getName()
+                + "       (uuid, id, titleCache) "
                 + " FROM TermNode node "
                 + " JOIN DefinedTerm term ON node.term = term "
-                + (pattern!=null?" WHERE term.titleCache LIKE :pattern":""));
+                + (pattern!=null?" WHERE term.titleCache LIKE :pattern":""),
+                SortableTaxonNodeQueryResult.class);
         if(pattern!=null){
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
@@ -91,20 +89,14 @@ public class TermNodeDaoImpl
         }
         return getUuidAndTitleCache(query);
 	}
-	 protected List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(Query query){
-	        List<UuidAndTitleCache<TermNode>> list = new ArrayList<>();
-	        List<Object> result = query.list();
 
-	        for(Object obj : result){
-	            if (obj instanceof SortableTaxonNodeQueryResult) {
-	                SortableTaxonNodeQueryResult stnqr = (SortableTaxonNodeQueryResult) obj;
-	                list.add(new UuidAndTitleCache<>(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
-	            }else{
-	                Object[] object = (Object[])obj;
-	                list.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
-	            }
-	        }
-	        return list;
-	    }
+	protected List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(Query<SortableTaxonNodeQueryResult> query){
+        List<UuidAndTitleCache<TermNode>> list = new ArrayList<>();
+        List<SortableTaxonNodeQueryResult> result = query.list();
 
+        for(SortableTaxonNodeQueryResult stnqr : result){
+            list.add(new UuidAndTitleCache<>(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
+        }
+        return list;
+    }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -53,10 +53,9 @@ public class TypeDesignationDaoHibernateImpl
 
     @Override
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse() {
-        Query query = getSession().createQuery("select distinct tdb.typeStatus from TypeDesignationBase tdb");
-        @SuppressWarnings("unchecked")
+        Query<TypeDesignationStatusBase> query = getSession().createQuery(
+                "select distinct tdb.typeStatus from TypeDesignationBase tdb", TypeDesignationStatusBase.class);
         List<TypeDesignationStatusBase> terms = query.list();
         return terms;
     }
-
 }

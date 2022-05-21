@@ -16,7 +16,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -69,12 +69,12 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
 
     @Override
     public EntityValidation getEntityValidation(String validatedEntityClass, int validatedEntityId) {
-        Query query = getSession().createQuery(
+        Query<EntityValidation> query = getSession().createQuery(
                 "FROM EntityValidation vr "
-                        + "WHERE vr.validatedEntityClass = :cls AND vr.validatedEntityId = :id");
-        query.setString("cls", validatedEntityClass);
-        query.setInteger("id", validatedEntityId);
-        @SuppressWarnings("unchecked")
+                        + "WHERE vr.validatedEntityClass = :cls AND vr.validatedEntityId = :id",
+                        EntityValidation.class);
+        query.setParameter("cls", validatedEntityClass);
+        query.setParameter("id", validatedEntityId);
         List<EntityValidation> result = query.list();
         if (result.size() == 0) {
             return null;
@@ -85,57 +85,60 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
 
     @Override
     public List<EntityValidation> getEntityValidations() {
-        Query query = getSession().createQuery(
-                "FROM EntityValidation vr "
-                        + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
-        @SuppressWarnings("unchecked")
+        Query<EntityValidation> query = getSession().createQuery(
+                " FROM EntityValidation vr "
+              + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
+                EntityValidation.class);
         List<EntityValidation> result = query.list();
         return result;
     }
 
     @Override
     public List<EntityValidation> getEntityValidations(String validatedEntityClass) {
-        Query query = getSession()
+        Query<EntityValidation> query = getSession()
                 .createQuery(
-                        "FROM EntityValidation vr "
-                                + "WHERE vr.validatedEntityClass = :cls ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
-        query.setString("cls", validatedEntityClass);
-        @SuppressWarnings("unchecked")
+                        " FROM EntityValidation vr "
+                      + " WHERE vr.validatedEntityClass = :cls "
+                      + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
+                      EntityValidation.class);
+        query.setParameter("cls", validatedEntityClass);
         List<EntityValidation> result = query.list();
         return result;
     }
 
     @Override
     public List<EntityValidation> getEntitiesViolatingConstraint(String validatorClass) {
-        Query query = getSession().createQuery(
-                "FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
-                        + "WHERE cv.validator = :cls ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
-        query.setString("cls", validatorClass);
-        @SuppressWarnings("unchecked")
+        Query<EntityValidation> query = getSession().createQuery(
+                "  FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
+               + " WHERE cv.validator = :cls "
+               + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
+               EntityValidation.class);
+        query.setParameter("cls", validatorClass);
         List<EntityValidation> result = query.list();
         return result;
     }
 
     @Override
     public List<EntityValidation> getEntityValidations(String validatedEntityClass, Severity severity) {
-        Query query = getSession().createQuery(
+        Query<EntityValidation> query = getSession().createQuery(
                 "FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
                         + "WHERE vr.validatedEntityClass = :cls " + "AND cv.severity = :severity "
-                        + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
-        query.setString("cls", validatedEntityClass);
-        query.setString("severity", severity.toString());
-        @SuppressWarnings("unchecked")
+                        + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
+                        EntityValidation.class);
+        query.setParameter("cls", validatedEntityClass);
+        query.setParameter("severity", severity.toString());
         List<EntityValidation> result = query.list();
         return result;
     }
 
     @Override
     public List<EntityValidation> getEntityValidations(Severity severity) {
-        Query query = getSession().createQuery(
-                "FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
-                        + "WHERE cv.severity = :severity " + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
-        query.setString("severity", severity.toString());
-        @SuppressWarnings("unchecked")
+        Query<EntityValidation> query = getSession().createQuery(
+                " FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
+              + " WHERE cv.severity = :severity "
+              + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
+              EntityValidation.class);
+        query.setParameter("severity", severity.toString());
         List<EntityValidation> result = query.list();
         return result;
     }
@@ -184,11 +187,11 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
             }
             sql.append(")");
         }
-        Query query = getSession().createQuery(sql.toString());
-        query.setInteger("id", validationResultId);
+        Query<EntityConstraintViolation> query = getSession().createQuery(sql.toString(), EntityConstraintViolation.class);
+        query.setParameter("id", validationResultId);
         if (validationGroups != null && validationGroups.length != 0) {
             for (int i = 0; i < validationGroups.length; ++i) {
-                query.setString("param" + i, validationGroups[i].getName());
+                query.setParameter("param" + i, validationGroups[i].getName());
             }
         }
         int n = query.executeUpdate();

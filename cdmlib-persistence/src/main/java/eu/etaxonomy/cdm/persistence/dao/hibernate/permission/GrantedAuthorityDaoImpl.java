@@ -6,10 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
@@ -27,12 +26,10 @@ public class GrantedAuthorityDaoImpl extends CdmEntityDaoBase<GrantedAuthorityIm
 	@Override
     public GrantedAuthorityImpl findAuthorityString(String authorityString){
 	    GrantedAuthorityImpl result = null;
-	    Query query = getSession().createQuery("select ga from GrantedAuthorityImpl ga where ga.authority = :authority");
+	    Query<GrantedAuthorityImpl> query = getSession().createQuery("select ga from GrantedAuthorityImpl ga where ga.authority = :authority", GrantedAuthorityImpl.class);
         query.setParameter("authority",authorityString);
 
-        result = (GrantedAuthorityImpl)query.uniqueResult();
-
-
+        result = query.uniqueResult();
         return result;
 
 	}

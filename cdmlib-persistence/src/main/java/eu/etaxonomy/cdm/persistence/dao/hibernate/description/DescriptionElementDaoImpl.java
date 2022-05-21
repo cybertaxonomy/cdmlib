@@ -16,7 +16,8 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -50,10 +51,10 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     public long countMedia(DescriptionElementBase descriptionElement) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query query = getSession().createQuery("select count(media) from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
+            Query<Long> query = getSession().createQuery("select count(media) from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement", Long.class);
             query.setParameter("descriptionElement", descriptionElement);
 
-            return ((Long)query.uniqueResult());
+            return (query.uniqueResult());
         } else {
             // Horribly inefficient, I know, but hard to do at the moment with envers.
             // FIXME Improve this (by improving envers)
@@ -73,7 +74,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
 
             FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-            org.hibernate.search.FullTextQuery fullTextQuery = null;
+            FullTextQuery fullTextQuery = null;
 
             if(clazz == null) {
                 fullTextQuery = fullTextSession.createFullTextQuery(query, type);
@@ -90,12 +91,11 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     public List<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query query = getSession().createQuery("select media from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement order by index(media)");
+            Query<Media> query = getSession().createQuery("select media from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement order by index(media)", Media.class);
             query.setParameter("descriptionElement", descriptionElement);
 
             addPageSizeAndNumber(query, pageSize, pageNumber);
 
-            @SuppressWarnings("unchecked")
             List<Media> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -133,7 +133,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-            org.hibernate.search.FullTextQuery fullTextQuery = null;
+            FullTextQuery fullTextQuery = null;
             FullTextSession fullTextSession = Search.getFullTextSession(getSession());
             if(clazz == null) {
                 fullTextQuery = fullTextSession.createFullTextQuery(query, type);
@@ -142,7 +142,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
             }
             addOrder(fullTextQuery,orderHints);
 
-            addPageSizeAndNumber(fullTextQuery, pageSize, pageNumber);
+            this.addPageSizeAndNumber(fullTextQuery, pageSize, pageNumber);
 
             @SuppressWarnings("unchecked")
             List<DescriptionElementBase> results = fullTextQuery.list();
@@ -158,7 +158,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     public void purgeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         for(Class<? extends DescriptionElementBase> clazz : indexedClasses) {
-            fullTextSession.purgeAll(type); // remove all description element base from indexes
+            fullTextSession.purgeAll(clazz); // remove all description element base from indexes
         }
         fullTextSession.flushToIndexes();
     }

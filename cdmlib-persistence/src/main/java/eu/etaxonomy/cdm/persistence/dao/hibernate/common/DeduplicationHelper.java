@@ -17,7 +17,6 @@ import javax.naming.Reference;
 import org.apache.commons.lang.UnhandledException;
 import org.apache.log4j.Logger;
 import org.hibernate.MappingException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.internal.SessionImpl;
@@ -26,6 +25,7 @@ import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.collection.OneToManyPersister;
 import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.query.Query;
 import org.hibernate.type.AnyType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -530,9 +530,9 @@ public class DeduplicationHelper {
 		        String hql = " UPDATE " + className + " c "
 		                + " SET c."+propertyName+" = :newValue "
 		                + " WHERE c.id = :id ";
-		        Query query = session.createQuery(hql);
-		        query.setEntity("newValue", cdmBase1);
-		        query.setInteger("id",referencingObject.getId());
+		        Query<?> query = session.createQuery(hql);
+		        query.setParameter("newValue", cdmBase1);
+		        query.setParameter("id",referencingObject.getId());
 		        int rowCount = query.executeUpdate();
 		        if (logger.isDebugEnabled()){logger.debug("Rows affected: " + rowCount);}
 		        session.refresh(referencingObject);

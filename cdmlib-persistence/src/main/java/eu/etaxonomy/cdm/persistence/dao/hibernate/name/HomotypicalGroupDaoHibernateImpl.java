@@ -9,7 +9,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -39,7 +39,6 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 			Integer pageNumber, List<String> propertyPaths) {
 
 		// checkNotInPriorView("getTypeDesignations(HomotypicalGroup homotypicalGroup,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
-		Query query = null;
 		String queryString = "select designation from TypeDesignationBase designation join designation.typifiedNames name join name.homotypicalGroup homotypicalGroup where homotypicalGroup = :homotypicalGroup";
 
 		if(status != null) {
@@ -49,7 +48,8 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 			queryString +=  " and designation.class = :type";
 		}
 
-		query = getSession().createQuery(queryString);
+		@SuppressWarnings("unchecked")
+        Query<T> query = getSession().createQuery(queryString);
 
 		if(status != null) {
 			query.setParameter("status", status);

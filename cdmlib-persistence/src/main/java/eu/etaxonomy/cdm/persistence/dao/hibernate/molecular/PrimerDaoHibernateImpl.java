@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Primer;
@@ -48,15 +48,13 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         List<UuidAndTitleCache<Primer>> list = new ArrayList<UuidAndTitleCache<Primer>>();
         Session session = getSession();
 
-        Query query = session.createQuery("select uuid, id, label from Primer");
+        Query<Object[]> query = session.createQuery("select uuid, id, label from Primer", Object[].class);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
             list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
         }
-
         return list;
     }
 
@@ -77,8 +75,6 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
 
-        Session session = getSession();
-
         String queryString = "SELECT uuid, id, label FROM Prime ";
 
         if ( pattern != null){
@@ -87,9 +83,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
 
         }
 
-        Query query;
-        query = session.createQuery(queryString);
-
+        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
 
         if (limitOfInitialElements != null){
             query.setMaxResults(limitOfInitialElements);
@@ -101,7 +95,6 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
               query.setParameter("pattern", pattern);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
         List<UuidAndTitleCache<Primer>> list = new ArrayList<>();
         for(Object[] object : result){

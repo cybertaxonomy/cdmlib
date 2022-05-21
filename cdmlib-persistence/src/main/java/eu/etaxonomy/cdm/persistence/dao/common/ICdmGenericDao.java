@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;

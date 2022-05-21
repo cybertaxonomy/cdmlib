@@ -15,8 +15,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -109,11 +109,12 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
     public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern) {
         Session session = getSession();
-        Query query = session.createQuery(
+        Query<Object[]> query = session.createQuery(
                 " SELECT uuid, id, titleCache "
-                        + " FROM " + clazz.getSimpleName()
-                        + (pattern!=null?" WHERE titleCache LIKE :pattern":" WHERE 1 = 1 ")
-                        + (termType!=null?" AND termType = :termType ":"")
+                    + " FROM " + clazz.getSimpleName()
+                    + (pattern!=null?" WHERE titleCache LIKE :pattern":" WHERE 1 = 1 ")
+                    + (termType!=null?" AND termType = :termType ":""),
+                    Object[].class
                 );
         if(pattern!=null){
             pattern = pattern.replace("*", "%");
@@ -135,10 +136,9 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
         String queryString = TermTreeDto.getTermTreeDtoSelect()
                 + " WHERE a.termType = :termType"
                 + " ORDER BY a.titleCache";
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("termType", termType);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<TermTreeDto> list = TermTreeDto.termTreeDtoListFrom(result);
@@ -150,14 +150,11 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
         String queryString = TermTreeDto.getTermTreeDtoSelect()
                 + " WHERE a.uuid = :uuid"
                 + " ORDER BY a.titleCache";
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("uuid", uuid);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-
         List<TermTreeDto> list = TermTreeDto.termTreeDtoListFrom(result);
         return !list.isEmpty()? list.get(0): null;
     }
-
 }
