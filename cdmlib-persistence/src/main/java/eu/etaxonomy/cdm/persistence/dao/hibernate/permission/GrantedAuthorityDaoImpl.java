@@ -31,6 +31,5 @@ public class GrantedAuthorityDaoImpl extends CdmEntityDaoBase<GrantedAuthorityIm
 
         result = query.uniqueResult();
         return result;
-
 	}
 }

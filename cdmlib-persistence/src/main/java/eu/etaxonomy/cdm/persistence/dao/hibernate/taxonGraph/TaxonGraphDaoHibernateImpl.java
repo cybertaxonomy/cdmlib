@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
  * <code>TaxonGraphBeforeTransactionCompleteProcess</code> is instantiated and
  * used in the {@link TaxonGraphHibernateListener}.
  *
- *
  * @author a.kohlbecker
  * @since Sep 26, 2018
  */

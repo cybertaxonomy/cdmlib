@@ -72,7 +72,4 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
         List<T> result = defaultBeanInitializer.initializeAll(query.list(), propertyPaths);
 		return result;
 	}
-
-
-
 }

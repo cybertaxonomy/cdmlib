@@ -13,7 +13,6 @@ import java.io.InputStream;
 
 import org.junit.internal.runners.InitializationError;
 import org.junit.runner.notification.RunNotifier;
-import org.unitils.UnitilsJUnit4TestClassRunner;
 
 /**
  * The CDM integration tests can not yet use the {@link org.springframework.test.context.junit4.SpringJUnit4ClassRunner SpringJUnit4ClassRunner}
@@ -23,24 +22,15 @@ import org.unitils.UnitilsJUnit4TestClassRunner;
  * properties into the spring environments. In contrast to the {@link org.springframework.test.context.junit4.SpringJUnit4ClassRunner SpringJUnit4ClassRunner}
  * it loads the properties from a test resource file named <code>spring-environment.mock.properties</code>
  *
- *
  * @author a.kohlbecker
  * @since Nov 23, 2017
- *
  */
 public class AlternativeUnitilsJUnit4TestClassRunner extends UnitilsJUnit4TestClassRunner {
 
-    /**
-     * @param testClass
-     * @throws InitializationError
-     */
     public AlternativeUnitilsJUnit4TestClassRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(RunNotifier notifier) {
 
@@ -48,9 +38,6 @@ public class AlternativeUnitilsJUnit4TestClassRunner extends UnitilsJUnit4TestCl
         super.run(notifier);
     }
 
-    /**
-     * @param propFile
-     */
     protected void loadSystemPropertiesFrom(String propFile) {
         InputStream inStream = this.getClass().getClassLoader().getResourceAsStream(propFile);
         //Properties props = new Properties();
@@ -61,7 +48,4 @@ public class AlternativeUnitilsJUnit4TestClassRunner extends UnitilsJUnit4TestCl
             throw new RuntimeException(e);
         }
     }
-
-
-
 }

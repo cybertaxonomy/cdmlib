@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -41,19 +40,17 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 public class DescriptiveDataSetDao
         extends IdentifiableDaoBase<DescriptiveDataSet>
         implements IDescriptiveDataSetDao {
-	private static final Logger logger = Logger.getLogger(DescriptiveDataSetDao.class);
 
-	 @Autowired
-	 private ITermTreeDao termTreeDao;
+    private static final Logger logger = Logger.getLogger(DescriptiveDataSetDao.class);
 
-	 @Autowired
-     private IDefinedTermDao termDao;
+	@Autowired
+	private ITermTreeDao termTreeDao;
 
-	 @Autowired
-     private ITaxonNodeDao nodeDao;
+	@Autowired
+    private IDefinedTermDao termDao;
 
-	 @Autowired
-     private IDescriptionDao descriptionDao;
+	@Autowired
+    private ITaxonNodeDao nodeDao;
 
 	public DescriptiveDataSetDao() {
 		super(DescriptiveDataSet.class);
@@ -96,7 +93,6 @@ public class DescriptiveDataSetDao
 //
 //			Example: from Order order where order.items[0].id = 1234
 
-
 			//feature
 			String strQueryTreeId = "SELECT ws.descriptiveSystem.id FROM DescriptiveDataSet dds join dds.descriptiveSystem tree WHERE dds.uuid = :descriptiveDataSetUuid ";
 			Query<Integer> queryTree = getSession().createQuery(strQueryTreeId, Integer.class);
@@ -112,9 +108,9 @@ public class DescriptiveDataSetDao
 			String strClass = (clazz == null )? "DescriptionElementBase" : clazz.getSimpleName();
 
 			String fetch = "";
-			if (clazz.equals(CategoricalData.class)){
+			if (clazz!= null && clazz.equals(CategoricalData.class)){
 				fetch = " left join fetch el.states stateList join fetch stateList.state ";
-			}else if (clazz.equals(QuantitativeData.class)){
+			}else if (clazz!=null && clazz.equals(QuantitativeData.class)){
 				fetch = " left join fetch el.statisticalValues valueList join fetch valueList.type ";
 			}
 
@@ -161,11 +157,8 @@ public class DescriptiveDataSetDao
 					if (logger.isDebugEnabled()){logger.debug("feature set already exists");}
 				}
 				featureSet.add(data);
-
 			}
-
 //			defaultBeanInitializer.initialize(
-
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -173,9 +166,6 @@ public class DescriptiveDataSetDao
 		}
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<DescriptiveDataSet>> getDescriptiveDataSetUuidAndTitleCache(Integer limitOfInitialElements,
             String pattern) {

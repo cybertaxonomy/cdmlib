@@ -819,12 +819,12 @@ public class DefinedTermDaoImpl
             }
             dto.setVocabularyDto(vocDto);
         }
-
         return list;
     }
 
     @Override
     public TermDto findByUUIDAsDto(UUID uuid) {
+
         String queryString = TermDto.getTermDtoSelect()
                 + " where a.uuid like :uuid ";
         Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
@@ -838,9 +838,7 @@ public class DefinedTermDaoImpl
         }else{
             return null;
         }
-
     }
-
 
     @Override
     public Collection<TermDto> findByTypeAsDto(TermType termType) {
@@ -854,7 +852,6 @@ public class DefinedTermDaoImpl
         query.setParameter("termType", termType);
 
         List<Object[]> result = query.list();
-
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
     }
@@ -905,7 +902,6 @@ public class DefinedTermDaoImpl
             query.setParameterList("supportedCategories", supportedCategories);
 
             List<Object[]> result = query.list();
-
             list = TermDto.termDtoListFrom(result);
             map.put(featureUuid, list);
         }

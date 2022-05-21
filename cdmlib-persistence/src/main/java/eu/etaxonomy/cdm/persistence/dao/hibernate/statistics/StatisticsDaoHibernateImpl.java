@@ -280,13 +280,6 @@ public class StatisticsDaoHibernateImpl
 //		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
-	 * countTaxaInClassification(java.lang.Class,
-	 * eu.etaxonomy.cdm.model.taxon.Classification)
-	 */
 	@Override
 	public Long countTaxaInClassification(Class<? extends TaxonBase> clazz,
 			Classification classification) {

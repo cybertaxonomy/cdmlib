@@ -435,5 +435,4 @@ public class ClassificationDaoHibernateImpl
         }
         return result;
     }
-
 }

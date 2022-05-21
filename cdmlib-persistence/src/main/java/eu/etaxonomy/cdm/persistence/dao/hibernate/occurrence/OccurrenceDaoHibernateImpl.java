@@ -3,7 +3,6 @@
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
 import java.util.ArrayList;
@@ -449,7 +448,7 @@ public class OccurrenceDaoHibernateImpl
         }
 
         if(orderHints!=null){
-            addOrder(criteria,orderHints);
+            addOrder(criteria, orderHints);
         }
         return criteria;
     }
@@ -660,7 +659,7 @@ public class OccurrenceDaoHibernateImpl
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start){
 
-        Set<SpecimenNodeWrapper> testSet = new HashSet();
+        Set<SpecimenNodeWrapper> testSet = new HashSet<>();
 
         testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
         testSet.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start));
@@ -861,7 +860,6 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
-
     @Override
     public Collection<IndividualsAssociation> listIndividualsAssociations(SpecimenOrObservationBase<?> specimen, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         //DISTINCT is necessary if more than one description exists for a taxon because we create the cross product of all taxon descriptions and description elements
@@ -897,9 +895,6 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         String queryString = "FROM SpecimenOrObservationBase sob "
@@ -917,10 +912,6 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
-    /**
-     *
-     * {@inheritDoc}
-     */
     @Override
     public DnaSample findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths) {
         String queryString = "SELECT dnaSample FROM DnaSample as dnaSample join dnaSample.sequences as sequences WITH sequences.geneticAccessionNumber LIKE :accessionNumberString";
@@ -929,7 +920,6 @@ public class OccurrenceDaoHibernateImpl
         @SuppressWarnings("unchecked")
         List<DnaSample> dnaSamples = query.list();
         defaultBeanInitializer.initializeAll(dnaSamples, propertyPaths);
-
 
         if (dnaSamples.isEmpty()){
             logger.debug("there is no dnaSample for genetic accession number " + accessionNumberString + " this should not happen.");
@@ -940,14 +930,8 @@ public class OccurrenceDaoHibernateImpl
             logger.debug("there are more than one dnaSample for genetic accession number " + accessionNumberString + " this should not happen.");
             return null;
         }
-
-
     }
 
-    /**
-    *
-    * {@inheritDoc}
-    */
    @Override
    public long countByGeneticAccessionNumber(String accessionNumberString) {
        String queryString = "SELECT count(dnaSample) FROM DnaSample dnaSample JOIN dnaSample.sequences sequence WHERE sequence.geneticAccessionNumber LIKE :accessionNumberString";
@@ -957,10 +941,6 @@ public class OccurrenceDaoHibernateImpl
        return result;
    }
 
-    /**
-     * @param dnaSamples
-     * @param results
-     */
     private void extractDeterminedOriginals(List<DerivedUnit> samples, List<DerivedUnit> results) {
         for (DerivedUnit sample:samples){
             if (sample.getDeterminations() != null && !sample.getDeterminations().isEmpty()){
@@ -968,8 +948,8 @@ public class OccurrenceDaoHibernateImpl
             }else{
                 if (sample instanceof DerivedUnit){
                     Set<SpecimenOrObservationBase> originals = sample.getDerivedFrom().getOriginals();
-                    List<DerivedUnit> originalDerivedUnits = new ArrayList();
-                    for (SpecimenOrObservationBase original:originals){
+                    List<DerivedUnit> originalDerivedUnits = new ArrayList<>();
+                    for (SpecimenOrObservationBase original: originals){
                         if (original instanceof DerivedUnit){
                             originalDerivedUnits.add((DerivedUnit)original);
                         }
@@ -982,9 +962,6 @@ public class OccurrenceDaoHibernateImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<SpecimenOrObservationBase> findOriginalsForDerivedUnit(UUID derivedUnitUuid, List<String> propertyPaths) {
         String queryString = "SELECT DISTINCT o FROM DerivedUnit du"
@@ -996,9 +973,6 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids) {
         String queryString = "SELECT DISTINCT fu.gatheringEvent.exactLocation FROM FieldUnit fu"

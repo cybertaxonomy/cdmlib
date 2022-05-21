@@ -242,7 +242,6 @@ public class TermDto extends AbstractTermDto{
         return getTermDtoSelect("DefinedTermBase");
     }
 
-
     public Collection<UUID> getMedia() {
         return media;
     }

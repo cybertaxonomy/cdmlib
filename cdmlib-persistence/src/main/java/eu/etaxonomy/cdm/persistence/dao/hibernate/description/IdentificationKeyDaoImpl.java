@@ -66,5 +66,4 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 		}
 		return count;
 	}
-
 }

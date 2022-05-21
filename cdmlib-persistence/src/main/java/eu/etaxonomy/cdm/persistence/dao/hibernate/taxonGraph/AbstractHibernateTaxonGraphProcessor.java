@@ -59,7 +59,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
  *
  * @author a.kohlbecker
  * @since Oct 4, 2018
- *
  */
 public abstract class AbstractHibernateTaxonGraphProcessor {
 
@@ -399,14 +398,9 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return relatedNames;
     }
 
-    /**
-     * @param name
-     * @return
-     */
     protected List<TaxonName> relatedLowerNames(TaxonName name) {
 
         List<TaxonName> relatedNames = new ArrayList<>();
-
         if(name.getRank().isGenus()){
             if(name.getGenusOrUninomial() != null){
                 List<TaxonName> names = listNamesAtRank(Rank.SPECIES(), name.getGenusOrUninomial(), null);
@@ -435,18 +429,11 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return relatedNames;
     }
 
-
-    /**
-     * @param taxon
-     */
     protected List<TaxonRelationship> taxonGraphRelationsFrom(Taxon taxon, Reference citation) {
         List<TaxonRelationship> relations = getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedFrom);
         return relations;
     }
 
-    /**
-     * @param taxon
-     */
     protected List<TaxonRelationship> taxonGraphRelationsTo(Taxon taxon, Reference citation) {
         List<TaxonRelationship> relations = getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedTo);
         return relations;
@@ -487,12 +474,10 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
     }
 
     /**
-     *
      * @param relatedTaxon required
      * @param type required
      * @param citation can be null
      * @param direction required
-     * @return
      */
     protected List<TaxonRelationship> getTaxonRelationships(Taxon relatedTaxon, TaxonRelationshipType type, Reference citation, Direction direction){
 
@@ -510,6 +495,4 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         List<TaxonRelationship> rels = q.list();
         return rels;
     }
-
-
 }

@@ -363,12 +363,9 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         query.setParameter("feature", TermType.Feature);
 
         List<Object[]> result = query.list();
-
         List<TermVocabularyDto>  dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
-
         return dtos;
     }
-
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes) {
@@ -386,16 +383,16 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
                 }
             }
         }
-        String queryString = TermVocabularyDto.getTermCollectionDtoSelect();
+        String queryString = TermCollectionDto.getTermCollectionDtoSelect();
 
         if (!termTypeWithSubType.isEmpty()){
             queryString += " WHERE a.termType in (:termTypes) ";
             if (pattern != null){
-                queryString += " AND a.titleCache like :pattern";
+                queryString += " AND a.titleCache LIKE :pattern";
             }
         }else{
             if (pattern != null){
-                queryString += " WHERE a.titleCache like :pattern";
+                queryString += " WHERE a.titleCache LIKE :pattern";
             }
         }
 
@@ -486,7 +483,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         query.setParameterList("uuidList", vocUuids);
 
         List<Object[]> result = query.list();
-
         list = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return list;
     }

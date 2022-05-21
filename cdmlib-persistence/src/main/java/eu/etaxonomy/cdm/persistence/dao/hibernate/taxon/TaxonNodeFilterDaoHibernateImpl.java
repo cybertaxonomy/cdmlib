@@ -306,10 +306,6 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return result;
     }
 
-
-    /**
-     * @param subtreeFilter
-     */
     private void initializeSubtreeIndex(List<LogicFilter<TaxonNode>> subtreeFilter) {
         for (LogicFilter<TaxonNode> filter : subtreeFilter){
             if (filter.getTreeIndex() == null){
@@ -320,13 +316,10 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
                 }
             }
         }
-
     }
-
 
     /**
      * Returns the HQL string for this operation
-     *
      */
     private String op2Hql(Op op){
         return op == Op.NOT ? " AND NOT " : op.toString();

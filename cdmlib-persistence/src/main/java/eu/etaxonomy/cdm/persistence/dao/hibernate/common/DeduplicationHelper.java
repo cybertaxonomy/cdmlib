@@ -552,7 +552,7 @@ public class DeduplicationHelper {
 		             * WHERE id IN (SELECT * FROM IntextReference
 		             *
 		             */
-		            System.out.println("IntextReference found");
+//		            System.out.println("IntextReference found");
 		        }
 	        }
 	    }

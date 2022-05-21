@@ -530,14 +530,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return hql;
     }
 
-    /**
-     * @param taxonUuid
-     * @param classificationUuid
-     * @param agentUuid
-     * @param relTypeUuid TODO
-     * @param query
-     * @param rankId TODO
-     */
     private void setParamsForListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid,
             UUID rankUuid, UUID relTypeUuid, Query<?> query) {
 
@@ -1021,9 +1013,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return queryStr;
     }
 
-    /**
-     * query for
-     */
     private String forSubtreeRelationQueryStr(boolean includeSharedTaxa, boolean overwriteExisting,
             TreeIndex subTreeIndex, SelectMode mode) {
 
@@ -1233,9 +1222,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-
         List<TaxonNodeDto> list = createNodeDtos(result);
-
         return list;
     }
 

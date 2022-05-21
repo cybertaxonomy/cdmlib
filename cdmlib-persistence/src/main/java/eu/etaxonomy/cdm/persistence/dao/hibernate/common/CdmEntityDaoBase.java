@@ -733,10 +733,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return criteria;
     }
 
-    /**
-     * @param clazz
-     * @return
-     */
     private Criteria criterionForType(Class<? extends T> clazz) {
         return  getSession().createCriteria(entityType(clazz));
     }
@@ -1108,15 +1104,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return result;
     }
 
-    /**
-     *
-     * @param clazz
-     * @param param
-     * @param queryString
-     * @param matchmode
-     * @param criterion
-     * @return
-     */
     @Override
     public long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
             List<Criterion> criterion) {

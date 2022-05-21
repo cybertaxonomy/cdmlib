@@ -178,5 +178,4 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		}
 		fullTextSession.flushToIndexes();
 	}
-
 }

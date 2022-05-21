@@ -41,9 +41,6 @@ public class SearchResultBuilder implements ISearchResultBuilder {
 
     public static final Logger logger = Logger.getLogger(SearchResultBuilder.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder#createResultSetFromIds(eu.etaxonomy.cdm.search.LuceneSearch, org.apache.lucene.search.TopDocs, eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao, java.lang.String)
-     */
     private Query query;
     /**
      * fragmentNumber - max number of sentence fragments to return

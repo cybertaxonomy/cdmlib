@@ -234,6 +234,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     @Override
     public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
         checkNotInPriorView("IdentifiableDaoBase.getSources(T identifiableEntity, Integer pageSize, Integer pageNumber)");
         Query<OriginalSourceBase> query = getSession().createQuery(
                 "   SELECT source "

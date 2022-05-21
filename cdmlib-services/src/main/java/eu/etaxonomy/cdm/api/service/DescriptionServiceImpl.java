@@ -1079,6 +1079,7 @@ public class DescriptionServiceImpl
 
     }
 
+    // FIXME Query should not be used in service layer
     @Override
     public DescriptionBaseDto loadDto(UUID descriptionUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
@@ -1123,8 +1124,9 @@ public class DescriptionServiceImpl
         }else{
             return null;
         }
-
     }
+
+    // FIXME Query should not be used in service layer
     @Override
     public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuids) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
@@ -1161,12 +1163,11 @@ public class DescriptionServiceImpl
             List<Object[]> resultQuant = query.list();
             List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
             dto.getElements().addAll(listQuant);
-
         }
         return list;
-
     }
 
+    // FIXME Query should not be used in service layer
     @Override
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect();
@@ -1174,37 +1175,27 @@ public class DescriptionServiceImpl
         query.setParameter("uuid", taxonUuid);
 
         List<Object[]> result = query.list();
-
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
 
         return list;
-
     }
 
     @Override
     public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid) {
-      //get specimen used in description
-      //get individial associations with this specimen
-      //get taxon node for the classification
-      @SuppressWarnings("unchecked")
-      List<SortableTaxonNodeQueryResult> result =  dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
+        //get specimen used in description
+        //get individial associations with this specimen
+        //get taxon node for the classification
+        List<SortableTaxonNodeQueryResult> result =  dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
 
-      if (!result.isEmpty()){
-         List<TaxonNodeDto> dtos = taxonNodeDao.createNodeDtos(result);
-         if (dtos.size() == 1){
-             return dtos.get(0);
-         }else{
-             logger.debug("There is more than one taxon associated to the specimen with uuid: " + specimenUuid + " return the first in the list");
-             return dtos.get(0);
-         }
-      }
-
-
-
+        if (!result.isEmpty()){
+            List<TaxonNodeDto> dtos = taxonNodeDao.createNodeDtos(result);
+            if (dtos.size() == 1){
+                return dtos.get(0);
+            }else{
+                logger.debug("There is more than one taxon associated to the specimen with uuid: " + specimenUuid + " return the first in the list");
+                return dtos.get(0);
+            }
+        }
         return null;
     }
-
-
-
-
 }

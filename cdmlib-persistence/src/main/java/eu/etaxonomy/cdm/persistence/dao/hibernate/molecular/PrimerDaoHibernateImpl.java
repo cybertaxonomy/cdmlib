@@ -36,9 +36,6 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PrimerDaoHibernateImpl.class);
 
-    /**
-     * @param type
-     */
     public PrimerDaoHibernateImpl() {
         super(Primer.class);
     }
@@ -69,9 +66,6 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         return findByParam(Primer.class, "label", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
 
@@ -80,7 +74,6 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         if ( pattern != null){
             queryString += " WHERE ";
             queryString += " label LIKE :pattern";
-
         }
 
         Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
@@ -100,8 +93,6 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         for(Object[] object : result){
             list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0],(Integer)object[1], (String)object[2]));
         }
-
         return list;
     }
-
 }

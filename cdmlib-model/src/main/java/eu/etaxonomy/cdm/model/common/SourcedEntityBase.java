@@ -70,7 +70,6 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 		super();
 	}
 
-//
 //	public SourcedEntityBase(Reference citation, String citationMicroReference,
 //			String originalNameString) {
 //		this.citationMicroReference = citationMicroReference;

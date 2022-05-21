@@ -228,7 +228,4 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
 		return result;
 	}
-
-
-
 }

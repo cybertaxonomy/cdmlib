@@ -21,10 +21,8 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityConstraintViolationDao;
 
 /**
- *
  * @author ayco_holleman
  * @since 15 jan. 2015
- *
  */
 @Repository
 @Qualifier("entityConstraintViolationHibernateImpl")
@@ -83,5 +81,4 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
         List<EntityConstraintViolation> result = query.list();
         return result;
     }
-
 }

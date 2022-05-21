@@ -407,7 +407,6 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
             query.setParameter("pattern", pattern);
         }
         return getUuidAndAbbrevTitleCache(query);
-
     }
 
     @Override
@@ -430,7 +429,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
         return getUuidAndAbbrevTitleCache(query);
     }
-    
+
     @Override
     public List<Reference> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<String> params = new HashSet<>();
@@ -439,5 +438,4 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
         return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
-
 }

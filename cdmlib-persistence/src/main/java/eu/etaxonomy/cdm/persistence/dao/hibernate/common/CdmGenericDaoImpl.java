@@ -578,7 +578,6 @@ public class CdmGenericDaoImpl
 		return helper.isMergeable(cdmBase1, cdmBase2, mergeStrategy);
 	}
 
-
 	@Override
 	public <T extends CdmBase> T find(Class<T> clazz, int id){
 		Session session;

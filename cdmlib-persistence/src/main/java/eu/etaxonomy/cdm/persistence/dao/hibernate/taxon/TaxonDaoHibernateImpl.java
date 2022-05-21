@@ -145,7 +145,6 @@ public class TaxonDaoHibernateImpl
         return count(type, restrictions, INCLUDE_UNPUBLISHED);
     }
 
-
     @Override
     public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includePublished) {
 
@@ -402,7 +401,6 @@ public class TaxonDaoHibernateImpl
             String conceptSelect = subSelects.conceptSelect;
             String commonNameSubSelect = subSelects.commonNameSubselect;
 
-
             if (logger.isDebugEnabled()) {
                 logger.debug("taxonSubselect: " + (taxonSubselect != null ? taxonSubselect: "NULL"));
                 logger.debug("synonymSubselect: " + (synonymSubselect != null ? synonymSubselect: "NULL"));
@@ -655,7 +653,6 @@ public class TaxonDaoHibernateImpl
             }
         }
     }
-
 
     @Override
     public UUID delete(TaxonBase taxonBase) throws DataAccessException{
@@ -1243,15 +1240,8 @@ public class TaxonDaoHibernateImpl
 
         Long count = query.uniqueResult();
         return count;
-
     }
 
-
-    /**
-     * @param classificationFilter
-     * @param orderHints
-     * @return
-     */
     private String prepareListAcceptedTaxaFor(Classification classificationFilter, boolean doCount) {
 
         String hql;
@@ -1602,11 +1592,6 @@ public class TaxonDaoHibernateImpl
         }
 	}
 
-
-	/**
-	 * @param
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countByIdentifier(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.term.DefinedTerm, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.persistence.query.MatchMode)
-	 */
 	@Override
 	public <S extends TaxonBase> long countByIdentifier(Class<S> clazz,
 			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode) {
@@ -1719,6 +1704,7 @@ public class TaxonDaoHibernateImpl
 
     /**
      * {@inheritDoc}
+     *
      * @see #countByIdentifier(Class, String, DefinedTerm, TaxonNode, MatchMode)
      */
     @Override
@@ -1756,9 +1742,7 @@ public class TaxonDaoHibernateImpl
         if (markerValue != null){
             queryString += " AND mks.flag = :flag";
         }
-        if (markerType != null){
-            queryString += " AND mks.markerType = :type";
-        }
+        queryString += " AND mks.markerType = :type";
 
         Query<Long> query = getSession().createQuery(queryString, Long.class);
         query.setParameter("type", markerType);
@@ -1770,9 +1754,6 @@ public class TaxonDaoHibernateImpl
         return c;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <S extends TaxonBase> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType,
             Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity,
@@ -1880,9 +1861,6 @@ public class TaxonDaoHibernateImpl
         return results;
     }
 
-
-
-
     @Override
     public  List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern){
         Session session = getSession();
@@ -1912,8 +1890,6 @@ public class TaxonDaoHibernateImpl
 
         return getUuidAndTitleCache(query);
     }
-
-
 
     @Override
     protected List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Query query){

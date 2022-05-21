@@ -318,9 +318,7 @@ public class DescriptionDaoImpl
             }
 
             List<T> results = criteria.list();
-
             defaultBeanInitializer.initializeAll(results, propertyPaths);
-
             return results;
         } else {
             List<T> result = new ArrayList<T>();
@@ -365,7 +363,6 @@ public class DescriptionDaoImpl
             }
 
             defaultBeanInitializer.initializeAll(result, propertyPaths);
-
             return result;
         }
     }
@@ -473,12 +470,9 @@ public class DescriptionDaoImpl
             }
 
             List<TaxonNameDescription> results = query.getResultList();
-
             defaultBeanInitializer.initializeAll(results, propertyPaths);
-
             return results;
         }
-
     }
 
     @Override
@@ -780,14 +774,9 @@ public class DescriptionDaoImpl
             query.setParameter("classifcationUuid", classificationUuid);
         }
 
-
-
         return query;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#listTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
-     */
     @Override
     public List<Media> listTaxonDescriptionMedia(UUID taxonUuid,
             Boolean limitToGalleries, Set<MarkerType> markerTypes,
@@ -806,15 +795,12 @@ public class DescriptionDaoImpl
                 Query<Media> query = getSession().createQuery(queryString, Media.class);
 
                 setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
-
-
 //	            addMarkerTypesCriterion(markerTypes, hql);
 
                 setPagingParameter(query, pageSize, pageNumber);
 
                 @SuppressWarnings("unchecked")
                 List<Media> results = query.list();
-
                 defaultBeanInitializer.initializeAll(results, propertyPaths);
 
                 return results;
@@ -845,7 +831,6 @@ public class DescriptionDaoImpl
         if(taxonUuid != null){
             query.setParameter("uuid", taxonUuid);
         }
-
     }
 
     /**
@@ -928,7 +913,6 @@ public class DescriptionDaoImpl
                     allAreaIds.add(leaf[0]);
                 }
             }
-
 
             // NOTE can't use "select new TermDto(distinct a.uuid, r , a.vocabulary.uuid) since we will get multiple
             // rows for a term with multiple representations

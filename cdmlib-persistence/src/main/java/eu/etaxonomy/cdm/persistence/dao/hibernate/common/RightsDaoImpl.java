@@ -26,17 +26,15 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 /**
  * @author k.luther
  * @since 15.02.2017
- *
  */
 @Repository
 public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements IRightsDao  {
+
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(RightsDaoImpl.class);
-    /**
-     * @param type
-     */
+
     public RightsDaoImpl(Class rightsClass) {
         super(rightsClass);
-
     }
 
     public RightsDaoImpl(){
@@ -109,11 +107,8 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
             }
 
             list.add(new UuidAndTitleCache<Rights>(Rights.class, (UUID) object[0],(Integer)object[1], rightsText));
-
         }
 
         return list;
     }
-
-
 }
