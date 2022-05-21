@@ -62,6 +62,18 @@ public class SortFieldOptions implements LuceneOptions {
 		// TODO Auto-generated method stub
 	}
 
+    @Override
+    public void addSortedDocValuesFieldToDocument(String fieldName, String indexedString, Document document) {
+        logger.warn("not yet implemented");
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addNumericDocValuesFieldToDocument(String fieldName, Number numericValue, Document document) {
+        logger.warn("not yet implemented");
+        // TODO Auto-generated method stub
+    }
+
 	@Override
 	public String indexNullAs() {
 		// TODO Auto-generated method stub

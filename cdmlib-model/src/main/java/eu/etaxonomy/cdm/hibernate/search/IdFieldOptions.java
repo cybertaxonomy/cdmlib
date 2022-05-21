@@ -63,6 +63,18 @@ public class IdFieldOptions implements LuceneOptions {
 	}
 
 	@Override
+    public void addSortedDocValuesFieldToDocument(String fieldName, String indexedString, Document document) {
+        logger.warn("not yet implemented");
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addNumericDocValuesFieldToDocument(String fieldName, Number numericValue, Document document) {
+        logger.warn("not yet implemented");
+        // TODO Auto-generated method stub
+    }
+
+	@Override
 	public String indexNullAs() {
 		logger.warn("not yet implemented");
 		// TODO Auto-generated method stub
