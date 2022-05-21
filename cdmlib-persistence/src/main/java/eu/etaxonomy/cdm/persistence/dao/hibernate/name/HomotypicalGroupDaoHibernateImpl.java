@@ -60,15 +60,7 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 
 		query.setParameter("homotypicalGroup",homotypicalGroup);
 
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-			if(pageNumber != null) {
-				query.setFirstResult(pageNumber * pageSize);
-			} else {
-				query.setFirstResult(0);
-			}
-		}
-		@SuppressWarnings("unchecked")
+		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<T> result = defaultBeanInitializer.initializeAll(query.list(), propertyPaths);
 		return result;
 	}

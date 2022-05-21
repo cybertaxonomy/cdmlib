@@ -130,14 +130,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());
 
-				if(pageSize != null) {
-			        query.setMaxResults(pageSize);
-			        if(pageNumber != null) {
-			            query.setFirstResult(pageNumber * pageSize);
-			        } else {
-			    	    query.setFirstResult(0);
-			        }
-			    }
+				addPageSizeAndNumber(query, pageSize, pageNumber);
 				List<MediaKey> results = query.getResultList();
 				defaultBeanInitializer.initializeAll(results, propertyPaths);
 				return results;
@@ -152,7 +145,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		checkNotInPriorView("MediaDaoHibernateImpl.getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query<Rights> query = getSession().createQuery("select rights from Media media join media.rights rights where media = :media", Rights.class);
 		query.setParameter("media",media);
-		setPagingParameter(query, pageSize, pageNumber);
+		addPageSizeAndNumber(query, pageSize, pageNumber);
 		List<Rights> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;

@@ -586,11 +586,8 @@ public class TaxonDaoHibernateImpl
         Query<R> query = prepareByNameQuery(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
                 searchField, queryString, classification, subtree, matchMode, namedAreas, order, doCount, false, returnClass);
 
-        if(pageSize != null && !doCount && query != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            }
+        if(!doCount && query != null) {
+            this.addPageSizeAndNumber(query, pageSize, pageNumber);
         }
 
         return query;
@@ -615,12 +612,8 @@ public class TaxonDaoHibernateImpl
         Query<R> query = getSession().createQuery(hql, returnClass);
 
         query.setParameter("queryString", matchMode.queryStringFrom(queryString));
-
-        if(pageSize != null &&  !doCount) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            }
+        if(!doCount) {
+            this.addPageSizeAndNumber(query, pageSize, pageNumber);
         }
         return query;
     }
@@ -1688,7 +1681,7 @@ public class TaxonDaoHibernateImpl
         }
 
         //paging
-        setPagingParameter(query, pageSize, pageNumber);
+		addPageSizeAndNumber(query, pageSize, pageNumber);
 
         List<Object[]> results = query.list();
         //initialize
@@ -1806,7 +1799,7 @@ public class TaxonDaoHibernateImpl
         }
 
         //paging
-        setPagingParameter(query, pageSize, pageNumber);
+        addPageSizeAndNumber(query, pageSize, pageNumber);
 
         List<Object[]> results = query.list();
         //initialize

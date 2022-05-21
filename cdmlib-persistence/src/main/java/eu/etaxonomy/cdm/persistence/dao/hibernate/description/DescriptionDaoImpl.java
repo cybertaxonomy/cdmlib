@@ -742,12 +742,7 @@ public class DescriptionDaoImpl
             query.setParameterList("features", features) ;
         }
 
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            }
-        }
+        addPageSizeAndNumber(query, pageSize, pageNumber);
         return query;
     }
 
@@ -797,9 +792,7 @@ public class DescriptionDaoImpl
                 setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
 //	            addMarkerTypesCriterion(markerTypes, hql);
 
-                setPagingParameter(query, pageSize, pageNumber);
-
-                @SuppressWarnings("unchecked")
+                addPageSizeAndNumber(query, pageSize, pageNumber);
                 List<Media> results = query.list();
                 defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -920,12 +913,8 @@ public class DescriptionDaoImpl
                     + "where a.id in (:allAreaIds) order by a.idInVocabulary";
             query = getSession().createQuery(parentAreasQueryStr, Object[].class);
             query.setParameterList("allAreaIds", allAreaIds);
-            if(pageSize != null) {
-                query.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    query.setFirstResult(pageNumber * pageSize);
-                }
-            }
+
+            addPageSizeAndNumber(query, pageSize, pageNumber);
             parentResults = query.list();
         }
         List<TermDto> dtoList = TermDto.termDtoListFrom(parentResults);

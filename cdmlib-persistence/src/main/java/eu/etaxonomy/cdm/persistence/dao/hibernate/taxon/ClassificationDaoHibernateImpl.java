@@ -234,7 +234,7 @@ public class ClassificationDaoHibernateImpl
             Integer pageSize, Integer pageIndex, List<String> propertyPaths){
          Query<TaxonNode> query = prepareListSiblingsOf(taxon, classification, includeUnpublished, false, TaxonNode.class);
 
-         setPagingParameter(query, pageSize, pageIndex);
+         addPageSizeAndNumber(query, pageSize, pageIndex);
 
          List<TaxonNode> result = query.list();
          //check if array is "empty" (not containing null objects)

@@ -67,13 +67,7 @@ public class RegistrationDaoHibernateImpl
 
         Query<Registration> query = makeReferenceQuery(reference, includedStatus, false, Registration.class);
 
-        // TODO complete ....
-        if(limit != null /*&&  !doCount*/) {
-            query.setMaxResults(limit);
-            if(start != null) {
-                query.setFirstResult(start);
-            }
-        }
+        addLimitAndStart(query, limit, start);
 
         //TODO order hints do not work with queries
 

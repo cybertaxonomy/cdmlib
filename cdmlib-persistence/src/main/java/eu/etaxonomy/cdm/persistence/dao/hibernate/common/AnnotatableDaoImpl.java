@@ -92,15 +92,8 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
         query.setParameter("id",annotatableEntity.getId());
 
+        addPageSizeAndNumber(query, pageSize, pageNumber);
 
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
-		    }
-		}
-
-		@SuppressWarnings("unchecked")
         List<Annotation> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
@@ -157,13 +150,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
 		query.setParameter("id",annotatableEntity.getId());
 
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
-		    }
-		}
-
+		addPageSizeAndNumber(query, pageSize, pageNumber);
 		List<Marker> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
@@ -211,15 +198,8 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 //		      query.setParameter("class", clazz.getName());
 //		}
 
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
-		    }
-		}
-
+        addPageSizeAndNumber(query, pageSize, pageNumber);
 		List<Object[]> result = query.list();
-
 		if(propertyPaths != null && !propertyPaths.isEmpty()) {
 		  for(Object[] objects : result) {
 			defaultBeanInitializer.initialize(objects[0], propertyPaths);

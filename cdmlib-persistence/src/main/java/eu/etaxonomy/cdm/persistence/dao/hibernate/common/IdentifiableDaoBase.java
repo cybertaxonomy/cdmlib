@@ -132,12 +132,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
         Query<R> query = getSession().createQuery(hql, resultClass);
 
-        if(pageSize != null && !doCount) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            }
+        if (!doCount) {
+            this.addPageSizeAndNumber(query, pageSize, pageNumber);
         }
+
         return query;
     }
 
@@ -226,8 +224,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         Query<Credit> query = getSession().createQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity",
                 Credit.class);
         query.setParameter("identifiableEntity",identifiableEntity);
-        setPagingParameter(query, pageSize, pageNumber);
-        @SuppressWarnings("unchecked")
+        addPageSizeAndNumber(query, pageSize, pageNumber);
+
         List<Credit> result = query.list();
         return result;
     }
@@ -548,7 +546,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         }
 
         //paging
-        setPagingParameter(query, pageSize, pageNumber);
+		addPageSizeAndNumber(query, pageSize, pageNumber);
 
 		List<Object[]> results = query.list();
         //initialize

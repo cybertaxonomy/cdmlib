@@ -101,12 +101,12 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Query<InstitutionalMembership> query = getSession().createQuery("select institutionalMembership from InstitutionalMembership institutionalMembership left join fetch institutionalMembership.institute where institutionalMembership.person = :person", InstitutionalMembership.class);
 		    query.setParameter("person", person);
-		    setPagingParameter(query, pageSize, pageNumber);
+		    addPageSizeAndNumber(query, pageSize, pageNumber);
 			return query.list();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(InstitutionalMembership.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("person").eq(person.getId()));
-			setPagingParameter(query, pageSize, pageNumber);
+			addPageSizeAndNumber(query, pageSize, pageNumber);
 			return query.getResultList();
 		}
 	}
@@ -117,8 +117,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		Query<Person> query = getSession().createQuery("select teamMember from Team team join team.teamMembers teamMember where team = :team order by sortindex", Person.class);
 		query.setParameter("team", team);
 		//query.addOrder( Order.asc("sortindex") );
-		setPagingParameter(query, pageSize, pageNumber);
-		@SuppressWarnings("unchecked")
+		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<Person> result = query.list();
 		return result;
 	}
@@ -136,8 +135,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		checkNotInPriorView("AgentDaoImpl.getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber)");
 		Query<Address> query = getSession().createQuery("select address from AgentBase agent join agent.contact.addresses address where agent = :agent", Address.class);
 		query.setParameter("agent", agent);
-		setPagingParameter(query, pageSize, pageNumber);
-        @SuppressWarnings("unchecked")
+		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<Address> result = query.list();
         return result;
 	}

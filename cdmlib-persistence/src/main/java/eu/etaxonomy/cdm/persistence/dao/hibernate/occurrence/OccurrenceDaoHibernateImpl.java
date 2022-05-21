@@ -438,14 +438,7 @@ public class OccurrenceDaoHibernateImpl
                 return null;
             }
         }
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
+        addLimitAndStart(criteria, limit, start);
 
         if(orderHints!=null){
             addOrder(criteria, orderHints);

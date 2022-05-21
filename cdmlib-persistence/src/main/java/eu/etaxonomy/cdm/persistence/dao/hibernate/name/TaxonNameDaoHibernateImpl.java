@@ -270,15 +270,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
                 criteria.add(Restrictions.eq("type", type));
             }
 
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
-            }
-
+            addPageSizeAndNumber(criteria, pageSize, pageNumber);
             addOrder(criteria, orderHints);
 
             @SuppressWarnings("unchecked")
@@ -372,15 +364,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber){
         Query<Integer> query = getTypeDesignationQuery("designation.typeSpecimen.id", name, SpecimenTypeDesignation.class, status);
 
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-        @SuppressWarnings("unchecked")
+        addPageSizeAndNumber(query, pageSize, pageNumber);
         List<Integer> result = query.list();
         return result;
     }

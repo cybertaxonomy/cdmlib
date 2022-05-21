@@ -134,18 +134,7 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addPageSizeAndNumber(Query query, Integer pageSize, Integer pageNumber) {
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-    }
-
-    protected void addPageSizeAndNumber(FullTextQuery query, Integer pageSize, Integer pageNumber) {
+    protected void addPageSizeAndNumber(Query<?> query, Integer pageSize, Integer pageNumber) {
         if(pageSize != null) {
             query.setMaxResults(pageSize);
             if(pageNumber != null) {
@@ -189,7 +178,7 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addLimitAndStart(Query query, Integer limit, Integer start) {
+    protected void addLimitAndStart(Query<?> query, Integer limit, Integer start) {
         if(limit != null) {
             if(start != null) {
                 query.setFirstResult(start);

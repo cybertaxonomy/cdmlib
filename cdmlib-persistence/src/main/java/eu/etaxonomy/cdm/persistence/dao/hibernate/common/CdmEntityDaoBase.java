@@ -959,28 +959,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return type;
     }
 
-    protected void setPagingParameter(Query query, Integer pageSize, Integer pageIndex) {
-        if (pageSize != null) {
-            query.setMaxResults(pageSize);
-            if (pageIndex != null) {
-                query.setFirstResult(pageIndex * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-    }
-
-    protected void setPagingParameter(AuditQuery query, Integer pageSize, Integer pageIndex) {
-        if (pageSize != null) {
-            query.setMaxResults(pageSize);
-            if (pageIndex != null) {
-                query.setFirstResult(pageIndex * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-    }
-
     @Override
     public long count(T example, Set<String> includeProperties) {
         Criteria criteria = getSession().createCriteria(example.getClass());
