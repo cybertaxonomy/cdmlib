@@ -51,7 +51,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 	private static final Logger logger = Logger.getLogger(CommonServiceImplTest.class);
 
     private static final String LIE_TEAMMEMBERS_NOSESSION = "failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.agent.Team.teamMembers, could not initialize proxy - no Session";
-    private static final String LIE_NOSESSION = "could not initialize proxy - no Session";
+    private static final String LIE_NOSESSION = "could not initialize proxy .* no Session";
 
     private static final UUID taxonUuid = UUID.fromString("23c35977-01b5-452c-9225-ecce440034e0");
 
@@ -115,10 +115,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
             CdmBase.deproxy(taxon.getName(), TaxonName.class);
             Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
-
-            if(!lie.getMessage().equals(LIE_NOSESSION)) {
-                Assert.fail("LazyInitializationException thrown, but not : " + LIE_NOSESSION);
-            }
+            assertIsLieNoSession(lie);
         }
 
         // ---- loading taxon with find (id) ----
@@ -134,10 +131,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
             CdmBase.deproxy(taxon.getName(),TaxonName.class);
             Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
-
-            if(!lie.getMessage().equals(LIE_NOSESSION)) {
-                Assert.fail("LazyInitializationException thrown, but not : " + LIE_NOSESSION);
-            }
+            assertIsLieNoSession(lie);
         }
 
         // ---- loading taxon with findTaxonByUuid ----
@@ -195,6 +189,12 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         team.setProtectedNomenclaturalTitleCache(true);
         taxonService.update(taxon);
 
+    }
+
+    private void assertIsLieNoSession(LazyInitializationException lie) {
+        if(!lie.getMessage().matches(LIE_NOSESSION)) {
+            Assert.fail("LazyInitializationException ("+lie.getMessage()+") thrown, but does not match: " + LIE_NOSESSION);
+        }
     }
 
     @Test
