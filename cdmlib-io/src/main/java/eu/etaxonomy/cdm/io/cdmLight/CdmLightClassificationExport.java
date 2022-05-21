@@ -2428,7 +2428,7 @@ public class CdmLightClassificationExport
         } else if (authorship instanceof Team) {
 
             Team authorTeam = (Team)authorship;
-            fullAuthorship = authorTeam.getCacheStrategy().getTitleCache(authorTeam);
+            fullAuthorship = authorTeam.cacheStrategy().getTitleCache(authorTeam);
         }
         return fullAuthorship;
     }

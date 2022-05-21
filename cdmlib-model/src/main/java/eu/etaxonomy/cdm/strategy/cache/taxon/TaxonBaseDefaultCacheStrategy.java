@@ -115,7 +115,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         TaxonName name = CdmBase.deproxy(taxonBase.getName());
 
         if (name != null){
-            INameCacheStrategy nameCacheStrategy = name.getCacheStrategy();
+            INameCacheStrategy nameCacheStrategy = name.cacheStrategy();
             useNameCache = (useNameCache || taxonBase.isUseNameCache()) && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy;
             if (useNameCache){
                 INonViralNameCacheStrategy nvnCacheStrategy = (INonViralNameCacheStrategy)nameCacheStrategy;
@@ -152,7 +152,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         else{
             //existing sec
             if (sec.isProtectedTitleCache() == false &&
-                    sec.getCacheStrategy() != null &&
+                    sec.cacheStrategy() != null &&
                     sec.getAuthorship() != null &&
                     isNotBlank(sec.getAuthorship().getTitleCache()) &&
                     isNotBlank(sec.getYear())){

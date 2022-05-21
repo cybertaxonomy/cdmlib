@@ -310,10 +310,10 @@ public class Team extends TeamOrPersonBase<Team> {
 			return this.nomenclaturalTitleCache;
 		}
 		if (nomenclaturalTitleCache == null){
-			this.nomenclaturalTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+			this.nomenclaturalTitleCache = cacheStrategy().getNomenclaturalTitleCache(this);
 		}else{
 			//as long as team members do not inform the team about changes the cache must be created new each time
-		    nomenclaturalTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+		    nomenclaturalTitleCache = cacheStrategy().getNomenclaturalTitleCache(this);
 		}
 		return nomenclaturalTitleCache;
 	}
@@ -353,10 +353,10 @@ public class Team extends TeamOrPersonBase<Team> {
             return this.collectorTitleCache;
         }
         if (collectorTitleCache == null){
-            this.collectorTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+            this.collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
         }else{
             //as long as team members do not inform the team about changes the cache must be created new each time
-            collectorTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+            collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
         }
         return collectorTitleCache;
     }
@@ -409,7 +409,7 @@ public class Team extends TeamOrPersonBase<Team> {
         if (this.protectedNomenclaturalTitleCache == false){
             String oldNomTitleCache = this.nomenclaturalTitleCache;
 
-            String newNomTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+            String newNomTitleCache = cacheStrategy().getNomenclaturalTitleCache(this);
 
             if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newNomTitleCache) ){
                 this.setNomenclaturalTitleCache(null, false);
@@ -426,7 +426,7 @@ public class Team extends TeamOrPersonBase<Team> {
         }
         if (this.protectedCollectorTitleCache == false){
             String oldCollTitleCache = this.collectorTitleCache;
-            String newCollTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+            String newCollTitleCache = cacheStrategy().getCollectorTitleCache(this);
 
             if ( oldCollTitleCache == null || ! oldCollTitleCache.equals(newCollTitleCache) ){
                  this.setCollectorTitleCache(null, false);

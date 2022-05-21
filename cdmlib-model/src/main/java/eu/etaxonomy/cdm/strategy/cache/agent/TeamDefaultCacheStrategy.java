@@ -121,7 +121,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
             }else if (this == FULL){
                 return member.getFullTitle();
             }else if (this == FAMILY){
-                return member.getCacheStrategy().getFamilyTitle(member);
+                return member.cacheStrategy().getFamilyTitle(member);
             }else if (this == COLLECTOR){
               return member.getCollectorTitleCache();
             }

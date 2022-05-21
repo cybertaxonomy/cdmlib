@@ -201,7 +201,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
 
     @Transient
     public List<TaggedText> getTaggedTitle(){
-        return getCacheStrategy().getTaggedTitle(this);
+        return cacheStrategy().getTaggedTitle(this);
     }
 
     /**

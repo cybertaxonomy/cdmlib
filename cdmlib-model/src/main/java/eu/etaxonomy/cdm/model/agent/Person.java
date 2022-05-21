@@ -467,7 +467,7 @@ public class Person extends TeamOrPersonBase<Person>{
     private boolean updateNomenclaturalCache() {
         //updates the nomenclaturalTitleCache if necessary
         String oldCache = this.nomenclaturalTitleCache;
-        String newCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+        String newCache = cacheStrategy().getNomenclaturalTitleCache(this);
         if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
 //            this.setNomenclaturalTitleCache(null, false);
             this.getNomenclaturalTitleCache();
@@ -479,7 +479,7 @@ public class Person extends TeamOrPersonBase<Person>{
     private boolean updateCollectorCache() {
         //updates the collectorTitleCache if necessary
         String oldCache = this.collectorTitleCache;
-        String newCache = getCacheStrategy().getCollectorTitleCache(this);
+        String newCache = cacheStrategy().getCollectorTitleCache(this);
         if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
 //            this.setNomenclaturalTitleCache(null, false);
             this.getCollectorTitleCache();

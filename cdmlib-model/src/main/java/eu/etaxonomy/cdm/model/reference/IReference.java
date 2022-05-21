@@ -102,7 +102,7 @@ public interface IReference
      */
     public void setCacheStrategy(IReferenceCacheStrategy defaultStrategy);
 
-    public IReferenceCacheStrategy getCacheStrategy();
+    public IReferenceCacheStrategy cacheStrategy();
 
     /**
 	 * @see Cloneable

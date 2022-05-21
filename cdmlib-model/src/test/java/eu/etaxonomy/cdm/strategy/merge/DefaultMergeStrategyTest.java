@@ -176,7 +176,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 
 	@Test
 	public void testInvokeReferences() throws MergeException {
-		IReferenceCacheStrategy cacheStrategy1 = book1.getCacheStrategy();
+		IReferenceCacheStrategy cacheStrategy1 = book1.cacheStrategy();
 		int id = book1.getId();
 		UUID uuid = book1.getUuid();
 		try {
@@ -208,7 +208,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInReference());
 
 		//Transient
-		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.getCacheStrategy());
+		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.cacheStrategy());
 
 		//UserType
 		Assert.assertSame("Created must be created2", created2, book1.getCreated());

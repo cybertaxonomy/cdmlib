@@ -172,7 +172,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlTransient
     @Transient
-    protected S cacheStrategy;
+    protected IIdentifiableEntityCacheStrategy cacheStrategy;
 
     protected IdentifiableEntity(){
         initListener();
@@ -279,7 +279,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             String oldTitleCache = this.titleCache;
 
             @SuppressWarnings("unchecked")
-            String newTitleCache = getCacheStrategy().getTitleCache(this);
+            String newTitleCache = cacheStrategy().getTitleCache(this);
 
             if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){
                 this.setTitleCache(null, false);
@@ -303,8 +303,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @return <code>true</code> if some cache was updated, <code>false</code> otherwise
      */
     public boolean updateCaches(S entityCacheStrategy){
-        S oldCacheStrategy = this.getCacheStrategy();
-        this.cacheStrategy = entityCacheStrategy != null? entityCacheStrategy : this.getCacheStrategy();
+        S oldCacheStrategy = this.cacheStrategy();
+        this.cacheStrategy = entityCacheStrategy != null? entityCacheStrategy : this.cacheStrategy();
         boolean result = this.updateCaches();
         this.cacheStrategy = oldCacheStrategy;
         return result;
@@ -670,11 +670,13 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @return  the cache strategy used for <i>this</i> identifiable entity
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    public S getCacheStrategy() {
+    @Transient
+    @java.beans.Transient
+    public S cacheStrategy() {
         if (this.cacheStrategy == null){
             initDefaultCacheStrategy();
         }
-        return this.cacheStrategy;
+        return (S)this.cacheStrategy;
     }
     public void setCacheStrategy(S cacheStrategy) {
         this.cacheStrategy = cacheStrategy;
@@ -682,11 +684,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @Override
     public String generateTitle() {
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
             return this.getClass() + ": " + this.getUuid();
         }else{
-            S cacheStrategy = getCacheStrategy();
+            S cacheStrategy = cacheStrategy();
             return cacheStrategy.getTitleCache(this);
         }
     }

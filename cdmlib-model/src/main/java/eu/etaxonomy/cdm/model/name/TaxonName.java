@@ -1395,11 +1395,11 @@ public class TaxonName
 
     @Override
     public String generateFullTitle(){
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
-            return getCacheStrategy().getFullTitleCache(this);
+            return cacheStrategy().getFullTitleCache(this);
         }
     }
 
@@ -1443,14 +1443,14 @@ public class TaxonName
     @Override
     @Transient
     public List<TaggedText> getTaggedName(){
-        INameCacheStrategy strat = getCacheStrategy();
+        INameCacheStrategy strat = cacheStrategy();
         return strat.getTaggedTitle(this);
     }
 
     @Override
     @Transient
     public List<TaggedText> getTaggedFullTitle() {
-        INameCacheStrategy strat = getCacheStrategy();
+        INameCacheStrategy strat = cacheStrategy();
         return strat.getTaggedFullTitle(this);
     }
 
@@ -1544,11 +1544,11 @@ public class TaxonName
      */
     @Override
     public String generateAuthorship(){
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
-            return getCacheStrategy().getAuthorshipCache(this);
+            return cacheStrategy().getAuthorshipCache(this);
         }
     }
 
@@ -1875,11 +1875,11 @@ public class TaxonName
      * @see     #getNameCache()
      */
     protected String generateNameCache(){
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.toString());
             return null;
         }else{
-            return getCacheStrategy().getNameCache(this);
+            return cacheStrategy().getNameCache(this);
         }
     }
 
@@ -3610,7 +3610,7 @@ public class TaxonName
         //updates the authorship cache if necessary and via the listener updates all higher caches
         if (protectedAuthorshipCache == false){
             String oldCache = this.authorshipCache;
-            String newCache = getCacheStrategy().getAuthorshipCache(this);
+            String newCache = cacheStrategy().getAuthorshipCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setAuthorshipCache(null, false);
                 this.getAuthorshipCache();
@@ -3624,7 +3624,7 @@ public class TaxonName
         //updates the name cache if necessary and via the listener updates all higher caches
         if (protectedNameCache == false){
             String oldCache = this.nameCache;
-            String newCache = getCacheStrategy().getNameCache(this);
+            String newCache = cacheStrategy().getNameCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setNameCache(null, false);
                 this.getNameCache();
@@ -3637,7 +3637,7 @@ public class TaxonName
     private boolean updateFullTitleCache() {
         if (protectedFullTitleCache == false){
             String oldCache = this.fullTitleCache;
-            String newCache = getTruncatedCache(getCacheStrategy().getFullTitleCache(this));
+            String newCache = getTruncatedCache(cacheStrategy().getFullTitleCache(this));
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setFullTitleCache(null, false);
                 this.getFullTitleCache();

@@ -111,19 +111,19 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
 
     @SuppressWarnings("unchecked")
     private String generateNomenclaturalTitleCache() {
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             return this.getClass() + ": " + this.getUuid();
         }else{
-            return getCacheStrategy().getNomenclaturalTitleCache((T)this);
+            return cacheStrategy().getNomenclaturalTitleCache((T)this);
         }
     }
 
     @SuppressWarnings("unchecked")
     private String generateCollectorTitleCache() {
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             return this.getClass() + ": " + this.getUuid();
         }else{
-            return getCacheStrategy().getCollectorTitleCache((T)this);
+            return cacheStrategy().getCollectorTitleCache((T)this);
         }
     }
 
@@ -152,7 +152,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         if (agent.isProtectedTitleCache()){
             return agent.getTitleCache();
         }else{
-            return this.getCacheStrategy().getFullTitle(agent);
+            return this.cacheStrategy().getFullTitle(agent);
         }
     }
 

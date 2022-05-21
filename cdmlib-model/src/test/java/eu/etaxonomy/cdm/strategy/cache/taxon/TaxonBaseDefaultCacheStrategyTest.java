@@ -225,7 +225,7 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
     public void testMisapplication(){
         //assert default (taxon without relation)
         Taxon man = Taxon.NewInstance(name, sec);
-        ITaxonCacheStrategy<Taxon> cacheStrategy = man.getCacheStrategy();
+        ITaxonCacheStrategy<Taxon> cacheStrategy = man.cacheStrategy();
         assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
 
         //make it a MAN only

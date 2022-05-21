@@ -307,7 +307,7 @@ public class TypeDesignationSetFormatter {
             TypedEntityReference<?> typeDesignationEntity) {
 
         if (td.getTypeName() != null){
-            workingsetBuilder.addAll(td.getTypeName().getCacheStrategy().getTaggedTitle(td.getTypeName()));
+            workingsetBuilder.addAll(td.getTypeName().cacheStrategy().getTaggedTitle(td.getTypeName()));
         }
 
         String flags = null;

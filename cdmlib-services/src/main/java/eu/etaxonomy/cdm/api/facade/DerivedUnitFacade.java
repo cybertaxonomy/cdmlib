@@ -2097,8 +2097,8 @@ public class DerivedUnitFacade {
 	 */
 	public String getSpecimenLabel() {
 	    if(checkDerivedUnit()){
-	        if(derivedUnit.getCacheStrategy() instanceof DerivedUnitFacadeCacheStrategy){
-	            return ((DerivedUnitFacadeCacheStrategy)derivedUnit.getCacheStrategy()).getSpecimenLabel(this);
+	        if(derivedUnit.cacheStrategy() instanceof DerivedUnitFacadeCacheStrategy){
+	            return ((DerivedUnitFacadeCacheStrategy)derivedUnit.cacheStrategy()).getSpecimenLabel(this);
 	        }
 
 	    }

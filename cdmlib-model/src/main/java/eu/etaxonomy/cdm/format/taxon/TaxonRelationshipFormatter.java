@@ -210,14 +210,14 @@ public class TaxonRelationshipFormatter {
     }
 
     private List<TaggedText> getNameCacheTags(TaxonName name) {
-        List<TaggedText> result = name.getCacheStrategy().getTaggedName(name);
+        List<TaggedText> result = name.cacheStrategy().getTaggedName(name);
         return result;
     }
 
     private List<TaggedText> getNameTitleCacheTags(TaxonName name) {
 
         //TODO full title?
-        List<TaggedText> result = name.getCacheStrategy().getTaggedFullTitle(name);
+        List<TaggedText> result = name.cacheStrategy().getTaggedFullTitle(name);
         return result;
     }
 

@@ -292,8 +292,8 @@ public class Media
 
     @Transient
     public String getTitleCacheByLanguage(Language lang){
-        if (getCacheStrategy() != null){
-            return ((MediaDefaultCacheStrategy)getCacheStrategy()).getTitleCacheByLanguage(this, lang);
+        if (cacheStrategy() != null){
+            return ((MediaDefaultCacheStrategy)cacheStrategy()).getTitleCacheByLanguage(this, lang);
         }else{
             return null;
         }

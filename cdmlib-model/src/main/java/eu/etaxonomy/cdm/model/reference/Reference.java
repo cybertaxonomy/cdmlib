@@ -813,11 +813,11 @@ public class Reference
 	// TODO implement
 	@Transient
 	public String getCitation(){
-		if (getCacheStrategy() == null){
+		if (cacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
 		}else{
-			return getCacheStrategy().getTitleCache(this);
+			return cacheStrategy().getTitleCache(this);
 		}
 	}
 
@@ -828,7 +828,7 @@ public class Reference
 	}
 
     public String generateAbbrevTitle() {
-		return getCacheStrategy().getNomenclaturalTitleCache(this);
+		return cacheStrategy().getNomenclaturalTitleCache(this);
 	}
 
 	/**
@@ -942,7 +942,7 @@ public class Reference
     @Transient
     public String getNomenclaturalCitation(String microReference) {
 		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getLabel();
-		if (getCacheStrategy() == null){
+		if (cacheStrategy() == null){
 		    throw new IllegalStateException("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 		}else{
 		    return NomenclaturalSourceFormatter.INSTANCE().format(this, microReference);
@@ -1199,9 +1199,9 @@ public class Reference
        if (this.protectedAbbrevTitleCache == false){
            String oldAbbrevTitleCache = this.abbrevTitleCache;
 
-           String newAbbrevTitleCache = getTruncatedCache(getCacheStrategy().getNomenclaturalTitleCache(this));
+           String newAbbrevTitleCache = getTruncatedCache(cacheStrategy().getNomenclaturalTitleCache(this));
            if (newAbbrevTitleCache.equals("")){
-               newAbbrevTitleCache = getCacheStrategy().getTitleCache(this);
+               newAbbrevTitleCache = cacheStrategy().getTitleCache(this);
            }
 
            if ( oldAbbrevTitleCache == null || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){
