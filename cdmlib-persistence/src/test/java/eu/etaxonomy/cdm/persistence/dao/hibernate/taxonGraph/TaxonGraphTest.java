@@ -104,7 +104,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testnewTaxonName() throws TaxonGraphException{
+    public void testNewTaxonName() throws TaxonGraphException{
 
         setUuidPref();
 

@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
-import javassist.compiler.ast.Keyword;
 
 /**
  * This class represents human beings, living or dead.<BR>
