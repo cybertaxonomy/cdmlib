@@ -209,7 +209,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	 //       http://dev.e-taxonomy.eu/trac/changeset/13291/trunk/cdmlib/cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd
 	 public void testListInitialization() {
 		 AuditEventContextHolder.getContext().setAuditEvent(auditEvent);
-		 List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		 List<OrderHint> orderHints = new ArrayList<>();
 		 orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
 
 		 List<String> propertyPaths = new ArrayList<String>();

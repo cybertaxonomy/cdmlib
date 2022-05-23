@@ -184,16 +184,6 @@
     </repository>
     <!-- Neccessary for hibernate-envers -->
     <repository>
-  <!--    <releases>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>   -->
       <id>jboss-repository</id>
       <name>JBoss Repository</name>
       <url>https://repository.jboss.org</url>

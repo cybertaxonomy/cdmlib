@@ -1458,7 +1458,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     }
 
     private List<Classification> getClassificationList(int limit) {
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
         List<Classification> clist = classificationService.listClassifications(limit, 0, orderHints, VOC_CLASSIFICATION_INIT_STRATEGY);
         return clist;

@@ -558,7 +558,6 @@ public class TaxonNode
 
         child.setSource(source);
 
-
         return child;
     }
 
@@ -789,7 +788,6 @@ public class TaxonNode
         }else{
             parentChildren.add(index, this);
         }
-
 
         //sortIndex
         //TODO workaround (see sortIndex doc)

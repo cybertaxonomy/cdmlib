@@ -81,7 +81,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         extends AbstractHibernateTaxonGraphProcessor
         implements BeforeTransactionCompletionProcess {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
     private static final String[] TAXONNAME_NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
@@ -92,16 +91,9 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
     private static boolean failOnMissingNomRef = false;
 
-    /**
-     * @return the failOnMissingNomRef
-     */
     public static boolean isFailOnMissingNomRef() {
         return failOnMissingNomRef;
     }
-
-    /**
-     * @param failOnMissingNomRef the failOnMissingNomRef to set
-     */
     public static void setFailOnMissingNomRef(boolean failOnMissingNomRef) {
         TaxonGraphBeforeTransactionCompleteProcess.failOnMissingNomRef = failOnMissingNomRef;
     }
@@ -360,7 +352,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
      */
     protected void createTempSession(SessionImplementor session) {
         if(getSession() == null){
-            parentSession = (Session)session;
+            parentSession = session;
             temporarySession = ((Session) session)
                       .sessionWithOptions().transactionContext()
                       // in contrast to AuditProcess.doBeforeTransactionCompletion we need the session to close automatically,
@@ -554,10 +546,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         }
     }
 
-
-    /**
-     * @return
-     */
     @Override
     public Session getSession() {
         return temporarySession;
@@ -568,21 +556,12 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         Object oldState;
         Object newState;
         int index;
-        /**
-         * @param oldState
-         * @param newState
-         * @param index
-         */
+
         public PropertyStateChange(Object oldState, Object newState, int index) {
             super();
             this.oldState = oldState;
             this.newState = newState;
             this.index = index;
         }
-
-
-
     }
-
-
 }

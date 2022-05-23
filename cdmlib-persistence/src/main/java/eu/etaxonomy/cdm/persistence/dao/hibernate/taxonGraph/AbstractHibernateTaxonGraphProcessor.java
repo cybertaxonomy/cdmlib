@@ -64,7 +64,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
 
     private static final Logger logger = Logger.getLogger(AbstractHibernateTaxonGraphProcessor.class);
 
-    EnumSet<ReferenceType> referenceSectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
+    private EnumSet<ReferenceType> referenceSectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
 
     private Reference secReference = null;
 
@@ -77,41 +77,21 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return relType;
     }
 
-
-    /**
-     * MUST ONLY BE USED IN TESTS
-     */
-    @Deprecated
-    protected UUID secReferenceUUID;
-
-
-    /**
-     * MUST ONLY BE USED IN TESTS
-     */
-    @Deprecated
-    protected void setSecReferenceUUID(UUID uuid){
-        secReferenceUUID = uuid;
-    }
-
     public UUID getSecReferenceUUID(){
-        if(secReferenceUUID != null){
-            return secReferenceUUID;
-        } else {
-            CdmPreference pref = CdmPreferenceLookup.instance().get(TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID);
-            UUID uuid = null;
-            if(pref != null && pref.getValue() != null){
-                try {
-                    uuid = UUID.fromString(pref.getValue());
-                } catch (Exception e) {
-                    // TODO is logging only ok?
-                    logger.error(e);
-                }
+        CdmPreference pref = CdmPreferenceLookup.instance().get(TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID);
+        UUID uuid = null;
+        if(pref != null && pref.getValue() != null){
+            try {
+                uuid = UUID.fromString(pref.getValue());
+            } catch (Exception e) {
+                // TODO is logging only ok?
+                logger.error(e);
             }
-            if(uuid == null){
-                logger.error("missing cdm property: " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
-            }
-            return uuid;
         }
+        if(uuid == null){
+            logger.error("missing cdm property: " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
+        }
+        return uuid;
     }
 
     /**
@@ -360,10 +340,6 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return conceptRef;
     }
 
-    /**
-     * @param name
-     * @return
-     */
     protected List<TaxonName> relatedHigherNames(TaxonName name) {
 
         List<TaxonName> relatedNames = new ArrayList<>();

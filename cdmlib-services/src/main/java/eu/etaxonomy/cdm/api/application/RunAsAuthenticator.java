@@ -60,7 +60,7 @@ public class RunAsAuthenticator {
        authentication = securityContext.getAuthentication();
 
 
-       Collection<GrantedAuthority> rules = new ArrayList<GrantedAuthority>();
+       Collection<GrantedAuthority> rules = new ArrayList<>();
        rules.add(ga);
        RunAsUserToken adminToken = new RunAsUserToken(
                RUN_AS_KEY,

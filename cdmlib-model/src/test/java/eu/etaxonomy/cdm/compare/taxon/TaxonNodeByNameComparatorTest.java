@@ -30,17 +30,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.kohlbecker
  * @since 18.07.2011
- *
  */
 public class TaxonNodeByNameComparatorTest {
 
     private static final Logger logger = Logger.getLogger(TaxonNodeByNameComparatorTest.class);
 
-
-    /**
-     * test method for {@link TaxonNodeByNameComparator#compare(eu.etaxonomy.cdm.model.taxon.TaxonNode
-     * , eu.etaxonomy.cdm.model.taxon.TaxonNode) }
-     */
     @Test
     @Ignore
     public void testCompare() {
@@ -74,7 +68,7 @@ public class TaxonNodeByNameComparatorTest {
         classification.addChildTaxon(taxon_4, sec, null);
 
         classification.getChildNodes();
-        ArrayList<TaxonNode> taxonNodes = new ArrayList<TaxonNode>();
+        ArrayList<TaxonNode> taxonNodes = new ArrayList<>();
         taxonNodes.addAll(classification.getChildNodes());
 
         // order using default settings

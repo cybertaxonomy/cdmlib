@@ -25,7 +25,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -127,13 +126,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     private TaxonNode node4;
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
-	 */
 	@Test
 	@DataSet
 	public final void testMakeTaxonNodeASynonymOfAnotherTaxonNode() {

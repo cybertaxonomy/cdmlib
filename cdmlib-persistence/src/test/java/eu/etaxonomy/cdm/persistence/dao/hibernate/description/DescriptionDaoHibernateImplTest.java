@@ -147,7 +147,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxon");
 
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
 
         List<TaxonDescription> descriptions = descriptionDao.searchDescriptionByDistribution(namedAreas, null, 10,2,orderHints,propertyPaths);

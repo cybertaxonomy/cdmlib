@@ -52,7 +52,9 @@ import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
  */
 @Repository("taxonGraphDao")
 @Transactional(readOnly = true)
-public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProcessor implements ITaxonGraphDao {
+public class TaxonGraphDaoHibernateImpl
+        extends AbstractHibernateTaxonGraphProcessor
+        implements ITaxonGraphDao {
 
     private TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
 

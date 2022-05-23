@@ -270,7 +270,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testRandomOrder() {
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new RandomOrder());
         List<TaxonBase> list = cdmEntityDaoBase.list((Class)null, 1000, 0, orderHints, null);
         assertNotNull("list() should not return null", list);
@@ -280,7 +280,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testListByUuids() {
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new RandomOrder());
         UUID[] uuids = new UUID[]{UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66"), UUID.fromString("822d98dc-9ef7-44b7-a870-94573a3bcb46")};
         List<TaxonBase> list = cdmEntityDaoBase.list(Arrays.asList(uuids), 20, 0, orderHints, null);

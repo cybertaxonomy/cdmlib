@@ -328,7 +328,6 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
         }
     }
 
-
     /**
      * Start a new transaction. Only call this method if
      * {@link #endTransaction()} has been called. {@link #setComplete()} can be
@@ -385,5 +384,4 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
         setComplete();
         endTransaction();
     }
-
 }

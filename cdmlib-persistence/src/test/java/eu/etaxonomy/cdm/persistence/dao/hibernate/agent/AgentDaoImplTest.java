@@ -221,7 +221,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("AgentDaoImplTest.testExists.xml")
     public void testSortingListInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
         List<AgentBase> result = agentDao.list((Class)null, null, null, orderHints, null);
         Assert.assertNotNull("list() should return a list",result);

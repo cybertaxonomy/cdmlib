@@ -24,17 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -218,10 +214,10 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         OccurrenceServiceRequestParameterDto dto = geoservice.getOccurrenceServiceRequestParameters(specimensOrObersvations,
                 specimenOrObservationTypeColors );
-   
+
         return dto;
     }
-    
+
 	private List<SpecimenOrObservationBase> occurencesForTaxon(UUID taxonUuid, UuidList relationshipUuids,
 			UuidList relationshipInversUuids, Integer maxDepth, HttpServletResponse response) throws IOException {
 		Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
@@ -229,7 +225,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, (List<String>)null);
 
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
