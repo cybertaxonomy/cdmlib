@@ -41,7 +41,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 
     @Override
     public boolean userNameExists(String username) {
-        Query<Long> query = getSession().createQuery("SELECT count(user) FROM User user WHERE user.username = :username", long.class);
+        Query<Long> query = getSession().createQuery("SELECT count(user) FROM User user WHERE user.username = :username", Long.class);
         query.setParameter("username", username);
 
         long count = query.uniqueResult();
@@ -50,7 +50,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 
     @Override
     public boolean emailAddressExists(String emailAddress) {
-        Query<Long> query = getSession().createQuery("SELECT count(user) FROM User user WHERE user.emailAddress = :emailAddress", long.class);
+        Query<Long> query = getSession().createQuery("SELECT count(user) FROM User user WHERE user.emailAddress = :emailAddress", Long.class);
         query.setParameter("emailAddress", emailAddress);
 
         long count = query.uniqueResult();
