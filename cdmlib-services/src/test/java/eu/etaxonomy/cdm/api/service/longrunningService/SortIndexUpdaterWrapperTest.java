@@ -11,14 +11,13 @@ package eu.etaxonomy.cdm.api.service.longrunningService;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.ITermNodeService;
@@ -26,7 +25,6 @@ import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
-import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -57,6 +55,7 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet
+    @ExpectedDataSet
     public void testTermNode() {
         try {
             Field sortIndexField = TermNode.class.getDeclaredField("sortIndex");
@@ -69,39 +68,16 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
 
             Assert.assertEquals("No exception should be thrown during sortindex update", 0, result.getExceptions().size());
 
-            @SuppressWarnings("unchecked")
-            TermTree<Feature> termTree = termTreeService.find(uuidTermTree);
-            Assert.assertNotNull(termTree);
-            TermNode<Feature> rootNode = termTree.getRoot();
-            ListIterator<Integer> expectedIdOrder = Arrays.asList(new Integer[]{5000,5002,5003,5004,5005,5006,5001}).listIterator();
-            testTreeRecursive(sortIndexField, rootNode,expectedIdOrder);
-
         } catch (NoSuchFieldException | SecurityException e1) {
             Assert.fail("sortIndex field not found");
         }
     }
 
-    private <T extends ITreeNode<T>> void testTreeRecursive(Field sortIndexField, ITreeNode<T> rootNode, ListIterator<Integer> expectedIdOrder) {
-        Assert.assertEquals(expectedIdOrder.next(), (Integer)rootNode.getId());
-        @SuppressWarnings("deprecation")
-        List<T> children = rootNode.getChildNodes();
-        for (int i = 0 ; i < children.size(); i++){
-            try {
-                T child = children.get(i);
-                Integer sortIndex = (Integer)sortIndexField.get(child);
-                Assert.assertEquals((Integer)i, sortIndex);
-                testTreeRecursive(sortIndexField, child, expectedIdOrder);
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                Assert.fail("sortIndex field not accessible");
-            }
-        }
-    }
-
-    @Test
-//    @DataSet
-    public void testPolytomousKeyNode() {
-        //TODO
-    }
+//    @Test
+////    @DataSet
+//    public void testPolytomousKeyNode() {
+//        //TODO
+//    }
 
     @Test
     @DataSet
@@ -116,7 +92,6 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
         }
     }
 
-//    @Test
     @Override
     public void createTestDataSet() throws FileNotFoundException {
 
