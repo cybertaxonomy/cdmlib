@@ -11,12 +11,15 @@ package eu.etaxonomy.cdm.hibernate;
 import java.util.ArrayList;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author a.kohlbecker
  * @since Jun 13, 2016
  */
+@Ignore //not needed anymore since upgrade to hibernate 5.2 (#10067) and fixing #8127
+// TODO fully remove once the correct functionality is tested intensively
 public class HHH_9751_UtilTest extends Assert {
 
     @Test

@@ -29,7 +29,9 @@ public class HHH_9751_Util {
      * @return the number of null values removed from the collection
      */
     static public int removeAllNull(Collection<?> collection) {
-
+        if (true) {
+            return 0;
+        }
         int cnt = 0;
         try {
 

@@ -20,7 +20,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -180,7 +179,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	// reading works, but writing doesn't
 	//
 	@OrderColumn(name = "sortIndex", nullable=true)  //, base = 0
-	@OrderBy("sortIndex")
+//	@OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private List<PolytomousKeyNode> children = new ArrayList<>();
@@ -193,7 +192,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@JoinColumn(name = "parent_id" /*, insertable=false, updatable=false, nullable=false */)
 	private PolytomousKeyNode parent;
 
-	// see comment on children @IndexColumn
+	//see comment on children @IndexColumn
+	//see also https://dev.e-taxonomy.eu/redmine/issues/3722, #4278
+	@Transient
 	private Integer sortIndex = -1;
 
 	@XmlElement(name = "Statement")
@@ -298,7 +299,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	//see #4278 and #4200, alternatively can be private and use deproxy(this, PolytomousKeyNode.class)
 	protected void setSortIndex(Integer sortIndex) {
-		this.sortIndex = sortIndex;
+//      sortIndex = sortIndex;  old #3722
+        //do nothing
 	}
 
 	/**

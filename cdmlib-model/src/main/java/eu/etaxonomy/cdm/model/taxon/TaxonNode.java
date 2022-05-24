@@ -22,7 +22,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -140,14 +139,15 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
-    @OrderColumn(name="sortIndex")
-    @OrderBy("sortIndex")
+    @OrderColumn(name="sortIndex", nullable=true)
+//    @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
-    //@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    //do not cascade
     private List<TaxonNode> childNodes = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
     //see https://dev.e-taxonomy.eu/redmine/issues/4200
+    @Transient
     private Integer sortIndex = -1;
 
     @XmlElement(name = "countChildren")
@@ -221,7 +221,8 @@ public class TaxonNode
 
     @Transient
     public Integer getSortIndex() {
-        return sortIndex;
+        //return sortIndex;
+        return getParent() == null ? null : getParent().getChildNodes().indexOf(CdmBase.deproxy(this));
 	}
     /**
      * SortIndex shall be handled only internally, therefore not public.
@@ -234,7 +235,8 @@ public class TaxonNode
      @Deprecated
     protected void setSortIndex(Integer i) {
 //    	 CdmBase.deproxy(this, TaxonNode.class).sortIndex = i;  //alternative solution for private, DON'T remove
-    	 sortIndex = i;
+//    	 sortIndex = i;  old #3722
+         //do nothing
 	}
 
     public Taxon getTaxon() {

@@ -22,7 +22,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -95,13 +94,14 @@ public class TermNode <T extends DefinedTermBase>
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
-    @OrderColumn(name="sortIndex")
-    @OrderBy("sortIndex")
+    @OrderColumn(name="sortIndex", nullable=true)
+//    @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<TermNode<T>> children = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
+    @Transient
     private Integer sortIndex;
 
     @XmlElementWrapper(name = "OnlyApplicableIf")
@@ -168,10 +168,11 @@ public class TermNode <T extends DefinedTermBase>
 	/**
 	 * @deprecated for internal use only.
 	 */
-	//see #4278 , #4200
+	//see #4278 , #4200, #3722
 	@Deprecated
     protected void setSortIndex(Integer sortIndex) {
-		this.sortIndex = sortIndex;
+//      sortIndex = sortIndex;  old #3722
+        //do nothing
 	}
 
 	/**
