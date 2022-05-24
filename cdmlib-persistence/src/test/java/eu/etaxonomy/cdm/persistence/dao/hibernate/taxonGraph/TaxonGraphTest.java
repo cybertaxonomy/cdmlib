@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,6 +45,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Sep 27, 2018
  */
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
+
+    private static final Logger logger = Logger.getLogger(TaxonGraphTest.class);
 
     enum EventType{
         INSERT, UPDATE;
@@ -215,8 +218,8 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         setUuidPref();
 
         TaxonName n_trachelomonas_o_var_d = nameDao.load(uuid_n_trachelomonas_o_var_d);
-
-        List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, nameDao.load(uuid_n_trachelomonas), true);
+        TaxonName n_trachelomonas = nameDao.load(uuid_n_trachelomonas);
+        List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, n_trachelomonas, true);
         Assert.assertEquals("One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas' expected", 1, edges.size());
         edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, nameDao.load(uuid_n_trachelomonas_o), true);
         Assert.assertEquals("One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas oviformis' expected", 1, edges.size());

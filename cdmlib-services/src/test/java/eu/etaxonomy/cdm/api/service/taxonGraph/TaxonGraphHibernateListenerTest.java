@@ -152,7 +152,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     /**
-     * Test for TaxonGraphException when TaxonName.nomenclaturalSource == nulll
+     * Test for TaxonGraphException when TaxonName.nomenclaturalSource == null
      */
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
@@ -183,7 +183,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     /**
-     * Test for TaxonGraphException when TaxonName.nomenclaturalSource.citation == nulll
+     * Test for TaxonGraphException when TaxonName.nomenclaturalSource.citation == null
      */
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")

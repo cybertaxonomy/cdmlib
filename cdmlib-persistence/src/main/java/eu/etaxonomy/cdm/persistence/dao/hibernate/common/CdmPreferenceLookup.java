@@ -21,9 +21,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
  *
  * @author a.kohlbecker
  * @since Oct 2, 2018
- *
  */
-
 public class CdmPreferenceLookup {
 
     private static CdmPreferenceLookup instance;
@@ -73,6 +71,5 @@ public class CdmPreferenceLookup {
         boolean isOutDated(){
             return System.currentTimeMillis() - updateInterval > time;
         }
-
     }
 }

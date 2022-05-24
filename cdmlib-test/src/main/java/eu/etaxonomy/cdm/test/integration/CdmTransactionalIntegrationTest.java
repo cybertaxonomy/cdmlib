@@ -67,7 +67,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
     /**
      * TransactionStatus for this test. Typical subclasses won't need to use it.
      */
-    private TransactionStatus	transactionStatus;
+    private TransactionStatus transactionStatus;
 
     /**
      * Get the <em>default rollback</em> flag for this test.

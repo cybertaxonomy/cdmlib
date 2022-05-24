@@ -119,11 +119,6 @@ public class PreferenceResolver {
         }
     }
 
-    /**
-     * @param subject
-     * @param subject2
-     * @return
-     */
     private static boolean subjectMatches(PreferenceSubject subjectA, PreferenceSubject subjectB) {
         List<String> partsA = subjectA.getParts();
         List<String> partsB = subjectB.getParts();

@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +45,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
  * @author a.mueller
  */
 public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSecurity {
+
+    private static final Logger logger = Logger.getLogger(CdmEntityDaoBaseTest.class);
 
     private UUID uuid;
     private TaxonBase<?> cdmBase;
