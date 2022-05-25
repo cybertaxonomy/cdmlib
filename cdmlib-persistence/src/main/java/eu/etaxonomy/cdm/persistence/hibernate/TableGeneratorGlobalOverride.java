@@ -31,7 +31,7 @@ class TableGeneratorGlobalOverride {
 
 	public TableGeneratorGlobalOverride(){}
 
-//	public static final ThreadLocal<Properties> threadLocalProperties = new ThreadLocal<Properties>();
+//	public static final ThreadLocal<Properties> threadLocalProperties = new ThreadLocal<>();
 
 	public static Properties properties;
 

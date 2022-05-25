@@ -75,13 +75,6 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
         }
     }
 
-    /**
-     * @param name
-     * @param representation
-     * @param text
-     * @param document
-     * @param luceneOptions
-     */
     private void addRepresentationField(String name, Representation representation, String representationField, String text, Document document, LuceneOptions luceneOptions) {
         if(text == null){
             return;
@@ -109,6 +102,4 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
             includeParentTerms = Boolean.parseBoolean(parameters.get(INCLUDE_PARENT_TERMS_KEY));
         }
     }
-
-
 }
