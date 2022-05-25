@@ -18,6 +18,7 @@ import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
@@ -106,7 +107,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testNewTaxonName() throws TaxonGraphException{
 
         setUuidPref();
@@ -130,7 +134,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testChangeNomRef() throws TaxonGraphException{
 
         setUuidPref();
@@ -156,7 +163,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testChangeRank() throws TaxonGraphException{
 
         setUuidPref();
@@ -181,7 +191,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testChangeGenus() throws TaxonGraphException{
 
         setUuidPref();
@@ -212,7 +225,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testChangeSpecificEpithet_of_InfraSpecific() throws TaxonGraphException{
 
         setUuidPref();
