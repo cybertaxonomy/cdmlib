@@ -80,7 +80,7 @@ public class DdlCreator {
             //metadata
             ImplicitNamingStrategyComponentPathImpl namingStrategy = new ImplicitNamingStrategyComponentPathImpl();
             PhysicalNamingStrategy physicalNamingStrategy = new UpperCasePhysicalNamingStrategyStandardImpl();
-            Metadata metadata = metadataSources.getMetadataBuilder(serviceRegistry)
+            Metadata metadata = metadataSources.getMetadataBuilder()
                     .applyImplicitSchemaName("public")
                     .applyImplicitNamingStrategy(namingStrategy)
                     .applyPhysicalNamingStrategy(physicalNamingStrategy)

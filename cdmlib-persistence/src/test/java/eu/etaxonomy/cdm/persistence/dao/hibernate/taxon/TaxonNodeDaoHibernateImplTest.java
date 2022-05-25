@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.proxy.HibernateProxy;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,7 +52,6 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import javassist.util.proxy.Proxy;
 
 public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
@@ -246,13 +246,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
-    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml")
+    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy.xml")
+    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy-result.xml")
     //test if TaxonNode.remove(index) works correctly with proxies
-    public void testSortindexForJavassist(){
+    public void testSortindexForHibernateProxy(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
     	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
-    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
+    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof HibernateProxy);
     	Taxon firstTopLevelTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode childNode = classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
@@ -261,13 +261,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
-    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist2-result.xml")
+    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy.xml")
+    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy2-result.xml")
     //test if TaxonNode.addNode(node) works correctly with proxies
-    public void testSortindexForJavassist2(){
+    public void testSortindexForHibernateProxy2(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
     	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
-    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
+    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof HibernateProxy);
     	Taxon newTaxon = Taxon.NewInstance(null, null);
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode newNode = classification.addChildTaxon(newTaxon, 0, null, null);
