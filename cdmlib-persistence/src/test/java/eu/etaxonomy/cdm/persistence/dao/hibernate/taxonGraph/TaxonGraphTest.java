@@ -90,7 +90,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     protected static UUID uuid_t_trachelomonas_s_var_a = UUID.fromString("3f14c528-e191-4a6f-b2a9-36c9a3fc7eee");
 
     public AbstractHibernateTaxonGraphProcessor taxonGraphProcessor(){
-        AbstractHibernateTaxonGraphProcessor processor = new AbstractHibernateTaxonGraphProcessor() {
+        AbstractHibernateTaxonGraphProcessor processor = new AbstractHibernateTaxonGraphProcessor(prefDao) {
             @Override
             public Session getSession() {
                 return nameDao.getSession();

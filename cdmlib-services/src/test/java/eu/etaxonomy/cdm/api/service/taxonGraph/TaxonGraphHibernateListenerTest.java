@@ -110,7 +110,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         }
         //
         taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class,
-                new Object[] { new RunAsAdmin(runAsAuthenticationProvider) }, new Class[] { IRunAs.class });
+                new Object[] { new RunAsAdmin(runAsAuthenticationProvider), prefDao}, new Class[] { IRunAs.class, IPreferenceDao.class} );
     }
 
     @After

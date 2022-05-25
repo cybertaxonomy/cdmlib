@@ -136,6 +136,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
                 postInsertEventConstructorArgTypes[i] = ptype;
                 postUpdateEventConstructorArgTypes[i] = ptype;
                 preDeleteEventConstructorArgTypes[i] = ptype;
+                i++;
             }
             postInsertEventConstructor = type.getConstructor(postInsertEventConstructorArgTypes);
             postUpdateEventConstructor = type.getConstructor(postUpdateEventConstructorArgTypes);

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.AbstractHibernateTaxonGraphProcessor;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
@@ -124,7 +125,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
     private IRunAs runAs = null;
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event, IRunAs runAs){
+    public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event, IRunAs runAs, IPreferenceDao prefDao){
+        super(prefDao);
         eventType = EventType.UPDATE;
         if(event.getEntity() instanceof TaxonName) {
             taxonName = (TaxonName) event.getEntity();
@@ -141,7 +143,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         this.runAs = runAs;
     }
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event, IRunAs runAs) {
+    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event, IRunAs runAs, IPreferenceDao prefDao) {
+        super(prefDao);
         eventType = EventType.INSERT;
         if(event.getEntity() instanceof TaxonName) {
             taxonName = (TaxonName) event.getEntity();
@@ -158,7 +161,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         this.runAs = runAs;
     }
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PreDeleteEvent event, IRunAs runAs) {
+    public TaxonGraphBeforeTransactionCompleteProcess(PreDeleteEvent event, IRunAs runAs, IPreferenceDao prefDao) {
+        super(prefDao);
         eventType = EventType.DELETE;
         if(event.getEntity() instanceof TaxonName) {
             taxonName = (TaxonName) event.getEntity();

@@ -22,15 +22,24 @@ import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
  * @author a.kohlbecker
  * @since Oct 2, 2018
  */
-public class CdmPreferenceLookup {
+public class CdmPreferenceCache {
 
-    private static CdmPreferenceLookup instance;
+    //we register preference access per preference dao (5-2022, before it was purely static),
+    //this is to allow running >1 entity managers per virtual machine. It Assumes that
+    //each peference dao "belongs" to exactly one entity manager. Needs to be changed
+    //if this assumption is not true in future.
+    //The change became necessary as e.g. running persistence tests uses >1 entity manager
+    //when running in (maven) suite.
+    private static Map<IPreferenceDao,CdmPreferenceCache> registry = new HashMap<>();
 
-    public static CdmPreferenceLookup instance(){
-        if(instance == null){
-            instance = new CdmPreferenceLookup();
+    public static CdmPreferenceCache instance(IPreferenceDao dao){
+        CdmPreferenceCache result = registry.get(dao);
+        if(result == null){
+            result = new CdmPreferenceCache();
+            result.setIPreferenceDao(dao);
+            registry.put(dao, result);
         }
-        return instance;
+        return result;
     }
 
     long updateInterval = 10 * 60 * 1000l;

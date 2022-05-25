@@ -29,7 +29,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmPreferenceLookup;
+import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmPreferenceCache;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 
@@ -77,8 +78,14 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return relType;
     }
 
+    protected IPreferenceDao preferenceDao;
+
+    public AbstractHibernateTaxonGraphProcessor(IPreferenceDao preferenceDao) {
+        this.preferenceDao = preferenceDao;
+    }
+
     public UUID getSecReferenceUUID(){
-        CdmPreference pref = CdmPreferenceLookup.instance().get(TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID);
+        CdmPreference pref = CdmPreferenceCache.instance(preferenceDao).get(TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID);
         UUID uuid = null;
         if(pref != null && pref.getValue() != null){
             try {

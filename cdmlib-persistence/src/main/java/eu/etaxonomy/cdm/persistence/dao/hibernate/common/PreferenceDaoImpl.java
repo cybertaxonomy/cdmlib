@@ -126,8 +126,7 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        CdmPreferenceLookup.instance().setIPreferenceDao(this);
-
+        CdmPreferenceCache.instance(this);
     }
 
 }
