@@ -46,11 +46,20 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class LuceneSearch {
 
-    protected String groupByField = "id";
+    public static final Logger logger = Logger.getLogger(LuceneSearch.class);
 
     public final static String ID_FIELD = "id";
 
-    public static final Logger logger = Logger.getLogger(LuceneSearch.class);
+    /**
+     * The MAX_HITS_ALLOWED value must be one less than Integer.MAX_VALUE
+     * otherwise PriorityQueue will produce an exception since it
+     * will always add 1 to the maxhits so Integer.MAX_VALUE
+     * would become Integer.MIN_VALUE
+     */
+    public final int MAX_HITS_ALLOWED = 10000;
+
+
+    protected String groupByField = "id";
 
     protected ILuceneIndexToolProvider toolProvider;
 
@@ -64,14 +73,6 @@ public class LuceneSearch {
 
     //class filter
     protected Class<? extends CdmBase> cdmTypeRestriction;
-
-    /**
-     * The MAX_HITS_ALLOWED value must be one less than Integer.MAX_VALUE
-     * otherwise PriorityQueue will produce an exception since it
-     * will always add 1 to the maxhits so Integer.MAX_VALUE
-     * would become Integer.MIN_VALUE
-     */
-    public final int MAX_HITS_ALLOWED = 10000;
 
     protected BooleanQuery query;
 

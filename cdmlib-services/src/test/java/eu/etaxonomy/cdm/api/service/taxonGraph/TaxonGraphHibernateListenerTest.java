@@ -387,7 +387,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
 
     /**
-     * exactly the same as {@link #testRemoveNomenclaturalSource()}
+     * Exactly the same as {@link #testRemoveNomenclaturalSource()}
      * but removing the citation of the source indirectly via setNomenclaturalReference()
      */
     @Test

@@ -87,7 +87,7 @@ public class Cloning extends MaterialOrMethodEvent implements Cloneable{
 
     //made protected to fix a java.lang.InstantiationException which occurred while loading
     //see https://stackoverflow.com/questions/7273125/hibernate-envers-and-javassist-enhancement-failed-exception
-    protected Cloning(){};
+    protected Cloning(){}
     protected Cloning(DefinedTerm definedMaterialOrMethod, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
     	super(definedMaterialOrMethod, methodText);
     	this.strain = strain;

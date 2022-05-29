@@ -67,15 +67,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 @Transactional
 public class CdmMassIndexer implements ICdmMassIndexer {
 
-    private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<>();
     public static final Logger logger = Logger.getLogger(CdmMassIndexer.class);
+
+    private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<>();
 
     /*
      * flag to enable old hibernate search 3.1 mode
      */
     private static final boolean HS_31_MODE = false;
 
-    public HibernateTransactionManager transactionManager;
+    private HibernateTransactionManager transactionManager;
 
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
@@ -88,7 +89,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     /**
-     * reindex method based on hibernate search  3.1
+     * Reindex method based on hibernate search  3.1
      *
      * @param type
      * @param monitor
@@ -101,7 +102,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-        fullTextSession.setFlushMode(FlushMode.MANUAL);
+        fullTextSession.setHibernateFlushMode(FlushMode.MANUAL);
         fullTextSession.setCacheMode(CacheMode.IGNORE);
 
         logger.info("start indexing " + type.getName());
@@ -150,12 +151,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         subMonitor.done();
     }
 
-    /**
-     *
-     *
-     * @param type
-     * @param monitor
-     */
     protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
         String indexName = null;
         if(type.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
@@ -256,19 +251,11 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return batchSize;
     }
 
-    /**
-     * @param countResult
-     * @return
-     */
     private int calculateNumOfBatches(Long countResult, int batchSize) {
         Long numOfBatches =  countResult > 0 ? ((countResult-1)/batchSize)+1 : 0;
         return numOfBatches.intValue();
     }
 
-    /**
-     * @param type
-     * @return
-     */
     private <T> Long countEntities(Class<T> type) {
         Object countResultObj = getSession().createQuery("select count(*) from " + type.getName()).uniqueResult();
         Long countResult = (Long)countResultObj;
@@ -421,8 +408,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         int steps = dictionaryClasses().length; // +1 for optimize
         monitor.beginTask("Creating Dictionary " + dictionaryClasses().length + " classes", steps);
 
-        for(Class type : dictionaryClasses()){
-            createDictionary(type, monitor);
+        for(Class<?> type : dictionaryClasses()){
+            createDictionary((Class)type, monitor);
         }
 
         monitor.done();
@@ -504,11 +491,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return indexedClasses;
     }
 
-    /**
-     * @return
-     */
     @Override
-    public Class[] dictionaryClasses() {
+    public Class<?>[] dictionaryClasses() {
         return new Class[] {
                 TaxonName.class
                 };

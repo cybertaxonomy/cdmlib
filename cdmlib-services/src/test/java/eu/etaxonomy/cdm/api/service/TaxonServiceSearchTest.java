@@ -1111,8 +1111,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Expecting 3 entity", 3, pager.getCount().intValue());
         Set<UUID> uuids = getTaxonUuidSet(pager);
         Assert.assertTrue("The real synonym should be contained", uuids.contains(ABIES_SUBALPINA_UUID));
-        Assert.assertTrue("The pro parte synonym should be contained",uuids.contains(ABIES_LASIOCARPA_UUID));
-        Assert.assertTrue("The misapplied name should be contained",uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("The pro parte synonym should be contained", uuids.contains(ABIES_LASIOCARPA_UUID));
+        Assert.assertTrue("The misapplied name should be contained", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
     }
 
     @Test
@@ -1262,9 +1262,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("misappliedNames with matching area & status filter", 3, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Pro parte misapplied name should be in", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
-
     }
-
 
     @Test
     @DataSet
@@ -1412,7 +1410,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         /* Since the upgrade from hibernate search 4 to 5.5
          * triggering an update of t_abies_alba is no longer sufficient to also update the
          * document of t_abies_kawakamii_sensu_komarov in the lucene index.
-         * the last test in testFindTaxaAndNamesByFullText_AreaFilter() failed in this case.
+         * The last test in testFindTaxaAndNamesByFullText_AreaFilter() failed in this case.
          * This situation is reproduced here:
          */
         taxonService.update(t_abies_alba);
@@ -1420,9 +1418,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(null);
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
-                  EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                  "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
-        Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
+        Assert.assertEquals("MisappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
+        Assert.assertEquals("Misapplied name found should be taxon with id 5006", 5006, pager.getRecords().get(0).getEntity().getId());
     }
 
 
@@ -1458,9 +1457,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, CdmBase.deproxy(pager.getRecords().get(0).getEntity()).getClass());
         Assert.assertEquals("Expecting Taxon ", ABIES_BALSAMEA_UUID, pager.getRecords().get(0).getEntity().getUuid());
-
     }
-
 
     @Test
     @DataSet
@@ -1575,9 +1572,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         logger.info("Benchmark result - [find taxon by CommonName via lucene] : " + duration + "ms (" + BENCHMARK_ROUNDS + " benchmark rounds )");
     }
 
-    /**
-     *
-     */
+
     private void refreshLuceneIndex() {
 
 //        commitAndStartNewTransaction(null);

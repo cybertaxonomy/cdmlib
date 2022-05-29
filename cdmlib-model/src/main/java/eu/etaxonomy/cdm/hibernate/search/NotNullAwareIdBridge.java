@@ -35,20 +35,13 @@ import org.hibernate.search.bridge.TwoWayFieldBridge;
  *
  * @author a.kohlbecker
  * @since Sep 21, 2012
- *
  */
 public class NotNullAwareIdBridge implements TwoWayFieldBridge {
 
     public static final String NOT_NULL_VALUE = "1";
     public static final String NOT_NULL_FIELD_NAME = "notNull";
+    public static final String NULL_STRING = "";
 
-    public static String NULL_STRING = "";
-
-
-    /**
-     * @param name
-     * @return
-     */
     public static String notNullField(String name) {
         return name + "." + NOT_NULL_FIELD_NAME;
     }
@@ -58,10 +51,9 @@ public class NotNullAwareIdBridge implements TwoWayFieldBridge {
 
         /*
          * DocumentBuilderIndexedEntity<T>.buildDocumentFields(Object, Document, PropertiesMetadata, Map<String,String>, Set<String>)
-         * is adding the idField a second time even if it has already been set by an idFieldBrige. this might be fixed in a
+         * is adding the idField a second time even if it has already been set by an idFieldBrige. This might be fixed in a
          * more recent version of hibernate! TODO after hibernate update: check if we can remove this extra condition.
          * We are avoiding this by checking the document:
-         *
          */
         if(name.endsWith("id") && document.getField(name) != null) { // id already set?
             return;
@@ -69,7 +61,7 @@ public class NotNullAwareIdBridge implements TwoWayFieldBridge {
 
         Field field = new StringField(
                 name,
-                String.valueOf(value.toString()),
+                value.toString(),
                 luceneOptions.getStore());
         document.add(field);
 

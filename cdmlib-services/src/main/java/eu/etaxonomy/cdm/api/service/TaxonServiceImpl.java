@@ -1820,7 +1820,7 @@ public class TaxonServiceImpl
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         Builder joinFromQueryBuilder = new Builder();
-        if(!StringUtils.isEmpty(queryString)){
+        if(StringUtils.isNotEmpty(queryString)){
             joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
         }
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdsQuery("type.id", edge.getRelationshipTypes()), Occur.MUST);
@@ -1896,8 +1896,8 @@ public class TaxonServiceImpl
         }
         SortField[] sortFields = new SortField[orderHints.size()];
         int i = 0;
-        for(OrderHint oh : orderHints){
-            sortFields[i++] = oh.toSortField();
+        for(OrderHint orderHint : orderHints){
+            sortFields[i++] = orderHint.toSortField();
         }
 //        SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("id", SortField.STRING, false)};
 //        SortField[] sortFields = new SortField[]{new SortField(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortField.STRING, false)};

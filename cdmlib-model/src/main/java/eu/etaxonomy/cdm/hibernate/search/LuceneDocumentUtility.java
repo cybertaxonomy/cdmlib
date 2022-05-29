@@ -16,16 +16,11 @@ import org.apache.lucene.index.DocValuesType;
 /**
  * @author a.kohlbecker
  * @since Nov 27, 2015
- *
  */
 public class LuceneDocumentUtility {
 
     public static final Logger logger = Logger.getLogger(LuceneDocumentUtility.class);
 
-    /**
-     * @param field
-     * @param document
-     */
     public static void setOrReplaceDocValueField(Field field, Document document) {
 
         if(field.fieldType().docValuesType().equals(DocValuesType.NONE)) {
@@ -41,5 +36,4 @@ public class LuceneDocumentUtility {
         }
         document.add(field);
     }
-
 }

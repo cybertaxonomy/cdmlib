@@ -119,7 +119,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
     private EventType eventType;
 
-    enum EventType {
+    private enum EventType {
         INSERT, UPDATE, DELETE,
     }
 

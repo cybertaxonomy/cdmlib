@@ -30,9 +30,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Enumeration of all abstract CDM base types. Each provides a set of all sub types.
+ *
  * @author a.kohlbecker
  * @since Sep 28, 2012
- *
  */
 public enum CdmBaseType {
 
@@ -56,12 +56,8 @@ public enum CdmBaseType {
 
     CdmBaseType(Class<? extends CdmBase> baseClass){
         this.baseClass = baseClass;
-        try {
-            subClasses = subclassesFor(baseClass);
-            updateBaseTypeMap();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        subClasses = subclassesFor(baseClass);
+        updateBaseTypeMap();
     }
 
     private void updateBaseTypeMap(){
@@ -73,7 +69,7 @@ public enum CdmBaseType {
         }
     }
 
-    private Collection<Class<? extends CdmBase>> subclassesFor(Class<? extends CdmBase> clazz) throws ClassNotFoundException{
+    private Collection<Class<? extends CdmBase>> subclassesFor(Class<? extends CdmBase> clazz){
 
         boolean includeAbstract = true;
         boolean includeInterfaces = false;
@@ -99,11 +95,10 @@ public enum CdmBaseType {
     }
 
     public List<String> getSubClassNames() {
-        List<String> names = new ArrayList<String>(subClasses.size());
+        List<String> names = new ArrayList<>(subClasses.size());
         for(Class<? extends CdmBase> clazz : subClasses){
             names.add(clazz.getName());
         }
         return names;
     }
-
 }
