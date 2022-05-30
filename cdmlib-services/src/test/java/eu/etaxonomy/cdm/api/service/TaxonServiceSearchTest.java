@@ -1284,7 +1284,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Assert.assertEquals("misappliedNames with matching area & status filter", 3, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
-        Assert.assertTrue("Misapplied name should be in", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Misapplied name should be in", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Abies balsamea should be in", uuids.contains(ABIES_BALSAMEA_UUID));
+        Assert.assertTrue("Abies alba should be in", uuids.contains(ABIES_ALBA_UUID));
 
         t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
         relsTo = t_abies_balsamea.getMisappliedNameRelations();
