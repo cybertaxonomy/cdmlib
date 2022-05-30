@@ -253,9 +253,8 @@ public class NameServiceImpl
             result.setError();
             return result;
         }
-        for (SpecimenOrObservationBase original : derivedFrom.getOriginals()) {
+        for (SpecimenOrObservationBase<?> original : derivedFrom.getOriginals()) {
             DerivationEvent.NewSimpleInstance(original, duplicate, derivedFrom.getType());
-
         }
         duplicate.setAccessionNumber(accessionNumber);
         duplicate.setBarcode(barcode);
@@ -289,14 +288,13 @@ public class NameServiceImpl
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
             @SuppressWarnings("rawtypes")
-            Set<TypeDesignationBase<?>> designationSet = new HashSet(name.getTypeDesignations());
+            Set<TypeDesignationBase> designationSet = new HashSet<>(name.getTypeDesignations());
             for (TypeDesignationBase<?> desig : designationSet){
                 desig = CdmBase.deproxy(desig);
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
-            @SuppressWarnings("unchecked")
-            Set<TaxonName> nameSet = new HashSet(typeDesignation.getTypifiedNames());
+            Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
             for (TaxonName singleName : nameSet){
                 singleName = CdmBase.deproxy(singleName);
                 removeSingleDesignation(singleName, typeDesignation);
@@ -316,10 +314,6 @@ public class NameServiceImpl
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
-    /**
-     * @param name
-     * @param typeDesignation
-     */
     @Transactional
     private void removeSingleDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation) {
 
@@ -371,17 +365,12 @@ public class NameServiceImpl
                         name.removeNameRelationship(rel);
                     }
                 }
-
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * @param name
-     * @return
-     */
     private Set<NameRelationship> getModifiableSet(Set<NameRelationship> relations) {
         Set<NameRelationship> rels = new HashSet<NameRelationship>();
         for (NameRelationship rel : relations){
@@ -392,7 +381,6 @@ public class NameServiceImpl
 
 //********************* METHODS ****************************************************************//
 
-
     /**
      * TODO candidate for harmonization
      * new name findByName
@@ -401,7 +389,7 @@ public class NameServiceImpl
     @Deprecated
     public List<TaxonName> getNamesByNameCache(String nameCache){
         boolean includeAuthors = false;
-        List result = dao.findByName(includeAuthors, nameCache, MatchMode.EXACT, null, null, null, null);
+        List<TaxonName> result = dao.findByName(includeAuthors, nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
     }
 
@@ -452,9 +440,6 @@ public class NameServiceImpl
         return new DefaultPagerImpl<TaxonNameParts>(pageIndex, count, pageSize, results);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Pager<TaxonNameParts> findTaxonNameParts(TaxonNamePartsFilter filter, String namePartQueryString,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
@@ -597,7 +582,7 @@ public class NameServiceImpl
             results = dao.getHybridNames(name, type, pageSize, pageNumber,orderHints,propertyPaths);
         }
 
-        return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -620,9 +605,9 @@ public class NameServiceImpl
             int maxNoOfResults,
             List<Language> languages,
             boolean highlightFragments) {
+
         String similarity = Float.toString(accuracy);
         String searchSuffix = "~" + similarity;
-
 
         Builder finalQueryBuilder = new Builder();
         finalQueryBuilder.setDisableCoord(false);
@@ -777,7 +762,6 @@ public class NameServiceImpl
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
-        @SuppressWarnings("rawtypes")
         List<SearchResult<TaxonName>> searchResults = searchResultBuilder.createResultSet(
                 topDocs, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
@@ -805,12 +789,9 @@ public class NameServiceImpl
         // --- execute search
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
-
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
-        @SuppressWarnings("rawtypes")
         List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
 
         return searchResults;
@@ -830,7 +811,6 @@ public class NameServiceImpl
 
         // --- execute search
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
