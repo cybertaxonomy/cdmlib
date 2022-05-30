@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate.search;
 
 import org.hibernate.search.bridge.StringBridge;
@@ -14,7 +13,6 @@ import org.hibernate.search.bridge.StringBridge;
 /**
  * @deprecated use the solr HTMLStripStandardTokenizerFactory instead
  *  why is the solr implementation a better option?
- *
  */
 @Deprecated
 public class StripHtmlBridge implements StringBridge {
@@ -28,5 +26,4 @@ public class StripHtmlBridge implements StringBridge {
           return null;
         }
     }
-
 }

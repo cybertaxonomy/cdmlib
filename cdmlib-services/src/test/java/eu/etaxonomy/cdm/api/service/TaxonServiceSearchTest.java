@@ -95,12 +95,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private static final UUID CLASSIFICATION_ALT_UUID = UUID.fromString("d7c741e3-ae9e-4a7d-a566-9e3a7a0b51ce");
     private static final UUID ABIES_SUBALPINA_UUID = UUID.fromString("9fee273c-c819-4f1f-913a-cd910465df51");
     private static final UUID ABIES_LASIOCARPA_UUID = UUID.fromString("9ce1fecf-c1ad-4127-be01-85d5d9f847ce");
+    private static final UUID ABIES_KAWAKAMII_SEC_KOMAROV_UUID = UUID.fromString("e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1");
 
     private static final UUID ROOTNODE_CLASSIFICATION_5000 = UUID.fromString("a8266e45-091f-432f-87ae-c625e6aa9bbc");
 
     private static final UUID DESC_ABIES_BALSAMEA_UUID = UUID.fromString("900108d8-e6ce-495e-b32e-7aad3099135e");
     private static final UUID DESC_ABIES_ALBA_UUID = UUID.fromString("ec8bba03-d993-4c85-8472-18b14942464b");
-    private static final UUID ABIES_KAWAKAMII_SEC_KOMAROV_UUID = UUID.fromString("e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1");
 
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 

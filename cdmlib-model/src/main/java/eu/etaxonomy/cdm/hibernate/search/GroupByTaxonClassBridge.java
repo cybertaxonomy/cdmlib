@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2012 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.hibernate.search;
 
 import org.apache.log4j.Logger;
@@ -17,13 +25,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * <code>groupby_taxon.id</code> to the lucene document which can be used to
  * group search results based on the taxon which is associated with the indexed
  * cdm entity. So any cdm class which is involved in querying for taxa must
- * used this class bridge, e.g.:
+ * use this class bridge, e.g.:
  *
- * <pre>
-   @ClassBridge(impl=GroupByTaxonClassBridge.class)}
+  <pre>
+   @ClassBridge(impl=GroupByTaxonClassBridge.class))
   </pre>
- *
  * or
+ *
  * <pre>
    @ClassBridges({
      @ClassBridge(impl=GroupByTaxonClassBridge.class),
@@ -34,7 +42,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  * @author a.kohlbecker
  * @since Oct 4, 2012
- *
  */
 public class GroupByTaxonClassBridge extends AbstractClassBridge{
 
@@ -46,10 +53,6 @@ public class GroupByTaxonClassBridge extends AbstractClassBridge{
         super();
     }
 
-    /**
-     * @param entity
-     * @return
-     */
     protected Taxon getAssociatedTaxon(Object entity) {
 
         if (entity instanceof DescriptionBase<?>) {
