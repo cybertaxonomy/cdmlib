@@ -17,11 +17,10 @@ import org.hibernate.search.bridge.LuceneOptions;
  * Lucene index class bridge which sets class information for the objects into the index.
  *
  * TODO: is this class really needed?
- *  1. the canonical name should for all cdm types be he same as the name
+ *  1. the canonical name should for all cdm types be the same as the name
  *  2. the class name is already stored in the document as _hibernate_class
  *
  * @author c.mathew
- * @version 1.0
  * @since 26 Jul 2013
  */
 public class ClassInfoBridge implements FieldBridge {
