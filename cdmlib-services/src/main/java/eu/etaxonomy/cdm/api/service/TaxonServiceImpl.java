@@ -2064,6 +2064,9 @@ public class TaxonServiceImpl
             if(addDistributionFilter){
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
 
+                //TODO replace by createByDistributionJoinQuery
+                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+
                 /*
                  * Here I was facing a weird and nasty bug which took me bugging be really for hours until I found this solution.
                  * Maybe this is a bug in java itself.
@@ -2086,22 +2089,25 @@ public class TaxonServiceImpl
                  * The bug is persistent after a reboot of the development computer.
                  */
 //                String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
-//                String toField = "relation." + misappliedNameForUuid +".to.id";
-                String toField = "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id";
+                String toField = "relation." + TaxonRelationshipType.uuidMisappliedNameFor +".to.id";
+//                String toField = "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id";
 //                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + misappliedNameForUuid +".to.id") ? " > identical" : " > different");
 //                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id") ? " > identical" : " > different");
 
-                //TODO replace by createByDistributionJoinQuery
-                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+
                 Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
                         fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
-
-//                debug code for bug described above
-                //does not compile anymore since changing from lucene 3.6.2 to lucene 4.10+
-//                DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
-//                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
-
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
+
+                String toFieldProParte = "relation." + TaxonRelationshipType.uuidProParteMisappliedNameFor +".to.id";
+                Query taxonAreaJoinQueryProParte = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
+                        fromField, true, byDistributionQuery, toFieldProParte, null, ScoreMode.None);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQueryProParte, Occur.SHOULD);
+
+                String toFieldPartial = "relation." + TaxonRelationshipType.uuidPartialMisappliedNameFor +".to.id";
+                Query taxonAreaJoinQueryPartial = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
+                        fromField, true, byDistributionQuery, toFieldPartial, null, ScoreMode.None);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQueryPartial, Occur.SHOULD);
             }
         }
 
@@ -2118,11 +2124,20 @@ public class TaxonServiceImpl
 
             if(addDistributionFilter){
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
-                String toField = "relation.8a896603-0fa3-44c6-9cd7-df2d8792e577.to.id";
+
+                //proparte synonyms
+                String toField = "relation."+TaxonRelationshipType.uuidProParteSynonymFor+".to.id";
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
                 Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
                         fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
+
+                //partial synonyms
+                toField = "relation."+TaxonRelationshipType.uuidPartialSynonymFor+".to.id";
+//                BooleanQuery byDistributionQuery2 = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+                Query taxonAreaJoinQuery2 = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
+                        fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery2, Occur.SHOULD);
             }
         }//end pro parte synonyms
 
