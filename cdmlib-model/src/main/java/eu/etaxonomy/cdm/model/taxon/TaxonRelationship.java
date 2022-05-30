@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -67,6 +68,7 @@ public class TaxonRelationship
     @ManyToOne(fetch=FetchType.EAGER)
 //    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
+    @ContainedIn  //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the related taxon to fully work
     private Taxon relatedFrom;
 
     @XmlElement(name = "RelatedTo")
@@ -75,6 +77,7 @@ public class TaxonRelationship
     @ManyToOne(fetch=FetchType.EAGER)
 //  @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
+    @ContainedIn
     private Taxon relatedTo;
 
     @XmlElement(name = "Type")

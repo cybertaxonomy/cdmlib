@@ -1110,7 +1110,42 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<UUID> uuids = getTaxonUuidSet(pager);
         Assert.assertTrue("The real synonym should be contained", uuids.contains(ABIES_SUBALPINA_UUID));
         Assert.assertTrue("The pro parte synonym should be contained", uuids.contains(ABIES_LASIOCARPA_UUID));
-        Assert.assertTrue("The misapplied name should be contained", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("The misapplied name should be contained", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+
+        //test with area filter
+        Set<NamedArea> area_germany = new HashSet<>();
+        area_germany.add(germany);
+        Set<PresenceAbsenceTerm> statusNative = new HashSet<>();
+        statusNative.add(PresenceAbsenceTerm.NATIVE());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", (Classification)null, subtree, area_germany, statusNative, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 3 entity", 3, pager.getCount().intValue());
+        uuids = getTaxonUuidSet(pager);
+        Assert.assertTrue("The real synonym should be contained", uuids.contains(ABIES_SUBALPINA_UUID));
+        Assert.assertTrue("The pro parte synonym should be contained", uuids.contains(ABIES_LASIOCARPA_UUID));
+        Assert.assertTrue("The misapplied name should be contained", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+
+        //test failing area filter (test for a distribution/status that does not exist in DB)
+        Set<PresenceAbsenceTerm> absent = new HashSet<>();
+        absent.add(PresenceAbsenceTerm.ABSENT());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", (Classification)null, subtree, area_germany, absent, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 0 entity", 0, pager.getCount().intValue());
+        uuids = getTaxonUuidSet(pager);
+
+        //test failing area filter (test for a distribution/status that is attached to taxon which has no synonym and not misapplied name)
+        Set<NamedArea> area_russia = new HashSet<>();
+        area_russia.add(russia);
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", (Classification)null, subtree, area_russia, absent, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting only the accepted taxon Abies alba to be contained", 1, pager.getCount().intValue());
+        uuids = getTaxonUuidSet(pager);
+        Assert.assertTrue("The accepted synonym should be contained", uuids.contains(ABIES_ALBA_UUID));
     }
 
     @Test
@@ -1396,8 +1431,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     //https://dev.e-taxonomy.eu/redmine/issues/5477
+    // for general testing of misapplied names see also #testFindTaxaAndNamesByFullText_synonymsAndMisapplied_7486
     public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
+        refreshLuceneIndex();
         TaxonNode subtree = null;
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
@@ -1415,7 +1452,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
          * triggering an update of t_abies_alba is no longer sufficient to also update the
          * document of t_abies_kawakamii_sensu_komarov in the lucene index.
          * The last test in testFindTaxaAndNamesByFullText_AreaFilter() failed in this case.
-         * This situation is reproduced here:
+         * This situation is reproduced here.
+         * In record TaxonBase.id = 5006 there should be 2 fields "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id", one
+         * with value 5003 and the other one with value 5001. The later should be newly created.
+         * You find this in the index after running refreshLuceneIndex() (see below) but not after
+         * only calling commitAndStartNewTransaction().
          */
         taxonService.update(t_abies_alba);
 
@@ -1424,10 +1465,24 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
                 "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
-        Assert.assertEquals("MisappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
-        Assert.assertEquals("Misapplied name found should be taxon with id 5006", 5006, pager.getRecords().get(0).getEntity().getId());
-    }
 
+        if (pager.getCount().intValue() == 1) {
+            Assert.assertEquals("MisappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
+            Assert.assertEquals("Misapplied name found should be taxon with id 5006", 5006, pager.getRecords().get(0).getEntity().getId());
+        }else {
+            //run the query again after refreshing the lucene index to test if it is
+            //only an index refresh problem or a general problem
+            refreshLuceneIndex();
+            pager = taxonService.findTaxaAndNamesByFullText(
+                    EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                    "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
+            if (pager.getCount().intValue() == 1) {
+                Assert.fail("The index was only correctly updated after fully refreshing the lucene index");
+            } else {
+                Assert.fail("The query on the lucene index generally does not work anymore");
+            }
+        }
+    }
 
     /**
      * Regression test for #3119: fulltext search: Entity always null whatever search
