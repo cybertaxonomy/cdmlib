@@ -41,7 +41,7 @@
     <httpcomponents.version>4.5.13</httpcomponents.version>
     <doxia.version>1.11.1</doxia.version>                <!-- checked 2021-12 -->
     <poi.version>4.1.2</poi.version>                    <!-- checked 2020-08 -->
-    <jackson.version>2.13.1</jackson.version>           <!-- checked 2021-12 -->
+    <jackson.version>2.13.3</jackson.version>           <!-- checked 2021-12 -->
 	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2020-08 -->
 	<slf4j.version>1.7.30</slf4j.version>               <!-- checked 2020-08 -->
 	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
@@ -1247,7 +1247,7 @@
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>31.0.1-jre</version>
+          <version>31.1-jre</version>
       </dependency>
 	  <dependency>
 	      <groupId>com.google.code.findbugs</groupId>
