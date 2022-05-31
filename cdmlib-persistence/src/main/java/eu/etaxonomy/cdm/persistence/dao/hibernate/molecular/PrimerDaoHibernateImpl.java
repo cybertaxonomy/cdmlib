@@ -19,7 +19,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Primer;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 @Repository
-public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implements IPrimerDao{
+public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> implements IPrimerDao{
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PrimerDaoHibernateImpl.class);

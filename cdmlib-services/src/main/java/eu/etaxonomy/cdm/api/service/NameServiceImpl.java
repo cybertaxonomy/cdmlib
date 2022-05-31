@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
@@ -32,7 +31,6 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +60,6 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -91,7 +88,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
@@ -112,7 +108,6 @@ import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-
 @Service
 @Transactional(readOnly = true)
 public class NameServiceImpl
@@ -129,9 +124,6 @@ public class NameServiceImpl
     private ITaxonService taxonService;
     @Autowired
     private ICommonService commonService;
-    @Autowired
-    @Qualifier("sourcedEntityDao")
-    private ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
     @Autowired
     private INomenclaturalStatusDao nomStatusDao;
     @Autowired
@@ -277,7 +269,7 @@ public class NameServiceImpl
     @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
     	if(typeDesignation != null && typeDesignation .isPersited()){
-    		typeDesignation = HibernateProxyHelper.deproxy(sourcedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
+    		typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignation.getUuid()));
     	}
 
         DeleteResult result = new DeleteResult();
@@ -310,7 +302,7 @@ public class NameServiceImpl
     @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(sourcedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
+        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignationUuid));
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 

@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Repository
 @Qualifier("taxonNodeDaoHibernateImpl")
-public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
+public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 		implements ITaxonNodeDao {
 
 	private static final Logger logger = Logger.getLogger(TaxonNodeDaoHibernateImpl.class);

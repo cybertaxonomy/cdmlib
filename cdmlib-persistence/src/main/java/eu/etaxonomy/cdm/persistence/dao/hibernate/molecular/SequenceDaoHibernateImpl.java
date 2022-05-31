@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
 
 /**
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
  *
  */
 @Repository
-public class SequenceDaoHibernateImpl extends AnnotatableDaoImpl<Sequence> implements ISequenceDao{
+public class SequenceDaoHibernateImpl extends AnnotatableDaoBaseImpl<Sequence> implements ISequenceDao{
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(SequenceDaoHibernateImpl.class);

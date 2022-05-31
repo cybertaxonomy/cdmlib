@@ -29,11 +29,11 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
-public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionElementBase> implements IDescriptionElementDao {
+public class DescriptionElementDaoImpl extends AnnotatableDaoBaseImpl<DescriptionElementBase> implements IDescriptionElementDao {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(DescriptionElementDaoImpl.class);
 

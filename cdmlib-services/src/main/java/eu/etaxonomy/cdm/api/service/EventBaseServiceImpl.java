@@ -18,16 +18,16 @@ import eu.etaxonomy.cdm.persistence.dao.common.IEventBaseDao;
 /**
  * @author a.kohlbecker
  * @since Jan 9, 2013
- *
  */
 @Service
 @Transactional(readOnly = true)
-public class EventBaseServiceImpl extends AnnotatableServiceBase<EventBase, IEventBaseDao> implements IEventBaseService {
+public class EventBaseServiceImpl
+        extends AnnotatableServiceBase<EventBase, IEventBaseDao>
+        implements IEventBaseService {
 
     @Override
     @Autowired
     protected void setDao(IEventBaseDao dao) {
         this.dao = dao;
     }
-
 }

@@ -18,11 +18,11 @@ import eu.etaxonomy.cdm.persistence.dao.common.IEventBaseDao;
  * @since Jan 9, 2013
  */
 @Repository
-public class EventBaseDaoImpl extends AnnotatableDaoImpl<EventBase> implements IEventBaseDao {
+public class EventBaseDaoImpl
+        extends AnnotatableDaoBaseImpl<EventBase>
+        implements IEventBaseDao {
 
     public EventBaseDaoImpl() {
         super(EventBase.class);
     }
-
-
 }

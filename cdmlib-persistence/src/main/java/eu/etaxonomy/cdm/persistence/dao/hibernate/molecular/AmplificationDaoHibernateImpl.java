@@ -19,7 +19,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Amplification;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 @Repository
-public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplification> implements IAmplificationDao{
+public class AmplificationDaoHibernateImpl extends AnnotatableDaoBaseImpl<Amplification> implements IAmplificationDao{
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(AmplificationDaoHibernateImpl.class);

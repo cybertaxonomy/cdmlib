@@ -51,7 +51,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -72,10 +71,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
- * @author a.mueller FIXME CdmEntityDaoBase is abstract, can it be annotated
- *         with @Repository?
+ * Hibernate implementation for {@link ICdmEntityDao}.
  */
-@Repository
 public abstract class CdmEntityDaoBase<T extends CdmBase>
         extends DaoBase
         implements ICdmEntityDao<T> {

@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Repository
 public class RegistrationDaoHibernateImpl
-            extends AnnotatableDaoImpl<Registration>
+            extends AnnotatableDaoBaseImpl<Registration>
             implements IRegistrationDao {
 
     @SuppressWarnings("unused")

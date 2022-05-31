@@ -25,23 +25,20 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
  * @author n.hoffmann
  * @since 24.09.2008
  */
-public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
+public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
         extends VersionableDaoBase<T>
         implements IAnnotatableDao<T> {
 
     @SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(AnnotatableDaoImpl.class);
+	private static Logger logger = Logger.getLogger(AnnotatableDaoBaseImpl.class);
 
-	/**
-	 * @param type
-	 */
-	public AnnotatableDaoImpl(Class<T> type) {
+	public AnnotatableDaoBaseImpl(Class<T> type) {
 		super(type);
 	}
 
 	@Override
     public long countAnnotations(T annotatableEntity, MarkerType status) {
-		checkNotInPriorView("AnnotatableDaoImpl.countAnnotations(T annotatableEntity, MarkerType status)");
+		checkNotInPriorView("AnnotatableDaoBaseImpl.countAnnotations(T annotatableEntity, MarkerType status)");
 		Query<Long> query = null;
 
 		String className = annotatableEntity.getClass().getName();
@@ -61,7 +58,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
 	@Override
     public List<Annotation> getAnnotations(T annotatableEntity,	MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		checkNotInPriorView("AnnotatableDaoImpl.getAnnotations(T annotatableEntity, MarkerType status, Integer pageSize, Integer pageNumber)");
+		checkNotInPriorView("AnnotatableDaoBaseImpl.getAnnotations(T annotatableEntity, MarkerType status, Integer pageSize, Integer pageNumber)");
 
 		Query<Annotation> query = null;
         StringBuffer orderString = new StringBuffer();
@@ -101,7 +98,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
 	@Override
     public long countMarkers(T annotatableEntity, Boolean technical) {
-		checkNotInPriorView("AnnotatableDaoImpl.countMarkers(T annotatableEntity, Boolean technical");
+		checkNotInPriorView("AnnotatableDaoBaseImpl.countMarkers(T annotatableEntity, Boolean technical");
         Query<Long> query = null;
 
         String className = annotatableEntity.getClass().getName();
@@ -120,7 +117,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
     @Override
     public List<Marker> getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-    	checkNotInPriorView("AnnotatableDaoImpl.getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+    	checkNotInPriorView("AnnotatableDaoBaseImpl.getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 
     	Query<Marker> query = null;
         StringBuffer orderString = new StringBuffer();
@@ -158,7 +155,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
     @Override
     public int countMarkers(Class<? extends T> clazz, Boolean technical) {
-		checkNotInPriorView("AnnotatableDaoImpl.countMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
+		checkNotInPriorView("AnnotatableDaoBaseImpl.countMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query<Long> query = null;
 		String className = clazz == null ? type.getName() : clazz.getName();
 		if(technical == null) {
@@ -180,7 +177,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity>
 
 	@Override
     public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		checkNotInPriorView("AnnotatableDaoImpl.groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
+		checkNotInPriorView("AnnotatableDaoBaseImpl.groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query<Object[]> query = null;
 		String className = clazz == null ? type.getName() : clazz.getName();
         if(technical == null) {
