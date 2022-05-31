@@ -1193,7 +1193,7 @@
       <dependency>
         <groupId>net.sf.ehcache</groupId>
         <artifactId>ehcache</artifactId>
-        <version>2.10.6</version>
+        <version>2.10.9.2</version>
       </dependency>
       <!-- ******* XML ******* -->
       <dependency>
@@ -1297,7 +1297,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20211205</version>
+        <version>20220320</version>
       </dependency>
       <!-- ******* HIBERNATE / EJB3 ******* -->
       <dependency>
