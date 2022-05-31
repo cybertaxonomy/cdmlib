@@ -96,20 +96,6 @@
   </organization>
   <developers>
     <developer>
-      <id>a.kohlbecker</id>
-      <name>Andreas Kohlbecker</name>
-      <email>a.kohlbecker [at] bgbm.org</email>
-      <organization>Botanical Garden Botanical Museum Berlin</organization>
-      <organizationUrl>https://www.bgbm.org/en/biodiversity-informatics</organizationUrl>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Architect</role>
-        <role>Java Developer</role>
-        <role>Release Manager</role>
-      </roles>
-      <url />
-    </developer>
-    <developer>
       <id>k.luther</id>
       <name>Katja Luther</name>
       <email>k.luther [at] bgbm.org</email>
@@ -118,6 +104,7 @@
       <timezone>+1</timezone>
       <roles>
         <role>Java Developer</role>
+        <role>Release Manager</role>
       </roles>
       <url />
     </developer>
@@ -136,8 +123,6 @@
       <url />
     </developer>
   </developers>
-  <!--contributors> <contributor> <name>Test-Contributor</name> </contributor> 
-    </contributors -->
   <issueManagement>
     <system>Redmine</system>
     <url>https://dev.e-taxonomy.eu/redmine/projects/edit</url>
