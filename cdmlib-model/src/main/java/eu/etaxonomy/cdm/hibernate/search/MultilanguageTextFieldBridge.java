@@ -50,14 +50,12 @@ public class MultilanguageTextFieldBridge implements FieldBridge {
             Field allField = new TextField(name + ".ALL",
                     languageString.getText(),
                     luceneOptions.getStore());
-            allField.setBoost(luceneOptions.getBoost());
             document.add(allField);
 
             Field langField = new TextField(name + "." + languageString.getLanguage().getUuid(),
                     languageString.getText(),
                     luceneOptions.getStore()
                     );
-            allField.setBoost(luceneOptions.getBoost());
             document.add(langField);
         }
     }

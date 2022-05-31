@@ -31,13 +31,11 @@ public class ClassInfoBridge implements FieldBridge {
         Field nameField = new StringField(name + ".name",
                 value.getClass().getName(),
                 luceneOptions.getStore());
-        nameField.setBoost(luceneOptions.getBoost());
         document.add(nameField);
 
         Field canonicalNameField = new StringField(name + ".canonicalName",
                 value.getClass().getCanonicalName(),
                 luceneOptions.getStore());
-        canonicalNameField.setBoost(luceneOptions.getBoost());
         document.add(canonicalNameField);
 
     }

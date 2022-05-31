@@ -390,7 +390,6 @@ public class QueryFactory {
 
         classFilterBuilder.add(termQuery, Occur.SHOULD);
         BooleanQuery classFilter = classFilterBuilder.build();
-        classFilter.setBoost(0);
 
         filteredQueryBuilder.add(query, Occur.MUST);
         filteredQueryBuilder.add(classFilter, Occur.MUST); // TODO using Occur.FILTER might be improve performance but causes wrong results

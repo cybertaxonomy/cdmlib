@@ -52,7 +52,6 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
         Field langLabelField = new TextField(name + "label",
               term.getLabel(),
               luceneOptions.getStore());
-        langLabelField.setBoost(luceneOptions.getBoost());
         document.add(langLabelField);
 
         for(Representation representation : term.getRepresentations()){
@@ -82,7 +81,6 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
         Field allField = new TextField(name + "representation." + representationField + ".ALL",
                 text,
                 luceneOptions.getStore());
-        allField.setBoost(luceneOptions.getBoost());
         document.add(allField);
 
 
@@ -90,8 +88,6 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge implements P
             Field langField = new TextField(name + "representation." + representationField + "."+ representation.getLanguage().getUuid().toString(),
                     text,
                     luceneOptions.getStore());
-
-            allField.setBoost(luceneOptions.getBoost());
             document.add(langField);
         }
     }
