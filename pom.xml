@@ -1689,7 +1689,7 @@
           <version>${javax.mail.version}</version>
       </dependency>
       <dependency>
-        <!-- only needed for PasswordResetService, may be replaced by Thymeleaf -->
+        <!-- only needed for PasswordResetService, may be replaced by Thymeleaf, but also needed in TaxEditor cdmlib modul -->
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>1.9</version>
