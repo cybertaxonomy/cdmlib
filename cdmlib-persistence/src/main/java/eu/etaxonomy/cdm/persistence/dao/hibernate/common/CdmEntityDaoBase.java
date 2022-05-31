@@ -82,10 +82,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
-    protected int flushAfterNo = 1000; // large numbers may cause
-                                       // synchronisation errors when commiting
-                                       // the session !!
-
+    protected int flushAfterNo = 1000; // large numbers may cause synchronisation errors
+                                        // when commiting the session
     protected Class<T> type;
 
     @Autowired

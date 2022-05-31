@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.Collection;
@@ -29,7 +28,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import javassist.tools.rmi.ObjectNotFoundException;
 
 /**
- * An data access interface that all data access classes implement
+ * Base class for all DAOs intended for persisting instances of a certain CdmBase subclass.
+ *
+ * @param <T> The CdmBase subclass type.
+ *
  * @author m.doering
  * @since 02-Nov-2007 19:36:10
  */

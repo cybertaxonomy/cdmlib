@@ -383,13 +383,9 @@ public class CdmGenericDaoImpl
         return result;
     }
 
-	/**
-	 * @param referencedClass
-	 * @return
-	 * @throws NoSuchFieldException
-	 * @throws ClassNotFoundException
-	 */
-	protected Set<ReferenceHolder> makeHolderSet(Class<?> referencedClass) throws ClassNotFoundException, NoSuchFieldException {
+    //Dev Note: the soon to be removed class referringObjectMetadataFactoryImpl used properties in
+    //   entityType.getAttributes(), e.g. isAssociation(). This might be considered for xxx, too
+	private Set<ReferenceHolder> makeHolderSet(Class<?> referencedClass) throws ClassNotFoundException, NoSuchFieldException {
 		Set<ReferenceHolder> result = new HashSet<>();
 
 		//init
@@ -397,9 +393,11 @@ public class CdmGenericDaoImpl
 			allCdmClasses = getAllPersistedClasses(false); //findAllCdmClasses();
 		}
 		SessionFactory sessionFactory = getSession().getSessionFactory();
+//        EntityManagerFactory sessionFactory = getSession().getSessionFactory();
 
 		for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 			ClassMetadata classMetadata = sessionFactory.getClassMetadata(cdmClass);
+//	        javax.persistence.metamodel.EntityType<? extends CdmBase> classMetadata = sessionFactory.getMetamodel().entity(cdmClass);
 			Type[] propertyTypes = classMetadata.getPropertyTypes();
 			int propertyNr = 0;
 			for (Type propertyType: propertyTypes){
