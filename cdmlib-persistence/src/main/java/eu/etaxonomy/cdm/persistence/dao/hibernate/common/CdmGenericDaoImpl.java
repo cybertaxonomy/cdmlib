@@ -208,31 +208,23 @@ public class CdmGenericDaoImpl
         return result;
     }
 
-	@Override
-	public Set<Class<? extends CdmBase>> getAllPersistedClasses(boolean includeAbstractClasses){
-		Set<Class<? extends CdmBase>> result = new HashSet<>();
+    @Override
+    public Set<Class<? extends CdmBase>> getAllPersistedClasses(boolean includeAbstractClasses){
+        Set<Class<? extends CdmBase>> result = new HashSet<>();
 
-		SessionFactory sessionFactory = getSession().getSessionFactory();
-		Map<String,?> allClassMetadata = sessionFactory.getAllClassMetadata();
-		Collection<String> keys = allClassMetadata.keySet();
-		for (String strKey : keys){
-			if (! strKey.endsWith("_AUD") && !strKey.endsWith("_AUD1")){
-				try {
-                    Class<?> clazz = Class.forName(strKey);
-					boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
-					if (! isAbstractClass || includeAbstractClasses){
-						result.add((Class)clazz);
-					}
-				} catch (ClassNotFoundException e) {
-				    String message = "Persisted CDM class not found: " + strKey;
-				    logger.warn(message);
-				    //TODO better throw exception, but currently some keys are really not found yet
-//					throw new RuntimeException("Persisted CDM class not found: " + strKey,e);
-				}
-			}
-		}
-		return result;
-	}
+        EntityManagerFactory sessionFactory = getSession().getSessionFactory();
+        Set<javax.persistence.metamodel.EntityType<?>> entities = sessionFactory.getMetamodel().getEntities();
+        for (javax.persistence.metamodel.EntityType<?> entity : entities){
+            if (! entity.getName().endsWith("_AUD") && !entity.getName().endsWith("_AUD1")){
+                Class<?> clazz = entity.getBindableJavaType();
+                boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
+                if (! isAbstractClass || includeAbstractClasses){
+                    result.add((Class)clazz);
+                }
+            }
+        }
+        return result;
+    }
 
     @Override
     public Set<ReferencingObjectDto> getReferencingObjectsDto(CdmBase referencedCdmBase){
