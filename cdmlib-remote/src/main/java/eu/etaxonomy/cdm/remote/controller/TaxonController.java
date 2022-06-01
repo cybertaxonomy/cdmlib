@@ -76,7 +76,6 @@ import io.swagger.annotations.Api;
  *
  * @author a.kohlbecker
  * @since 20.07.2009
- *
  */
 @Controller
 @Api("taxon")
@@ -103,6 +102,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "taxonNodes.classification",
             "taxonNodes.parent",
+            "taxonNodes.parent.childNodes",   //currently needed to compute sortindex //TODO improve
             "taxonNodes.taxon.name",
             "taxonNodes.taxon.secSource.citation",
             "taxonNodes.statusNote",
