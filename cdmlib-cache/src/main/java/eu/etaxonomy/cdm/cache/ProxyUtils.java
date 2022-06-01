@@ -27,6 +27,7 @@ import org.hibernate.collection.internal.PersistentSortedSet;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
+import org.hibernate.proxy.pojo.bytebuddy.SerializableProxy;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -159,6 +160,10 @@ public class ProxyUtils {
                 return result;
             }
         }
+        if (o instanceof SerializableProxy) {
+            throw new RuntimeException("Serializable bytebuddy proxy not yet handled");
+        }
+
         return o;
     }
 
