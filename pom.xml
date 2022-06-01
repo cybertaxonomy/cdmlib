@@ -1068,13 +1068,6 @@
         <version>6.1.2</version>
       </dependency>
       <dependency>
-        <!-- only for version management jcl-over-slf4j depends in different versions from 
-        org.docx4j:docx4j:6.0.1 and org.apache.jena:jjena-tdb:1.1.2 -->
-        <groupId>org.slf4j</groupId>
-        <artifactId>jcl-over-slf4j</artifactId>
-        <version>1.7.25</version>
-      </dependency>
-      <dependency>
         <!-- only for version management xalan depends in different versions from 
         org.docx4j:docx4j:6.0.1 and xom:xom:1.2.5 -->
       	<groupId>xalan</groupId>
@@ -1378,7 +1371,7 @@
         <artifactId>byte-buddy</artifactId>
         <version>1.12.10</version>
       </dependency>
-      <!-- dependenc of hibernate-core and hibernate-search -->
+      <!-- dependency of hibernate-core and hibernate-search -->
       <dependency>
         <groupId>org.jboss.spec.javax.transaction</groupId>
         <artifactId>jboss-transaction-api_1.2_spec</artifactId>
