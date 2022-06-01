@@ -1178,6 +1178,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + "   LEFT OUTER JOIN name.rank AS rank ";
         return queryString;
     }
+    
+    
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
@@ -1193,6 +1195,21 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
         return list;
     }
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid) {
+    	String queryString = getTaxonNodeDtoQuery();
+        queryString += " WHERE t.uuid = :uuid ";
+        Query<SortableTaxonNodeQueryResult> query =  getSession().createQuery(queryString, SortableTaxonNodeQueryResult.class);
+        query.setParameter("uuid", taxonUuid);
+
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        List<TaxonNodeDto> list = createNodeDtos(result);
+        if (list.isEmpty()) {
+        	return null;
+        }
+        return list;
+    }
+
 
     @Override
     public List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
