@@ -1368,9 +1368,15 @@
         <version>${hibernate-search.version}</version>
       </dependency>
       <dependency>
+        <!-- TODO can be removed, not used anymore by hibernate, but still a dependency in 5.4.x -->
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.29.0-GA</version>
+      </dependency>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>1.12.10</version>
       </dependency>
       <!-- dependenc of hibernate-core and hibernate-search -->
       <dependency>
