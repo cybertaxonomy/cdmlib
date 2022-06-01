@@ -142,7 +142,7 @@ public class ProxyUtils {
      * otherwise <code>o</code> is returned.
      */
     public static <T extends Object> T deproxyIfInitialized(T o) {
-        if(o != null && o instanceof HibernateProxy) {
+        if(o instanceof HibernateProxy) {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
             if(!hli.isUninitialized()) {
                 @SuppressWarnings("unchecked")
@@ -151,7 +151,7 @@ public class ProxyUtils {
             }
         }
 
-        if(o != null && o instanceof PersistentCollection) {
+        if(o instanceof PersistentCollection) {
             PersistentCollection pc = ((PersistentCollection)o);
             if(pc.wasInitialized()) {
                 @SuppressWarnings("unchecked")
