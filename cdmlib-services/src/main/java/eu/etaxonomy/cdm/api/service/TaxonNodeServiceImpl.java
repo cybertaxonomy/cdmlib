@@ -1445,5 +1445,9 @@ public class TaxonNodeServiceImpl
         return dao.getTaxonNodeDtos(nodeUuids);
     }
 
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuids) {
+        return dao.getTaxonNodeDtosFromTaxon(taxonUuids);
+    }
 
 }

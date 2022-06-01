@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -246,25 +247,33 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
-    public Set<TaxonNodeDto>  doGetTaxonNodes(
+    public Collection<TaxonNodeDto>  doGetTaxonNodes(
             @PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
-        TaxonBase<?> taxonBase;
+        TaxonBase<?> taxonBase = null;
         if (subtreeUuid != null){
             taxonBase = doGet(taxonUuid, subtreeUuid, request, response);
         }else{
-            taxonBase = service.load(taxonUuid, NO_UNPUBLISHED, getTaxonNodeInitStrategy().getPropertyPaths());
+//            taxonBase = service.load(taxonUuid, NO_UNPUBLISHED, getTaxonNodeInitStrategy().getPropertyPaths());
         }
-        if(taxonBase instanceof Taxon){
+        if(taxonBase != null && taxonBase instanceof Taxon){
             return ((Taxon)taxonBase).getTaxonNodes().stream().map(e -> new TaxonNodeDto(e)).collect(Collectors.toSet());
-        } else {
-            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-            return null;
-        }
+        }else { 
+        	try {
+        		return nodeService.getTaxonNodeDtosFromTaxon(taxonUuid);
+        	}catch(Exception e) {
+        		 HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+                 return null;
+        	}
+        
+    	}
+    	
+           
+        
     }
 
     protected  EntityInitStrategy getTaxonNodeInitStrategy() {
