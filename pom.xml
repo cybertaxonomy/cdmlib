@@ -41,12 +41,12 @@
     <httpcomponents.version>4.5.13</httpcomponents.version>
     <doxia.version>1.11.1</doxia.version>                <!-- checked 2021-12 -->
     <poi.version>4.1.2</poi.version>                    <!-- checked 2020-08 -->
-    <jackson.version>2.13.3</jackson.version>           <!-- checked 2021-12 -->
-	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2020-08 -->
-	<slf4j.version>1.7.30</slf4j.version>               <!-- checked 2020-08 -->
+    <jackson.version>2.13.3</jackson.version>           <!-- checked 2022-05 -->
+	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2022-06 -->
+	<slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
 	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
 	<cglib.version>3.3.0</cglib.version>
-	<aspectj.version>1.9.7</aspectj.version>            <!-- checked 2022-01 -->
+	<aspectj.version>1.9.7</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
     <javax.mail.version>1.5.6</javax.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
@@ -1085,7 +1085,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-imaging</artifactId>
-        <version>1.0-alpha2</version>
+        <version>1.0-alpha3</version>
       </dependency>
       <dependency>
         <groupId>org.cybertaxonomy.media</groupId>
@@ -1214,8 +1214,8 @@
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
-        <version>2.12.1</version>
-        <!-- checked 2021-12 -->
+        <version>2.12.2</version>
+        <!-- checked 2022-06 -->
       </dependency>
       <!-- >batik-ext required by Xerces 2.11.0 for class ElementTraversal, 
         as this is not included anymore in xml-apis 2.x -->
@@ -1349,7 +1349,7 @@
       <dependency>
         <groupId>org.hibernate.common</groupId>
         <artifactId>hibernate-commons-annotations</artifactId>
-        <version>5.1.0.Final</version>
+        <version>5.1.2.Final</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
@@ -1364,7 +1364,7 @@
       <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
-        <version>3.28.0-GA</version>
+        <version>3.29.0-GA</version>
       </dependency>
       <!-- dependenc of hibernate-core and hibernate-search -->
       <dependency>
@@ -1526,8 +1526,8 @@
       <dependency>
           <groupId>jakarta.validation</groupId>
           <artifactId>jakarta.validation-api</artifactId>
-          <version>3.0.0</version>
-          <!-- checked 2020-08 -->
+          <version>3.0.2</version>
+          <!-- checked 2022-06 -->
       </dependency>
 	  <dependency>
 		 <groupId>org.glassfish.web</groupId>
