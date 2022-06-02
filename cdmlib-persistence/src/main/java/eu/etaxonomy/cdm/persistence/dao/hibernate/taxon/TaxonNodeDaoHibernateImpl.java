@@ -1169,11 +1169,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     private String getTaxonNodeDtoQuery() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid "
+                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn) "
                 + ") "
-                + " FROM TaxonNode tn "
-                + "   INNER JOIN tn.taxon AS t "
-                + "   INNER JOIN tn.parent AS p"
+                + " FROM TaxonNode p "
+                + "   INNER JOIN p.childNodes AS tn"
+                + "   INNER JOIN tn.taxon AS t "               
                 + "   INNER JOIN t.name AS name "
                 + "   LEFT OUTER JOIN name.rank AS rank ";
         return queryString;
@@ -1216,7 +1216,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         List<TaxonNodeDto> nodeDtos = new ArrayList<>();
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         for(SortableTaxonNodeQueryResult queryDTO : result){
-            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex(), queryDTO.getParentNodeUuid());
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex(), queryDTO.getParentNodeUuid(), queryDTO.getSortIndex());
             nodeDtos.add(nodeDto);
         }
         return nodeDtos;
