@@ -211,6 +211,10 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return
      */
     List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result);
-
-	List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuids);
+    /**
+     * @param taxonUuid
+     * @param subTreeIndex
+     * @return
+     */
+	List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex);
 }

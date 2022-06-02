@@ -298,7 +298,12 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     TaxonNodeDto getTaxonNodeDto(UUID nodeUuid);
 
-	List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuids);
+    /**
+     * @param taxonUuid
+     * @param subTreeIndex
+     * @return
+     */
+	List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex);
 
 
 }

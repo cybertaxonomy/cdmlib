@@ -1196,12 +1196,19 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         return list;
     }
     @Override
-    public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid) {
+    public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex) {
     	String queryString = getTaxonNodeDtoQuery();
         queryString += " WHERE t.uuid = :uuid ";
+        if (subTreeIndex != null) {
+        	subTreeIndex += "%";
+        	queryString += " AND tn.treeIndex like :subTreeIndex ";
+        }
         Query<SortableTaxonNodeQueryResult> query =  getSession().createQuery(queryString, SortableTaxonNodeQueryResult.class);
         query.setParameter("uuid", taxonUuid);
-
+        if (subTreeIndex != null) {
+        	query.setParameter("subTreeIndex", subTreeIndex);
+        }
+        
         List<SortableTaxonNodeQueryResult> result = query.list();
         List<TaxonNodeDto> list = createNodeDtos(result);
         if (list.isEmpty()) {

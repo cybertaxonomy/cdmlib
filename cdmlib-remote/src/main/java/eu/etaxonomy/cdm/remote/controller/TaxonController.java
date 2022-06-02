@@ -254,23 +254,20 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
-        TaxonBase<?> taxonBase = null;
+        //this should be done by treeIndex as parameter, but as first implementation we get the node and then the treeinde
+        String subTreeIndex = null;
         if (subtreeUuid != null){
-            taxonBase = doGet(taxonUuid, subtreeUuid, request, response);
-        }else{
-//            taxonBase = service.load(taxonUuid, NO_UNPUBLISHED, getTaxonNodeInitStrategy().getPropertyPaths());
+        	TaxonNode subtree = getSubtreeOrError(subtreeUuid, nodeService, response);
+        	subTreeIndex = subtree != null? subtree.treeIndex(): null;
         }
-        if(taxonBase != null && taxonBase instanceof Taxon){
-            return ((Taxon)taxonBase).getTaxonNodes().stream().map(e -> new TaxonNodeDto(e)).collect(Collectors.toSet());
-        }else { 
-        	try {
-        		return nodeService.getTaxonNodeDtosFromTaxon(taxonUuid);
-        	}catch(Exception e) {
+        try {
+        	return nodeService.getTaxonNodeDtosFromTaxon(taxonUuid, subTreeIndex);
+        }catch(Exception e) {
         		 HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
                  return null;
-        	}
+        }
         
-    	}
+    	
     	
            
         
