@@ -27,6 +27,7 @@ public class SortableTaxonNodeQueryResult {
     protected Rank nameRank = Rank.UNKNOWN_RANK();
     protected UUID parentNodeUuid;
     protected Integer sortIndex;
+    protected UUID classificationUuid;
 
     /**Is this the reason
      * @param taxonNodeUuid
@@ -35,7 +36,7 @@ public class SortableTaxonNodeQueryResult {
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
-            Rank nameRank, UUID parentNodeUuid, Integer sortIndex) {
+            Rank nameRank, UUID parentNodeUuid, Integer sortIndex, UUID classificationUuid) {
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.treeIndex = treeIndex;
@@ -47,6 +48,7 @@ public class SortableTaxonNodeQueryResult {
         }
         this.parentNodeUuid = parentNodeUuid;
         this.sortIndex = sortIndex;
+        this.classificationUuid = classificationUuid;
     }
 
     /**
@@ -57,18 +59,18 @@ public class SortableTaxonNodeQueryResult {
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
             Rank nameRank, UUID parentNodeUuid) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null);
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null, null);
     }
 
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null);
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null, null);
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null);
+        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null, null);
     }
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache, UUID parentNodeUuid) {
         this(taxonNodeUuid, taxonNodeId, null, taxonUuid, taxonTitleCache, null, parentNodeUuid);
@@ -127,7 +129,21 @@ public class SortableTaxonNodeQueryResult {
     public void setParentNodeUuid(UUID parentNodeUuid) {
         this.parentNodeUuid = parentNodeUuid;
     }
+    /**
+     * @return the parentNodeUuid
+     */
+    public UUID getClassificaionUuid() {
+        return classificationUuid;
+    }
 
+    /**
+     * @param parentNodeUuid the parentNodeUuid to set
+     */
+    public void setClassificationUuid(UUID classificationUuid) {
+        this.classificationUuid = classificationUuid;
+    }
+
+    
     public Integer getTaxonNodeId() {
         return taxonNodeId;
     }
