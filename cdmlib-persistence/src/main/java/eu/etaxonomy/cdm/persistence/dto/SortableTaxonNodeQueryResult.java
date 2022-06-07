@@ -8,9 +8,13 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 
 /**
  * @author a.kohlbecker
@@ -28,6 +32,13 @@ public class SortableTaxonNodeQueryResult {
     protected UUID parentNodeUuid;
     protected Integer sortIndex;
     protected UUID classificationUuid;
+    protected boolean taxonIsPublish = true;
+    protected TaxonNodeStatus status;
+ 
+
+
+    private Map<Language, String> statusNote = new HashMap<>();
+
 
     /**Is this the reason
      * @param taxonNodeUuid
@@ -36,7 +47,7 @@ public class SortableTaxonNodeQueryResult {
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
-            Rank nameRank, UUID parentNodeUuid, Integer sortIndex, UUID classificationUuid) {
+            Rank nameRank, UUID parentNodeUuid, Integer sortIndex, UUID classificationUuid,  Boolean taxonIsPublished, TaxonNodeStatus status) {
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.treeIndex = treeIndex;
@@ -49,6 +60,8 @@ public class SortableTaxonNodeQueryResult {
         this.parentNodeUuid = parentNodeUuid;
         this.sortIndex = sortIndex;
         this.classificationUuid = classificationUuid;
+        this.taxonIsPublish = taxonIsPublished;
+        
     }
 
     /**
@@ -59,18 +72,18 @@ public class SortableTaxonNodeQueryResult {
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
             Rank nameRank, UUID parentNodeUuid) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null, null);
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null, null, null, null);
     }
 
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null, null, null, null);
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null, null, null, null);
     }
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache, UUID parentNodeUuid) {
         this(taxonNodeUuid, taxonNodeId, null, taxonUuid, taxonTitleCache, null, parentNodeUuid);
@@ -132,7 +145,7 @@ public class SortableTaxonNodeQueryResult {
     /**
      * @return the parentNodeUuid
      */
-    public UUID getClassificaionUuid() {
+    public UUID getClassificationUuid() {
         return classificationUuid;
     }
 
@@ -144,7 +157,23 @@ public class SortableTaxonNodeQueryResult {
     }
 
     
-    public Integer getTaxonNodeId() {
+    public boolean isTaxonIsPublish() {
+		return taxonIsPublish;
+	}
+
+	public void setTaxonIsPublish(boolean taxonIsPublish) {
+		this.taxonIsPublish = taxonIsPublish;
+	}
+
+	public Map<Language, String> getStatusNote() {
+		return statusNote;
+	}
+
+	public void setStatusNote(Map<Language, String> statusNote) {
+		this.statusNote = statusNote;
+	}
+
+	public Integer getTaxonNodeId() {
         return taxonNodeId;
     }
     public void setTaxonNodeId(Integer taxonNodeId) {
@@ -169,6 +198,14 @@ public class SortableTaxonNodeQueryResult {
     public void setNameTitleCache(String nameTitleCache) {
         this.nameTitleCache = nameTitleCache;
     }
+
+	public TaxonNodeStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TaxonNodeStatus status) {
+		this.status = status;
+	}
 
 
 }
