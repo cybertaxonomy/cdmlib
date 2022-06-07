@@ -1169,7 +1169,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     private String getTaxonNodeDtoQuery() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish "
+                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status "
                 + ") "
                 + " FROM TaxonNode p "
                 + "   INNER JOIN p.childNodes AS tn"
