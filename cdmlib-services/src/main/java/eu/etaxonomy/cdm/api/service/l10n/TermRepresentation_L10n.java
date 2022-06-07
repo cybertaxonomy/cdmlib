@@ -77,7 +77,11 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         } else {
             if(Hibernate.isInitialized(term.getRepresentations())){
                 Representation representation = term.getPreferredRepresentation(languages);
-                setRepresentation(representation);
+                if (representation != null) {
+                	setRepresentation(representation);
+                }else {
+                	label = term.getTitleCache();
+                }
             } else {
                 logger.debug("representations of term not initialized  " + term.getUuid().toString());
             }
