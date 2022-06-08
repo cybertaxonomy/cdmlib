@@ -33,7 +33,7 @@ public class SortableTaxonNodeQueryResult {
     protected Integer sortIndex;
     protected UUID classificationUuid;
     protected Boolean taxonIsPublish = true;
-    protected String status;
+    protected TaxonNodeStatus status;
  
 
 
@@ -54,16 +54,13 @@ public class SortableTaxonNodeQueryResult {
         this.taxonUuid = taxonUuid;
         this.taxonTitleCache = taxonTitleCache;
         this.nameTitleCache = nameTitleCache;
-        if(nameRank != null){
-            this.nameRank = nameRank;
-        }
+        this.nameRank = nameRank;
         this.parentNodeUuid = parentNodeUuid;
         this.sortIndex = sortIndex;
         this.classificationUuid = classificationUuid;
         this.taxonIsPublish = taxonIsPublished;
-        if (status != null) {
-        	this.status = status.getLabel();
-        }
+        this.status = status;
+        
         		
        
         
@@ -205,11 +202,11 @@ public class SortableTaxonNodeQueryResult {
         this.nameTitleCache = nameTitleCache;
     }
 
-	public String getStatus() {
+	public TaxonNodeStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(TaxonNodeStatus status) {
 		this.status = status;
 	}
 

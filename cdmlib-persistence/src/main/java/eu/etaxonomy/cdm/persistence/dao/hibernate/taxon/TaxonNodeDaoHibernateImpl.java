@@ -1224,7 +1224,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         List<TaxonNodeDto> nodeDtos = new ArrayList<>();
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         for(SortableTaxonNodeQueryResult queryDTO : result){
-            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex(), queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(), queryDTO.isTaxonIsPublish(), queryDTO.getStatus());
+        	
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank()!= null? queryDTO.getNameRank().getOrderIndex(): null, queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(), queryDTO.isTaxonIsPublish(), queryDTO.getStatus());
             
             
             nodeDtos.add(nodeDto);
