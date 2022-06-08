@@ -54,7 +54,9 @@ public class SortableTaxonNodeQueryResult {
         this.taxonUuid = taxonUuid;
         this.taxonTitleCache = taxonTitleCache;
         this.nameTitleCache = nameTitleCache;
-        this.nameRank = nameRank;
+        if (nameRank != null) {
+        	this.nameRank = nameRank;
+        }
         this.parentNodeUuid = parentNodeUuid;
         this.sortIndex = sortIndex;
         this.classificationUuid = classificationUuid;
