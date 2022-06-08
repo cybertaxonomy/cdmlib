@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
  * @author a.mueller
  * @since 18.12.2008
  */
-abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
+public abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
     private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
 
@@ -382,15 +382,7 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
     }
 
     //********************* Base methods for CdmDataSource and CdmPersistentDatasource
-    /**
-     * @param hbm2dll
-     * @param showSql
-     * @param formatSql
-     * @param registerAuditing
-     * @param registerSearchListener
-     * @param cacheProviderClass
-     * @return
-     */
+
     protected AbstractBeanDefinition makeHibernatePropertiesBean(DatabaseTypeEnum dbType,
             DbSchemaValidation hbm2dll, boolean showSql,
             boolean formatSql, boolean registerAuditing, boolean registerSearchListener,

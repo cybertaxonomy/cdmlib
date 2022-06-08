@@ -17,12 +17,12 @@ import org.hibernate.envers.boot.internal.EnversIntegrator;
 /**
  * @author a.mueller
  * @since 03.08.2017
- *
  */
 public class HibernateConfiguration implements Serializable{
 
     private static final long serialVersionUID = -894395918847594447L;
 
+    //properties
     public final static String SHOW_SQL = "hibernate.show_sql";
 
     public final static String FORMAT_SQL = "hibernate.format_sql";
@@ -38,12 +38,8 @@ public class HibernateConfiguration implements Serializable{
     public static final boolean FORMAT_SQL_DEFAULT = false;
     public static final boolean REGISTER_SEARCH_DEFAULT = false;
     public static final boolean REGISTER_ENVERS_DEFAULT = true;
-
     public static final Class<? extends RegionFactory> CACHE_PROVIDER_DEFAULT = NoCachingRegionFactory.class;
 
-    /**
-     * @return
-     */
     public static HibernateConfiguration NewDefaultInstance() {
         HibernateConfiguration result = NewInstance(SHOW_SQL_DEFAULT, FORMAT_SQL_DEFAULT,
                 REGISTER_SEARCH_DEFAULT, REGISTER_ENVERS_DEFAULT, CACHE_PROVIDER_DEFAULT);

@@ -238,9 +238,6 @@ public class CdmPersistentDataSourceTest {
 		assertEquals(String.valueOf(formatSql), properties.getProperty("hibernate.format_sql"));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#exists(java.lang.String)}.
-	 */
 	@Test
 	public void testExists() {
 		assertTrue(CdmPersistentDataSource.exists("default"));
@@ -248,9 +245,6 @@ public class CdmPersistentDataSourceTest {
 		assertFalse(CdmPersistentDataSource.exists("xlsj�dfl"));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#save(java.lang.String, eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	public void testSaveStringDatabaseTypeEnumStringStringIntStringString() {
 		String dataSourceString = "tmp";
@@ -288,9 +282,6 @@ public class CdmPersistentDataSourceTest {
 		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#save(java.lang.String, eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)}.
-	 */
 	//@Test
 	public void testSaveStringDatabaseTypeEnumStringStringStringString() {
 		//see testSaveStringDatabaseTypeEnumStringStringIntStringString
@@ -304,18 +295,12 @@ public class CdmPersistentDataSourceTest {
 		testSaveStringDatabaseTypeEnumStringStringStringString();
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getAllDataSources()}.
-	 */
 	@Test
 	public void testGetAllDataSources() {
 		//assertEquals(6, CdmPersistentDataSource.getAllDataSources().size());  //does not run for all orders of tests of this class
 		assertEquals("default", CdmPersistentDataSource.getAllDataSources().get(0).getName());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#toString()}.
-	 */
 	@Test
 	public void testToString() {
 		String dataSourceName = "default";
@@ -326,9 +311,6 @@ public class CdmPersistentDataSourceTest {
 		}
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getDataSourceInputStream()}.
-	 */
 	@Test
 	public void testGetDataSourceInputStream() {
 		FileInputStream is = CdmPersistentSourceUtils.getCdmSourceInputStream();
@@ -343,9 +325,7 @@ public class CdmPersistentDataSourceTest {
 
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getDataSourceOutputStream()}.
-	 */
+
 	@Ignore
 	@Test
 	public void testGetDataSourceOutputStream() {
