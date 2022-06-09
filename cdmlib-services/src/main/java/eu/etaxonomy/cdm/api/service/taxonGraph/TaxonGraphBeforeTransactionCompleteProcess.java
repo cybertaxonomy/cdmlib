@@ -18,7 +18,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
@@ -28,6 +27,7 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PreDeleteEvent;
 
 import eu.etaxonomy.cdm.api.application.IRunAs;
+import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
 import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -308,7 +308,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
           if (getSession() != null ) {
               // temporarySession.close(); // no need to close the session since the session is configured for auto close, see createTempSession()
               if(origLoggerLevel != null){
-                  Configurator.setLevel("org.hibernate.SQL", origLoggerLevel);
+                  LogUtils.setLevel("org.hibernate.SQL", origLoggerLevel);
               }
           }
       }

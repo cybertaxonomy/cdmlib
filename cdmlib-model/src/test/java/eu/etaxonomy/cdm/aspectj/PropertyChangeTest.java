@@ -17,10 +17,10 @@ import java.beans.PropertyChangeListener;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -64,6 +64,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
 		@Before
 		public void updateDebugLevel(){
-		    Configurator.setLevel(logger, Level.INFO);
+		    LogUtils.setLevel(logger, Level.INFO);
 		}
 	}
