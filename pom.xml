@@ -696,8 +696,11 @@
         <version>${slf4j.version}</version>
       </dependency>
       <dependency>
+        <!-- replaces slf4j-log4j12 as log4j12 redirects to reload4j as log4j12 reached EOL 2015,
+             can maybe be removed once fully removing log4j12 (#10072), but not sure if it also
+             supports log4j2 -->
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
+        <artifactId>slf4j-reload4j</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
 	  <dependency>
