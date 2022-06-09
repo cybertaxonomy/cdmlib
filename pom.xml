@@ -1089,6 +1089,12 @@
         <version>8.3.7</version>
       </dependency>
       <dependency>
+        <!-- dependency of guava and docx4j -->
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>2.14.0</version>
+      </dependency>
+      <dependency>
         <!-- only for version management xalan depends in different versions from 
         org.docx4j:docx4j:6.0.1 and xom:xom:1.2.5 -->
       	<groupId>xalan</groupId>
