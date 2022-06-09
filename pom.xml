@@ -49,7 +49,7 @@
 	<aspectj.version>1.9.7</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
-    <javax.mail.version>1.5.6</javax.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
+    <jakarta.mail.version>1.5.6</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
     <doclint>none</doclint>   
   </properties>
   
@@ -1724,7 +1724,7 @@
         <!-- Email functionality (used in cdmlib-services) -->
           <groupId>com.sun.mail</groupId>
           <artifactId>javax.mail</artifactId>
-          <version>${javax.mail.version}</version>
+          <version>${jakarta.mail.version}</version>
       </dependency>
       <dependency>
         <!-- only needed for PasswordResetService, may be replaced by Thymeleaf, but also needed in TaxEditor cdmlib modul -->

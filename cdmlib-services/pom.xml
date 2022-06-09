@@ -97,7 +97,14 @@
     </dependency>
     <dependency>
         <groupId>com.sun.mail</groupId>
+        <!-- is now jakarate.mail, but wait with update until spring-context-support upgrades -->
         <artifactId>javax.mail</artifactId>
+        <exclusions>
+            <exclusion>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
     <dependency>
         <groupId>org.subethamail</groupId>
