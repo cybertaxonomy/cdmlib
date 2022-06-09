@@ -1086,7 +1086,7 @@
       <dependency>
         <groupId>org.docx4j</groupId>
         <artifactId>docx4j-JAXB-Internal</artifactId>
-        <version>8.0.0</version>
+        <version>8.3.7</version>
       </dependency>
       <dependency>
         <!-- only for version management xalan depends in different versions from 
