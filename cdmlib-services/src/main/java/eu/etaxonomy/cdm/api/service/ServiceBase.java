@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -43,7 +43,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
             implements IService<T>, ApplicationContextAware {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ServiceBase.class);
+    private static final Logger logger = LogManager.getLogger(ServiceBase.class);
 
     protected ApplicationContext appContext;
 

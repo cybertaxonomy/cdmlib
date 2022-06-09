@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
@@ -47,7 +47,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = 8879154738843628476L;
 
-    private static final Logger logger = Logger.getLogger(DwcaTypesExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaTypesExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/TypesAndSpecimen";
 	protected static final String fileName = "typesAndSpecimen.txt";

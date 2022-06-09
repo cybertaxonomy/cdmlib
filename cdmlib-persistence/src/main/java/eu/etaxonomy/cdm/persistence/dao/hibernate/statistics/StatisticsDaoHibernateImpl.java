@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
 import java.util.ArrayList;
@@ -8,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -35,7 +44,6 @@ import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
  * @author s.buers
  *
  */
-
 @Repository
 public class StatisticsDaoHibernateImpl
         extends DaoBase
@@ -47,8 +55,7 @@ public class StatisticsDaoHibernateImpl
 	private static final int REFERENCE_LINK_RECURSION_DEPTH = 1;
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger
-			.getLogger(StatisticsDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(StatisticsDaoHibernateImpl.class);
 
 	@Override
 	public Long countDescriptiveSourceReferences() {

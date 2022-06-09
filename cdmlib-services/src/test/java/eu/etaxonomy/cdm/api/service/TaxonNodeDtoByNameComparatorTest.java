@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByNameComparator;
  */
 public class TaxonNodeDtoByNameComparatorTest {
 
-    private static final Logger logger = Logger.getLogger(TaxonNodeDtoByNameComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNodeDtoByNameComparatorTest.class);
 
     @Test
     @Ignore

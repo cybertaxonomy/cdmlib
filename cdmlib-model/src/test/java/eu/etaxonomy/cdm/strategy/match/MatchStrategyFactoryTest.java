@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.strategy.match;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class MatchStrategyFactoryTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MatchStrategyFactoryTest.class);
+	private static final Logger logger = LogManager.getLogger(MatchStrategyFactoryTest.class);
 
 	private static boolean FAIL_ALL = true;
 

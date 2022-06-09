@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -55,7 +55,7 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
 
     private static final long serialVersionUID = -7832621515891195623L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TermRelationBase.class);
+    private static final Logger logger = LogManager.getLogger(TermRelationBase.class);
 
     @XmlElement(name = "TermGraph")
     @XmlIDREF

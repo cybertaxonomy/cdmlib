@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,7 +28,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/description"})
 public class DescriptionListPortalController extends DescriptionListController {
 
-   public static final Logger logger = Logger.getLogger(DescriptionListPortalController.class);
+   public static final Logger logger = LogManager.getLogger(DescriptionListPortalController.class);
 
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -77,7 +77,7 @@ public class SpecimenCdmExcelImport
         implements ICdmIO<SpecimenCdmExcelImportState> {
     private static final long serialVersionUID = 5489033387543936839L;
 
-    private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImport.class);
+    private static final Logger logger = LogManager.getLogger(SpecimenCdmExcelImport.class);
 
 	private static final String WORKSHEET_NAME = "Specimen";
 

@@ -5,7 +5,7 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -26,7 +26,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
     private static final long serialVersionUID = -2254648962451309933L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(IoConfiguratorBase.class);
+	private static final Logger logger = LogManager.getLogger(IoConfiguratorBase.class);
 
     public static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
     public static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;

@@ -23,7 +23,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.transform.JDOMSource;
 
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  */
 public class PdfOutputModule extends PublishOutputModuleBase {
 
-	private static final Logger logger = Logger.getLogger(PdfOutputModule.class);
+	private static final Logger logger = LogManager.getLogger(PdfOutputModule.class);
 
 	public static String STYLESHEET_RESOURCE_DEFAULT = "/stylesheets/pdf/cdmToPdf.xsl";
 

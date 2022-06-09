@@ -3,7 +3,7 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.boot.Metadata;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -21,7 +21,7 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
  *
  */
 public class CdmListenerIntegrator implements Integrator {
-    private static final Logger logger = Logger.getLogger(CdmListenerIntegrator.class);
+    private static final Logger logger = LogManager.getLogger(CdmListenerIntegrator.class);
 
     @Override
     public void integrate(Metadata metadata,

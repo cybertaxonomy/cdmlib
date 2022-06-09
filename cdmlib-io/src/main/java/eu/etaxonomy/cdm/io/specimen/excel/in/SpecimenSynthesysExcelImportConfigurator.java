@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @version 1.0
  */
 public class SpecimenSynthesysExcelImportConfigurator extends ImportConfiguratorBase<SpecimenSynthesysExcelImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(SpecimenSynthesysExcelImportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(SpecimenSynthesysExcelImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
 	private boolean reuseTaxon = false;

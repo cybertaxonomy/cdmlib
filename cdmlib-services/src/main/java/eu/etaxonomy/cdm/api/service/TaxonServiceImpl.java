@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -149,7 +149,7 @@ public class TaxonServiceImpl
             extends IdentifiableServiceBase<TaxonBase,ITaxonDao>
             implements ITaxonService{
 
-    private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(TaxonServiceImpl.class);
 
     public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
 

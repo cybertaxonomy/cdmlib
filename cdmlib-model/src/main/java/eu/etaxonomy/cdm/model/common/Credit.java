@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 public class Credit extends LanguageStringBase implements Cloneable{
 	private static final long serialVersionUID = 5763391127298427701L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Credit.class);
+	private static final Logger logger = LogManager.getLogger(Credit.class);
 
 // ********************** FACTORY **********************************************/
 

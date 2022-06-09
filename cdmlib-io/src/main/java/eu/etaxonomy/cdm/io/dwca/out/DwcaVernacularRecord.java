@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRecord{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaVernacularRecord.class);
+	private static final Logger logger = LogManager.getLogger(DwcaVernacularRecord.class);
 
 	private String vernacularName;
 	private String source;

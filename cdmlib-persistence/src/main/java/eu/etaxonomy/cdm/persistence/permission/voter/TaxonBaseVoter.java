@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.permission.voter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class TaxonBaseVoter extends CdmPermissionVoter {
 
-    public static final Logger logger = Logger.getLogger(TaxonBaseVoter.class);
+    public static final Logger logger = LogManager.getLogger(TaxonBaseVoter.class);
 
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {

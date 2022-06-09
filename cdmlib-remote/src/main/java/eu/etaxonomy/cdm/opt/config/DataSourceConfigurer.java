@@ -22,7 +22,8 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.H2CorrectedDialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 import org.hibernate.dialect.PostgreSQL82Dialect;
@@ -91,7 +92,7 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 @PropertySource(value="file:${user.home}/.cdmLibrary/cdmlib-remote.properties", ignoreResourceNotFound=true)
 public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
-    public static final Logger logger = Logger.getLogger(DataSourceConfigurer.class);
+    public static final Logger logger = LogManager.getLogger(DataSourceConfigurer.class);
 
     protected static final String HIBERNATE_DIALECT = "hibernate.dialect";
     protected static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.default.indexBase";

@@ -20,7 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
  */
 public class BioCaseQueryServiceWrapperTest {
 
-    public static final Logger logger = Logger.getLogger(BioCaseQueryServiceWrapperTest.class);
+    public static final Logger logger = LogManager.getLogger(BioCaseQueryServiceWrapperTest.class);
 
     private static final int MAX_LINES_TO_READ = 1000;
     private static final int TIMEOUT = 60000;

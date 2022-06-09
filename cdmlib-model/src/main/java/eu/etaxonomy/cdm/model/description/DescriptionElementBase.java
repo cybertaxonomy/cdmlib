@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.ListIndexBase;
@@ -103,7 +103,7 @@ public abstract class DescriptionElementBase
 
     private static final long serialVersionUID = 5000910777835755905L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionElementBase.class);
 
     //type, category of information. In structured descriptions characters
     @XmlElement(name = "Feature")

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import com.ibm.lsid.MalformedLSIDException;
 
@@ -72,7 +72,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
         extends PartitionableConverterBase<CONFIG, STATE>
         implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>, ItemFilter<StreamItem> {
 
-    private static final Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
+    private static final Logger logger = LogManager.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
 
     //if this converter is used as filter we may not want to delete item parts during evaluation
     boolean isFilterOnly = false;

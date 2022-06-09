@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.tcsxml;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 
 public abstract class CdmSingleAttributeXmlMapperBase extends CdmSingleAttributeMapperBase implements IXmlMapper{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmSingleAttributeXmlMapperBase.class);
+	private static final Logger logger = LogManager.getLogger(CdmSingleAttributeXmlMapperBase.class);
 	
 	protected Namespace sourceNamespace;
 

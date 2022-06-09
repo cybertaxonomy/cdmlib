@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Audited
 public class InstitutionalMembership extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -800814712134999042L;
-	public static final Logger logger = Logger.getLogger(InstitutionalMembership.class);
+	public static final Logger logger = LogManager.getLogger(InstitutionalMembership.class);
 
 	/*Time period a person belonged to the institution*/
     @XmlElement(name = "Period")

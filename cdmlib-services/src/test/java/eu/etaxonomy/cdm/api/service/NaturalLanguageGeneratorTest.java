@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NaturalLanguageGeneratorTest.class);
+	private static final Logger logger = LogManager.getLogger(NaturalLanguageGeneratorTest.class);
 
 	@SpringBeanByType
 	private INaturalLanguageGenerator generator;

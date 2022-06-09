@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +43,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 
     private static final long serialVersionUID = -2441804641147165510L;
 
-    private static final Logger logger = Logger.getLogger(TcsRdfReferenceImport.class);
+    private static final Logger logger = LogManager.getLogger(TcsRdfReferenceImport.class);
 
 	private static int modCount = 1000;
 

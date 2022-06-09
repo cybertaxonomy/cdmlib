@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -90,7 +90,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     USER("User"),
     ;
 
-    public static final Logger logger = Logger.getLogger(PermissionClass.class);
+    public static final Logger logger = LogManager.getLogger(PermissionClass.class);
 
     private PermissionClass(String key){
         //we have no UUIDs defined yet, but needed for tests

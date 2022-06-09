@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -91,7 +91,7 @@ import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
  */
 public class CdmApplicationController implements ICdmRepository {
 
-    private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
+    private static final Logger logger = LogManager.getLogger(CdmApplicationController.class);
 
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
 

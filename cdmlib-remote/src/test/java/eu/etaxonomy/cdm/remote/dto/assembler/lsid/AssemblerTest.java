@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
@@ -91,7 +91,7 @@ import net.sf.cglib.proxy.MethodProxy;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class AssemblerTest extends UnitilsJUnit4 {
 
-    public static final Logger logger = Logger.getLogger(AssemblerTest.class);
+    public static final Logger logger = LogManager.getLogger(AssemblerTest.class);
 
     @SpringBeanByType
     private Mapper mapper;

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.print;
 
 import java.util.ArrayList;
@@ -14,7 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
@@ -27,8 +27,8 @@ import org.jdom.input.SAXBuilder;
  * @since Jul 16, 2010
  */
 public abstract class XmlEntityFactoryBase implements IXMLEntityFactory {
-	private static final Logger logger = Logger
-			.getLogger(XmlEntityFactoryBase.class);
+
+	private static final Logger logger = LogManager.getLogger(XmlEntityFactoryBase.class);
 
 	/**
 	 * A list of XML element names that are used to store collections

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -42,7 +42,7 @@ public class OriginalSourceDaoImpl
         implements IOriginalSourceDao {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(OriginalSourceDaoImpl.class);
+	private static final Logger logger = LogManager.getLogger(OriginalSourceDaoImpl.class);
 
 	public OriginalSourceDaoImpl() {
 		super(OriginalSourceBase.class);

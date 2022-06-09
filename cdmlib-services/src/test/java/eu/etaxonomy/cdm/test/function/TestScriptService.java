@@ -17,7 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.transaction.TransactionStatus;
@@ -64,7 +65,7 @@ import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 
 public class TestScriptService {
 
-    private static final Logger logger = Logger.getLogger(TestScriptService.class);
+    private static final Logger logger = LogManager.getLogger(TestScriptService.class);
 
 	private void testNewConfigControler(){
 
@@ -430,7 +431,8 @@ public class TestScriptService {
 			UUID uuid1 = botName1.getUuid();
 			UUID uuid2 = botName2.getUuid();
 			try {
-				Logger loggerTrace = Logger.getLogger("org.hibernate.type");
+				@SuppressWarnings("unused")
+                Logger loggerTrace = LogManager.getLogger("org.hibernate.type");
 				//loggerTrace.setLevel(Level.TRACE);
 				System.out.println(logger.getName());
 

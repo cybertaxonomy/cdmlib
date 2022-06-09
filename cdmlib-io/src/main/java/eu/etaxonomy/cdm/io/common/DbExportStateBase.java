@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class DbExportStateBase<CONFIG extends DbExportConfiguratorBase<? extends DbExportStateBase<CONFIG, TRANSFORM>, TRANSFORM, Source>, TRANSFORM extends IExportTransformer>
         extends ExportStateBase<CONFIG, TRANSFORM, Source> {
 	
-    private static final Logger logger = Logger.getLogger(DbExportStateBase.class);
+    private static final Logger logger = LogManager.getLogger(DbExportStateBase.class);
 
 	protected Map<UUID, Integer> dbIdMap = new HashMap<UUID, Integer>();
 

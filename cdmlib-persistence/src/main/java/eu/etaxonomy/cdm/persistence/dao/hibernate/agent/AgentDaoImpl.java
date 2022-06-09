@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAgentDao{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AgentDaoImpl.class);
+	private static final Logger logger = LogManager.getLogger(AgentDaoImpl.class);
 
 	public AgentDaoImpl() {
 		super(AgentBase.class);

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.config;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 // @EnableCaching // for future use
 public class EhCacheConfiguration implements DisposableBean {
 
-    public static final Logger logger = Logger.getLogger(EhCacheConfiguration.class);
+    public static final Logger logger = LogManager.getLogger(EhCacheConfiguration.class);
 
     @Autowired(required = false)
     public DiskStoreConfiguration diskStoreConfiguration = null;

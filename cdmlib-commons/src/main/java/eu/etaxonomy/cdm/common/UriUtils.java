@@ -52,14 +52,15 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author n.hoffmann
  * @since Sep 23, 2010
  */
 public class UriUtils {
-    private static final Logger logger = Logger.getLogger(UriUtils.class);
+    private static final Logger logger = LogManager.getLogger(UriUtils.class);
 
     protected static final String URI_IS_NOT_ABSOLUTE = "URI is not absolute (protocol is missing)";
 

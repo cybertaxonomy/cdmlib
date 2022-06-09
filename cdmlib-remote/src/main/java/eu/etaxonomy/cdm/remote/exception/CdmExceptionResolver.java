@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.exception;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
@@ -19,7 +19,7 @@ import com.ibm.lsid.LSIDException;
 
 public class CdmExceptionResolver extends SimpleMappingExceptionResolver {
 	
-	public static final Logger logger = Logger.getLogger(CdmExceptionResolver.class);
+	public static final Logger logger = LogManager.getLogger(CdmExceptionResolver.class);
 	
 	
 	

@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -85,7 +85,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class NamedArea extends OrderedTermBase<NamedArea> {
 
     private static final long serialVersionUID = 6248434369557403036L;
-    private static final Logger logger = Logger.getLogger(NamedArea.class);
+    private static final Logger logger = LogManager.getLogger(NamedArea.class);
 
 	//Continent UUIDs
     private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");

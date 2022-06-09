@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -199,7 +199,7 @@ public class TaxonName
                 INomenclaturalStanding {
 
     private static final long serialVersionUID = -791164269603409712L;
-    private static final Logger logger = Logger.getLogger(TaxonName.class);
+    private static final Logger logger = LogManager.getLogger(TaxonName.class);
 
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.

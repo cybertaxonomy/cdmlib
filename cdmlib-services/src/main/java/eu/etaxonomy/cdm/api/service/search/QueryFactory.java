@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 public class QueryFactory {
 
-    public static final Logger logger = Logger.getLogger(QueryFactory.class);
+    public static final Logger logger = LogManager.getLogger(QueryFactory.class);
 
     protected ILuceneIndexToolProvider toolProvider;
 

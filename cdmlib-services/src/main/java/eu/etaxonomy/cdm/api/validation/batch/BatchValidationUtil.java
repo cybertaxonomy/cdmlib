@@ -17,7 +17,7 @@ import java.util.List;
 import javax.print.attribute.standard.Media;
 import javax.validation.Validator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IService;
@@ -62,7 +62,7 @@ class BatchValidationUtil {
     }
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(BatchValidationUtil.class);
+    private static final Logger logger = LogManager.getLogger(BatchValidationUtil.class);
 
     // Ideally retrieved dynamically through reflection, but got stuck on
     // getXXXService methods in ICdmRepository returning proxies

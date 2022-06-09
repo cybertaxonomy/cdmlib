@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -56,7 +56,7 @@ public class EndnoteRecordsImport
         implements ICdmIO<EndnoteImportState> {
 
     private static final long serialVersionUID = -8591314328811284619L;
-    private static final Logger logger = Logger.getLogger(EndnoteRecordsImport.class);
+    private static final Logger logger = LogManager.getLogger(EndnoteRecordsImport.class);
 
 	private static int modCount = 1000;
 

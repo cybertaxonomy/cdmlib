@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +61,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		implements IIdentifiableEntityService<T>{
 
 	protected static final int UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE = 1000;
-	protected static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
+	protected static final  Logger logger = LogManager.getLogger(IdentifiableServiceBase.class);
 
 	@Override
 	@Transactional(readOnly = true)

@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -112,7 +112,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
                 implements IMultiLanguageTextHolder, IIntextReferenceTarget, IDescribable<DescriptionBase<S>>, IPublishable  {
 
     private static final long serialVersionUID = 6932680139334408031L;
-    private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
+    private static final Logger logger = LogManager.getLogger(SpecimenOrObservationBase.class);
 
     /**
      * An indication of what the unit record describes.

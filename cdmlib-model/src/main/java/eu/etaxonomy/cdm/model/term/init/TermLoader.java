@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 @Component
 public class TermLoader implements ITermLoader {
 
-	private static final Logger logger = Logger.getLogger(TermLoader.class);
+	private static final Logger logger = LogManager.getLogger(TermLoader.class);
 
 	@Override
 	public void unloadAllTerms(){

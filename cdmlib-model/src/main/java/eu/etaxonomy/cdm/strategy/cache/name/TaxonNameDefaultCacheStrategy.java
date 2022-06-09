@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -43,7 +43,7 @@ public class TaxonNameDefaultCacheStrategy
         extends NameCacheStrategyBase
         implements INonViralNameCacheStrategy {
 
-    private static final Logger logger = Logger.getLogger(TaxonNameDefaultCacheStrategy.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNameDefaultCacheStrategy.class);
 	private static final long serialVersionUID = -6577757501563212669L;
 
     final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");

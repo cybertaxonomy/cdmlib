@@ -185,6 +185,13 @@
       <groupId>de.digitalcollections.iiif</groupId>
       <artifactId>iiif-apis</artifactId>
     </dependency>
+    
+    <!-- only until problems in LoggingConfigurator are solved -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    
   </dependencies>
 </project>
 

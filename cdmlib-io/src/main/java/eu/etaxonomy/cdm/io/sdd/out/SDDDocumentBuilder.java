@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.sdd.out;
 
 import java.io.File;
@@ -25,7 +24,8 @@ import java.util.Set;
 
 import javax.xml.bind.Marshaller;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xerces.dom.DocumentImpl;
 import org.apache.xerces.dom.ElementImpl;
 import org.apache.xerces.impl.xpath.regex.ParseException;
@@ -193,8 +193,7 @@ public class SDDDocumentBuilder {
 
 	private final Language defaultLanguage = Language.DEFAULT();
 
-	private static final Logger logger = Logger
-			.getLogger(SDDDocumentBuilder.class);
+	private static final Logger logger = LogManager.getLogger(SDDDocumentBuilder.class);
 
 	public SDDDocumentBuilder() throws SAXException, IOException {
 		document = new DocumentImpl();

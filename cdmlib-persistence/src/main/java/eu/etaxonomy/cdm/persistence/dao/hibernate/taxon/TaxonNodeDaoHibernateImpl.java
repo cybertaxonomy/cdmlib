@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Projections;
@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 		implements ITaxonNodeDao {
 
-	private static final Logger logger = Logger.getLogger(TaxonNodeDaoHibernateImpl.class);
+	private static final Logger logger = LogManager.getLogger(TaxonNodeDaoHibernateImpl.class);
 
     private static final int DEFAULT_SET_SUBTREE_PARTITION_SIZE = 100;
 

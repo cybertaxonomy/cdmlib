@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.json.processor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import net.sf.json.CycleSetAcess;
@@ -24,7 +24,7 @@ import net.sf.json.CycleSetAcess;
 @Deprecated
 public class CdmBeanProcessingRegistry extends CycleSetAcess {
 
-	private static final Logger logger = Logger.getLogger(CdmBeanProcessingRegistry.class);
+	private static final Logger logger = LogManager.getLogger(CdmBeanProcessingRegistry.class);
 
 	protected static ThreadLocal<Set<CdmBase>> processedBeans = new ThreadLocal<Set<CdmBase>>(){
 		      @Override

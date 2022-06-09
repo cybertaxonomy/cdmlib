@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
@@ -24,7 +24,7 @@ import org.hibernate.event.spi.SaveOrUpdateEventListener;
 public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeEventListener {
     private static final long serialVersionUID = -5511287200489449838L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CacheStrategyGenerator.class);
+    private static final Logger logger = LogManager.getLogger(CacheStrategyGenerator.class);
 
     @Override
     public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {

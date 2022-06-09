@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @author a.mueller
  */
 public class NonViralNameTest extends EntityTestBase {
-	private static Logger logger = Logger.getLogger(NonViralNameTest.class);
+	private static Logger logger = LogManager.getLogger(NonViralNameTest.class);
 
 	private INonViralName nonViralName1;
 	private INonViralName nonViralName2;

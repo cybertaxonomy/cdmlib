@@ -17,7 +17,7 @@ import java.util.EnumSet;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -42,7 +42,7 @@ public class EnumSetUserType<E extends Enum<E>>
 
     private static final long serialVersionUID = 1060802925284271666L;
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(EnumSetUserType.class);
+	private static final Logger logger = LogManager.getLogger(EnumSetUserType.class);
 
     private static final String SEP = "#";
 

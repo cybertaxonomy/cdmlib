@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.agent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class TeamTest {
 
-	public static final Logger logger = Logger.getLogger(TeamTest.class);
+	public static final Logger logger = LogManager.getLogger(TeamTest.class);
 
 	private Team teamProtected;
 	private Team teamWithMembers;

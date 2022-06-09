@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(StatisticsServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger(StatisticsServiceImplTest.class);
 
 	// constant if you want to printout the database content to console:
 	// only recommended for a small probe

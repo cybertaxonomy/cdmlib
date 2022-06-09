@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import eu.etaxonomy.cdm.database.NamedContextHolder;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.database.NamedContextHolder;
  */
 @Deprecated
 public class DatasourceContextHandlerInterceptor extends HandlerInterceptorAdapter {
-	private static final Logger logger = Logger.getLogger(DatasourceContextHandlerInterceptor.class);
+	private static final Logger logger = LogManager.getLogger(DatasourceContextHandlerInterceptor.class);
 
 	private final static Pattern basepathPattern = Pattern.compile("^/([^/]+)/.*");
 

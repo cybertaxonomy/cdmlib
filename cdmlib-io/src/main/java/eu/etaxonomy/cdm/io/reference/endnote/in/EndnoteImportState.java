@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 public class EndnoteImportState
             extends ImportStateBase<EndnoteImportConfigurator, EndNoteImportBase>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(EndnoteImportState.class);
+	private static final Logger logger = LogManager.getLogger(EndnoteImportState.class);
 
 	public EndnoteImportState(EndnoteImportConfigurator config) {
 		super(config);

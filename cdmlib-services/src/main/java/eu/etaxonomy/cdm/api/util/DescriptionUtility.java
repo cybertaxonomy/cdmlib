@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
  */
 public class DescriptionUtility {
 
-    private static final Logger logger = Logger.getLogger(DescriptionUtility.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionUtility.class);
 
 
     /**

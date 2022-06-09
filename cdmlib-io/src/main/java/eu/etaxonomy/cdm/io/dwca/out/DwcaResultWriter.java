@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,7 +26,7 @@ public class DwcaResultWriter extends DwcaExportBase {
 
     private static final long serialVersionUID = -1657568483721887287L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaDescriptionExport.class);
 
 
     /**

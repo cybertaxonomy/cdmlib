@@ -15,7 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaTaxExport extends DwcaExportBase {
     private static final long serialVersionUID = -3770976064909193441L;
 
-    private static final Logger logger = Logger.getLogger(DwcaTaxExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaTaxExport.class);
 
 
     @Autowired

@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -125,7 +125,7 @@ public abstract class Cdm2CdmImportBase
         extends CdmImportBase<Cdm2CdmImportConfigurator, Cdm2CdmImportState> {
 
     private static final long serialVersionUID = 1344722304369624443L;
-    private static final Logger logger = Logger.getLogger(Cdm2CdmImportBase.class);
+    private static final Logger logger = LogManager.getLogger(Cdm2CdmImportBase.class);
 
     //quick and dirty
     private Cdm2CdmImportState stateX;

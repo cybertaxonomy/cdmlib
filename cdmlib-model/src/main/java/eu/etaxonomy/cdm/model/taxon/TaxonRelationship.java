@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -60,7 +60,7 @@ public class TaxonRelationship
         extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
     private static final long serialVersionUID = 1378437971941534653L;
-    static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
+    static private final Logger logger = LogManager.getLogger(TaxonRelationship.class);
 
     @XmlElement(name = "RelatedFrom")
     @XmlIDREF

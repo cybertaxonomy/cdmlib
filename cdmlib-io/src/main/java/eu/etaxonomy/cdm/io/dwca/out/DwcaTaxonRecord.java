@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  */
 public class DwcaTaxonRecord extends DwcaRecordBase{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaTaxonRecord.class);
+	private static final Logger logger = LogManager.getLogger(DwcaTaxonRecord.class);
 
 	private DwcaId scientificNameId;
 	private UUID acceptedNameUsageId;

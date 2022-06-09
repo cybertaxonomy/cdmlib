@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.MappingException;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
@@ -56,7 +57,7 @@ import org.hibernate.type.Type;
 //see also TableGeneratorGlobalOverride
 public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
-	private static final Logger logger = Logger.getLogger(TableGenerator.class);
+	private static final Logger logger = LogManager.getLogger(TableGenerator.class);
 
 	@Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {

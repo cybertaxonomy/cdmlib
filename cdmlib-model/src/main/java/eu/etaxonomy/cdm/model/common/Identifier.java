@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
@@ -47,7 +47,7 @@ public class Identifier
 
     private static final long serialVersionUID = 3337567049024506936L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Identifier.class);
+	private static final Logger logger = LogManager.getLogger(Identifier.class);
 
 
 	@XmlElement(name ="Identifier" )

@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
  *
  */
 public class ImportHandlerBase extends DefaultHandler2 {
-	private static final Logger logger = Logger.getLogger(ImportHandlerBase.class);
+	private static final Logger logger = LogManager.getLogger(ImportHandlerBase.class);
 	
 	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
 	

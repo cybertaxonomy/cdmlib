@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.ProjectionList;
@@ -61,7 +61,7 @@ public class DescriptionDaoImpl
             extends IdentifiableDaoBase<DescriptionBase>
             implements IDescriptionDao{
 
-    private static final Logger logger = Logger.getLogger(DescriptionDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionDaoImpl.class);
 
     public DescriptionDaoImpl() {
         super(DescriptionBase.class);

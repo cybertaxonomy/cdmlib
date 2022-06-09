@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.taxonx;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator, CdmImportBase>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonXImportState.class);
+	private static final Logger logger = LogManager.getLogger(TaxonXImportState.class);
 
 	private Reference modsReference;
 

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * This exception should be thrown if a derived unit facade does not support a certain
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 public class MethodNotSupportedByDerivedUnitTypeException extends Exception {
 	private static final long serialVersionUID = -1135345372784107810L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MethodNotSupportedByDerivedUnitTypeException.class);
+	private static final Logger logger = LogManager.getLogger(MethodNotSupportedByDerivedUnitTypeException.class);
 
 
 	/**

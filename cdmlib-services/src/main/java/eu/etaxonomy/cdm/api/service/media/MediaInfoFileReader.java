@@ -20,7 +20,7 @@ import org.apache.commons.imaging.common.ImageMetadata.ImageMetadataItem;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.common.UriUtils;
  */
 public class MediaInfoFileReader extends AbstactMediaMetadataReader {
 
-    private static Logger logger = Logger.getLogger(MediaInfoFileReader.class);
+    private static Logger logger = LogManager.getLogger(MediaInfoFileReader.class);
 
     public static final Integer IMAGE_READ_TIMEOUT = 3000; // ms
 

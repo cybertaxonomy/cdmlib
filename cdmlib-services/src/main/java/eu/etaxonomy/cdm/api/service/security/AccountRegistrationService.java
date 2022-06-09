@@ -15,7 +15,7 @@ import java.util.Optional;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -45,7 +45,7 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
 
     protected static final String USER_NAME_EXISTS_MSG = "This user name is already being used by someone else.";
 
-    private static Logger logger = Logger.getLogger(PasswordResetRequest.class);
+    private static Logger logger = LogManager.getLogger(PasswordResetRequest.class);
 
     @Autowired
     @Qualifier("accountCreationRequestTokenStore")

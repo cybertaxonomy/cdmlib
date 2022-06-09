@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	private static final long serialVersionUID = 6895093454763415279L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivationEventType.class);
+	private static final Logger logger = LogManager.getLogger(DerivationEventType.class);
 
 	private static final UUID uuidAccessioning = UUID.fromString("3c7c0929-0528-493e-9e5f-15e0d9585fa1");
 	private static final UUID uuidDnaExtraction = UUID.fromString("f9f957b6-88c0-4531-9a7f-b5fb1c9daf66");

@@ -19,7 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  */
 public class CoordinateConverter {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CoordinateConverter.class);
+	private static final Logger logger = LogManager.getLogger(CoordinateConverter.class);
 
     //Patterns
     private List<CoordinatePattern> patterns;

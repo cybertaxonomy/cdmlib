@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.markup.handler;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.ImportHandlerBase;
  */
 public class TreatmentHandler extends ImportHandlerBase{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TreatmentHandler.class);
+	private static final Logger logger = LogManager.getLogger(TreatmentHandler.class);
 	
 	private boolean isInTaxon;
 

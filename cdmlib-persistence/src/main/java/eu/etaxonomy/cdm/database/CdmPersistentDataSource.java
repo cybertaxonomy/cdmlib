@@ -21,7 +21,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.spi.RegionFactory;
 import org.jdom.Attribute;
 import org.jdom.Element;
@@ -48,7 +48,7 @@ public class CdmPersistentDataSource
         implements ICdmPersistentSource {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
+    private static final Logger logger = LogManager.getLogger(CdmPersistentDataSource.class);
 
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
 

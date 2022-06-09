@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hsqldb.server.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
  * @author a.mueller
  */
 public class LocalHsqldb extends BasicDataSource {
-	private static final Logger logger = Logger.getLogger(LocalHsqldb.class);
+	private static final Logger logger = LogManager.getLogger(LocalHsqldb.class);
 
 	private String sep = System.getProperty("file.separator");
 

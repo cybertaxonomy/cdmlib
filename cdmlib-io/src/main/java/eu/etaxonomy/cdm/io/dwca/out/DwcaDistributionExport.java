@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -33,7 +33,7 @@ public class DwcaDistributionExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = -3274468345456407430L;
 
-    private static final Logger logger = Logger.getLogger(DwcaDistributionExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaDistributionExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Distribution";
 	protected static final String fileName = "distribution.txt";

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class SortIndexUpdater extends SchemaUpdaterStepBase {
 
-    private static final Logger logger = Logger.getLogger(SortIndexUpdater.class);
+    private static final Logger logger = LogManager.getLogger(SortIndexUpdater.class);
 
 	private final String tableName;
     private final String sortIndexColumn;

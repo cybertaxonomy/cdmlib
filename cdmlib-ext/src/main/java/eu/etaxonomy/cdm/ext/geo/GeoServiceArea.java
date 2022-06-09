@@ -23,7 +23,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
@@ -46,7 +47,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
  */
 public class GeoServiceArea {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(GeoServiceArea.class);
+    private static final Logger logger = LogManager.getLogger(GeoServiceArea.class);
 
     private static final String VALUE = "value";
     private static final String FIELD = "field";

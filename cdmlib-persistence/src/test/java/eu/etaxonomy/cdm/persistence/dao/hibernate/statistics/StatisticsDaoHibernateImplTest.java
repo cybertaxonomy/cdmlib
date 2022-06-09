@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class StatisticsDaoHibernateImplTest
         extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(StatisticsDaoHibernateImplTest.class);
+    private static final Logger logger = LogManager.getLogger(StatisticsDaoHibernateImplTest.class);
 
 	@SpringBeanByType
 	private IStatisticsDao statisticsDao;

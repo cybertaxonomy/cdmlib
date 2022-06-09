@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 import java.lang.reflect.Method;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * @since 06.02.2012
  */
 public class DbAreaMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	private static final Logger logger = Logger.getLogger(DbAreaMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbAreaMapper.class);
 
 	private Method method;
 	private boolean isCache;

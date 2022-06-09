@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -59,7 +59,7 @@ public class NameTypeDesignation
         extends TypeDesignationBase<NameTypeDesignationStatus>  {
 
 	private static final long serialVersionUID = 8478663508862210879L;
-	final static Logger logger = Logger.getLogger(NameTypeDesignation.class);
+	final static Logger logger = LogManager.getLogger(NameTypeDesignation.class);
 
 	@XmlElement(name = "IsRejectedType")
 	private boolean rejectedType;

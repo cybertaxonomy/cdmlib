@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class DefaultMergeStrategyTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DefaultMergeStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(DefaultMergeStrategyTest.class);
 
 	private DefaultMergeStrategy bookMergeStrategy;
 	private Reference book1;

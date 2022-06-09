@@ -23,7 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -83,7 +83,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/taxon/{uuid}"})
 public class TaxonController extends AbstractIdentifiableController<TaxonBase, ITaxonService>{
 
-    public static final Logger logger = Logger.getLogger(TaxonController.class);
+    public static final Logger logger = LogManager.getLogger(TaxonController.class);
 
     @Autowired
     private IOccurrenceService occurrenceService;

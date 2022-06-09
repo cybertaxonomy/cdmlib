@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -60,7 +60,7 @@ public class EnumUserType<E extends Enum<E>>
 
     private static final long serialVersionUID = 4641078915907621907L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(EnumUserType.class);
+	private static final Logger logger = LogManager.getLogger(EnumUserType.class);
 
     private static final int[] SQL_TYPES = { Types.VARCHAR };
 

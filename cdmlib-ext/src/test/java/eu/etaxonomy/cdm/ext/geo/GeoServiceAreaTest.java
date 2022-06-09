@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -12,9 +12,9 @@ import static org.junit.Assert.fail;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import org.junit.Test;
  *
  */
 public class GeoServiceAreaTest {
-	private static final Logger logger = Logger.getLogger(GeoServiceAreaTest.class);
+	private static final Logger logger = LogManager.getLogger(GeoServiceAreaTest.class);
 
 	/**
 	 * @throws java.lang.Exception
@@ -41,8 +41,8 @@ public class GeoServiceAreaTest {
 	public void setUp() throws Exception {
 	}
 
-// ********************************** TESTS ****************************************	
-	
+// ********************************** TESTS ****************************************
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.ext.geo.GeoServiceArea#add(java.lang.String, java.lang.String, java.lang.String)}.
 	 */

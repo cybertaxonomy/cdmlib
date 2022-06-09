@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.sandbox.queries.FuzzyLikeThisQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -114,7 +114,7 @@ public class NameServiceImpl
           extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
           implements INameService {
 
-    static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
+    static private final Logger logger = LogManager.getLogger(NameServiceImpl.class);
 
     @Autowired
     private IOccurrenceService occurrenceService;

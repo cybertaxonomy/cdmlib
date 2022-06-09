@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.excel.taxa;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
@@ -23,7 +23,7 @@ public abstract class TaxonExcelImportBase
         extends ExcelTaxonOrSpecimenImportBase<TaxonExcelImportState, ExcelImportConfiguratorBase, ExcelRowBase> {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonExcelImportBase.class);
+	private static final Logger logger = LogManager.getLogger(TaxonExcelImportBase.class);
 
 	/*
 	 * Supported Columns:

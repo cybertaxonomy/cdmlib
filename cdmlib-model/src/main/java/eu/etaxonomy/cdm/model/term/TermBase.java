@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -63,7 +63,7 @@ public abstract class TermBase
 
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TermBase.class);
+    private static final Logger logger = LogManager.getLogger(TermBase.class);
 
     @XmlElement(name = "URI")
     @Field(analyze = Analyze.NO)

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -77,7 +77,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         extends DaoBase
         implements ICdmEntityDao<T> {
 
-    private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
+    private static final Logger logger = LogManager.getLogger(CdmEntityDaoBase.class);
 
     protected int flushAfterNo = 1000; // large numbers may cause synchronisation errors
                                         // when commiting the session

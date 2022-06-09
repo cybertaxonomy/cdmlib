@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -44,7 +44,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
 
     private static final long serialVersionUID = 8329871164348514709L;
 
-    private static final Logger logger = Logger.getLogger(DerivationTreeSummaryDTO.class);
+    private static final Logger logger = LogManager.getLogger(DerivationTreeSummaryDTO.class);
 
     private List<Link> specimenScans = new ArrayList<>();
     private List<MolecularData> molecularDataList = new ArrayList<>();

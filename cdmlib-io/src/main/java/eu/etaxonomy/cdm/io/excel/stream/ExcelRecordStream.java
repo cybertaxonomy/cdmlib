@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  *
  */
 public class ExcelRecordStream  implements IItemStream{
-	private static Logger logger = Logger.getLogger(ExcelRecordStream.class);
+	private static Logger logger = LogManager.getLogger(ExcelRecordStream.class);
 
 	private ExcelStreamImportState state;
 

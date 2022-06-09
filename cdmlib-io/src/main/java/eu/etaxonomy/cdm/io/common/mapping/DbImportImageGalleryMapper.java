@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.URI;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @since 12.05.2009
  */
 public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, Taxon> implements IDbImportMapper<DbImportStateBase<?,?>,Taxon>{
-	private static final Logger logger = Logger.getLogger(DbImportImageGalleryMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportImageGalleryMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
 

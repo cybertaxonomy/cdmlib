@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
 
@@ -40,7 +40,7 @@ public class VerbatimTimePeriod extends TimePeriod {
 
     private static final long serialVersionUID = -6543644293635460526L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(VerbatimTimePeriod.class);
+    private static final Logger logger = LogManager.getLogger(VerbatimTimePeriod.class);
 
     private static VerbatimTimePeriodFormatter formatter = VerbatimTimePeriodFormatter.NewDefaultInstance();
 

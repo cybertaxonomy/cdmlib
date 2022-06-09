@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -91,7 +91,7 @@ import io.swagger.annotations.Api;
 public class NameCatalogueController extends AbstractController<TaxonName, INameService> implements ResourceLoaderAware {
 
 
-    private static final Logger logger = Logger.getLogger(NameCatalogueController.class);
+    private static final Logger logger = LogManager.getLogger(NameCatalogueController.class);
 
     private ResourceLoader resourceLoader;
 

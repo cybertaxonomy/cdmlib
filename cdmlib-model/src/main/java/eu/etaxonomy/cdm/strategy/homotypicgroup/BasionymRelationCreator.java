@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -44,7 +44,7 @@ public class BasionymRelationCreator extends StrategyBase {
 
     private static final long serialVersionUID = -4711438819176248413L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(BasionymRelationCreator.class);
+    private static final Logger logger = LogManager.getLogger(BasionymRelationCreator.class);
 
     private UUID uuid = UUID.fromString("e9e1d1f5-e398-4ba7-81a6-92875573d7cb");
 

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.hibernate.search;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  */
 public class TaxonRelationshipClassBridge extends AbstractClassBridge {
 
-    public static final Logger logger = Logger.getLogger(TaxonRelationshipClassBridge.class);
+    public static final Logger logger = LogManager.getLogger(TaxonRelationshipClassBridge.class);
 
     private static final String FROM = ".from.";
     private static final String TO = ".to.";

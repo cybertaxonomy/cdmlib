@@ -11,8 +11,9 @@ package eu.etaxonomy.cdm.common.monitor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This is a console style progress monitor with prints the progress information to configured {@link Logger} with level {@link Level#INFO}
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
 public class DefaultProgressMonitor implements IProgressMonitor {
 
     private static final long serialVersionUID = 8782649283568146667L;
-    private static final Logger logger = Logger.getLogger(DefaultProgressMonitor.class);
+    private static final Logger logger = LogManager.getLogger(DefaultProgressMonitor.class);
 
     public static final DefaultProgressMonitor NewInstance(){
         return new DefaultProgressMonitor();

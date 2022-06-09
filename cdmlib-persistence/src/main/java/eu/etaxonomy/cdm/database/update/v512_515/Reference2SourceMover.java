@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 public class Reference2SourceMover extends SchemaUpdaterStepBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(Reference2SourceMover.class);
+    private static final Logger logger = LogManager.getLogger(Reference2SourceMover.class);
 
     private final String tableName;
     private final String citationsIdAttr;

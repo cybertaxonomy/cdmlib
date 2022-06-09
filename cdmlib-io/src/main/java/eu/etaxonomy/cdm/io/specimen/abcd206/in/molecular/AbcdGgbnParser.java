@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.common.URI;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -61,7 +61,7 @@ public class AbcdGgbnParser {
 
     private static final String REVERSE = "reverse";
 
-    private static final Logger logger = Logger.getLogger(AbcdGgbnParser.class);
+    private static final Logger logger = LogManager.getLogger(AbcdGgbnParser.class);
 
     private final String prefix = "ggbn:";
 

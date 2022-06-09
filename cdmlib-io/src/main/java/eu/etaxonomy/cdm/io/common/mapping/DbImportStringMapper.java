@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportStringMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportStringMapper.class);
 
 	public static DbImportStringMapper NewInstance (String dbAttributeString, String cdmAttributeString) {
 		boolean obligatory = false;

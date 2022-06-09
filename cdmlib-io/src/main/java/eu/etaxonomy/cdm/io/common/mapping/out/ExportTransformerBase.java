@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
  */
 public class ExportTransformerBase implements IExportTransformer {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExportTransformerBase.class);
+	private static final Logger logger = LogManager.getLogger(ExportTransformerBase.class);
 
 	@Override
 	public Object getKeyByFeature(Feature feature) throws UndefinedTransformerMethodException {

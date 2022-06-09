@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -30,7 +30,7 @@ public class TypeDesignationDaoHibernateImpl
             implements ITypeDesignationDao {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TypeDesignationDaoHibernateImpl.class);
+	private static final Logger logger = LogManager.getLogger(TypeDesignationDaoHibernateImpl.class);
 
 	public TypeDesignationDaoHibernateImpl() {
 		super((Class)(TypeDesignationBase.class));

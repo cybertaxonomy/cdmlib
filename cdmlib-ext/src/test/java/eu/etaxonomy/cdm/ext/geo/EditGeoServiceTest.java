@@ -29,7 +29,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +67,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since 08.10.2008
  */
 public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
+    private static final Logger logger = LogManager.getLogger(EditGeoServiceTest.class);
 
     private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
     private static URI editMapServiceUri;

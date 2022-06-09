@@ -24,7 +24,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.IMethodCache;
  */
 public abstract class AbstractBeanInitializer<CDM extends CdmBase> implements IBeanInitializer{
 
-    public static final Logger logger = Logger.getLogger(AbstractBeanInitializer.class);
+    public static final Logger logger = LogManager.getLogger(AbstractBeanInitializer.class);
 
     @Autowired
     private IMethodCache methodCache;

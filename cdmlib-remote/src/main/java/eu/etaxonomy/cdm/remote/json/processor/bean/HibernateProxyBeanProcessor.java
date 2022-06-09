@@ -3,7 +3,7 @@
  */
 package eu.etaxonomy.cdm.remote.json.processor.bean;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import net.sf.json.CycleSetAcess;
@@ -16,7 +16,7 @@ import net.sf.json.processors.JsonBeanProcessor;
  */
 public class HibernateProxyBeanProcessor extends CycleSetAcess implements JsonBeanProcessor {
 
-	public static final Logger logger = Logger.getLogger(HibernateProxyBeanProcessor.class);
+	public static final Logger logger = LogManager.getLogger(HibernateProxyBeanProcessor.class);
 
 	@Override
     public JSONObject processBean(Object bean, JsonConfig jsonConfig) {

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.IoResultBase;
 
@@ -20,7 +20,7 @@ public abstract class IoStateBase<CONFIG
         extends IIoConfigurator, IO extends ICdmIO, RESULT extends IoResultBase> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(IoStateBase.class);
+	private static final Logger logger = LogManager.getLogger(IoStateBase.class);
 
 	private IO currentIO;
 

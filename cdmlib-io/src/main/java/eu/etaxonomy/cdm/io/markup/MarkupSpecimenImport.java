@@ -23,7 +23,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class MarkupSpecimenImport extends MarkupImportBase  {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupSpecimenImport.class);
+	private static final Logger logger = LogManager.getLogger(MarkupSpecimenImport.class);
 
 	private static final String ALTERNATIVE_COLLECTION_TYPE_STATUS = "alternativeCollectionTypeStatus";
 	private static final String ALTERNATIVE_COLLECTOR = "alternativeCollector";

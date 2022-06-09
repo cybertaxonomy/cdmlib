@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
 public class TreeIndexUpdater
         extends AuditedSchemaUpdaterStepBase {
 
-    private static final Logger logger = Logger.getLogger(TreeIndexUpdater.class);
+    private static final Logger logger = LogManager.getLogger(TreeIndexUpdater.class);
 
 	private String indexColumnName = "treeIndex";
 	private final String treeIdColumnName;

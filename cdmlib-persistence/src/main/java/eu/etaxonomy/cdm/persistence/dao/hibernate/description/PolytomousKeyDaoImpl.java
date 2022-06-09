@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 public class PolytomousKeyDaoImpl extends IdentifiableDaoBase<PolytomousKey> implements IPolytomousKeyDao {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(PolytomousKeyDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger(PolytomousKeyDaoImpl.class);
 
 	@Autowired
 	IPolytomousKeyNodeDao nodeDao;

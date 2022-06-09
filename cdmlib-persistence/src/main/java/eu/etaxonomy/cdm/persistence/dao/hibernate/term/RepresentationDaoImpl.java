@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
 public class RepresentationDaoImpl 
 extends LanguageStringBaseDaoImpl<Representation> implements IRepresentationDao {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(RepresentationDaoImpl.class);
+	private static final Logger logger = LogManager.getLogger(RepresentationDaoImpl.class);
 
 	public RepresentationDaoImpl() {
 		super(Representation.class); 

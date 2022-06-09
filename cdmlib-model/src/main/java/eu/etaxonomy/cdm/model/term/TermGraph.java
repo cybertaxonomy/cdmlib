@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 
@@ -42,7 +42,7 @@ public class TermGraph <T extends DefinedTermBase>
             extends TermGraphBase<T, TermRelation<T>> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
-	private static final Logger logger = Logger.getLogger(TermGraph.class);
+	private static final Logger logger = LogManager.getLogger(TermGraph.class);
 
 //******************** FACTORY METHODS ******************************************/
 

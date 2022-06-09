@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ public class DescriptionElementServiceImpl
         extends AnnotatableServiceBase<DescriptionElementBase,IDescriptionElementDao>
         implements IDescriptionElementService {
 
-    private static final Logger logger = Logger.getLogger(DescriptionElementServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionElementServiceImpl.class);
 
     @Override
     @Autowired

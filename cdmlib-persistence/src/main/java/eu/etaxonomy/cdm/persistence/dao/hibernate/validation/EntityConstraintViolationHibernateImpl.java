@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.validation;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -30,7 +30,7 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
         IEntityConstraintViolationDao {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(EntityConstraintViolationHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(EntityConstraintViolationHibernateImpl.class);
 
     public EntityConstraintViolationHibernateImpl() {
         super(EntityConstraintViolation.class);

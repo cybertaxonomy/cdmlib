@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.print.out;
 
 import java.io.File;
@@ -22,7 +21,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -35,11 +35,10 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
  *
  * @author n.hoffmann
  * @since Apr 20, 2010
- * @version 1.0
  */
 public abstract class PublishOutputModuleBase implements IPublishOutputModule {
-	private static final Logger logger = Logger
-			.getLogger(PublishOutputModuleBase.class);
+
+	private static final Logger logger = LogManager.getLogger(PublishOutputModuleBase.class);
 
 	/**
 	 * The date format used by {@link #generateFilenameWithDate(String, String)}

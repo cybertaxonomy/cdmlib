@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.tcsxml.in;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  */
 @Component
 public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
-	private static final Logger logger = Logger.getLogger(TcsXmlSpecimensImport.class);
+	private static final Logger logger = LogManager.getLogger(TcsXmlSpecimensImport.class);
 
 	private static int modCount = 1000;
 	

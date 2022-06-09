@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class DbUriMapper
             extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
 
-    private static final Logger logger = Logger.getLogger(DbUriMapper.class);
+    private static final Logger logger = LogManager.getLogger(DbUriMapper.class);
 
 	private static final int MAX_PRECISION = -1;  //precision for datatype nvarchar(max) == clob (SQL Server 2008)
 

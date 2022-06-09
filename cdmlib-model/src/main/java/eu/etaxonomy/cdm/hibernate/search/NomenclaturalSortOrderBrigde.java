@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.hibernate.search;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.SortedDocValuesField;
@@ -47,7 +47,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
 
     private static final char PAD_CHAR = '0';
 
-    public static final Logger logger = Logger.getLogger(NomenclaturalSortOrderBrigde.class);
+    public static final Logger logger = LogManager.getLogger(NomenclaturalSortOrderBrigde.class);
 
     final static int MAX_FIELD_LENGTH = 50; // used to pab the strings, should be 255 set to 50 for debugging FIXME
     public final static String NAME_SORT_FIELD_NAME = "nomenclaturalOrder__sort";

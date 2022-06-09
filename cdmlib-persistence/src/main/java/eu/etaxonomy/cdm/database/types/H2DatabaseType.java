@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2CorrectedDialect;
 
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.database.LocalH2;
  *
  */
 public class H2DatabaseType extends DatabaseTypeBase {
-	private static final Logger logger = Logger.getLogger(H2DatabaseType.class);
+	private static final Logger logger = LogManager.getLogger(H2DatabaseType.class);
 
 	//typeName
 	private final String typeName = "H2 Database";

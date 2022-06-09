@@ -13,7 +13,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.GeneralParser;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class MarkupModsImport extends MarkupImportBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupModsImport.class);
+	private static final Logger logger = LogManager.getLogger(MarkupModsImport.class);
 
 	protected static final String MODS_TITLEINFO = "titleInfo";
 	protected static final String MODS_ABSTRACT = "abstract";

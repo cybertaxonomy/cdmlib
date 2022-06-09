@@ -13,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class OrderedTermBaseTest extends EntityTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(OrderedTermBaseTest.class);
+	private static final Logger logger = LogManager.getLogger(OrderedTermBaseTest.class);
 
 	private OrderedTermBase otb1;
 	private OrderedTermBase otb2;

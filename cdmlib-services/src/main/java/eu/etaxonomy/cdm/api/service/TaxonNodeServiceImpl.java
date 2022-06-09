@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -103,7 +103,7 @@ public class TaxonNodeServiceImpl
            extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao>
            implements ITaxonNodeService{
 
-    private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNodeServiceImpl.class);
 
     @Autowired
     private IBeanInitializer defaultBeanInitializer;

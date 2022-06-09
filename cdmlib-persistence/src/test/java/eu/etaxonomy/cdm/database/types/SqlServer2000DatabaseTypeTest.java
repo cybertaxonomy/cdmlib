@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.database.types;
 
 import static org.junit.Assert.*;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
  */
 public class SqlServer2000DatabaseTypeTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SqlServer2000DatabaseTypeTest.class);
+	private static final Logger logger = LogManager.getLogger(SqlServer2000DatabaseTypeTest.class);
 	
 	CdmPersistentDataSource dataSource;
 	static DatabaseTypeEnum enumType;

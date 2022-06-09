@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.DocValuesType;
@@ -19,7 +19,7 @@ import org.apache.lucene.index.DocValuesType;
  */
 public class LuceneDocumentUtility {
 
-    public static final Logger logger = Logger.getLogger(LuceneDocumentUtility.class);
+    public static final Logger logger = LogManager.getLogger(LuceneDocumentUtility.class);
 
     public static void setOrReplaceDocValueField(Field field, Document document) {
 

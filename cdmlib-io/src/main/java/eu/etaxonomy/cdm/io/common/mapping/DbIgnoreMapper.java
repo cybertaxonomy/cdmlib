@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class DbIgnoreMapper
         extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {
 
-    private static final Logger logger = Logger.getLogger(DbIgnoreMapper.class);
+    private static final Logger logger = LogManager.getLogger(DbIgnoreMapper.class);
 
 //*************************** FACTORY ***************************************************************//
 

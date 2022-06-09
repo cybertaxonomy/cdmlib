@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupImportState> implements IImportConfigurator {
     private static final long serialVersionUID = 779807547137921079L;
 
-    private static final Logger logger = Logger.getLogger(MarkupImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger(MarkupImportConfigurator.class);
 
 	public static MarkupImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new MarkupImportConfigurator(uri, destination);

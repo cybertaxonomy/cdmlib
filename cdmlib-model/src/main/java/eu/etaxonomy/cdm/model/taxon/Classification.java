@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -78,7 +78,7 @@ public class Classification
             implements ITaxonTreeNode{
 
     private static final long serialVersionUID = -753804821474209635L;
-    private static final Logger logger = Logger.getLogger(Classification.class);
+    private static final Logger logger = LogManager.getLogger(Classification.class);
 
     @XmlElement(name = "Name")
     @OneToOne(fetch = FetchType.LAZY)

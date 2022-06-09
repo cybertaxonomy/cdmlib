@@ -15,7 +15,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 //FIXME this class replicates lots of code in CdmDataSourceBase, we may want to merge it
 //in a common helper class to avoid redundant code
 public class WrappedCdmDataSource implements ICdmDataSource {
-	private static final Logger logger = Logger.getLogger(WrappedCdmDataSource.class);
+	private static final Logger logger = LogManager.getLogger(WrappedCdmDataSource.class);
 
 
 	private final DataSource datasource;

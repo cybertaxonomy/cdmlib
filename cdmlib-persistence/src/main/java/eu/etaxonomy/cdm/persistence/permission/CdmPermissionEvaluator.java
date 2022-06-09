@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
 @Component
 public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
-    protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
+    protected static final Logger logger = LogManager.getLogger(CdmPermissionEvaluator.class);
 
     private AccessDecisionManager accessDecisionManager;
 

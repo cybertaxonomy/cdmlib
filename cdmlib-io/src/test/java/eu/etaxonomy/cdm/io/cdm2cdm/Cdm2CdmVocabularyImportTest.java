@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(Cdm2CdmVocabularyImportTest.class);
+    private static final Logger logger = LogManager.getLogger(Cdm2CdmVocabularyImportTest.class);
 
     private static CdmApplicationController otherRepository;
 

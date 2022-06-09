@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
  */
 public class DbClobMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbClobMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbClobMapper.class);
 
 	public static DbClobMapper NewInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbClobMapper(cdmAttributeString, dbAttributeString, null);

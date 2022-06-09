@@ -28,7 +28,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.Document;
@@ -54,7 +54,7 @@ public class TaxonXImport
         extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>{
 
     private static final long serialVersionUID = 8166758191513137605L;
-    private static final Logger logger = Logger.getLogger(TaxonXImport.class);
+    private static final Logger logger = LogManager.getLogger(TaxonXImport.class);
 
     private static String prefix = "";
     public static String LOG_FOLDER = "C:\\Users\\pesiimport\\.cdmLibrary\\log\\taxonX\\";

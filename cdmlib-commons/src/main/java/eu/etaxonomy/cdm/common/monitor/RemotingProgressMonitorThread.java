@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.common.monitor;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Thread class to be used to run monitored jobs
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class RemotingProgressMonitorThread extends Thread {
 
-    private static final Logger logger = Logger.getLogger(RemotingProgressMonitorThread.class);
+    private static final Logger logger = LogManager.getLogger(RemotingProgressMonitorThread.class);
 
     private static ConcurrentHashMap<IRemotingProgressMonitor, RemotingProgressMonitorThread>
         monitorsInProgress = new ConcurrentHashMap<>();

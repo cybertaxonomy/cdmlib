@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
@@ -31,7 +31,7 @@ import net.sf.json.JsonConfig;
  */
 public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 
-    public static final Logger logger = Logger.getLogger(TermBaseBeanProcessor.class);
+    public static final Logger logger = LogManager.getLogger(TermBaseBeanProcessor.class);
 
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[] {
             "representations",

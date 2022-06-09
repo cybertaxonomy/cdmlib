@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service.l10n;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
  */
 public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
-    public static final Logger logger = Logger.getLogger(TermRepresentation_L10n.class);
+    public static final Logger logger = LogManager.getLogger(TermRepresentation_L10n.class);
 
     String label = null;
     String abbreviatedLabel = null;

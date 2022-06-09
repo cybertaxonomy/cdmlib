@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.api.application;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 public class CdmIoApplicationController extends CdmApplicationController {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmIoApplicationController.class);
+	private static final Logger logger = LogManager.getLogger(CdmIoApplicationController.class);
 
 
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";

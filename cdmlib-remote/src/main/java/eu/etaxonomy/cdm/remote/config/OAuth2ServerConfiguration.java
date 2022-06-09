@@ -8,7 +8,8 @@
  */
 package eu.etaxonomy.cdm.remote.config;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -107,7 +108,7 @@ public class OAuth2ServerConfiguration {
 
         private static final String CLIENT_ID = "any-client";
 
-        public static final Logger logger = Logger.getLogger(AuthorizationServerConfiguration.class);
+        public static final Logger logger = LogManager.getLogger(AuthorizationServerConfiguration.class);
 
         @Autowired
         private UserApprovalHandler userApprovalHandler;

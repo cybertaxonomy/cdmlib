@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.XmlImportState;
  */
 public class SDDImportState extends XmlImportState<SDDImportConfigurator, SDDImport>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SDDImportState.class);
+	private static final Logger logger = LogManager.getLogger(SDDImportState.class);
 
 	public SDDImportState(SDDImportConfigurator config) {
 		super(config);

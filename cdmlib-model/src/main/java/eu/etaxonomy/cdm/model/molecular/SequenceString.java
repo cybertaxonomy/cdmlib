@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 public class SequenceString implements Cloneable, Serializable{
 
 	private static final long serialVersionUID = 45735207807329055L;
-	private static final Logger logger = Logger.getLogger(SequenceString.class);
+	private static final Logger logger = LogManager.getLogger(SequenceString.class);
 
 	/**{@link #getString()}*/
 	@XmlElement(name = "String")

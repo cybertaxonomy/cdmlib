@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.descriptive.word.out;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -29,7 +29,7 @@ public class WordExportConfigurator extends XmlExportConfiguratorBase<WordExport
     private static final long serialVersionUID = -4360021755279592592L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(WordExportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(WordExportConfigurator.class);
 
     private TermTree featureTree;
 

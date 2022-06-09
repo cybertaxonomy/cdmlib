@@ -27,7 +27,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  * @since 17.10.2011
  */
 public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
-	private static Logger logger = Logger.getLogger(DwcaZipToStreamConverter.class);
+	private static Logger logger = LogManager.getLogger(DwcaZipToStreamConverter.class);
 
 	private final String META_XML = "meta.xml";
 	protected static final boolean IS_CORE = true;

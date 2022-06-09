@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.json.CDL;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ public class CsvFileDownloadView implements View{
 
 	private File file;
 
-	Logger logger = Logger.getLogger(CsvFileDownloadView.class);
+	Logger logger = LogManager.getLogger(CsvFileDownloadView.class);
 
 	/**
 	 * 

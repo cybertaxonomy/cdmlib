@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNull;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 
-	private static final Logger logger = Logger.getLogger(BotanicNameCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(BotanicNameCacheStrategyTest.class);
 
 	private static final String familyNameString = "Familia";
 	private static final String genusNameString = "Genus";

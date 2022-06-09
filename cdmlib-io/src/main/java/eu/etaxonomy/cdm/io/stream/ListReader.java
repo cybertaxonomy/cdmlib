@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.stream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * ListReader wraps a list to implement IReader.
@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  */
 public class ListReader<TYPE extends Object> implements IReader<TYPE> {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(ListReader.class);
+	private static Logger logger = LogManager.getLogger(ListReader.class);
 
 	private final List<TYPE> list;
 	private int index = 0;

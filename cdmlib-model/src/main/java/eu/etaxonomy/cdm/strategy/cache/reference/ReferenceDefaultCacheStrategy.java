@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -51,7 +51,7 @@ public class ReferenceDefaultCacheStrategy
 
     private static final long serialVersionUID = 6773742298840407263L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ReferenceDefaultCacheStrategy.class);
+    private static final Logger logger = LogManager.getLogger(ReferenceDefaultCacheStrategy.class);
 
     private final static UUID uuid = UUID.fromString("63e669ca-c6be-4a8a-b157-e391c22580f9");
 

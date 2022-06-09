@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -50,7 +50,7 @@ public class TaxonXNomenclatureImport
         extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>  {
 
     private static final long serialVersionUID = 796115831082828758L;
-    private static final Logger logger = Logger.getLogger(TaxonXNomenclatureImport.class);
+    private static final Logger logger = LogManager.getLogger(TaxonXNomenclatureImport.class);
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;

@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.MutablePropertyValues;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 public class CdmDataSource extends CdmDataSourceBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
+	private static final Logger logger = LogManager.getLogger(CdmDataSource.class);
 
 	private DatabaseTypeEnum dbType;
 	private String database;

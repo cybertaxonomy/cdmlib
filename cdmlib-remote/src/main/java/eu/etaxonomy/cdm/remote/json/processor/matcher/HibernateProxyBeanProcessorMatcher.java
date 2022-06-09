@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.remote.json.processor.matcher;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
 import net.sf.json.processors.JsonBeanProcessorMatcher;
@@ -22,7 +22,7 @@ import net.sf.json.processors.JsonBeanProcessorMatcher;
 public class HibernateProxyBeanProcessorMatcher extends
 		JsonBeanProcessorMatcher {
 
-	public static final Logger logger = Logger.getLogger(HibernateProxyBeanProcessorMatcher.class);
+	public static final Logger logger = LogManager.getLogger(HibernateProxyBeanProcessorMatcher.class);
 	
 	/* (non-Javadoc)
 	 * @see net.sf.json.processors.JsonBeanProcessorMatcher#getMatch(java.lang.Class, java.util.Set)

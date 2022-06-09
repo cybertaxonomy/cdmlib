@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An instance of this class represents an method result that contains 2 variables. The variables may be typified.
@@ -17,7 +18,8 @@ import org.apache.log4j.Logger;
  * @since 30.10.2008
  */
 public class DoubleResult<S extends Object, T extends Object> {
-	private static final Logger logger = Logger.getLogger(DoubleResult.class);
+
+	private static final Logger logger = LogManager.getLogger(DoubleResult.class);
 
 	private S firstResult = null;
 	private T secondResult = null;
@@ -25,7 +27,6 @@ public class DoubleResult<S extends Object, T extends Object> {
 	public DoubleResult() {
 		if (logger.isDebugEnabled()){logger.debug("Constructor");}
 	}
-
 
 	public DoubleResult(S firstResult, T secondResult) {
 		this.firstResult = firstResult;

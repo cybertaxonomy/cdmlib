@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import de.digitalcollections.iiif.model.ImageContent;
 import de.digitalcollections.iiif.model.MetadataEntry;
@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
  */
 public class ManifestComposer {
 
-    public static final Logger logger = Logger.getLogger(ManifestComposer.class);
+    public static final Logger logger = LogManager.getLogger(ManifestComposer.class);
 
     private IMediaToolbox mediaTools;
 

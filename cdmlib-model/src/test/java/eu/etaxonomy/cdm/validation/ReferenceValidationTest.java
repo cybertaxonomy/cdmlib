@@ -17,7 +17,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.groups.Default;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
  */
 @SuppressWarnings("unused")
 public class ReferenceValidationTest extends ValidationTestBase {
-	private static final Logger logger = Logger.getLogger(ReferenceValidationTest.class);
+	private static final Logger logger = LogManager.getLogger(ReferenceValidationTest.class);
 
 	private IBook book;
 

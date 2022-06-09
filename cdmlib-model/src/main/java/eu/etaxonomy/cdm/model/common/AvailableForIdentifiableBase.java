@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlElement;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -32,7 +32,7 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
 
     private static final long serialVersionUID = -8671887501681406910L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(AvailableForIdentifiableBase.class);
+    private static final Logger logger = LogManager.getLogger(AvailableForIdentifiableBase.class);
 
     //for hibernate use only
     @Deprecated

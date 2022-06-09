@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.Partial;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.hibernate.PartialUserType;
  * @version 1.0
  */
 public class PartialJSONValueProcessor implements JsonValueProcessor {
-	private static Logger logger = Logger.getLogger(PartialJSONValueProcessor.class);
+	private static Logger logger = LogManager.getLogger(PartialJSONValueProcessor.class);
 
 	
 	/* (non-Javadoc)

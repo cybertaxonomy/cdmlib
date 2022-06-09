@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -68,7 +68,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     private static final long serialVersionUID = 6977221584815363620L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Synonym.class);
+	private static final Logger logger = LogManager.getLogger(Synonym.class);
 
     @XmlElement(name = "acceptedTaxon")
     @XmlIDREF

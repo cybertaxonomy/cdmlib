@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -33,7 +33,7 @@ import org.joda.time.Partial;
 public class PartialUserType extends AbstractUserType implements UserType /* extends AbstractSingleColumnUserType<Partial, String, ColumnMapper<Partial,String>> implements UserType */ {
 	private static final long serialVersionUID = -5323104403077597869L;
 
-	private static final Logger logger = Logger.getLogger(PartialUserType.class);
+	private static final Logger logger = LogManager.getLogger(PartialUserType.class);
 
 	//not required
 	public final static PartialUserType INSTANCE = new PartialUserType();

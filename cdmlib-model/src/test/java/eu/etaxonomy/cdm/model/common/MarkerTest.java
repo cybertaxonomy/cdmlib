@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  */
 public class MarkerTest extends EntityTestBase {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(MarkerTest.class);
+	private static Logger logger = LogManager.getLogger(MarkerTest.class);
 
 	private static boolean flag1;
 	private static Marker marker1;

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -31,7 +31,7 @@ public class Abcd206ImportConfigurator
     private static final long serialVersionUID = -7204105522522645681L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger(Abcd206ImportConfigurator.class);
 
 
     //TODO

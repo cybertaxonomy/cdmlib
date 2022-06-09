@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
-	private static final Logger logger = Logger.getLogger(SimpleSchemaUpdaterStep.class);
+	private static final Logger logger = LogManager.getLogger(SimpleSchemaUpdaterStep.class);
 
 	private final Map<DatabaseTypeEnum, String> queryMap = new HashMap<>();
 	private final Map<DatabaseTypeEnum, String> auditQueryMap = new HashMap<>();

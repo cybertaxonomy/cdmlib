@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +88,7 @@ public class DescriptiveDataSetService
         extends IdentifiableServiceBase<DescriptiveDataSet, IDescriptiveDataSetDao>
         implements IDescriptiveDataSetService {
 
-    private static Logger logger = Logger.getLogger(DescriptiveDataSetService.class);
+    private static Logger logger = LogManager.getLogger(DescriptiveDataSetService.class);
 
     @Autowired
     private IOccurrenceService occurrenceService;

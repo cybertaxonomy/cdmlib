@@ -21,7 +21,7 @@ import java.util.Set;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.common.URI;
@@ -77,7 +77,7 @@ public class DerivedUnitFacade {
 	private static final String METER = "m";
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacade.class);
+	private static final Logger logger = LogManager.getLogger(DerivedUnitFacade.class);
 
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";
 

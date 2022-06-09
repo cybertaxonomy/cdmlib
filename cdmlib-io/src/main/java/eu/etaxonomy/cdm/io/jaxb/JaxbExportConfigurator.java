@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
@@ -30,7 +30,7 @@ public class JaxbExportConfigurator
     private static final long serialVersionUID = -3081392679701925440L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(JaxbExportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(JaxbExportConfigurator.class);
 
 	private int maxRows = 0;
 	private boolean formattedOutput = Boolean.TRUE;

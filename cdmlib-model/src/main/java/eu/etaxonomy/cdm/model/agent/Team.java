@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.ListIndexBase;
@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 public class Team extends TeamOrPersonBase<Team> {
 
     private static final long serialVersionUID = 97640416905934622L;
-	public static final Logger logger = Logger.getLogger(Team.class);
+	public static final Logger logger = LogManager.getLogger(Team.class);
 
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache = false;

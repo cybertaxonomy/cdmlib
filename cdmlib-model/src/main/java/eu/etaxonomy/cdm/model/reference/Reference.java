@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -144,7 +144,7 @@ public class Reference
                    INomenclaturalReference, IReference, IIntextReferenceTarget {
 
     private static final long serialVersionUID = -2034764545042691295L;
-	private static final Logger logger = Logger.getLogger(Reference.class);
+	private static final Logger logger = LogManager.getLogger(Reference.class);
 
 //  from E+M import (still needed?)
 //	@Column(length=255)

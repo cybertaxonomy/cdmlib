@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -31,7 +31,7 @@ public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
         extends DbImportDefinedTermCreationMapperBase<Feature, DescriptionElementBase, DbImportStateBase<?,?>> {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportFeatureCreationMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportFeatureCreationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.proxy.HibernateProxy;
@@ -22,7 +22,7 @@ import org.hibernate.proxy.HibernateProxy;
 public class HibernateProxyHelper {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(HibernateProxyHelper.class);
+	private static final Logger logger = LogManager.getLogger(HibernateProxyHelper.class);
 
 	// ************************** Hibernate proxies *******************/
 	/**

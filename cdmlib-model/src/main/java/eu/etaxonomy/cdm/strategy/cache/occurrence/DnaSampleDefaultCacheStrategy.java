@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -38,7 +38,7 @@ public class DnaSampleDefaultCacheStrategy
     private static final long serialVersionUID = -7166834437359037691L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DnaSampleDefaultCacheStrategy.class);
+	private static final Logger logger = LogManager.getLogger(DnaSampleDefaultCacheStrategy.class);
 
 	private static final UUID uuid = UUID.fromString("48e72fbc-9714-4df6-b031-ba361fbf3f59");
 

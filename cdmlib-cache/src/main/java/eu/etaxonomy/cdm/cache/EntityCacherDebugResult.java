@@ -16,7 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
@@ -35,7 +36,7 @@ import net.sf.ehcache.Element;
  */
 public class EntityCacherDebugResult {
 
-    private static final Logger logger = Logger.getLogger(EntityCacherDebugResult.class);
+    private static final Logger logger = LogManager.getLogger(EntityCacherDebugResult.class);
 
     private Map<CdmEntityInfo, CdmEntityInfo> duplicateCdmEntityMap;
 

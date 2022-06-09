@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -70,7 +70,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
           extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(RelationshipTermBase.class);
+	private static final Logger logger = LogManager.getLogger(RelationshipTermBase.class);
 
 	@XmlElement(name = "Symmetrical")
 	@Field(analyze = Analyze.NO)

@@ -20,7 +20,8 @@ import javax.sql.DataSource;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -75,7 +76,7 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 @HibernateSessionFactory({"/eu/etaxonomy/cdm/hibernate.cfg.xml", "/eu/etaxonomy/cdm/hibernate-test.cfg.xml"})
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 
-    private static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
+    private static final Logger logger = LogManager.getLogger(CdmIntegrationTest.class);
 
     private static final String PROPERTY_H2_SERVER = "h2Server";
     private static final String H2_SERVER_RUNNING = "h2ServerIsRunning";

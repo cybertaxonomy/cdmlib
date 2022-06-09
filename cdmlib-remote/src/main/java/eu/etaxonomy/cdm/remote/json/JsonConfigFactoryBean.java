@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 
 import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
@@ -35,7 +35,7 @@ import net.sf.json.util.PropertyFilter;
  */
 public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 
-	public static final Logger logger = Logger.getLogger(JsonConfigFactoryBean.class);
+	public static final Logger logger = LogManager.getLogger(JsonConfigFactoryBean.class);
 
 	private JsonConfig jsonConfig = null;
 

@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -53,7 +53,7 @@ public class SynonymType extends RelationshipTermBase<SynonymType> {
 
     private static final long serialVersionUID = -3775216614202923889L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SynonymType.class);
+	private static final Logger logger = LogManager.getLogger(SynonymType.class);
 
 	protected static Map<UUID, SynonymType> termMap = null;
 

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.database;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataSourceReloader {
 
-	static final Logger logger = Logger.getLogger(DataSourceReloader.class);
+	static final Logger logger = LogManager.getLogger(DataSourceReloader.class);
 
 	private SessionFactory factory;
 

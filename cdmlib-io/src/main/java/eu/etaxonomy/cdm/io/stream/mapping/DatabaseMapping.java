@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  */
 public class DatabaseMapping implements IImportMapping {
-    private static final Logger logger = Logger.getLogger(DatabaseMapping.class);
+    private static final Logger logger = LogManager.getLogger(DatabaseMapping.class);
 
 	private static final String DATABASE_INTERNAL_IMPORT_MAPPING = "_internalImportMapping";
 	protected static final String TABLE_IMPORT_MAPPING  = "importmapping";

@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
     private static final long serialVersionUID = -5088210641256430878L;
-	private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparator.class);
+	private static final Logger logger = LogManager.getLogger(HomotypicGroupTaxonComparator.class);
 
     private final TaxonBase<?> firstTaxonInGroup;
     private final TaxonName firstNameInGroup;

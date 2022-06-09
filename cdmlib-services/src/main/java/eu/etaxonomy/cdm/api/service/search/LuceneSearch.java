@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class LuceneSearch {
 
-    public static final Logger logger = Logger.getLogger(LuceneSearch.class);
+    public static final Logger logger = LogManager.getLogger(LuceneSearch.class);
 
     public final static String ID_FIELD = "id";
 

@@ -19,7 +19,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class MarkupNomenclatureImport extends MarkupImportBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupNomenclatureImport.class);
+	private static final Logger logger = LogManager.getLogger(MarkupNomenclatureImport.class);
 
 
 //	private NonViralNameParserImpl parser = new NonViralNameParserImpl();

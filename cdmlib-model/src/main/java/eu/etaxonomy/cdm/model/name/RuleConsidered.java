@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -38,7 +38,7 @@ import org.hibernate.envers.Audited;
 public class RuleConsidered implements Cloneable, Serializable{
 
     private static final long serialVersionUID = 531030660792800636L;
-    private static final Logger logger = Logger.getLogger(RuleConsidered.class);
+    private static final Logger logger = LogManager.getLogger(RuleConsidered.class);
 
     //The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
     //the note property.

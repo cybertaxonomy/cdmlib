@@ -15,7 +15,7 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
@@ -92,7 +92,7 @@ public enum RankClass implements IEnumTerm<RankClass>{
 
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(RankClass.class);
+	private static final Logger logger = LogManager.getLogger(RankClass.class);
 
 
 

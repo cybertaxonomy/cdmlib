@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.opt.config;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,7 @@ import net.sf.ehcache.config.DiskStoreConfiguration;
 @Configuration
 public class EhCacheDiskStoreConfiguration {
 
-    public static final Logger logger = Logger.getLogger(EhCacheDiskStoreConfiguration.class);
+    public static final Logger logger = LogManager.getLogger(EhCacheDiskStoreConfiguration.class);
 
     @Autowired
     private DataSourceProperties dataSourceProperties = null;

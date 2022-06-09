@@ -8,14 +8,14 @@
 
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
 public class ClassJSONValueProcessor implements JsonValueProcessor {
 
-	private static final Logger logger = Logger.getLogger(ClassJSONValueProcessor.class);
+	private static final Logger logger = LogManager.getLogger(ClassJSONValueProcessor.class);
 
 	@Override
 	public Object processArrayValue(Object obj, JsonConfig jsonConfig) {

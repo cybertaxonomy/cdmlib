@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -71,7 +71,7 @@ public class OccurrenceDaoHibernateImpl
           extends IdentifiableDaoBase<SpecimenOrObservationBase>
           implements IOccurrenceDao {
 
-    private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(TaxonDaoHibernateImpl.class);
 
     @Autowired
     private IDescriptionDao descriptionDao;

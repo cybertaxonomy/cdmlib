@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.aspectj;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 public class NewEntityListenerTest
         implements NewEntityListener {
 
-    private static Logger logger = Logger.getLogger(NewEntityListenerTest.class);
+    private static Logger logger = LogManager.getLogger(NewEntityListenerTest.class);
     private Object lastPropValue;
 
     @Override

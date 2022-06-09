@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 16.02.2010
  */
 public class ResultSetPartitioner<STATE extends IPartitionedState> {
-	private static final Logger logger = Logger.getLogger(ResultSetPartitioner.class);
+	private static final Logger logger = LogManager.getLogger(ResultSetPartitioner.class);
 	private final PartitionerProfiler profiler = new PartitionerProfiler();
 
 //************************* STATIC ***************************************************/

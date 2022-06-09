@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
@@ -42,7 +42,7 @@ public abstract class NameCacheStrategyBase
         implements INameCacheStrategy {
     private static final long serialVersionUID = -2322348388258675517L;
 
-    private static final Logger logger = Logger.getLogger(NameCacheStrategyBase.class);
+    private static final Logger logger = LogManager.getLogger(NameCacheStrategyBase.class);
 
     final static UUID uuid = UUID.fromString("817ae5b5-3ac2-414b-a134-a9ae86cba040");
 

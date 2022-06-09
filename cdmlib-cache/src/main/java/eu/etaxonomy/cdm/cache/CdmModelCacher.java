@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -46,7 +47,7 @@ import net.sf.ehcache.Element;
  */
 public class CdmModelCacher {
 
-    private static final Logger logger = Logger.getLogger(CdmModelCacher.class);
+    private static final Logger logger = LogManager.getLogger(CdmModelCacher.class);
 
     public static String HB_CONFIG_FILE_PATH= "/eu/etaxonomy/cdm/mappings/hibernate.cfg.xml";
 

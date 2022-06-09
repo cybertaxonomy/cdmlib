@@ -17,7 +17,7 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 
 @Component
 public class PersistentTermInitializer extends DefaultTermInitializer {
-    private static final Logger logger = Logger.getLogger(PersistentTermInitializer.class);
+    private static final Logger logger = LogManager.getLogger(PersistentTermInitializer.class);
 
     private boolean omit = false;
     protected ITermVocabularyDao vocabularyDao;

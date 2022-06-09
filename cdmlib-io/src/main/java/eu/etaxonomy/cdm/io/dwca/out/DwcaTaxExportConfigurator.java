@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -30,7 +30,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
     private static final long serialVersionUID = -464609596078614735L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaTaxExportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(DwcaTaxExportConfigurator.class);
 
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";

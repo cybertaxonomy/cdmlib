@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * This mapper does not change any import object, but keeps the information that a database
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 public class DbExportNotYetImplementedMapper
         extends DbExportIgnoreMapper {
 
-    private static final Logger logger = Logger.getLogger(DbExportNotYetImplementedMapper.class);
+    private static final Logger logger = LogManager.getLogger(DbExportNotYetImplementedMapper.class);
 
 	public static DbExportNotYetImplementedMapper NewInstance(String dbAttributeToIgnore){
 		return new DbExportNotYetImplementedMapper(null, dbAttributeToIgnore, null, null);

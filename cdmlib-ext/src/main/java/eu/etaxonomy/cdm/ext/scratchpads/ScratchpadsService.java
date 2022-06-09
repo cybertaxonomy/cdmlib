@@ -22,7 +22,8 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.common.UriUtils;
  */
 public class ScratchpadsService {
 
-	private static final Logger logger = Logger.getLogger(ScratchpadsService.class);
+	private static final Logger logger = LogManager.getLogger(ScratchpadsService.class);
 
 	public static final String SCRATCHPADS_JSON_ENDPOINT = "http://scratchpads.eu/explore/sites-list/json";
 

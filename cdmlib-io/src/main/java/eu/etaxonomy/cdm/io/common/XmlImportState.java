@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import javax.xml.stream.XMLEventReader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 public class XmlImportState<CONFIG extends XmlImportConfiguratorBase, IO extends XmlImportBase> extends ImportStateBase<CONFIG, IO> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(XmlImportState.class);
+	private static final Logger logger = LogManager.getLogger(XmlImportState.class);
 
 	private XMLEventReader reader;
 

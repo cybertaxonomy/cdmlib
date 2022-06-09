@@ -1,17 +1,18 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
 package eu.etaxonomy.cdm.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,7 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class XmlHelpTest {
-	private static final Logger logger = Logger.getLogger(XmlHelpTest.class);
+	private static final Logger logger = LogManager.getLogger(XmlHelpTest.class);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -37,7 +38,7 @@ public class XmlHelpTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	
+
 /******* TESTS *************************************/
 
 	@Test

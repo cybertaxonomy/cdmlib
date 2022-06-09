@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 public abstract class DwcaDataImportStateBase<CONFIG extends DwcaDataImportConfiguratorBase>
         extends StreamImportStateBase<CONFIG, StreamImportBase>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaDataImportStateBase.class);
+	private static final Logger logger = LogManager.getLogger(DwcaDataImportStateBase.class);
 
 	public DwcaDataImportStateBase(CONFIG config) {
 		super(config);

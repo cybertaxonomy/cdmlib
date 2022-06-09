@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -27,7 +27,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 
     private final Map<String,UUID> personMap = new HashMap<String, UUID>();
 
-    private final Logger logger = Logger.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
 
 
 	private final String AUTHOR = "author";

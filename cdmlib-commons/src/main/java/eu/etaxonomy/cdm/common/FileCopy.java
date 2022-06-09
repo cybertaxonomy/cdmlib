@@ -1,12 +1,11 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.common;
 
 import java.io.File;
@@ -16,15 +15,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
  * @since 20.11.2008
- * @version 1.0
  */
 public class FileCopy {
-	private static final Logger logger = Logger.getLogger(FileCopy.class);
+
+	private static final Logger logger = LogManager.getLogger(FileCopy.class);
 
 	// overwrite constants
 	public static final int DO_OVERWRITE = 1;
@@ -33,9 +33,9 @@ public class FileCopy {
 	// default values
 	private static int bufferSize = 4 * 1024;
 	private static int overwrite = DO_OVERWRITE;
-		
+
 	/**
-	 * Copies a File to another directory 
+	 * Copies a File to another directory
 	 * @param sourceFile
 	 * @param destinationDirectory
 	 * @param destFileName
@@ -57,7 +57,7 @@ public class FileCopy {
 		}
 		InputStream in = new FileInputStream(sourceFile);
 		copy(in, destinationDirectory, destFileName);
-		
+
 		if (!destinationDirectory.isDirectory()) {
 			logger.warn("Not a directory: " + destinationDirectory.getName());
 			return false;
@@ -65,13 +65,13 @@ public class FileCopy {
 		File destinationFile = new File(destinationDirectory, destFileName);
 
 		OutputStream out = new FileOutputStream(destinationFile);
-		
+
 		return copy(in, out);
 	}
-	
+
 	public static boolean copy(InputStream in, File destinationDirectory, String destFileName)
 			throws IOException {
-		
+
 		if (!destinationDirectory.isDirectory()) {
 			throw new IOException("Destination is not a directory");
 		}
@@ -80,10 +80,10 @@ public class FileCopy {
 		}
 		File destinationFile = new File(destinationDirectory, destFileName);
 		OutputStream out = new FileOutputStream(destinationFile);
-		
+
 		return copy(in, out);
-}
-	
+	}
+
 	public static boolean copy(InputStream in, OutputStream out)
 			throws IOException {
 		byte[] buffer = new byte[bufferSize];
@@ -97,22 +97,20 @@ public class FileCopy {
 		return true;
 	}
 
-	
 	public static boolean copy(String source, String destDirectory, String destFileName)
 			throws IOException {
 		File sourceFile = new File(source);
 		File destinationDir = new File(destDirectory);
 		return copy(sourceFile, destinationDir, destFileName);
 	}
-	
+
 	public static boolean copy(String source, String destDirectory)
 			throws IOException {
 		return copy(source, destDirectory, null);
 	}
 
-
 	/**
-	 * True if file 
+	 * True if file
 	 * @param file File destination
 	 * @return true if data can be copied, false otherwise
 	 */
@@ -126,10 +124,4 @@ public class FileCopy {
 			return false;
 		}
 	}
-
-
 }
-	
-	
-
-

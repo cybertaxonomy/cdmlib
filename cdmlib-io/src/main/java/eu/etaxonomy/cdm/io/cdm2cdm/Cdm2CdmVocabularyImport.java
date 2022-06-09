@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -33,7 +33,7 @@ public class Cdm2CdmVocabularyImport
         extends Cdm2CdmImportBase {
 
     private static final long serialVersionUID = 3995116783196060465L;
-    private static final Logger logger = Logger.getLogger(Cdm2CdmVocabularyImport.class);
+    private static final Logger logger = LogManager.getLogger(Cdm2CdmVocabularyImport.class);
 
     @Override
     protected void doInvoke(Cdm2CdmImportState state) {

@@ -37,7 +37,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -99,7 +99,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @since 04.08.2008
  */
 public abstract class MarkupImportBase  {
-	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);
+	private static final Logger logger = LogManager.getLogger(MarkupImportBase.class);
 
 	//Base
 	protected static final String ALTITUDE = "altitude";

@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common.mapping.berlinModel;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
  */
 public class CdmStringMapper extends CdmSingleAttributeMapperBase {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(CdmStringMapper.class);
+	private static Logger logger = LogManager.getLogger(CdmStringMapper.class);
 	
 	/**
 	 * @param dbValue

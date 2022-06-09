@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
  */
 public class InitialsUpdater extends SchemaUpdaterStepBase{
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(InitialsUpdater.class);
+    private static final Logger logger = LogManager.getLogger(InitialsUpdater.class);
 
     /**
      * @return

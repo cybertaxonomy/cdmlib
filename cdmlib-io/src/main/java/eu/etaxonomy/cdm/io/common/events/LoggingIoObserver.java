@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.common.events;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
  *
  */
 public class LoggingIoObserver implements IIoObserver {
-	private static final Logger logger = Logger.getLogger(LoggingIoObserver.class);
+	private static final Logger logger = LogManager.getLogger(LoggingIoObserver.class);
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IIoObserver#handleEvent(eu.etaxonomy.cdm.io.common.IIoEvent)

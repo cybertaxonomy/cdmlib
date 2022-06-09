@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class VersionableDaoBase<T extends VersionableEntity> extends CdmEntityDaoBase<T> implements IVersionableDao<T> {
-	private static final Logger logger = Logger.getLogger(VersionableDaoBase.class);
+	private static final Logger logger = LogManager.getLogger(VersionableDaoBase.class);
 
 	public VersionableDaoBase(Class<T> type) {
 		super(type);

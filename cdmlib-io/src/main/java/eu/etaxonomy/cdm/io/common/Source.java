@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.http.MethodNotSupportedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
  *  @author Andreas Müller
  */
 public class Source {
-	static Logger logger = Logger.getLogger(Source.class);
+	static Logger logger = LogManager.getLogger(Source.class);
 
 /* ************ Constants **************************************/
     //Mode

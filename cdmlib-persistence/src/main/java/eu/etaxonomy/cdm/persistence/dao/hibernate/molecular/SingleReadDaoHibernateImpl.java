@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.molecular;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
 public class SingleReadDaoHibernateImpl extends AnnotatableDaoBaseImpl<SingleRead> implements ISingleReadDao{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(SingleReadDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(SingleReadDaoHibernateImpl.class);
 
     /**
      * @param type

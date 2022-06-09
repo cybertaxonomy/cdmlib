@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class NameTypeDesignationTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NameTypeDesignationTest.class);
+	private static final Logger logger = LogManager.getLogger(NameTypeDesignationTest.class);
 
 	private NameTypeDesignation term1 = null;
 	private NameTypeDesignation term2 = null;

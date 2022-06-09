@@ -23,7 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
@@ -84,7 +84,7 @@ public class TaxonDaoHibernateImpl
               extends IdentifiableDaoBase<TaxonBase>
               implements ITaxonDao {
 //    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
-    private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(TaxonDaoHibernateImpl.class);
 
     public TaxonDaoHibernateImpl() {
         super(TaxonBase.class);

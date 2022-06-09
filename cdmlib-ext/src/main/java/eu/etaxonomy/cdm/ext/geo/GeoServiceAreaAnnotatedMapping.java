@@ -13,7 +13,8 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 @Component
 public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(GeoServiceAreaAnnotatedMapping.class);
+    private static final Logger logger = LogManager.getLogger(GeoServiceAreaAnnotatedMapping.class);
 
     @Autowired
     private ITermService termService;

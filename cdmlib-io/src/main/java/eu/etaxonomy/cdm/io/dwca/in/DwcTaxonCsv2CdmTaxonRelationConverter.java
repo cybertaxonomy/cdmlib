@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
@@ -48,7 +48,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 
 	private static final String SINGLE_CLASSIFICATION = "Single Classification";
 
-	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
+	private static Logger logger = LogManager.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
 
 	private static final String ID = "id";
 

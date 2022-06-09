@@ -20,7 +20,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.util.NestedServletException;
 
 /**
@@ -30,10 +31,10 @@ import org.springframework.web.util.NestedServletException;
  *
  * @author a.kohlbecker
  * @since Jan 17, 2020
- *
  */
 public class DateHeaderFilter implements Filter {
 
+    private static final Logger logger = LogManager.getLogger(DateHeaderFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -57,18 +58,18 @@ public class DateHeaderFilter implements Filter {
             httpServletResponse.setHeader("Date", dateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
         } catch ( NullPointerException e) {
             // see above and #9185
-            Logger.getLogger(this.getClass()).info("Can not add data header: " + e.getMessage());
+            logger.info("Can not add data header: " + e.getMessage());
         } catch (NestedServletException e) {
             // see above and #9185
             if(e.getCause() != null && e.getCause() instanceof NullPointerException) {
-                Logger.getLogger(this.getClass()).info("Can not add data header: " + e.getCause());
+                logger.info("Can not add data header: " + e.getCause());
             } else {
                 // higher level in this case as these are unexpected
-                Logger.getLogger(this.getClass()).warn("Can not add data header.", e);
+                logger.warn("Can not add data header.", e);
             }
         } catch (Exception e) {
             // higher level in this case as these are unexpected
-            Logger.getLogger(this.getClass()).warn("Can not add data header.", e);
+            logger.warn("Can not add data header.", e);
         }
     }
 
@@ -76,5 +77,4 @@ public class DateHeaderFilter implements Filter {
     public void destroy() {
         // Nothing to do
     }
-
 }

@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.Field;
@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
     private static final long serialVersionUID = 7216686200093054648L;
-    private static final Logger logger = Logger.getLogger(Group.class);
+    private static final Logger logger = LogManager.getLogger(Group.class);
 
     public final static UUID GROUP_EDITOR_UUID = UUID.fromString("22e5e8af-b99c-4884-a92f-71978efd3770");
     public final static UUID GROUP_EDITOR_EXTENDED_CREATE_UUID = UUID.fromString("89a7f47f-6f2b-45ac-88d4-a99a4cf29f07");

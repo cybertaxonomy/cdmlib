@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -29,7 +29,7 @@ public class OccurrenceSearch implements RemoteResponse {
     private OccurrenceSearchRequest request;
     private final List<OccurrenceSearchResponse> response;
 
-    public static final Logger logger = Logger.getLogger(BaseListController.class);
+    public static final Logger logger = LogManager.getLogger(BaseListController.class);
 
     public OccurrenceSearch() {
     	this.response = new ArrayList<OccurrenceSearchResponse>();

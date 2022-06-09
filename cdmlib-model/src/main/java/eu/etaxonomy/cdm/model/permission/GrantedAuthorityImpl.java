@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 
     private static final long serialVersionUID = 2651969425860655040L;
-    private static final Logger logger = Logger.getLogger(GrantedAuthority.class);
+    private static final Logger logger = LogManager.getLogger(GrantedAuthority.class);
 
     @XmlElement(name = "Authority")
     @Column(unique = true)

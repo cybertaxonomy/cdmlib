@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @since 01.04.2009
  */
 public class ClassificationTest {
-	private static final Logger logger = Logger.getLogger(ClassificationTest.class);
+	private static final Logger logger = LogManager.getLogger(ClassificationTest.class);
 
 	private static String treeName1;
 	private static Classification classification1;

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.application;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -87,7 +87,7 @@ import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 @Component
 public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 
-    private static final Logger logger = Logger.getLogger(CdmRepository.class);
+    private static final Logger logger = LogManager.getLogger(CdmRepository.class);
 
 	protected ApplicationContext applicationContext;
 

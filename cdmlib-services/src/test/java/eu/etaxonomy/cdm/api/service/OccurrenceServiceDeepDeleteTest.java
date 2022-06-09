@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -54,7 +54,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     private final UUID FIELD_UNIT2_UUID = UUID.fromString("ae798108-6483-4d09-900f-7f849c43bcc9");
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(OccurrenceServiceDeepDeleteTest.class);
+    private static final Logger logger = LogManager.getLogger(OccurrenceServiceDeepDeleteTest.class);
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;

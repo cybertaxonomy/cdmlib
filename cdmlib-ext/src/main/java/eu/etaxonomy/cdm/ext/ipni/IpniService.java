@@ -28,7 +28,8 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -71,7 +72,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 @Component
 public class IpniService  implements IIpniService{
-    private static final Logger logger = Logger.getLogger(IpniService.class);
+    private static final Logger logger = LogManager.getLogger(IpniService.class);
 
 
     //TYPE

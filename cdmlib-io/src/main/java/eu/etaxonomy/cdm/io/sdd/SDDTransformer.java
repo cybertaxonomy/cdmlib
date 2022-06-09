@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.sdd;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 public class SDDTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SDDTransformer.class);
+	private static final Logger logger = LogManager.getLogger(SDDTransformer.class);
 	
 	
 	

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
     private static final long serialVersionUID = 6632990505515905663L;
 
-    private static final Logger logger = Logger.getLogger(TcsXmlTaxonRelationsImport.class);
+    private static final Logger logger = LogManager.getLogger(TcsXmlTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
 

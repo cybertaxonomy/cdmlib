@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
 
@@ -23,7 +23,7 @@ import org.apache.lucene.search.DocIdSetIterator;
  */
 public class DocIdBitSetPrinter {
 
-    public static final Logger logger = Logger.getLogger(DocIdBitSetPrinter.class);
+    public static final Logger logger = LogManager.getLogger(DocIdBitSetPrinter.class);
 
     public static String docsAsString(DocIdSet docset, int maxdocs){
 

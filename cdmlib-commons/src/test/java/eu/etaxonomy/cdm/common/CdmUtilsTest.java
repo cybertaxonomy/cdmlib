@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,13 +25,13 @@ import org.junit.Test;
  */
 public class CdmUtilsTest {
 
-	private static final Logger logger = Logger.getLogger(CdmUtilsTest.class);
+	private static final Logger logger = LogManager.getLogger(CdmUtilsTest.class);
 
 /************************** TESTS ****************************************/
 
 	@Test
 	public void testFindLibrary() {
-		if (logger.isEnabledFor(Level.DEBUG)) {logger.debug(CdmUtils.findLibrary(CdmUtils.class));}
+		logger.debug("{}", CdmUtils.findLibrary(CdmUtils.class));
 
 		String library = CdmUtils.findLibrary(CdmUtils.class);
 		String endOfLibrary = "target/classes/eu/etaxonomy/cdm/common/CdmUtils.class";

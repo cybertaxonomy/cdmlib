@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
     private static final long serialVersionUID = 4615869699069336295L;
 
-    private static final Logger logger = Logger.getLogger(TcsRdfTaxonImport.class);
+    private static final Logger logger = LogManager.getLogger(TcsRdfTaxonImport.class);
 
 	private static int modCount = 30000;
 

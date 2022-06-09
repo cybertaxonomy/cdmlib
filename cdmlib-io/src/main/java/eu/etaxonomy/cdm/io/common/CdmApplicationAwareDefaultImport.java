@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 @Component("defaultImport")
 public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> implements ICdmImporter<T>, ApplicationContextAware {
-    private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultImport.class);
+    private static final Logger logger = LogManager.getLogger(CdmApplicationAwareDefaultImport.class);
 
     protected ApplicationContext applicationContext;
 

@@ -3,7 +3,7 @@
  */
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 @Deprecated
 public class TdwgAreaProvider {
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TdwgAreaProvider.class);
+	private static final Logger logger = LogManager.getLogger(TdwgAreaProvider.class);
 
 
 //************************** METHODS ********************************

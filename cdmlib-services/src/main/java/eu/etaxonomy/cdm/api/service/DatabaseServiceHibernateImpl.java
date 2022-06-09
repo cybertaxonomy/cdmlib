@@ -16,7 +16,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 @Service
 @Transactional(readOnly = true)
 public class DatabaseServiceHibernateImpl  implements IDatabaseService, ApplicationContextAware {
-	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
+	private static final Logger logger = LogManager.getLogger(DatabaseServiceHibernateImpl.class);
 
 	private static final String TMP_DATASOURCE = "tmp";
 

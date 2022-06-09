@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldUnitCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeFieldUnitCacheStrategyTest.class);
 
 	DerivedUnit specimen;
 	DerivationEvent derivationEvent;

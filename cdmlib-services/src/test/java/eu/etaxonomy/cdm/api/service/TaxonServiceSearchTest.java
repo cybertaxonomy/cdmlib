@@ -23,8 +23,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.junit.Assert;
 import org.junit.Before;
@@ -85,7 +86,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
-    private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
+    private static Logger logger = LogManager.getLogger(TaxonServiceSearchTest.class);
 
     private static final int BENCHMARK_ROUNDS = 300;
 
@@ -1704,7 +1705,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         if(level == null){
             level = Level.DEBUG;
         }
-        if(logger.isEnabledFor(level)){
+        if(logger.isEnabled(level)){
             StringBuilder b = new StringBuilder();
             b.append("\n");
             int i = 0;

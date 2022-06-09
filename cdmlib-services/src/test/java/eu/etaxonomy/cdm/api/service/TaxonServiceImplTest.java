@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -87,7 +87,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger(TaxonServiceImplTest.class);
 
     @SpringBeanByType
     private ITaxonService service;

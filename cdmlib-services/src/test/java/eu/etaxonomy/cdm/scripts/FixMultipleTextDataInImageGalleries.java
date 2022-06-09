@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
  * @version 1.0
  */
 public class FixMultipleTextDataInImageGalleries {
-	public static final Logger logger = Logger.getLogger(FixMultipleTextDataInImageGalleries.class);
+	public static final Logger logger = LogManager.getLogger(FixMultipleTextDataInImageGalleries.class);
 
 	public static ICdmDataSource dataSource(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;

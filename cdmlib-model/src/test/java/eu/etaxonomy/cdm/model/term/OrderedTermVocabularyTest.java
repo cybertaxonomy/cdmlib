@@ -15,7 +15,7 @@ import static org.junit.Assert.fail;
 
 import java.util.SortedSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class OrderedTermVocabularyTest extends EntityTestBase {
 	@SuppressWarnings("unused")
-    private static Logger logger = Logger.getLogger(OrderedTermVocabularyTest.class);
+    private static Logger logger = LogManager.getLogger(OrderedTermVocabularyTest.class);
 
 	private OrderedTermBase<?> otb1;
 	private OrderedTermBase<?> otb2;

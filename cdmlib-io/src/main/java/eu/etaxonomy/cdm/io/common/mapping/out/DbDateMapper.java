@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 /**
@@ -21,7 +21,7 @@ import org.joda.time.DateTime;
 public class DbDateMapper extends DbSingleAttributeExportMapperBase implements IDbExportMapper {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbStringMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbStringMapper.class);
 
 	public static DbDateMapper NewInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbDateMapper(cdmAttributeString, dbAttributeString, null);

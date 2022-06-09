@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
 public class ShiftUserType  extends AbstractUserType implements UserType {
 	private static final long serialVersionUID = -2507496252811101383L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ShiftUserType.class);
+	private static final Logger logger = LogManager.getLogger(ShiftUserType.class);
 
 	private static final String SHIFT_SEPARATOR = ";";
 	private static final String ATTR_SEPARATOR = ",";

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonBaseDefaultCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(TaxonBaseDefaultCacheStrategyTest.class);
 
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";

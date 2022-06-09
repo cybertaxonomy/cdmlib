@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,7 +69,7 @@ public class SpecimenTest {
         }
     }
 
-    private static final Logger logger = Logger.getLogger(SpecimenTest.class);
+    private static final Logger logger = LogManager.getLogger(SpecimenTest.class);
 
 	private DerivedUnit specimen;
 

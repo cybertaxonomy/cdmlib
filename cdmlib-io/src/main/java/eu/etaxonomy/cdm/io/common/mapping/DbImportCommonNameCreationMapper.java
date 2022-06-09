@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
  */
 public class DbImportCommonNameCreationMapper<STATE extends DbImportStateBase<?,?>> extends DbImportDescriptionElementCreationMapperBase<CommonTaxonName, DbImportStateBase<?,?>> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportCommonNameCreationMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportCommonNameCreationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 	

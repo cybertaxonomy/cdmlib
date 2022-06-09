@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -113,7 +113,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 
 	private static final long serialVersionUID = 6754598791831848704L;
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(Feature.class);
+    private static final Logger logger = LogManager.getLogger(Feature.class);
 
 	protected static Map<UUID, Feature> termMap = null;
 

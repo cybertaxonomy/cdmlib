@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -43,7 +43,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         extends CdmImportBase<CONFIG, STATE> {
 
     private static final long serialVersionUID = 2759164811664484732L;
-    private static final Logger logger = Logger.getLogger(ExcelImportBase.class);
+    private static final Logger logger = LogManager.getLogger(ExcelImportBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 

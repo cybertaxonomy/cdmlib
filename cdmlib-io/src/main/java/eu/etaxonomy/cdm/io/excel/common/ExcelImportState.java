@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.excel.common;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
@@ -25,7 +25,7 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
         extends ImportStateBase<CONFIG, ExcelImportBase>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExcelImportState.class);
+	private static final Logger logger = LogManager.getLogger(ExcelImportState.class);
 
 	private Integer currentLine;
 	private ROW currentRow;

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class DbSequenceMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbSequenceMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbSequenceMapper.class);
 	private int sqlType = Types.INTEGER; ;
 	private int sequence;
 	private int start = 0;

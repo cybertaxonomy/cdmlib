@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -67,7 +67,7 @@ public class Collection
         extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> {
 
     private static final long serialVersionUID = -7833674897174732255L;
-	private static final Logger logger = Logger.getLogger(Collection.class);
+	private static final Logger logger = LogManager.getLogger(Collection.class);
 
 	@XmlElement(name = "Code")
 	@Field(analyze = Analyze.NO)

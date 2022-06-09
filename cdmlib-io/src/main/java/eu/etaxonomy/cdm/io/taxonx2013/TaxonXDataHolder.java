@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.taxonx2013;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  */
 public class TaxonXDataHolder {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TaxonXDataHolder.class);
+    private static final Logger logger = LogManager.getLogger(TaxonXDataHolder.class);
 
 
     protected String atomisedStr;

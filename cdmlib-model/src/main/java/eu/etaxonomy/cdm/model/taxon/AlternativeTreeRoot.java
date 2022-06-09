@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class AlternativeTreeRoot extends TaxonNode {
 	private static final long serialVersionUID = 3194452473289639597L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AlternativeTreeRoot.class);
+	private static final Logger logger = LogManager.getLogger(AlternativeTreeRoot.class);
 	
 	private TaxonNode replacedTaxonNode; 
 	

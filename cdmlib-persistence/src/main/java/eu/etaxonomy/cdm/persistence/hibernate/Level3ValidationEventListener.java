@@ -8,7 +8,7 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostDeleteEventListener;
 import org.hibernate.persister.entity.EntityPersister;
@@ -24,7 +24,7 @@ public class Level3ValidationEventListener extends ValidationEventListenerBase
             implements PostDeleteEventListener {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(Level3ValidationEventListener.class);
+    private static final Logger logger = LogManager.getLogger(Level3ValidationEventListener.class);
 
     public Level3ValidationEventListener(IEntityValidationCrud dao) {
         super(dao);

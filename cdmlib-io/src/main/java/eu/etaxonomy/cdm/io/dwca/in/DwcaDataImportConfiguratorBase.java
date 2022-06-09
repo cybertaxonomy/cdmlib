@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -28,7 +28,7 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
     private static final long serialVersionUID = 7091818889753715572L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaDataImportConfiguratorBase.class);
+	private static final Logger logger = LogManager.getLogger(DwcaDataImportConfiguratorBase.class);
 
 	private boolean doSplitRelationshipImport = false;
 	private boolean doSynonymRelationships = true;

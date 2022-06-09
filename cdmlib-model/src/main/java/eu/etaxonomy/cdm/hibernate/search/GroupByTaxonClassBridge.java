@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.SortedDocValuesField;
@@ -47,7 +47,7 @@ public class GroupByTaxonClassBridge extends AbstractClassBridge{
 
     public static final String GROUPBY_TAXON_FIELD = "groupby_taxon.id__sort";
 
-    public static final Logger logger = Logger.getLogger(GroupByTaxonClassBridge.class);
+    public static final Logger logger = LogManager.getLogger(GroupByTaxonClassBridge.class);
 
     public GroupByTaxonClassBridge() {
         super();

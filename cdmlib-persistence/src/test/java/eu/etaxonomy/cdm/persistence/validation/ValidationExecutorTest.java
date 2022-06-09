@@ -14,13 +14,13 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ValidationExecutorTest {
 
-	public static final Logger logger = Logger.getLogger(ValidationExecutorTest.class);
+	public static final Logger logger = LogManager.getLogger(ValidationExecutorTest.class);
 
 
 	@Before

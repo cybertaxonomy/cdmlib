@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ReverseComparator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger(HomotypicGroupTaxonComparatorTest.class);
 
     private Reference sec;
     private Reference ref1;

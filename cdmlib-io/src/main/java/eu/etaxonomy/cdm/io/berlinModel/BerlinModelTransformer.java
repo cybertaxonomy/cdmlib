@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @since 20.03.2008
  */
 public class BerlinModelTransformer {
-	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
+	private static final Logger logger = LogManager.getLogger(BerlinModelTransformer.class);
 
 	//source Refs
 	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");

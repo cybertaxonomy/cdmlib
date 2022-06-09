@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
@@ -27,7 +27,7 @@ public final class DwcaImportTransformer extends InputTransformerBase {
     private static final long serialVersionUID = 3204045957159056826L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaImportTransformer.class);
+	private static final Logger logger = LogManager.getLogger(DwcaImportTransformer.class);
 
 	private static final UUID uuidFeatureBiology = UUID.fromString("daf92173-a262-49f1-9a45-923941d9c557");
 

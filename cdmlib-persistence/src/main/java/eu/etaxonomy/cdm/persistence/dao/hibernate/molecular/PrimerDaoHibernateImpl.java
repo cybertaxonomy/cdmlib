@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.query.Query;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> implements IPrimerDao{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(PrimerDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(PrimerDaoHibernateImpl.class);
 
     public PrimerDaoHibernateImpl() {
         super(Primer.class);

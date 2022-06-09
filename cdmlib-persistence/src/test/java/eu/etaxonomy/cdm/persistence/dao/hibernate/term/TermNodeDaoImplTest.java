@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class TermNodeDaoImplTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(TermNodeDaoImplTest.class);
+	private static Logger logger = LogManager.getLogger(TermNodeDaoImplTest.class);
 
 	@SpringBeanByType
 	private ITermTreeDao treeDao;

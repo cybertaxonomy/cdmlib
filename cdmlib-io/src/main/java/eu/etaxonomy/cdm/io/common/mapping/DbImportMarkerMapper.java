@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @version 1.0
  */
 public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity> implements IDbImportMapper<DbImportStateBase<?,?>,AnnotatableEntity>{
-	private static final Logger logger = Logger.getLogger(DbImportMarkerMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportMarkerMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
 

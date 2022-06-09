@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.database.update;
 import java.sql.ResultSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  */
 public class CdmUpdater {
 
-    private static final Logger logger = Logger.getLogger(CdmUpdater.class);
+    private static final Logger logger = LogManager.getLogger(CdmUpdater.class);
 
     private static final ISchemaUpdater getCurrentSchemaUpdater() {
         return SchemaUpdater_5271_5290.NewInstance();

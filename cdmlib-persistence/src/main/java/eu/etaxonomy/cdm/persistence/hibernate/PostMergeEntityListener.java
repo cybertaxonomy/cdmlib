@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
@@ -36,7 +36,7 @@ public class PostMergeEntityListener implements MergeEventListener {
     private static final long serialVersionUID = 1565797119368313987L;
 
     private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<>();
-    private static final Logger logger = Logger.getLogger(PostMergeEntityListener.class);
+    private static final Logger logger = LogManager.getLogger(PostMergeEntityListener.class);
 
     public static void addSession(Session session) {
         newEntitiesMap.put(session, new HashSet<>());

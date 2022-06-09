@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
  * @version 1.0
  */
 public class DbIntegerExtensionMapper extends DbExtensionMapper {
-	private static final Logger logger = Logger.getLogger(DbIntegerExtensionMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbIntegerExtensionMapper.class);
 
 
 

@@ -15,7 +15,7 @@ import java.util.Set;
 import javax.naming.Reference;
 
 import org.apache.commons.lang.UnhandledException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.MappingException;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  * @author a.mueller
  */
 public class DeduplicationHelper {
-	private static final Logger logger = Logger.getLogger(DeduplicationHelper.class);
+	private static final Logger logger = LogManager.getLogger(DeduplicationHelper.class);
 
 	private final SessionImpl session;
 	private final CdmGenericDaoImpl genericDao;

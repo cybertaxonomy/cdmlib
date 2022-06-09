@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.spell.Dictionary;
@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 @Transactional
 public class CdmMassIndexer implements ICdmMassIndexer {
 
-    public static final Logger logger = Logger.getLogger(CdmMassIndexer.class);
+    public static final Logger logger = LogManager.getLogger(CdmMassIndexer.class);
 
     private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<>();
 

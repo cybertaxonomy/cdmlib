@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaVernacularExport extends DwcaDataExportBase {
     private static final long serialVersionUID = 3169086545830374918L;
 
-    private static final Logger logger = Logger.getLogger(DwcaVernacularExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaVernacularExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/VernacularName";
 	protected static final String fileName = "vernacular.txt";

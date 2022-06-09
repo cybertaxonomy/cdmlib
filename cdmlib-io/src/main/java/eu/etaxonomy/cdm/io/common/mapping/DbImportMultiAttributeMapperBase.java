@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public abstract class DbImportMultiAttributeMapperBase<CDMBASE extends CdmBase, STATE extends DbImportStateBase<?,?>> extends MultipleAttributeMapperBase<CdmSingleAttributeMapperBase> implements IDbImportMapper<STATE, CDMBASE>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportMultiAttributeMapperBase.class);
+	private static final Logger logger = LogManager.getLogger(DbImportMultiAttributeMapperBase.class);
 
 //**************************** ATTRIBUTES ****************************************************
 

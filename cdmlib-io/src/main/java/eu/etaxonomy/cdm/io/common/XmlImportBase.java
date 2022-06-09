@@ -24,7 +24,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -42,7 +42,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 
     private static final long serialVersionUID = 1505202381104645545L;
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(XmlImportBase.class);
+	private static final Logger logger = LogManager.getLogger(XmlImportBase.class);
 
 	protected void fireSchemaConflictEventExpectedStartTag(String elName, XMLEventReader reader) throws XMLStreamException {
 		String type = "ElementStart";

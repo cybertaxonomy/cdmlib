@@ -23,7 +23,7 @@ import java.util.UUID;
 import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -93,7 +93,7 @@ public class CdmGenericDaoImpl
          extends CdmEntityDaoBase<CdmBase>
          implements ICdmGenericDao{
 
-    private static final Logger logger = Logger.getLogger(CdmGenericDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger(CdmGenericDaoImpl.class);
 
 	private Set<Class<? extends CdmBase>> allCdmClasses = null;
 	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<>();

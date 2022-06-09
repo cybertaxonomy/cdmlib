@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 public class Address extends VersionableEntity {
 	private static final long serialVersionUID = 682106303069088972L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Address.class);
+	private static final Logger logger = LogManager.getLogger(Address.class);
 
 	public static Address NewInstance(){
 		return new Address();

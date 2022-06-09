@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.common.Tree;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
  */
 public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
 
-    public static final Logger logger = Logger.getLogger(DistributionTree.class);
+    public static final Logger logger = LogManager.getLogger(DistributionTree.class);
 
     private final IDefinedTermDao termDao;
 

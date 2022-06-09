@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.editor;
 
 import java.beans.PropertyEditorSupport;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.kohlbecker
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 public class CdmTypePropertyEditor extends PropertyEditorSupport  {
 
-    public static final Logger logger = Logger.getLogger(CdmTypePropertyEditor.class);
+    public static final Logger logger = LogManager.getLogger(CdmTypePropertyEditor.class);
 
     @Override
     public void setAsText(String text) {

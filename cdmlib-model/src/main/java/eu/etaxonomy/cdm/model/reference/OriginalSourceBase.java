@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -78,7 +78,7 @@ public abstract class OriginalSourceBase
 
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);
+	private static final Logger logger = LogManager.getLogger(OriginalSourceBase.class);
 
 	/**
 	 * The {@link OriginalSourceType type} of this source. According to PROV the type has to be thought as

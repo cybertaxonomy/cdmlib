@@ -6,7 +6,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -19,7 +19,7 @@ public class CdmDefaultExport<T extends IExportConfigurator>
             extends CdmDefaultIOBase<IExportConfigurator>
             implements ICdmExporter<T> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmDefaultExport.class);
+	private static final Logger logger = LogManager.getLogger(CdmDefaultExport.class);
 
 	@Override
     public ExportResult invoke(T config){

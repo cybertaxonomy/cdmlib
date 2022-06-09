@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.database;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author AM
@@ -20,7 +20,7 @@ public enum H2Mode {
 	EMBEDDED,
 	IN_MEMORY,
 	TCP;
-	private static final Logger logger = Logger.getLogger(H2Mode.class);
+	private static final Logger logger = LogManager.getLogger(H2Mode.class);
 	
 	
 	private static final String embedded = "embedded";

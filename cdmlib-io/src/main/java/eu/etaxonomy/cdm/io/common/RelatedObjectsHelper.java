@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class RelatedObjectsHelper {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(RelatedObjectsHelper.class);
+	private static final Logger logger = LogManager.getLogger(RelatedObjectsHelper.class);
 	
 	private Map<Object, Map<String, ? extends CdmBase>> relatedObjects;
 

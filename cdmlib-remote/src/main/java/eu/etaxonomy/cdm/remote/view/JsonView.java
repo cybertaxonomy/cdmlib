@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.SuppressPropertiesBeanIntrospector;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.View;
 
 import eu.etaxonomy.cdm.opt.config.DataSourceProperties;
@@ -47,7 +47,7 @@ public class JsonView extends BaseView implements View {
         BeanUtilsBean.setInstance(bub);
     }
 
-    public static final Logger logger = Logger.getLogger(JsonView.class);
+    public static final Logger logger = LogManager.getLogger(JsonView.class);
 
     private JsonConfig jsonConfig;
 

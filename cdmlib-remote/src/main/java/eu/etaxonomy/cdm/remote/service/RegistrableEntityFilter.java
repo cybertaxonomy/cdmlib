@@ -12,7 +12,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.util.UserHelper;
@@ -35,7 +36,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 @Component
 public class RegistrableEntityFilter {
 
-    private static Logger logger = Logger.getLogger(RegistrableEntityFilter.class);
+    private static Logger logger = LogManager.getLogger(RegistrableEntityFilter.class);
 
     protected UserHelper userHelper;
 

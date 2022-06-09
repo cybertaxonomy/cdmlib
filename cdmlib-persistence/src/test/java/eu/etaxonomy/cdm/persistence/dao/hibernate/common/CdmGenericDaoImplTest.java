@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -171,7 +171,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
+    private static final Logger logger = LogManager.getLogger(CdmGenericDaoImplTest.class);
 
 	@SpringBeanByType
 	private CdmGenericDaoImpl cdmGenericDao;

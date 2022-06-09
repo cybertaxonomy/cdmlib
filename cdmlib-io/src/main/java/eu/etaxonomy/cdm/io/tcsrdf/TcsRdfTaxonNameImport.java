@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 import java.io.InputStream;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
     private static final long serialVersionUID = -2547422867292051979L;
 
-    private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameImport.class);
+    private static final Logger logger = LogManager.getLogger(TcsRdfTaxonNameImport.class);
 
 	private static int modCount = 5000;
 

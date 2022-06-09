@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class MaterialOrMethodEvent extends EventBase {
 
     private static final long serialVersionUID = -4799205199942053585L;
-	private static final Logger logger = Logger.getLogger(MaterialOrMethodEvent.class);
+	private static final Logger logger = LogManager.getLogger(MaterialOrMethodEvent.class);
 
     @XmlElement(name = "DefinedMaterialOrMethod")
     @XmlIDREF

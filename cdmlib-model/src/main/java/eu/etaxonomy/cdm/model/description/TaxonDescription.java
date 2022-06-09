@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -74,7 +74,7 @@ public class TaxonDescription
 
     private static final long serialVersionUID = 8065879180505546803L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TaxonDescription.class);
+    private static final Logger logger = LogManager.getLogger(TaxonDescription.class);
 
     @XmlElementWrapper(name = "Scopes")
     @XmlElement(name = "Scope")

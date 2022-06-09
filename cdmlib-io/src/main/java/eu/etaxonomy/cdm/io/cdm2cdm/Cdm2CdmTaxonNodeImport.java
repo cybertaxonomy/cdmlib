@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -25,7 +25,7 @@ public class Cdm2CdmTaxonNodeImport
         extends Cdm2CdmImportBase {
 
     private static final long serialVersionUID = -2111102574346601573L;
-    private static final Logger logger = Logger.getLogger(Cdm2CdmTaxonNodeImport.class);
+    private static final Logger logger = LogManager.getLogger(Cdm2CdmTaxonNodeImport.class);
 
 
     @Override

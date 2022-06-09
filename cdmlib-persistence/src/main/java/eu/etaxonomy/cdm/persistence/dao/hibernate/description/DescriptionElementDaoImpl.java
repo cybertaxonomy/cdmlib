@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Repository
 public class DescriptionElementDaoImpl extends AnnotatableDaoBaseImpl<DescriptionElementBase> implements IDescriptionElementDao {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DescriptionElementDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionElementDaoImpl.class);
 
     private final String defaultField = "multilanguageText.text";
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
 import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 public class CdmApplicationUtils implements ApplicationContextAware {
-    private static final Logger logger = Logger.getLogger(CdmApplicationUtils.class);
+    private static final Logger logger = LogManager.getLogger(CdmApplicationUtils.class);
 
     private static ApplicationContext applicationContext;
 

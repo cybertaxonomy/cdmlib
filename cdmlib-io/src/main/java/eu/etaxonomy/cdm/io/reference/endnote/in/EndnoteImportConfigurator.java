@@ -14,7 +14,7 @@ import java.net.MalformedURLException;
 import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,7 @@ public class EndnoteImportConfigurator
             extends ImportConfiguratorBase<EndnoteImportState, URI> {
 
     private static final long serialVersionUID = 2763770696094215281L;
-    private static final Logger logger = Logger.getLogger(EndnoteImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger(EndnoteImportConfigurator.class);
 
     //TODO
     private static IInputTransformer defaultTransformer = null;

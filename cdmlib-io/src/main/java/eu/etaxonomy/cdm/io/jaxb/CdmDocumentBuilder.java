@@ -33,7 +33,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.xml.resolver.tools.CatalogResolver;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextElement;
 //which allows to package the schemas into a jar file.
 public class CdmDocumentBuilder extends Jaxb2Marshaller  {
 
-    private static final Logger logger = Logger.getLogger(CdmDocumentBuilder.class);
+    private static final Logger logger = LogManager.getLogger(CdmDocumentBuilder.class);
     private boolean formattedOutput = Boolean.TRUE;
     private String encoding = "UTF-8";
 

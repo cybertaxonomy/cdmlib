@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import org.junit.Test;
  */
 public class DatabaseTypeEnumTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DatabaseTypeEnumTest.class);
+	private static final Logger logger = LogManager.getLogger(DatabaseTypeEnumTest.class);
 	private static DatabaseTypeEnum dbEnum;
 	private static DatabaseTypeEnum dbEnumSql2005;
 

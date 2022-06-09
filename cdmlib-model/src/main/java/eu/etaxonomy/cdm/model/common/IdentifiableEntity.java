@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -96,7 +96,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
 
     private static final long serialVersionUID = 7912083412108359559L;
-    private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
+    private static final Logger logger = LogManager.getLogger(IdentifiableEntity.class);
 
     @XmlTransient
     public static final boolean PROTECTED = true;

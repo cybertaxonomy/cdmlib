@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.excel.distribution;
 
 import eu.etaxonomy.cdm.common.URI;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class DistributionImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
 
     private static final long serialVersionUID = -4283236727158858201L;
-    private static final Logger logger = Logger.getLogger(DistributionImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger(DistributionImportConfigurator.class);
 
 	@Override
     @SuppressWarnings("unchecked")

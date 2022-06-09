@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class ExtensionTypeTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExtensionTypeTest.class);
+	private static final Logger logger = LogManager.getLogger(ExtensionTypeTest.class);
 
 //****************** TESTS *******************************************************/
 

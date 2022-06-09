@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * Mapper base class mapping a single source attribute to a single destination attribute.
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBase{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmSingleAttributeMapperBase.class);
+	private static final Logger logger = LogManager.getLogger(CdmSingleAttributeMapperBase.class);
 
 	private String sourceValue;
 	private String destinationValue;

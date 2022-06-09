@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -77,7 +77,7 @@ public class TermNode <T extends DefinedTermBase>
             extends TermRelationBase<T, TermNode<T>, TermTree>
             implements ITreeNode<TermNode<T>> {
 
-    private static final Logger logger = Logger.getLogger(TermNode.class);
+    private static final Logger logger = LogManager.getLogger(TermNode.class);
 
     @XmlElement(name = "Parent")
     @XmlIDREF

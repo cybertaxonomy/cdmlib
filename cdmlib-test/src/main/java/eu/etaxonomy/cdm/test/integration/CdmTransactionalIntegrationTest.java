@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.test.integration;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,7 +34,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 @Transactional(TransactionMode.DISABLED) // NOTE: we are handling transaction by ourself in this class, thus we prevent unitils from creating transactions
 public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest {
 
-    protected static final Logger logger = Logger.getLogger(CdmTransactionalIntegrationTest.class);
+    protected static final Logger logger = LogManager.getLogger(CdmTransactionalIntegrationTest.class);
 
     /**
      * The transaction manager to use
@@ -369,7 +369,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      */
     protected void commitAndStartNewTransaction(final String[] tableNames) {
         commit();
-        if(tableNames != null && logger.isEnabledFor(Level.DEBUG)){
+        if(tableNames != null && logger.isDebugEnabled()){
             printDataSet(System.out, tableNames);
 //          careful, the following will overwrite existing files:
 //          writeDbUnitDataSetFile(tableNames);

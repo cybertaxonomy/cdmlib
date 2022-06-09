@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
  */
 public class SwaggerStaticIT extends WebServiceTestBase {
 
-    public static final Logger logger = Logger.getLogger(SwaggerStaticIT.class);
+    public static final Logger logger = LogManager.getLogger(SwaggerStaticIT.class);
 
     private String[] swaggerResourcesPaths = new String[]{"", "/configuration/ui", "/configuration/security" };
 

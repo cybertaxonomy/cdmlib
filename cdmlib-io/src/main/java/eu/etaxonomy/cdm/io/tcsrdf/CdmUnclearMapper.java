@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.tcsrdf;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 public class CdmUnclearMapper extends CdmSingleAttributeRDFMapperBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CdmUnclearMapper.class);
+    private static final Logger logger = LogManager.getLogger(CdmUnclearMapper.class);
 
 	/**
 	 * @param dbValue

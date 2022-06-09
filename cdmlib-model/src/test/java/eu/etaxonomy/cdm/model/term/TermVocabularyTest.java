@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
 public class TermVocabularyTest extends EntityTestBase {
-	private static Logger logger = Logger.getLogger(TermVocabularyTest.class);
+	private static Logger logger = LogManager.getLogger(TermVocabularyTest.class);
 
 	private DefinedTermBase<?> dtb1;
 	private DefinedTermBase<?> dtb2;

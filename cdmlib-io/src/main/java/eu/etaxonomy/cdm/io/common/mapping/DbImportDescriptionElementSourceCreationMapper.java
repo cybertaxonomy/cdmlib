@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class DbImportDescriptionElementSourceCreationMapper extends DbImportObjectCreationMapperBase<DescriptionElementSource, DbImportStateBase<?,?>> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportDescriptionElementSourceCreationMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportDescriptionElementSourceCreationMapper.class);
 
 //**************************** FACTORY METHOD ***********************************************/
 

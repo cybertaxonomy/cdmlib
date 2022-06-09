@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -85,7 +85,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 public class Person extends TeamOrPersonBase<Person>{
 
     private static final long serialVersionUID = 4153566493065539763L;
-	public static final Logger logger = Logger.getLogger(Person.class);
+	public static final Logger logger = LogManager.getLogger(Person.class);
 
     @XmlElement(name="NomenclaturalTitle")
     @Field(index=Index.YES)

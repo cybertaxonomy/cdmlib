@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 public class User extends CdmBase implements UserDetails {
 
     private static final long serialVersionUID = 6582191171369439163L;
-    private static final Logger logger = Logger.getLogger(User.class);
+    private static final Logger logger = LogManager.getLogger(User.class);
 
     public static final String USERNAME_REGEX = "[A-Za-z0-9_\\.\\-]+";
 

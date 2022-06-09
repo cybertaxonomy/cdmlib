@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 12.05.2009
  */
 public class ObjectChangeMapper extends CdmAttributeMapperBase implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
-	private static final Logger logger = Logger.getLogger(ObjectChangeMapper.class);
+	private static final Logger logger = LogManager.getLogger(ObjectChangeMapper.class);
 
 	private DbExportStateBase<?, IExportTransformer> state;  //for possible later use
 

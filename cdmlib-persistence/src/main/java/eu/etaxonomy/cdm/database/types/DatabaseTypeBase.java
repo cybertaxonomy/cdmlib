@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.database.types;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.Dialect;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.database.DbcpSaveDataSource;
  *
  */
 abstract class DatabaseTypeBase implements IDatabaseType {
-	private static final Logger logger = Logger.getLogger(DatabaseTypeBase.class);
+	private static final Logger logger = LogManager.getLogger(DatabaseTypeBase.class);
 	
 	//typeName
 	private String typeName;

@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @since 21.11.2008
  */
 public class TestFullReferenceParser {
-	private static final Logger logger = Logger.getLogger(TestFullReferenceParser.class);
+	private static final Logger logger = LogManager.getLogger(TestFullReferenceParser.class);
 
 
 	private boolean test(){

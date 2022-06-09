@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -112,7 +112,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
             implements IDefinedTerm<T>, Comparable<T> {
 
     private static final long serialVersionUID = 2931811562248571531L;
-    private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
+    private static final Logger logger = LogManager.getLogger(DefinedTermBase.class);
 
 //	@XmlElement(name = "KindOf")
 //    @XmlIDREF

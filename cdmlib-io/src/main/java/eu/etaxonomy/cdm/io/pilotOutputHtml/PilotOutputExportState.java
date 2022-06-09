@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.pilotOutputHtml;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
 
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.XmlExportState;
  */
 public class PilotOutputExportState extends XmlExportState<PilotOutputExportConfigurator>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PilotOutputExportState.class);
+	private static final Logger logger = LogManager.getLogger(PilotOutputExportState.class);
 
 	public PilotOutputExportState(PilotOutputExportConfigurator config) {
 		super(config);

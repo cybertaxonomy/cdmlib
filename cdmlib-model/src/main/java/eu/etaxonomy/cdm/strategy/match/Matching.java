@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 public class Matching {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Matching.class);
+	private static final Logger logger = LogManager.getLogger(Matching.class);
 
 	private SortedMap<String, FieldMatcher> fieldMatchers = new TreeMap<>();
 	private SortedMap<String, FieldMatcher> tmpFieldMatchers = new TreeMap<>();

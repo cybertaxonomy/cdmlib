@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.excel.stream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportStateBase;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaImportState;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.io.stream.excel.ExcelStreamImportConfigurator;
  */
 public class ExcelStreamImportState extends DwcaDataImportStateBase<ExcelStreamImportConfigurator>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaImportState.class);
+	private static final Logger logger = LogManager.getLogger(DwcaImportState.class);
 
 	public ExcelStreamImportState(ExcelStreamImportConfigurator config) {
 		super(config);

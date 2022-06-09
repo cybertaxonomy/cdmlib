@@ -15,7 +15,7 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -516,7 +516,7 @@ public enum TermType implements IEnumTerm<TermType>{
 // **************** END ENUM **********************/
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TermType.class);
+    private static final Logger logger = LogManager.getLogger(TermType.class);
 
     private TermType(UUID uuid, String defaultString, String key){
         this(uuid, defaultString, key, null);

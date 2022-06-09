@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -41,7 +41,7 @@ public class DescriptiveDataSetDao
         extends IdentifiableDaoBase<DescriptiveDataSet>
         implements IDescriptiveDataSetDao {
 
-    private static final Logger logger = Logger.getLogger(DescriptiveDataSetDao.class);
+    private static final Logger logger = LogManager.getLogger(DescriptiveDataSetDao.class);
 
 	@Autowired
 	private ITermTreeDao termTreeDao;

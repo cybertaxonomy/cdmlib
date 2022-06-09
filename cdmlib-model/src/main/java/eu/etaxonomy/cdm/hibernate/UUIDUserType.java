@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -30,7 +30,7 @@ public class UUIDUserType  extends AbstractUserType implements UserType {
 	static final long serialVersionUID = -3959049831344758708L;
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(UUIDUserType.class);
+	private static final Logger logger = LogManager.getLogger(UUIDUserType.class);
 
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 

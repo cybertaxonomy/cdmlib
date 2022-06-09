@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  *
  */
 public class SequenceServiceTest extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = Logger.getLogger(SequenceServiceTest.class);
+    private static final Logger logger = LogManager.getLogger(SequenceServiceTest.class);
 
     @SpringBeanByType
     private ISequenceService sequenceService;

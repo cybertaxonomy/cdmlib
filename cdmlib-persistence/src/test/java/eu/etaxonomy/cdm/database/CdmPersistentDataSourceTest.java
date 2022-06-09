@@ -20,7 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cache.spi.RegionFactory;
 import org.junit.After;
@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.config.CdmPersistentXMLSource.CdmSourceProperties;
 @Ignore
 public class CdmPersistentDataSourceTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmPersistentDataSourceTest.class);
+	private static final Logger logger = LogManager.getLogger(CdmPersistentDataSourceTest.class);
 
 	private static CdmPersistentDataSource dataSource;
 

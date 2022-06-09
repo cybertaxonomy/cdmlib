@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.tcsxml;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @version 1.0
  */
 public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
-	private static final Logger logger = Logger.getLogger(DefaultTcsXmlPlaceholders.class);
+	private static final Logger logger = LogManager.getLogger(DefaultTcsXmlPlaceholders.class);
 
 	/* (non-Javadoc)
 	 * @see tcsxml.ITcsXmlPlaceholderClass#makeMetaDataDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element)

@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -32,7 +32,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
         extends CdmSingleAttributeMapperBase
         implements IDbExportMapper<STATE, IExportTransformer>  {
 
-    private static final Logger logger = Logger.getLogger(DbSingleAttributeExportMapperBase.class);
+    private static final Logger logger = LogManager.getLogger(DbSingleAttributeExportMapperBase.class);
 
 	protected DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<>();
 	private Integer precision = null;

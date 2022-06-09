@@ -12,7 +12,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.remote.json.processor.matcher.HibernateJSONValueProcessorMatcher;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.remote.json.processor.matcher.HibernateJSONValueProcesso
  */
 public class HibernateJSONValueProcessor implements JsonValueProcessor {
 	
-	public static final Logger logger = Logger.getLogger(HibernateJSONValueProcessor.class);
+	public static final Logger logger = LogManager.getLogger(HibernateJSONValueProcessor.class);
 	
 //	public Object processArrayValue(Object object, JsonConfig jsonConfig) {
 //		if(Hibernate.isInitialized(object)) {

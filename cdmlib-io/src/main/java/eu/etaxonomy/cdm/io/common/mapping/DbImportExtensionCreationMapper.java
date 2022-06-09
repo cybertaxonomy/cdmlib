@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.Extension;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @version 1.0
  */
 public class DbImportExtensionCreationMapper extends DbImportSupplementCreationMapperBase<Extension, IdentifiableEntity, DbImportStateBase<?, ?>, ExtensionType > {
-	private static final Logger logger = Logger.getLogger(DbImportExtensionCreationMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportExtensionCreationMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
 	

@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -60,7 +60,7 @@ public class CsvDemoExport extends CsvDemoBase {
 
     private static final long serialVersionUID = 8265935377927091897L;
 
-    private static final Logger logger = Logger.getLogger(CsvDemoExport.class);
+    private static final Logger logger = LogManager.getLogger(CsvDemoExport.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "RedlistCoreTax.csv";

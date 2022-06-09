@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -65,7 +65,7 @@ public class TermVocabulary<T extends DefinedTermBase>
         extends TermCollection<T,TermNode> {
 
     private static final long serialVersionUID = 1925052321596648672L;
-	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
+	private static final Logger logger = LogManager.getLogger(TermVocabulary.class);
 
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database
 	//is created for the first time.

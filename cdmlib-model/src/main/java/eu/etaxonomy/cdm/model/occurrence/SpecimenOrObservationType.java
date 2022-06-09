@@ -15,7 +15,7 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -196,7 +196,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	;
 
 	@SuppressWarnings("unused")
-	private final Logger logger = Logger.getLogger(SpecimenOrObservationType.class);
+	private final Logger logger = LogManager.getLogger(SpecimenOrObservationType.class);
 
 
 	private SpecimenOrObservationType(UUID uuid, String defaultString, String key){

@@ -15,7 +15,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -63,7 +63,7 @@ public class ManifestController {
 
     private static final String HTTP_IIIF_CYBERTAXONOMY_ORG = "http://iiif.cybertaxonomy.org/";
 
-    public static final Logger logger = Logger.getLogger(ManifestController.class);
+    public static final Logger logger = LogManager.getLogger(ManifestController.class);
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

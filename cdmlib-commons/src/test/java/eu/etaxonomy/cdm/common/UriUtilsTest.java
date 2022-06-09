@@ -11,13 +11,14 @@ import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class UriUtilsTest {
 
-    private static final Logger logger = Logger.getLogger(UriUtilsTest.class);
+    private static final Logger logger = LogManager.getLogger(UriUtilsTest.class);
 
 //********************* TESTS **********************************************/
 

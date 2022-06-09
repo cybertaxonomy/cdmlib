@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -69,7 +69,7 @@ public class TermTree <T extends DefinedTermBase>
             implements ITermTree<T, TermNode> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
-	private static final Logger logger = Logger.getLogger(TermTree.class);
+	private static final Logger logger = LogManager.getLogger(TermTree.class);
 
 
     // TODO representations needed? TermTree was a TermBase until v3.3 but was removed from

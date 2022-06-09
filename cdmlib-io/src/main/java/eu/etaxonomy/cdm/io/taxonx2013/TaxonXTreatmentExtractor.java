@@ -26,7 +26,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -81,7 +81,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     private static final String PUBLICATION_YEAR = "publicationYear";
 
-	private static final Logger logger = Logger.getLogger(TaxonXTreatmentExtractor.class);
+	private static final Logger logger = LogManager.getLogger(TaxonXTreatmentExtractor.class);
 
     private static final String notMarkedUp = "Not marked-up";
     private static final UUID proIbioTreeUUID = UUID.fromString("2c49f506-c7f7-44de-a8b9-2e695de3769c");

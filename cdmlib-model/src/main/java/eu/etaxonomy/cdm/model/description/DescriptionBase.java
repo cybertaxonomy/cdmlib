@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -94,7 +94,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         implements ICdmTarget{
 
     private static final long serialVersionUID = 5504218413819040193L;
-    private static final Logger logger = Logger.getLogger(DescriptionBase.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionBase.class);
 
     @XmlElement( name = "DescribedSpecimenOrObservation")
     @ManyToOne(fetch = FetchType.LAZY)

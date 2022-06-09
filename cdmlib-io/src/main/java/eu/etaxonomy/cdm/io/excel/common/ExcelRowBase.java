@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.SourceType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public abstract class ExcelRowBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExcelRowBase.class);
+	private static final Logger logger = LogManager.getLogger(ExcelRowBase.class);
 
 	private UUID cdmUuid = null;
 

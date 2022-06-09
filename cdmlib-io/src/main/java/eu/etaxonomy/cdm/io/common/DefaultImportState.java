@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  */
 public class DefaultImportState<CONFIG extends ImportConfiguratorBase> extends ImportStateBase<CONFIG, CdmImportBase> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DefaultImportState.class);
+	private static final Logger logger = LogManager.getLogger(DefaultImportState.class);
 	/**
 	 * @param config
 	 */

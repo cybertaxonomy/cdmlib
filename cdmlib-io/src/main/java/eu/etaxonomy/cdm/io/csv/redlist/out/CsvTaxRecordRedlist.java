@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CsvTaxRecordRedlist.class);
+	private static final Logger logger = LogManager.getLogger(CsvTaxRecordRedlist.class);
 
 	private String scientificNameId;
 	private String scientificName;

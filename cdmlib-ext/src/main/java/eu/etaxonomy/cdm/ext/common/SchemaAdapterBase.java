@@ -12,7 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public abstract class SchemaAdapterBase<T extends CdmBase> {
 
-	public static final Logger logger = Logger.getLogger(SchemaAdapterBase.class);
+	public static final Logger logger = LogManager.getLogger(SchemaAdapterBase.class);
 
 	/**
 	 * @return the identifier e.g. "info:srw/schema/1/dc-v1.1" for DublinCore

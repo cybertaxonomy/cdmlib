@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -94,7 +94,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             implements ICdmImport<CONFIG, STATE>{
 
     private static final long serialVersionUID = 8730012744209195616L;
-    private static final Logger logger = Logger.getLogger(CdmImportBase.class);
+    private static final Logger logger = LogManager.getLogger(CdmImportBase.class);
 
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.compare.term;
 
 import java.util.Comparator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.TermBase;
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.term.TermBase;
  */
 public class TermLanguageComparator<T extends TermBase> implements Comparator<T> {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(TermLanguageComparator.class);
+	private static Logger logger = LogManager.getLogger(TermLanguageComparator.class);
 
 	private final Language defaultLanguage;
 	private final Language compareLanguage;

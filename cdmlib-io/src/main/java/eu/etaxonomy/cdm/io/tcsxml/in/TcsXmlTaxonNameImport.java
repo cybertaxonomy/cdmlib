@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 
     private static final long serialVersionUID = -1978871518114999061L;
-    private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameImport.class);
+    private static final Logger logger = LogManager.getLogger(TcsXmlTaxonNameImport.class);
 
 	private static int modCount = 5000;
 

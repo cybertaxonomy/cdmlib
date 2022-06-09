@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 public class PreservationMethod extends MaterialOrMethodEvent implements Cloneable {
 	private static final long serialVersionUID = 2366116167028862401L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PreservationMethod.class);
+	private static final Logger logger = LogManager.getLogger(PreservationMethod.class);
 
     @XmlElement(name = "Medium")
     @XmlIDREF

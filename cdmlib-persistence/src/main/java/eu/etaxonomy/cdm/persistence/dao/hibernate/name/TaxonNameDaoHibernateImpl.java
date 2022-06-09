@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Qualifier("taxonNameDaoHibernateImpl")
 public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> implements ITaxonNameDao {
 
-    private static final Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNameDaoHibernateImpl.class);
 
     @Autowired
     private ITaxonDao taxonDao;

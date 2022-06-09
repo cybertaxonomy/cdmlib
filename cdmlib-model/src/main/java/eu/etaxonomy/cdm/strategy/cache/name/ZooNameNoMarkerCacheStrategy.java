@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -24,7 +24,7 @@ public class ZooNameNoMarkerCacheStrategy
                 extends TaxonNameDefaultCacheStrategy {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ZooNameNoMarkerCacheStrategy.class);
+	private static final Logger logger = LogManager.getLogger(ZooNameNoMarkerCacheStrategy.class);
 	private static final long serialVersionUID = 2821727191810867550L;
 
 	final static UUID uuid = UUID.fromString("8ffa5f04-0303-4875-be44-dac5ff95b874");

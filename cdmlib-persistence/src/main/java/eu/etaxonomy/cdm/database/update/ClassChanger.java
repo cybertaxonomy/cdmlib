@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class ClassChanger
        extends AuditedSchemaUpdaterStepBase{
 
-    private static final Logger logger = Logger.getLogger(ClassChanger.class);
+    private static final Logger logger = LogManager.getLogger(ClassChanger.class);
 
 	private final String newClassName;
 	private final String[] oldClassNames;

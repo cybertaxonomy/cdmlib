@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -31,7 +31,7 @@ public class DwcaReferenceExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = -8334741499089219441L;
 
-    private static final Logger logger = Logger.getLogger(DwcaReferenceExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaReferenceExport.class);
 
 	protected static final String fileName = "reference.txt";
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Reference";

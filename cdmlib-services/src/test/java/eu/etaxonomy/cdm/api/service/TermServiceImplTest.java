@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TermServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger(TermServiceImplTest.class);
 
     @SpringBeanByType
     private ITermService termService;

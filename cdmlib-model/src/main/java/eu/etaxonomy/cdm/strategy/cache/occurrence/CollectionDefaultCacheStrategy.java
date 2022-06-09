@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -32,7 +32,7 @@ public class CollectionDefaultCacheStrategy
 
     private static final long serialVersionUID = 457142779236428472L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CollectionDefaultCacheStrategy.class);
+	private static final Logger logger = LogManager.getLogger(CollectionDefaultCacheStrategy.class);
 
 	private static final UUID uuid = UUID.fromString("42834de1-698c-4d43-a31a-1c5617a708d6");
 

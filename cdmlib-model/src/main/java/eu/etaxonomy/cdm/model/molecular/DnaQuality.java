@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.term.OrderedTerm;
 public class DnaQuality extends VersionableEntity implements Cloneable {
 	private static final long serialVersionUID = -8829069331010573654L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DnaQuality.class);
+	private static final Logger logger = LogManager.getLogger(DnaQuality.class);
 
 // ****************** FACTORY METHOD *****************/
 

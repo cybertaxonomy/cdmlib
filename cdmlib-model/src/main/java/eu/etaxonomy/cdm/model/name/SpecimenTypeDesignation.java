@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -59,7 +59,7 @@ public class SpecimenTypeDesignation
         extends TypeDesignationBase<SpecimenTypeDesignationStatus> {
 
 	private static final long serialVersionUID = 6481627446997275007L;
-	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
+	private static final Logger logger = LogManager.getLogger(SpecimenTypeDesignation.class);
 
 	@XmlElement(name = "TypeSpecimen")
 	@XmlIDREF

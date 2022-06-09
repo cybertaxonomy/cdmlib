@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.Collection;
@@ -16,18 +15,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeEvent.EventType;
 
 /**
  * @author n.hoffman
  * @since 09.04.2009
- * @version 1.0
  */
 public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEvent>>{
-	private static final Logger logger = Logger
-			.getLogger(CdmDataChangeMap.class);
+
+	@SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger(CdmDataChangeMap.class);
 
 	private Map<EventType, Vector<CdmDataChangeEvent>> dataChangeMap;
 

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -30,7 +30,7 @@ public class TermRepresentationUpdater
             extends SchemaUpdaterStepBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermRepresentationUpdater.class);
+	private static final Logger logger = LogManager.getLogger(TermRepresentationUpdater.class);
 
 	public static final TermRepresentationUpdater NewInstance(List<ISchemaUpdaterStep> stepList,
 	        String stepName, UUID uuidTerm, String description,  String label, String abbrev,

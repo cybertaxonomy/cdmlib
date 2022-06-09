@@ -17,7 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Component
 public class TaxonNodePrintAppController extends AbstractController<TaxonNode, ITaxonNodeService> {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TaxonNodePrintAppController.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNodePrintAppController.class);
 
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{

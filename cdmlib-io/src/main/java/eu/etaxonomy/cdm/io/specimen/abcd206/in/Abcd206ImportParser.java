@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  */
 public class Abcd206ImportParser {
 
-    private static final Logger logger = Logger.getLogger(Abcd206ImportParser.class);
+    private static final Logger logger = LogManager.getLogger(Abcd206ImportParser.class);
     /**
      * Store the unit's properties into variables Look which unit is the
      * preferred one Look what kind of name it is supposed to be, for the

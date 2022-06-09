@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -40,7 +40,7 @@ public class RegistrationDaoHibernateImpl
             implements IRegistrationDao {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(RegistrationDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(RegistrationDaoHibernateImpl.class);
 
     public RegistrationDaoHibernateImpl() {
         super(Registration.class);

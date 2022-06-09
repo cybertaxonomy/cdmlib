@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaImageExport extends DwcaDataExportBase {
     private static final long serialVersionUID = -4997807762779037215L;
 
-    private static final Logger logger = Logger.getLogger(DwcaImageExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaImageExport.class);
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Image";
 	protected static final String fileName = "images.txt";

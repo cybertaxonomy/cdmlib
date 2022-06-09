@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
  */
 public abstract class DbImportSupplementCreationMapperBase<SUPPLEMENT extends VersionableEntity, SUPPLEMENTABLE extends AnnotatableEntity, STATE extends DbImportStateBase<?,?>, TYPE extends DefinedTermBase> extends DbImportObjectCreationMapperBase<SUPPLEMENT, STATE>  {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportSupplementCreationMapperBase.class);
+	private static final Logger logger = LogManager.getLogger(DbImportSupplementCreationMapperBase.class);
 
 
 //******************************* ATTRIBUTES ***************************************/

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.excel.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -24,7 +24,7 @@ public abstract class ExcelImportConfiguratorBase
             extends ImportConfiguratorBase<ExcelImportState, URI>{
 
     private static final long serialVersionUID = 9031559773350645304L;
-    private static final Logger logger = Logger.getLogger(ExcelImportConfiguratorBase.class);
+    private static final Logger logger = LogManager.getLogger(ExcelImportConfiguratorBase.class);
 
 	//TODO
 	private static IInputTransformer defaultTransformer = null;

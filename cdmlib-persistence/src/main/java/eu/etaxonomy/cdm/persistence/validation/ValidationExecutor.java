@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.validation.ConstraintValidator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * A {@code ThreadPoolExecutor} specialized in dealing with
@@ -85,7 +85,7 @@ import org.apache.log4j.Logger;
 //maybe we want to make this a spring component ?  #4663
 public class ValidationExecutor extends ThreadPoolExecutor implements RejectedExecutionHandler {
 
-	private static final Logger logger = Logger.getLogger(ValidationExecutor.class);
+	private static final Logger logger = LogManager.getLogger(ValidationExecutor.class);
 
 	// Number of threads to keep in the thread pool
 	static final int CORE_POOL_SIZE = 0;

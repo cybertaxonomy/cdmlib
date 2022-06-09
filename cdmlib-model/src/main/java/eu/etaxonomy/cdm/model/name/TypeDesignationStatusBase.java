@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
@@ -55,7 +55,7 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
         extends OrderedTermBase<T> {
 
 	private static final long serialVersionUID = -7204587330204725285L;
-	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);
+	static Logger logger = LogManager.getLogger(TypeDesignationStatusBase.class);
 
 //********************************** Constructor *********************************/
 

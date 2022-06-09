@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Latitude;
 import org.hibernate.search.annotations.Longitude;
@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Spatial(spatialMode=SpatialMode.RANGE, name="point")
 public class Point implements Cloneable, Serializable {
     private static final long serialVersionUID = 531030660792800636L;
-    private static final Logger logger = Logger.getLogger(Point.class);
+    private static final Logger logger = LogManager.getLogger(Point.class);
 
     //TODO was Float but H2 threw errors, maybe we should also use BigDecimal for exactness, see #8978
     @XmlElement(name = "Longitude")

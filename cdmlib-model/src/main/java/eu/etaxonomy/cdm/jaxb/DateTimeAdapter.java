@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -22,7 +22,7 @@ import org.joda.time.format.ISODateTimeFormat;
  * @version 1.0
  */
 public class DateTimeAdapter extends XmlAdapter<String, DateTime> {
-	private static final Logger logger = Logger.getLogger(DateTimeAdapter.class);
+	private static final Logger logger = LogManager.getLogger(DateTimeAdapter.class);
 
 	@Override
 	public String marshal(DateTime dateTime) throws Exception {

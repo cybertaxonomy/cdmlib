@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 @Audited
 public class SingleRead extends EventBase implements Cloneable{
 	private static final long serialVersionUID = 1735535003073536132L;
-	private static final Logger logger = Logger.getLogger(SingleRead.class);
+	private static final Logger logger = LogManager.getLogger(SingleRead.class);
 
 	/** @see #getAmplificationResult()  */
 	@XmlElement(name = "AmplificationResult")

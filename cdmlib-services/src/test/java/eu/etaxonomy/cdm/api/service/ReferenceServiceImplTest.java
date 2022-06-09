@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ReferenceServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger(ReferenceServiceImplTest.class);
 
     private static final UUID REFERENCE1_UUID = UUID.fromString("4857d1f5-77d1-4583-87c4-f0d08fcfefcc");
     private static final UUID REFERENCE2_UUID = UUID.fromString("fcdfb0cc-9ef6-48e3-ad56-492614491c73");

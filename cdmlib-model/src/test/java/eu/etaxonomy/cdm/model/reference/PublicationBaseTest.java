@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -30,7 +30,7 @@ import org.springframework.beans.BeanUtils;
  */
 public class PublicationBaseTest {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(PublicationBaseTest.class);
+	private static Logger logger = LogManager.getLogger(PublicationBaseTest.class);
 
 	private IBook reference;
 	private IArticle reference2;

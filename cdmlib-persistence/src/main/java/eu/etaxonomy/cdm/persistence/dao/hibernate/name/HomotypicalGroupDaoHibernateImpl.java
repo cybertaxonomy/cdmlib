@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<HomotypicalGroup> implements IHomotypicalGroupDao {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(HomotypicalGroupDaoHibernateImpl.class);
+	private static final Logger logger = LogManager.getLogger(HomotypicalGroupDaoHibernateImpl.class);
 
 	public HomotypicalGroupDaoHibernateImpl() {
 		super(HomotypicalGroup.class);

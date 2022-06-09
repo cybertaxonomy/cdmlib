@@ -22,7 +22,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class MarkupFeatureImport extends MarkupImportBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupFeatureImport.class);
+	private static final Logger logger = LogManager.getLogger(MarkupFeatureImport.class);
 
 	protected static final String MODS_TITLEINFO = "titleInfo";
 

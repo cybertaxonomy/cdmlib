@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CommonServiceImplTest.class);
+	private static final Logger logger = LogManager.getLogger(CommonServiceImplTest.class);
 
     private static final String LIE_TEAMMEMBERS_NOSESSION = "failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.agent.Team.teamMembers, could not initialize proxy - no Session";
     private static final String LIE_NOSESSION = "could not initialize proxy .* no Session";

@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CreatedAndNotesMapper.class);
+	private static final Logger logger = LogManager.getLogger(CreatedAndNotesMapper.class);
 	
 	public static CreatedAndNotesMapper NewInstance(){
 		return new CreatedAndNotesMapper(true);

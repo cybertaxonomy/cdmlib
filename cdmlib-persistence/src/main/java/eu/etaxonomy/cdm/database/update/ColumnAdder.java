@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @since 16.09.2010
  */
 public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
-	private static final Logger logger = Logger.getLogger(ColumnAdder.class);
+	private static final Logger logger = LogManager.getLogger(ColumnAdder.class);
 
 	private final String newColumnName;
 	private final Datatype columnType;

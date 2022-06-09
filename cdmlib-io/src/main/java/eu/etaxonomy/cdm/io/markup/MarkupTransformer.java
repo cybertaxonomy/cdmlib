@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.markup;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
@@ -34,7 +34,7 @@ public class MarkupTransformer extends InputTransformerBase {
     private static final long serialVersionUID = -3910080152461421047L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupTransformer.class);
+	private static final Logger logger = LogManager.getLogger(MarkupTransformer.class);
 
 	//preliminary
 	public static final UUID uuidKalimantan = UUID.fromString("05c6bce3-2e55-48cb-a414-707e936066d1");

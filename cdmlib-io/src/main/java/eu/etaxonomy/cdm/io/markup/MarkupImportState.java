@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.XmlImportState;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
  */
 public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, MarkupDocumentImport>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupImportState.class);
+	private static final Logger logger = LogManager.getLogger(MarkupImportState.class);
 
 	private UnmatchedLeads unmatchedLeads;
 	private boolean onlyNumberedTaxaExist; //attribute in <key>

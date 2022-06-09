@@ -24,7 +24,8 @@ import java.util.UUID;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +70,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 public class EditGeoService implements IEditGeoService {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(EditGeoService.class);
+    private static final Logger logger = LogManager.getLogger(EditGeoService.class);
 
     @Autowired
     private IDescriptionDao dao;

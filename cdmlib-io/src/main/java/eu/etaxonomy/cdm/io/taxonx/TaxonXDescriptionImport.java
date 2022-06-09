@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Content;
 import org.jdom.Element;
@@ -48,7 +48,7 @@ public class TaxonXDescriptionImport
         extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState> {
 
     private static final long serialVersionUID = 1957356490206741364L;
-    private static final Logger logger = Logger.getLogger(TaxonXDescriptionImport.class);
+    private static final Logger logger = LogManager.getLogger(TaxonXDescriptionImport.class);
 
 	public TaxonXDescriptionImport(){
 		super();

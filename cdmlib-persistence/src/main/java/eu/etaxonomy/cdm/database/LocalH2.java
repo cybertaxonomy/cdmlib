@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.h2.tools.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
  *
  */
 public class LocalH2 extends BasicDataSource {
-	private static final Logger logger = Logger.getLogger(LocalH2.class);
+	private static final Logger logger = LogManager.getLogger(LocalH2.class);
 
 	private final String sep = System.getProperty("file.separator");
 

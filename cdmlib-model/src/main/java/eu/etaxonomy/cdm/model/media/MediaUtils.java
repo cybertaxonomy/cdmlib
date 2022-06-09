@@ -13,13 +13,13 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public class MediaUtils {
 
-    private static final Logger logger = Logger.getLogger(MediaUtils.class);
+    private static final Logger logger = LogManager.getLogger(MediaUtils.class);
 
 
     public static MediaRepresentation findBestMatchingRepresentation(Media media,

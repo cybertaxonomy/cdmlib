@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 public class Cloning extends MaterialOrMethodEvent implements Cloneable{
 	private static final long serialVersionUID = 6179007910988646989L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Cloning.class);
+	private static final Logger logger = LogManager.getLogger(Cloning.class);
 
 	/** @see #getStrain() */
     @XmlElement(name = "strain")

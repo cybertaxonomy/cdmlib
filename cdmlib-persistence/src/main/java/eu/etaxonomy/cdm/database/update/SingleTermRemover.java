@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -31,7 +31,7 @@ public class SingleTermRemover
         extends SchemaUpdaterStepBase{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SingleTermRemover.class);
+	private static final Logger logger = LogManager.getLogger(SingleTermRemover.class);
 
 // **************************** FACTORY METHODS ********************************/
 

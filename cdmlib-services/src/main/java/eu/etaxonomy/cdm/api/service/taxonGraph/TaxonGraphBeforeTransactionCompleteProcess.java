@@ -15,8 +15,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
@@ -82,7 +84,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         extends AbstractHibernateTaxonGraphProcessor
         implements BeforeTransactionCompletionProcess {
 
-    private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
+    private static final Logger logger = LogManager.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
     private static final String[] TAXONNAME_NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
     private static final String[] TAXONNAME_NOMENCLATURALSOURCE = new String[]{"nomenclaturalSource"};
@@ -306,7 +308,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
           if (getSession() != null ) {
               // temporarySession.close(); // no need to close the session since the session is configured for auto close, see createTempSession()
               if(origLoggerLevel != null){
-                  Logger.getLogger("org.hibernate.SQL").setLevel(origLoggerLevel);
+                  Configurator.setLevel("org.hibernate.SQL", origLoggerLevel);
               }
           }
       }

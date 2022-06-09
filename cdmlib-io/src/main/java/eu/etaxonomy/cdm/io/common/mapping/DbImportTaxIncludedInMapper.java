@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImportConfiguratorBase<STATE>,?>>
         extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 
-    private static final Logger logger = Logger.getLogger(DbImportTaxIncludedInMapper.class);
+    private static final Logger logger = LogManager.getLogger(DbImportTaxIncludedInMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 

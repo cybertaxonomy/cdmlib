@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class UnitsGatheringEvent {
 
-    private static final Logger logger = Logger.getLogger(UnitsGatheringEvent.class);
+    private static final Logger logger = LogManager.getLogger(UnitsGatheringEvent.class);
     private static final boolean DEBUG = false;
     private final GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 

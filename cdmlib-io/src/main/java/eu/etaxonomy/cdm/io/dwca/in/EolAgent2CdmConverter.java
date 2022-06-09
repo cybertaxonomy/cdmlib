@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.stream.IReader;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 				implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(EolAgent2CdmConverter.class);
+	private static final Logger logger = LogManager.getLogger(EolAgent2CdmConverter.class);
 	private static final String CORE_ID = "coreId";
 
 	/**

@@ -21,8 +21,10 @@ import java.util.regex.Pattern;
 
 import javax.mail.internet.MimeMessage;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(PasswordResetServiceTest.class);
+    private static final Logger logger = LogManager.getLogger(PasswordResetServiceTest.class);
 
     private static final double maxRequestRate = 4.0;
 
@@ -101,8 +103,8 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
 
     @Before
     public void resetPasswordResetService() throws InterruptedException {
-        logger.setLevel(Level.DEBUG);
-        Logger.getLogger(PasswordResetRequest.class).setLevel(Level.TRACE);
+        Configurator.setLevel(logger, Level.DEBUG);
+        Configurator.setLevel(PasswordResetRequest.class, Level.TRACE);
         // speed up testing
         passwordResetService.setRateLimiterTimeout(Duration.ofMillis(rateLimiterTimeout));
         passwordResetService.setRate(maxRequestRate);

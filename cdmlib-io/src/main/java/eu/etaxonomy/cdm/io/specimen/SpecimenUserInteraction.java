@@ -32,7 +32,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -54,8 +55,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class SpecimenUserInteraction implements ItemListener, Serializable {
 
     private static final long serialVersionUID = 6384263183459028523L;
+
     @SuppressWarnings("unused")
-    private static Logger log = Logger.getLogger(SpecimenUserInteraction.class);
+    private static Logger log = LogManager.getLogger(SpecimenUserInteraction.class);
 
     public Classification askForClassification(Map<String, Classification> classMap){
         List<String> possibilities = new ArrayList<String>(classMap.keySet());

@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class ShpAttributesToNamedAreaMapper {
 
-    public static final Logger logger = Logger.getLogger(ShpAttributesToNamedAreaMapper.class);
+    public static final Logger logger = LogManager.getLogger(ShpAttributesToNamedAreaMapper.class);
 
     private static final char COMMA = ',';
 

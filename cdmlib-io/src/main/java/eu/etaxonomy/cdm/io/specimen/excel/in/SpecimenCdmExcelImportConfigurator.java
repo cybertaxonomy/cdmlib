@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import eu.etaxonomy.cdm.common.URI;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
     private static final long serialVersionUID = -114046010543496409L;
-    private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger(SpecimenCdmExcelImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new SpecimenCdmExcelTransformer();
 
 	//old

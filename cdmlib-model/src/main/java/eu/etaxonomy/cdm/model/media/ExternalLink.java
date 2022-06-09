@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -63,7 +63,7 @@ public class ExternalLink extends VersionableEntity{
 
     private static final long serialVersionUID = -5008959652949778843L;
 
-    private static final Logger logger = Logger.getLogger(ExternalLink.class);
+    private static final Logger logger = LogManager.getLogger(ExternalLink.class);
 
     /**
      * The {@link ExternalLinkType type} of this link.

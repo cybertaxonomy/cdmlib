@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import io.swagger.annotations.Api;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 public class EventBaseController extends BaseController<EventBase, IEventBaseService> {
     
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(EventBaseController.class);
+    private static final Logger logger = LogManager.getLogger(EventBaseController.class);
 
     @Override
     @Autowired

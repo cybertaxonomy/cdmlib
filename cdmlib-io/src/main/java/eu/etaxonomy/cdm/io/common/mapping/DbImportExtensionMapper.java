@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity>
         implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{
 
-	private static final Logger logger = Logger.getLogger(DbImportExtensionMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportExtensionMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
 

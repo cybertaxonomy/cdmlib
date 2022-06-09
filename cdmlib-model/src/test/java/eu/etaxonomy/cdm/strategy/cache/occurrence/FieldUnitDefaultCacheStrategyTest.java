@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class FieldUnitDefaultCacheStrategyTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FieldUnitDefaultCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(FieldUnitDefaultCacheStrategyTest.class);
 
 	private FieldUnit fieldUnit;
 	private GatheringEvent gatheringEvent;

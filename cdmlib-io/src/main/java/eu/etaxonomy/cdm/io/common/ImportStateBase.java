@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -47,7 +47,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
         extends IoStateBase<CONFIG, IO, ImportResult> {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
+	private static final Logger logger = LogManager.getLogger(ImportStateBase.class);
 
     private boolean success = true;
 

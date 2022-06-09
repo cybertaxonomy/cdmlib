@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,7 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 @Controller
 public class StaticSwaggerApiDoc {
 
-    public static final Logger logger = Logger.getLogger(StaticSwaggerApiDoc.class);
+    public static final Logger logger = LogManager.getLogger(StaticSwaggerApiDoc.class);
 
     public static final String SWAGGER_STATIC = "swagger-static";
     public static final String JSON = ".json";

@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -77,7 +77,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
     private static final long serialVersionUID = -1145031415387024364L;
 
-    private static final Logger logger = Logger.getLogger(SpecimenSythesysExcelImport.class);
+    private static final Logger logger = LogManager.getLogger(SpecimenSythesysExcelImport.class);
 
     protected String fullScientificNameString;
     protected String nomenclatureCode;

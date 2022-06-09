@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.io.FileNotFoundException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SaveOrUpdateEntityListenerTest.class);
+	private static final Logger logger = LogManager.getLogger(SaveOrUpdateEntityListenerTest.class);
 
 	@SpringBeanByType
 	private OccurrenceDaoHibernateImpl occurrenceDao;

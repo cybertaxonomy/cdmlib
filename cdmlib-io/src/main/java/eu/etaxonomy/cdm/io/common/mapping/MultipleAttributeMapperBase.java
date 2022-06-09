@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingleAttributeMapperBase> extends CdmAttributeMapperBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MultipleAttributeMapperBase.class);
+	private static final Logger logger = LogManager.getLogger(MultipleAttributeMapperBase.class);
 
 
 //******************************* ATTRIBUTES ***************************************/

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.remote.view.oaipmh.IdentifyView;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class JsonToCsvViewTest extends UnitilsJUnit4 {
 
-    public static final Logger logger = Logger.getLogger(JsonToCsvViewTest.class);
+    public static final Logger logger = LogManager.getLogger(JsonToCsvViewTest.class);
 
     @SpringBeanByName
     private Marshaller marshaller;

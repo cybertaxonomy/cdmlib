@@ -18,7 +18,7 @@ import java.util.Objects;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class EmailSendTest extends CdmIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(EmailSendTest.class);
+    private static final Logger logger = LogManager.getLogger(EmailSendTest.class);
 
     private static final String SUBJECT = "eu.etaxonomy.cdm.test.function.EmailSendTest";
 

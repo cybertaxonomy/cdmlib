@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -51,7 +51,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
     private static final long serialVersionUID = -6817762818458834785L;
 
-    public static final Logger logger = Logger.getLogger(IkeyPlusImport.class);
+    public static final Logger logger = LogManager.getLogger(IkeyPlusImport.class);
 
     private TermVocabulary<Feature> featureVoc;
 

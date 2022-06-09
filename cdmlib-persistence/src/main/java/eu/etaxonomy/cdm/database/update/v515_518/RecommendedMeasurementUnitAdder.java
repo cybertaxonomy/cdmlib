@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 public class RecommendedMeasurementUnitAdder  extends SchemaUpdaterStepBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(RecommendedMeasurementUnitAdder.class);
+    private static final Logger logger = LogManager.getLogger(RecommendedMeasurementUnitAdder.class);
 
     private final UUID uuidFeature;
     private final UUID uuidUnit;

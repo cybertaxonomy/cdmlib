@@ -12,7 +12,7 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.validation.constraint.BasionymsMustShareEpithetsAndAutho
 public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(BasionymsMustShareEpithetsAndAuthorsTest.class);
+    private static final Logger logger = LogManager.getLogger(BasionymsMustShareEpithetsAndAuthorsTest.class);
 
 	private IBotanicalName name;
 	private TaxonName basionymName;

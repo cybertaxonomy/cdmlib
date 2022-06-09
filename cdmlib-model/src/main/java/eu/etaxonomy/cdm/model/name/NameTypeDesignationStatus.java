@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTypeDesignationStatus> {
 	private static final long serialVersionUID = -8801837496688711907L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NameTypeDesignationStatus.class);
+	private static final Logger logger = LogManager.getLogger(NameTypeDesignationStatus.class);
 
 	private static final UUID uuidOriginalDesignation = UUID.fromString("40032a44-973b-4a64-b25e-76f86c3a753c");
 	private static final UUID uuidMonotypy = UUID.fromString("3fc639b2-9a64-45f8-9a81-657a4043ad74");

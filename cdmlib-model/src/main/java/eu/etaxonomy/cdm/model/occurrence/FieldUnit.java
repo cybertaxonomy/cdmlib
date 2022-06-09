@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
 public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> implements Cloneable{
 
     private static final long serialVersionUID = -7586670941559035171L;
-	private static final Logger logger = Logger.getLogger(FieldUnit.class);
+	private static final Logger logger = LogManager.getLogger(FieldUnit.class);
 
 	@XmlElement(name = "FieldNumber")
 	@Field

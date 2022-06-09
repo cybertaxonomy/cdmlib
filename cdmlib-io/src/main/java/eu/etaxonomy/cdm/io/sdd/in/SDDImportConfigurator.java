@@ -14,7 +14,7 @@ import java.net.MalformedURLException;
 import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportState> implements IImportConfigurator, IMatchingImportConfigurator {
     private static final long serialVersionUID = -960998183005112130L;
 
-    private static final Logger logger = Logger.getLogger(SDDImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger(SDDImportConfigurator.class);
 
 	//TODO
 	private static IInputTransformer defaultTransformer = new SDDTransformer();

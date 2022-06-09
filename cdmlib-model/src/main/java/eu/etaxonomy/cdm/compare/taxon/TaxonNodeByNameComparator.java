@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -34,7 +34,7 @@ public class TaxonNodeByNameComparator
 
     private static final String HYBRID_SIGN = UTF8.HYBRID.toString();
 
-    private static final Logger logger = Logger.getLogger(TaxonNodeByNameComparator.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNodeByNameComparator.class);
 
     private boolean ignoreHybridSign = true;
     private boolean sortInfraGenericFirst = true;

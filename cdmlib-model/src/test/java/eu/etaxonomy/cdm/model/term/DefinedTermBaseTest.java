@@ -8,14 +8,14 @@
  */
 package eu.etaxonomy.cdm.model.term;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class DefinedTermBaseTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-    private static Logger logger = Logger.getLogger(DefinedTermBaseTest.class);
+    private static Logger logger = LogManager.getLogger(DefinedTermBaseTest.class);
 
 	/** ******* TEST ************************************ */
 

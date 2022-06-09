@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.CollectionProxy;
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 public class HibernateBeanInitializer<CDM extends CdmBase> extends AbstractBeanInitializer<CDM>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
+	private static final Logger logger = LogManager.getLogger(HibernateBeanInitializer.class);
 
     @Override
     public Object initializeInstance(Object bean) {

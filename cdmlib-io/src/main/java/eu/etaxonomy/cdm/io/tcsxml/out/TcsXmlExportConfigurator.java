@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.tcsxml.out;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -25,7 +25,7 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
     private static final long serialVersionUID = 2943494702785912481L;
 
     @SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(TcsXmlExportConfigurator.class);
+	private static Logger logger = LogManager.getLogger(TcsXmlExportConfigurator.class);
 
 
 	private TcsXmlExportState state;

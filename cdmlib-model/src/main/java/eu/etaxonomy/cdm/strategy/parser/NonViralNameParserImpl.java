@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
@@ -58,7 +58,7 @@ public class NonViralNameParserImpl
             extends NonViralNameParserImplRegExBase
             implements INonViralNameParser<INonViralName> {
 
-    private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
+    private static final Logger logger = LogManager.getLogger(NonViralNameParserImpl.class);
 
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 

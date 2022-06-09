@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.sdd.out;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -26,7 +26,7 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
     private static final long serialVersionUID = 2416094455247924084L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SDDExportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(SDDExportConfigurator.class);
 
 	private int maxRows = 0;
 

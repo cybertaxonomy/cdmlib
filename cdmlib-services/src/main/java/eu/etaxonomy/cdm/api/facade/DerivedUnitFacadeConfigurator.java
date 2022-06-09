@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.facade;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
  */
 public class DerivedUnitFacadeConfigurator {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeConfigurator.class);
 	
 	
 	public static DerivedUnitFacadeConfigurator NewInstance(){

@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -93,7 +93,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 
     private static final long serialVersionUID = -3053225700018294809L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CdmBase.class);
+    private static final Logger logger = LogManager.getLogger(CdmBase.class);
 
     protected static final int CLOB_LENGTH = 65536;
 

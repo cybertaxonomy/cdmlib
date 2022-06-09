@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -154,7 +154,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
-	private static final Logger logger = Logger.getLogger(PolytomousKeyNode.class);
+	private static final Logger logger = LogManager.getLogger(PolytomousKeyNode.class);
 
 	// This is the main key a node belongs to. Although other keys may also
 	// reference <code>this</code> node, a node usually belongs to a given key.

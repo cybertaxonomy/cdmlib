@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.strategy.cache.agent;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -25,7 +25,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 
     private static final long serialVersionUID = 8375295443642690479L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategy.class);
+    private static final Logger logger = LogManager.getLogger(TeamDefaultCacheStrategy.class);
 
 
     public static final String FINAL_TEAM_CONCATINATION = " & ";

@@ -25,7 +25,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
@@ -56,7 +57,7 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 @Component
 public class DataBaseTablePrinter {
 
-    protected static final Logger logger = Logger.getLogger(DataBaseTablePrinter.class);
+    protected static final Logger logger = LogManager.getLogger(DataBaseTablePrinter.class);
 
     @Autowired
     protected DataSource dataSource;

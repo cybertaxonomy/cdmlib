@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.print.out.mediawiki;
 
 import java.io.BufferedInputStream;
@@ -17,7 +25,8 @@ import java.util.UUID;
 import javax.security.auth.login.LoginException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -39,7 +48,6 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  * TODO would we move this class somewhere else and/or rename it?
  *
  * @author s.buers, l.morris
- *
  */
 public class Cdm2MediawikiExporter {
 
@@ -56,8 +64,7 @@ public class Cdm2MediawikiExporter {
 
 	//-------------------
 
-	private static final Logger logger = Logger
-			.getLogger(Cdm2MediawikiExporter.class);
+	private static final Logger logger = LogManager.getLogger(Cdm2MediawikiExporter.class);
 
 	private PublishConfigurator configurator = PublishConfigurator.NewRemoteInstance();
 

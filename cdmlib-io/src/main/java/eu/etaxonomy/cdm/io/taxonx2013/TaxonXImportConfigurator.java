@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -34,7 +34,7 @@ public class TaxonXImportConfigurator
 
     private static final long serialVersionUID = -7607808010688414010L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger(TaxonXImportConfigurator.class);
 
     private String defaultImportClassification = null;
     //if true the information in the mods part (taxonxHeader)
