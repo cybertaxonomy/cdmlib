@@ -66,8 +66,8 @@
  		<artifactId>jena-tdb</artifactId>	
 	</dependency>
     <dependency>
-        <groupId>org.docx4j</groupId>
-        <artifactId>docx4j</artifactId>
+      <groupId>org.docx4j</groupId>
+      <artifactId>docx4j-JAXB-Internal</artifactId>
     </dependency>
     <dependency>
       <groupId>xml-resolver</groupId>

@@ -1057,6 +1057,17 @@
         <artifactId>ooxml-schemas</artifactId>
         <version>1.4</version>
       </dependency>
+      <dependency>
+        <!-- indirect poi-schema and doxia dependency -->
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-classworlds</artifactId>
+        <version>2.6.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>2.1.1</version>
+      </dependency>
       <!--       <dependency> -->
 <!-- maybe needed in cdmlib-io, see https://poi.apache.org/help/faq.html  question 3 on when to use ooxml-schemas and when poi-ooxml-schemas  -->
 <!--         <groupId>org.apache.poi</groupId> -->
@@ -1071,8 +1082,8 @@
       </dependency>
       <dependency>
         <groupId>org.docx4j</groupId>
-        <artifactId>docx4j</artifactId>
-        <version>6.1.2</version>
+        <artifactId>docx4j-JAXB-Internal</artifactId>
+        <version>8.0.0</version>
       </dependency>
       <dependency>
         <!-- only for version management xalan depends in different versions from 
