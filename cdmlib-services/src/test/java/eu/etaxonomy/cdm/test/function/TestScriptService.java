@@ -314,29 +314,6 @@ public class TestScriptService {
 
 	}
 
-	private void testLocalHsql(){
-		CdmApplicationController appCtr = null;
-		try {
-			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
-			appCtr = CdmApplicationController.NewInstance(ds);
-			List<?> l = appCtr.getNameService().list(null,5, 1,null,null);
-			System.out.println(l);
-			//Agent agent = new Agent();
-			//appCtr.getAgentService().saveAgent(agent);
-			appCtr.close();
-		} catch (RuntimeException e) {
-			logger.error("Runtime Exception");
-			e.printStackTrace();
-			if (appCtr != null){
-			    appCtr.close();
-			}
-
-		} catch (DataSourceNotFoundException e) {
-			logger.error("Runtime Exception");
-			e.printStackTrace();
-		}
-	}
-
 	private void testLocalH2(){
 
 		DbSchemaValidation validation = DbSchemaValidation.CREATE;
@@ -490,7 +467,6 @@ public class TestScriptService {
 
 		//CdmUtils.findLibrary(au.com.bytecode.opencsv.CSVReader.class);
 		//testPostgreServer();
-		//testLocalHsql();
 		//testLocalH2();
 		//testWritableResourceDirectory();
 //		testH2();

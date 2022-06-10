@@ -13,22 +13,6 @@
         <property name="username" value="testUser"/>
         <property name="password" value="testPassword"/>
     </bean>
-	    
-	<bean id="localDefaultHsqlDataSource" 
-			lazy-init="true"
-  			class="eu.etaxonomy.cdm.database.LocalHsqldb" 	
-			init-method="init"
-  			destroy-method="destroy"
-  			>
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-        <property name="startServer" value="true"/>
-        <property name="silent" value="true"/>
-        <!-- property name="pureUrl" value="jdbc:hsqldb:hsql://localhost/"/-->
-        <!-- property name="dbName" value="cdm"/> -->
-        <!--  <property name="databasePath" value="C:\tmp\cdmDb\"/> -->
-  	</bean>
 	
 	<bean id="localDefaultH2DataSource" 
 			lazy-init="true"

@@ -20,7 +20,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.h2.tools.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
@@ -152,9 +153,8 @@ public class LocalH2 extends BasicDataSource {
 		}
 	}
 
-
 	/**
-	 * stops the Hsqldb Server
+	 * stops the H2 Server
 	 */
 	private void stopH2Server(){
 		if (h2Server != null){
