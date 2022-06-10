@@ -224,7 +224,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     public void testCountDescriptionElements() {
 
         long numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, null);
-        assertEquals("expecting 37 description elements in total", 37, numberOfDescriptionElements);
+        assertEquals("expecting 38 description elements in total", 38, numberOfDescriptionElements);
 
         numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, TextData.class);
         assertEquals("expecting 4 description elements of type TextData", 4, numberOfDescriptionElements);
@@ -244,7 +244,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     public void testGetDescriptionElements() {
 
         List<TextData> elements = descriptionDao.getDescriptionElements(null, null, null, null, null, null, null);
-        assertEquals("expecting 37 description elements in total", 37, elements.size());
+        assertEquals("expecting 38 description elements in total", 38, elements.size());
 
         elements = descriptionDao.getDescriptionElements(null, null, null, TextData.class, null, null, null);
         assertEquals("expecting 4 description elements of type TextData", 4, elements.size());
