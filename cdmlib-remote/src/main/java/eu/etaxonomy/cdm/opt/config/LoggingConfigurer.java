@@ -67,6 +67,9 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer  {
         // ... ctx.updateLoggers();
 
 
+        if (true) {
+            return;
+        }
         @SuppressWarnings("unchecked")
         Enumeration<Appender> appenders = Logger.getRootLogger().getAllAppenders();
         while(appenders.hasMoreElements()){
