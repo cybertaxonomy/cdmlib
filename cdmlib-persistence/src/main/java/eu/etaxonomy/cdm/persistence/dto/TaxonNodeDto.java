@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -60,7 +61,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
      */
     private TaxonNodeStatus status;
 
-    private String statusNote ;
+    private Map<Language, String> statusNote = new HashMap<>();
 
 
     /**
@@ -91,11 +92,11 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(uuid, id, nameTitleCache, taxonTitleCache);
 
     }
-    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status){
+    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status, List<LanguageString> statusNote){
     	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
     	this.status = status;
     	this.taxonIsPublish = taxonIsPublished;
-    	this.statusNote = statusNote;
+//    	this.statusNote ;
     }
 
     public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid) {
@@ -153,10 +154,10 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         //taxonNode
         taxonomicChildrenCount = taxonNode.getCountChildren();
         status = taxonNode.getStatus();
-        statusNote = taxonNode.getStatusNote(Language.DEFAULT());
-//        for(Language lang : taxonNode.getStatusNote().keySet()) {
-//            statusNote.put(lang, taxonNode.getStatusNote(lang));
-//        }
+
+        for(Language lang : taxonNode.getStatusNote().keySet()) {
+            statusNote.put(lang, taxonNode.getStatusNote(lang));
+        }
 
         treeIndex = taxonNode.treeIndex();
         if(taxonNode.getParent() != null) {
@@ -280,7 +281,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         }
     }
 
-    public String getStatusNote() {
+    public Map<Language, String> getStatusNote() {
         return statusNote;
     }
 }
