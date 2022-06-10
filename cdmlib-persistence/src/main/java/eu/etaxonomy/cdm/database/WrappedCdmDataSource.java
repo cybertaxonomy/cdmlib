@@ -219,7 +219,7 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	@Deprecated
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
 			Boolean showSql, Boolean formatSql, Boolean registerSearchListener,
-			Class<? extends RegionFactory> cacheProviderClass) {
+			Class<? extends RegionFactory> cacheProviderClass, String byteCodeProvider) {
 		//TODO is it possible/required to build a properties bean here?
 		throw new UnsupportedOperationException("getHibernatePropertiesBean() not supported by WrappedCdmDataSource");
 	}

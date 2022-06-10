@@ -386,7 +386,8 @@ public abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSou
     protected AbstractBeanDefinition makeHibernatePropertiesBean(DatabaseTypeEnum dbType,
             DbSchemaValidation hbm2dll, boolean showSql,
             boolean formatSql, boolean registerAuditing, boolean registerSearchListener,
-            Class<? extends RegionFactory> cacheProviderClass) {
+            Class<? extends RegionFactory> cacheProviderClass,
+            String byteCodeProvider) {
 
         AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
         MutablePropertyValues hibernateProps = new MutablePropertyValues();
@@ -400,6 +401,7 @@ public abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSou
         props.setProperty(HibernateConfiguration.FORMAT_SQL, String.valueOf(formatSql));
         props.setProperty(HibernateConfiguration.REGISTER_SEARCH, String.valueOf(registerSearchListener));
         props.setProperty(EnversIntegrator.AUTO_REGISTER, String.valueOf(registerAuditing));
+        props.setProperty(HibernateConfiguration.BYTECODE_PROVIDER, byteCodeProvider);
 
         hibernateProps.add("properties",props);
         bd.setPropertyValues(hibernateProps);

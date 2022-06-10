@@ -205,9 +205,9 @@ public class CdmDataSource extends CdmDataSourceBase {
     @Override
     @Deprecated
     public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql,
-            Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
+            Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass, String byteCodeProvider){
         HibernateConfiguration hibernateConfig = HibernateConfiguration.NewInstance(showSql, formatSql,
-                registerSearchListener, null, cacheProviderClass);
+                registerSearchListener, null, cacheProviderClass, byteCodeProvider);
         return getHibernatePropertiesBean(hbm2dll, hibernateConfig);
     }
 
@@ -215,7 +215,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
 	        HibernateConfiguration hibernateConfig){
         if (hibernateConfig == null){
-            hibernateConfig = new HibernateConfiguration();  //empty
+            hibernateConfig = HibernateConfiguration.NewDefaultInstance();  //empty
         }
 
         boolean showSql = hibernateConfig.getShowSql(this.showSql);
@@ -223,6 +223,7 @@ public class CdmDataSource extends CdmDataSourceBase {
         boolean registerAuditing = hibernateConfig.getRegisterEnvers(this.registerAuditing);
         boolean registerSearchListener = hibernateConfig.getRegisterSearch(this.registerSearchListener);
         Class<? extends RegionFactory> cacheProviderClass = hibernateConfig.getCacheProviderClass(this.cacheProviderClass);
+        String byteCodeProvider = hibernateConfig.getByteCodeProvider(HibernateConfiguration.BYTECODE_PROVIDER_DEFAULT);
 
 		//Hibernate default values
 		if (hbm2dll == null){
@@ -230,7 +231,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		}
 
 		AbstractBeanDefinition bd = makeHibernatePropertiesBean(dbType, hbm2dll, showSql, formatSql, registerAuditing,
-                registerSearchListener, cacheProviderClass);
+                registerSearchListener, cacheProviderClass, byteCodeProvider);
 		return bd;
 	}
 

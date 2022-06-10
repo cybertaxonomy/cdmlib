@@ -42,7 +42,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	//authentification token
 	protected UsernamePasswordAuthenticationToken authenticationToken;
 
-	protected HibernateConfiguration hibernateConfig = new HibernateConfiguration();
+	protected HibernateConfiguration hibernateConfig = HibernateConfiguration.NewDefaultInstance();
 
     //etc
 	private IProgressMonitor progressMonitor;

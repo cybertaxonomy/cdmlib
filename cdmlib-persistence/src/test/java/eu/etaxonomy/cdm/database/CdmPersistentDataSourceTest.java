@@ -35,6 +35,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.config.CdmPersistentSourceUtils;
 import eu.etaxonomy.cdm.config.CdmPersistentXMLSource.CdmSourceProperties;
+import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 
 /**
@@ -222,8 +223,9 @@ public class CdmPersistentDataSourceTest {
 		boolean formatSql = false;
 		boolean registerSearchListener = false;
 		Class<? extends RegionFactory> cacheProviderClass = NoCachingRegionFactory.class;
+		String byteCodeProvider = HibernateConfiguration.BYTECODE_PROVIDER_DEFAULT;
 
-		BeanDefinition beanDef = dataSource.getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
+		BeanDefinition beanDef = dataSource.getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass, byteCodeProvider);
 		PropertyValues propValues = beanDef.getPropertyValues();
 		String propName =  "properties";
 		PropertyValue propValue =  propValues.getPropertyValue(propName);
