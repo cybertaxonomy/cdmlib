@@ -60,7 +60,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
      */
     private TaxonNodeStatus status;
 
-    private Map<Language, String> statusNote = new HashMap<>();
+    private String statusNote ;
 
 
     /**
@@ -91,10 +91,11 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(uuid, id, nameTitleCache, taxonTitleCache);
 
     }
-    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status, Map<Language, String> statusNote){
+    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status){
     	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
     	this.status = status;
     	this.taxonIsPublish = taxonIsPublished;
+    	this.statusNote = statusNote;
     }
 
     public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid) {
@@ -152,10 +153,10 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         //taxonNode
         taxonomicChildrenCount = taxonNode.getCountChildren();
         status = taxonNode.getStatus();
-
-        for(Language lang : taxonNode.getStatusNote().keySet()) {
-            statusNote.put(lang, taxonNode.getStatusNote(lang));
-        }
+        statusNote = taxonNode.getStatusNote(Language.DEFAULT());
+//        for(Language lang : taxonNode.getStatusNote().keySet()) {
+//            statusNote.put(lang, taxonNode.getStatusNote(lang));
+//        }
 
         treeIndex = taxonNode.treeIndex();
         if(taxonNode.getParent() != null) {
@@ -279,7 +280,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         }
     }
 
-    public Map<Language, String> getStatusNote() {
-        return Collections.unmodifiableMap(statusNote);
+    public String getStatusNote() {
+        return statusNote;
     }
 }
