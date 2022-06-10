@@ -62,13 +62,12 @@ public class SortableTaxonNodeQueryResult {
         this.classificationUuid = classificationUuid;
         this.taxonIsPublish = taxonIsPublished;
         this.status = status;
-        
-        		
-       
-        
-        
     }
 
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
+            Rank nameRank, UUID parentNodeUuid) {
+    	this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid, null, null,null, null);
+    }
     /**
      * @param taxonNodeUuid
      * @param taxonNodeId

@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -620,6 +621,14 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertEquals(3, list.size());
     }
 
+    
+    @Test
+    @DataSet
+    public void testGetNodeOfIndividualAssociationForSpecimen() {
+    	List<SortableTaxonNodeQueryResult> list = descriptionDao.getNodeOfIndividualAssociationForSpecimen(UUID.fromString("4c3231a9-336e-4b21-acf2-129683627de4"), null);
+    	Assert.assertEquals(1, list.size());
+    
+    }
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }
