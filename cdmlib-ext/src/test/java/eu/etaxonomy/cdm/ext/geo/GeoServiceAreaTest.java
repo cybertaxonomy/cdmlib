@@ -15,31 +15,15 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author a.mueller
  * @since 12.08.2011
- *
  */
 public class GeoServiceAreaTest {
-	private static final Logger logger = LogManager.getLogger(GeoServiceAreaTest.class);
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
+    private static final Logger logger = LogManager.getLogger(GeoServiceAreaTest.class);
 
 // ********************************** TESTS ****************************************
 
