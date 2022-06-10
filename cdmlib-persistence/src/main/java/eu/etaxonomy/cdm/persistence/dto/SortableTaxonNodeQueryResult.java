@@ -10,9 +10,11 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 
@@ -47,7 +49,7 @@ public class SortableTaxonNodeQueryResult {
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
-            Rank nameRank, UUID parentNodeUuid, Integer sortIndex, UUID classificationUuid,  Boolean taxonIsPublished, TaxonNodeStatus status) {
+            Rank nameRank, UUID parentNodeUuid, Integer sortIndex, UUID classificationUuid,  Boolean taxonIsPublished, TaxonNodeStatus status, Map<Language,LanguageString> statusNote) {
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.treeIndex = treeIndex;
@@ -62,11 +64,17 @@ public class SortableTaxonNodeQueryResult {
         this.classificationUuid = classificationUuid;
         this.taxonIsPublish = taxonIsPublished;
         this.status = status;
+        if (statusNote != null) {
+        	this.statusNote = new HashMap<Language, String>();
+        	for (Entry<Language, LanguageString> entry :statusNote.entrySet()) {
+        		this.statusNote.put(entry.getKey(), entry.getValue().getText());
+        	}
+        }
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
             Rank nameRank, UUID parentNodeUuid) {
-    	this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid, null, null,null, null);
+    	this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid, null, null,null, null, null);
     }
     /**
      * @param taxonNodeUuid
@@ -76,18 +84,18 @@ public class SortableTaxonNodeQueryResult {
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
             Rank nameRank, UUID parentNodeUuid) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null, null, null, null, null);
     }
 
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null, null, null, null, null);
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null, null, null, null, null);
     }
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache, UUID parentNodeUuid) {
         this(taxonNodeUuid, taxonNodeId, null, taxonUuid, taxonTitleCache, null, parentNodeUuid);
