@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 @Configuration
 public class LoggingConfigurer extends AbstractWebApplicationConfigurer  {
 
-
     @Autowired
     private DataSourceProperties dataSourceProperties = null;
 
