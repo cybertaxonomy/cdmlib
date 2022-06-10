@@ -21,7 +21,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.spi.RegionFactory;
 import org.jdom.Attribute;
 import org.jdom.Element;
@@ -73,13 +74,6 @@ public class CdmPersistentDataSource
 	 */
 	public final static CdmPersistentDataSource NewDefaultInstance() throws DataSourceNotFoundException {
 		return NewInstance("default");
-	}
-
-	/**
-	 * Returns the default CdmDataSource
-	 */
-	public final static CdmPersistentDataSource NewLocalHsqlInstance() throws DataSourceNotFoundException{
-		return NewInstance("localDefaultHsql");
 	}
 
 	/**
