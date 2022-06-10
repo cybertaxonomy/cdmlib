@@ -62,6 +62,7 @@
                       locks must not only be released after application shutdown in test environment -->
                 <prop key="hibernate.search.default.exclusive_index_use">false</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2CorrectedDialectTest</prop>
+                <prop key="hibernate.bytecode.provider">javassist</prop>                
                 <prop key="implicitNamingStrategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"</prop>
             </props>
         </property>

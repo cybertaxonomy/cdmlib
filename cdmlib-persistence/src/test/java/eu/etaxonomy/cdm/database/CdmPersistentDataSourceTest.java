@@ -163,6 +163,7 @@ public class CdmPersistentDataSourceTest {
 		assertEquals(NoCachingRegionFactory.class.getName(), properties.getProperty("hibernate.cache.region.factory_class"));
 		assertEquals(String.valueOf(false), properties.getProperty("hibernate.show_sql"));
 		assertEquals(String.valueOf(false), properties.getProperty("hibernate.format_sql"));
+		assertEquals(HibernateConfiguration.BYTECODE_PROVIDER_DEFAULT, properties.getProperty("hibernate.bytecode.provider"));
 
 		//null
 		beanDef = dataSource.getHibernatePropertiesBean(null);
@@ -201,6 +202,7 @@ public class CdmPersistentDataSourceTest {
 		assertEquals(cacheProviderClass.getName(), properties.getProperty("hibernate.cache.region.factory_class"));
 		assertEquals(String.valueOf(showSql), properties.getProperty("hibernate.show_sql"));
 		assertEquals(String.valueOf(formatSql), properties.getProperty("hibernate.format_sql"));
+		assertEquals(HibernateConfiguration.BYTECODE_PROVIDER_DEFAULT, properties.getProperty("hibernate.bytecode.provider"));
 	}
 
 	@Test

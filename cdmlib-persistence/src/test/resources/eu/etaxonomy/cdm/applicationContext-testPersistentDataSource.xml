@@ -28,6 +28,7 @@
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
                 <prop key="hibernate.search.default.indexBase">./target/test-classes</prop>
+                <prop key="hibernate.bytecode.provider">javassist</prop>
             </props>
         </property>
     </bean> 
