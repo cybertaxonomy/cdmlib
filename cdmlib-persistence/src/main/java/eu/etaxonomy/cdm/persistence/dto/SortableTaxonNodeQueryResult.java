@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -39,7 +41,7 @@ public class SortableTaxonNodeQueryResult {
  
 
 
-    private String statusNote ;
+    private List<LanguageString> statusNote = new ArrayList<>();
 
 
     /**Is this the reason
@@ -49,7 +51,7 @@ public class SortableTaxonNodeQueryResult {
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
-            Rank nameRank, UUID parentNodeUuid, Integer sortIndex, UUID classificationUuid,  Boolean taxonIsPublished, TaxonNodeStatus status) {
+            Rank nameRank, UUID parentNodeUuid, Integer sortIndex, UUID classificationUuid,  Boolean taxonIsPublished, TaxonNodeStatus status, LanguageString statusNote) {
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.treeIndex = treeIndex;
@@ -64,7 +66,9 @@ public class SortableTaxonNodeQueryResult {
         this.classificationUuid = classificationUuid;
         this.taxonIsPublish = taxonIsPublished;
         this.status = status;
-//        this.statusNote = statusNote.getText();
+        if (statusNote != null) {
+		this.statusNote.add(statusNote);
+        }
         
 //        if (statusNote != null) {
 //        	this.statusNote = new HashMap<Language, String>();
@@ -76,7 +80,7 @@ public class SortableTaxonNodeQueryResult {
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
             Rank nameRank, UUID parentNodeUuid) {
-    	this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid, null, null,null, null);
+	this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid, null, null,null, null, null);
     }
     /**
      * @param taxonNodeUuid
@@ -86,18 +90,18 @@ public class SortableTaxonNodeQueryResult {
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
             Rank nameRank, UUID parentNodeUuid) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null, null, null, null, null);
     }
 
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null, null, null, null, null);
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null, null, null, null, null);
     }
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache, UUID parentNodeUuid) {
         this(taxonNodeUuid, taxonNodeId, null, taxonUuid, taxonTitleCache, null, parentNodeUuid);
@@ -179,11 +183,11 @@ public class SortableTaxonNodeQueryResult {
 		this.taxonIsPublish = taxonIsPublish;
 	}
 
-	public String getStatusNote() {
+	public List<LanguageString> getStatusNote() {
 		return statusNote;
 	}
 
-	public void setStatusNote(String statusNote) {
+	public void setStatusNote(List<LanguageString> statusNote) {
 		this.statusNote = statusNote;
 	}
 

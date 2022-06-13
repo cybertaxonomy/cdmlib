@@ -408,7 +408,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
         List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); // cant use "*" here since this is not supported by the method under test
         assertNotNull(result);
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         assertEquals("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7", result.get(0).getUuid().toString()); // Acherontia(Fabricius, 1798) rank: Genus
         assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(1).getUuid().toString()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
         assertEquals("770239f6-4fa8-496b-8738-fe8f7b2ad519", result.get(2).getUuid().toString()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
@@ -420,7 +420,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     public final void testGetTaxonNodeDtoCheckSortIndex(){
 
         List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); 
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
        
         assertTrue(0 == result.get(0).getSortIndex()); // Acherontia(Fabricius, 1798) rank: Genus
         assertTrue(0 == result.get(1).getSortIndex()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
@@ -435,7 +435,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     public final void testGetTaxonNodeDtoCheckStatus(){
 
         List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); 
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
        
         assertEquals(TaxonNodeStatus.UNPLACED, result.get(0).getStatus()); // Acherontia(Fabricius, 1798) rank: Genus
         assertEquals(null, result.get(1).getStatus());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
@@ -443,6 +443,21 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertEquals(TaxonNodeStatus.EXCLUDED, result.get(3).getStatus());  // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
     
     
+    }
+
+    @Test
+    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    public final void testGetTaxonNodeDtoCheckNote(){
+
+        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
+        assertEquals(5, result.size());
+
+        assertNotNull(result.get(3).getStatusNote()); // Acherontia(Fabricius, 1798) rank: Genus
+        assertNotNull(result.get(4).getStatusNote());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
+//        assertEquals(null, result.get(2).getStatus());  // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
+//        assertEquals(TaxonNodeStatus.EXCLUDED, result.get(3).getStatus());  // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
+//
+
     }
 
 
