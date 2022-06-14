@@ -175,7 +175,7 @@ public class SortableTaxonNodeQueryResult {
     }
 
     
-    public boolean isTaxonIsPublish() {
+    public Boolean isTaxonIsPublish() {
 		return taxonIsPublish;
 	}
 

@@ -77,7 +77,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     private String treeIndex = null;
     private Integer sortIndex = null;
-    private boolean taxonIsPublish = true;
+    private Boolean taxonIsPublish = true;
 
 
     public TaxonNodeDto(ITaxonTreeNode taxonNode) {
@@ -96,9 +96,9 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
     	this.status = status;
     	this.taxonIsPublish = taxonIsPublished;
-	for (LanguageString str: statusNote) {
-		this.statusNote.put(str.getLanguage(), str.getText());
-	}
+    	for (LanguageString str: statusNote) {
+    		this.statusNote.put(str.getLanguage(), str.getText());
+    	}
     }
 
     public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid) {

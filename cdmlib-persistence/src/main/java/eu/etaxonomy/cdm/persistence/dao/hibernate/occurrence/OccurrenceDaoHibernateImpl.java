@@ -982,7 +982,7 @@ public class OccurrenceDaoHibernateImpl
 
         String queryString = "SELECT du.catalogNumber, du.accessionNumber, du.barcode FROM DerivedUnit du"
                 + " WHERE du.uuid LIKE :derivedUnitUuid";
-        Query<String[]> query = getSession().createQuery(queryString, String[].class);
+        Query<String[]> query = getSession().createQuery(queryString);
         query.setParameter("derivedUnitUuid", derivedUnitUuid);
         List<String[]> results = query.list();
         if (results.isEmpty()){
