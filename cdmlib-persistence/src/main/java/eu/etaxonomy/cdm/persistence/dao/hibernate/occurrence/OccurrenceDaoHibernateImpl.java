@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Tuple;
+
 import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -980,23 +982,23 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public String findMostSignificantIdentifier(UUID derivedUnitUuid) {
 
-        String queryString = "SELECT du.catalogNumber, du.accessionNumber, du.barcode FROM DerivedUnit du"
+        String queryString = "SELECT du.catalogNumber as catalogNumber, du.accessionNumber as accessionNumber, du.barcode as barcode FROM DerivedUnit du"
                 + " WHERE du.uuid LIKE :derivedUnitUuid";
-        Query<String[]> query = getSession().createQuery(queryString);
+        Query<Tuple> query = getSession().createQuery(queryString, Tuple.class);
         query.setParameter("derivedUnitUuid", derivedUnitUuid);
-        List<String[]> results = query.list();
+        List<Tuple> results = query.list();
         if (results.isEmpty()){
             return null;
         }
-        Object[] stringResult = results.get(0);
-        if (stringResult[1] != null && stringResult[1] instanceof String){
-            return (String)stringResult[1];
+        Tuple stringResult = results.get(0);
+        if (stringResult.get("accessionNumber") != null && stringResult.get("accessionNumber") instanceof String){
+            return (String)stringResult.get("accessionNumber");
         }
-        if (stringResult[2] != null && stringResult[2] instanceof String){
-            return (String)stringResult[2];
+        if (stringResult.get("barcode") != null && stringResult.get("barcode") instanceof String){
+            return (String)stringResult.get("barcode");
         }
-        if (stringResult[0] != null && stringResult[0] instanceof String){
-            return (String)stringResult[0];
+        if (stringResult.get("catalogNumber") != null && stringResult.get("catalogNumber") instanceof String){
+            return (String)stringResult.get("catalogNumber");
         }
 
         return null;
