@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -61,7 +62,8 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 @XmlRootElement(name = "SingleRead")
 @Entity
 @Audited
-public class SingleRead extends EventBase implements Cloneable{
+public class SingleRead extends EventBase {
+
 	private static final long serialVersionUID = 1735535003073536132L;
 	private static final Logger logger = LogManager.getLogger(SingleRead.class);
 
@@ -118,7 +120,7 @@ public class SingleRead extends EventBase implements Cloneable{
 	// ********************* CONSTRUCTOR ********************/
 
 	//protected for Javassist, otherwise private
-	protected SingleRead(){};
+	protected SingleRead(){}
 
 	// ********************* GETTER / SETTER ********************/
 
@@ -286,7 +288,7 @@ public class SingleRead extends EventBase implements Cloneable{
     		SingleRead result = (SingleRead)super.clone();
 
     		//sequences
-    		result.sequence = (SequenceString)this.sequence.clone();
+    		result.sequence = this.sequence.clone();
 
     		//don't change amplification, pherogram, primer, sequence, direction
     		return result;
