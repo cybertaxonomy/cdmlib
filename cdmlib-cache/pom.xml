@@ -9,7 +9,6 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-cache</artifactId>
   <name>CDM Entity Cache</name>
   <description>CDM Entity Cache</description>
@@ -18,7 +17,7 @@
     </plugins>
   </build>
   <dependencies>
-  <dependency>
+    <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-services</artifactId>
     </dependency>
@@ -28,5 +27,4 @@
         <scope>test</scope>
     </dependency>
    </dependencies>
-  
 </project>
