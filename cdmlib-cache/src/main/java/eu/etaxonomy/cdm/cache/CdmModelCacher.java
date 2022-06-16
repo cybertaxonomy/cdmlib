@@ -101,6 +101,7 @@ public class CdmModelCacher {
     		Metadata metadata = new MetadataSources( registry ).buildMetadata();
     		sessionFactory = metadata.buildSessionFactory();
 //    		Configuration configuration = buildConfiguration(HB_CONFIG_FILE_PATH);
+
         	Map<String, ClassMetadata> classMetaDataMap = sessionFactory.getAllClassMetadata();
 //        	Metadata metadata = new MetadataSources( registry ).getMetadataBuilder().applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE ).build();
 

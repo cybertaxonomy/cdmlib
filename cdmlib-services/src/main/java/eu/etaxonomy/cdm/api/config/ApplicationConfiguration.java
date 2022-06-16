@@ -35,7 +35,6 @@ public class ApplicationConfiguration {
      * <b>NOTE:</b> This will not work with current implementation of the
      * {@link eu.etaxonomy.cdm.test.integration.CdmIntegrationTest CdmIntegrationTests}.
      * For these tests please use the {@link unitils.AlternativeUnitilsJUnit4TestClassRunner}.
-     *
      */
     public static final String TEST_MODE = "testmode";
 
@@ -52,10 +51,6 @@ public class ApplicationConfiguration {
         return props.getProperty(key);
     }
 
-    /**
-     * @param currentDataSourceId
-     * @throws IOException
-     */
     protected Properties loadPropertiesFile(ApplicationConfigurationFile configFile) {
 
         String currentDataSourceId = env.getProperty(CdmConfigurationKeys.CDM_DATA_SOURCE_ID);
@@ -86,9 +81,4 @@ public class ApplicationConfiguration {
         }
         return configurations.get(configFile.getFileName());
     }
-
-
-
-
-
 }
