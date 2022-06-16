@@ -290,6 +290,8 @@ public class CdmApplicationController implements ICdmRepository {
                 hibernateConfig.getShowSql());
         setHibernateProperty(hibernatePropBean, HibernateConfiguration.FORMAT_SQL,
                 hibernateConfig.getFormatSql());
+        setHibernateProperty(hibernatePropBean, HibernateConfiguration.BYTECODE_PROVIDER,
+                hibernateConfig.getByteCodeProvider());
     }
 
 
