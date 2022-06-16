@@ -220,10 +220,6 @@
       <artifactId>slf4j-reload4j</artifactId>
     </dependency>
     <dependency>
-	  <groupId>net.sf.ehcache</groupId>
-	  <artifactId>ehcache</artifactId>	  
-	</dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
