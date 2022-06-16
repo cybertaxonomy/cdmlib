@@ -219,7 +219,7 @@ public class DescriptiveDataSetService
         UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
         //get taxon node
 
-
+        
         return descriptionService.findTaxonNodeDtoForIndividualAssociation(specimen.getUuid(), descriptiveDataSet.getSubTreeFilter().iterator().next().getClassificationUUID());
         //NOTE: don't remove cast as it does not compile on some systems
 //        List<DescriptionBaseDto> descDtos = descriptionService.loadDtos(descriptiveDataSet.getDescriptionUuids());

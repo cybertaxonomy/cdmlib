@@ -116,6 +116,8 @@ public class SortableTaxonNodeQueryResult {
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
         this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, null);
     }
+    
+    //tn.uuid, tn.id, t.uuid, t.titleCache, name.titleCache, rank, cl.uuid,  t.publish, tn.status, note
 
     public UUID getTaxonNodeUuid() {
         return taxonNodeUuid;

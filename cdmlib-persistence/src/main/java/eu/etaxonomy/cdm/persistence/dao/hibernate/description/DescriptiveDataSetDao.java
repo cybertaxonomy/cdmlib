@@ -202,7 +202,7 @@ public class DescriptiveDataSetDao
 
     private List<UUID> getNodeUuidsForDescriptiveDataSet(UUID uuid) {
         Session session = getSession();
-
+       
         String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.taxonSubtreeFilter as t WHERE a.uuid = :uuid";
         Query<UUID> query = session.createQuery(queryString, UUID.class);
         query.setParameter("uuid", uuid);
@@ -260,7 +260,7 @@ public class DescriptiveDataSetDao
         }
         //get taxon nodes
         List<UUID> nodeUuids = getNodeUuidsForDescriptiveDataSet(uuid);
-        List<TaxonNodeDto> nodeDtos = nodeDao.getTaxonNodeDtos(nodeUuids);
+        List<TaxonNodeDto> nodeDtos = nodeDao.getTaxonNodeDtosWithoutParent(nodeUuids);
         Set<TaxonNodeDto> nodeSet = new HashSet<>(nodeDtos);
         dto.setSubTreeFilter(nodeSet);
 

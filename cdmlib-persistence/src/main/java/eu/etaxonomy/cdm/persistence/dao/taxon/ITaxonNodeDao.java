@@ -217,4 +217,8 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return
      */
 	List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex);
+
+	List<TaxonNodeDto> getTaxonNodeDtosWithoutParent(List<UUID> nodeUuids);
+
+
 }
