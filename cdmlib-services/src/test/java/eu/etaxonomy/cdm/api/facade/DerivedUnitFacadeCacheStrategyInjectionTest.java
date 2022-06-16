@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.facade;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.Assert;
 import org.junit.Before;
