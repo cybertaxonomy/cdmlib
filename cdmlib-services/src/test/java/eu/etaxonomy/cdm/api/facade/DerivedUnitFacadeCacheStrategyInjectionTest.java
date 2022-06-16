@@ -216,7 +216,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
         Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
     }
 
-    //Test if even a hibernate proxy (javassist) class correctly loads the DerivedUnitCacheStrategy.
+    //Test if even a hibernate proxy class correctly loads the DerivedUnitCacheStrategy.
     @Test
     @DataSet
     public void testPersistedDerivedUnit(){

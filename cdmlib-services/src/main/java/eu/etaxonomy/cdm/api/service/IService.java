@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import javassist.tools.rmi.ObjectNotFoundException;
 
 /**
  * @author a.kohlbecker
@@ -230,8 +229,9 @@ public interface IService<T extends ICdmBase>{
      * object usually is a proxy object except for the case when it was already initialized
      * before in the same session.<BR>
      * This methods wraps {@link Session#load(Class, java.io.Serializable)}.<BR>
-     * It does not check, if the object really exists but throws an {@link ObjectNotFoundException}
+     * It does not check, if the object really exists but throws an
      * exception when no record with the given id exists in the database.
+     *
      * @return
      *         the (uninitialized proxy) object
      */

@@ -42,7 +42,7 @@ public class HibernateConfiguration implements Serializable{
     public static final boolean REGISTER_SEARCH_DEFAULT = false;
     public static final boolean REGISTER_ENVERS_DEFAULT = true;
     public static final Class<? extends RegionFactory> CACHE_PROVIDER_DEFAULT = NoCachingRegionFactory.class;
-    public final static String BYTECODE_PROVIDER_DEFAULT = "javassist";  //bytebuddy, TODO make it an enum
+    public final static String BYTECODE_PROVIDER_DEFAULT = "bytebuddy";
 
     //*************************** FACTORY METHODS **************************************/
 

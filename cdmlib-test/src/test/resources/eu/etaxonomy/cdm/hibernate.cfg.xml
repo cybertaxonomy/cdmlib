@@ -7,8 +7,6 @@
     <session-factory>
 
       <property name="connection.release_mode">after_transaction</property>
-      
-      <property name="hibernate.bytecode.provider">javassist</property>
 
       <!-- Connection Pooling -->
 <!--       <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->

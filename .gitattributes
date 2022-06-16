@@ -292,9 +292,6 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testFindDeleted.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.xml -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.testSortindexForJavassist2-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationCrudJdbcImplTest.testReplaceError-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationCrudJdbcImplTest.testSave.xml -text

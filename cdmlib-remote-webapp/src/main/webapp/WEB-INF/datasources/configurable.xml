@@ -26,7 +26,6 @@
               <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
               <prop key="hibernate.show_sql">false</prop>
               <prop key="hibernate.format_sql">false</prop>
-              <prop key="hibernate.bytecode.provider">javassist</prop>
               <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
               <prop key="hibernate.search.default.indexBase">${eu.etaxonomy.cdm.search.index.path}</prop><!-- set in applicationContext.xml -->
 
