@@ -1386,6 +1386,7 @@
         <artifactId>hibernate-search-engine</artifactId>
         <version>${hibernate-search.version}</version>
       </dependency>
+
       <dependency>
         <!-- used by hibernate as bytecode provider framework -->
         <groupId>net.bytebuddy</groupId>
@@ -1397,6 +1398,12 @@
         <groupId>org.jboss.spec.javax.transaction</groupId>
         <artifactId>jboss-transaction-api_1.2_spec</artifactId>
         <version>1.1.1.Final</version>
+      </dependency>
+      <dependency>
+        <!-- dependency of iiif-apis (and still by hibernate but will be removed in v5.6 as hibernate uses bytebuddy)  -->
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.29.0-GA</version>
       </dependency>
 
       <!-- ******* SPRING ******* -->
