@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Projections;
@@ -931,7 +932,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         if (relTypeUuids != null && !relTypeUuids.isEmpty()){
             query.setParameterList("relTypeUuid", relTypeUuids);
         }
-        @SuppressWarnings("unchecked")
+
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
             @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -1111,7 +1112,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
              if (pattern != null && !pattern.equals("?")){
                  query.setParameter("pattern", pattern);
              }
-             @SuppressWarnings("unchecked")
+
              List<SortableTaxonNodeQueryResult> resultClassifications = query.list();
 
              result.addAll(resultClassifications);
@@ -1173,30 +1174,30 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + ") "
                 + " FROM TaxonNode p "
                 + "   INNER JOIN p.childNodes AS tn"
-                + "   INNER JOIN tn.taxon AS t "               
+                + "   INNER JOIN tn.taxon AS t "
                 + "   INNER JOIN t.name AS name "
                 + "   INNER JOIN tn.classification AS cl "
                 + "	  LEFT OUTER JOIN tn.statusNote as note "
                 + "   LEFT OUTER JOIN name.rank AS rank ";
         return queryString;
     }
-    
+
     public String getTaxonNodeDtoQueryWithoutParent() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
         	+	"tn.uuid, tn.id, t.titleCache"// rank "
-                
+
         //    + "tn.uuid, tn.id, t.uuid, t.titleCache, name.titleCache, rank, cl.uuid,  t.publish, tn.status, note "
             + ") "
             + " FROM TaxonNode tn "
-            + "   LEFT JOIN tn.taxon AS t "     ;          
+            + "   LEFT JOIN tn.taxon AS t "     ;
 //            + "   LEFT JOIN t.name AS name "
 //            + "   INNER JOIN tn.classification AS cl ";
 //            + "	  LEFT OUTER JOIN tn.statusNote as note ";
       //      + "   LEFT OUTER JOIN name.rank AS rank ";
         return queryString;
     }
-    
-    
+
+
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
@@ -1212,7 +1213,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
         return list;
     }
-    
+
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtosWithoutParent(List<UUID> nodeUuids) {
         String queryString = getTaxonNodeDtoQueryWithoutParent();
@@ -1240,7 +1241,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         if (subTreeIndex != null) {
         	query.setParameter("subTreeIndex", subTreeIndex);
         }
-        
+
         List<SortableTaxonNodeQueryResult> result = query.list();
         List<TaxonNodeDto> list = createNodeDtos(result);
         if (list.isEmpty()) {
@@ -1293,5 +1294,5 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, limit, pattern, searchForClassifications, false);
     }
 
-	
+
 }
