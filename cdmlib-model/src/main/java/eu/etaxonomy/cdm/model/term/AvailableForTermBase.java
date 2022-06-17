@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.term;
 
 import java.util.EnumSet;
 
@@ -14,13 +14,13 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.common.CdmClass;
 
 /**
  * This
@@ -44,11 +44,10 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase>
     )
     private EnumSet<CdmClass> availableFor = EnumSet.noneOf(CdmClass.class);
 
-    //for hibernate use only
+    //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
-    protected AvailableForTermBase() {
-        super();
-    }
+    AvailableForTermBase() {}
+
     @Deprecated
     protected AvailableForTermBase(TermType type) {
         super(type);
@@ -65,7 +64,7 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase>
     }
 
     /**
-     * for know it is private and the boolean getters and setters should be used instead.
+     * for now it is private and the boolean getters and setters should be used instead.
      * If you make it public make sure to guarantee that any change to the enum set results
      * in a new enum set (see also {@link #newEnumSet(EnumSet, CdmClass, CdmClass)}
      * and that the client is aware of the enum set being immutable.

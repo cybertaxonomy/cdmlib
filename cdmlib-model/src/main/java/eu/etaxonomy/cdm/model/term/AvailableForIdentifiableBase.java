@@ -6,18 +6,18 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.term;
 
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlElement;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * This
@@ -34,11 +34,9 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger(AvailableForIdentifiableBase.class);
 
-    //for hibernate use only
+    //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
-    protected AvailableForIdentifiableBase() {
-        super();
-    }
+    AvailableForIdentifiableBase() {}
     @Deprecated
     protected AvailableForIdentifiableBase(TermType type) {
         super(type);
