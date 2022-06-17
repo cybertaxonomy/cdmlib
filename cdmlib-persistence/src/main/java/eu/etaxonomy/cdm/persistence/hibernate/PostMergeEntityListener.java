@@ -84,7 +84,7 @@ public class PostMergeEntityListener implements MergeEventListener {
 
             if (TaxonNode.class.isAssignableFrom(entityClazz)){
                 TaxonNode node = (TaxonNode)entity;
-                node.removeNullValueFromChildren();
+//                node.removeNullValueFromChildren();
             } else if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
                 PolytomousKeyNode node = (PolytomousKeyNode) entity;
                 if (node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){

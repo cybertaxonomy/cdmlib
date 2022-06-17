@@ -36,8 +36,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-import org.hibernate.LazyInitializationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -687,12 +687,9 @@ public class TaxonNode
             childNodes.remove(index);
             child.setClassification(null);
 
-            //update sortindex
-            //TODO workaround (see sortIndex doc)
             this.countChildren = childNodes.size();
             child.setParent(null);
             child.setTreeIndex(null);
-            updateSortIndex(index);
             child.setSortIndex(null);
         }
     }
@@ -770,10 +767,7 @@ public class TaxonNode
         // add this node to the parent's child nodes
         parent = CdmBase.deproxy(parent);
         List<TaxonNode> parentChildren = parent.getChildNodes();
-       //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
-//        HHH_9751_Util.removeAllNull(parentChildren);
-//        parent.updateSortIndex(0);
         if (index > parent.getChildNodes().size()){
             index = parent.getChildNodes().size();
         }
@@ -788,16 +782,12 @@ public class TaxonNode
             parentChildren.add(index, this);
         }
 
-        //sortIndex
-        //TODO workaround (see sortIndex doc)
-       // this.getParent().removeNullValueFromChildren();
-        this.getParent().updateSortIndex(index);
-        //only for debugging
-        if (this.getSortIndex() == null){
-            logger.warn("sortindex is null. This should not happen.");
-        }else if (! this.getSortIndex().equals(index)){
-        	logger.warn("index and sortindex are not equal: " +  this.getSortIndex() + ";" + index);
-        }
+//        //only for debugging
+//        if (this.getSortIndex() == null){
+//            logger.warn("sortindex is null. This should not happen.");
+//        }else if (! this.getSortIndex().equals(index)){
+//        	logger.warn("index and sortindex are not equal: " +  this.getSortIndex() + ";" + index);
+//        }
 
         // update the children count
         parent.setCountChildren(parent.getChildNodes().size());
@@ -809,7 +799,7 @@ public class TaxonNode
 	 * @param parentChildren
 	 * @param index
 	 */
-	private void updateSortIndex(int index) {
+	private void updateSortIndex_old(int index) {
 	    if (this.hasChildNodes()){
     	    List<TaxonNode> children = this.getChildNodes();
     	    HHH_9751_Util.removeAllNull(children);
@@ -1042,14 +1032,14 @@ public class TaxonNode
         return getTaxon() == null? null: getTaxon().getName();
     }
 
-    public void removeNullValueFromChildren(){
-        try {
-            //HHH_9751_Util.removeAllNull(childNodes);
-            this.updateSortIndex(0);
-        } catch (LazyInitializationException e) {
-            logger.info("Cannot clean up uninitialized children without a session, skipping.");
-        }
-    }
+//    public void removeNullValueFromChildren(){
+//        try {
+//            //HHH_9751_Util.removeAllNull(childNodes);
+//            this.updateSortIndex(0);
+//        } catch (LazyInitializationException e) {
+//            logger.info("Cannot clean up uninitialized children without a session, skipping.");
+//        }
+//    }
 
     private boolean hasStatus(TaxonNodeStatus status) {
         return CdmUtils.nullSafeEqual(this.status, status);

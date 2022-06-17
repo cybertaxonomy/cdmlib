@@ -389,7 +389,7 @@ public class CdmLightClassificationExport
                 }
             }
 
-            taxonNode.removeNullValueFromChildren();
+//            taxonNode.removeNullValueFromChildren();
 
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling the taxon node of "
