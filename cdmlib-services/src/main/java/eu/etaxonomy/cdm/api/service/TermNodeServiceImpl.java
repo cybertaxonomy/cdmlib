@@ -409,8 +409,7 @@ public class TermNodeServiceImpl
                     for (Representation rep: dto.getTerm().getRepresentations()){
                         Representation oldRep = character.getRepresentation(rep.getLanguage());
                         if (oldRep == null){
-                            oldRep = new Representation();
-                            oldRep.setLanguage(rep.getLanguage());
+                            oldRep = Representation.NewInstance(null, null, null, rep.getLanguage());
                             character.addRepresentation(oldRep);
                         }
                         oldRep.setLabel(rep.getLabel());
