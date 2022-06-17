@@ -20,11 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
 
-
 /**
  * @author a.mueller
  * @since 2014-11-19
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OrderedTerm")
@@ -34,6 +32,7 @@ import org.hibernate.envers.Audited;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
+
 	private static final long serialVersionUID = 5122485867783720769L;
 
 	//Determination modifier
@@ -66,16 +65,15 @@ public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
 
 //******************* CONSTRUCTOR ***********************************/
 
-	//for hibernate/javassist use only
+	//for hibernate use only, *packet* private required by bytebuddy
 	@Deprecated
-	protected OrderedTerm(){super(TermType.Unknown);}
+	OrderedTerm(){super(TermType.Unknown);}
 
 	public OrderedTerm(TermType type, String description, String label, String labelAbbrev) {
 		super(type, description, label, labelAbbrev);
 	}
 
 //*************************** TERM MAP *********************/
-
 
 	public static final OrderedTerm DNA_QUALITY_HIGH(){
 		return getTermByUuid(uuidDnaQualityHigh);
@@ -108,5 +106,4 @@ public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
 	protected int partOfCsvLineIndex(){
 		return 5;
 	}
-
 }

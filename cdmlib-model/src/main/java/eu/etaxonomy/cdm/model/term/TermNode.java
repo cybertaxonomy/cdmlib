@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -129,9 +130,9 @@ public class TermNode <T extends DefinedTermBase>
 
 // ******************** CONSTRUCTOR ***************************************/
 
-	//TODO needed?
+    //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
-    protected TermNode(){}
+    TermNode(){}
 
 	/**
 	 * Class constructor: creates a new empty feature node instance.

@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -93,9 +94,9 @@ public abstract class TermBase
 
 //******************* CONSTRUCTOR *************************************/
 
-    //for JAXB only, TODO needed?
+    //for hibernate (and JAXB?) use only, *packet* private required by bytebuddy
     @Deprecated
-    protected TermBase(){}
+    TermBase(){}
 
     protected TermBase(TermType type){
         super();
@@ -105,8 +106,8 @@ public abstract class TermBase
         	this.termType = type;
         }
     }
-    
-   
+
+
 
     protected TermBase(TermType type, String term, String label, String labelAbbrev, Language lang) {
         this(type);

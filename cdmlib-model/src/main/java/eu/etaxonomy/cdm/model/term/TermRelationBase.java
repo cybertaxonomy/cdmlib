@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -88,7 +89,9 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
 
  // ******************** CONSTRUCTOR ***************************************/
 
-    protected TermRelationBase(){}
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
+    TermRelationBase(){}
 
     protected TermRelationBase(TermType termType) {
         this.termType = termType;

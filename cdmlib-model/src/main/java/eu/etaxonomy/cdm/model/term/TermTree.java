@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.ArrayList;
@@ -26,7 +25,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -86,7 +86,6 @@ public class TermTree <T extends DefinedTermBase>
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private TermNode<T> root;
 
-
 //******************** FACTORY METHODS ******************************************/
 
     /**
@@ -123,7 +122,6 @@ public class TermTree <T extends DefinedTermBase>
         return new TermTree<>(TermType.Feature);
     }
 
-
 	/**
 	 * @deprecated since 5.9, use {@link #NewFeatureInstance(UUID)} instead
 	 */
@@ -145,7 +143,6 @@ public class TermTree <T extends DefinedTermBase>
         result.setUuid(uuid);
         return result;
     }
-
 
     /**
      * @deprecated sinde 5.9 use {@link #NewFeatureInstance(List)} instead
@@ -176,12 +173,11 @@ public class TermTree <T extends DefinedTermBase>
 		return result;
 	}
 
-
 // ******************** CONSTRUCTOR *************************************/
 
-    //for JAXB only, TODO needed?
+	//for hibernate (+JAXB?) use only, *packet* private required by bytebuddy
     @Deprecated
-    protected TermTree(){}
+    TermTree(){}
 
 	/**
 	 * Class constructor: creates a new feature tree instance with an empty

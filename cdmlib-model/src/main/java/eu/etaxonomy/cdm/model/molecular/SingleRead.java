@@ -110,7 +110,6 @@ public class SingleRead extends EventBase {
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private MaterialOrMethodEvent materialOrMethod;
 
-
 	// ******************** FACTORY METHOD ******************/
 
 	public static SingleRead NewInstance(){
@@ -119,11 +118,11 @@ public class SingleRead extends EventBase {
 
 	// ********************* CONSTRUCTOR ********************/
 
-	//protected for Javassist, otherwise private
-	protected SingleRead(){}
+	//for internal and hibernate use only, *packet* private required by bytebuddy
+	@Deprecated
+	SingleRead(){}
 
 	// ********************* GETTER / SETTER ********************/
-
 
 	/**
 	 * Returns the {@link AmplificationResult amplification product} that was the input for this

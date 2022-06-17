@@ -16,7 +16,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Store;
@@ -67,9 +68,9 @@ public class Representation extends LanguageStringBase {
         return new Representation(description, label, abbreviatedLabel, lang);
     }
 
-    public Representation() {
-        super();
-    }
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
+    Representation() {}
 
     /**
      * text represents an explanation/declaration ('The name is illegitimate according to ICBN'); label a string identifier ('illegitimate name');

@@ -578,13 +578,7 @@ public class TaxonName
 
 // *************** FACTORY METHODS ********************************/
 
-    //see TaxonNameFactory
-    /**
-     * @param code
-     * @param rank
-     * @param homotypicalGroup
-     * @return
-     */
+    //TODO move to TaxonNameFactory
     protected static TaxonName NewInstance(NomenclaturalCode code, Rank rank,
             HomotypicalGroup homotypicalGroup) {
 
@@ -604,15 +598,8 @@ public class TaxonName
 
 // ************* CONSTRUCTORS *************/
 
-    /**
-     * Class constructor: creates a new empty taxon name.
-     * @param code
-     *
-     * @see #TaxonName(Rank)
-     * @see #TaxonName(HomotypicalGroup)
-     * @see #TaxonName(Rank, HomotypicalGroup)
-     */
-    protected TaxonName() {}
+    //for hibernate use only, *packet* private required by bytebuddy
+    TaxonName() {}
 
     /**
      * Class constructor: creates a new taxon name instance
@@ -629,7 +616,6 @@ public class TaxonName
      * @see    					 #TaxonName(HomotypicalGroup)
      */
     protected TaxonName(NomenclaturalCode type, Rank rank, HomotypicalGroup homotypicalGroup) {
-        this();
         setNameType(type);
         this.setRank(rank);
         if (homotypicalGroup == null){

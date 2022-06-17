@@ -553,7 +553,7 @@ public class TaxonNode
         }
            // check if this node is a descendant of the childNode
         if(child.getParent() != this && child.isAncestor(this)){
-            throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
+            throw new IllegalStateException("New parent node is a descendant of the node to be moved.");
         }
 
         child.setParentTreeNode(this, index);
@@ -697,7 +697,6 @@ public class TaxonNode
         }
     }
 
-
     /**
      * Remove this taxonNode From its taxonomic parent
      *
@@ -739,8 +738,6 @@ public class TaxonNode
     /**
      * Sets the parent of this taxon node to the given parent. Cleans up references to
      * old parents and sets the classification to the new parents classification
-     *
-     * @param parent
      */
     @Transient
     protected void setParentTreeNode(TaxonNode parent, int index){

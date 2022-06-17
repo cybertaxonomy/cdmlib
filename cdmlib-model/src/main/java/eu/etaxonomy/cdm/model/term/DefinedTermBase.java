@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -198,9 +199,9 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
 //***************************** CONSTRUCTOR *******************************************/
 
-    //for javassit only
+    //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
-    protected DefinedTermBase(){};
+    DefinedTermBase(){}
 
     protected DefinedTermBase(TermType type) {
         super(type);

@@ -15,7 +15,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 /**
@@ -38,8 +39,9 @@ public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends Te
 
  // ******************** CONSTRUCTOR *************************************/
 
+    //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
-    protected TermGraphBase(){}
+    TermGraphBase(){}
 
     protected TermGraphBase(TermType termType) {
         super(termType);

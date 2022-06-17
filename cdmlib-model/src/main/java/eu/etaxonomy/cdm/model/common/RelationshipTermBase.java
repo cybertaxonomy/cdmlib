@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -102,10 +103,10 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 
 //******************** CONSTRUCTOR ************************/
 
-    //for JAXB only, TODO needed?
+    //for hibernate use only, *packet* private required by bytebuddy
+    @SuppressWarnings("unused")
     @Deprecated
-    private RelationshipTermBase(){super();}
-
+    RelationshipTermBase(){}
 
 	protected RelationshipTermBase(TermType type) {
 		super(type);

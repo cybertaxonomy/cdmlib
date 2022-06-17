@@ -146,8 +146,9 @@ public class Classification
 
 // **************************** CONSTRUCTOR *********************************/
 
-    //for hibernate use only, protected required by Javassist
-    protected Classification(){super();}
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
+    Classification(){}
 
     protected Classification(String name, Reference reference, Language language){
         this();

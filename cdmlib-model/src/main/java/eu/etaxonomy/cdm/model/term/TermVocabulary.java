@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -91,7 +92,6 @@ public class TermVocabulary<T extends DefinedTermBase>
 
 // ********************************* FACTORY METHODS *****************************************/
 
-
 	public static TermVocabulary NewInstance(TermType type){
 		return new TermVocabulary(type);
 	}
@@ -118,12 +118,11 @@ public class TermVocabulary<T extends DefinedTermBase>
         return new TermVocabulary<T>(type, description, label, abbrev, termSourceUri, language);
     }
 
-
 // ************************* CONSTRUCTOR *************************************************
 
-	//for hibernate use only
+    //for hibernate use only, *packet* private required by bytebuddy
 	@Deprecated
-	protected TermVocabulary() {
+	TermVocabulary() {
 		super(TermType.Unknown);
 	}
 

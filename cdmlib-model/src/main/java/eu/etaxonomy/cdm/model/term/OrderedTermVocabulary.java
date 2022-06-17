@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.Iterator;
@@ -22,7 +21,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OrderedTermVocabulary")
@@ -42,13 +41,11 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
         extends TermVocabulary<T>
         implements ITermGraph<T, TermNode>    {
 
-
 	private static final long serialVersionUID = 7871741306306371242L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(OrderedTermVocabulary.class);
 
 // ************************* FACTORY METHODS ***********************************************/
-
 
 	/**
 	 * @param type the {@link TermType term type}, must be the same as for all included terms
@@ -75,11 +72,9 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 
 //************************ CONSTRUCTOR *****************************************************/
 
-	//for hibernate use only
+    //for hibernate use only, *packet* private required by bytebuddy
 	@Deprecated
-	protected OrderedTermVocabulary() {
-		super();
-	}
+	OrderedTermVocabulary() {}
 
 	protected OrderedTermVocabulary(TermType type) {
 		super(type);

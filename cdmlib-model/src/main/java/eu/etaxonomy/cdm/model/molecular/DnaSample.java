@@ -67,10 +67,6 @@ public class DnaSample extends DerivedUnit {
 
 // ****************** FACTORY METHOD *****************/
 
-	/**
-	 * Factory method
-	 * @return a new and empty DnaSample
-	 */
 	public static DnaSample NewInstance(){
 		return new DnaSample(SpecimenOrObservationType.DnaSample);
 	}
@@ -80,9 +76,6 @@ public class DnaSample extends DerivedUnit {
     }
 
 // ************** ATTRIBUTES ****************************/
-
-//	@XmlElement(name = "BankNumber")
-//	private String bankNumber;
 
 	@XmlElementWrapper(name = "Sequences")
 	@XmlElement(name = "sequence")
@@ -109,15 +102,11 @@ public class DnaSample extends DerivedUnit {
 
 // ******************* CONSTRUCTOR *************************/
 
-    /**
-     * @deprecated for hibernate use only
-     */
+    //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
-	protected DnaSample() {  //protected for Javassist, otherwise private
-		super();
-	}
+	DnaSample() {}
 
-	private  DnaSample(SpecimenOrObservationType type) {  //protected for Javassist, otherwise private
+	private  DnaSample(SpecimenOrObservationType type) {
         super(type);
     }
 

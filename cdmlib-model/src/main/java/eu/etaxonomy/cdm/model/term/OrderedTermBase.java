@@ -18,7 +18,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -74,7 +75,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
 
 // *********************** CONSTRUCTOR *************************/
 
-    //for JAXB only, TODO needed?
+  //for hibernate use only, protected required by bytebuddy and subclasses outside package
     @Deprecated
     protected OrderedTermBase(){}
 
