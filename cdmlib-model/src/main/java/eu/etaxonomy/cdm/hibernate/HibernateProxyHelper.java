@@ -16,6 +16,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.proxy.HibernateProxy;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 /**
  * @author a.mueller
  * @since 03.03.2009
@@ -28,12 +30,14 @@ public class HibernateProxyHelper {
 	// ************************** Hibernate proxies *******************/
 	/**
 	 * Deproxy and cast the given object to the given class.
-	 * If clazz is <code>null</code>. If object is not an instance of HibernateProxy no
-	 * deproxy is performed.
+	 * clazz must not be <code>null</code> if object is instance of {@link HibernateProxy}.
+	 * If object is not an instance of HibernateProxy no deproxy is performed.
 	 *
      * Note AM (2022-06-16): maybe for pure casting this method is not reqired anymore and also
      *       deproxing might be obsolete in most cases since the current bytecode
      *       provider "bytebuddy" probably casts and handles proxies correctly.
+     *
+     * @see CdmBase#deproxy(Object, Class) for further information
      *
 	 * @param object the object to cast
 	 * @param clazz the class to cast to
