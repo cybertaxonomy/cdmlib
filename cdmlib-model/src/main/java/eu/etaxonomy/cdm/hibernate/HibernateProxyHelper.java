@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.proxy.HibernateProxy;
@@ -30,8 +31,12 @@ public class HibernateProxyHelper {
 	 * If clazz is <code>null</code>. If object is not an instance of HibernateProxy no
 	 * deproxy is performed.
 	 *
-	 * @param object
-	 * @param clazz
+     * Note AM (2022-06-16): maybe for pure casting this method is not reqired anymore and also
+     *       deproxing might be obsolete in most cases since the current bytecode
+     *       provider "bytebuddy" probably casts and handles proxies correctly.
+     *
+	 * @param object the object to cast
+	 * @param clazz the class to cast to
 	 * @return the casted and deproxied object
 	 * @throws ClassCastException
 	 */
