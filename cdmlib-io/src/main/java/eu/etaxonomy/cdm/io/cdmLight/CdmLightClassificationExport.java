@@ -198,10 +198,6 @@ public class CdmLightClassificationExport
 
     private void setOrderIndex(CdmLightExportState state, OrderHelper order) {
 
-        // String sortIndex = StringUtils.isBlank(sort_index)?
-        // String.valueOf(order.getOrderIndex()): sort_index+ "_"
-        // +String.valueOf(order.getOrderIndex());
-
         if (order.getTaxonUuid() != null
                 && state.getProcessor().hasRecord(CdmLightExportTable.TAXON, order.getTaxonUuid().toString())) {
             String[] csvLine = state.getProcessor().getRecord(CdmLightExportTable.TAXON,

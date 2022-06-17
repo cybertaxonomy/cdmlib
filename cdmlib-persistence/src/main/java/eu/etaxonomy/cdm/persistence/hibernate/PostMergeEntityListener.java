@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
@@ -33,10 +34,12 @@ import eu.etaxonomy.cdm.model.term.TermTree;
  * @since 23 Sep 2015
  */
 public class PostMergeEntityListener implements MergeEventListener {
+
     private static final long serialVersionUID = 1565797119368313987L;
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger(PostMergeEntityListener.class);
 
     private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<>();
-    private static final Logger logger = LogManager.getLogger(PostMergeEntityListener.class);
 
     public static void addSession(Session session) {
         newEntitiesMap.put(session, new HashSet<>());
@@ -52,7 +55,7 @@ public class PostMergeEntityListener implements MergeEventListener {
 
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
-        Object entity = event.getEntity();
+//        Object entity = event.getEntity();
     }
 
     @Override

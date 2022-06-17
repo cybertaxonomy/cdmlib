@@ -120,7 +120,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
          *   - Campanula bononiensis
          */
         List<TaxonNode> nodes = taxonNodeService.list(TaxonNode.class, 100, 0, null, null);
-        // TODO: this needs to be fixed, the sortindex should never be -1
         for (TaxonNode node: nodes){
             if (node.getTaxon() != null){
                 assertTrue("The sortindex should not be smaller than 0", node.getSortIndex() > -1 );
