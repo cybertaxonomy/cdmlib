@@ -1157,7 +1157,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
         String queryString = getTaxonNodeDtoQuery();
         queryString += " WHERE tn.uuid = :uuid ";
-        Query<SortableTaxonNodeQueryResult> query =  getSession().createNativeQuery(queryString, SortableTaxonNodeQueryResult.class);
+        Query<SortableTaxonNodeQueryResult> query =  getSession().createQuery(queryString, SortableTaxonNodeQueryResult.class);
         query.setParameter("uuid", nodeUuid);
 
         List<SortableTaxonNodeQueryResult> result = query.list();
