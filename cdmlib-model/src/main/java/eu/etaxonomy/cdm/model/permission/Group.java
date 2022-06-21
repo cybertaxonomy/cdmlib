@@ -29,7 +29,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.Field;
@@ -74,18 +75,6 @@ public class Group extends CdmBase {
     public static final String GROUP_PUBLISH_NAME = "Publish";
     public final static String GROUP_USER_MANAGER_NAME = "User_Manager";
 
-//*********************** FACTORY *********************/
-
-    public static Group NewInstance(){
-        return new Group();
-    }
-
-    public static Group NewInstance(String name){
-        Group group = Group.NewInstance();
-        group.setName(name);
-        return group;
-    }
-
 //**************** FIELDS ******************************/
 
     @XmlElement(name = "Name")
@@ -118,11 +107,23 @@ public class Group extends CdmBase {
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set <AuthorityBase> authorities = new HashSet<>();
 
+
+  //*********************** FACTORY *********************/
+
+    public static Group NewInstance(){
+        return new Group();
+    }
+
+    public static Group NewInstance(String name){
+        Group group = Group.NewInstance();
+        group.setName(name);
+        return group;
+    }
+
 // ********************* CONSTRUCTOR ************************/
 
-    protected Group(){
-        super();
-    }
+    //for internal use only, *packet* private required by bytebuddy
+    Group(){}
 
 // *************** GETTER / SETTER ***********************************/
 

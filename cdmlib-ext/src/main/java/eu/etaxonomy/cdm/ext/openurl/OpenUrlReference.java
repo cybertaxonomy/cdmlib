@@ -52,24 +52,16 @@ public class OpenUrlReference extends Reference {
 		return itemUri;
 	}
 
-	/**
-	 * @param titleUri the titleUri to set
-	 */
+    public URI getTitleUri() {
+        return titleUri;
+    }
 	public void setTitleUri(URI titleUri) {
 		this.titleUri = titleUri;
 	}
 
 
 	/**
-	 * @return the titleUri
-	 */
-	public URI getTitleUri() {
-		return titleUri;
-	}
-
-
-	/**
-	 * Splits the id from the base ulr of the id urls used in bhl. For example the url string http://www.biodiversitylibrary.org/item/16772 will be split into
+	 * Splits the id from the base url of the id urls used in bhl. For example the url string http://www.biodiversitylibrary.org/item/16772 will be split into
 	 * <ol>
 	 * <li>http://www.biodiversitylibrary.org/item</li>
 	 * <li>16772</li>
@@ -89,18 +81,11 @@ public class OpenUrlReference extends Reference {
 		}
 	}
 
-	/**
-	 * @param referenceType the referenceType to set
-	 */
+    public ReferenceType getReferenceType() {
+        return referenceType;
+    }
 	public void setReferenceType(ReferenceType referenceType) {
 		this.referenceType = referenceType;
-	}
-
-	/**
-	 * @return the referenceType
-	 */
-	public ReferenceType getReferenceType() {
-		return referenceType;
 	}
 
 	/**

@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -94,6 +95,8 @@ public class TaxonRelationship
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private TaxonomicOperation operation;
 
+// *************************** CONSTRUCTOR ********************************/
+
     /**
      * @deprecated for hibernate only, don't use
      */
@@ -117,6 +120,8 @@ public class TaxonRelationship
     protected TaxonRelationship(Taxon from, Taxon to, TaxonRelationshipType type, Reference citation, String citationMicroReference) {
         super(from, to, type, citation, citationMicroReference);
     }
+
+// *********************** GETTER / SETTER *************************/
 
     /**
      * Returns the {@link Taxon taxon} involved as a source in <i>this</i>

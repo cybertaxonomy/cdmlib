@@ -11,17 +11,13 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.EnumSet;
 import java.util.StringTokenizer;
 
-
 /**
- *
  * @author k.luther
  * @author a.kohlbecker
  */
 public class Operation {
 
-    private Operation(){
-
-    }
+    private Operation(){}
 
     final static public EnumSet<CRUD> CREATE = EnumSet.of(CRUD.CREATE);
 
@@ -66,7 +62,4 @@ public class Operation {
             return false;
         }
     }
-
 }
-
-

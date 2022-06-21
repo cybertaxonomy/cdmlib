@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -194,7 +195,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
 
     @Override
     protected void initDefaultCacheStrategy() {
-        this.cacheStrategy = (S)new TaxonBaseDefaultCacheStrategy();
+        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy();
     }
 
 //********* METHODS **************************************/

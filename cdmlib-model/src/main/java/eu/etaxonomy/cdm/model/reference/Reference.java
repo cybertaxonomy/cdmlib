@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -141,7 +142,7 @@ public class Reference
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
                    IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
                    IThesis,IWebPage, IPersonalCommunication,
-                   INomenclaturalReference, IReference, IIntextReferenceTarget {
+                   IIntextReferenceTarget {
 
     private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = LogManager.getLogger(Reference.class);
@@ -366,6 +367,9 @@ public class Reference
 
 // *********************** CONSTRUCTOR ************************/
 
+    //for hibernate use only, *packet* private required by bytebuddy
+    //TODO currenctly still protected as OpenUrlReference inherits from Reference
+    //     this should be fixed
     protected Reference(){
 		this(ReferenceType.Generic);  //just in case someone uses constructor
 	}

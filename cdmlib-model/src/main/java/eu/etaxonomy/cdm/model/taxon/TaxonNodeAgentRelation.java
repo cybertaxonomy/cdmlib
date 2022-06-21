@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * (e.g. author of the according subtree, last scrutiny, ...).
  * It is not meant to define rights and roles which are only handled via the
  * {@link GrantedAuthority granted authorities}.
+ *
  * @author a.mueller
  * @since 29.05.2015
  */
@@ -76,6 +78,8 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private DefinedTerm type;
 
+// ***************************** FACTORY ****************************
+
     protected static TaxonNodeAgentRelation NewInstance(TaxonNode taxonNode, TeamOrPersonBase<?> agent, DefinedTerm type){
         TaxonNodeAgentRelation result = new TaxonNodeAgentRelation();
         result.taxonNode = taxonNode;
@@ -84,6 +88,8 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
         taxonNode.addAgentRelation(result);
         return result;
     }
+
+// ******************** CONSTRUCTOR ******************************/
 
     private TaxonNodeAgentRelation(){}
 
