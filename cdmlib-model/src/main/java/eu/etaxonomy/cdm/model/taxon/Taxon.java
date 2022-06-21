@@ -257,9 +257,10 @@ public class Taxon
     }
 // ************* CONSTRUCTORS *************/
 
+    //for hibernate use only, *packet* private required by bytebuddy
     //TODO should be private, but still produces Spring init errors
     @Deprecated
-    public Taxon(){}
+    Taxon(){}
 
     private Taxon(TaxonName taxonName, Reference sec){
         super(taxonName, sec, null);

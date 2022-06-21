@@ -191,7 +191,9 @@ public class TaxonNode
 
 // ******************** CONSTRUCTOR **********************************************/
 
-    protected TaxonNode(){super();}
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
+    TaxonNode(){}
 
     /**
      * to create nodes either use {@link Classification#addChildTaxon(Taxon, Reference, String, Synonym)}

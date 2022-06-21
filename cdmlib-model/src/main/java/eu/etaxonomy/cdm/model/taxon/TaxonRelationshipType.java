@@ -118,11 +118,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 //********************************** CONSTRUCTOR *********************************/
 
-  	/**
-  	 * @deprecated for inner (hibernate) use only
-  	 */
+    //for hibernate use only, *packet* private required by bytebuddy
   	@Deprecated
-  	protected TaxonRelationshipType() {
+  	TaxonRelationshipType() {
 		super(TermType.TaxonRelationshipType);
 	}
 	/**

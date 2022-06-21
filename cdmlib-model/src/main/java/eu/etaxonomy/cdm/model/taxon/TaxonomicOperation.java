@@ -60,7 +60,8 @@ public class TaxonomicOperation extends VersionableEntity {
 
 // ************************ CONSTRUCTOR *******************************/
 
-    @Deprecated  //for jaxb/hibernate use only
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
     private TaxonomicOperation(){}
 
     private TaxonomicOperation(TaxonomicOperationType type, TimePeriod timePeriod) {

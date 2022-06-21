@@ -45,11 +45,12 @@ public class Role extends AuthorityBase {
 
     // *************************** CONSTRUCTOR ********************************/
 
-    //for hibernate use only
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
     private Role(){}
 
     private Role(String role) {
-        super();
+        this();
         this.role = role;
     }
 

@@ -56,10 +56,7 @@ public abstract class NamedSourceBase extends OriginalSourceBase {
 
 //*********************** CONSTRUCTOR ******************************/
 
-    //for hibernate use only
-    /**
-     * @deprecated for internal use only
-     */
+    //for hibernate bytecode generation only, protected required by subclasses
     @Deprecated
     protected NamedSourceBase(){}
 

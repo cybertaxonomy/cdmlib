@@ -119,13 +119,9 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 
 // ********************* CONSTRUCTORS ******************************/
 
-	/**
-	 * Class constructor: creates a new empty synonym instance.
-	 *
-	 * @see 	#Synonym(TaxonName, Reference)
-	 */
+    //for hibernate use only, *packet* private required by bytebuddy
 	//TODO should be private, but still produces Spring init errors
-	public Synonym(){}
+	Synonym(){}
 
 	private Synonym(TaxonName taxonName, Reference sec, String secDetail){
 		super(taxonName, sec, secDetail);

@@ -27,10 +27,8 @@ public class NamedSource extends NamedSourceBase {
 
     private static final long serialVersionUID = 6778434032127847851L;
 
-    /**
-     * Factory method
-     * @return
-     */
+// *********************** FACTORY METHODS *********************************/
+
     public static NamedSource NewInstance(OriginalSourceType type){
         return new NamedSource(type);
     }
@@ -104,12 +102,9 @@ public class NamedSource extends NamedSourceBase {
 
   //*********************** CONSTRUCTOR ******************************/
 
-    //for hibernate use only
-    /**
-     * @deprecated for internal use only
-     */
+    //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
-    protected NamedSource(){}
+    NamedSource(){}
 
     protected NamedSource(OriginalSourceType type){
         super(type);

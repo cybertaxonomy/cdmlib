@@ -48,9 +48,9 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 
 // ************* CONSTRUCTOR ********************/
 
-    protected GrantedAuthorityImpl() {
-        super();
-    }
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
+    GrantedAuthorityImpl() {}
 
 // *************** GETTER / SETTER ********************/
 

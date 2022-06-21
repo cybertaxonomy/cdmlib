@@ -166,14 +166,8 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
 
 // ************* CONSTRUCTORS *************/
 
-    /**
-     * Class constructor: creates a new empty (abstract) taxon.
-     *
-     * @see 	#TaxonBase(TaxonName, Reference)
-     */
-    protected TaxonBase(){
-        super();
-    }
+    //for hibernate use only, *packet* private required by bytebuddy and subclasses
+    TaxonBase(){}
 
     /**
      * Class constructor: creates a new (abstract) taxon with the

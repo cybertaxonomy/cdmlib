@@ -133,13 +133,10 @@ public abstract class OriginalSourceBase
 
 //***************** CONSTRUCTOR ***********************/
 
-	//for hibernate use only
-	protected OriginalSourceBase() {
-	}
+    //for hibernate use only, protected required by subclasses
+    @Deprecated
+	protected OriginalSourceBase(){}
 
-	/**
-	 * Constructor
-	 */
 	protected OriginalSourceBase(OriginalSourceType type){
 		if (type == null){
 			throw new IllegalArgumentException("OriginalSourceType must not be null");
