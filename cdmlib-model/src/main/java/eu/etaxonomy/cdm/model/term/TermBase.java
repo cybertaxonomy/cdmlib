@@ -95,7 +95,6 @@ public abstract class TermBase
 //******************* CONSTRUCTOR *************************************/
 
     //for hibernate (and JAXB?) use only, *packet* private required by bytebuddy
-    @Deprecated
     TermBase(){}
 
     protected TermBase(TermType type){
