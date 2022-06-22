@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -92,20 +93,6 @@ public class DerivationEvent extends EventBase {
 
 	/**
 	 * Factory method
-	 * @deprecated Use {@link #NewInstance(DerivationEventType)} or any other
-	 * factory method instead to make sure,
-	 * the derivation event type is always set.
-	 */
-	@Deprecated
-	public static DerivationEvent NewInstance(){
-		return new DerivationEvent();
-	}
-
-	// ********************* FACTORY  ****************************/
-
-	/**
-	 * Factory method
-	 * @return
 	 */
 	public static DerivationEvent NewInstance(DerivationEventType type){
 		DerivationEvent result = new DerivationEvent();
@@ -126,10 +113,8 @@ public class DerivationEvent extends EventBase {
 
 // ************************* CONSTRUCTOR ****************************/
 
-	/**
-	 * Constructor
-	 */
-	protected DerivationEvent() {
+    //for hibernate use only, *packet* private required by bytebuddy
+	DerivationEvent() {
 		super();
 	}
 

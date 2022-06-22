@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.HashMap;
@@ -19,7 +18,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
+
 	private static final long serialVersionUID = 6895093454763415279L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(DerivationEventType.class);
@@ -59,20 +60,17 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 
 	protected static Map<UUID, DerivationEventType> termMap = null;
 
-
+//*********************** FACTORY ***********************************************/
 
 	/**
 	 * Factory method
-	 * @return
 	 */
 	public static DerivationEventType NewInstance(){
 		return new DerivationEventType();
 	}
 
-
 	/**
 	 * Factory method
-	 * @return
 	 */
 	public static DerivationEventType NewInstance(String term, String label, String labelAbbrev){
 		return new DerivationEventType(term, label, labelAbbrev);
@@ -80,26 +78,21 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 
 //********************************** Constructor *********************************/
 
-  	//for hibernate use only
-  	@Deprecated
-  	protected DerivationEventType() {
+    //*packet* private required by bytebuddy
+  	DerivationEventType() {
 		super(TermType.DerivationEventType);
 	}
-
 
 	private DerivationEventType(String term, String label, String labelAbbrev) {
 		super(TermType.DerivationEventType, term, label, labelAbbrev);
 	}
 
-
 //************************** METHODS ********************************
-
 
 	@Override
 	public void resetTerms(){
 		termMap = null;
 	}
-
 
 	protected static DerivationEventType getTermByUuid(UUID uuid){
 	    if (termMap == null || termMap.isEmpty()){
@@ -111,30 +104,34 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 
 	/**
 	 * TODO distinguish from {@link #DUPLICATE_SEGREGATEION()}
-	 * @return
 	 */
 	public static final DerivationEventType DUPLICATE(){
 		return getTermByUuid(uuidDuplicate);
 	}
+
 	public static final DerivationEventType GATHERING_IN_SITU(){
 		return getTermByUuid(uuidGatheringInSitu);
 	}
+
 	public static final DerivationEventType TISSUE_SAMPLING(){
 		return getTermByUuid(uuidTissueSampling);
 	}
+
 	public static final DerivationEventType DNA_EXTRACTION(){
 		return getTermByUuid(uuidDnaExtraction);
 	}
+
 	public static final DerivationEventType VEGETATIVE_PROPAGATION(){
 		return getTermByUuid(uuidVegetativPropagation);
 	}
+
 	/**
 	 * TODO distinguish from {@link #DUPLICATE()}
-	 * @return
 	 */
 	public static final DerivationEventType DUPLICATE_SEGREGATEION(){
 		return getTermByUuid(uuidDuplicateSegregation);
 	}
+
 	/**
 	 * The accessioning in a collection which usually results in an accession number.
 	 * @return
@@ -183,19 +180,16 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	/**
 	 * The preparation of e.g. a living culture into a preparation which can be stored in a collection
 	 * (using certain preparation methods)
-	 * @return
 	 */
 	public static final DerivationEventType PREPARATION(){
 		return getTermByUuid(uuidPreparation);
 	}
 	/**
 	 * Ex-situ cultivation.
-	 * @return
 	 */
 	public static final DerivationEventType CULTIVATION_EX_SITU(){
 		return getTermByUuid(uuidCultivationExSitu);
 	}
-
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<DerivationEventType> termVocabulary) {
@@ -204,5 +198,4 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 			termMap.put(term.getUuid(), term);
 		}
 	}
-
 }

@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -129,7 +130,8 @@ public class DeterminationEvent extends EventBase {
 
 //*********************** CONSTRUCTOR ********************************/
 
-	protected DeterminationEvent() {
+    //for hibernate use only, *packet* private required by bytebuddy
+	DeterminationEvent() {
 		super();
 	}
 

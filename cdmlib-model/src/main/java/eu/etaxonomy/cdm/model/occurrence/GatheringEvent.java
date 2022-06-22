@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.Calendar;
@@ -31,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -157,7 +157,6 @@ public class GatheringEvent extends EventBase {
 	@NumericField
 	private Double distanceToGroundMax;
 
-
 	/**
 	 * Distance to ground (e.g. when sample is taken from a tree) as text.
 	 * If min/max value exists together with distanceToGroundText
@@ -196,21 +195,23 @@ public class GatheringEvent extends EventBase {
     @Column(length=30)
 	private String distanceToWaterSurfaceText;
 
+//*********************** FACTORY ****************************************/
 
 	/**
 	 * Factory method
-	 * @return
 	 */
 	public static GatheringEvent NewInstance(){
 		return new GatheringEvent();
 	}
 
-	/**
-	 * Constructor
-	 */
-	protected GatheringEvent() {
+//**************************** CONSTRUCTOR ************************************/
+
+    //for hibernate use only, *packet* private required by bytebuddy
+	GatheringEvent() {
 		super();
 	}
+
+//********************* GETTER /SETTER *************************************/
 
 	public Point getExactLocation(){
 		return this.exactLocation;
@@ -219,31 +220,26 @@ public class GatheringEvent extends EventBase {
 		this.exactLocation = exactLocation;
 	}
 
-
-
 	public NamedArea getCountry() {
 		return country;
 	}
-
 	public void setCountry(NamedArea country) {
 		this.country = country;
 	}
 
 	/**
 	 * Further collecting areas. Should not include #getCountry()
-	 * @return
 	 */
 	public Set<NamedArea> getCollectingAreas(){
 		if(collectingAreas == null) {
-			this.collectingAreas = new HashSet<NamedArea>();
+			this.collectingAreas = new HashSet<>();
 		}
 		return this.collectingAreas;
 	}
 
-
-	 /**
-	  * Further collecting areas. Should not include #getCountry()
-	  * @param area
+	/**
+	 * Further collecting areas. Should not include #getCountry()
+	 * @param area
 	 */
 	public void addCollectingArea(NamedArea area){
 		if (this.collectingAreas == null) {

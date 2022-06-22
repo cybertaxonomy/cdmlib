@@ -22,7 +22,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -72,7 +73,6 @@ public class MaterialOrMethodEvent extends EventBase {
 
 	//TODO citation / link
 
-
 // ******************** FACTORY METHOD ******************/
 
     public static MaterialOrMethodEvent NewInstance(){
@@ -85,16 +85,15 @@ public class MaterialOrMethodEvent extends EventBase {
 
 // ********************* CONSTRUCTOR ********************/
 
-    protected MaterialOrMethodEvent(){};
+    //for hibernate use only, *packet* private required by bytebuddy
+    MaterialOrMethodEvent(){}
 
     protected MaterialOrMethodEvent(DefinedTerm definedMaterialOrMethod, String methodText){
     	this.definedMaterialOrMethod = definedMaterialOrMethod;
     	this.setDescription(methodText);
     }
 
-
 // ********************* GETTER / SETTER ********************/
-
 
 	/**
 	 * The {@link #getDescription()} method is inherited from {@link EventBase}.

@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -42,7 +43,6 @@ import eu.etaxonomy.cdm.model.term.TermType;
  *
  * @author a.mueller
  * @since 2013-09-11
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PreservationMethod", propOrder = {
@@ -53,7 +53,8 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Entity
 //TODO @Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class PreservationMethod extends MaterialOrMethodEvent implements Cloneable {
+public class PreservationMethod extends MaterialOrMethodEvent {
+
 	private static final long serialVersionUID = 2366116167028862401L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(PreservationMethod.class);
@@ -86,8 +87,8 @@ public class PreservationMethod extends MaterialOrMethodEvent implements Cloneab
 
 	// ********************* CONSTRUCTOR ********************/
 
-	//for hibernate use only
-	protected PreservationMethod(){};
+    //for hibernate use only, *packet* private required by bytebuddy
+	PreservationMethod(){}
 
     private PreservationMethod(DefinedTerm definedMaterialOrMethod, String methodText, DefinedTerm medium, Double temperature){
     	super(definedMaterialOrMethod, methodText);

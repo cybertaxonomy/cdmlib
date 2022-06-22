@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -235,17 +236,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElement(name = "ProtectedIdentityCache")
     private boolean protectedIdentityCache;
 
-
 //********************************** CONSTRUCTOR *********************************/
 
-    //for hibernate use only
-    @Deprecated
-    protected SpecimenOrObservationBase(){
-        super();
-    }
+    //for hibernate use only, *packet* private required by bytebuddy and subclass
+    SpecimenOrObservationBase(){}
 
     protected SpecimenOrObservationBase(SpecimenOrObservationType recordBasis) {
-        super();
         if (recordBasis == null){ throw new IllegalArgumentException("RecordBasis must not be null");}
         this.recordBasis = recordBasis;
     }
