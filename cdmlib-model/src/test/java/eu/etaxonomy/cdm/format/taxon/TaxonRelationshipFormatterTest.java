@@ -144,6 +144,25 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
         Assert.assertEquals(inverseSymbol + " ?\u202F\"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
+    }
+
+    @Test
+    public void testGetTaggedTextMisappliedNameProParte() {
+
+        inverse = true;
+        TaxonRelationshipType type = TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR();
+        String inverseSymbol = type.getInverseSymbol();
+        String symbol = type.getSymbol();
+        taxonRel.setType(type);
+
+        List<TaggedText> tags = formatter.getTaggedText(taxonRel, inverse, languages);
+        String str = TaggedCacheHelper.createString(tags);
+        Assert.assertEquals(inverseSymbol + " \"Abies alba\" sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
+
+        //inverse
+        tags = formatter.getTaggedText(taxonRel, !inverse, languages);
+        str = TaggedCacheHelper.createString(tags);
+        Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
 
     }
 
