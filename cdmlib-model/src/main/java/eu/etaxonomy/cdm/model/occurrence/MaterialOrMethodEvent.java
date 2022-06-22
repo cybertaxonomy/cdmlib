@@ -85,8 +85,8 @@ public class MaterialOrMethodEvent extends EventBase {
 
 // ********************* CONSTRUCTOR ********************/
 
-    //for hibernate use only, *packet* private required by bytebuddy
-    MaterialOrMethodEvent(){}
+    //for hibernate use only, protected required by subclasses
+    protected MaterialOrMethodEvent(){}
 
     protected MaterialOrMethodEvent(DefinedTerm definedMaterialOrMethod, String methodText){
     	this.definedMaterialOrMethod = definedMaterialOrMethod;
