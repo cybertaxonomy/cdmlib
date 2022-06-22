@@ -89,6 +89,7 @@ public class Cloning extends MaterialOrMethodEvent {
     //for hibernate use only, *packet* private required by bytebuddy
     //see https://stackoverflow.com/questions/7273125/hibernate-envers-and-javassist-enhancement-failed-exception
     Cloning(){}
+
     private Cloning(DefinedTerm definedMaterialOrMethod, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
     	super(definedMaterialOrMethod, methodText);
     	this.strain = strain;
