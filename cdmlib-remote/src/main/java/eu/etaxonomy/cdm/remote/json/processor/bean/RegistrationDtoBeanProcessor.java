@@ -30,8 +30,6 @@ public class RegistrationDtoBeanProcessor extends AbstractBeanProcessor<Registra
                 );
     }
 
-
-
     @Override
     public JSONObject processBeanSecondStep(RegistrationDTO bean, JSONObject json, JsonConfig jsonConfig) {
         // nothing to do here

@@ -32,7 +32,7 @@ public interface ITermNodeService extends IVersionableService<TermNode>{
 
     public DeleteResult isDeletable(UUID nodeUuid, TermNodeDeletionConfigurator config);
 
-    public DeleteResult deleteNode(UUID nodeUuid, TermNodeDeletionConfigurator config);
+    public <T extends DefinedTermBase<?>>  DeleteResult deleteNode(UUID nodeUuid, TermNodeDeletionConfigurator config);
 
 
     /**

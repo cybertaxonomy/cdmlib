@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -86,14 +85,15 @@ public class TermNodeServiceImpl
 
 	@Override
 	@Transactional(readOnly = false)
-	public DeleteResult deleteNode(UUID nodeUuid, TermNodeDeletionConfigurator config) {
+	public <T extends DefinedTermBase<?>> DeleteResult deleteNode(UUID nodeUuid, TermNodeDeletionConfigurator config) {
 	    DeleteResult result = new DeleteResult();
-        TermNode node = CdmBase.deproxy(dao.load(nodeUuid));
+        @SuppressWarnings("unchecked")
+        TermNode<T> node = CdmBase.deproxy(dao.load(nodeUuid));
 	    result = isDeletable(nodeUuid, config);
 	    if (result.isOk()){
-	        TermNode<?> parent = node.getParent();
+	        TermNode<T> parent = node.getParent();
             parent = CdmBase.deproxy(parent);
-	        List<TermNode> children = new ArrayList<>(node.getChildNodes());
+            List<TermNode<T>> children = new ArrayList<>(node.getChildNodes());
 
 	        if (config.getChildHandling().equals(ChildHandling.DELETE)){
 
@@ -104,12 +104,10 @@ public class TermNodeServiceImpl
 	            if (parent != null){
 	                parent.removeChild(node);
 	            }
-
 	        } else{
-
 	            if (parent != null){
 	                parent.removeChild(node);
-	                for (TermNode child: children){
+	                for (TermNode<T> child: children){
 	                    node.removeChild(child);
 	                    parent.addChild(child);
 	                }
@@ -133,13 +131,6 @@ public class TermNodeServiceImpl
 	     }
 	     return result;
 	 }
-
-	 private UpdateResult createChildNode(UUID parentNodeUUID, UUID nodeUuid, DefinedTermBase term, UUID vocabularyUuid){
-	     UpdateResult result =  createChildNode(parentNodeUUID, term, vocabularyUuid);
-	     result.getCdmEntity().setUuid(nodeUuid);
-	     return result;
-	 }
-
 
 	 @Override
      public UpdateResult createChildNode(UUID parentNodeUuid, DefinedTermBase term, UUID vocabularyUuid){
@@ -165,7 +156,7 @@ public class TermNodeServiceImpl
              result.addException(new Exception("The parent node does not exist."));
              return result;
 	     }
-	     DefinedTermBase<?> child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
+	     DefinedTermBase child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
 
 	     if(node.getGraph() != null && !node.getGraph().isAllowDuplicates() && node.getGraph().getDistinctTerms().contains(child)){
 	         result.setError();
@@ -176,8 +167,7 @@ public class TermNodeServiceImpl
 	     TermNode childNode;
          if(position<0) {
              childNode = node.addChild(child);
-         }
-         else{
+         } else {
              childNode = node.addChild(child, position);
          }
          save(childNode);
@@ -482,7 +472,7 @@ public class TermNodeServiceImpl
                     List<TermVocabulary> termVocs;
                     if (!uuids.isEmpty()){
                         termVocs = vocabularyService.load(uuids, null);
-                        for (TermVocabulary voc: termVocs){
+                        for (TermVocabulary<DefinedTerm> voc: termVocs){
                             character.addRecommendedModifierEnumeration(voc);
                         }
                     }

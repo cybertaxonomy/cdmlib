@@ -22,5 +22,4 @@ public class TimePeriodBeanProcessor extends AbstractModifiableThingBeanProcesso
         // TODO Auto-generated method stub
         return null;
     }
-
 }
