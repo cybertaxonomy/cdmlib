@@ -209,7 +209,7 @@ public class TermNodeServiceImpl
         propertyPaths.add("parent");
         propertyPaths.add("parent.children");
         propertyPaths.add("children");
-        TermNode<?> test = load(movedNodeUuid, propertyPaths);
+
         TermNode movedNode = CdmBase.deproxy(load(movedNodeUuid, propertyPaths), TermNode.class);
         TermNode<?> targetNode = CdmBase.deproxy(load(targetNodeUuid, propertyPaths));
         TermNode<?> parent = CdmBase.deproxy(movedNode.getParent());
