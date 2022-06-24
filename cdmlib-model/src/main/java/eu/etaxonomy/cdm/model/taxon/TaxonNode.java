@@ -145,6 +145,12 @@ public class TaxonNode
     //do not cascade
     private List<TaxonNode> childNodes = new ArrayList<>();
 
+    //TODO remove
+    //see https://dev.e-taxonomy.eu/redmine/issues/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/4200
+    @Transient
+    private Integer sortIndex = -1;
+
     @XmlElement(name = "countChildren")
     private int countChildren;
 
