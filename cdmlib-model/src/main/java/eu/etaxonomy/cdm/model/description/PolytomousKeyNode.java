@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -480,7 +481,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
             	nodeNumber = getMaxNodeNumberFromRoot() + 1;
         }
 
-
 		children.add(index, child);
 		child.setKey(this.getKey());
 
@@ -489,8 +489,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		child.setParent(this);
 		//this.removeNullValueFromChildren();
 	}
-
-
 
 	/**
 	 * Removes the given polytomous key node from the list of
@@ -544,8 +542,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	/**
 	 * Returns the current maximum value of the node number in the entire key
 	 * starting from the root.
-	 *
-	 * @return
 	 */
 	private int getMaxNodeNumberFromRoot() {
 		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();

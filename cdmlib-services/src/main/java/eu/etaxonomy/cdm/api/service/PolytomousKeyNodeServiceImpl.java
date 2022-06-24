@@ -51,7 +51,7 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
            // result.addException(new Exception("The polytomouskey node was already deleted."));;
             return result;
         }
-        List<PolytomousKeyNode> children = new ArrayList<PolytomousKeyNode>();
+        List<PolytomousKeyNode> children = new ArrayList<>();
 
         node.removeNullValueFromChildren();
         for (PolytomousKeyNode child: node.getChildren()){
