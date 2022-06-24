@@ -146,14 +146,6 @@ public class IOServiceImpl implements IIOService {
         }
     }
 
-//    @Override
-//    public ImportResult updateData(SecundumForSubtreeConfigurator configurator) {
-//        ImportResult result;
-//
-//        result = cdmImport.invoke(configurator);
-//        return result;
-//    }
-
     @Override
     public ImportResult importDataFromUri(IImportConfigurator configurator, byte[] importData) {
         ImportResult result;
@@ -220,33 +212,6 @@ public class IOServiceImpl implements IIOService {
             return result;
     }
 
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public ImportResult updateSortIndex(SortIndexUpdaterConfigurator config) {
-//        ImportResult result = new ImportResult();
-//
-//        result = cdmImport.invoke(config);
-//        return result;
-//    }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public ImportResult updateCaches(CacheUpdaterConfigurator config) {
-//        ImportResult result = new ImportResult();
-//
-//        result = cdmImport.invoke(config);
-//        return result;
-//    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ImportResult updateDistributionData(ExcelDistributionUpdateConfigurator configurator) {
         ImportResult result = new ImportResult();
@@ -254,18 +219,10 @@ public class IOServiceImpl implements IIOService {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ImportResult importRISData(RisReferenceImportConfigurator configurator) {
         ImportResult result = new ImportResult();
         result = cdmImport.invoke(configurator);
         return result;
     }
-
-
-
-
-
 }
