@@ -255,39 +255,6 @@ public class TaxonNode
 
     public boolean isExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
 
-//************************* SOURCE *********************/
-
-//    @Override
-//    @Transient
-//    public String getMicroReference() {
-//        return source == null ? null : this.source.getCitationMicroReference();
-//    }
-//    public void setMicroReference(String microReference) {
-//        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
-//        checkNullSource();
-//    }
-//
-//    @Override
-//    @Transient
-//    public Reference getReference() {
-//        return (this.source == null) ? null : source.getCitation();
-//    }
-//    public void setReference(Reference reference) {
-//        getSource(true).setCitation(reference);
-//        checkNullSource();
-//    }
-
-//    @Override
-//    public DescriptionElementSource getSource() {
-//        return source;
-//    }
-//    @Override
-//    public void setSource(DescriptionElementSource source) {
-//        this.source = source;
-//    }
-
-
-
 //************************************************************/
 
     /**
