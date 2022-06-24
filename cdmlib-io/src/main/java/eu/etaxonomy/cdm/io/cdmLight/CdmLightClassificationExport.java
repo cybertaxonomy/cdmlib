@@ -115,10 +115,6 @@ public class CdmLightClassificationExport
 
     private static final long serialVersionUID = 2518643632756927053L;
 
-    private static final String IPNI_NAME_IDENTIFIER = "Ipni Name Identifier";
-    private static final String TROPICOS_NAME_IDENTIFIER = "Tropicos Name Identifier";
-    private static final String WFO_NAME_IDENTIFIER = "WFO Name Identifier";
-
     @Autowired
     IEditGeoService geoService;
 
