@@ -51,7 +51,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -81,7 +80,6 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "taxon",
     "parent",
     "treeIndex",
-    "sortIndex",
     "childNodes",
     "countChildren",
     "agentRelations",
@@ -139,16 +137,13 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/4200
+    //see https://dev.e-taxonomy.eu/redmine/issues/8127
+    //see https://dev.e-taxonomy.eu/redmine/issues/10067
     @OrderColumn(name="sortIndex", nullable=true)
-//    @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     //do not cascade
     private List<TaxonNode> childNodes = new ArrayList<>();
-
-    //see https://dev.e-taxonomy.eu/redmine/issues/3722
-    //see https://dev.e-taxonomy.eu/redmine/issues/4200
-    @Transient
-    private Integer sortIndex = -1;
 
     @XmlElement(name = "countChildren")
     private int countChildren;
@@ -220,26 +215,6 @@ public class TaxonNode
     }
 
 // ************************* GETTER / SETTER *******************************/
-
-    @Transient
-    public Integer getSortIndex() {
-        //return sortIndex;
-        return getParent() == null ? null : getParent().getChildNodes().indexOf(CdmBase.deproxy(this));
-	}
-    /**
-     * SortIndex shall be handled only internally, therefore not public.
-     * However, as javaassist only supports protected methods it needs to be protected, not private.
-     * Alternatively we could use deproxy on every call of this method (see commented code)
-     * @param i
-     * @return
-     * @deprecated for internal use only
-     */
-     @Deprecated
-    protected void setSortIndex(Integer i) {
-//    	 CdmBase.deproxy(this, TaxonNode.class).sortIndex = i;  //alternative solution for private, DON'T remove
-//    	 sortIndex = i;  old #3722
-         //do nothing
-	}
 
     public Taxon getTaxon() {
         return taxon;
@@ -314,6 +289,15 @@ public class TaxonNode
 
 
 //************************************************************/
+
+    /**
+     * The computed order index of this node being a child in the parents
+     * childnode list.
+     */
+    @Transient
+    public Integer getSortIndex() {
+        return getParent() == null ? null : getParent().getChildNodes().indexOf(CdmBase.deproxy(this));
+    }
 
     //countChildren
     public int getCountChildren() {
@@ -692,7 +676,6 @@ public class TaxonNode
             this.countChildren = childNodes.size();
             child.setParent(null);
             child.setTreeIndex(null);
-            child.setSortIndex(null);
         }
     }
 
@@ -794,29 +777,6 @@ public class TaxonNode
         // update the children count
         parent.setCountChildren(parent.getChildNodes().size());
     }
-
-	/**
-	 * As long as the sort index is not correctly handled through hibernate this is a workaround method
-	 * to update the sort index manually
-	 * @param parentChildren
-	 * @param index
-	 */
-	private void updateSortIndex_old(int index) {
-	    if (this.hasChildNodes()){
-    	    List<TaxonNode> children = this.getChildNodes();
-    	    HHH_9751_Util.removeAllNull(children);
-    	    for(int i = index; i < children.size(); i++){
-            	TaxonNode child = children.get(i);
-            	if (child != null){
-    //        		child = CdmBase.deproxy(child, TaxonNode.class);  //deproxy not needed as long as setSortIndex is protected or public #4200
-            		child.setSortIndex(i);
-            	}else{
-            		String message = "A node in a taxon tree must never be null but is (ParentId: %d; sort index: %d; index: %d; i: %d)";
-            		throw new IllegalStateException(String.format(message, getId(), sortIndex, index, i));
-            	}
-            }
-	    }
-	}
 
     /**
      * Returns a set containing this node and all nodes that are descendants of this node.
@@ -1033,15 +993,6 @@ public class TaxonNode
     public TaxonName getNullSafeName() {
         return getTaxon() == null? null: getTaxon().getName();
     }
-
-//    public void removeNullValueFromChildren(){
-//        try {
-//            //HHH_9751_Util.removeAllNull(childNodes);
-//            this.updateSortIndex(0);
-//        } catch (LazyInitializationException e) {
-//            logger.info("Cannot clean up uninitialized children without a session, skipping.");
-//        }
-//    }
 
     private boolean hasStatus(TaxonNodeStatus status) {
         return CdmUtils.nullSafeEqual(this.status, status);

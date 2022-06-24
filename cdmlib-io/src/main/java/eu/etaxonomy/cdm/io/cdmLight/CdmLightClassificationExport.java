@@ -389,8 +389,6 @@ public class CdmLightClassificationExport
                 }
             }
 
-//            taxonNode.removeNullValueFromChildren();
-
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling the taxon node of "
                     + cdmBaseStr(taxonNode.getTaxon()) + ", titleCache:"+ taxonNode.getTaxon().getTitleCache()+": " + e.getMessage());
