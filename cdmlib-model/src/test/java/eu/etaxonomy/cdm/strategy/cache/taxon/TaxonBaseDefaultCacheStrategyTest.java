@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -98,6 +99,16 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         name.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxon.getTitleCache());
 	}
+
+    @Test
+    public void testGetTitleCacheWithNameUsedInSource() {
+        Taxon taxon = Taxon.NewInstance(name, sec);
+        TaxonName nameUsedInSource = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        nameUsedInSource.setGenusOrUninomial("Pinus");
+        nameUsedInSource.setSpecificEpithet("blanca");
+        taxon.getSecSource().setNameUsedInSource(nameUsedInSource);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl. (sub Pinus blanca)", taxon.getTitleCache());
+    }
 
 	//same as for accepted taxa but with syn. sec. instead of sec.
     @Test

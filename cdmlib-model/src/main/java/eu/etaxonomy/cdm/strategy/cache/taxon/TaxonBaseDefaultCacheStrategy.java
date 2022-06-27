@@ -87,6 +87,12 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         if (!secTags.isEmpty()){
             tags.add(new TaggedText(TagEnum.separator, secSeparator));
             tags.addAll(secTags);
+            List<TaggedText> secNameUsedInSourceTags = getSecNameUsedInSourceTags(taxonBase);
+            if (!secNameUsedInSourceTags.isEmpty()){
+                tags.add(new TaggedText(TagEnum.separator, " (sub "));
+                tags.addAll(secNameUsedInSourceTags);
+                tags.add(new TaggedText(TagEnum.separator, ")"));
+            }
         }else if (isMisapplication && isBlank(taxonBase.getAppendedPhrase())){
             tags.add(new TaggedText(TagEnum.appendedPhrase, "auct."));
         }
@@ -114,9 +120,17 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         List<TaggedText> tags = new ArrayList<>();
         TaxonName name = CdmBase.deproxy(taxonBase.getName());
 
+        getNameTags(tags, name, (useNameCache || taxonBase.isUseNameCache()));
+        if (isNotBlank(taxonBase.getAppendedPhrase())){
+            tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
+        }
+        return tags;
+    }
+
+    private List<TaggedText> getNameTags(List<TaggedText> tags, TaxonName name, boolean useNameCache) {
         if (name != null){
             INameCacheStrategy nameCacheStrategy = name.cacheStrategy();
-            useNameCache = (useNameCache || taxonBase.isUseNameCache()) && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy;
+            useNameCache = useNameCache && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy;
             if (useNameCache){
                 INonViralNameCacheStrategy nvnCacheStrategy = (INonViralNameCacheStrategy)nameCacheStrategy;
                 List<TaggedText> nameCacheTags = nvnCacheStrategy.getTaggedName(name);
@@ -127,13 +141,22 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 List<TaggedText> statusTags = nameCacheStrategy.getNomStatusTags(name, true, true);
                 tags.addAll(statusTags);
             }
-            if (isNotBlank(taxonBase.getAppendedPhrase())){
-                tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
-            }
         }
 
         return tags;
     }
+
+    private List<TaggedText> getSecNameUsedInSourceTags(T taxonBase) {
+        List<TaggedText> tags = new ArrayList<>();
+        if (taxonBase.getSecSource()!=null && taxonBase.getSecSource().getNameUsedInSource() != null) {
+            //if names are equal there is no need for now to show the "sub" name
+            if (!taxonBase.getSecSource().getNameUsedInSource().equals(taxonBase.getName())) {
+                getNameTags(tags, taxonBase.getSecSource().getNameUsedInSource(), true);
+            }
+        }
+        return tags;
+    }
+
 
     private List<TaggedText> getSecundumTags(T taxonBase, boolean isMisapplication) {
         List<TaggedText> tags = new ArrayList<>();
