@@ -92,13 +92,14 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(uuid, id, nameTitleCache, taxonTitleCache);
 
     }
-    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status, List<LanguageString> statusNote){
+    public TaxonNodeDto(UUID uuid, Integer id, UUID taxonUuid, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status, List<LanguageString> statusNote){
     	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
     	this.status = status;
     	this.taxonIsPublish = taxonIsPublished;
     	for (LanguageString str: statusNote) {
     		this.statusNote.put(str.getLanguage(), str.getText());
     	}
+	this.taxonUuid = taxonUuid;
     }
 
     public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid) {

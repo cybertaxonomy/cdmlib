@@ -144,14 +144,14 @@ public class DescriptiveDataSetService
             }
             DescriptionBaseDto descDto = descriptionService.loadDto(description);
             RowWrapperDTO<?> rowWrapper = null;
-            if (descDto.getTaxonDto() != null &&
+            if (descDto != null && descDto.getTaxonDto() != null &&
                     (descDto.getTypes().contains(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION)
                             || descDto.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC)
                             || descDto.getTypes().contains(DescriptionType.SECONDARY_DATA)
                             )){
                 rowWrapper = createTaxonRowWrapper(descDto, datasetDto.getUuid());
             }
-            else if (descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
+            else if (descDto != null &&descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
                     !descDto.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))){
                 rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid);
             }
@@ -207,7 +207,7 @@ public class DescriptiveDataSetService
     private DescriptionBaseDto recurseDefaultDescription(TaxonNodeDto node, DescriptiveDataSetBaseDto dataSet){
         DescriptionBaseDto defaultDescription = null;
         if(node!=null && node.getTaxonUuid()!=null){
-            defaultDescription = getTaxonDescriptionForDescriptiveDataSetAndType(dataSet, node.getUuid(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
+            defaultDescription = getTaxonDescriptionForDescriptiveDataSetAndType(dataSet, node.getTaxonUuid(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
             if(defaultDescription==null && node.getParentUUID()!=null){
                 defaultDescription = recurseDefaultDescription(taxonNodeService.dto(node.getParentUUID()), dataSet);
             }
@@ -491,22 +491,36 @@ public class DescriptiveDataSetService
     @Override
     public DescriptionBaseDto getTaxonDescriptionForDescriptiveDataSetAndType(DescriptiveDataSetBaseDto dataSet, UUID taxonUuid, DescriptionType descriptionType){
         Session session = getSession();
-        String queryString = "SELECT d.uuid FROM DescriptiveDataSet a JOIN a.descriptions as d JOIN d.taxon t WHERE t.uuid = :taxonuuid AND a.uuid = :dataSetUuid and d.type = :descriptionType";
+        String queryString = "SELECT d.uuid FROM DescriptiveDataSet a JOIN a.descriptions as d JOIN d.taxon t WHERE t.uuid = :taxonuuid AND a.uuid = :dataSetUuid";// and d.type = :descriptionType";
 
         Query query;
         query = session.createQuery(queryString);
         query.setParameter("taxonuuid", taxonUuid);
         query.setParameter("dataSetUuid", dataSet.getUuid());
-        query.setParameter("descriptionType", descriptionType);
+//        query.setParameter("descriptionType", descriptionType);
 
         @SuppressWarnings("unchecked")
         List<UUID> result = query.list();
         List<DescriptionBaseDto> list = new ArrayList<>();
         list.addAll(descriptionService.loadDtos(new HashSet(result)));
+
         if (list.isEmpty()){
             return null;
+        }else {
+		List<DescriptionBaseDto> correctTypeOnly = new ArrayList<>();
+		for (DescriptionBaseDto dto: list) {
+			if (dto.getTypes().contains(descriptionType)) {
+				correctTypeOnly.add(dto);
+			}
+		}
+		if (correctTypeOnly.isEmpty()) {
+			return null;
+		}else {
+			return correctTypeOnly.get(0);
+		}
         }
-        return list.get(0);
+
+//        return list.get(0);
     }
 
     @Override

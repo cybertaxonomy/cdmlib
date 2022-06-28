@@ -1184,16 +1184,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     public String getTaxonNodeDtoQueryWithoutParent() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-        	+	"tn.uuid, tn.id, t.titleCache"// rank "
-
-        //    + "tn.uuid, tn.id, t.uuid, t.titleCache, name.titleCache, rank, cl.uuid,  t.publish, tn.status, note "
+		+	"tn.uuid, tn.id, t.uuid, t.titleCache"// rank "
             + ") "
             + " FROM TaxonNode tn "
             + "   LEFT JOIN tn.taxon AS t "     ;
-//            + "   LEFT JOIN t.name AS name "
-//            + "   INNER JOIN tn.classification AS cl ";
-//            + "	  LEFT OUTER JOIN tn.statusNote as note ";
-      //      + "   LEFT OUTER JOIN name.rank AS rank ";
+
         return queryString;
     }
 
@@ -1256,7 +1251,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         List<TaxonNodeDto> nodeDtos = new ArrayList<>();
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         for(SortableTaxonNodeQueryResult queryDTO : result){
-            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank()!= null? queryDTO.getNameRank().getOrderIndex(): null, queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(), queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getStatusNote());
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonUuid(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank()!= null? queryDTO.getNameRank().getOrderIndex(): null, queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(), queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getStatusNote());
             nodeDtos.add(nodeDto);
         }
         return nodeDtos;
