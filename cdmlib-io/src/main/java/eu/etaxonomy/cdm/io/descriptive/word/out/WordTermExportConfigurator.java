@@ -24,34 +24,34 @@ import eu.etaxonomy.cdm.model.term.TermTree;
  * @since Oct 18, 2018
  *
  */
-public class WordExportConfigurator extends XmlExportConfiguratorBase<WordExportState> {
+public class WordTermExportConfigurator extends XmlExportConfiguratorBase<WordTermExportState> {
 
     private static final long serialVersionUID = -4360021755279592592L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(WordExportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(WordTermExportConfigurator.class);
 
     private TermTree featureTree;
 
 
-    private WordExportConfigurator(ICdmDataSource source, File destinationFolder, TermTree featureTree) {
+    private WordTermExportConfigurator(ICdmDataSource source, File destinationFolder, TermTree featureTree) {
         super(destinationFolder, source, null);
         this.featureTree = featureTree;
     }
 
-    public static WordExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, TermTree featureTree) {
-        return new WordExportConfigurator(source, destinationFolder, featureTree);
+    public static WordTermExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, TermTree featureTree) {
+        return new WordTermExportConfigurator(source, destinationFolder, featureTree);
     }
 
     @Override
-    public WordExportState getNewState() {
-        return new WordExportState(this);
+    public WordTermExportState getNewState() {
+        return new WordTermExportState(this);
     }
 
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[] {
-                WordExport.class
+                WordTermExport.class
         };
     }
 

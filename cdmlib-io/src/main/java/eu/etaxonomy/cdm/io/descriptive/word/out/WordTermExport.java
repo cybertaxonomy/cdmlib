@@ -29,17 +29,17 @@ import eu.etaxonomy.cdm.model.term.TermTree;
  * @since Oct 18, 2018
  */
 @Component
-public class WordExport extends CdmExportBase<WordExportConfigurator, WordExportState, IExportTransformer, File> {
+public class WordTermExport extends CdmExportBase<WordTermExportConfigurator, WordTermExportState, IExportTransformer, File> {
 
     private static final long serialVersionUID = 3197379920692366008L;
 
     @Override
-    protected boolean doCheck(WordExportState state) {
+    protected boolean doCheck(WordTermExportState state) {
         return false;
     }
 
     @Override
-    protected void doInvoke(WordExportState state) {
+    protected void doInvoke(WordTermExportState state) {
 
         TransactionStatus txStatus = startTransaction(true);
 
@@ -127,7 +127,7 @@ public class WordExport extends CdmExportBase<WordExportConfigurator, WordExport
     }
 
     @Override
-    protected boolean isIgnore(WordExportState state) {
+    protected boolean isIgnore(WordTermExportState state) {
         return false;
     }
 

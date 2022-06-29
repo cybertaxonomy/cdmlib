@@ -18,12 +18,12 @@ import eu.etaxonomy.cdm.io.common.XmlExportState;
  * @since Oct 18, 2018
  *
  */
-public class WordExportState extends XmlExportState<WordExportConfigurator>{
+public class WordTermExportState extends XmlExportState<WordTermExportConfigurator>{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(WordExportState.class);
+    private static final Logger logger = LogManager.getLogger(WordTermExportState.class);
 
-    public WordExportState(WordExportConfigurator config) {
+    public WordTermExportState(WordTermExportConfigurator config) {
         super(config);
     }
 
