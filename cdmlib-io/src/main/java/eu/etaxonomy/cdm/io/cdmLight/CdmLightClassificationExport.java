@@ -116,10 +116,9 @@ public class CdmLightClassificationExport
     private static final long serialVersionUID = 2518643632756927053L;
 
     @Autowired
-    IEditGeoService geoService;
+    private IEditGeoService geoService;
 
     public CdmLightClassificationExport() {
-        super();
         this.ioName = this.getClass().getSimpleName();
     }
 

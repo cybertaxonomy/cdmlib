@@ -12,7 +12,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationExecutor;
 import org.springframework.util.Assert;
@@ -28,7 +29,6 @@ import org.springframework.util.ClassUtils;
  *
  * @author a.kohlbecker
  * @since Feb 17, 2020
- *
  */
 public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecutor {
 
