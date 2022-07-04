@@ -11,13 +11,14 @@ package eu.etaxonomy.cdm.io.sdd.in;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -32,9 +33,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author h.fradin
  * @since 24.10.2008
  */
-public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportState> implements IImportConfigurator, IMatchingImportConfigurator {
-    private static final long serialVersionUID = -960998183005112130L;
+public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportState>
+        implements IImportConfigurator, IMatchingImportConfigurator {
 
+    private static final long serialVersionUID = -960998183005112130L;
     private static final Logger logger = LogManager.getLogger(SDDImportConfigurator.class);
 
 	//TODO

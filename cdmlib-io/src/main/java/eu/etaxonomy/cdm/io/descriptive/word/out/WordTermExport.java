@@ -123,12 +123,10 @@ public class WordTermExport extends CdmExportBase<WordTermExportConfigurator, Wo
             }
             addChildNode(childNode, mainDocumentPart, indent+1);
         }
-
     }
 
     @Override
     protected boolean isIgnore(WordTermExportState state) {
         return false;
     }
-
 }

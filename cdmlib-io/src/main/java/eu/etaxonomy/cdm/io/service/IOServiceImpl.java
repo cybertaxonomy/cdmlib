@@ -57,18 +57,12 @@ public class IOServiceImpl implements IIOService {
 
     @Autowired
     IProgressMonitorService progressMonitorService;
-//
-//    @Autowired
-//    @Qualifier("defaultUpdate")
-//    CdmApplicationAwareDefaultUpdate cdmUpdate;
-
 
     @Override
     public ExportResult export(IExportConfigurator config) {
         config.setTarget(TARGET.EXPORT_DATA);
         return cdmExport.execute(config);
     }
-
 
     @Override
     public UUID monitImportData(final IImportConfigurator configurator, final byte[] importData, final SOURCE_TYPE type) {
@@ -110,24 +104,6 @@ public class IOServiceImpl implements IIOService {
         monitorThread.start();
         return uuid;
     }
-
-//    @Override
-//    public UUID monitUpdateData(final IImportConfigurator configurator) {
-//        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-//            @Override
-//            public Serializable doRun(IRemotingProgressMonitor monitor) {
-//
-//                configurator.setProgressMonitor(monitor);
-//                ImportResult result =updateData((SecundumForSubtreeConfigurator)configurator);
-//
-//                return result;
-//            }
-//        };
-//        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-//        monitorThread.setPriority(3);
-//        monitorThread.start();
-//        return uuid;
-//    }
 
     @Override
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {

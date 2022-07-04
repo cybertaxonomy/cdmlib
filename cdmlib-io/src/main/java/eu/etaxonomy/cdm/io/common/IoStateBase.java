@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.IoResultBase;
 
@@ -53,11 +54,4 @@ public abstract class IoStateBase<CONFIG
     public void setResult(RESULT result) {
         this.result = result;
     }
-
-//    public IProgressMonitor getCurrentMonitor() {
-//        return currentMonitor;
-//    }
-//    public void setCurrentMonitor(IProgressMonitor currentMonitor) {
-//        this.currentMonitor = currentMonitor;
-//    }
 }
