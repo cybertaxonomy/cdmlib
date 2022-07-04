@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
@@ -126,7 +127,8 @@ public class IOServiceImpl implements IIOService {
     public ImportResult importDataFromUri(IImportConfigurator configurator, byte[] importData) {
         ImportResult result;
 
-        ImportConfiguratorBase config = (ImportConfiguratorBase)configurator;
+        @SuppressWarnings("unchecked")
+        ImportConfiguratorBase<?, URI> config = (ImportConfiguratorBase<?,URI>)configurator;
         String suffix = ".import";
         String prefix = "cdm-";
         FileOutputStream stream = null;
@@ -135,7 +137,7 @@ public class IOServiceImpl implements IIOService {
             Path tempFilePath = Files.createTempFile(prefix, suffix);
             stream = new FileOutputStream(tempFilePath.toFile());
             stream.write(importData);
-            config.setSource(tempFilePath.toUri());
+            config.setSource(new URI(tempFilePath.toUri()));
             result = cdmImport.invoke(config);
      //       Files.delete(tempFilePath);
         } catch (Exception e) {
