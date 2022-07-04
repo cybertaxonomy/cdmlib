@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.sdd.ikeyplus;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
@@ -44,7 +45,6 @@ import fr.lis.ikeyplus.utils.Utils;
 /**
  * @author andreas
  * @since Sep 18, 2012
- *
  */
 @Component
 public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, IkeyPlusImportState>{
@@ -71,18 +71,6 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
     }
 
-    /**
-     * @param sddUri
-     * @param utils
-     * @return
-     * @throws Exception
-     */
-    /**
-     * @param sddUri
-     * @param utils
-     * @return
-     * @throws Exception
-     */
     public PolytomousKey getKey(URI sddUri, Utils utils) throws Exception {
 
         //TODO move below into configurator
@@ -95,7 +83,6 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         utils.setWeightType(Utils.GLOBAL_CHARACTER_WEIGHT);
 
         SDDSaxParser sDDSaxParser = new SDDSaxParser(sddUri.toString(), utils);
-
 
         DataSet data = sDDSaxParser.getDataset();
 
@@ -126,14 +113,10 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
         persistNewEntities();
 
-
         return null;
-
-
     }
 
     private void persistNewEntities() {
-
 
         // persist features
         Collection features = featureMap.values();
@@ -154,13 +137,12 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         boolean isRootNode = (parentNode == null);
 
 
-        Set<PolytomousKeyNode> pkNodeSet = new HashSet<PolytomousKeyNode>();
+        Set<PolytomousKeyNode> pkNodeSet = new HashSet<>();
         if(node == null){
             return pkNodeSet;
         }
 
         KeyStatement statement = getKeyStatementFrom(node);
-
 
         //node.getNodeDescription(); // not needed here, contains warnings etc
 
@@ -206,15 +188,9 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
             }
         }
 
-
         return pkNodeSet;
     }
 
-    /**
-     * @param feature
-     * @param statement
-     * @return
-     */
     public PolytomousKeyNode createPkNode(Feature feature, KeyStatement statement) {
         PolytomousKeyNode pkNode;
         pkNode = PolytomousKeyNode.NewInstance();
@@ -224,10 +200,6 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         return pkNode;
     }
 
-    /**
-     * @param node
-     * @return
-     */
     public KeyStatement getKeyStatementFrom(SingleAccessKeyNode node) {
         String label;
         if(node.getCharacterState() instanceof QuantitativeMeasure){
@@ -244,12 +216,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         }
     }
 
-    /**
-     * @param character
-     * @return
-     */
     private Feature getFeatureFrom(ICharacter character) {
-
 
         if(!featureMap.containsKey(character.getId())){
 
@@ -274,7 +241,6 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         }
     }
 
-
     @Override
     protected boolean doCheck(IkeyPlusImportState state) {
         // TODO Auto-generated method stub
@@ -286,5 +252,4 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         // TODO Auto-generated method stub
         return false;
     }
-
 }
