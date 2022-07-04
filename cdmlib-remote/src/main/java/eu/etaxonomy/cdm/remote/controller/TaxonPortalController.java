@@ -125,6 +125,8 @@ public class TaxonPortalController extends TaxonController{
             "name.status.type.representations",
             "name.status.source.citation",
             "secSource.nameUsedInSource.$",
+            "secSource.nameUsedInSource.nomenclaturalSource.citation.authorship",
+            "secSource.nameUsedInSource.nomenclaturalSource.citation.inReference.authorship",
             "secSource.citation.authorship.$",
             "secSource.citation.inReference.authorship.$"
 //            "descriptions" // TODO remove
