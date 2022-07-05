@@ -303,16 +303,10 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
         //do nothing
 	}
 
-	/**
-	 * @return
-	 */
+
 	public PolytomousKey getKey() {
 		return key;
 	}
-
-	/**
-	 * @param key
-	 */
 	public void setKey(PolytomousKey key) {
 		this.key = key;
 	}
@@ -627,7 +621,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * node. If the list does not contain this node then -1 will be returned.
 	 *
 	 * @param node
-	 *            the feature node the position of which is being searched
+	 *            the polytomous key node the position of which is searched
 	 * @see #addChild(PolytomousKeyNode, int)
 	 * @see #removeChild(int)
 	 */
@@ -640,7 +634,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 
 	/**
-	 * Returns the boolean value indicating if <i>this</i> feature node has
+	 * Returns the boolean value indicating if <i>this</i> polytomous key node has
 	 * children (false) or not (true). A node without children is at the
 	 * bottommost level of a tree and is called a leaf.
 	 *
@@ -831,6 +825,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	    }
 	}
 
+    public Taxon removeTaxon() {
+        Taxon result = taxon;
+        this.taxon = null;
+        return result;
+    }
+
     private boolean emptyChildNodeExists() {
         for (PolytomousKeyNode child : this.children){
             if (child.getStatement() == null && child.getQuestion() == null && child.getChildren().isEmpty()
@@ -858,9 +858,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		PolytomousKeyNode result;
 		try {
 			result = (PolytomousKeyNode) super.clone();
-			result.children = new ArrayList<PolytomousKeyNode>();
+			result.children = new ArrayList<>();
 
-			result.modifyingText = new HashMap<Language, LanguageString>();
+			result.modifyingText = new HashMap<>();
 			for (Entry<Language, LanguageString> entry : this.modifyingText
 					.entrySet()) {
 				result.putModifyingText(entry.getValue());
@@ -873,11 +873,5 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			return null;
 		}
 	}
-
-    public Taxon removeTaxon() {
-        Taxon result = taxon;
-        this.taxon = null;
-        return result;
-    }
 
 }

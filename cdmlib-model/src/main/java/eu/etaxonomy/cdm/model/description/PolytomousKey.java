@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -202,7 +203,7 @@ public class PolytomousKey
     @Override
     public Set<Taxon> getCoveredTaxa() {
         if (coveredTaxa == null) {
-            this.coveredTaxa = new HashSet<Taxon>();
+            this.coveredTaxa = new HashSet<>();
         }
         return coveredTaxa;
     }
@@ -248,7 +249,7 @@ public class PolytomousKey
     @Override
     public Set<NamedArea> getGeographicalScope() {
         if (geographicalScope == null) {
-            this.geographicalScope = new HashSet<NamedArea>();
+            this.geographicalScope = new HashSet<>();
         }
         return geographicalScope;
     }
@@ -287,7 +288,7 @@ public class PolytomousKey
     @Override
     public Set<Taxon> getTaxonomicScope() {
         if (taxonomicScope == null) {
-            this.taxonomicScope = new HashSet<Taxon>();
+            this.taxonomicScope = new HashSet<>();
         }
         return taxonomicScope;
     }
@@ -326,7 +327,7 @@ public class PolytomousKey
     @Override
     public Set<DefinedTerm> getScopeRestrictions() {
         if (scopeRestrictions == null) {
-            this.scopeRestrictions = new HashSet<DefinedTerm>();
+            this.scopeRestrictions = new HashSet<>();
         }
         return scopeRestrictions;
     }
@@ -379,19 +380,6 @@ public class PolytomousKey
     }
 
     // ******************** toString *****************************************/
-
-    private class IntegerObject {
-        int number = 0;
-
-        int inc() {
-            return number++;
-        };
-
-        @Override
-        public String toString() {
-            return String.valueOf(number);
-        }
-    }
 
     public String print(PrintStream stream) {
         String title = this.getTitleCache() + "\n";
@@ -498,7 +486,7 @@ public class PolytomousKey
     }
 
 
-    // *********************** CLONE ************************************/
+// *********************** CLONE ************************************/
 
     /**
      * Clones <i>this</i> PolytomousKey. This is a shortcut that enables to
@@ -515,24 +503,24 @@ public class PolytomousKey
         try {
             result = (PolytomousKey) super.clone();
 
-            result.coveredTaxa = new HashSet<Taxon>();
+            result.coveredTaxa = new HashSet<>();
             for (Taxon taxon : this.coveredTaxa) {
                 result.addCoveredTaxon(taxon);
             }
 
-            result.geographicalScope = new HashSet<NamedArea>();
+            result.geographicalScope = new HashSet<>();
             for (NamedArea area : this.geographicalScope) {
                 result.addGeographicalScope(area);
             }
 
             result.root = this.root.clone();
 
-            result.scopeRestrictions = new HashSet<DefinedTerm>();
+            result.scopeRestrictions = new HashSet<>();
             for (DefinedTerm scope : this.scopeRestrictions) {
                 result.addScopeRestriction(scope);
             }
 
-            result.taxonomicScope = new HashSet<Taxon>();
+            result.taxonomicScope = new HashSet<>();
             for (Taxon taxon : this.taxonomicScope) {
                 result.addTaxonomicScope(taxon);
             }
