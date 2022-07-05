@@ -38,7 +38,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -473,10 +472,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
-		if (children.contains(null)){
-		    HHH_9751_Util.removeAllNull(children);
-		    updateSortIndex();
-		}
+
 		if(nodeNumber == null) {
             	nodeNumber = getMaxNodeNumberFromRoot() + 1;
         }
@@ -484,10 +480,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		children.add(index, child);
 		child.setKey(this.getKey());
 
-		updateSortIndex();
-		child.setSortIndex(index);
 		child.setParent(this);
-		//this.removeNullValueFromChildren();
 	}
 
 	/**
@@ -547,7 +540,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();
 		int rootNumber = this.getKey().getStartNumber();
 
-		rootKeyNode.updateSortIndex();
 		return getMaxNodeNumber(rootNumber, rootKeyNode);
 	}
 
@@ -560,7 +552,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	private int getMaxNodeNumber(int maxNumber, PolytomousKeyNode parent) {
 		if (parent.getNodeNumber() != null) {
 			maxNumber = (maxNumber < parent.getNodeNumber()) ? parent.getNodeNumber() : maxNumber;
-			parent.removeNullValueFromChildren();
 			for (PolytomousKeyNode child : parent.getChildren()) {
 			    if (parent == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating the max node number.");
@@ -593,9 +584,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		} else {
 			node.setNodeNumber(nodeN);
 			newNodeN++;
-			List<PolytomousKeyNode> children = node.getChildren();
-			HHH_9751_Util.removeAllNull(children);
-			updateSortIndex();
+			List<PolytomousKeyNode> children = node.getChildren();;
 			for (PolytomousKeyNode child : children) {
 				if (node == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
@@ -891,14 +880,4 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
         return result;
     }
 
-    private void updateSortIndex(){
-        HHH_9751_Util.removeAllNull(children);
-        for (int i = 0; i < children.size(); i++) {
-            children.get(i).setSortIndex(i);
-        }
-    }
-
-    public void removeNullValueFromChildren(){
-        updateSortIndex();
-    }
 }

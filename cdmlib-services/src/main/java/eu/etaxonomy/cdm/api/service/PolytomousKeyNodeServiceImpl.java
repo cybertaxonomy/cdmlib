@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -53,7 +52,6 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
         }
         List<PolytomousKeyNode> children = new ArrayList<>();
 
-        node.removeNullValueFromChildren();
         for (PolytomousKeyNode child: node.getChildren()){
             children.add(child);
         }
@@ -81,10 +79,6 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
             result.addUpdatedObject(node);
         }
         if (parent!= null){
-            if (parent.getChildren().contains(null)){
-                List<PolytomousKeyNode> parentChildren = parent.getChildren();
-                HHH_9751_Util.removeAllNull(parentChildren);
-            }
             parent.removeChild(node);
             dao.saveOrUpdate(parent);
         }

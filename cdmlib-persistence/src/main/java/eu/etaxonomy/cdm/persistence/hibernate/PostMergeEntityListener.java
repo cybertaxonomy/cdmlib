@@ -84,22 +84,24 @@ public class PostMergeEntityListener implements MergeEventListener {
             if (TaxonNode.class.isAssignableFrom(entityClazz)){
                 //do nothing (remove if #8127/#3722 is fully solved
             } else if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
-                PolytomousKeyNode node = (PolytomousKeyNode) entity;
-                if (node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
-                    node.removeNullValueFromChildren();
-                    for (PolytomousKeyNode childNode: node.getChildren()){
-                        removeNullFromCollections(childNode);
-                    }
-                }
+//                PolytomousKeyNode node = (PolytomousKeyNode) entity;
+//                if (node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
+//                    node.removeNullValueFromChildren();
+//                    for (PolytomousKeyNode childNode: node.getChildren()){
+//                        removeNullFromCollections(childNode);
+//                    }
+//                }
+                  //do nothing (remove if #8127/#3722 is fully solved
             }else if (PolytomousKey.class.isAssignableFrom(entityClazz)){
-                PolytomousKey key = (PolytomousKey) entity;
-                PolytomousKeyNode node = key.getRoot();
-                if (node != null && node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
-                    node.removeNullValueFromChildren();
-                    for (PolytomousKeyNode childNode: node.getChildren()){
-                        removeNullFromCollections(childNode);
-                    }
-                }
+//                PolytomousKey key = (PolytomousKey) entity;
+//                PolytomousKeyNode node = key.getRoot();
+//                if (node != null && node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
+////                    node.removeNullValueFromChildren();
+//                    for (PolytomousKeyNode childNode: node.getChildren()){
+//                        removeNullFromCollections(childNode);
+//                    }
+//                }
+                //do nothing (remove if #8127/#3722 is fully solved
             }else if(TermTree.class.isAssignableFrom(entityClazz)){
                 //do nothing (remove if #8127/#3722 is fully solved
             } else if (TermNode.class.isAssignableFrom(entityClazz)){
