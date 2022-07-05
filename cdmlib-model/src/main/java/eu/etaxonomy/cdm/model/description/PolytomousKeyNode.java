@@ -513,12 +513,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (child != null) {
 			children.remove(index);
 			child.setParent(null);
-			// TODO workaround (see sortIndex doc)
-			for (int i = 0; i < children.size(); i++) {
-				PolytomousKeyNode childAt = children.get(i);
-				childAt.setSortIndex(i);
-			}
-			child.setSortIndex(null);
+//			// TODO workaround (see sortIndex doc)
+//			for (int i = 0; i < children.size(); i++) {
+//				PolytomousKeyNode childAt = children.get(i);
+//				childAt.setSortIndex(i);
+//			}
+//			child.setSortIndex(null);
 			child.setNodeNumber(null);
 		}
 		refreshNodeNumbering();
