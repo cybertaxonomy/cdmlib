@@ -218,7 +218,6 @@ public class TermTree <T extends DefinedTermBase>
 	@Transient
 	public List<TermNode<T>> getRootChildren(){
 		List<TermNode<T>> result = new ArrayList<>();
-		root.removeNullValueFromChildren();
 		result.addAll(root.getChildNodes());
 		return result;
 	}
@@ -253,12 +252,6 @@ public class TermTree <T extends DefinedTermBase>
     public Set<T> independentTerms() {
         Set<T> terms = root.getIndependentTermsRecursive();
         return terms;
-    }
-
-    public void removeNullValueFromChildren(){
-       root.removeNullValueFromChildren();
-
-
     }
 
 //*********************** CLONE ********************************************************/

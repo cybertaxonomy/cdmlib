@@ -37,12 +37,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -96,12 +94,14 @@ public class TermNode <T extends DefinedTermBase>
     @XmlElement(name = "Child")
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex", nullable=true)
-//    @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<TermNode<T>> children = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/4200
+    //see https://dev.e-taxonomy.eu/redmine/issues/8127
+    //see https://dev.e-taxonomy.eu/redmine/issues/10067
     @Transient
     private Integer sortIndex;
 
@@ -165,16 +165,6 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
 //** ********************** CHILDREN ******************************/
-
-	/**
-	 * @deprecated for internal use only.
-	 */
-	//see #4278 , #4200, #3722
-	@Deprecated
-    protected void setSortIndex(Integer sortIndex) {
-//      sortIndex = sortIndex;  old #3722
-        //do nothing
-	}
 
 	/**
      * Returns the (ordered) list of tree nodes which are children nodes of
@@ -261,13 +251,6 @@ public class TermNode <T extends DefinedTermBase>
 	    child.setParent(this);
 	    child.setGraph(this.getGraph());
 	    children.add(index, child);
-	    //TODO workaround (see sortIndex doc)
-	    for(int i = 0; i < children.size(); i++){
-	        if (children.get(i) != null){
-	            children.get(i).setSortIndex(i);
-	        }
-	    }
-	    child.setSortIndex(index);
 	    return child;
 	}
 
@@ -299,11 +282,6 @@ public class TermNode <T extends DefinedTermBase>
 		child.setParent(this);
 		child.setGraph(this.getGraph());
 		children.add(index, child);
-		//TODO workaround (see sortIndex doc)
-		for(int i = 0; i < children.size(); i++){
-			children.get(i).setSortIndex(i);
-		}
-		child.setSortIndex(index);
 	    return child;
 	}
 
@@ -343,14 +321,6 @@ public class TermNode <T extends DefinedTermBase>
 			children.remove(index);
 			child.setParent(null);
 			child.setGraph(null);
-			//TODO workaround (see sortIndex doc)
-			for(int i = 0; i < children.size(); i++){
-				TermNode<T> childAt = children.get(i);
-				if (childAt != null){
-				    childAt.setSortIndex(i);
-				}
-			}
-			child.setSortIndex(null);
 		}
 	}
 
@@ -708,21 +678,4 @@ public class TermNode <T extends DefinedTermBase>
 			return this.getGraph().getId();
 		}
 	}
-
-	void updateSortIndex(){
-	 // TODO workaround (see sortIndex doc)
-	    try{
-	        for (int i = 0; i < children.size(); i++) {
-	            children.get(i).setSortIndex(i);
-	        }
-	    } catch (LazyInitializationException e) {
-            logger.info("Cannot clean up uninitialized children without a session, skipping.");
-        }
-
-	}
-
-	public void removeNullValueFromChildren(){
-	    HHH_9751_Util.removeAllNull(children);
-        updateSortIndex();
-    }
 }

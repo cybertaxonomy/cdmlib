@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
-import org.hibernate.LazyInitializationException;
 import org.hibernate.Session;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
@@ -103,26 +102,9 @@ public class PostMergeEntityListener implements MergeEventListener {
                     }
                 }
             }else if(TermTree.class.isAssignableFrom(entityClazz)){
-
-                TermTree<?> tree = (TermTree<?>)entity;
-                tree.removeNullValueFromChildren();
-                try{
-                    for (TermNode<?> node:tree.getRootChildren()){
-                        node.removeNullValueFromChildren();
-                        if (node.getChildNodes() != null){
-                            for (TermNode<?> childNode: node.getChildNodes()){
-                                removeNullFromCollections(childNode);
-                            }
-                        }
-                    }
-                } catch (LazyInitializationException e) {
-                    logger.warn("Cannot clean up uninitialized children without a session, skipping.");
-                }
+                //do nothing (remove if #8127/#3722 is fully solved
             } else if (TermNode.class.isAssignableFrom(entityClazz)){
-                TermNode<?> node = (TermNode<?>)entity;
-                if (Hibernate.isInitialized(node.getChildNodes())){
-                    node.removeNullValueFromChildren();
-                }
+                //do nothing (remove if #8127/#3722 is fully solved
             }
         }
     }
