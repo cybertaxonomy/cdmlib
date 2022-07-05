@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -165,8 +164,6 @@ public class TaxonNodeServiceImpl
                 }
             }
         }
-
-        HHH_9751_Util.removeAllNull(childNodes);
 
         if (recursive == false && sortMode != null){
             Comparator<TaxonNode> comparator = sortMode.comparator();
@@ -1418,7 +1415,6 @@ public class TaxonNodeServiceImpl
         //add children
         if (config.isDoRecursive()){
             List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
-            HHH_9751_Util.removeAllNull(originalChildNodes);
 
             for (TaxonNode originalChildNode : originalChildNodes) {
                 cloneTaxonRecursive(originalChildNode, childNodeClone, config);
