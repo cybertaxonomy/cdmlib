@@ -154,6 +154,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
+
 	private static final Logger logger = LogManager.getLogger(PolytomousKeyNode.class);
 
 	// This is the main key a node belongs to. Although other keys may also
@@ -189,7 +190,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlSchemaType(name = "IDREF")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = PolytomousKeyNode.class)
-	@JoinColumn(name = "parent_id" /*, insertable=false, updatable=false, nullable=false */)
+	@JoinColumn(name = "parent_id")
 	private PolytomousKeyNode parent;
 
 	//see comment on children @IndexColumn
@@ -468,7 +469,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		}
 
 		if(nodeNumber == null) {
-            	nodeNumber = getMaxNodeNumberFromRoot() + 1;
+		    nodeNumber = getMaxNodeNumberFromRoot() + 1;
         }
 
 		children.add(index, child);
@@ -578,7 +579,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		} else {
 			node.setNodeNumber(nodeN);
 			newNodeN++;
-			List<PolytomousKeyNode> children = node.getChildren();;
+			List<PolytomousKeyNode> children = node.getChildren();
 			for (PolytomousKeyNode child : children) {
 				if (node == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
