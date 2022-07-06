@@ -89,9 +89,9 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             tags.addAll(secTags);
             List<TaggedText> secNameUsedInSourceTags = getSecNameUsedInSourceTags(taxonBase);
             if (!secNameUsedInSourceTags.isEmpty()){
-                tags.add(new TaggedText(TagEnum.separator, " (sub "));
+                tags.add(new TaggedText(TagEnum.secNameInSourceSeparator, " (sub "));
                 tags.addAll(secNameUsedInSourceTags);
-                tags.add(new TaggedText(TagEnum.separator, ")"));
+                tags.add(new TaggedText(TagEnum.secNameInSourceSeparator, ")"));
             }
         }else if (isMisapplication && isBlank(taxonBase.getAppendedPhrase())){
             tags.add(new TaggedText(TagEnum.appendedPhrase, "auct."));
