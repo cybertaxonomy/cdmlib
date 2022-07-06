@@ -491,13 +491,13 @@ public class DescriptiveDataSetService
     @Override
     public DescriptionBaseDto getTaxonDescriptionForDescriptiveDataSetAndType(DescriptiveDataSetBaseDto dataSet, UUID taxonUuid, DescriptionType descriptionType){
         Session session = getSession();
-        String queryString = "SELECT d.uuid FROM DescriptiveDataSet a JOIN a.descriptions as d JOIN d.taxon t WHERE t.uuid = :taxonuuid AND a.uuid = :dataSetUuid";// and d.type = :descriptionType";
+        String queryString = "SELECT d.uuid FROM DescriptiveDataSet a JOIN a.descriptions as d JOIN d.taxon t WHERE t.uuid = :taxonuuid AND a.uuid = :dataSetUuid  and :descriptionType IN d.types";
 
         Query query;
         query = session.createQuery(queryString);
         query.setParameter("taxonuuid", taxonUuid);
         query.setParameter("dataSetUuid", dataSet.getUuid());
-//        query.setParameter("descriptionType", descriptionType);
+        query.setParameter("descriptionType", descriptionType.getKey());
 
         @SuppressWarnings("unchecked")
         List<UUID> result = query.list();
