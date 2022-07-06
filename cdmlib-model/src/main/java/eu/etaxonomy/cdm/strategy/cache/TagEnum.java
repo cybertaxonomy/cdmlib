@@ -152,7 +152,7 @@ public enum TagEnum {
 	 * @return <code>true</code> if type is separator or postSeparator
 	 */
 	public boolean isSeparator(){
-		return this == separator || this == postSeparator;
+		return this == separator || this == postSeparator || this == secNameInSourceSeparator;
 	}
 	public boolean isHybridSign(){
 		return this == hybridSign;
