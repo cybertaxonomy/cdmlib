@@ -15,15 +15,14 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -31,11 +30,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
-import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.property.access.spi.Getter;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 
 /**
  * This class is serializing and deserializing the CDM model for performance purposes.
@@ -55,29 +52,20 @@ public class CdmModelCacher {
     public static final String CDM_MAP_SER_FOLDER = "/eu/etaxonomy/cdm/mappings/";
     public static final String CDM_MAP_SER_FILE_PATH = CDM_MAP_SER_FOLDER + CDM_MAP_SER_FILE;
 
-    public void cacheGetterFields(Cache cache) throws IOException, ClassNotFoundException, URISyntaxException {
+    public void cacheGetterFields(Cache cache) throws IOException, ClassNotFoundException {
         Map<String, CdmModelFieldPropertyFromClass> modelClassMap = loadModelClassMap();
 
         cache.removeAll();
 
         for(Map.Entry<String, CdmModelFieldPropertyFromClass> entry : modelClassMap.entrySet()) {
-            cache.put(new Element(entry.getKey(), entry.getValue()));
+            cache.put(new net.sf.ehcache.Element(entry.getKey(), entry.getValue()));
         }
     }
 
-    public Map<String, CdmModelFieldPropertyFromClass> loadModelClassMap() throws URISyntaxException, IOException, ClassNotFoundException  {
+    public Map<String, CdmModelFieldPropertyFromClass> loadModelClassMap() throws IOException, ClassNotFoundException  {
 
-        // ============== Eclpipse specific ============== //
-        /*Bundle bundle = Platform.getBundle("eu.etaxonomy.taxeditor.cdmlib");
 
-        URL modelMapFileBundleURL = bundle.getEntry(CDM_MAP_SER_FILE_PATH);
-        URL modelMapFileURL = FileLocator.resolve(modelMapFileBundleURL);
-        String modelMapFilePath = modelMapFileURL.getFile();
-        FileInputStream fin = new FileInputStream(modelMapFilePath);
-        */
         InputStream fin = this.getClass().getResourceAsStream(CDM_MAP_SER_FILE_PATH);
-        // ==============000000000000000 ============== //
-
         ObjectInputStream ois = new ObjectInputStream(fin);
         @SuppressWarnings("unchecked")
 		Map<String, CdmModelFieldPropertyFromClass> modelClassMap = (Map<String, CdmModelFieldPropertyFromClass>) ois.readObject();
@@ -92,30 +80,48 @@ public class CdmModelCacher {
     	final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
     			.configure(hibernateConfigFile) // configures settings from hibernate.cfg.xml
     			.build();
-    	SessionFactory sessionFactory = null;
+
     	Map<String, CdmModelFieldPropertyFromClass> modelClassMap = new HashMap<>();
     	try {
 //    		ConnectionProvider connectionProvider = registry.getService(ConnectionProvider.class);
 //    		DatasourceConnectionProviderImpl providerImpl = registry.getService(DatasourceConnectionProviderImpl.class);
 
     		Metadata metadata = new MetadataSources( registry ).buildMetadata();
-    		sessionFactory = metadata.buildSessionFactory();
-//    		Configuration configuration = buildConfiguration(HB_CONFIG_FILE_PATH);
-
-        	Map<String, ClassMetadata> classMetaDataMap = sessionFactory.getAllClassMetadata();
-//        	Metadata metadata = new MetadataSources( registry ).getMetadataBuilder().applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE ).build();
-
-            for(ClassMetadata classMetaData : classMetaDataMap.values()) {
-            	Class<?> mappedClass = classMetaData.getMappedClass();
-
-                String mappedClassName = mappedClass.getName();
-
-                PersistentClass persistentClass = metadata.getEntityBinding(mappedClassName);
-                CdmModelFieldPropertyFromClass cmgmfc = new CdmModelFieldPropertyFromClass(mappedClassName);
-                logger.warn("Adding class : " + mappedClassName + " to cache");
-                addGetters(persistentClass, cmgmfc);
-                modelClassMap.put(mappedClassName, cmgmfc);
+    		Collection<PersistentClass> entityBindings = metadata.getEntityBindings();
+    		for (PersistentClass persistentClass : entityBindings) {
+                Class<?> mappedClass = persistentClass.getMappedClass();
+                if (mappedClass != null) {
+                    handleEntityClass(modelClassMap, metadata, mappedClass);
+                }
             }
+
+//    		Class<?> epc = entityBindings.iterator().next().getMappedClass();
+
+    		//SessionFactory sessionFactory = metadata.buildSessionFactory();
+//    		Metamodel metaModel = sessionFactory.getMetamodel();
+//    		Set<EntityType<?>> entityTypes = metaModel.getEntities();
+//    		for (EntityType<?> entityType : entityTypes) {
+//    		    Class<?> mappedClass = entityType.getJavaType();
+//                handleEntityClass(modelClassMap, metadata, mappedClass);
+//    		}
+//    		sessionFactory.close();
+
+//    		// *************** OLD ***********************/
+//
+//        	Map<String, ClassMetadata> classMetaDataMap = sessionFactory.getAllClassMetadata();
+////        	Metadata metadata = new MetadataSources( registry ).getMetadataBuilder().applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE ).build();
+//
+//            for(ClassMetadata classMetaData : classMetaDataMap.values()) {
+//            	Class<?> mappedClass = classMetaData.getMappedClass();
+//
+//                String mappedClassName = mappedClass.getName();
+//
+//                PersistentClass persistentClass = metadata.getEntityBinding(mappedClassName);
+//                CdmModelFieldPropertyFromClass cmgmfc = new CdmModelFieldPropertyFromClass(mappedClassName);
+//                logger.warn("Adding class : " + mappedClassName + " to cache");
+//                addGetters(persistentClass, cmgmfc);
+//                modelClassMap.put(mappedClassName, cmgmfc);
+//            }
     	}
     	catch (Exception e) {
     		// The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
@@ -126,9 +132,18 @@ public class CdmModelCacher {
         return modelClassMap;
     }
 
+    private void handleEntityClass(Map<String, CdmModelFieldPropertyFromClass> modelClassMap, Metadata metadata,
+            Class<?> mappedClass) {
+        String mappedClassName = mappedClass.getName();
+        PersistentClass persistentClass = metadata.getEntityBinding(mappedClassName);
+        CdmModelFieldPropertyFromClass fieldProperties = new CdmModelFieldPropertyFromClass(mappedClassName);
+        logger.warn("Adding class : " + mappedClassName + " to cache");
+        addGetters(persistentClass, fieldProperties);
+        modelClassMap.put(mappedClassName, fieldProperties);
+    }
+
     public static Configuration buildConfiguration(String hibernateConfigFilePath) {
         Configuration configuration = new Configuration().configure(hibernateConfigFilePath);
-        configuration.buildMappings();
         return configuration;
     }
 
@@ -159,9 +174,11 @@ public class CdmModelCacher {
     	// See also https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/TaxonomicEditorDevelopersGuide#Model-Change-Actions
     	//Note AM: does not fully work for me, but running the main from the IDE works.
 
+        System.out.println("Start CdmModelCacher main.");
         CdmModelCacher cdmModelCacher = new CdmModelCacher();
         Map<String, CdmModelFieldPropertyFromClass> modelClassMap = cdmModelCacher.generateModelClassMap();
         try{
+            System.out.println("Model created.");
         	if (!modelClassMap.isEmpty()){
         	    File outFile = new File("src/main/resources/" + CDM_MAP_SER_FILE_PATH);
         	    System.out.println("writing to " + outFile.getAbsolutePath());
@@ -170,13 +187,15 @@ public class CdmModelCacher {
         		oos.writeObject(modelClassMap);
         		oos.close();
         		System.out.println("CDM Map serialized");
+                System.exit(0);
         	}else{
         		String message = "CDM Map was empty. Model cache update NOT successful";
         		System.out.println(message);
         	}
-
         }catch(Exception ex){
             ex.printStackTrace();
         }
+
+        System.exit(1);
     }
 }

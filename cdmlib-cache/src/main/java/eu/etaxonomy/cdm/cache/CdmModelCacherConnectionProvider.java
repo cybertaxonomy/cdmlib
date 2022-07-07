@@ -8,6 +8,8 @@
  */
 package eu.etaxonomy.cdm.cache;
 
+import java.net.URL;
+
 import javax.sql.DataSource;
 
 import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
@@ -25,18 +27,20 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
  * @author a.mueller
  */
 public class CdmModelCacherConnectionProvider extends DatasourceConnectionProviderImpl{
-	private static final long serialVersionUID = 454393966637126346L;
+
+    private static final long serialVersionUID = 454393966637126346L;
 
 	public CdmModelCacherConnectionProvider() {
-		super();
 		setDataSource(getDataSourcePreliminary());
 	}
 
 	private DataSource getDataSourcePreliminary() {
 		String database = "modelCacher";
-		String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
+		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
+		String path = location.getFile().replace("classes/", "tmp/h2/"+database);
+//		String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
         String username = "sa";
-        CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
+        CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("temp", username, "", path);
         return dataSource;
 	}
 }
