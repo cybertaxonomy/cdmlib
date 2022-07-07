@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -59,8 +60,8 @@ public class CdmApplicationUtils implements ApplicationContextAware {
                     File homeDir = null;
                     if(applicationContext != null){
                         try {
-                        ConfigFileUtil configFileUtil = applicationContext.getBean(ConfigFileUtil.class);
-                        homeDir = configFileUtil.perUserCdmFolder();
+                            ConfigFileUtil configFileUtil = applicationContext.getBean(ConfigFileUtil.class);
+                            homeDir = configFileUtil.perUserCdmFolder();
                         } catch(Exception e) {
                             logger.info("Can not use ConfigFileUtil to determine perUserCdmFolder, due to: " + e.getClass().toString() + " - " +  e.getMessage());
                         }

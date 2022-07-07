@@ -78,9 +78,9 @@
       <artifactId>cdmlib-services</artifactId>
     </dependency>
     <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-test</artifactId>
-        <scope>test</scope>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-test</artifactId>
+      <scope>test</scope>
     </dependency>
    </dependencies>
 </project>
