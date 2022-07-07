@@ -64,7 +64,6 @@ public class CdmModelCacher {
 
     public Map<String, CdmModelFieldPropertyFromClass> loadModelClassMap() throws IOException, ClassNotFoundException  {
 
-
         InputStream fin = this.getClass().getResourceAsStream(CDM_MAP_SER_FILE_PATH);
         ObjectInputStream ois = new ObjectInputStream(fin);
         @SuppressWarnings("unchecked")
@@ -94,38 +93,8 @@ public class CdmModelCacher {
                     handleEntityClass(modelClassMap, metadata, mappedClass);
                 }
             }
-
-//    		Class<?> epc = entityBindings.iterator().next().getMappedClass();
-
-    		//SessionFactory sessionFactory = metadata.buildSessionFactory();
-//    		Metamodel metaModel = sessionFactory.getMetamodel();
-//    		Set<EntityType<?>> entityTypes = metaModel.getEntities();
-//    		for (EntityType<?> entityType : entityTypes) {
-//    		    Class<?> mappedClass = entityType.getJavaType();
-//                handleEntityClass(modelClassMap, metadata, mappedClass);
-//    		}
-//    		sessionFactory.close();
-
-//    		// *************** OLD ***********************/
-//
-//        	Map<String, ClassMetadata> classMetaDataMap = sessionFactory.getAllClassMetadata();
-////        	Metadata metadata = new MetadataSources( registry ).getMetadataBuilder().applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE ).build();
-//
-//            for(ClassMetadata classMetaData : classMetaDataMap.values()) {
-//            	Class<?> mappedClass = classMetaData.getMappedClass();
-//
-//                String mappedClassName = mappedClass.getName();
-//
-//                PersistentClass persistentClass = metadata.getEntityBinding(mappedClassName);
-//                CdmModelFieldPropertyFromClass cmgmfc = new CdmModelFieldPropertyFromClass(mappedClassName);
-//                logger.warn("Adding class : " + mappedClassName + " to cache");
-//                addGetters(persistentClass, cmgmfc);
-//                modelClassMap.put(mappedClassName, cmgmfc);
-//            }
     	}
     	catch (Exception e) {
-    		// The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-    		// so destroy it manually.
     		StandardServiceRegistryBuilder.destroy( registry );
     		e.printStackTrace();
     	}
@@ -168,9 +137,9 @@ public class CdmModelCacher {
 
     public static void main(String argv[]) {
 
-        // To re-create the serialised cdm map run,
-        // mvn exec:java -Dexec.mainClass="eu.etaxonomy.cdm.cache.CdmModelCacher"
-        // in the eu.etaxonomy.taxeditor.cdmlib project root dir
+        // To create the serialised cdm map run
+        // mvn exec:exec -Dexec.mainClass="eu.etaxonomy.cdm.cache.CdmModelCacher"
+        // in the cdmlib-cache project root directory
     	// See also https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/TaxonomicEditorDevelopersGuide#Model-Change-Actions
     	//Note AM: does not fully work for me, but running the main from the IDE works.
 
@@ -181,7 +150,6 @@ public class CdmModelCacher {
             System.out.println("Model created.");
         	if (!modelClassMap.isEmpty()){
         	    String strPath = CdmModelCacher.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-//        	    File outFile = new File("src/main/resources/" + CDM_MAP_SER_FILE_PATH);
                 File outFile = new File(strPath + CDM_MAP_SER_FILE_PATH);
 
                 System.out.println("writing to " + outFile.getAbsolutePath());
