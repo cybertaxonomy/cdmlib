@@ -180,8 +180,11 @@ public class CdmModelCacher {
         try{
             System.out.println("Model created.");
         	if (!modelClassMap.isEmpty()){
-        	    File outFile = new File("src/main/resources/" + CDM_MAP_SER_FILE_PATH);
-        	    System.out.println("writing to " + outFile.getAbsolutePath());
+        	    String strPath = CdmModelCacher.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+//        	    File outFile = new File("src/main/resources/" + CDM_MAP_SER_FILE_PATH);
+                File outFile = new File(strPath + CDM_MAP_SER_FILE_PATH);
+
+                System.out.println("writing to " + outFile.getAbsolutePath());
         		FileOutputStream fout = new FileOutputStream(outFile);
         		ObjectOutputStream oos = new ObjectOutputStream(fout);
         		oos.writeObject(modelClassMap);

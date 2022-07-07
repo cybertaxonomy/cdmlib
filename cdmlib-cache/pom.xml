@@ -56,7 +56,7 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <versionRange>[3.0.0,)</versionRange>
-                    <phase>process-resources</phase>
+                    <phase>compile</phase>
                     <goals>
                       <goal>exec</goal>
                     </goals>
