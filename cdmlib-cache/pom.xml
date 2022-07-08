@@ -22,7 +22,7 @@
                 <execution>
                     <phase>compile</phase> 
                     <goals>
-                        <!-- goal 'java'  has problems with closing threads, therefore se exec -->
+                        <!-- goal 'java'  has problems with closing threads, therefore use exec -->
                         <goal>exec</goal>
                     </goals>
                 </execution>
@@ -34,10 +34,6 @@
                     <classpath/>
                     <argument>eu.etaxonomy.cdm.cache.CdmModelCacher</argument>
                 </arguments>
-                <!-- configuration if using goal 'java' -->
-     <!--       <mainClass>eu.etaxonomy.cdm.cache.CdmModelCacher</mainClass>
-                <cleanupDaemonThreads>true</cleanupDaemonThreads>
-                <stopUnresponsiveDaemonThreads>false</stopUnresponsiveDaemonThreads>  -->
             </configuration>
         </plugin>
     </plugins>

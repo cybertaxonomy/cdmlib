@@ -19,7 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,19 +84,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
         @Before
         public void setUp()  {
-//            DefinedTerm ipniIdentifierTerm = DefinedTerm.NewIdentifierTypeInstance("IPNI Identifier", "IPNI Identifier", "IPNI Identifier");
-//            ipniIdentifierTerm.setUuid(DefinedTerm.uuidIpniNameIdentifier);
-//
-//            DefinedTerm tropicosIdentifierTerm = DefinedTerm.NewIdentifierTypeInstance("Tropicos Identifier", "Tropicos Identifier", "Tropicos Identifier");
-//            tropicosIdentifierTerm.setUuid(DefinedTerm.uuidTropicosNameIdentifier);
-//
-//            DefinedTerm wfoIdentifierTerm = DefinedTerm.NewIdentifierTypeInstance("WFO Identifier", "WFO Identifier", "WFO Identifier");
-//            wfoIdentifierTerm.setUuid(DefinedTerm.uuidWfoNameIdentifier);
-//            List<DefinedTermBase> terms = new ArrayList();
-//            terms.add(wfoIdentifierTerm);
-//            terms.add(tropicosIdentifierTerm);
-//            terms.add(ipniIdentifierTerm);
-//            termService.saveOrUpdate(terms);
             createFullTestDataSet();
         }
 
@@ -107,7 +95,6 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         public void testSubTree(){
 
             CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
-//            config.setCreateCondensedDistributionString(false);
             config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac")));
 
             config.setTarget(TARGET.EXPORT_DATA);
@@ -118,9 +105,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             @SuppressWarnings("unchecked")
             Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
 
-            byte[] taxon = data.get(CdmLightExportTable.TAXON.getTableName());
-            Assert.assertNotNull("Taxon table must not be null", taxon);
-            String taxonStr = new String(taxon);
+            byte[] taxonByte = data.get(CdmLightExportTable.TAXON.getTableName());
+            Assert.assertNotNull("Taxon table must not be null", taxonByte);
+            String taxonStr = new String(taxonByte);
             String notExpected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
             Assert.assertFalse("Result must not contain root taxon", taxonStr.startsWith(notExpected));
             String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
@@ -187,35 +174,35 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
             ByteArrayInputStream stream = new ByteArrayInputStream( data.get(CdmLightExportTable.TAXON.getTableName()));
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
-            String line;
+
             int count = 0;
             try {
-                while ((line = reader.readLine()) != null) {
+                while (reader.readLine() != null) {
                     count ++;
                 }
-                Assert.assertTrue("There should be 5 taxa", count == 6);// 6 because of the header line
+                Assert.assertTrue("There should be 5 taxa", count == 5+1);// 1 header line
 
                 stream = new ByteArrayInputStream(data.get(CdmLightExportTable.REFERENCE.getTableName()));
                 reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
                 count = 0;
-                while ((line = reader.readLine()) != null) {
+                while (reader.readLine() != null) {
                     count ++;
                 }
-                Assert.assertTrue("There should be 7 references (6 nomenclatural references and 1 sec reference)", count == 8);
+                Assert.assertTrue("There should be 7 references (6 nomenclatural references and 1 sec reference)", count == 7+1);  //1 header line
                 stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
                 reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
                 count = 0;
-                while ((line = reader.readLine()) != null) {
+                while (reader.readLine() != null) {
                     count ++;
                 }
-                Assert.assertTrue("There should be 1 synonym", count == 2);
+                Assert.assertTrue("There should be 1 synonym", count == 1+1);  // 1 header line
             } catch (IOException e) {
                 e.printStackTrace();
                 Assert.fail("IO Exception thrown during test.");
             }
-            byte[] taxon = data.get(CdmLightExportTable.TAXON.getTableName());
-            Assert.assertNotNull("Taxon table must not be null", taxon);
-            String taxonStr = new String(taxon);
+            byte[] taxonByte = data.get(CdmLightExportTable.TAXON.getTableName());
+            Assert.assertNotNull("Taxon table must not be null", taxonByte);
+            String taxonStr = new String(taxonByte);
             String notExpected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
             Assert.assertFalse("Result must not contain root taxon", taxonStr.startsWith(notExpected));
             String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
@@ -340,6 +327,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         }
 
         public void createFullTestDataSet() {
+
             Set<TaxonNode> nodesToSave = new HashSet<>();
 
             Reference sec1 = ReferenceFactory.newGeneric();
@@ -428,13 +416,5 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         }
 
         @Override
-        public void createTestDataSet() throws FileNotFoundException {
-            //      try {
-            //      writeDbUnitDataSetFile(new String[] {
-            //              "Classification",
-            //      }, "testAttachDnaSampleToDerivedUnit");
-            //  } catch (FileNotFoundException e) {
-            //      e.printStackTrace();
-            //  }
-        }
+        public void createTestDataSet() throws FileNotFoundException {}
 }

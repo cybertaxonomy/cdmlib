@@ -104,7 +104,6 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 //******************** CONSTRUCTOR ************************/
 
     //for hibernate use only, *packet* private required by bytebuddy
-    @SuppressWarnings("unused")
     @Deprecated
     RelationshipTermBase(){}
 

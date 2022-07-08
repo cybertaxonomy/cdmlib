@@ -139,9 +139,8 @@ public class CdmModelCacher {
 
         // To create the serialised cdm map run
         // mvn exec:exec -Dexec.mainClass="eu.etaxonomy.cdm.cache.CdmModelCacher"
-        // in the cdmlib-cache project root directory
+        // in the cdmlib-cache project root directory.
     	// See also https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/TaxonomicEditorDevelopersGuide#Model-Change-Actions
-    	//Note AM: does not fully work for me, but running the main from the IDE works.
 
         System.out.println("Start CdmModelCacher main.");
         CdmModelCacher cdmModelCacher = new CdmModelCacher();

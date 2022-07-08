@@ -256,7 +256,6 @@ public class CdmLightClassificationExport
                     state.getNodeChildrenMap().put(root.getUuid(), childNodes);
 
                     // add root to node map
-
                 }
                 TaxonNodeDto rootDto = new TaxonNodeDto(root);
                 UUID parentUuid = root.getParent() != null ? root.getParent().getUuid()
@@ -268,11 +267,9 @@ public class CdmLightClassificationExport
                     List<TaxonNodeDto> rootList = new ArrayList<>();
                     rootList.add(rootDto);
                     state.getNodeChildrenMap().put(parentUuid, rootList);
-
                 }
                 if (root.hasTaxon()) {
                     handleTaxon(state, root);
-
                 }
             } catch (Exception e) {
                 state.getResult().addException(e, "An unexpected error occurred when handling taxonNode "
@@ -297,8 +294,11 @@ public class CdmLightClassificationExport
                 Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
 
                 try {
+                    //accepted name
                     TaxonName name = taxon.getName();
                     handleName(state, name, taxon, true);
+
+                    //homotypic group / synonyms
                     HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
                     int index = 0;
                     int homotypicGroupIndex = 0;
@@ -318,18 +318,20 @@ public class CdmLightClassificationExport
                         homotypicGroupIndex++;
                     }
 
+                    //pro parte synonyms
                     index = 0;
                     for (Taxon tax : taxon.getAllProParteSynonyms()) {
                         handleProPartePartialMisapplied(state, tax, taxon, true, false, index);
                         index++;
                     }
 
-
+                    //misapplications
                     for (Taxon tax : taxon.getAllMisappliedNames()) {
                         handleProPartePartialMisapplied(state, tax, taxon, false, true, index);
                         index++;
                     }
 
+                    //taxon table
                     CdmLightExportTable table = CdmLightExportTable.TAXON;
                     String[] csvLine = new String[table.getSize()];
 
@@ -357,9 +359,12 @@ public class CdmLightClassificationExport
                             taxonNode.getClassification());
                     csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification()
                             .getTitleCache();
-
                     csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = taxon.isPublish() ? "1" : "0";
+
+                    //taxon node
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isUnplaced() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isDoubtful() ? "1" : "0";
                     Map<Language, LanguageString> notesMap = taxonNode.getStatusNote();
                     String statusNotes = "";
                     if (!notesMap.isEmpty() && notesMap.size() == 1) {
@@ -373,9 +378,10 @@ public class CdmLightClassificationExport
                     }
                     csvLine[table.getIndex(CdmLightExportTable.STATUS_NOTES)] = statusNotes;
 
-                    csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isUnplaced() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isDoubtful() ? "1" : "0";
+                    //process taxon line
                     state.getProcessor().put(table, taxon, csvLine);
+
+                    //descriptions
                     handleDescriptions(state, taxon);
                 } catch (Exception e) {
                     state.getResult().addException(e,
@@ -383,7 +389,6 @@ public class CdmLightClassificationExport
                     state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
                 }
             }
-
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling the taxon node of "
                     + cdmBaseStr(taxonNode.getTaxon()) + ", titleCache:"+ taxonNode.getTaxon().getTitleCache()+": " + e.getMessage());
