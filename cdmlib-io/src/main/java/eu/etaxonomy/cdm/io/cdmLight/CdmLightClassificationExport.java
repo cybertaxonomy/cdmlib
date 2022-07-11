@@ -376,6 +376,13 @@ public class CdmLightClassificationExport
                             statusNotes = notesMap.values().iterator().next().getText();
                         }
                     }
+                    if (taxonNode.getSource() != null) {
+                        String sourceStr = OriginalSourceFormatter.INSTANCE.format(taxonNode.getSource());
+                        if (StringUtils.isNotBlank(sourceStr)) {
+                            statusNotes = CdmUtils.concat(" ", statusNotes, "[" + sourceStr + "]");
+                        }
+                    }
+
                     csvLine[table.getIndex(CdmLightExportTable.STATUS_NOTES)] = statusNotes;
 
                     //process taxon line

@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -207,6 +209,8 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertFalse("Result must not contain root taxon", taxonStr.startsWith(notExpected));
             String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
             Assert.assertTrue(taxonStr.contains(expected));
+            String expectedExcluded = "\"1\",\"My status note [My sec ref: 27]\"";
+            Assert.assertTrue(taxonStr.contains(expectedExcluded));
 
             byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
             String referenceString = new String(reference);
@@ -395,7 +399,12 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             setUuid(subspeciesUnpublished, "290e295a-9089-4616-a30c-15ded79e064f");
             subspeciesUnpublished.setPublish(false);
             TaxonNode node5 = node3.addChildTaxon(subspeciesUnpublished, sec1, "33");
+            //excluded node
             setUuid(node5, "81d9c9b2-c8fd-4d4f-a0b4-e7e656dcdc20");
+            node5.setStatus(TaxonNodeStatus.EXCLUDED);
+            node5.setCitation(sec1);
+            node5.setCitationMicroReference("27");
+            node5.putStatusNote(Language.ENGLISH(), "My status note");
             nodesToSave.add(node5);
 
             classificationService.save(classification);
