@@ -14,7 +14,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -68,6 +70,19 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
         @SuppressWarnings("unused")
         private static final Logger logger = LogManager.getLogger(CdmLightExportTest.class);
+
+        private static final UUID rootNodeUuid = UUID.fromString("a67b4efd-6148-46a9-a377-1efd14768cfa");
+        private static final UUID node1Uuid = UUID.fromString("0fae5ad5-ffa2-4100-bcd7-8aa9dda0aebc");
+        private static final UUID node2Uuid = UUID.fromString("43ca733b-fe3a-42ce-8a92-000e27badf44");
+        private static final UUID node3Uuid = UUID.fromString("a0c9733a-fe3a-42ce-8a92-000e27bfdfa3");
+        private static final UUID node4Uuid = UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac");
+        private static final UUID node5Uuid = UUID.fromString("81d9c9b2-c8fd-4d4f-a0b4-e7e656dcdc20");
+
+        private static final UUID familyTaxonUuid = UUID.fromString("3162e136-f2e2-4f9a-9010-3f35908fbae1");
+        private static final UUID genusTaxonUuid = UUID.fromString("3f52e136-f2e1-4f9a-9010-2f35908fbd39");
+        private static final UUID speciesTaxonUuid = UUID.fromString("9182e136-f2e2-4f9a-9010-3f35908fb5e0");
+        private static final UUID subspeciesTaxonUuid = UUID.fromString("b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
+        private static final UUID subspeciesUnpublishedTaxonUuid = UUID.fromString("290e295a-9089-4616-a30c-15ded79e064f");
 
         @SpringBeanByName
         private CdmApplicationAwareDefaultExport<CdmLightExportConfigurator> defaultExport;
@@ -174,51 +189,36 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             @SuppressWarnings("unchecked")
             Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
 
-            ByteArrayInputStream stream = new ByteArrayInputStream( data.get(CdmLightExportTable.TAXON.getTableName()));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
+            //test counts
+            List<String> taxonResult = getStringList(data, CdmLightExportTable.TAXON);
+            Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size()-1);// 1 header line
 
-            int count = 0;
-            try {
-                while (reader.readLine() != null) {
-                    count ++;
-                }
-                Assert.assertTrue("There should be 5 taxa", count == 5+1);// 1 header line
+            List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
+            Assert.assertEquals("There should be 7 references (6 nomenclatural references and 1 sec reference)", 7, referenceResult.size()-1);// 1 header line
 
-                stream = new ByteArrayInputStream(data.get(CdmLightExportTable.REFERENCE.getTableName()));
-                reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
-                count = 0;
-                while (reader.readLine() != null) {
-                    count ++;
-                }
-                Assert.assertTrue("There should be 7 references (6 nomenclatural references and 1 sec reference)", count == 7+1);  //1 header line
-                stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
-                reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
-                count = 0;
-                while (reader.readLine() != null) {
-                    count ++;
-                }
-                Assert.assertTrue("There should be 1 synonym", count == 1+1);  // 1 header line
-            } catch (IOException e) {
-                e.printStackTrace();
-                Assert.fail("IO Exception thrown during test.");
-            }
-            byte[] taxonByte = data.get(CdmLightExportTable.TAXON.getTableName());
-            Assert.assertNotNull("Taxon table must not be null", taxonByte);
-            String taxonStr = new String(taxonByte);
-            String notExpected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
-            Assert.assertFalse("Result must not contain root taxon", taxonStr.startsWith(notExpected));
+            List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
+            Assert.assertEquals("There should be 1 synonym", 1, synonymResult.size()-1);// 1 header line
+
+            //test single data
+            Assert.assertEquals("Result must not contain root taxon",
+                    0, taxonResult.stream().filter(line->line.contains(rootNodeUuid.toString())).count());
+
+            //subspecies
+            String subspeciesLine = getLine(taxonResult, subspeciesTaxonUuid);
             String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
-            Assert.assertTrue(taxonStr.contains(expected));
-            String expectedExcluded = "\"1\",\"My status note [My sec ref: 27]\"";
-            Assert.assertTrue(taxonStr.contains(expectedExcluded));
-            String expectedSecNameUsedInSource = "\"My sec ref\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"Genus species subsp. subspec\",\"Mill.\";";
-            Assert.assertTrue(taxonStr.contains(expectedSecNameUsedInSource));
+            Assert.assertTrue(subspeciesLine.startsWith(expected));
+            String expectedSecNameUsedInSource = "\"My sec ref\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"Genus species subsp. subspec\",\"Mill.\",";
+            Assert.assertTrue(subspeciesLine.contains(expectedSecNameUsedInSource));
 
-            byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
-            String referenceString = new String(reference);
-            Assert.assertNotNull("Reference table must not be null", reference);
+            //unpublished/excluded/note
+            String unpublishedLine = getLine(taxonResult, subspeciesUnpublishedTaxonUuid);
+            String expectedExcluded = "\"1\",\"0\",\"0\",\"My status note\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref: 27\",\"0\"";
+            Assert.assertTrue(unpublishedLine.contains(expectedExcluded));
+
+            //references
+            String nomRefLine = getLine(referenceResult, UUID.fromString("b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f"));
             expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
-            Assert.assertTrue(referenceString.contains(expected));
+            Assert.assertEquals(expected, nomRefLine.substring(0, expected.length()));
 
             byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
             String geographicAreaFactString = new String(geographicAreaFact);
@@ -249,6 +249,10 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                 expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
             }
             Assert.assertTrue(homotypicGroupString.contains(expected));
+        }
+
+        private String getLine(List<String> list, UUID uuid) {
+            return list.stream().filter(line->line.startsWith("\""+ uuid.toString())).findFirst().get();
         }
 
         @Test
@@ -332,6 +336,21 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertTrue(result.getWarnings().size() == 0);
         }
 
+        private List<String> getStringList(Map<String, byte[]> data, CdmLightExportTable table) {
+            List<String> result = new ArrayList<>();
+            ByteArrayInputStream stream = new ByteArrayInputStream( data.get(table.getTableName()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
+            String line;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    result.add(line);
+                }
+            } catch (IOException e) {
+                Assert.fail("IOException during result read");
+            }
+            return result;
+        }
+
         public void createFullTestDataSet() {
 
             Set<TaxonNode> nodesToSave = new HashSet<>();
@@ -342,6 +361,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
             Classification classification = Classification.NewInstance("CdmLightExportTest Classification");
             setUuid(classification, "4096df99-7274-421e-8843-211b603d832e");
+            setUuid(classification.getRootNode(), rootNodeUuid);
 
             NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
             TaxonName familyName = parser.parseReferencedName("Family L., Sp. Pl. 3: 22. 1752",
@@ -349,9 +369,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             setUuid(familyName,"e983cc5e-4c77-4c80-8cb0-73d43df31ef7");
             setUuid(familyName.getNomenclaturalReference(), "b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
             Taxon family = Taxon.NewInstance(familyName, sec1);
-            setUuid(family,"3162e136-f2e2-4f9a-9010-3f35908fbae1");
+            setUuid(family, familyTaxonUuid);
             TaxonNode node1 = classification.addChildTaxon(family, sec1, "22");
-            setUuid(node1, "0fae5ad5-ffa2-4100-bcd7-8aa9dda0aebc");
+            setUuid(node1, node1Uuid.toString());
             nodesToSave.add(node1);
 
             TaxonName genusName = parser.parseReferencedName("Genus Humb., The book of botany 3: 22. 1804",
@@ -359,10 +379,10 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             setUuid(genusName,"5e83cc5e-4c77-4d80-8cb0-73d63df35ee3");
             setUuid(genusName.getNomenclaturalReference(), "5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
             Taxon genus = Taxon.NewInstance(genusName, sec1);
-            setUuid(genus,"3f52e136-f2e1-4f9a-9010-2f35908fbd39");
+            setUuid(genus, genusTaxonUuid);
 
             TaxonNode node2 = node1.addChildTaxon(genus, sec1, "33");
-            setUuid(node2, "43ca733b-fe3a-42ce-8a92-000e27badf44");
+            setUuid(node2, node2Uuid);
             nodesToSave.add(node2);
 
             TaxonName speciesName = parser.parseReferencedName("Genus species Mill., The book of botany 3: 22. 1804",
@@ -370,7 +390,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             setUuid(speciesName,"f983cc5e-4c77-4c80-8cb0-73d43df31ee9");
             setUuid(speciesName.getNomenclaturalReference(), "a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
             Taxon species = Taxon.NewInstance(speciesName, sec1);
-            setUuid(species,"9182e136-f2e2-4f9a-9010-3f35908fb5e0");
+            setUuid(species, speciesTaxonUuid);
             TaxonName synonymName = parser.parseReferencedName("Genus synonym Mill., The book of botany 3: 22. 1804", NomenclaturalCode.ICNAFP, Rank.SPECIES());
 
             setUuid(synonymName, "1584157b-5c43-4150-b271-95b2c99377b2");
@@ -379,7 +399,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             synonymUnpublished.setPublish(false);
             species.addHomotypicSynonym(synonymUnpublished);
             TaxonNode node3 = node2.addChildTaxon(species, sec1, "33");
-            setUuid(node3, "a0c9733a-fe3a-42ce-8a92-000e27bfdfa3");
+            setUuid(node3, node3Uuid.toString());
             nodesToSave.add(node3);
 
             TaxonName subspeciesName = parser.parseReferencedName("Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
@@ -389,9 +409,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
             Taxon subspecies = Taxon.NewInstance(subspeciesName, sec1);
             subspecies.getSecSource().setNameUsedInSource(subspeciesName);
-            setUuid(subspecies, "b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
+            setUuid(subspecies, subspeciesTaxonUuid);
             TaxonNode node4 = node3.addChildTaxon(subspecies, sec1, "33");
-            setUuid(node4, "f8c9933a-fe3a-42ce-8a92-000e27bfdfac");
+            setUuid(node4, node4Uuid);
             nodesToSave.add(node4);
 
             TaxonName subspeciesNameUnpublished = parser.parseReferencedName("Genus species subsp. unpublished Mill., The book of botany 3: 22. 1804",
@@ -399,11 +419,11 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             setUuid(subspeciesNameUnpublished,"b6da7ab2-6c67-44b7-9719-2557542f5a23");
 
             Taxon subspeciesUnpublished = Taxon.NewInstance(subspeciesNameUnpublished, sec1);
-            setUuid(subspeciesUnpublished, "290e295a-9089-4616-a30c-15ded79e064f");
+            setUuid(subspeciesUnpublished, subspeciesUnpublishedTaxonUuid);
             subspeciesUnpublished.setPublish(false);
             TaxonNode node5 = node3.addChildTaxon(subspeciesUnpublished, sec1, "33");
             //excluded node
-            setUuid(node5, "81d9c9b2-c8fd-4d4f-a0b4-e7e656dcdc20");
+            setUuid(node5, node5Uuid.toString());
             node5.setStatus(TaxonNodeStatus.EXCLUDED);
             node5.setCitation(sec1);
             node5.setCitationMicroReference("27");
@@ -425,6 +445,10 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
         private void setUuid(CdmBase cdmBase, String uuidStr) {
             cdmBase.setUuid(UUID.fromString(uuidStr));
+        }
+
+        private void setUuid(CdmBase cdmBase, UUID uuid) {
+            cdmBase.setUuid(uuid);
         }
 
         @Override

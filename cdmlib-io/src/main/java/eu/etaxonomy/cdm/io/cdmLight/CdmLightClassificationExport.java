@@ -389,14 +389,13 @@ public class CdmLightClassificationExport
                             statusNotes = notesMap.values().iterator().next().getText();
                         }
                     }
-                    if (taxonNode.getSource() != null) {
-                        String sourceStr = OriginalSourceFormatter.INSTANCE.format(taxonNode.getSource());
-                        if (StringUtils.isNotBlank(sourceStr)) {
-                            statusNotes = CdmUtils.concat(" ", statusNotes, "[" + sourceStr + "]");
-                        }
-                    }
-
                     csvLine[table.getIndex(CdmLightExportTable.STATUS_NOTES)] = statusNotes;
+
+                    if (taxonNode.getSource() != null) {
+                        csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_REF_FK)] = getId(state, taxonNode.getSource().getCitation());
+                        String sourceStr = OriginalSourceFormatter.INSTANCE.format(taxonNode.getSource());
+                        csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_REFERENCE)] = sourceStr;
+                    }
 
                     //process taxon line
                     state.getProcessor().put(table, taxon, csvLine);
