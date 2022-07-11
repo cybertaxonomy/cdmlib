@@ -356,6 +356,17 @@ public class CdmLightClassificationExport
                             handleReference(state, taxon.getSec());
                         }
                     }
+                    //secundum subname
+                    TaxonName subName = taxon.getSecSource() == null? null : taxon.getSecSource().getNameUsedInSource();
+                    if (subName != null) {
+                        csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME_FK)] = getId(state, subName);
+                        if (!state.getNameStore().containsKey((subName.getId()))) {
+                            handleName(state, subName, null);
+                        }
+                        csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME)] = subName.getNameCache();
+                        csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME_AUTHORS)] = subName.getAuthorshipCache();
+                    }
+
                     csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = taxon.getAppendedPhrase();
                     csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_ID)] = getId(state,
                             taxonNode.getClassification());

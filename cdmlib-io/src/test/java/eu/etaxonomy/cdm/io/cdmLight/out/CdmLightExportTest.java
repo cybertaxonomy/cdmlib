@@ -211,6 +211,8 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertTrue(taxonStr.contains(expected));
             String expectedExcluded = "\"1\",\"My status note [My sec ref: 27]\"";
             Assert.assertTrue(taxonStr.contains(expectedExcluded));
+            String expectedSecNameUsedInSource = "\"My sec ref\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"Genus species subsp. subspec\",\"Mill.\";";
+            Assert.assertTrue(taxonStr.contains(expectedSecNameUsedInSource));
 
             byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
             String referenceString = new String(reference);
@@ -386,6 +388,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             setUuid(subspeciesName.getNomenclaturalReference(), "b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
 
             Taxon subspecies = Taxon.NewInstance(subspeciesName, sec1);
+            subspecies.getSecSource().setNameUsedInSource(subspeciesName);
             setUuid(subspecies, "b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
             TaxonNode node4 = node3.addChildTaxon(subspecies, sec1, "33");
             setUuid(node4, "f8c9933a-fe3a-42ce-8a92-000e27bfdfac");
