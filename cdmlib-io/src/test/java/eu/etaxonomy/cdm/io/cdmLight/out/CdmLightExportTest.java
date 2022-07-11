@@ -110,7 +110,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             byte[] taxonByte = data.get(CdmLightExportTable.TAXON.getTableName());
             Assert.assertNotNull("Taxon table must not be null", taxonByte);
             String taxonStr = new String(taxonByte);
-            String notExpected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
+            String notExpected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
             Assert.assertFalse("Result must not contain root taxon", taxonStr.startsWith(notExpected));
             String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
             Assert.assertTrue(taxonStr.contains(expected));
@@ -205,7 +205,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             byte[] taxonByte = data.get(CdmLightExportTable.TAXON.getTableName());
             Assert.assertNotNull("Taxon table must not be null", taxonByte);
             String taxonStr = new String(taxonByte);
-            String notExpected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
+            String notExpected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
             Assert.assertFalse("Result must not contain root taxon", taxonStr.startsWith(notExpected));
             String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
             Assert.assertTrue(taxonStr.contains(expected));

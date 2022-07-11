@@ -339,6 +339,8 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
                     Taxon parent = (taxonNode.getParent() == null) ? null : taxonNode.getParent().getTaxon();
                     csvLine[table.getIndex(CdmLightExportTable.PARENT_FK)] = getId(state, parent);
+
+                    //secundum reference
                     csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
                     if (taxon.getSec() != null && taxon.getSec().getDatePublished() != null
                             && taxon.getSec().getDatePublished().getFreeText() != null) {
@@ -1125,7 +1127,7 @@ public class CdmLightClassificationExport
             NomenclaturalSource nomenclaturalSource = name.getNomenclaturalSource();
             if (nomenclaturalSource != null &&nomenclaturalSource.getNameUsedInSource() != null){
                 handleName(state, nomenclaturalSource.getNameUsedInSource(), null);
-                csvLine[table.getIndex(CdmLightExportTable.NAME_USED_IN_SOURCE)] = getId(state, nomenclaturalSource.getNameUsedInSource());
+                csvLine[table.getIndex(CdmLightExportTable.NAME_USED_IN_SOURCE_FK)] = getId(state, nomenclaturalSource.getNameUsedInSource());
             }
 
             if (nomRef != null) {
@@ -1265,7 +1267,6 @@ public class CdmLightClassificationExport
             TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations, name);
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
-            String test = manager.print(false, false, false, rules);;
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, rules);
 
             StringBuilder stringbuilder = new StringBuilder();
