@@ -114,7 +114,7 @@ public class RegistrationDTO {
         case TYPIFICATION:
         default:
             try {
-                typeDesignationSetContainer = new TypeDesignationSetContainer(reg.getTypeDesignations());
+                typeDesignationSetContainer = TypeDesignationSetContainer.NewDefaultInstance(reg.getTypeDesignations());
                 summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true)
                         .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedCacheHelper.createString(summaryTaggedText);

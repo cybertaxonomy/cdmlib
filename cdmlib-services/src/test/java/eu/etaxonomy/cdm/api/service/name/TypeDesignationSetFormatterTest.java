@@ -185,7 +185,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 
         typifiedName.addTypeDesignation(ntd, false);
 
-        TypeDesignationSetContainer manager = new TypeDesignationSetContainer(tds);
+        TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance(tds);
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
         String text = formatter.format(manager);
         Assert.assertEquals("Prionus L.\u202F\u2013\u202FNametype: Prionus coriatius L.", text);
@@ -223,7 +223,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         statusSource.setTitle("Status test");
         std_HT.getTypeSpecimen().addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
 
-        TypeDesignationSetContainer container = new TypeDesignationSetContainer(tds);
+        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
 
         String text = formatter.format(container);
@@ -262,7 +262,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(std_HT, false);
         typifiedName.addTypeDesignation(std_IT_3, false);
 
-        TypeDesignationSetContainer container = new TypeDesignationSetContainer(tds);
+        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(false, false, false);
         String text = formatter.format(container);
         int holotypeIndex = text.indexOf("holotype");

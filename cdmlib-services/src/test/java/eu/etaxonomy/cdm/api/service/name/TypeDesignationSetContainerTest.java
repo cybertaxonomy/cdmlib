@@ -200,10 +200,9 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
             typifiedName.addTypeDesignation(std_IT_2, false);
             typifiedName.addTypeDesignation(std_IT_3, false);
 
-            TypeDesignationSetContainer typeDesignationManager = new TypeDesignationSetContainer(tds);
+            TypeDesignationSetContainer typeDesignationManager = TypeDesignationSetContainer.NewDefaultInstance(tds);
             String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME);
 
-//            Logger.getLogger(this.getClass()).debug(result);
             assertNotNull(result);
             assertEquals(
                     "Prionus L.\u202F\u2013\u202FTypes: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (isotype: M);"
