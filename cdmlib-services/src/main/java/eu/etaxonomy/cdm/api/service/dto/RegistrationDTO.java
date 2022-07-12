@@ -18,7 +18,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
@@ -268,7 +269,7 @@ public class RegistrationDTO {
     public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(TypedEntityReference baseEntityReference) {
         Set<TypeDesignationBase> typeDesignations = new HashSet<>();
         TypeDesignationWorkingSet workingSet = getTypeDesignationWorkingSet(baseEntityReference);
-        for(TypeDesignationDTO ref :  workingSet.getTypeDesignations()){
+        for(TypeDesignationDTO<?> ref :  workingSet.getTypeDesignations()){
             typeDesignations.add(findTypeDesignation(ref));
         }
         return typeDesignations;

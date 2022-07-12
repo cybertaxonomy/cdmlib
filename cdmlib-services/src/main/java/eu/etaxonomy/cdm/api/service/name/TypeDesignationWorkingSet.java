@@ -51,6 +51,13 @@ public class TypeDesignationWorkingSet
 
     private VersionableEntity baseEntity;
 
+    public enum TypeDesignationWorkingSetType {
+        SPECIMEN_TYPE_DESIGNATION_WORKINGSET,
+        NAME_TYPE_DESIGNATION_WORKINGSET;
+        boolean isSpecimenType(){return this == SPECIMEN_TYPE_DESIGNATION_WORKINGSET;}
+        boolean isNameType(){return this == NAME_TYPE_DESIGNATION_WORKINGSET;}
+    }
+
 // ********************************* CONSTRUCTOR **************************/
 
     public TypeDesignationWorkingSet(VersionableEntity baseEntity) {
@@ -120,23 +127,6 @@ public class TypeDesignationWorkingSet
         return isSpecimenTypeDesigationWorkingSet() ? TypeDesignationWorkingSetType.SPECIMEN_TYPE_DESIGNATION_WORKINGSET : TypeDesignationWorkingSetType.NAME_TYPE_DESIGNATION_WORKINGSET;
     }
 
-
-    public enum TypeDesignationWorkingSetType {
-        SPECIMEN_TYPE_DESIGNATION_WORKINGSET,
-        NAME_TYPE_DESIGNATION_WORKINGSET;
-        boolean isSpecimenType(){return this == SPECIMEN_TYPE_DESIGNATION_WORKINGSET;}
-        boolean isNameType(){return this == NAME_TYPE_DESIGNATION_WORKINGSET;}
-    }
-
-    @Override
-    public String toString(){
-        if(label != null){
-            return label;
-        } else {
-            return super.toString();
-        }
-    }
-
     /**
      * Uses the <code>comparator</code> to find the highest {@link TypeDesignationStatusBase} term and returns that.
      */
@@ -149,4 +139,14 @@ public class TypeDesignationWorkingSet
         }
         return highestTypeStatus;
     }
+
+    @Override
+    public String toString(){
+        if(label != null){
+            return label;
+        } else {
+            return super.toString();
+        }
+    }
+
 }

@@ -76,52 +76,51 @@ public class TypeDesignationSetManager {
 
     private TaxonName typifiedName;
 
-    private Comparator<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> entryComparator = new Comparator<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>>(){
+    private Class tdType1;
 
-        /**
-          * Sorts the base entities (TypedEntityReference) in the following order:
-          *
-          * 1. FieldUnits
-          * 2. DerivedUnit (in case of missing FieldUnit we expect the base type to be DerivedUnit)
-          * 3. NameType
-          *
-          * {@inheritDoc}
-          */
-         @Override
-         public int compare(Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> o1, Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> o2) {
+    /**
+     * Sorts the base entities (TypedEntityReference) in the following order:
+     *
+     * 1. FieldUnits
+     * 2. DerivedUnit (in case of missing FieldUnit we expect the base type to be DerivedUnit)
+     * 3. NameType
+     *
+     * {@inheritDoc}
+     */
+    private Comparator<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> entryComparator = (o1,o2)->{
 
-             TypeDesignationWorkingSet ws1 = o1.getValue();
-             TypeDesignationWorkingSet ws2 = o2.getValue();
+         TypeDesignationWorkingSet ws1 = o1.getValue();
+         TypeDesignationWorkingSet ws2 = o2.getValue();
 
-             if (ws1.getWorkingsetType() != ws2.getWorkingsetType()){
-                 //first specimen types, then name types (very rare case anyway)
-                 return ws1.getWorkingsetType() == TypeDesignationWorkingSetType.NAME_TYPE_DESIGNATION_WORKINGSET? 1:-1;
-             }
+         if (ws1.getWorkingsetType() != ws2.getWorkingsetType()){
+             //first specimen types, then name types (very rare case anyway)
+             return ws1.getWorkingsetType() == TypeDesignationWorkingSetType.NAME_TYPE_DESIGNATION_WORKINGSET? 1:-1;
+         }
 
-             boolean hasStatus1 = !ws1.keySet().contains(null) && !ws1.keySet().contains(NullTypeDesignationStatus.SINGLETON());
-             boolean hasStatus2 = !ws2.keySet().contains(null) && !ws2.keySet().contains(NullTypeDesignationStatus.SINGLETON());
-             if (hasStatus1 != hasStatus2){
-                 //first without status as it is difficult to distinguish a non status from a "same" status record if the first record has a status and second has no status
-                 return hasStatus1? 1:-1;
-             }
+         boolean hasStatus1 = !ws1.keySet().contains(null) && !ws1.keySet().contains(NullTypeDesignationStatus.SINGLETON());
+         boolean hasStatus2 = !ws2.keySet().contains(null) && !ws2.keySet().contains(NullTypeDesignationStatus.SINGLETON());
+         if (hasStatus1 != hasStatus2){
+             //first without status as it is difficult to distinguish a non status from a "same" status record if the first record has a status and second has no status
+             return hasStatus1? 1:-1;
+         }
 
-             //                boolean hasStatus1 = ws1.getTypeDesignations(); //.stream().filter(td -> td.getSt);
+         //boolean hasStatus1 = ws1.getTypeDesignations(); //.stream().filter(td -> td.getSt);
 
-             Class<?> type1 = o1.getKey().getType();
-             Class<?> type2 = o2.getKey().getType();
+         Class<?> type1 = o1.getKey().getType();
+         Class<?> type2 = o2.getKey().getType();
 
-             if(!type1.equals(type2)) {
-                 if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
-                     // FieldUnits first
-                     return type1.equals(FieldUnit.class) ? -1 : 1;
-                 } else {
-                     // name types last (in case of missing FieldUnit we expect the base type to be DerivedUnit which comes into the middle)
-                     return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
-                 }
+         if(!type1.equals(type2)) {
+             if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
+                 // FieldUnits first
+                 return type1.equals(FieldUnit.class) ? -1 : 1;
              } else {
-                 return o1.getKey().getLabel().compareTo(o2.getKey().getLabel());
+                 // name types last (in case of missing FieldUnit we expect the base type to be DerivedUnit which comes into the middle)
+                 return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
              }
-         }};
+         } else {
+             return o1.getKey().getLabel().compareTo(o2.getKey().getLabel());
+         }
+     };
 
     /**
      * Groups the EntityReferences for each of the TypeDesignations by the according TypeDesignationStatus.
@@ -303,11 +302,13 @@ public class TypeDesignationSetManager {
     }
 
     private LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderByTypeByBaseEntity(
-            Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> stringsByTypeByBaseEntity){
+            Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationWorkingSet> stringsByTypeByBaseEntity){
 
        // order the FieldUnit TypeName keys
-       Set<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> entrySet = stringsByTypeByBaseEntity.entrySet();
-       LinkedList<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> baseEntityKeyList = new LinkedList<>(entrySet);
+       Set<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> entrySet
+               = stringsByTypeByBaseEntity.entrySet();
+       LinkedList<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> baseEntityKeyList
+               = new LinkedList<>(entrySet);
        Collections.sort(baseEntityKeyList, entryComparator);
 
        // new LinkedHashMap for the ordered FieldUnitOrTypeName keys
