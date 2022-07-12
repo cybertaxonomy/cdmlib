@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator.ORDER_BY;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -90,8 +91,7 @@ public class TypeDesignationSetContainer {
     public static TypeDesignationSetContainer NewInstance(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
             TypeDesignationSetComparator.ORDER_BY orderBy)
             throws TypeDesignationSetException{
-        TypeDesignationSetContainer result = new TypeDesignationSetContainer(typeDesignations);
-        result.typeDesignationSetComparator = new TypeDesignationSetComparator(orderBy);
+        TypeDesignationSetContainer result = new TypeDesignationSetContainer(typeDesignations, null, orderBy);
         return result;
     }
 
@@ -99,12 +99,16 @@ public class TypeDesignationSetContainer {
 
     private TypeDesignationSetContainer(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
             throws TypeDesignationSetException{
-    	this(typeDesignations, null);
+    	this(typeDesignations, null, null);
     }
 
     public TypeDesignationSetContainer(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
-            TaxonName typifiedName)
+            TaxonName typifiedName, ORDER_BY orderBy)
             throws TypeDesignationSetException  {
+
+        if (orderBy != null) {
+            typeDesignationSetComparator = new TypeDesignationSetComparator(orderBy);
+        }
         for (TypeDesignationBase<?> typeDes:typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }

@@ -181,7 +181,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         }
 
         @Test
-        public void test1() throws TypeDesignationSetException{
+        public void testOrder() throws TypeDesignationSetException{
 
             @SuppressWarnings("rawtypes")
             List<TypeDesignationBase> tds = new ArrayList<>();
@@ -200,7 +200,9 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
             typifiedName.addTypeDesignation(std_IT_2, false);
             typifiedName.addTypeDesignation(std_IT_3, false);
 
-            TypeDesignationSetContainer typeDesignationManager = TypeDesignationSetContainer.NewDefaultInstance(tds);
+            //order by base entity
+            TypeDesignationSetComparator.ORDER_BY orderByBaseEntity = TypeDesignationSetComparator.ORDER_BY.BASE_ENTITY;
+            TypeDesignationSetContainer typeDesignationManager = TypeDesignationSetContainer.NewInstance(tds, orderByBaseEntity);
             String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME);
 
             assertNotNull(result);
@@ -218,6 +220,27 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
             Iterator<TypeDesignationStatusBase<?>> keyIt_2 = byStatusMapIterator.next().keySet().iterator();
             assertEquals("isotype", keyIt_1.next().getLabel());
             assertEquals("holotype", keyIt_2.next().getLabel());
+            assertEquals("isotype", keyIt_2.next().getLabel());
+
+            //order by type status
+            TypeDesignationSetComparator.ORDER_BY orderByTypeStatus = TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS;
+            typeDesignationManager = TypeDesignationSetContainer.NewInstance(tds, orderByTypeStatus);
+            result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME);
+
+            assertNotNull(result);
+            assertEquals(
+                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
+                    + " Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (isotype: M);"
+                    + " nametype: Prionus coriatius L."
+                    , result
+                    );
+
+            orderedTypeDesignations = typeDesignationManager.getOrderedTypeDesignationSets();
+            byStatusMapIterator = orderedTypeDesignations.values().iterator();
+            keyIt_1 = byStatusMapIterator.next().keySet().iterator();
+            keyIt_2 = byStatusMapIterator.next().keySet().iterator();
+            assertEquals("holotype", keyIt_1.next().getLabel());
+            assertEquals("isotype", keyIt_1.next().getLabel());
             assertEquals("isotype", keyIt_2.next().getLabel());
         }
 

@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 public class TypeDesignationSetComparator implements Comparator<TypeDesignationSet> {
 
     //not yet used
-    enum ORDER_BY{
+    public enum ORDER_BY{
         TYPE_STATUS,
         BASE_ENTITY;
     }
