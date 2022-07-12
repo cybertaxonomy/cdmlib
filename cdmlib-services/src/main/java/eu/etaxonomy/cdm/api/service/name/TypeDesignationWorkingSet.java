@@ -17,12 +17,8 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * TypeDesignations which refer to the same FieldUnit (SpecimenTypeDesignation) or TaxonName
@@ -43,12 +39,10 @@ public class TypeDesignationWorkingSet {
 
     private String label = null;
 
-    //maybe removed in future as redundant with baseEntity
-    private TypedEntityReference<? extends VersionableEntity> baseEntityReference;
+    private VersionableEntity baseEntity;
 
     private LinkedHashMap<TypeDesignationStatusBase<?>,Collection<TypeDesignationDTO>> designationByStatusMap = new LinkedHashMap<>();
 
-    private VersionableEntity baseEntity;
 
     public enum TypeDesignationWorkingSetType {
         SPECIMEN_TYPE_DESIGNATION_WORKINGSET,
@@ -61,12 +55,6 @@ public class TypeDesignationWorkingSet {
 
     public TypeDesignationWorkingSet(VersionableEntity baseEntity) {
         this.baseEntity = baseEntity;
-        this.baseEntityReference = TypeDesignationSetManager.makeEntityReference(baseEntity);
-    }
-
-    public TypeDesignationWorkingSet(VersionableEntity baseEntity, TypedEntityReference<? extends VersionableEntity> baseEntityRef) {
-        this.baseEntity = baseEntity;
-        this.baseEntityReference = baseEntityRef;
     }
 
 // ***********************************************************************/
@@ -117,16 +105,17 @@ public class TypeDesignationWorkingSet {
         this.label = representation;
     }
 
-    /**
-     * A reference to the entity which is the common base entity for all TypeDesignations in this workingset.
-     * For a {@link SpecimenTypeDesignation} this is usually the {@link FieldUnit} if it is present. Otherwise it can also be
-     * a {@link DerivedUnit} or something else depending on the specific use case.
-     *
-     * @return the baseEntityReference
-     */
-    public TypedEntityReference<? extends VersionableEntity> getBaseEntityReference() {
-        return baseEntityReference;
-    }
+//TODO if not needed anymore
+//    /**
+//     * A reference to the entity which is the common base entity for all TypeDesignations in this workingset.
+//     * For a {@link SpecimenTypeDesignation} this is usually the {@link FieldUnit} if it is present. Otherwise it can also be
+//     * a {@link DerivedUnit} or something else depending on the specific use case.
+//     *
+//     * @return the baseEntityReference
+//     */
+//    public TypedEntityReference<? extends VersionableEntity> getBaseEntityReference() {
+//        return baseEntityReference;
+//    }
 
     public boolean isSpecimenWorkingSet() {
         return getWorkingsetType().isSpecimenType();
@@ -156,6 +145,8 @@ public class TypeDesignationWorkingSet {
         return highestTypeStatus;
     }
 
+// **************************** toString() ************************************
+
     @Override
     public String toString(){
         if(label != null){
@@ -164,5 +155,4 @@ public class TypeDesignationWorkingSet {
             return super.toString();
         }
     }
-
 }

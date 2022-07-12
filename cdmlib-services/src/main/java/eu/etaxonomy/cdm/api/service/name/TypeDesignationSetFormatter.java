@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -64,6 +65,18 @@ public class TypeDesignationSetFormatter {
     private boolean withStartingTypeLabel;
     private boolean withNameIfAvailable;
 
+    public static String entityLabel(VersionableEntity baseEntity) {
+        String label = "";
+        if(baseEntity instanceof IdentifiableEntity<?>){
+            label = ((IdentifiableEntity<?>)baseEntity).getTitleCache();
+        }
+        //TODO
+//        else {
+//            label = baseEntity.toString();
+//        }
+        return label;
+    }
+
     public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable) {
         this.withCitation = withCitation;
@@ -94,14 +107,14 @@ public class TypeDesignationSetFormatter {
         }
 
         int typeSetCount = 0;
-        Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedByTypesByBaseEntity
+        Map<VersionableEntity,TypeDesignationWorkingSet> orderedByTypesByBaseEntity
                     = manager.getOrderedTypeDesignationWorkingSets();
         TypeDesignationWorkingSetType lastWsType = null;
         if (orderedByTypesByBaseEntity != null){
-            for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
+            for(VersionableEntity baseEntity : orderedByTypesByBaseEntity.keySet()) {
                 buildTaggedTextForSingleTypeSet(manager, withBrackets, finalBuilder,
-                        typeSetCount, baseEntityRef, lastWsType);
-                lastWsType = orderedByTypesByBaseEntity.get(baseEntityRef).getWorkingsetType();
+                        typeSetCount, baseEntity, lastWsType);
+                lastWsType = orderedByTypesByBaseEntity.get(baseEntity).getWorkingsetType();
                 typeSetCount++;
             }
         }
@@ -109,11 +122,11 @@ public class TypeDesignationSetFormatter {
     }
 
     private void buildTaggedTextForSingleTypeSet(TypeDesignationSetManager manager, boolean withBrackets,
-            TaggedTextBuilder finalBuilder, int typeSetCount, TypedEntityReference<?> baseEntityRef, TypeDesignationWorkingSetType lastWsType) {
+            TaggedTextBuilder finalBuilder, int typeSetCount, VersionableEntity baseEntity, TypeDesignationWorkingSetType lastWsType) {
 
-        Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>
+        Map<VersionableEntity,TypeDesignationWorkingSet>
                 orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
-        TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
+        TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntity);
 
         TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
         if(typeSetCount > 0){
@@ -132,9 +145,9 @@ public class TypeDesignationSetFormatter {
             }
         }
 
-        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntityRef, typeDesignationWorkingSet);
-        if(hasExplicitBaseEntity && !baseEntityRef.getLabel().isEmpty()){
-            workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
+        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationWorkingSet);
+        if(hasExplicitBaseEntity && !entityLabel(baseEntity).isEmpty()){
+            workingsetBuilder.add(TagEnum.specimenOrObservation, entityLabel(baseEntity), baseEntity);
         }
         int typeStatusCount = 0;
         if (withBrackets && hasExplicitBaseEntity){
@@ -156,12 +169,12 @@ public class TypeDesignationSetFormatter {
     /**
      * Checks if the baseType is the same as the (only?) type in the type designation workingset.
      */
-    private boolean hasExplicitBaseEntity(TypedEntityReference<?> baseEntityRef,
+    private boolean hasExplicitBaseEntity(VersionableEntity baseEntity,
             TypeDesignationWorkingSet typeDesignationWorkingSet) {
         if (!typeDesignationWorkingSet.isSpecimenWorkingSet()){
             return false;   //name type designations are not handled here
         }else{
-            UUID baseUuid = baseEntityRef.getUuid();
+            UUID baseUuid = baseEntity.getUuid();
             for (TypeDesignationDTO<?> dto: typeDesignationWorkingSet.getTypeDesignations()){
                 if (!baseUuid.equals(dto.getTypeUuid())){
                     return true;
@@ -278,7 +291,7 @@ public class TypeDesignationSetFormatter {
      * or if it has a single working set but this workingset has multiple type designations.
      */
     private boolean hasMultipleTypes(
-            Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> typeWorkingSets) {
+            Map<VersionableEntity,TypeDesignationWorkingSet> typeWorkingSets) {
         if (typeWorkingSets == null || typeWorkingSets.isEmpty()){
             return false;
         }else if (typeWorkingSets.keySet().size() > 1) {

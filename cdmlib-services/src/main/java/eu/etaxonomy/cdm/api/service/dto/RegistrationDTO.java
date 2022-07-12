@@ -258,25 +258,25 @@ public class RegistrationDTO {
         return name;
     }
 
-    public Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
+    public Map<VersionableEntity,TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
         return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets() : null;
     }
 
-    public TypeDesignationWorkingSet getTypeDesignationWorkingSet(TypedEntityReference baseEntityReference) {
-        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets().get(baseEntityReference) : null;
+    public TypeDesignationWorkingSet getTypeDesignationWorkingSet(VersionableEntity baseEntity) {
+        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets().get(baseEntity) : null;
     }
 
-    public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(TypedEntityReference baseEntityReference) {
+    public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(VersionableEntity baseEntity) {
         Set<TypeDesignationBase> typeDesignations = new HashSet<>();
-        TypeDesignationWorkingSet workingSet = getTypeDesignationWorkingSet(baseEntityReference);
+        TypeDesignationWorkingSet workingSet = getTypeDesignationWorkingSet(baseEntity);
         for(TypeDesignationDTO<?> ref :  workingSet.getTypeDesignations()){
             typeDesignations.add(findTypeDesignation(ref));
         }
         return typeDesignations;
     }
 
-    public NameTypeDesignation getNameTypeDesignation(TypedEntityReference baseEntityReference) {
-        Set<TypeDesignationBase> typeDesignations = getTypeDesignationsInWorkingSet(baseEntityReference);
+    public NameTypeDesignation getNameTypeDesignation(VersionableEntity baseEntity) {
+        Set<TypeDesignationBase> typeDesignations = getTypeDesignationsInWorkingSet(baseEntity);
         if(typeDesignations.size() == 1){
             TypeDesignationBase<?> item = typeDesignations.iterator().next();
             return (NameTypeDesignation)item ;
