@@ -15,7 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -174,7 +174,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
     }
 
     @Test
-    public void testNameTypeDesignationTaggedText() throws RegistrationValidationException {
+    public void testNameTypeDesignationTaggedText() throws TypeDesignationSetException {
 
         @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> tds = new ArrayList<>();
@@ -209,7 +209,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
     }
 
     @Test
-    public void testSpecimenTypeDesignationTaggedTextWithStatus() throws RegistrationValidationException {
+    public void testSpecimenTypeDesignationTaggedTextWithStatus() throws TypeDesignationSetException {
 
         @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> tds = new ArrayList<>();

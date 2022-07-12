@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
@@ -186,7 +186,7 @@ public class RegistrationDTOController
     public RegistrationWorkingSet doGetRegistrationWorkingSet(
             @PathVariable("reference_uuid") UUID referenceUuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws RegistrationValidationException {
+            HttpServletResponse response) throws TypeDesignationSetException {
 
         logger.info("doGetRegistrationWorkingSet() " + requestPathAndQuery(request));
 
@@ -224,7 +224,7 @@ public class RegistrationDTOController
             @RequestParam(value = "pageIndex", required=false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
-            HttpServletResponse response) throws PermissionDeniedException, RegistrationValidationException {
+            HttpServletResponse response) throws PermissionDeniedException, TypeDesignationSetException {
 
         logger.info("doGetByNameUUID() " + requestPathAndQuery(request));
 

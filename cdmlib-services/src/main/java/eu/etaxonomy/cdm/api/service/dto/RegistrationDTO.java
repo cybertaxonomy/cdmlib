@@ -22,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
@@ -80,7 +80,7 @@ public class RegistrationDTO {
     /**
      * @param reg
      * @param typifiedName should be provided for registrations for TypeDesignations
-     * @throws RegistrationValidationException
+     * @throws TypeDesignationSetException
      */
     public RegistrationDTO(Registration reg) {
 
@@ -118,7 +118,7 @@ public class RegistrationDTO {
                 summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true)
                         .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedCacheHelper.createString(summaryTaggedText);
-            } catch (RegistrationValidationException e) {
+            } catch (TypeDesignationSetException e) {
                 validationProblems.add("Validation errors: " + e.getMessage());
             }
             break;
