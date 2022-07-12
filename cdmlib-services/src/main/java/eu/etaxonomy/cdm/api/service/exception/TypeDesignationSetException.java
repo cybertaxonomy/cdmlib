@@ -14,17 +14,16 @@ import java.util.List;
 /**
  * @author a.kohlbecker
  * @since Mar 23, 2017
- *
  */
 @SuppressWarnings("serial")
-public class RegistrationValidationException extends Exception {
+public class TypeDesignationSetException extends Exception {
 
-    List<String> problems = new ArrayList<>();
+    private List<String> problems = new ArrayList<>();
 
     /**
      * @param message
      */
-    public RegistrationValidationException(String message, List<String> problems) {
+    public TypeDesignationSetException(String message, List<String> problems) {
         super(message);
         this.problems = problems;
     }
@@ -39,6 +38,4 @@ public class RegistrationValidationException extends Exception {
     public List<String> getProblems() {
         return problems;
     }
-
-
 }

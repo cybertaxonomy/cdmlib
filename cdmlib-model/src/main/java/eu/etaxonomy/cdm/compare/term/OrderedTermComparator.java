@@ -22,8 +22,8 @@ public class OrderedTermComparator <T extends DefinedTermBase<T>> implements Com
     @Override
     public int compare(T o1, T o2) {
         if (o1 instanceof OrderedTermBase && o2 instanceof OrderedTermBase){
-            OrderedTermBase odt1 = (OrderedTermBase) o1;
-            OrderedTermBase odt2 = (OrderedTermBase) o2;
+            OrderedTermBase odt1 = (OrderedTermBase<?>) o1;
+            OrderedTermBase odt2 = (OrderedTermBase<?>) o2;
             if (odt1.getVocabulary().equals(odt2.getVocabulary())){
                 return - odt1.compareTo(odt2);
             }else{

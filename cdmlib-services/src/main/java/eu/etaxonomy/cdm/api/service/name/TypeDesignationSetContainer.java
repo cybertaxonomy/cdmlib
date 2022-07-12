@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
@@ -130,19 +130,19 @@ public class TypeDesignationSetContainer {
 // **************************** CONSTRUCTOR ***********************************/
 
     public TypeDesignationSetContainer(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
-            throws RegistrationValidationException{
+            throws TypeDesignationSetException{
     	this(typeDesignations, null);
     }
 
     public TypeDesignationSetContainer(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
             TaxonName typifiedName)
-            throws RegistrationValidationException  {
+            throws TypeDesignationSetException  {
         for (TypeDesignationBase<?> typeDes:typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
         try {
         	findTypifiedName();
-        }catch (RegistrationValidationException e) {
+        }catch (TypeDesignationSetException e) {
         	if (typifiedName == null) {
         		throw e;
         	}
@@ -277,7 +277,7 @@ public class TypeDesignationSetContainer {
     }
 
     //TODO maybe not needed anymore
-    protected static TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
+    private static TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
 
         baseEntity = CdmBase.deproxy(baseEntity);
         String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
@@ -321,10 +321,9 @@ public class TypeDesignationSetContainer {
     /**
      * FIXME use the validation framework validators to store the validation problems!!!
      *
-     * @return
-     * @throws RegistrationValidationException
+     * @throws TypeDesignationSetException
      */
-    private void findTypifiedName() throws RegistrationValidationException {
+    private void findTypifiedName() throws TypeDesignationSetException {
 
         List<String> problems = new ArrayList<>();
 
@@ -357,7 +356,7 @@ public class TypeDesignationSetContainer {
         }
         if(!problems.isEmpty()){
             // FIXME use the validation framework
-            throw new RegistrationValidationException("Inconsistent type designations", problems);
+            throw new TypeDesignationSetException("Inconsistent type designations", problems);
         }
 
         if(typifiedName != null){
