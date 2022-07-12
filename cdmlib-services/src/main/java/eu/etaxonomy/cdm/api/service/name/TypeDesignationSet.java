@@ -39,6 +39,7 @@ public class TypeDesignationSet {
 
     public static final NullTypeDesignationStatus NULL_STATUS = NullTypeDesignationStatus.SINGLETON();
 
+    //TODO needed?
     private String label = null;
 
     private VersionableEntity baseEntity;
@@ -153,7 +154,7 @@ public class TypeDesignationSet {
         if(label != null){
             return label;
         } else {
-            return super.toString();
+            return designationByStatusMap.toString();
         }
     }
 }

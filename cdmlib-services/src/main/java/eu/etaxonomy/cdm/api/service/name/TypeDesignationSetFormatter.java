@@ -70,7 +70,7 @@ public class TypeDesignationSetFormatter {
         if(baseEntity instanceof IdentifiableEntity<?>){
             label = ((IdentifiableEntity<?>)baseEntity).getTitleCache();
         }
-        //TODO
+        //TODO first check if it will not break code
 //        else {
 //            label = baseEntity.toString();
 //        }
