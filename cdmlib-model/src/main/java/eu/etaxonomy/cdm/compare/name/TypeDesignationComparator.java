@@ -23,7 +23,7 @@ public class TypeDesignationComparator implements Comparator<TypeDesignationBase
 
     @SuppressWarnings("unchecked")
     @Override
-    public int compare(TypeDesignationBase o1, TypeDesignationBase o2) {
+    public int compare(@SuppressWarnings("rawtypes") TypeDesignationBase o1, @SuppressWarnings("rawtypes") TypeDesignationBase o2) {
 
         if (o1 == o2){
             return 0;
