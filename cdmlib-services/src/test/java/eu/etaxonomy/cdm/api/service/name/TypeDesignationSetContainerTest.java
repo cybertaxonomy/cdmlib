@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @author a.kohlbecker, k.luther, a.mueller
  * @since 03.09.2018
  */
-public class TypeDesignationSetManagerTest extends TermTestBase{
+public class TypeDesignationSetContainerTest extends TermTestBase{
 
         private static final boolean WITH_CITATION = true;
         private static final boolean WITH_NAME = true;
@@ -200,7 +200,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typifiedName.addTypeDesignation(std_IT_2, false);
             typifiedName.addTypeDesignation(std_IT_3, false);
 
-            TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(tds);
+            TypeDesignationSetContainer typeDesignationManager = new TypeDesignationSetContainer(tds);
             String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME);
 
 //            Logger.getLogger(this.getClass()).debug(result);
@@ -228,7 +228,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
             typifiedName.setTitleCache("Prionus L.", true);
 
-            TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            TypeDesignationSetContainer typeDesignationManager = new TypeDesignationSetContainer(typifiedName);
             String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME);
             assertEquals(
                     "Prionus L."
@@ -269,7 +269,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             //specimen types
             TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
             typifiedName.setTitleCache("Prionus coriatius L.", true);
-            TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            TypeDesignationSetContainer typeDesignationManager = new TypeDesignationSetContainer(typifiedName);
             typeDesignationManager.addTypeDesigations(std_LT);
             Reference citation = ReferenceFactory.newBook();
             Reference inRef = ReferenceFactory.newBookSection();
@@ -287,7 +287,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             //name types
             typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
             typifiedName.setTitleCache("Prionus L.", true);
-            typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            typeDesignationManager = new TypeDesignationSetContainer(typifiedName);
             typeDesignationManager.addTypeDesigations(ntd_LT);
             ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
             assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L. designated by Decandolle & al. 1962 [fide Miller 1989: 66]",
@@ -307,7 +307,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                 typifiedName.addTypeDesignation(mtd_HT_published, false);
                 typifiedName.addTypeDesignation(mtd_IT_unpublished, false);
 
-                TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+                TypeDesignationSetContainer typeDesignationManager = new TypeDesignationSetContainer(typifiedName);
                 typeDesignationManager.addTypeDesigations(mtd_HT_published);
                 typeDesignationManager.addTypeDesigations(mtd_IT_unpublished);
 
@@ -341,7 +341,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             citation.setTitle("The book of types");
             SpecimenTypeDesignation protectedDesignation = typifiedName.addSpecimenTypeDesignation(protectedSpecimen, SpecimenTypeDesignationStatus.NEOTYPE(), citation, "55", null, false, false);
 
-            TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            TypeDesignationSetContainer typeDesignationManager = new TypeDesignationSetContainer(typifiedName);
             typeDesignationManager.addTypeDesigations(protectedDesignation);
 
             assertEquals("Prionus coriatius L.\u202F\u2013\u202FNeotype: Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55"
@@ -369,7 +369,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 
             TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             typifiedName.setTitleCache("Prionus coriatius L.", true);
-            TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            TypeDesignationSetContainer typeDesignationManager = new TypeDesignationSetContainer(typifiedName);
             std_LT.setTypeStatus(null);
             typeDesignationManager.addTypeDesigations(std_LT);
             assertEquals("Prionus coriatius L.\u202F\u2013\u202FType: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC designated by Decandolle & al. 1962)",
@@ -382,7 +382,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             //name types
             typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
             typifiedName.setTitleCache("Prionus L.", true);
-            typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            typeDesignationManager = new TypeDesignationSetContainer(typifiedName);
             typeDesignationManager.addTypeDesigations(ntd_LT);
 //            ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
             assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L. designated by Decandolle & al. 1962",

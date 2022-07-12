@@ -24,9 +24,9 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -61,7 +61,7 @@ public class RegistrationDTO {
 
     private EntityReference name = null;
 
-    private TypeDesignationSetManager typeDesignationManager;
+    private TypeDesignationSetContainer typeDesignationSetContainer;
 
     private Registration reg;
 
@@ -114,9 +114,9 @@ public class RegistrationDTO {
         case TYPIFICATION:
         default:
             try {
-                typeDesignationManager = new TypeDesignationSetManager(reg.getTypeDesignations());
+                typeDesignationSetContainer = new TypeDesignationSetContainer(reg.getTypeDesignations());
                 summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true)
-                        .toTaggedText(typeDesignationManager));
+                        .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedCacheHelper.createString(summaryTaggedText);
             } catch (RegistrationValidationException e) {
                 validationProblems.add("Validation errors: " + e.getMessage());
@@ -139,8 +139,8 @@ public class RegistrationDTO {
     public RegistrationDTO(Registration reg, TaxonName typifiedName, Reference publication) {
         this.reg = reg;
         citation = publication;
-        // create a TypeDesignationSetManager with only a reference to the typifiedName for validation
-        typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+        // create a TypeDesignationSetContainer with only a reference to the typifiedName for validation
+        typeDesignationSetContainer = new TypeDesignationSetContainer(typifiedName);
         makeBibliographicCitationStrings();
         makeNomenclaturalCitationString();
     }
@@ -247,11 +247,11 @@ public class RegistrationDTO {
     }
 
     public EntityReference getTypifiedNameRef() {
-        return typeDesignationManager != null ? typeDesignationManager.getTypifiedNameAsEntityRef() : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getTypifiedNameAsEntityRef() : null;
     }
 
     public TaxonName typifiedName() {
-        return typeDesignationManager != null ? typeDesignationManager.getTypifiedName() : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getTypifiedName() : null;
     }
 
     public EntityReference getNameRef() {
@@ -259,11 +259,11 @@ public class RegistrationDTO {
     }
 
     public Map<VersionableEntity,TypeDesignationSet> getOrderedTypeDesignationSets() {
-        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationSets() : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getOrderedTypeDesignationSets() : null;
     }
 
     public TypeDesignationSet getTypeDesignationSet(VersionableEntity baseEntity) {
-        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationSets().get(baseEntity) : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getOrderedTypeDesignationSets().get(baseEntity) : null;
     }
 
     public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(VersionableEntity baseEntity) {
@@ -291,11 +291,11 @@ public class RegistrationDTO {
     }
 
     private TypeDesignationBase<?> findTypeDesignation(TypeDesignationDTO ref) {
-        return typeDesignationManager != null ? typeDesignationManager.findTypeDesignation(ref.getUuid()) : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.findTypeDesignation(ref.getUuid()) : null;
     }
 
     public Collection<TypeDesignationBase<?>> typeDesignations() {
-        return typeDesignationManager != null ? typeDesignationManager.getTypeDesignations() : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getTypeDesignations() : null;
     }
 
     private void makeNomenclaturalCitationString() {

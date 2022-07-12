@@ -84,19 +84,19 @@ public class TypeDesignationSetFormatter {
         this.withNameIfAvailable = withNameIfAvailable;
     }
 
-    public String format(TypeDesignationSetManager manager){
+    public String format(TypeDesignationSetContainer manager){
         return TaggedCacheHelper.createString(toTaggedText(manager));
     }
 
-    public String format(TypeDesignationSetManager manager, HTMLTagRules htmlTagRules){
+    public String format(TypeDesignationSetContainer manager, HTMLTagRules htmlTagRules){
         return TaggedCacheHelper.createString(toTaggedText(manager), htmlTagRules);
     }
 
-    public List<TaggedText> toTaggedText(TypeDesignationSetManager manager){
+    public List<TaggedText> toTaggedText(TypeDesignationSetContainer manager){
         return buildTaggedText(manager);
     }
 
-    private List<TaggedText> buildTaggedText(TypeDesignationSetManager manager){
+    private List<TaggedText> buildTaggedText(TypeDesignationSetContainer manager){
         boolean withBrackets = true;  //still unclear if this should become a parameter or should be always true
 
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
@@ -121,7 +121,7 @@ public class TypeDesignationSetFormatter {
         return finalBuilder.getTaggedText();
     }
 
-    private void buildTaggedTextForSingleTypeSet(TypeDesignationSetManager manager, boolean withBrackets,
+    private void buildTaggedTextForSingleTypeSet(TypeDesignationSetContainer manager, boolean withBrackets,
             TaggedTextBuilder finalBuilder, int typeSetCount, VersionableEntity baseEntity, TypeDesignationSetType lastWsType) {
 
         Map<VersionableEntity,TypeDesignationSet>
@@ -184,7 +184,7 @@ public class TypeDesignationSetFormatter {
         return false;
     }
 
-    private int buildTaggedTextForSingleTypeStatus(TypeDesignationSetManager manager,
+    private int buildTaggedTextForSingleTypeStatus(TypeDesignationSetContainer manager,
             TaggedTextBuilder workingsetBuilder, TypeDesignationSet typeDesignationSet,
             int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
             TypeDesignationSetType lastWsType, int typeSetCount) {

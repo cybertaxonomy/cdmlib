@@ -45,24 +45,20 @@ import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
 /**
- * Manages a collection of {@link TypeDesignationBase type designations} for the same typified name.
+ * Container for of collection of {@link TypeDesignationBase type designations} for the same typified name.
  *
- * Type designations are ordered by the base type which is a {@link TaxonName} for {@link NameTypeDesignation NameTypeDesignations} or
- * in case of {@link SpecimenTypeDesignation SpecimenTypeDesignations} the  associate {@link FieldUnit} or the {@link DerivedUnit}
- * if the former is missing. The type designations per base type are furthermore ordered by the {@link TypeDesignationStatusBase}.
- *
- * The TypeDesignationSetManager also provides string representations of the whole ordered set of all
- * {@link TypeDesignationBase TypeDesignations} and of the TypeDesignationSets:
- * <ul>
- *  <li>{@link #print()}
- *  <li>{@link #getOrderedTypeDesignationSets()} ... {@link TypeDesignationSet#getLabel()}
- * </ul>
- * Prior using the representations you need to trigger their generation by calling {@link #buildString()}
+ * Type designations are ordered by the base type which is a {@link TaxonName} for {@link NameTypeDesignation name type designations} or
+ * a {@link FieldUnit} in case of {@link SpecimenTypeDesignation specimen type designations}. The type designations per base type are furthermore ordered by the {@link TypeDesignationStatusBase}
+ * (or a {@link DerivedUnit} if the field unit is missing).
+ * <BR>
+ * All type designations belonging to one base type are handled in a {@link TypeDesignationSet}.
+ * <BR>
+ * The {@link TypeDesignationSetContainer} can be formatted by using the {@link TypeDesignationSetFormatter}
  *
  * @author a.kohlbecker
  * @since Mar 10, 2017
  */
-public class TypeDesignationSetManager {
+public class TypeDesignationSetContainer {
 
     //currently not really in use
     enum NameTypeBaseEntityType{
@@ -75,8 +71,6 @@ public class TypeDesignationSetManager {
     private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
 
     private TaxonName typifiedName;
-
-    private Class tdType1;
 
     /**
      * Sorts the base entities (TypedEntityReference) in the following order:
@@ -135,12 +129,12 @@ public class TypeDesignationSetManager {
 
 // **************************** CONSTRUCTOR ***********************************/
 
-    public TypeDesignationSetManager(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
+    public TypeDesignationSetContainer(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
             throws RegistrationValidationException{
     	this(typeDesignations, null);
     }
 
-    public TypeDesignationSetManager(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
+    public TypeDesignationSetContainer(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
             TaxonName typifiedName)
             throws RegistrationValidationException  {
         for (TypeDesignationBase<?> typeDes:typeDesignations){
@@ -158,7 +152,7 @@ public class TypeDesignationSetManager {
         mapAndSort();
     }
 
-    public TypeDesignationSetManager(HomotypicalGroup group) {
+    public TypeDesignationSetContainer(HomotypicalGroup group) {
         for (TypeDesignationBase<?> typeDes: group.getTypeDesignations()){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
@@ -166,7 +160,7 @@ public class TypeDesignationSetManager {
         mapAndSort();
     }
 
-    public TypeDesignationSetManager(TaxonName typifiedName) {
+    public TypeDesignationSetContainer(TaxonName typifiedName) {
         this.typifiedName = typifiedName;
     }
 
@@ -217,8 +211,7 @@ public class TypeDesignationSetManager {
         TypeDesignationStatusBase<?> status = td.getTypeStatus();
 
         try {
-            final VersionableEntity baseEntity = baseEntity(td);
-//            final TypedEntityReference<? extends VersionableEntity> baseEntityReference = makeEntityReference(baseEntity);
+            VersionableEntity baseEntity = baseEntity(td);
 
             TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
             boolean withCitation = true;
@@ -241,7 +234,6 @@ public class TypeDesignationSetManager {
             problems.add(e.getMessage());
         }
     }
-
 
     /**
      * Returns the uuid of the type designated by this {@link TypeDesignationDTO#}.

@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  */
 public class TypeDesignationSetFormatterTest extends TermTestBase{
 
-    //variables and setup were copied from TypeDesignationSetManagerTest
+    //variables and setup were copied from TypeDesignationSetContainerTest
     //not all of them are in use yet
     private NameTypeDesignation ntd;
     private NameTypeDesignation ntd_LT;
@@ -185,7 +185,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 
         typifiedName.addTypeDesignation(ntd, false);
 
-        TypeDesignationSetManager manager = new TypeDesignationSetManager(tds);
+        TypeDesignationSetContainer manager = new TypeDesignationSetContainer(tds);
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
         String text = formatter.format(manager);
         Assert.assertEquals("Prionus L.\u202F\u2013\u202FNametype: Prionus coriatius L.", text);
@@ -223,7 +223,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         statusSource.setTitle("Status test");
         std_HT.getTypeSpecimen().addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
 
-        TypeDesignationSetManager manager = new TypeDesignationSetManager(tds);
+        TypeDesignationSetContainer manager = new TypeDesignationSetContainer(tds);
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
 
         String text = formatter.format(manager);

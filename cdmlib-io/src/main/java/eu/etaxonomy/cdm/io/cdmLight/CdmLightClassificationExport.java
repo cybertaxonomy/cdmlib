@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
@@ -1274,7 +1274,7 @@ public class CdmLightClassificationExport
                     specimenTypeDesignations.add(HibernateProxyHelper.deproxy(typeDesignation, NameTypeDesignation.class));
                 }
             }
-            TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations, name);
+            TypeDesignationSetContainer manager = new TypeDesignationSetContainer(specimenTypeDesignations, name);
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, rules);
@@ -2111,7 +2111,7 @@ public class CdmLightClassificationExport
 
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
-                TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
+                TypeDesignationSetContainer manager = new TypeDesignationSetContainer(group);
                 list.addAll(new TypeDesignationSetFormatter(true, false, false).toTaggedText(manager));
             }
             String typeTextDesignations = "";
