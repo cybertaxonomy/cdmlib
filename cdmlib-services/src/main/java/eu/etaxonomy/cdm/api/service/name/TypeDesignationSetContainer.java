@@ -66,11 +66,19 @@ public class TypeDesignationSetContainer {
         TYPE_NAME;
     }
 
+    //not yet used
+    enum ORDER_BY{
+        TYPE_STATUS,
+        BASE_ENTITY;
+    }
+
     private NameTypeBaseEntityType nameTypeBaseEntityType = NameTypeBaseEntityType.NAME_TYPE_DESIGNATION;
 
     private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
 
     private TaxonName typifiedName;
+
+    private ORDER_BY orderBy = ORDER_BY.TYPE_STATUS;
 
     /**
      * Sorts the base entities (TypedEntityReference) in the following order:
@@ -112,7 +120,17 @@ public class TypeDesignationSetContainer {
                  return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
              }
          } else {
-//             tdType1 = ws1.getTypeDesignations().stream().map(td->td.get).sorted(null).findFirst().orElseGet(()->{return null;});
+             if (orderBy == ORDER_BY.TYPE_STATUS) {
+                 @SuppressWarnings({ "unchecked", "rawtypes" })
+                 Comparator<TypeDesignationStatusBase<?>> statusComparator = (Comparator)new TypeDesignationStatusComparator<>();
+                 TypeDesignationStatusBase<?> status1 = ws1.highestTypeStatus(statusComparator);
+                 TypeDesignationStatusBase<?> status2 = ws2.highestTypeStatus(statusComparator);
+                 int comp = statusComparator.compare(status1, status2);
+                 if (comp != 0) {
+                     return comp;
+                 }
+             }
+
              String label1 = TypeDesignationSetFormatter.entityLabel(o1.getKey());
              String label2 = TypeDesignationSetFormatter.entityLabel(o2.getKey());
              return label1.compareTo(label2);

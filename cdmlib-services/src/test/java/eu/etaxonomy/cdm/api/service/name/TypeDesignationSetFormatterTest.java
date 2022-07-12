@@ -246,4 +246,26 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 //                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(3)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
 //        Assert.assertEquals("there should be 4 tags only", 4, taggedText.size());
     }
+
+    //#10089
+    @Test
+    public void testOrderedByStatusNotBaseEntity() throws TypeDesignationSetException {
+
+        @SuppressWarnings("rawtypes")
+        List<TypeDesignationBase> tds = new ArrayList<>();
+        tds.add(std_HT);
+        tds.add(std_IT_3);
+
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+
+        typifiedName.addTypeDesignation(std_HT, false);
+        typifiedName.addTypeDesignation(std_IT_3, false);
+
+        TypeDesignationSetContainer container = new TypeDesignationSetContainer(tds);
+        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(false, false, false);
+        String text = formatter.format(container);
+        int holotypeIndex = text.indexOf("holotype");
+        Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );
+    }
 }

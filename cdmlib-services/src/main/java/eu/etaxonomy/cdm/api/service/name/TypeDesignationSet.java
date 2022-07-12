@@ -139,9 +139,11 @@ public class TypeDesignationSet {
      */
     public TypeDesignationStatusBase<?> highestTypeStatus(Comparator<TypeDesignationStatusBase<?>> comparator) {
         TypeDesignationStatusBase<?> highestTypeStatus = null;
+        boolean isFirst = true;
         for(TypeDesignationStatusBase<?> status : designationByStatusMap.keySet()) {
-            if(comparator.compare(status, highestTypeStatus) < 0){
+            if(isFirst || comparator.compare(status, highestTypeStatus) < 0){
                 highestTypeStatus = status;
+                isFirst = false;
             }
         }
         return highestTypeStatus;
