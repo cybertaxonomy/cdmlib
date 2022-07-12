@@ -21,19 +21,21 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
- * TypeDesignations which refer to the same FieldUnit (SpecimenTypeDesignation) or TaxonName
- * (NameTypeDesignation) form a working set. The <code>TypeDesignationWorkingSet</code> internally
- * works with EnityReferences to the actual TypeDesignations.
+ * TypeDesignations which refer to the same base entity (e.g. FieldUnit for SpecimenTypeDesignations
+ * or TaxonName/NameTypeDesignation for NameTypeDesignation form a type designation set.
+ * The <code>TypeDesignationSet</code> internally stores the entity base
+ * and an ordered map that maps type status (TypeDesignationStatusBase) to the type designations
+ * in the <code>TypeDesignationSet</code>.
  *
- * The EntityReferences for TypeDesignations are grouped by the according TypeDesignationStatus.
  * The TypeDesignationStatusBase keys can be ordered by the term order defined in the vocabulary.
  *
- * A workingset can be referenced by the <code>baseEntityReference</code>.
+ * A typeDesignationSet can be referenced by the <code>baseEntity</code>.
  *
  * @author a.kohlbecker
+ * @author a.mueller
  * @since Mar 10, 2017
  */
-public class TypeDesignationWorkingSet {
+public class TypeDesignationSet {
 
     public static final NullTypeDesignationStatus NULL_STATUS = NullTypeDesignationStatus.SINGLETON();
 
@@ -43,17 +45,16 @@ public class TypeDesignationWorkingSet {
 
     private LinkedHashMap<TypeDesignationStatusBase<?>,Collection<TypeDesignationDTO>> designationByStatusMap = new LinkedHashMap<>();
 
-
-    public enum TypeDesignationWorkingSetType {
-        SPECIMEN_TYPE_DESIGNATION_WORKINGSET,
-        NAME_TYPE_DESIGNATION_WORKINGSET;
-        boolean isSpecimenType(){return this == SPECIMEN_TYPE_DESIGNATION_WORKINGSET;}
-        boolean isNameType(){return this == NAME_TYPE_DESIGNATION_WORKINGSET;}
+    public enum TypeDesignationSetType {
+        SPECIMEN_TYPE_DESIGNATION_SET,
+        NAME_TYPE_DESIGNATION_SET;
+        boolean isSpecimenType(){return this == SPECIMEN_TYPE_DESIGNATION_SET;}
+        boolean isNameType(){return this == NAME_TYPE_DESIGNATION_SET;}
     }
 
 // ********************************* CONSTRUCTOR **************************/
 
-    public TypeDesignationWorkingSet(VersionableEntity baseEntity) {
+    public TypeDesignationSet(VersionableEntity baseEntity) {
         this.baseEntity = baseEntity;
     }
 
@@ -128,8 +129,8 @@ public class TypeDesignationWorkingSet {
         return SpecimenOrObservationBase.class.isAssignableFrom(baseEntity.getClass());
     }
 
-    public TypeDesignationWorkingSetType getWorkingsetType() {
-        return isSpecimenTypeDesigationWorkingSet() ? TypeDesignationWorkingSetType.SPECIMEN_TYPE_DESIGNATION_WORKINGSET : TypeDesignationWorkingSetType.NAME_TYPE_DESIGNATION_WORKINGSET;
+    public TypeDesignationSetType getWorkingsetType() {
+        return isSpecimenTypeDesigationWorkingSet() ? TypeDesignationSetType.SPECIMEN_TYPE_DESIGNATION_SET : TypeDesignationSetType.NAME_TYPE_DESIGNATION_SET;
     }
 
     /**

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -258,17 +258,17 @@ public class RegistrationDTO {
         return name;
     }
 
-    public Map<VersionableEntity,TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
-        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets() : null;
+    public Map<VersionableEntity,TypeDesignationSet> getOrderedTypeDesignationSets() {
+        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationSets() : null;
     }
 
-    public TypeDesignationWorkingSet getTypeDesignationWorkingSet(VersionableEntity baseEntity) {
-        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets().get(baseEntity) : null;
+    public TypeDesignationSet getTypeDesignationSet(VersionableEntity baseEntity) {
+        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationSets().get(baseEntity) : null;
     }
 
     public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(VersionableEntity baseEntity) {
         Set<TypeDesignationBase> typeDesignations = new HashSet<>();
-        TypeDesignationWorkingSet workingSet = getTypeDesignationWorkingSet(baseEntity);
+        TypeDesignationSet workingSet = getTypeDesignationSet(baseEntity);
         for(TypeDesignationDTO<?> ref :  workingSet.getTypeDesignations()){
             typeDesignations.add(findTypeDesignation(ref));
         }

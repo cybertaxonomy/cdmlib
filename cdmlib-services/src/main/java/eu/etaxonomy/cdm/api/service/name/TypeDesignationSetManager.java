@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet.TypeDesignationWorkingSetType;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -52,10 +52,10 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
  * if the former is missing. The type designations per base type are furthermore ordered by the {@link TypeDesignationStatusBase}.
  *
  * The TypeDesignationSetManager also provides string representations of the whole ordered set of all
- * {@link TypeDesignationBase TypeDesignations} and of the TypeDesignationWorkingSets:
+ * {@link TypeDesignationBase TypeDesignations} and of the TypeDesignationSets:
  * <ul>
  *  <li>{@link #print()}
- *  <li>{@link #getOrderedTypeDesignationWorkingSets()} ... {@link TypeDesignationWorkingSet#getLabel()}
+ *  <li>{@link #getOrderedTypeDesignationSets()} ... {@link TypeDesignationSet#getLabel()}
  * </ul>
  * Prior using the representations you need to trigger their generation by calling {@link #buildString()}
  *
@@ -87,14 +87,14 @@ public class TypeDesignationSetManager {
      *
      * {@inheritDoc}
      */
-    private Comparator<Entry<VersionableEntity,TypeDesignationWorkingSet>> entryComparator = (o1,o2)->{
+    private Comparator<Entry<VersionableEntity,TypeDesignationSet>> entryComparator = (o1,o2)->{
 
-         TypeDesignationWorkingSet ws1 = o1.getValue();
-         TypeDesignationWorkingSet ws2 = o2.getValue();
+         TypeDesignationSet ws1 = o1.getValue();
+         TypeDesignationSet ws2 = o2.getValue();
 
          if (ws1.getWorkingsetType() != ws2.getWorkingsetType()){
              //first specimen types, then name types (very rare case anyway)
-             return ws1.getWorkingsetType() == TypeDesignationWorkingSetType.NAME_TYPE_DESIGNATION_WORKINGSET? 1:-1;
+             return ws1.getWorkingsetType() == TypeDesignationSetType.NAME_TYPE_DESIGNATION_SET? 1:-1;
          }
 
          boolean hasStatus1 = !ws1.keySet().contains(null) && !ws1.keySet().contains(NullTypeDesignationStatus.SINGLETON());
@@ -129,7 +129,7 @@ public class TypeDesignationSetManager {
      * Groups the EntityReferences for each of the TypeDesignations by the according TypeDesignationStatus.
      * The TypeDesignationStatusBase keys are already ordered by the term order defined in the vocabulary.
      */
-    private LinkedHashMap<VersionableEntity,TypeDesignationWorkingSet> orderedByTypesByBaseEntity;
+    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderedByTypesByBaseEntity;
 
     private List<String> problems = new ArrayList<>();
 
@@ -205,12 +205,12 @@ public class TypeDesignationSetManager {
      */
     protected void mapAndSort() {
 
-        Map<VersionableEntity,TypeDesignationWorkingSet> byBaseEntityByTypeStatus = new HashMap<>();
+        Map<VersionableEntity,TypeDesignationSet> byBaseEntityByTypeStatus = new HashMap<>();
         this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
         orderedByTypesByBaseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
     }
 
-    private void mapTypeDesignation(Map<VersionableEntity,TypeDesignationWorkingSet> byBaseEntityByTypeStatus,
+    private void mapTypeDesignation(Map<VersionableEntity,TypeDesignationSet> byBaseEntityByTypeStatus,
             TypeDesignationBase<?> td){
 
         td = HibernateProxyHelper.deproxy(td);
@@ -233,7 +233,7 @@ public class TypeDesignationSetManager {
                     getTypeUuid(td));
 
             if(!byBaseEntityByTypeStatus.containsKey(baseEntity)){
-                byBaseEntityByTypeStatus.put(baseEntity, new TypeDesignationWorkingSet(baseEntity));
+                byBaseEntityByTypeStatus.put(baseEntity, new TypeDesignationSet(baseEntity));
             }
             byBaseEntityByTypeStatus.get(baseEntity).insert(status, typeDesignationDTO);
 
@@ -296,30 +296,30 @@ public class TypeDesignationSetManager {
         return baseEntityReference;
     }
 
-    private LinkedHashMap<VersionableEntity,TypeDesignationWorkingSet> orderByTypeByBaseEntity(
-            Map<VersionableEntity,TypeDesignationWorkingSet> stringsByTypeByBaseEntity){
+    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderByTypeByBaseEntity(
+            Map<VersionableEntity,TypeDesignationSet> stringsByTypeByBaseEntity){
 
        // order the FieldUnit TypeName keys
-       Set<Entry<VersionableEntity,TypeDesignationWorkingSet>> entrySet
+       Set<Entry<VersionableEntity,TypeDesignationSet>> entrySet
                = stringsByTypeByBaseEntity.entrySet();
-       LinkedList<Entry<VersionableEntity,TypeDesignationWorkingSet>> baseEntityKeyList
+       LinkedList<Entry<VersionableEntity,TypeDesignationSet>> baseEntityKeyList
                = new LinkedList<>(entrySet);
        Collections.sort(baseEntityKeyList, entryComparator);
 
        // new LinkedHashMap for the ordered FieldUnitOrTypeName keys
-       LinkedHashMap<VersionableEntity,TypeDesignationWorkingSet> stringsOrderedbyBaseEntityOrderdByType
+       LinkedHashMap<VersionableEntity,TypeDesignationSet> stringsOrderedbyBaseEntityOrderdByType
            = new LinkedHashMap<>(stringsByTypeByBaseEntity.size());
 
-       for(Entry<VersionableEntity,TypeDesignationWorkingSet> entry : baseEntityKeyList){
+       for(Entry<VersionableEntity,TypeDesignationSet> entry : baseEntityKeyList){
            VersionableEntity baseEntity = entry.getKey();
-           TypeDesignationWorkingSet typeDesignationWorkingSet = stringsByTypeByBaseEntity.get(baseEntity);
+           TypeDesignationSet typeDesignationSet = stringsByTypeByBaseEntity.get(baseEntity);
            // order the TypeDesignationStatusBase keys
-            List<TypeDesignationStatusBase<?>> keyList = new LinkedList<>(typeDesignationWorkingSet.keySet());
+            List<TypeDesignationStatusBase<?>> keyList = new LinkedList<>(typeDesignationSet.keySet());
             Collections.sort(keyList, new TypeDesignationStatusComparator());
             // new LinkedHashMap for the ordered TypeDesignationStatusBase keys
-            TypeDesignationWorkingSet orderedStringsByOrderedTypes = new TypeDesignationWorkingSet(
-                    typeDesignationWorkingSet.getBaseEntity());
-            keyList.forEach(key -> orderedStringsByOrderedTypes.put(key, typeDesignationWorkingSet.get(key)));
+            TypeDesignationSet orderedStringsByOrderedTypes = new TypeDesignationSet(
+                    typeDesignationSet.getBaseEntity());
+            keyList.forEach(key -> orderedStringsByOrderedTypes.put(key, typeDesignationSet.get(key)));
             stringsOrderedbyBaseEntityOrderdByType.put(baseEntity, orderedStringsByOrderedTypes);
         }
 
@@ -399,7 +399,7 @@ public class TypeDesignationSetManager {
         return this.typeDesignations.get(uuid);
     }
 
-    public Map<VersionableEntity,TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
+    public Map<VersionableEntity,TypeDesignationSet> getOrderedTypeDesignationSets() {
         return orderedByTypesByBaseEntity;
     }
 

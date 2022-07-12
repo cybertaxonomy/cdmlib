@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet.TypeDesignationWorkingSetType;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
@@ -107,9 +107,9 @@ public class TypeDesignationSetFormatter {
         }
 
         int typeSetCount = 0;
-        Map<VersionableEntity,TypeDesignationWorkingSet> orderedByTypesByBaseEntity
-                    = manager.getOrderedTypeDesignationWorkingSets();
-        TypeDesignationWorkingSetType lastWsType = null;
+        Map<VersionableEntity,TypeDesignationSet> orderedByTypesByBaseEntity
+                    = manager.getOrderedTypeDesignationSets();
+        TypeDesignationSetType lastWsType = null;
         if (orderedByTypesByBaseEntity != null){
             for(VersionableEntity baseEntity : orderedByTypesByBaseEntity.keySet()) {
                 buildTaggedTextForSingleTypeSet(manager, withBrackets, finalBuilder,
@@ -122,11 +122,11 @@ public class TypeDesignationSetFormatter {
     }
 
     private void buildTaggedTextForSingleTypeSet(TypeDesignationSetManager manager, boolean withBrackets,
-            TaggedTextBuilder finalBuilder, int typeSetCount, VersionableEntity baseEntity, TypeDesignationWorkingSetType lastWsType) {
+            TaggedTextBuilder finalBuilder, int typeSetCount, VersionableEntity baseEntity, TypeDesignationSetType lastWsType) {
 
-        Map<VersionableEntity,TypeDesignationWorkingSet>
-                orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
-        TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntity);
+        Map<VersionableEntity,TypeDesignationSet>
+                orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationSets();
+        TypeDesignationSet typeDesignationSet = orderedByTypesByBaseEntity.get(baseEntity);
 
         TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
         if(typeSetCount > 0){
@@ -136,16 +136,16 @@ public class TypeDesignationSetFormatter {
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
             boolean isPlural = hasMultipleTypes(orderedByTypesByBaseEntity);
-            if(typeDesignationWorkingSet.getWorkingsetType().isSpecimenType()){
+            if(typeDesignationSet.getWorkingsetType().isSpecimenType()){
                 workingsetBuilder.add(TagEnum.label, (isPlural? "Types:": "Type:"));
-            } else if (typeDesignationWorkingSet.getWorkingsetType().isNameType()){
+            } else if (typeDesignationSet.getWorkingsetType().isNameType()){
                 workingsetBuilder.add(TagEnum.label, (isPlural? "Nametypes:": "Nametype:"));
             } else {
                 //do nothing for now
             }
         }
 
-        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationWorkingSet);
+        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationSet);
         if(hasExplicitBaseEntity && !entityLabel(baseEntity).isEmpty()){
             workingsetBuilder.add(TagEnum.specimenOrObservation, entityLabel(baseEntity), baseEntity);
         }
@@ -153,15 +153,15 @@ public class TypeDesignationSetFormatter {
         if (withBrackets && hasExplicitBaseEntity){
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
         }
-        for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
+        for(TypeDesignationStatusBase<?> typeStatus : typeDesignationSet.keySet()) {
             typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, workingsetBuilder,
-                    typeDesignationWorkingSet, typeStatusCount, typeStatus,
+                    typeDesignationSet, typeStatusCount, typeStatus,
                     lastWsType, typeSetCount);
         }
         if (withBrackets && hasExplicitBaseEntity){
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
         }
-        typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
+        typeDesignationSet.setRepresentation(workingsetBuilder.toString());
         finalBuilder.addAll(workingsetBuilder);
         return;
     }
@@ -170,12 +170,12 @@ public class TypeDesignationSetFormatter {
      * Checks if the baseType is the same as the (only?) type in the type designation workingset.
      */
     private boolean hasExplicitBaseEntity(VersionableEntity baseEntity,
-            TypeDesignationWorkingSet typeDesignationWorkingSet) {
-        if (!typeDesignationWorkingSet.isSpecimenWorkingSet()){
+            TypeDesignationSet typeDesignationSet) {
+        if (!typeDesignationSet.isSpecimenWorkingSet()){
             return false;   //name type designations are not handled here
         }else{
             UUID baseUuid = baseEntity.getUuid();
-            for (TypeDesignationDTO<?> dto: typeDesignationWorkingSet.getTypeDesignations()){
+            for (TypeDesignationDTO<?> dto: typeDesignationSet.getTypeDesignations()){
                 if (!baseUuid.equals(dto.getTypeUuid())){
                     return true;
                 }
@@ -185,25 +185,25 @@ public class TypeDesignationSetFormatter {
     }
 
     private int buildTaggedTextForSingleTypeStatus(TypeDesignationSetManager manager,
-            TaggedTextBuilder workingsetBuilder, TypeDesignationWorkingSet typeDesignationWorkingSet,
+            TaggedTextBuilder workingsetBuilder, TypeDesignationSet typeDesignationSet,
             int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
-            TypeDesignationWorkingSetType lastWsType, int typeSetCount) {
+            TypeDesignationSetType lastWsType, int typeSetCount) {
 
         //starting separator
         if(typeStatusCount++ > 0){
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
         }
 
-        boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
+        boolean isPlural = typeDesignationSet.get(typeStatus).size() > 1;
         String label = null;
-        if(typeStatus != TypeDesignationWorkingSet.NULL_STATUS){
+        if(typeStatus != TypeDesignationSet.NULL_STATUS){
             label = typeStatus.getLabel();
-        }else if (typeDesignationWorkingSet.getWorkingsetType() != lastWsType
+        }else if (typeDesignationSet.getWorkingsetType() != lastWsType
                 && (workingsetBuilder.size() > 0 && typeSetCount > 0)){
             //only for the first name type (coming after a specimen type add the label (extremely rare case, if at all existing)
-            if (typeDesignationWorkingSet.getWorkingsetType().isNameType()) {
+            if (typeDesignationSet.getWorkingsetType().isNameType()) {
                 label = "nametype";
-            }else if (typeDesignationWorkingSet.getWorkingsetType().isSpecimenType()) {
+            }else if (typeDesignationSet.getWorkingsetType().isSpecimenType()) {
                 label = "type";
             }
         }
@@ -218,7 +218,7 @@ public class TypeDesignationSetFormatter {
 
         //designation + sources
         int typeDesignationCount = 0;
-        for(TypeDesignationDTO<?> typeDesignationDTO : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+        for(TypeDesignationDTO<?> typeDesignationDTO : createSortedList(typeDesignationSet, typeStatus)) {
             TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationDTO.getUuid());
 
             typeDesignationCount = buildTaggedTextForSingleType(typeDes, withCitation,
@@ -279,9 +279,9 @@ public class TypeDesignationSetFormatter {
     }
 
     private List<TypeDesignationDTO> createSortedList(
-            TypeDesignationWorkingSet typeDesignationWorkingSet, TypeDesignationStatusBase<?> typeStatus) {
+            TypeDesignationSet typeDesignationSet, TypeDesignationStatusBase<?> typeStatus) {
 
-        List<TypeDesignationDTO> typeDesignationDTOs = new ArrayList<>(typeDesignationWorkingSet.get(typeStatus));
+        List<TypeDesignationDTO> typeDesignationDTOs = new ArrayList<>(typeDesignationSet.get(typeStatus));
         Collections.sort(typeDesignationDTOs);
         return typeDesignationDTOs;
     }
@@ -291,13 +291,13 @@ public class TypeDesignationSetFormatter {
      * or if it has a single working set but this workingset has multiple type designations.
      */
     private boolean hasMultipleTypes(
-            Map<VersionableEntity,TypeDesignationWorkingSet> typeWorkingSets) {
+            Map<VersionableEntity,TypeDesignationSet> typeWorkingSets) {
         if (typeWorkingSets == null || typeWorkingSets.isEmpty()){
             return false;
         }else if (typeWorkingSets.keySet().size() > 1) {
             return true;
         }
-        TypeDesignationWorkingSet singleSet = typeWorkingSets.values().iterator().next();
+        TypeDesignationSet singleSet = typeWorkingSets.values().iterator().next();
         return singleSet.getTypeDesignations().size() > 1;
     }
 

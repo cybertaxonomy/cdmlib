@@ -212,9 +212,9 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                     , result
                     );
 
-            Map<VersionableEntity,TypeDesignationWorkingSet> orderedTypeDesignations =
-                    typeDesignationManager.getOrderedTypeDesignationWorkingSets();
-            Iterator<TypeDesignationWorkingSet> byStatusMapIterator = orderedTypeDesignations.values().iterator();
+            Map<VersionableEntity,TypeDesignationSet> orderedTypeDesignations =
+                    typeDesignationManager.getOrderedTypeDesignationSets();
+            Iterator<TypeDesignationSet> byStatusMapIterator = orderedTypeDesignations.values().iterator();
             Iterator<TypeDesignationStatusBase<?>> keyIt_1 = byStatusMapIterator.next().keySet().iterator();
             Iterator<TypeDesignationStatusBase<?>> keyIt_2 = byStatusMapIterator.next().keySet().iterator();
             assertEquals("isotype", keyIt_1.next().getLabel());
