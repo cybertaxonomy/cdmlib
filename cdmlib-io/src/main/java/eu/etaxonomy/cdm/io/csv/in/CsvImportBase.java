@@ -109,7 +109,6 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private TransactionStatus startNewTransaction(STATE state, TransactionStatus tx) {
@@ -214,17 +213,11 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
         return sourceRef;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean doCheck(STATE state) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isIgnore(STATE state) {
         return false;

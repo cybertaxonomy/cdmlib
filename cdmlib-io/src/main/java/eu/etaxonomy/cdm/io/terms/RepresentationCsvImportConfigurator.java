@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @since 14.03.2017
- *
  */
 public class RepresentationCsvImportConfigurator
         extends SimpleImportConfiguratorBase<InputStreamReader>{
@@ -43,7 +42,6 @@ public class RepresentationCsvImportConfigurator
 
 // *************************************
 
-
     @Override
     @SuppressWarnings("unchecked")
     protected void makeIoClassList(){
@@ -59,7 +57,6 @@ public class RepresentationCsvImportConfigurator
         this.overrideWithEmpty = overrideWithEmpty;
     }
 
-
     public UUID getLanguageUuid() {
         return languageUuid;
     }
@@ -68,10 +65,6 @@ public class RepresentationCsvImportConfigurator
         this.languageUuid = languageUuid;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Reference getSourceReference() {
         if (this.sourceReference == null){
@@ -84,5 +77,4 @@ public class RepresentationCsvImportConfigurator
         }
         return sourceReference;
     }
-
 }

@@ -91,7 +91,6 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 //      this.workDone = this.workDone +  work;
     }
 
-
     @Override
     public void internalWorked(double work) {
         computeWorked(work);
@@ -147,10 +146,6 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         return result;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void waitForFeedback() {
         if(feedbackLock == null) {
@@ -170,9 +165,6 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFeedback(Serializable feedback) {
         synchronized (feedbackLock) {
@@ -182,27 +174,16 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Serializable getFeedback() {
         return feedback;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean getIsWaitingForFeedback() {
         return isWaitingForFeedback;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void waitForFeedback(long feedbackWaitTimeout) {
         if(feedbackWaitTimeout <= 0 ) {
@@ -212,44 +193,24 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         waitForFeedback();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasFeedbackWaitTimedOut() {
        long now = System.currentTimeMillis();
        return isWaitingForFeedback && (now - feedbackWaitStartTime > feedbackWaitTimeout);
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getOwner() {
         return owner;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt() {
         // do nothing
     }
-
-
-
 }

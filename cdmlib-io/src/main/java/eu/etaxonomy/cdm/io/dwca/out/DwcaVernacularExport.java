@@ -16,7 +16,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -54,9 +55,6 @@ public class DwcaVernacularExport extends DwcaDataExportBase {
     @Override
     protected void doInvoke(DwcaTaxExportState state){}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {

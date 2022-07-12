@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -44,7 +45,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  *
  * @author a.mueller
  * @since 04.04.2017
- *
  */
 @Component
 public class ExcelDistributionUpdate
@@ -55,17 +55,11 @@ public class ExcelDistributionUpdate
 
     private static final String AREA_MAP = "AreaMap";
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void analyzeRecord(Map<String, String> record, ExcelDistributionUpdateState state) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void firstPass(ExcelDistributionUpdateState state) {
         Map<String, String> record = state.getOriginalRecord();
@@ -93,12 +87,6 @@ public class ExcelDistributionUpdate
         }
     }
 
-    /**
-     * @param state
-     * @param taxon
-     * @param record
-     * @param line
-     */
     private void handleAreasForTaxon(ExcelDistributionUpdateState state, Taxon taxon, Map<String, String> record,
             String line) {
         ImportResult result = state.getResult();
@@ -156,10 +144,6 @@ public class ExcelDistributionUpdate
         }
     }
 
-    /**
-     * @param taxon
-     * @return
-     */
     private String getTaxonLabel(Taxon taxon) {
         return taxon.getName() == null ? taxon.getTitleCache() : taxon.getName().getTitleCache();
     }
@@ -195,10 +179,6 @@ public class ExcelDistributionUpdate
         return result;
     }
 
-    /**
-     * @param statusStr
-     * @return
-     */
     private PresenceAbsenceTerm getStatusByStatusStr(ExcelDistributionUpdateState state, String statusStr, String line) {
 //        FIXME replace hardcoded;
         if ("A".equals(statusStr)) {
@@ -218,12 +198,6 @@ public class ExcelDistributionUpdate
         return null;
     }
 
-    /**
-     * @param state
-     * @param key
-     * @param line
-     * @return
-     */
     private NamedArea getAreaByIdInVoc(ExcelDistributionUpdateState state, String id, String line) {
         //TODO remember in state
         Map<String, NamedArea> areaMap = (Map<String, NamedArea>)state.getStatusItem(AREA_MAP);
@@ -235,10 +209,6 @@ public class ExcelDistributionUpdate
         return area;
     }
 
-    /**
-     * @param state
-     * @return
-     */
     private Map<String, NamedArea> createAreaMap(ExcelDistributionUpdateState state) {
         Map<String, NamedArea> result = new HashMap<>();
         TermVocabulary<?> voc = getVocabularyService().find(state.getConfig().getAreaVocabularyUuid());
@@ -252,10 +222,6 @@ public class ExcelDistributionUpdate
         return result;
     }
 
-    /**
-     * @param keys
-     * @return
-     */
     private Set<String> removeNonAreaKeys(Set<String> keys) {
         Iterator<String> it = keys.iterator();
         while (it.hasNext()){
@@ -278,12 +244,6 @@ public class ExcelDistributionUpdate
         return false;
     }
 
-    /**
-     * @param state
-     * @param taxon
-     * @param line
-     * @return
-     */
     private Map<NamedArea, Set<Distribution>> getExistingDistributions(
             ExcelDistributionUpdateState state, Taxon taxon,
             String line) {
@@ -306,24 +266,18 @@ public class ExcelDistributionUpdate
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void secondPass(ExcelDistributionUpdateState state) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isIgnore(ExcelDistributionUpdateState state) {
         return false;
     }
+
     @Override
     protected boolean requiresNomenclaturalCode() {
         return false;
     }
-
 }

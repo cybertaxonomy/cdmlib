@@ -107,7 +107,7 @@ public class TypeDesignationSet {
         this.label = representation;
     }
 
-//TODO if not needed anymore
+//TODO remove if not needed anymore
 //    /**
 //     * A reference to the entity which is the common base entity for all TypeDesignations in this workingset.
 //     * For a {@link SpecimenTypeDesignation} this is usually the {@link FieldUnit} if it is present. Otherwise it can also be

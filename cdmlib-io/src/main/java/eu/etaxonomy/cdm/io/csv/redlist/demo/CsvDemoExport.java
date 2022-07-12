@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
 import java.io.ByteArrayOutputStream;
@@ -21,7 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -49,12 +49,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
-
 /**
  * @author a.oppermann
  * @since 18.10.2012
  */
-
 @Component
 public class CsvDemoExport extends CsvDemoBase {
 
@@ -110,7 +108,7 @@ public class CsvDemoExport extends CsvDemoBase {
                     }
                     break;
                 case EXPORT_DATA:
-                    exportStream = new ByteArrayOutputStream();;
+                    exportStream = new ByteArrayOutputStream();
                     writer = new PrintWriter(exportStream);
                     break;
                 default :
@@ -137,21 +135,12 @@ public class CsvDemoExport extends CsvDemoBase {
 	        this.clearExistingRecordIds();
 	    }
 
-//	    commitTransaction(txStatus);
 	    return;
 	}
 
-
-    /**
-     * @param state
-     * @param config
-     * @param txStatus
-     * @param classificationSet
-     * @param recordList
-     */
     private void performJsonXMLPagination(CsvDemoExportState state, CsvDemoExportConfigurator config,
             TransactionStatus txStatus, Set<Classification> classificationSet, List<CsvDemoRecord> recordList) {
-        // TODO Auto-generated method stub
+
         Classification classification = null;
         for(Classification c : classificationSet){
             classification = c;
@@ -176,16 +165,6 @@ public class CsvDemoExport extends CsvDemoBase {
         commitTransaction(txStatus);
     }
 
-
-    /**
-     * @param state
-     * @param config
-     * @param txStatus
-     * @param classificationSet
-     * @param progressMonitor
-     * @param writer
-     * @return
-     */
 	private void performCSVExport(CsvDemoExportState state, CsvDemoExportConfigurator config,
 	        TransactionStatus txStatus, Set<Classification> classificationSet, IProgressMonitor progressMonitor,
 	        PrintWriter writer) {
@@ -264,12 +243,10 @@ public class CsvDemoExport extends CsvDemoBase {
 	    }
 	}
 
-
     //TODO: Exception handling
 	/**
 	 *
 	 * @param config
-	 * @return
 	 */
 	protected Set<Classification> assembleClassificationSet(CsvDemoExportConfigurator config){
 		if(config != null){
@@ -284,9 +261,7 @@ public class CsvDemoExport extends CsvDemoBase {
 
 	//TODO: Exception handling
 	/**
-	 *
 	 * @param state
-	 * @return
 	 */
 	private CsvDemoRecord assembleRecord(CsvDemoExportState state) {
 		if(state!=null){
@@ -299,22 +274,11 @@ public class CsvDemoExport extends CsvDemoBase {
 		return null;
 	}
 
-
 	/**
 	 * handles the information record for the actual {@link Taxon} including {@link Classification classification}, Taxon Name, Taxon ID,
 	 * Taxon Status, Synonyms, {@link Feature features} data
+	 *
 	 * @param record the concrete information record
-	 * @param taxonBase {@link Taxon}
-	 * @param name
-	 * @param acceptedTaxon
-	 * @param parent
-	 * @param basionym
-	 * @param isPartial
-	 * @param isProParte
-	 * @param config
-	 * @param node
-	 * @param node
-	 * @param type
 	 */
 	private void handleTaxonBase(CsvDemoRecord record, TaxonBase<?> taxonBase,
 			INonViralName name, Classification classification,
@@ -397,13 +361,12 @@ public class CsvDemoExport extends CsvDemoBase {
 		if(config.isRedlistFeatures()){
 			if(features!= null) {
 
-				List<List<String>> featureCells = new ArrayList<List<String>>(features.size());
+				List<List<String>> featureCells = new ArrayList<>(features.size());
 				for(int i = 0; i < features.size(); i++) {
-					featureCells.add(new ArrayList<String>());
+					featureCells.add(new ArrayList<>());
 				}
 				handleRelatedRedlistStatus(record, taxon, false, featureCells, features);
 				handleRelatedRedlistStatus(record, taxon, true, featureCells, features);
-
 			}
 		}
 
@@ -428,13 +391,6 @@ public class CsvDemoExport extends CsvDemoBase {
 		}
 	}
 
-	/**
-	 * @param record
-	 * @param name
-	 * @param type
-	 * @param isPartial
-	 * @param isProParte
-	 */
 	private void handleTaxonomicStatus(
 			CsvDemoRecord record,
 			INonViralName name,
@@ -471,11 +427,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	}
 
 	/**
-	 *
 	 * This method concatenates several synonyms in a list.
-	 *
-	 * @param record
-	 * @param taxon
 	 */
 	private void handleSynonyms(CsvDemoRecord record, Taxon taxon) {
 
@@ -492,11 +444,6 @@ public class CsvDemoExport extends CsvDemoBase {
 		record.setSynonyms(synonymLabels);
 	}
 
-	/**
-	 *
-	 * @param record
-	 * @param taxon
-	 */
 	private void handleDiscriptionData(CsvDemoRecord record, Taxon taxon) {
 
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -513,13 +460,7 @@ public class CsvDemoExport extends CsvDemoBase {
 		}
 		record.setCountryCode(distributions);
 	}
-	/**
-	 *
-	 * @param record
-	 * @param taxon
-	 * @param featureCells
-	 * @param features
-	 */
+
 	private void handleRedlistStatus(CsvDemoRecord record, Taxon taxon, List<List<String>> featureCells, List<Feature> features){
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 
@@ -557,20 +498,11 @@ public class CsvDemoExport extends CsvDemoBase {
 		record.setFeatures(featureCells);
 	}
 
-	/**
-	 *
-	 * @param record
-	 * @param taxon
-	 * @param relationFrom
-	 * @param featureCells
-	 * @param features
-	 */
 	private void handleRelatedRedlistStatus(CsvDemoRecord record, Taxon taxon, boolean relationFrom, List<List<String>> featureCells, List<Feature> features) {
 
 		if (relationFrom) {
             handleRedlistStatus(record, taxon, featureCells, features);
         }
-
 
 		Set<TaxonRelationship> taxRels;
 		if(relationFrom){
@@ -591,12 +523,6 @@ public class CsvDemoExport extends CsvDemoBase {
 		}
 	}
 
-
-
-	/**
-	 *
-	 * @param taxonNodes
-	 */
 	private void sortTaxonNodes(List<TaxonNode> taxonNodes) {
 		Collections.sort(taxonNodes, new Comparator<TaxonNode>() {
 
@@ -626,10 +552,6 @@ public class CsvDemoExport extends CsvDemoBase {
 		return ! state.getConfig().isDoTaxa();
 	}
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public byte[] getByteArray() {
         if (this.exportStream != null){
@@ -637,5 +559,4 @@ public class CsvDemoExport extends CsvDemoBase {
         }
         return null;
     }
-
 }

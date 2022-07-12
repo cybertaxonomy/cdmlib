@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author k.luther
  * @since 19.02.2018
- *
  */
 @Component
 public class TaxonListImport extends TaxonExcelImportBase {
@@ -32,18 +31,12 @@ public class TaxonListImport extends TaxonExcelImportBase {
     final String nameColumn = "Name";
     final String correctNameColumn = "Correct name if synonym";
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ExcelListRow createDataHolderRow() {
 
         return new ExcelListRow();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void analyzeSingleValue(
             KeyValue keyValue,
@@ -60,9 +53,6 @@ public class TaxonListImport extends TaxonExcelImportBase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void firstPass(TaxonExcelImportState state) {
 
@@ -78,16 +68,13 @@ public class TaxonListImport extends TaxonExcelImportBase {
 
         if (StringUtils.isBlank(taxonDataHolder.getCorrectNameifSynonym() )){
             Taxon taxon = Taxon.NewInstance(state.getNameMap().get(taxonDataHolder.name), null);
-            taxon = (Taxon) getTaxonService().save(taxon);
+            taxon = getTaxonService().save(taxon);
             state.putTaxon(name.getNameCache(), taxon);
 
         }
         return;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void secondPass(TaxonExcelImportState state) {
        //import all synonyms -> column correct name if synonym contains name
@@ -106,7 +93,7 @@ public class TaxonListImport extends TaxonExcelImportBase {
                 if (taxon.getName().isGenus()){
                     makeParent(state, null, taxon);
                 }else{
-                    TaxonBase parent =  state.getTaxonMap().get(taxon.getName().getGenusOrUninomial());
+                    TaxonBase<?> parent =  state.getTaxonMap().get(taxon.getName().getGenusOrUninomial());
                     if (parent instanceof Taxon){
                         Taxon parentTaxon = (Taxon)parent;
                         makeParent(state, parentTaxon, taxon);
@@ -114,12 +101,6 @@ public class TaxonListImport extends TaxonExcelImportBase {
                 }
             }
         }
-
-
-
-
-
-
     }
 
     private void makeParent(TaxonExcelImportState state, Taxon parentTaxon, Taxon childTaxon){
@@ -150,15 +131,8 @@ public class TaxonListImport extends TaxonExcelImportBase {
         return;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isIgnore(TaxonExcelImportState state) {
-        // TODO Auto-generated method stub
         return false;
     }
-
-
-
 }

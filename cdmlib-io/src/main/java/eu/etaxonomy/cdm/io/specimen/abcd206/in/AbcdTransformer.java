@@ -17,15 +17,11 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 /**
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public class AbcdTransformer extends InputTransformerBase{
 
     private static final long serialVersionUID = 5946317528955718151L;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ReferenceSystem getReferenceSystemByKey(String key) throws UndefinedTransformerMethodException {
         if (StringUtils.isBlank(key)){
@@ -40,5 +36,4 @@ public class AbcdTransformer extends InputTransformerBase{
             return result;
         }
     }
-
 }

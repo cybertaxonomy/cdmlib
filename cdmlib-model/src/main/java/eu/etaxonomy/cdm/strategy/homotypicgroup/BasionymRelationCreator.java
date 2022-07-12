@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2017 EDIT
 * European Distributed Institute of Taxonomy
@@ -14,7 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -48,9 +48,6 @@ public class BasionymRelationCreator extends StrategyBase {
 
     private UUID uuid = UUID.fromString("e9e1d1f5-e398-4ba7-81a6-92875573d7cb");
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected UUID getUuid() {
         return uuid;
@@ -86,11 +83,6 @@ public class BasionymRelationCreator extends StrategyBase {
         }
     }
 
-    /**
-     * @param basionym
-     * @param name
-     * @param name2
-     */
     private void adaptHomotypicGroup(TaxonName basionym,
             TaxonName name1, TaxonName name2) {
         if (basionym.equals(name1)){
@@ -104,10 +96,6 @@ public class BasionymRelationCreator extends StrategyBase {
         }
     }
 
-    /**
-     * @param name
-     * @param name2
-     */
     private TaxonName compareHomotypic(TaxonName name1, TaxonName name2) {
         if (name1 == null || name2 == null){
             return null;
@@ -127,10 +115,6 @@ public class BasionymRelationCreator extends StrategyBase {
         }
     }
 
-    /**
-     * @param basionymCandiate
-     * @param newCombinationCandidate
-     */
     private boolean compareNameParts(TaxonName basionymCandidate,
             TaxonName newCombinationCandidate) {
         if (basionymCandidate.isGenusOrSupraGeneric() || newCombinationCandidate.isGenusOrSupraGeneric()){
@@ -141,11 +125,6 @@ public class BasionymRelationCreator extends StrategyBase {
         return false;
     }
 
-    /**
-     * @param name1
-     * @param name2
-     * @return
-     */
     private TaxonName checkAuthors(TaxonName name1, TaxonName name2) {
         if (hasBasionymAuthorOf(name1, name2)){
             return name1;
@@ -156,11 +135,6 @@ public class BasionymRelationCreator extends StrategyBase {
         }
     }
 
-    /**
-     * @param name1
-     * @param name2
-     * @return
-     */
     private boolean hasBasionymAuthorOf(TaxonName name1, TaxonName name2) {
         TeamOrPersonBase<?> basAuthor2 = name2.getBasionymAuthorship();
         TeamOrPersonBase<?> combinationAuthor = name1.getCombinationAuthorship();
@@ -173,11 +147,6 @@ public class BasionymRelationCreator extends StrategyBase {
         return false;
     }
 
-    /**
-     * @param basAuthor
-     * @param combinationAuthor
-     * @return
-     */
     private boolean matches(TeamOrPersonBase<?> basAuthor, TeamOrPersonBase<?> combinationAuthor) {
         //TODO better do with a CDM matcher that also compares other fields and
         //returns false if other fields are contradictory
@@ -192,11 +161,6 @@ public class BasionymRelationCreator extends StrategyBase {
         }
     }
 
-    /**
-     * @param basionymName
-     * @param newCombination
-     * @return
-     */
     public static boolean matchLastNamePart(TaxonName name1, TaxonName name2) {
         String familyNamePart1 = name1.getLastNamePart();
         String familyNamePart2 = name2.getLastNamePart();
@@ -209,10 +173,6 @@ public class BasionymRelationCreator extends StrategyBase {
         }
     }
 
-    /**
-     * @param familyNamePart
-     * @return
-     */
     private static  String normalizeBasionymNamePart(String familyNamePart) {
         String namePart = familyNamePart.toLowerCase()
                 .replaceAll("(um|us|a|is|e|os|on|or)$", "")
@@ -221,5 +181,4 @@ public class BasionymRelationCreator extends StrategyBase {
                 //TODO tampensis / tampense
         return namePart;
     }
-
 }

@@ -86,9 +86,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void handleSingleLine(STATE state) {
 
@@ -108,11 +105,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }
     }
 
-    /**
-     * @param state
-     * @param name
-     * @param cdmTaxon
-     */
     private void handleAccepted(STATE state, TaxonName name) {
         TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Taxon.class);
 
@@ -202,11 +194,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }
     }
 
-
-    /**
-     * @param state
-     * @return
-     */
     private Classification getClassification(STATE state) {
         if (classification == null){
             //TODO FIXME quick and dirty
@@ -221,10 +208,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         return classification;
     }
 
-    /**
-     * @param state
-     * @return
-     */
     private TaxonNode getWfoGenus(STATE state, String taxonName, Rank rank) {
         Map<String, String> record = state.getCurrentRecord();
         String key = taxonName + "WFO";
@@ -258,11 +241,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         return node;
     }
 
-    /**
-     * @param state
-     * @param name
-     * @param cdmTaxon
-     */
     private void handleSynonym(STATE state, TaxonName name) {
         TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Synonym.class);
 
@@ -331,14 +309,9 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }
     }
 
-    /**
-     * @param state
-     * @param name
-     * @param taxonId
-     * @return
-     */
     private TaxonBase<?> getCdmTaxon(STATE state, TaxonName name, String fieldName,
             Class<? extends TaxonBase> expectedClass) {
+
         Map<String, String> record = state.getCurrentRecord();
         String taxonId = record.get(fieldName);
 
@@ -366,11 +339,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }
     }
 
-    /**
-     * @param state
-     * @param name
-     * @param cdmTaxon
-     */
     private void handleDoubtful(STATE state, TaxonName name) {
         TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Taxon.class);
 
@@ -410,16 +378,8 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
 
         }
 //        }
-}
+    }
 
-
-
-    /**
-     * @param state
-     * @param originalNameStr
-     * @param sec
-     * @return
-     */
     private TaxonName makeDoubtfulBasionym(STATE state, String attrName, Reference sec) {
         TaxonName basionymName = getName(state, attrName);
         if (basionymName.getTaxonBases().size()>0){
@@ -429,10 +389,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         return basionymName;
     }
 
-    /**
-     * @param state
-     * @return
-     */
     private TaxonNode getDoubtfulPseudoParent(STATE state, Reference sec) {
         Map<String, String> record = state.getCurrentRecord();
         String family = record.get(FAMILY);
@@ -460,11 +416,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         return pseudoParent;
     }
 
-    /**
-     * @param state
-     * @param family2
-     * @return
-     */
     private TaxonNode getFamilyParent(STATE state, String familyStr) {
         //FIXME TODO nasty quick and dirty find uuid for families/Dianthus
         UUID familyUuid;
@@ -492,10 +443,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         return familyNode;
     }
 
-    /**
-     * @param state
-     * @return
-     */
     private TaxonName getName(STATE state, String attr) {
         Map<String, String> record = state.getCurrentRecord();
 
@@ -520,11 +467,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }
     }
 
-
-    /**
-     * @param state
-     * @return
-     */
     private Map<String, TaxonName> getNameMap(STATE state) {
         if (nameMap == null){
             refreshNameMap(state);
@@ -539,16 +481,9 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         return pseudoParentMap;
     }
 
-
-
-    /**
-     * @param state
-     * @param name
-     */
     private void addSourceReference(STATE state, IdentifiableEntity<?> entity) {
         entity.addImportSource(null, null, getTransactionalSourceReference(state), "line " + state.getLine());
     }
-
 
     @Override
     protected void refreshTransactionStatus(STATE state) {
@@ -556,13 +491,8 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         refreshNameMap(state);
         pseudoParentMap = new HashMap<>();
         classification = null;
-
     }
 
-
-    /**
-     * @param state
-     */
     protected void refreshNameMap(STATE state) {
         nameMap = new HashMap<>();
         DefinedTerm wfoType = DefinedTerm.IDENTIFIER_NAME_WFO();
@@ -579,6 +509,4 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
             }
         }
     }
-
-
 }

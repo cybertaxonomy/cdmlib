@@ -1647,6 +1647,7 @@ public class Taxon
 
     /**
      * {@inheritDoc}.
+     *
      * <BR>Also returns <code>false</code> if it is a misapplied name or has a similar concept relationship that
      * is similar to synonym relationship (shows up in the synonymy of applications)
      */
