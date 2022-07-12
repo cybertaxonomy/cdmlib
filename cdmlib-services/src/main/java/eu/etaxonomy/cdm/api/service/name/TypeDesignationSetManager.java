@@ -405,7 +405,7 @@ public class TypeDesignationSetManager {
         return this.typeDesignations.get(uuid);
     }
 
-    public LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
+    public Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
         return orderedByTypesByBaseEntity;
     }
 

@@ -13,8 +13,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -213,7 +213,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                     , result
                     );
 
-            LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedTypeDesignations =
+            Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedTypeDesignations =
                     typeDesignationManager.getOrderedTypeDesignationWorkingSets();
             Iterator<TypeDesignationWorkingSet> byStatusMapIterator = orderedTypeDesignations.values().iterator();
             Iterator<TypeDesignationStatusBase<?>> keyIt_1 = byStatusMapIterator.next().keySet().iterator();

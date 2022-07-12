@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.api.service.name;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -94,7 +94,7 @@ public class TypeDesignationSetFormatter {
         }
 
         int typeSetCount = 0;
-        LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedByTypesByBaseEntity
+        Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedByTypesByBaseEntity
                     = manager.getOrderedTypeDesignationWorkingSets();
         TypeDesignationWorkingSetType lastWsType = null;
         if (orderedByTypesByBaseEntity != null){
@@ -111,7 +111,7 @@ public class TypeDesignationSetFormatter {
     private void buildTaggedTextForSingleTypeSet(TypeDesignationSetManager manager, boolean withBrackets,
             TaggedTextBuilder finalBuilder, int typeSetCount, TypedEntityReference<?> baseEntityRef, TypeDesignationWorkingSetType lastWsType) {
 
-        LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>
+        Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>
                 orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
         TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
 
@@ -278,7 +278,7 @@ public class TypeDesignationSetFormatter {
      * or if it has a single working set but this workingset has multiple type designations.
      */
     private boolean hasMultipleTypes(
-            LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> typeWorkingSets) {
+            Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> typeWorkingSets) {
         if (typeWorkingSets == null || typeWorkingSets.isEmpty()){
             return false;
         }else if (typeWorkingSets.keySet().size() > 1) {
