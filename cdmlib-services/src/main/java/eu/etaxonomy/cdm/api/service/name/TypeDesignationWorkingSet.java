@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -36,11 +37,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  * @author a.kohlbecker
  * @since Mar 10, 2017
  */
-public class TypeDesignationWorkingSet
-        extends LinkedHashMap<TypeDesignationStatusBase<?>,
-                              Collection<TypeDesignationDTO>> {
-
-    private static final long serialVersionUID = -1329007606500890729L;
+public class TypeDesignationWorkingSet {
 
     public static final NullTypeDesignationStatus NULL_STATUS = NullTypeDesignationStatus.SINGLETON();
 
@@ -48,6 +45,8 @@ public class TypeDesignationWorkingSet
 
     //maybe removed in future as redundant with baseEntity
     private TypedEntityReference<? extends VersionableEntity> baseEntityReference;
+
+    private LinkedHashMap<TypeDesignationStatusBase<?>,Collection<TypeDesignationDTO>> designationByStatusMap = new LinkedHashMap<>();
 
     private VersionableEntity baseEntity;
 
@@ -78,21 +77,38 @@ public class TypeDesignationWorkingSet
 
     public List<TypeDesignationDTO> getTypeDesignations() {
         List<TypeDesignationDTO> typeDesignations = new ArrayList<>();
-        this.values().forEach(typeDesignationReferences -> typeDesignationReferences.forEach(td -> typeDesignations.add(td)));
+        designationByStatusMap.values().forEach(typeDesignationDtos -> typeDesignationDtos.forEach(td -> typeDesignations.add(td)));
         return typeDesignations;
     }
 
+    public Set<TypeDesignationStatusBase<?>> keySet() {
+        return designationByStatusMap.keySet();
+    }
+
+    public Collection<TypeDesignationDTO> get(TypeDesignationStatusBase<?> typeStatus) {
+        return designationByStatusMap.get(typeStatus);
+    }
+
     public void insert(TypeDesignationStatusBase<?> status,
-            TypeDesignationDTO typeDesignationEntityReference) {
+            TypeDesignationDTO<?> typeDesignationDto) {
 
         if(status == null){
             status = NULL_STATUS;
         }
-        if(!this.containsKey(status)){
-            this.put(status, new ArrayList<>());
+        if(!designationByStatusMap.containsKey(status)){
+            designationByStatusMap.put(status, new ArrayList<>());
         }
-        this.get(status).add(typeDesignationEntityReference);
+        designationByStatusMap.get(status).add(typeDesignationDto);
     }
+
+    public Collection<TypeDesignationDTO> put(TypeDesignationStatusBase<?> status,
+            Collection<TypeDesignationDTO> typeDesignationDtos) {
+        if(status == null){
+            status = NULL_STATUS;
+        }
+        return designationByStatusMap.put(status, typeDesignationDtos);
+    }
+
 
     public String getLabel() {
         return label;
@@ -132,7 +148,7 @@ public class TypeDesignationWorkingSet
      */
     public TypeDesignationStatusBase<?> highestTypeStatus(Comparator<TypeDesignationStatusBase<?>> comparator) {
         TypeDesignationStatusBase<?> highestTypeStatus = null;
-        for(TypeDesignationStatusBase<?> status : keySet()) {
+        for(TypeDesignationStatusBase<?> status : designationByStatusMap.keySet()) {
             if(comparator.compare(status, highestTypeStatus) < 0){
                 highestTypeStatus = status;
             }
