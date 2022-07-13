@@ -57,6 +57,8 @@ public class TypeDesignationSet {
 
     public TypeDesignationSet(VersionableEntity baseEntity) {
         this.baseEntity = baseEntity;
+        //init base entity label to avoid LazyInitializationExceptions
+        TypeDesignationSetFormatter.entityLabel(baseEntity);
     }
 
 // ***********************************************************************/
