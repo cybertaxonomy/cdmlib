@@ -128,18 +128,18 @@ public class TypeDesignationSetFormatter {
                 orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationSets();
         TypeDesignationSet typeDesignationSet = orderedByTypesByBaseEntity.get(baseEntity);
 
-        TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
+        TaggedTextBuilder taggedTextBuilder = new TaggedTextBuilder();
         if(typeSetCount > 0){
-            workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
+            taggedTextBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
         }else if (withStartingTypeLabel){
             //TODO this is not really exact as we may want to handle specimen types and
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
             boolean isPlural = hasMultipleTypes(orderedByTypesByBaseEntity);
             if(typeDesignationSet.getWorkingsetType().isSpecimenType()){
-                workingsetBuilder.add(TagEnum.label, (isPlural? "Types:": "Type:"));
+                taggedTextBuilder.add(TagEnum.label, (isPlural? "Types:": "Type:"));
             } else if (typeDesignationSet.getWorkingsetType().isNameType()){
-                workingsetBuilder.add(TagEnum.label, (isPlural? "Nametypes:": "Nametype:"));
+                taggedTextBuilder.add(TagEnum.label, (isPlural? "Nametypes:": "Nametype:"));
             } else {
                 //do nothing for now
             }
@@ -147,22 +147,22 @@ public class TypeDesignationSetFormatter {
 
         boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationSet);
         if(hasExplicitBaseEntity && !entityLabel(baseEntity).isEmpty()){
-            workingsetBuilder.add(TagEnum.specimenOrObservation, entityLabel(baseEntity), baseEntity);
+            taggedTextBuilder.add(TagEnum.specimenOrObservation, entityLabel(baseEntity), baseEntity);
         }
         int typeStatusCount = 0;
         if (withBrackets && hasExplicitBaseEntity){
-            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
+            taggedTextBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
         }
         for(TypeDesignationStatusBase<?> typeStatus : typeDesignationSet.keySet()) {
-            typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, workingsetBuilder,
+            typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, taggedTextBuilder,
                     typeDesignationSet, typeStatusCount, typeStatus,
                     lastWsType, typeSetCount);
         }
         if (withBrackets && hasExplicitBaseEntity){
-            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
+            taggedTextBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
         }
-        typeDesignationSet.setRepresentation(workingsetBuilder.toString());
-        finalBuilder.addAll(workingsetBuilder);
+        typeDesignationSet.setRepresentation(taggedTextBuilder.toString());
+        finalBuilder.addAll(taggedTextBuilder);
         return;
     }
 

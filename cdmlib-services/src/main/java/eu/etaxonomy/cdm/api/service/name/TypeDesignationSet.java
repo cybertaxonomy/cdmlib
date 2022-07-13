@@ -21,9 +21,9 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
- * TypeDesignations which refer to the same base entity (e.g. FieldUnit for SpecimenTypeDesignations
- * or TaxonName/NameTypeDesignation for NameTypeDesignation form a type designation set.
- * The <code>TypeDesignationSet</code> internally stores the entity base
+ * Type designations which refer to the same base entity (e.g. FieldUnit for SpecimenTypeDesignations
+ * or TaxonName/NameTypeDesignation for NameTypeDesignation form a {@link TypeDesignationSet}.
+ * The <code>TypeDesignationSet</code> internally stores the base entity
  * and an ordered map that maps type status (TypeDesignationStatusBase) to the type designations
  * in the <code>TypeDesignationSet</code>.
  *
@@ -39,7 +39,7 @@ public class TypeDesignationSet {
 
     public static final NullTypeDesignationStatus NULL_STATUS = NullTypeDesignationStatus.SINGLETON();
 
-    //TODO needed?
+    //TODO needed? => currently used as cache for toString()
     private String label = null;
 
     private VersionableEntity baseEntity;
