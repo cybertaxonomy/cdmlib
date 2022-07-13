@@ -239,7 +239,7 @@
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationSet">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.TypeDesignationSetValueProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.common.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>

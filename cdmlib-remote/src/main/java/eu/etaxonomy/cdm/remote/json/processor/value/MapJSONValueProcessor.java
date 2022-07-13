@@ -9,12 +9,11 @@
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import java.util.Map;
-import java.util.Objects;
 
-import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -30,34 +29,30 @@ public class MapJSONValueProcessor implements JsonValueProcessor {
 	@Override
 	public Object processArrayValue(Object value, JsonConfig jsonConfig) {
 
-	    if(value instanceof TypeDesignationSet){
-	        TypeDesignationSet map = (TypeDesignationSet)value;
-	        JSONObject json = new JSONObject();
-            for(TypeDesignationStatusBase<?> key : map.keySet()){
-                TermRepresentation_L10n term_L10n = new TermRepresentation_L10n(key, false);
-                String label = Objects.toString(term_L10n.getLabel(), "NULL");
-                json.element(label, map.get(key), jsonConfig);
-            }
-            return json;
-	    } else if(value instanceof Map){
-			Map<?,?> map= (Map<?,?>)value;
-			if( ! map.isEmpty()){
-			    JSONObject json = new JSONObject();
-			    if(map.keySet().iterator().next() instanceof TypedEntityReference){
-			        for(Object key : map.keySet()){
-			            json.element(key.toString(), map.get(key), jsonConfig);
-			        }
-			    } else {
-    				for (Object val : map.values()){
-    					if(val instanceof LanguageString){
-    						json.element(((LanguageString)val).getLanguageLabel(), val, jsonConfig);
-    					} else {
-    						return JSONObject.fromObject(value, jsonConfig);
-    					}
-    				}
-			    }
-				return json;
-			}
+    	Map<?,?> map= (Map<?,?>)value;
+		if( ! map.isEmpty()){
+		    JSONObject json = new JSONObject();
+		    Object firstKey = map.keySet().iterator().next();
+		    if(firstKey instanceof TypedEntityReference){
+		        for(Object key : map.keySet()){
+		            json.element(key.toString(), map.get(key), jsonConfig);
+		        }
+		    }else if (firstKey instanceof VersionableEntity && map.get(firstKey) instanceof TypeDesignationSet) {
+		        //handle TypeDesignationSetContainer.orderedByTypesByBaseEntity
+		        for(Object key : map.keySet()){
+                    json.element(TypeDesignationSetFormatter.entityLabel((VersionableEntity)key),
+                            map.get(key), jsonConfig);
+                }
+		    } else {
+				for (Object val : map.values()){
+					if(val instanceof LanguageString){
+						json.element(((LanguageString)val).getLanguageLabel(), val, jsonConfig);
+					} else {
+						return JSONObject.fromObject(value, jsonConfig);
+					}
+				}
+		    }
+			return json;
 		}
 		return JSONObject.fromObject(value, jsonConfig);
 	}
