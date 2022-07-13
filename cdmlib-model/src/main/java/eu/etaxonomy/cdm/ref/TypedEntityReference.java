@@ -69,6 +69,14 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         }
     }
 
+    public static  <T extends CdmBase> TypedEntityReference<T> fromEntityWithLabel(T entity, String explicitLabel) {
+        if(entity == null) {
+            return null;
+        }
+        entity = HibernateProxyHelper.deproxy(entity);
+        return new TypedEntityReference<>((Class<T>)entity.getClass(), entity.getUuid(), explicitLabel);
+    }
+
     /**
      * Casts the <code>TypedEntityReference</code> to the <code>subType</code> if possible.
      *

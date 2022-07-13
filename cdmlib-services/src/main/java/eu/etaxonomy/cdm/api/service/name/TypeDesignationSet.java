@@ -16,9 +16,14 @@ import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * Type designations which refer to the same base entity (e.g. FieldUnit for SpecimenTypeDesignations
@@ -109,17 +114,16 @@ public class TypeDesignationSet {
         this.label = representation;
     }
 
-//TODO remove if not needed anymore
-//    /**
-//     * A reference to the entity which is the common base entity for all TypeDesignations in this workingset.
-//     * For a {@link SpecimenTypeDesignation} this is usually the {@link FieldUnit} if it is present. Otherwise it can also be
-//     * a {@link DerivedUnit} or something else depending on the specific use case.
-//     *
-//     * @return the baseEntityReference
-//     */
-//    public TypedEntityReference<? extends VersionableEntity> getBaseEntityReference() {
-//        return baseEntityReference;
-//    }
+    /**
+     * A reference to the entity which is the common base entity for all TypeDesignations in this workingset.
+     * For a {@link SpecimenTypeDesignation} this is usually the {@link FieldUnit} if it is present. Otherwise it can also be
+     * a {@link DerivedUnit} or something else depending on the specific use case.
+     *
+     * @return the baseEntityReference
+     */
+    public TypedEntityReference<? extends VersionableEntity> getBaseEntityAsReference() {
+        return makeEntityReference(baseEntity);
+    }
 
     public boolean isSpecimenWorkingSet() {
         return getWorkingsetType().isSpecimenType();
@@ -149,6 +153,17 @@ public class TypeDesignationSet {
             }
         }
         return highestTypeStatus;
+    }
+
+    public static TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
+
+        baseEntity = CdmBase.deproxy(baseEntity);
+        String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
+
+        TypedEntityReference<? extends VersionableEntity> baseEntityReference =
+                TypedEntityReference.fromEntityWithLabel(baseEntity, label);
+
+        return baseEntityReference;
     }
 
 // **************************** toString() ************************************

@@ -10,10 +10,7 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import java.util.Map;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -24,7 +21,6 @@ import net.sf.json.processors.JsonValueProcessor;
  * @since 23.06.2010
  */
 public class MapJSONValueProcessor implements JsonValueProcessor {
-
 
 	@Override
 	public Object processArrayValue(Object value, JsonConfig jsonConfig) {
@@ -37,12 +33,6 @@ public class MapJSONValueProcessor implements JsonValueProcessor {
 		        for(Object key : map.keySet()){
 		            json.element(key.toString(), map.get(key), jsonConfig);
 		        }
-		    }else if (firstKey instanceof VersionableEntity && map.get(firstKey) instanceof TypeDesignationSet) {
-		        //handle TypeDesignationSetContainer.orderedByTypesByBaseEntity
-		        for(Object key : map.keySet()){
-                    json.element(TypeDesignationSetFormatter.entityLabel((VersionableEntity)key),
-                            map.get(key), jsonConfig);
-                }
 		    } else {
 				for (Object val : map.values()){
 					if(val instanceof LanguageString){

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -258,8 +259,18 @@ public class RegistrationDTO {
         return name;
     }
 
-    public Map<VersionableEntity,TypeDesignationSet> getOrderedTypeDesignationSets() {
-        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getOrderedTypeDesignationSets() : null;
+    public Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> getOrderedTypeDesignationSets() {
+        return typeDesignationSetContainer != null ?
+                typeDesignationSetKeyToTypedEntity(typeDesignationSetContainer.getOrderedTypeDesignationSets()) : null;
+    }
+
+    private Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> typeDesignationSetKeyToTypedEntity(
+            Map<VersionableEntity,TypeDesignationSet> orderedTypeDesignationSets) {
+        Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> result = new LinkedHashMap<>(orderedTypeDesignationSets.size());
+
+        orderedTypeDesignationSets.entrySet().forEach(e->
+            result.put(TypeDesignationSet.makeEntityReference(e.getKey()), e.getValue()));
+        return result;
     }
 
     public TypeDesignationSet getTypeDesignationSet(VersionableEntity baseEntity) {
