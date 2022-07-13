@@ -27,7 +27,7 @@ public class RegistrationDtoBeanProcessor extends AbstractBeanProcessor<Registra
                 "blockedBy",
                 "blocked",
                 "submitterUserName"
-                );
+            );
     }
 
     @Override
@@ -35,5 +35,4 @@ public class RegistrationDtoBeanProcessor extends AbstractBeanProcessor<Registra
         // nothing to do here
         return json;
     }
-
 }

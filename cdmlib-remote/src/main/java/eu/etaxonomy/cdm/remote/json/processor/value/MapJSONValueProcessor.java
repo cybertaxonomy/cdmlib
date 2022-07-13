@@ -23,7 +23,6 @@ import net.sf.json.processors.JsonValueProcessor;
 /**
  * @author a.kohlbecker
  * @since 23.06.2010
- *
  */
 public class MapJSONValueProcessor implements JsonValueProcessor {
 
@@ -63,13 +62,9 @@ public class MapJSONValueProcessor implements JsonValueProcessor {
 		return JSONObject.fromObject(value, jsonConfig);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.json.processors.JsonValueProcessor#processObjectValue(java.lang.String, java.lang.Object, net.sf.json.JsonConfig)
-	 */
 	@Override
 	public Object processObjectValue(String key, Object value,
 			JsonConfig jsonConfig) {
 		return processArrayValue(value, jsonConfig);
 	}
-
 }

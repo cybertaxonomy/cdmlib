@@ -18,7 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
@@ -466,10 +467,4 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             }
         }
     }
-
-
-
-
-
-
 }

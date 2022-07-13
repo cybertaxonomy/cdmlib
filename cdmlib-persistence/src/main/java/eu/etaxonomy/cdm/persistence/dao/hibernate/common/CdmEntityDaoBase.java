@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
@@ -1152,7 +1153,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
         List<Restriction<?>> allRestrictions = new ArrayList<>();
-        allRestrictions.add(new Restriction<String>(param, matchmode, queryString));
+        allRestrictions.add(new Restriction<>(param, matchmode, queryString));
         if(restrictions != null){
             allRestrictions.addAll(restrictions);
         }
@@ -1174,7 +1175,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             MatchMode matchmode, List<Restriction<?>> restrictions) {
 
         List<Restriction<?>> allRestrictions = new ArrayList<>();
-        allRestrictions.add(new Restriction<String>(param, matchmode, queryString));
+        allRestrictions.add(new Restriction<>(param, matchmode, queryString));
         if(restrictions != null){
             allRestrictions.addAll(restrictions);
         }

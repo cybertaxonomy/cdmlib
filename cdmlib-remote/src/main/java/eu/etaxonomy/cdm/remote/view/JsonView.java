@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.SuppressPropertiesBeanIntrospector;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.View;
 
 import eu.etaxonomy.cdm.opt.config.DataSourceProperties;
@@ -114,10 +115,9 @@ public class JsonView extends BaseView implements View {
 
         String contextPath = null;
 
-        if (request != null)
-        	{
+        if (request != null) {
         	contextPath = request.getContextPath();
-        	}
+        }
 
         if(jsonConfig == null){
             logger.error("The jsonConfig must not be null. It must be set in the applicationContext.");
@@ -132,7 +132,7 @@ public class JsonView extends BaseView implements View {
         boolean isCollectionType = false;
         JSON jsonObj;
         if (entity == null){
-          jsonObj = JSONObject.fromObject("{}");
+            jsonObj = JSONObject.fromObject("{}");
         } else if(Collection.class.isAssignableFrom(entity.getClass())){
             isCollectionType = true;
             jsonObj = JSONArray.fromObject(entity, jsonConfig);
@@ -151,8 +151,8 @@ public class JsonView extends BaseView implements View {
             XMLSerializer xmlSerializer = new XMLSerializer();
             if(isCollectionType){
                 xmlSerializer.setArrayName(entity.getClass().getSimpleName());
-                Class elementType = Object.class;
-                Collection c = (Collection)entity;
+                Class<?> elementType = Object.class;
+                Collection<?> c = (Collection<?>)entity;
                 if(c.size() > 0){
                     elementType = c.iterator().next().getClass();
                 }
@@ -205,6 +205,4 @@ public class JsonView extends BaseView implements View {
         // render
         render(entity, writer, jsonpCallback, request, response);
     }
-
-
 }

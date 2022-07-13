@@ -31,18 +31,18 @@ public class DateTimeJSONValueProcessor implements JsonValueProcessor {
 	@Override
     public Object processArrayValue(Object object, JsonConfig jsonConfig) {
 		DateTime dateTime = (DateTime) object;
-        return formatDateTime(object);
+        return formatDateTime(dateTime);
 	}
 
 	@Override
     public Object processObjectValue(String key, Object object,
 			JsonConfig jsonConfig) {
-	    return formatDateTime(object);
+	    return formatDateTime((DateTime)object);
 	}
 
-    public Object formatDateTime(Object object) {
+    Object formatDateTime(DateTime object) {
         if(object != null){
-	        DateTime dateTime = (DateTime) object;
+	        DateTime dateTime = object;
 	        // WARNING! null means now!
 	        return DateTimeJSONValueProcessor.iso8601Format.print(dateTime);
 	    } else {
