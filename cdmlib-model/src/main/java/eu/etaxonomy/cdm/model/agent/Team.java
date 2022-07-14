@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.ListIndexBase;
@@ -356,8 +357,15 @@ public class Team extends TeamOrPersonBase<Team> {
         if (collectorTitleCache == null){
             this.collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
         }else{
-            //as long as team members do not inform the team about changes the cache must be created new each time
-            collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
+            try {
+                //as long as team members do not inform the team about changes the cache must be created new each time
+                collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
+            } catch (LazyInitializationException e) {
+                //for debugging #10090 only
+                logger.error("LIE during getCollectorTitleCache");
+                e.printStackTrace();
+                throw e;
+            }
         }
         return collectorTitleCache;
     }
