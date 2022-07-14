@@ -13,6 +13,7 @@ import java.util.Objects;
 import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
@@ -26,7 +27,7 @@ public class TypeDesignationSetValueProcessor implements JsonValueProcessor {
     @Override
     public Object processArrayValue(Object value, JsonConfig jsonConfig) {
         if (value == null) {
-            return null;
+            return JSONNull.getInstance();
         }
         TypeDesignationSet tds = (TypeDesignationSet)value;
         JSONObject json = new JSONObject();
