@@ -5,9 +5,7 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package net.sf.json;
-
 
 /**
  * Base class for JSON Beanprocessors.
@@ -17,16 +15,15 @@ package net.sf.json;
  *
  * @author a.kohlbecker
  * @since 19.03.2009
- *
  */
-public class CycleSetAcess{
+public class CycleSetAccess{
 
 	public void removeFromCycleSet(Object instance) {
-		JSONObject.removeInstance(instance);
+		AbstractJSON.removeInstance(instance);
 	}
 
 	public void addToCycleSet(Object instance) {
-		JSONObject.addInstance(instance);
+		AbstractJSON.addInstance(instance);
 	}
 
 }

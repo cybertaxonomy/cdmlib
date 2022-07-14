@@ -1167,7 +1167,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         List<S> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
-
     }
 
     @Override
