@@ -70,8 +70,6 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 })
 @XmlRootElement(name = "Team")
 @Entity
-//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Team extends TeamOrPersonBase<Team> {
