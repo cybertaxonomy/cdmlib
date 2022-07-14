@@ -47,7 +47,7 @@ public class DateHeaderFilter implements Filter {
 
         try {
             OffsetDateTime dateTime = OffsetDateTime.now();
-            // from chain.doFilter() NestedServletExceptions with NPEs may bubble up from
+            // from chain.doFilter() NestedServletExceptions with NPEs may bubble up
             // from controller methods which miss proper handling of not found entities or the like
             // (HTTP 404 : uuid not found)
             // These situations are caught below and logged at info level for debugging purposes

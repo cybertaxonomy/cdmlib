@@ -149,7 +149,7 @@ public class JsonView extends BaseView implements View {
 
             if(type.equals(Type.XML)){
                 XMLSerializer xmlSerializer = new XMLSerializer();
-                if(isCollectionType){
+                if(isCollectionType && entity != null){  //can never be null here but there is an IDE warning otherwise
                     xmlSerializer.setArrayName(entity.getClass().getSimpleName());
                     Class<?> elementType = Object.class;
                     Collection<?> c = (Collection<?>)entity;
