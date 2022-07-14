@@ -25,6 +25,9 @@ public class TypeDesignationSetValueProcessor implements JsonValueProcessor {
 
     @Override
     public Object processArrayValue(Object value, JsonConfig jsonConfig) {
+        if (value == null) {
+            return null;
+        }
         TypeDesignationSet tds = (TypeDesignationSet)value;
         JSONObject json = new JSONObject();
         for(TypeDesignationStatusBase<?> key : tds.keySet()){

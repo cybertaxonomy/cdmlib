@@ -26,7 +26,7 @@ public class MapJSONValueProcessor implements JsonValueProcessor {
 	public Object processArrayValue(Object value, JsonConfig jsonConfig) {
 
     	Map<?,?> map= (Map<?,?>)value;
-		if( ! map.isEmpty()){
+		if( map != null && ! map.isEmpty()){
 		    JSONObject json = new JSONObject();
 		    Object firstKey = map.keySet().iterator().next();
 		    if(firstKey instanceof TypedEntityReference){
