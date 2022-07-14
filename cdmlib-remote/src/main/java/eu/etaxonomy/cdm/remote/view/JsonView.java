@@ -126,60 +126,60 @@ public class JsonView extends BaseView implements View {
         // option to skip json processing for debugging purposes, see #4925
         if(System.getProperty("SkipJSON") == null) {
 
-        // create JSON Object
+            // create JSON Object
 
-//        long start = System.currentTimeMillis();
-        boolean isCollectionType = false;
-        JSON jsonObj;
-        if (entity == null){
-            jsonObj = JSONObject.fromObject("{}");
-        } else if(Collection.class.isAssignableFrom(entity.getClass())){
-            isCollectionType = true;
-            jsonObj = JSONArray.fromObject(entity, jsonConfig);
-        }else if(entity instanceof String){
-            jsonObj = JSONObject.fromObject("{\"String\":\""+entity.toString().replace("\"", "\\\"")+"\"}");
-        } else if(entity instanceof Integer){
-            jsonObj = JSONObject.fromObject("{\"Integer\":"+((Integer)entity).intValue()+"}");
-        } else if(entity instanceof Boolean){
-            jsonObj = JSONObject.fromObject("{\"Boolean\":"+((Boolean)entity).toString()+"}");
-        } else {
-            jsonObj = JSONObject.fromObject(entity, jsonConfig);
-        }
-//        System.err.println("create JSON Object " + (System.currentTimeMillis() - start));
-
-        if(type.equals(Type.XML)){
-            XMLSerializer xmlSerializer = new XMLSerializer();
-            if(isCollectionType){
-                xmlSerializer.setArrayName(entity.getClass().getSimpleName());
-                Class<?> elementType = Object.class;
-                Collection<?> c = (Collection<?>)entity;
-                if(c.size() > 0){
-                    elementType = c.iterator().next().getClass();
-                }
-                xmlSerializer.setObjectName(elementType.getSimpleName());
-            } else if(entity != null){
-                xmlSerializer.setObjectName(entity.getClass().getSimpleName());
-            }
-            String xml = xmlSerializer.write( jsonObj );
-            if(type.equals(Type.XML) && xsl != null){
-
-                if(contextPath == null){
-                    contextPath = "";
-                }
-                String basepath = dataSourceProperties.getXslBasePath(contextPath + "/xsl");
-                String replace = "\r\n<?xml-stylesheet type=\"text/xsl\" href=\"" + basepath + "/" + xsl + "\"?>\r\n";
-                xml = xml.replaceFirst("\r\n", replace);
-            }
-            writer.append(xml);
-        } else {
-            // assuming json
-            if(jsonpCallback != null){
-               // writer.append(jsonpCallback).append("(").append(jsonObj.toString()).append(");");
+    //        long start = System.currentTimeMillis();
+            boolean isCollectionType = false;
+            JSON jsonObj;
+            if (entity == null){
+                jsonObj = JSONObject.fromObject("{}");
+            } else if(Collection.class.isAssignableFrom(entity.getClass())){
+                isCollectionType = true;
+                jsonObj = JSONArray.fromObject(entity, jsonConfig);
+            }else if(entity instanceof String){
+                jsonObj = JSONObject.fromObject("{\"String\":\""+entity.toString().replace("\"", "\\\"")+"\"}");
+            } else if(entity instanceof Integer){
+                jsonObj = JSONObject.fromObject("{\"Integer\":"+((Integer)entity).intValue()+"}");
+            } else if(entity instanceof Boolean){
+                jsonObj = JSONObject.fromObject("{\"Boolean\":"+((Boolean)entity).toString()+"}");
             } else {
-                writer.append(jsonObj.toString());
+                jsonObj = JSONObject.fromObject(entity, jsonConfig);
             }
-        }
-        //TODO resp.setContentType(type);
+    //        System.err.println("create JSON Object " + (System.currentTimeMillis() - start));
+
+            if(type.equals(Type.XML)){
+                XMLSerializer xmlSerializer = new XMLSerializer();
+                if(isCollectionType){
+                    xmlSerializer.setArrayName(entity.getClass().getSimpleName());
+                    Class<?> elementType = Object.class;
+                    Collection<?> c = (Collection<?>)entity;
+                    if(c.size() > 0){
+                        elementType = c.iterator().next().getClass();
+                    }
+                    xmlSerializer.setObjectName(elementType.getSimpleName());
+                } else if(entity != null){
+                    xmlSerializer.setObjectName(entity.getClass().getSimpleName());
+                }
+                String xml = xmlSerializer.write( jsonObj );
+                if(type.equals(Type.XML) && xsl != null){
+
+                    if(contextPath == null){
+                        contextPath = "";
+                    }
+                    String basepath = dataSourceProperties.getXslBasePath(contextPath + "/xsl");
+                    String replace = "\r\n<?xml-stylesheet type=\"text/xsl\" href=\"" + basepath + "/" + xsl + "\"?>\r\n";
+                    xml = xml.replaceFirst("\r\n", replace);
+                }
+                writer.append(xml);
+            } else {
+                // assuming json
+                if(jsonpCallback != null){
+                   // writer.append(jsonpCallback).append("(").append(jsonObj.toString()).append(");");
+                } else {
+                    writer.append(jsonObj.toString());
+                }
+            }
+            //TODO resp.setContentType(type);
 
         } else {
             writer.append("SkipJSON mode detected, this is for debugging only! Please contact the adminitrator.");
