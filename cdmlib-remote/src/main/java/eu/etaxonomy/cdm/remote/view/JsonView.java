@@ -111,7 +111,7 @@ public class JsonView extends BaseView implements View {
     }
 
     @Override
-    public void render(Object entity, PrintWriter writer, String jsonpCallback, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void render(Object entity, PrintWriter writer, String jsonpCallback, HttpServletRequest request, HttpServletResponse response) {
 
         String contextPath = null;
 
