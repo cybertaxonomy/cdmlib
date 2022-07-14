@@ -206,14 +206,16 @@ public class JsonView extends BaseView implements View {
             // render
             render(entity, writer, jsonpCallback, request, response);
         } catch (Exception e) {
-            writer.write("Error when rendering a response object of type " + (entity == null? "null" :entity.getClass().getCanonicalName()) + System.lineSeparator() + System.lineSeparator());
-            if (e.getCause() != null) {
-                //leave out the wrapping JSONException
-                e.getCause().printStackTrace(writer);
-            }else {
-                writer.write("No stacktrace");
+            if (request.getParameter("debug") != null){
+                writer.write("Error when rendering a response object of type " + (entity == null? "null" :entity.getClass().getCanonicalName()) + System.lineSeparator() + System.lineSeparator());
+                if (e.getCause() != null) {
+                    //leave out the wrapping JSONException
+                    e.getCause().printStackTrace(writer);
+                }else {
+                    writer.write("No stacktrace");
+                }
+                throw e;
             }
-            throw e;
         }
     }
 }
