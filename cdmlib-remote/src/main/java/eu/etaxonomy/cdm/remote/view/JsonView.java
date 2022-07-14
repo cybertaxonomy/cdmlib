@@ -202,7 +202,18 @@ public class JsonView extends BaseView implements View {
         // read jsonp parameter from the request
         String jsonpCallback = JsonpUtil.readJsonpCallback(request);
 
-        // render
-        render(entity, writer, jsonpCallback, request, response);
+        try {
+            // render
+            render(entity, writer, jsonpCallback, request, response);
+        } catch (Exception e) {
+            writer.write("Error when rendering a response object of type " + (entity == null? "null" :entity.getClass().getCanonicalName()) + System.lineSeparator() + System.lineSeparator());
+            if (e.getCause() != null) {
+                //leave out the wrapping JSONException
+                e.getCause().printStackTrace(writer);
+            }else {
+                writer.write("No stacktrace");
+            }
+            throw e;
+        }
     }
 }
