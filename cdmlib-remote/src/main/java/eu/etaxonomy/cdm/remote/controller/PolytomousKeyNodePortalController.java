@@ -36,6 +36,8 @@ public class PolytomousKeyNodePortalController extends PolytomousKeyNodeControll
             "otherNode",
             "taxon.name.nomenclaturalSource.citation.authorship",
             "taxon.name.nomenclaturalSource.citation.inReference.authorship",
+            "taxon.secSource.citation.authorship",
+            "taxon.secSource.citation.inReference.authorship",
             "subkey.$"
     });
 
