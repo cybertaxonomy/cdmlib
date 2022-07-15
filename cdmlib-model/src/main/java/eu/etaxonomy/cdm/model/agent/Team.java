@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.ListIndexBase;
@@ -358,11 +357,11 @@ public class Team extends TeamOrPersonBase<Team> {
             try {
                 //as long as team members do not inform the team about changes the cache must be created new each time
                 collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
-            } catch (LazyInitializationException e) {
-                //for debugging #10090 only
-                logger.error("LIE during getCollectorTitleCache");
-                e.printStackTrace();
-                throw e;
+            } catch (Exception e) {
+                //see #10090, getCollectorTitleCache is called e.g. if team is a secundum author, in this case if members are not initialized by BeanInitializer, however, jsonlib later tries to initialize the team (the exception is swallowed so it is not critical but a stacktrace is logged, which is not necessary)
+                //see also comment on TitleAndNameCacheAutoInitializer.initialize() for TaxonBase
+                if (logger.isDebugEnabled()){logger.debug("LIE during getCollectorTitleCache");}
+                return collectorTitleCache;
             }
         }
         return collectorTitleCache;
