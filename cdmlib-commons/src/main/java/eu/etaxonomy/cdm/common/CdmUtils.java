@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class CdmUtils {
 
-    private static final Logger logger = LogManager.getLogger(CdmUtils.class);
+    private static final Logger logger = LogManager.getLogger();
 
     static private boolean urlIsJarOrBundle(URL url){
         return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");

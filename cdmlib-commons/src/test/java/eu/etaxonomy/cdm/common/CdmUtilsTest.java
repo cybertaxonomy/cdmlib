@@ -25,7 +25,7 @@ import org.junit.Test;
  */
 public class CdmUtilsTest {
 
-	private static final Logger logger = LogManager.getLogger(CdmUtilsTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 /************************** TESTS ****************************************/
 

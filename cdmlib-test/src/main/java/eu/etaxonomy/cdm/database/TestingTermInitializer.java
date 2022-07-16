@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 
 public class TestingTermInitializer extends DefaultTermInitializer {
 
-    private static final Logger logger = LogManager.getLogger(TestingTermInitializer.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected PlatformTransactionManager transactionManager;
     protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();

@@ -23,7 +23,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
@@ -876,12 +877,6 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		throw new IllegalStateException("<SpecimenType> has no closing tag");
 	}
 
-
-
-	/**
-     * @param text
-     * @return
-     */
     private String removeTrailingPunctuation(String text) {
         while (isPunctuation(text.substring(text.length()-1))){
             text = text.substring(0, text.length()-1).trim();
@@ -889,14 +884,12 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
         return text;
     }
 
-
     private TeamOrPersonBase<?> createCollector(MarkupImportState state, String collectorStr) {
 		return createAuthor(state, collectorStr);
 	}
 
-
 	public List<DescriptionElementBase> handleMaterialsExamined(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature feature, TaxonDescription defaultDescription) throws XMLStreamException {
-		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+		List<DescriptionElementBase> result = new ArrayList<>();
 		//reset current areas
 		state.removeCurrentAreas();
 		while (reader.hasNext()) {
@@ -908,7 +901,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				state.removeCurrentAreas();
 				return result;
 			} else if (isStartingElement(next, SUB_HEADING)) {
-//				Map<String, Object> inlineMarkup = new HashMap<String, Object>();
+//				Map<String, Object> inlineMarkup = new HashMap<>();
 				String text = getCData(state, reader, next, true);
 				if (isFeatureHeading(state, next, text)){
 					feature = makeHeadingFeature(state, next, text, feature);

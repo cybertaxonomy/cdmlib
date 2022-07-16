@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
  * @author a.mueller
  */
 public class UuidGenerator {
-	private static final Logger logger = LogManager.getLogger(UuidGenerator.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static int n = 100;
 

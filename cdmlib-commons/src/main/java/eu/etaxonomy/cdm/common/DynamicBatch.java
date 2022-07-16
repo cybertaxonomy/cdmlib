@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DynamicBatch {
 
-    public static final Logger logger = LogManager.getLogger(DynamicBatch.class);
+    public static final Logger logger = LogManager.getLogger();
 
     int batchSize;
     int batchItemCount = -1;

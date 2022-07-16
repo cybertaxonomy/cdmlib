@@ -12,11 +12,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.yourkit.api.Controller;
+
 //TODO move to common
 public class ProfilerController {
 
-
-    private static final Logger logger = LogManager.getLogger(ProfilerController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static Controller controller;
     private static int memSnapshotCnt = 0;

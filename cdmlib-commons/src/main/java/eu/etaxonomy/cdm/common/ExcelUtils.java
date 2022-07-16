@@ -35,7 +35,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  */
 public class ExcelUtils {
 
-	private static final Logger logger = LogManager.getLogger(ExcelUtils.class);
+	private static final Logger logger = LogManager.getLogger();
 
     /** Reads all rows of an Excel worksheet */
     public static List<Map<String, String>> parseXLS(URI uri) throws FileNotFoundException {

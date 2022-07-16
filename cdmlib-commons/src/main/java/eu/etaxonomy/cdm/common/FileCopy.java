@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FileCopy {
 
-	private static final Logger logger = LogManager.getLogger(FileCopy.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	// overwrite constants
 	public static final int DO_OVERWRITE = 1;

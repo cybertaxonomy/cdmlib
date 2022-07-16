@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @Repository
 public class TestingTermVocabularyDao {
 
-    private static final Logger logger = LogManager.getLogger(TestingTermVocabularyDao.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private SessionFactory factory;

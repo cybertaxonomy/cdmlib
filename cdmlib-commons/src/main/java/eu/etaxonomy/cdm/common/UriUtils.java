@@ -60,7 +60,8 @@ import org.apache.logging.log4j.Logger;
  * @since Sep 23, 2010
  */
 public class UriUtils {
-    private static final Logger logger = LogManager.getLogger(UriUtils.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     protected static final String URI_IS_NOT_ABSOLUTE = "URI is not absolute (protocol is missing)";
 

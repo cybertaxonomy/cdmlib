@@ -30,7 +30,8 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 public class XmlHelp {
-	private static final Logger logger = LogManager.getLogger(XmlHelp.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	public final static Format prettyFormat = Format.getPrettyFormat();
 	/**
@@ -54,7 +55,6 @@ public class XmlHelp {
 			logger.error("FileNotFoundException in saveToXml()");
 			return false;
 		}
-
 	}
 
 	/**

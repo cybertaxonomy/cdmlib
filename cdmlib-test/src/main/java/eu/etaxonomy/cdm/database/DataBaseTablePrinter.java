@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 @Component
 public class DataBaseTablePrinter {
 
-    protected static final Logger logger = LogManager.getLogger(DataBaseTablePrinter.class);
+    protected static final Logger logger = LogManager.getLogger();
 
     @Autowired
     protected DataSource dataSource;

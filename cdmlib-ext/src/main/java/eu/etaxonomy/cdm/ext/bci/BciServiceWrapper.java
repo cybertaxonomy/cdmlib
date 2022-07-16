@@ -52,7 +52,7 @@ public class BciServiceWrapper
         extends ServiceWrapperBase<Collection>
         implements IBciServiceWrapper{
 
-    private static final Logger logger = LogManager.getLogger(BciServiceWrapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	 private enum ServiceType{
 		 AUTHOR,

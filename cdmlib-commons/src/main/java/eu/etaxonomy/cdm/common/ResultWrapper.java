@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ResultWrapper<T> {
 
-	private static final Logger logger = LogManager.getLogger(ResultWrapper.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	public static final ResultWrapper<Boolean> NewInstance(Boolean value){
 		ResultWrapper<Boolean> result = new ResultWrapper<Boolean>();

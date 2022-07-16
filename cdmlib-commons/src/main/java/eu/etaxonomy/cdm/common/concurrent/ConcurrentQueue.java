@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ConcurrentQueue<T> {
 
-    private static final Logger logger = LogManager.getLogger(ConcurrentQueue.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private int capacity;
     private List<T> queue = new LinkedList<>();

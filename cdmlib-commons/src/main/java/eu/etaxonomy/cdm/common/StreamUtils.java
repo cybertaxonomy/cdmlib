@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class StreamUtils {
 
-	public static final Logger logger = LogManager.getLogger(StreamUtils.class);
+	public static final Logger logger = LogManager.getLogger();
 	private static final int BUFFER_SIZE = 4096;
 
 	/**

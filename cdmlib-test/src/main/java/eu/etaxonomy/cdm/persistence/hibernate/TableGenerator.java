@@ -57,7 +57,7 @@ import org.hibernate.type.Type;
 //see also TableGeneratorGlobalOverride
 public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
-	private static final Logger logger = LogManager.getLogger(TableGenerator.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {

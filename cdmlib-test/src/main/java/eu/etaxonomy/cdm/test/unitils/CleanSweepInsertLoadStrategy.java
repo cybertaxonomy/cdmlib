@@ -39,7 +39,7 @@ import org.unitils.util.FileUtils;
  */
 public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
 
-    protected static final Logger logger = LogManager.getLogger(CleanSweepInsertLoadStrategy.class);
+    protected static final Logger logger = LogManager.getLogger();
 
     private static String clearDataResource = "eu/etaxonomy/cdm/database/ClearDBDataSet.xml";
 

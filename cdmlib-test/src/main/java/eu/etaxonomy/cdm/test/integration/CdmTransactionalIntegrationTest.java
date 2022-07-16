@@ -23,18 +23,16 @@ import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-
 /**
  * Abstract base class for integration testing a spring / hibernate application using
  * the unitils testing framework and dbunit.
  *
  * This base class extends the {@link CdmItegrationTest} by transactions management features.
- *
  */
 @Transactional(TransactionMode.DISABLED) // NOTE: we are handling transaction by ourself in this class, thus we prevent unitils from creating transactions
 public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest {
 
-    protected static final Logger logger = LogManager.getLogger(CdmTransactionalIntegrationTest.class);
+    protected static final Logger logger = LogManager.getLogger();
 
     /**
      * The transaction manager to use

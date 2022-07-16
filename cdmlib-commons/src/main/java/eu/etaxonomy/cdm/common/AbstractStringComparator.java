@@ -34,7 +34,7 @@ public abstract class AbstractStringComparator<T extends Object> implements Comp
 	 * a regular expression as key and a string to be prepended as value.
 	 */
 	public void setSubstitutionRules(Map<String, String> substitutionRules) {
-		this.substitutionRules = new HashMap<Pattern, String>(substitutionRules.size());
+		this.substitutionRules = new HashMap<>(substitutionRules.size());
 		for (String regex : substitutionRules.keySet()) {
 			this.substitutionRules.put(Pattern.compile(regex), substitutionRules.get(regex));
 		}

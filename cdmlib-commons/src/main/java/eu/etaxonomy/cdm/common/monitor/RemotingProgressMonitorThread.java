@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class RemotingProgressMonitorThread extends Thread {
 
-    private static final Logger logger = LogManager.getLogger(RemotingProgressMonitorThread.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static ConcurrentHashMap<IRemotingProgressMonitor, RemotingProgressMonitorThread>
         monitorsInProgress = new ConcurrentHashMap<>();

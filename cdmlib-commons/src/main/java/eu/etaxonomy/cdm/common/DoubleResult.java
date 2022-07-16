@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DoubleResult<S extends Object, T extends Object> {
 
-	private static final Logger logger = LogManager.getLogger(DoubleResult.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private S firstResult = null;
 	private T secondResult = null;
