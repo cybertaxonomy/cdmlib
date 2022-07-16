@@ -878,7 +878,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	}
 
     private String removeTrailingPunctuation(String text) {
-        while (isPunctuation(text.substring(text.length()-1))){
+        while (text.length() > 0 && isPunctuation(text.substring(text.length()-1))){
             text = text.substring(0, text.length()-1).trim();
         }
         return text;

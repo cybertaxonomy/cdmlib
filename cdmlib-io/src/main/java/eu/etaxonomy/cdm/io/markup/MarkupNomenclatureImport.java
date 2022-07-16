@@ -209,6 +209,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
             name = createNameByCode(state, null);
             Taxon acc = state.getCurrentTaxon();
             Taxon misapplied = Taxon.NewInstance(name, null);
+            this.save(acc, state); //we got a transient object exception later in the taxon otherwise
+            this.save(misapplied, state);
             misappliedRelation = acc.addMisappliedName(misapplied, null, null);
         }else if (!isNameType && ACCEPTED.equalsIgnoreCase(classValue)) {
 			isSynonym = false;

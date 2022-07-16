@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -581,7 +582,7 @@ public class Reference
 
 	@Override
     public void setPublisher(String publisher) {
-		this.publisher = isBlank(publisher)? null : publisher;
+		this.publisher = StringUtils.truncate(isBlank(publisher)? null : publisher, 255);
 	}
 
 	@Override
