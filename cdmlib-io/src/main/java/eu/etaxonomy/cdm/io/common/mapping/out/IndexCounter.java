@@ -9,15 +9,17 @@
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
  * @since 12.05.2009
  */
 public class IndexCounter {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(IndexCounter.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	int index = 0;
 

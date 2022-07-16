@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping.berlinModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.MultipleAttributeMapperBase;
@@ -21,11 +22,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @since 20.03.2008
- * @version 1.0
  */
 public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGLE_MAPPER extends CdmSingleAttributeMapperBase> extends MultipleAttributeMapperBase<SINGLE_MAPPER> {
-	@SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(CdmOneToManyMapper.class);
+
+    @SuppressWarnings("unused")
+	private static Logger logger = LogManager.getLogger();
 
 	private Class<MANY> manyClass;
 	private Class<ONE> oneClass;

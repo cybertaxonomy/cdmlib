@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 import java.sql.Types;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -29,7 +30,7 @@ public class DbLastActionMapper
         extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DbLastActionMapper.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	public static final UUID uuidMarkerTypeHasNoLastAction = UUID.fromString("99652d5a-bc92-4251-b57d-0fec4d258ab7");
 	public static final UUID uuidAnnotationTypeLastAction = UUID.fromString("d0423ffd-d1dc-4571-ba05-eb724eec3c77");

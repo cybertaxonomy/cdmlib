@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 import java.lang.reflect.Method;
 import java.sql.Types;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -27,7 +28,7 @@ public class DbLanguageMapper
             extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
             implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 
-    private static final Logger logger = LogManager.getLogger(DbLanguageMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private Method method;
 	private boolean isCache;

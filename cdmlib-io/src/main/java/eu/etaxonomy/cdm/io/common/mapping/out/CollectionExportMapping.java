@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -31,12 +32,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFORM>, CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM, Source>, TRANSFORM extends IExportTransformer>
         extends CdmDbExportMapping<STATE, CONFIG, TRANSFORM> {
 
-    private static final Logger logger = LogManager.getLogger(CollectionExportMapping.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private IdMapper parentMapper;
 	private DbSequenceMapper sequenceMapper;
 	private String collectionAttributeName;
-	private List<DbSimpleFilterMapper> filterMapper = new ArrayList<DbSimpleFilterMapper>() ;
+	private List<DbSimpleFilterMapper> filterMapper = new ArrayList<>() ;
 
 	public static CollectionExportMapping NewInstance(String tableName, String collectionAttributeName, IdMapper parentMapper){
 		return new CollectionExportMapping(tableName, collectionAttributeName, parentMapper, null);

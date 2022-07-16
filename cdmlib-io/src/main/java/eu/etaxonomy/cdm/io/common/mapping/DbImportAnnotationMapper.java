@@ -14,7 +14,8 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -39,7 +40,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class DbImportAnnotationMapper
             extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, AnnotatableEntity>{
 
-    private static final Logger logger = LogManager.getLogger(DbImportAnnotationMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private MarkerType ifNullMarkerType;
 

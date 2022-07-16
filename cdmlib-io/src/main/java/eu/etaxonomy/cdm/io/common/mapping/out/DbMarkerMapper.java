@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -22,11 +23,11 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
 public class DbMarkerMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DbMarkerMapper.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private final MarkerType markerType;
 

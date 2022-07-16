@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 import java.sql.Types;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -24,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class DbStringMapper
         extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
 
-    private static final Logger logger = LogManager.getLogger(DbStringMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final int MAX_PRECISION = -1;  //precision for datatype nvarchar(max) == clob (SQL Server 2008)
 	private boolean blankToNull = false;

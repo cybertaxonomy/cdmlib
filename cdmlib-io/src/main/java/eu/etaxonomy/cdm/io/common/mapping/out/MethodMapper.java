@@ -13,7 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Types;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportBase;
@@ -28,7 +29,7 @@ public class MethodMapper
             extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
             implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 
-    private static final Logger logger = LogManager.getLogger(MethodMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private Method method;
 	private Class<?>[] parameterTypes;

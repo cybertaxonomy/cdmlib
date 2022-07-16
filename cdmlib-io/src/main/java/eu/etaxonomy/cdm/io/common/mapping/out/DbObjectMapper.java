@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 import java.sql.Types;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 public class DbObjectMapper
         extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>{
 
-	private static final Logger logger = LogManager.getLogger(DbObjectMapper.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	boolean isCache;
 
