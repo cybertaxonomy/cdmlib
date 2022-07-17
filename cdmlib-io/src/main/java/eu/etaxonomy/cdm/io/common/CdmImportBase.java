@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -628,9 +629,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	/**
 	 * Returns a feature if it exists, null otherwise.
 	 * @see #getFeature(ImportStateBase, UUID, String, String, String, TermVocabulary)
-	 * @param state
-	 * @param uuid
-	 * @return
 	 */
 	protected Feature getFeature(STATE state, UUID uuid){
 		return getFeature(state, uuid, null, null, null, null);
@@ -640,12 +638,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * Returns a feature for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the feature exists in the database, if not creating it anew (with vocabulary etc.).
 	 * If label, text and labelAbbrev are all <code>null</code> no feature is created.
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
 	 */
 	protected Feature getFeature(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc){
 		if (uuid == null){
@@ -675,13 +667,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
      * checking if the uuid has already been used in this import, if not
      * checking if the status type exists in the database, if not creating it anew (with vocabulary etc.).
      * If label, text and labelAbbrev are all <code>null</code> no status type is created.
-     * @param state
-     * @param uuid
-     * @param label
-     * @param text
-     * @param language
-     * @param labelAbbrev
-     * @return
      */
     protected NomenclaturalStatusType getNomenclaturalStatusType(STATE state, UUID uuid, String label,
             String description, String labelAbbrev, Language language, TermVocabulary<NomenclaturalStatusType> voc){
