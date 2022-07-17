@@ -645,7 +645,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		Feature feature = state.getFeature(uuid);
 		if (feature == null){
-			feature = (Feature)getTermService().find(uuid);
+			feature = (Feature)CdmBase.deproxy(getTermService().find(uuid));
 			if (feature == null && ! hasNoLabel(label, description, labelAbbrev)){
 				feature = Feature.NewInstance(description, label, labelAbbrev);
 				feature.setUuid(uuid);
