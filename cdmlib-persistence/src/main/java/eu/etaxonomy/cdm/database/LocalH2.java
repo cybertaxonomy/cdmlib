@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.h2.tools.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
+import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 /**
  * @author a.mueller
@@ -166,7 +166,7 @@ public class LocalH2 extends BasicDataSource {
 	private static final String getDefaultPath(){
 		File path;
 		try {
-			path = CdmApplicationUtils.getWritableResourceDir();
+			path = CdmPersistenceUtils.getWritableResourceDir();
 		} catch (IOException e) {
 			logger.error(e);
 			throw new RuntimeException(e);

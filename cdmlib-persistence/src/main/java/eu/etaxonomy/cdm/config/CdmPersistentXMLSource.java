@@ -38,7 +38,7 @@ public class CdmPersistentXMLSource {
 
 	/**
 	 * Directory path of the template CDM sources config file - this file is used
-	 * in the case of the very first call to persist sources see {@link eu.etaxonomy.cdm.api.application.CdmApplicationUtils#getWritableResourceDir()}
+	 * in the case of the very first call to persist sources see {@link eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils#getWritableResourceDir()}
 	 */
 	public final static String CDMSOURCE_PATH = "/eu/etaxonomy/cdm/";
 

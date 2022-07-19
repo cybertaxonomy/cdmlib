@@ -23,7 +23,6 @@ import org.hibernate.query.Query;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
@@ -61,6 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
+import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 public class TestScriptService {
 
@@ -384,7 +384,7 @@ public class TestScriptService {
 	}
 
 	private boolean testWritableResourceDirectory() throws IOException{
-		CdmApplicationUtils.getWritableResourceDir();
+		CdmPersistenceUtils.getWritableResourceDir();
 		return true;
 	}
 

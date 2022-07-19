@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.application;
+package eu.etaxonomy.cdm.persistence.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,8 +25,9 @@ import eu.etaxonomy.cdm.common.FileCopy;
 import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
 import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
-public class CdmApplicationUtils implements ApplicationContextAware {
-    private static final Logger logger = LogManager.getLogger(CdmApplicationUtils.class);
+public class CdmPersistenceUtils implements ApplicationContextAware {
+
+    private static final Logger logger = LogManager.getLogger(CdmPersistenceUtils.class);
 
     private static ApplicationContext applicationContext;
 
@@ -114,6 +115,6 @@ public class CdmApplicationUtils implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        CdmApplicationUtils.applicationContext = applicationContext;
+        CdmPersistenceUtils.applicationContext = applicationContext;
     }
 }

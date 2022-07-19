@@ -18,10 +18,10 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2CorrectedDialect;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.LocalH2;
+import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 /**
  * @author a.mueller
@@ -147,7 +147,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 
 	private static final String getDefaultPath(){
 		try{
-			File path = CdmApplicationUtils.getWritableResourceDir();
+			File path = CdmPersistenceUtils.getWritableResourceDir();
 			String subPath = File.separator + "h2" + File.separator + "LocalH2";
 			return  path + subPath;
 		}catch(IOException e){

@@ -22,8 +22,8 @@ import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 /**
  * Utility class which manages the persistent source settings
@@ -40,7 +40,7 @@ public class CdmPersistentSourceUtils {
 	 */
 	public static String getResourceDirectory(){
 		try {
-			File f = CdmApplicationUtils.getWritableResourceDir();
+			File f = CdmPersistenceUtils.getWritableResourceDir();
 			return f.getPath();
 		} catch (IOException e) {
 			logger.error(e);
