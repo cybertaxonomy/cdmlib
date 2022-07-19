@@ -42,8 +42,10 @@
     <doxia.version>1.11.1</doxia.version>                <!-- checked 2021-12 -->
     <poi.version>5.2.2</poi.version>                    <!-- checked 2022-06 -->
     <jackson.version>2.13.3</jackson.version>           <!-- checked 2022-05 -->
-	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2022-06 -->
-	<slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
+	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2022-06 --> 
+	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
+    <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
+	<log4j.version>2.18.0</log4j.version>
 	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
 	<cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.7</aspectj.version>            <!-- checked 2022-05 -->
@@ -696,12 +698,9 @@
         <version>${slf4j.version}</version>
       </dependency>
       <dependency>
-        <!-- replaces slf4j-log4j12 as log4j12 redirects to reload4j as log4j12 reached EOL 2015,
-             can maybe be removed once fully removing log4j12 (#10072), but not sure if it also
-             supports log4j2 -->
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-reload4j</artifactId>
-        <version>${slf4j.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${log4j.version}</version>
       </dependency>
 	  <dependency>
         <!-- try to generally exclude -nop as we try to use log4j12, this is done already for unitils -->
@@ -877,12 +876,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>2.18.0</version>
+        <version>${log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>2.18.0</version>
+        <version>${log4j.version}</version>
       </dependency>
       
       <dependency>
