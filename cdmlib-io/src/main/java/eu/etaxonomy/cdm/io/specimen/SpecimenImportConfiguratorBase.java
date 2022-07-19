@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.specimen;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -23,24 +23,19 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 /**
  * @author k.luther
  * @since 15.07.2016
- *
  */
 public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase<CONFIG,STATE>, InputStream>
         extends ImportConfiguratorBase<STATE, InputStream> {
 
     private static final long serialVersionUID = 4741134251527063988L;
 
-    /**
-     * @param transformer
-     */
     public SpecimenImportConfiguratorBase(IInputTransformer transformer) {
         super(transformer);
-
     }
 
     private boolean ignoreImportOfExistingSpecimen = true;
     private boolean reuseExistingTaxaWhenPossible = true;
-    private final Map<UUID, UUID> taxonToDescriptionMap = new HashMap<UUID, UUID>();
+    private final Map<UUID, UUID> taxonToDescriptionMap = new HashMap<>();
 
     private Map<String, Team> titleCacheTeam;
     private Map<String, Person> titleCachePerson;
@@ -75,27 +70,19 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
 
     private SpecimenOrObservationType type;
 
+    private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
 
-    /**
-     * @return the type
-     */
+    protected Map<String,UUID> namedAreaDecisions = new HashMap<>();
+
+    private URI reportUri;
+
     public SpecimenOrObservationType getType() {
         return type;
     }
 
-    /**
-     * @param type the type to set
-     */
     public void setType(SpecimenOrObservationType type) {
         this.type = type;
     }
-
-    private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
-
-    protected Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
-
-    private URI reportUri;
-
 
     public boolean isIgnoreImportOfExistingSpecimen() {
         return ignoreImportOfExistingSpecimen;
@@ -128,10 +115,6 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
     public void setQuery(OccurenceQuery query) {
         this.query = query;
     }
-
-
-
-
 
     public String getTaxonReference() {
         return taxonReference;
@@ -273,23 +256,12 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
         return overwriteExistingSpecimens;
     }
 
-
-
-
-    /**
-     * @return
-     */
     public boolean isReuseExistingTaxaWhenPossible() {
-
         return reuseExistingTaxaWhenPossible;
     }
 
-    /**
-     * @param titleCacheTeam
-     */
     public void setTeams(Map<String, Team> titleCacheTeam) {
        this.titleCacheTeam  = titleCacheTeam;
-
     }
 
     public Team getTeam(String titleCache){
@@ -299,9 +271,7 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
     public Map<String, Team> getTeams(){
         return titleCacheTeam;
     }
-    /**
-     * @param titleCachePerson
-     */
+
     public void setPersons(Map<String, Person> titleCachePerson) {
         this.titleCachePerson = titleCachePerson;
     }
@@ -322,17 +292,10 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
        this.addMediaAsMediaSpecimen = addMediaAsMediaSpecimen;
     }
 
-
-    /**
-     * @return
-     */
     public boolean isIgnoreAuthorship() {
         return ignoreAuthorship;
     }
 
-    /**
-     * @return
-     */
     public boolean isRemoveCountryFromLocalityText() {
         return removeCountryFromLocalityText;
     }
@@ -345,18 +308,10 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
         this.query = query;
     }
 
-
-
-    /**
-     * @return the reuseExistingMetaData
-     */
     public boolean isReuseExistingMetaData() {
         return reuseExistingMetaData;
     }
 
-    /**
-     * @param reuseExistingMetaData the reuseExistingMetaData to set
-     */
     public void setReuseExistingMetaData(boolean reuseExistingMetaData) {
         this.reuseExistingMetaData = reuseExistingMetaData;
     }
@@ -391,7 +346,4 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
     public void setDownloadSequenceData(boolean downloadSequenceData) {
         this.downloadSequenceData = downloadSequenceData;
     }
-
-
-
 }
