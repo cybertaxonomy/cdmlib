@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -37,7 +39,8 @@ public class TermVocabularyOwlImport
         extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
 
     private static final long serialVersionUID = -3659780404413458511L;
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(TermVocabularyOwlImport.class);
+
+    private final static Logger logger = LogManager.getLogger();
 
     @Override
     protected boolean doCheck(StructureTreeOwlImportState state) {
