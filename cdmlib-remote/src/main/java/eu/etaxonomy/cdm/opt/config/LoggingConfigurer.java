@@ -8,12 +8,10 @@
  */
 package eu.etaxonomy.cdm.opt.config;
 
-import java.util.Enumeration;
-
-import org.apache.log4j.Appender;
-import org.apache.log4j.EnhancedPatternLayout;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+//import org.apache.log4j.Appender;
+//import org.apache.log4j.EnhancedPatternLayout;
+//import org.apache.log4j.Logger;
+//import org.apache.log4j.PatternLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -66,31 +64,27 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer  {
 //                }
         // ... ctx.updateLoggers();
 
-
-        if (true) {
-            return;
-        }
-        @SuppressWarnings("unchecked")
-        Enumeration<Appender> appenders = Logger.getRootLogger().getAllAppenders();
-        while(appenders.hasMoreElements()){
-            Appender appender = appenders.nextElement();
-            if(appender != null){
-                if(appender.getLayout() instanceof PatternLayout){
-                    PatternLayout layout = (PatternLayout)appender.getLayout();
-                    String conversionPattern = layout.getConversionPattern();
-                    if(!conversionPattern.startsWith(patternPrefix)){
-                        layout.setConversionPattern(patternPrefix + conversionPattern);
-                    }
-                }
-                if(appender.getLayout() instanceof EnhancedPatternLayout){
-                    EnhancedPatternLayout layout = (EnhancedPatternLayout)appender.getLayout();
-                    String conversionPattern = layout.getConversionPattern();
-                    if(!conversionPattern.startsWith(patternPrefix)){
-                        layout.setConversionPattern(patternPrefix + conversionPattern);
-                    }
-                }
-            }
-        }
+//        @SuppressWarnings("unchecked")
+//        Enumeration<Appender> appenders = Logger.getRootLogger().getAllAppenders();
+//        while(appenders.hasMoreElements()){
+//            Appender appender = appenders.nextElement();
+//            if(appender != null){
+//                if(appender.getLayout() instanceof PatternLayout){
+//                    PatternLayout layout = (PatternLayout)appender.getLayout();
+//                    String conversionPattern = layout.getConversionPattern();
+//                    if(!conversionPattern.startsWith(patternPrefix)){
+//                        layout.setConversionPattern(patternPrefix + conversionPattern);
+//                    }
+//                }
+//                if(appender.getLayout() instanceof EnhancedPatternLayout){
+//                    EnhancedPatternLayout layout = (EnhancedPatternLayout)appender.getLayout();
+//                    String conversionPattern = layout.getConversionPattern();
+//                    if(!conversionPattern.startsWith(patternPrefix)){
+//                        layout.setConversionPattern(patternPrefix + conversionPattern);
+//                    }
+//                }
+//            }
+//        }
     }
 
     @Override
