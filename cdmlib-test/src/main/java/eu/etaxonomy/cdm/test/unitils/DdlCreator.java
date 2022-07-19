@@ -51,10 +51,15 @@ public class DdlCreator {
     protected static final Logger logger = LogManager.getLogger();
 
 	public static void main(String[] args) {
-		try {
-		    logger.error("Java version: " + System.getProperty("java.version"));
-		    System.setSecurityManager(null); //avoids security exception when started by ant (problem is the jmx server registration by log4j2, similar issue is described at https://stackoverflow.com/questions/12195868/java-security-accesscontrolexception-when-using-ant-but-runs-ok-when-invoking-j )
-			new DdlCreator().execute(H2CorrectedDialectTest.class, "h2");
+	    try {
+            System.out.println("Java version: " + System.getProperty("java.version"));
+            System.setSecurityManager(null); //avoids security exception when started by ant (problem is the jmx server registration by log4j2, similar issue is described at https://stackoverflow.com/questions/12195868/java-security-accesscontrolexception-when-using-ant-but-runs-ok-when-invoking-j )
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+
+	    try {
+		    new DdlCreator().execute(H2CorrectedDialectTest.class, "h2");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
