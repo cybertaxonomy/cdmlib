@@ -67,12 +67,10 @@ public class UriUtilsTest {
 			try {
 				@SuppressWarnings("unused")
                 URI uri = new URI("http:/www.abc.de:8080/xyz");
-				System.out.println("  sdf");
 //				Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
 			} catch (URISyntaxException e) {
 				Assert.fail();
 			}
-
         } else {
             logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
         }

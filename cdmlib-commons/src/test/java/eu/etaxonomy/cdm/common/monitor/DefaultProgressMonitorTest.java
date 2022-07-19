@@ -14,7 +14,6 @@ import org.junit.Test;
 /**
  * @author a.mueller
  * @since 15.09.2016
- *
  */
 public class DefaultProgressMonitorTest {
 
@@ -30,8 +29,8 @@ public class DefaultProgressMonitorTest {
         }
 
         monitor.done();
-        System.out.println(monitor.getPercentage());
-        System.out.println(monitor.getPercentageRounded(3));
+//        System.out.println(monitor.getPercentage());
+//        System.out.println(monitor.getPercentageRounded(3));
     }
 
     @Test
@@ -58,8 +57,8 @@ public class DefaultProgressMonitorTest {
         }
 
         monitor.done();
-        System.out.println(monitor.getPercentage());
-        System.out.println(monitor.getPercentageRounded(3));
+//        System.out.println(monitor.getPercentage());
+//        System.out.println(monitor.getPercentageRounded(3));
     }
 
     @Test
@@ -69,7 +68,4 @@ public class DefaultProgressMonitorTest {
         monitor.worked(5);
         Assert.assertEquals(Double.valueOf(15.15152), Double.valueOf(monitor.getPercentage()));
     }
-
-
-
 }
