@@ -14,7 +14,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -1230,7 +1231,7 @@ public class PolytomousKeyGenerator {
 		for (TermNode<Feature> fn : node.getChildNodes()){
 			createDependencies(fn);
 		}
-		System.out.println(featureDependencies);
+//		System.out.println(featureDependencies);
 	}
 
 	/**
