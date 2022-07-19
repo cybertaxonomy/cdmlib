@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl;
@@ -46,8 +48,11 @@ import eu.etaxonomy.cdm.persistence.hibernate.UpperCasePhysicalNamingStrategySta
  */
 public class DdlCreator {
 
+    protected static final Logger logger = LogManager.getLogger();
+
 	public static void main(String[] args) {
 		try {
+		    logger.error("Java version: " + System.getProperty("java.version"));
 		    System.setSecurityManager(null); //avoids security exception when started by ant (problem is the jmx server registration by log4j2, similar issue is described at https://stackoverflow.com/questions/12195868/java-security-accesscontrolexception-when-using-ant-but-runs-ok-when-invoking-j )
 			new DdlCreator().execute(H2CorrectedDialectTest.class, "h2");
 		} catch (Exception e) {
