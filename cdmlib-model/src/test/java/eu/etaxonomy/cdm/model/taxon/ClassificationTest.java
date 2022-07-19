@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,15 +47,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @since 01.04.2009
  */
 public class ClassificationTest {
-	private static final Logger logger = LogManager.getLogger(ClassificationTest.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	private static String treeName1;
 	private static Classification classification1;
 	private static TaxonNode taxonNode1;
 	private static TaxonNode taxonNode2;
-	private static TaxonNode taxonNode3;
 	private static TaxonNode taxonNode12;
-	private static TaxonNode taxonNode121;
 	private static Taxon taxon1;
 	private static Taxon taxon2;
 	private static Taxon taxon3;
@@ -262,13 +262,14 @@ public class ClassificationTest {
 
 		}
 
-	private boolean handleSingleClass(Class<?> classToBeSearchedFor, Class<?> type, Field field, Class<?> cdmClass, Set<CdmBase> result, CdmBase value){
+    @SuppressWarnings("unused")
+    private boolean handleSingleClass(Class<?> classToBeSearchedFor, Class<?> type, Field field, Class<?> cdmClass, Set<CdmBase> result, CdmBase value){
 		if (! Modifier.isStatic(field.getModifiers())){
 			String methodName = StringUtils.rightPad(field.getName(), 30);
 			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
 			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
 
-			System.out.println(methodName +   "\t\t" + className + "\t\t" + returnTypeName);
+//			System.out.println(methodName +   "\t\t" + className + "\t\t" + returnTypeName);
 //			result_old.add(method);
 			result.addAll(getCdmBasesByFieldAndClass(field, cdmClass, value));
 		}
@@ -367,7 +368,7 @@ public class ClassificationTest {
 		taxonName3.setTitleCache("name3", true);
 
 		taxonNode12 = taxonNode1.addChildTaxon(taxon12, null, null);
-		taxonNode121 = taxonNode12.addChildTaxon(taxon121, null, null);
+		taxonNode12.addChildTaxon(taxon121, null, null);
 		taxonNode2 = classification1.addChildTaxon(taxon2, null, null);
 		taxonNode2.addChildTaxon(taxon3, null, null);
 		Classification clone = classification1.clone();

@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(HomotypicGroupTaxonComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private Reference sec;
     private Reference ref1;
