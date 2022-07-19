@@ -17,7 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 
@@ -29,14 +30,13 @@ import eu.etaxonomy.cdm.common.XmlHelp;
  * in the datasource datasource config
  *
  * @author cmathew
- *
  */
 public class CdmPersistentSourceUtils {
+
 	private static final Logger logger = LogManager.getLogger(CdmPersistentSourceUtils.class);
 
 	/**
 	 * Returns the directory containing the datasource config file
-	 * @return
 	 */
 	public static String getResourceDirectory(){
 		try {
