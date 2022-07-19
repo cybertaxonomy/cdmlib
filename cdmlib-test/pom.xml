@@ -26,12 +26,10 @@
                   <id>generate-ddl-create</id>
                   <phase>process-classes</phase>
                   <goals>
-                      
-                      <goal>run</goal>
+                  <!--    <goal>run</goal>  -->
                   </goals>
                   <configuration>
                       <target>
-                          <skip>true</skip>
                           <delete file="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
                           <!-- copy template file -->
                           <copy file="${basedir}/src/main/resources/dbscripts/001-cdm.h2.template.sql" tofile="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
