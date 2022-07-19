@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.validation.Level3;
  * @author ayco_holleman
  * @author a.mueller
  * @since 27 jan. 2015
- *
  */
 @Component("batchValidator")
 public class BatchValidator implements Runnable, ApplicationContextAware {
@@ -73,9 +72,6 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
         validate();
     }
 
-    /**
-     *
-     */
     private void initValidator() {
         if (getValidator() == null){
             HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
@@ -86,8 +82,6 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
             validationGroups = DEFAULT_VALIDATION_GROUPS;
         }
     }
-
-
 
     private <T extends ICdmBase, S extends T> void validate() {
         logger.info("Starting batch validation");
@@ -130,11 +124,6 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
 
     }
 
-    /**
-     * @param readOnly
-     * @return
-     *
-     */
     private TransactionStatus startTransaction(boolean readOnly) {
         PlatformTransactionManager txManager = getTransactionManager();
 
@@ -145,9 +134,6 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
         return txStatus;
     }
 
-    /**
-     * @return
-     */
     private PlatformTransactionManager getTransactionManager() {
         PlatformTransactionManager txManager = appContext.getBean(HibernateTransactionManager.class);
         return txManager;
@@ -162,14 +148,6 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
         }
     }
 
-
-    /**
-     * @param commonService
-     * @param entityClass
-     * @param entityValidationService
-     * @param jdbcPersister
-     *
-     */
     private void handlePage(ICommonService commonService, Class<CdmBase> entityClass, IEntityValidationService entityValidationService, EntityValidationCrudJdbcImpl jdbcPersister, int start, int pageSize) {
 
         List<CdmBase> entities;
@@ -298,5 +276,4 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
     public void setValidationGroups(Class<?>... validationGroups) {
         this.validationGroups = validationGroups;
     }
-
 }
