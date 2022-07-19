@@ -312,14 +312,16 @@ public class UriUtils {
             return true;
         }
 
-        URI uri = URI.create("http://www.cnn.com/");
+        URI uri = URI.create("http://www.bahn.de/");
         if (isServiceAvailable(uri)){
             return true;
         }
-        uri = URI.create("http://www.bahn.de/");
+
+        uri = URI.create("http://www.cnn.com/");
         if (isServiceAvailable(uri)){
             return true;
         }
+
         uri = URI.create("http://www.google.com/");
         if (isServiceAvailable(uri)){
             return true;
