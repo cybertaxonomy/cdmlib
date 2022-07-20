@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public class UuidGenerator {
 	private static final Logger logger = LogManager.getLogger();
 
-	private static int n = 100;
+	private static int n = 10;
 
 	public static void main(String[] args) {
 		if (logger.isDebugEnabled()){logger.debug("create UUIDs");}
