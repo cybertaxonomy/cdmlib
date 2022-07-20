@@ -90,6 +90,7 @@
     </dependency>
     <dependency>
         <!-- used for class LocalH2 (base class is from commons-dbcp) -->
+        <!-- TODO we should try to remove this dependency -->
         <groupId>commons-dbcp</groupId>
         <artifactId>commons-dbcp</artifactId>
     </dependency>

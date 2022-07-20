@@ -23,7 +23,6 @@
     <module>cdmlib-remote</module>
     <module>cdmlib-print</module>
     <module>cdmlib-remote-webapp</module>
-
   </modules>
   <properties>    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -738,7 +737,7 @@
         <groupId>org.unitils</groupId>
         <artifactId>unitils-database</artifactId>
         <version>${unitils.version}</version>
-     <!--    <scope>test</scope>  -->
+        <scope>test</scope>
         <exclusions>
           <exclusion>
             <groupId>org.springframework</groupId>
@@ -825,15 +824,23 @@
         higher number needed for compatibility with current hibernate and Java 1.6 
         PreparedStatement -->
       <dependency>
+        <!-- currently still needed by cdmlib-persistence, once removed, scope should be set to test -->
         <groupId>commons-dbcp</groupId>
         <artifactId>commons-dbcp</artifactId>
         <version>1.4</version>
         <!-- <scope>test</scope> -->
       </dependency>
+      <dependency>
+        <!-- currently still needed by cdmlib-persistence commons-dbcp dependency, once removed, scope should be set to test -->
+        <groupId>commons-pool</groupId>
+        <artifactId>commons-pool</artifactId>
+        <version>1.6</version>
+        <!-- <scope>test</scope> -->
+      </dependency>
 	  <dependency>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-test</artifactId>
-     <!--    <scope>test</scope>  -->
+        <scope>test</scope>
 		<version>${project.version}</version>
 	  </dependency>
       <dependency>
