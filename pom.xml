@@ -731,6 +731,13 @@
         <version>${unitils.version}</version>
         <!-- <scope>test</scope> unscoped since we need this dependency at 
           compile time in persistence for H2DbSupport.java -->
+        <exclusions>
+          <exclusion>
+            <!-- we use jcl-over-slf4j instead -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.unitils</groupId>
@@ -1017,6 +1024,13 @@
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
         <version>1.9.4</version>
+        <exclusions>
+          <exclusion>
+            <!-- we use jcl-over-slf4j instead -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>net.sf.json-lib</groupId>
