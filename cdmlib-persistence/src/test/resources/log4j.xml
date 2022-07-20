@@ -27,21 +27,14 @@
     <!-- Logger name="org.hibernate.hql" level="debug"/ -->
     <!-- Logger name="org.hibernate.jdbc" level="info"/ -->
     
-    <!-- ### log just the SQL
-         ### to log more context specific use this snipped in the code:
-         ### LogUtils.setLevel(logger, Level.TRACE) -->
+    <!-- log just the SQL
+         to log more context specific use this snipped in the code:
+         LogUtils.setLevel(logger, Level.TRACE) -->
     <!-- Logger name="org.hibernate.SQL" level="trace"/ -->
     <!-- Logger name="org.hibernate.type" level="trace"/ -->
     <!-- Logger name="org.hibernate.tool.hbm2ddl" level="warn"/ -->
     
-    <!-- ### log transaction activity -->
-    <!-- Logger name="org.hibernate.transaction" level="debug"/ -->
-    
     <!-- Logger name="org.hibernate.cache" level="debug"/ -->
-    
-    
-#log4j.logger.=debug
-    
     
     <!-- enable the following line if you want to track down connection
          leakages when using DriverManagerConnectionProvider -->
@@ -68,4 +61,5 @@
 #log4j.appender.org.dbunit=debug
 #log4j.appender.org.dbunit.database.statement=debug
 #log4j.appender.org.dbunit.database.DatabaseConfig=trace  -->
+
 

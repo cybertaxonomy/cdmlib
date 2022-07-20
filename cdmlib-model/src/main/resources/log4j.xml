@@ -14,6 +14,6 @@
       <!-- <AppenderRef ref="FILE"/> -->
     </Root>
     <Logger name="eu.etaxonomy.cdm.common" level="warn"/>
-    <Logger name="org.hibernate.orm.deprecation" level="error"/>  <!-- additivity="false" -->
+    <Logger name="org.hibernate.orm.deprecation" level="error"/>
   </Loggers>
 </Configuration>
