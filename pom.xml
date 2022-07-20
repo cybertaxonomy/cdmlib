@@ -1038,6 +1038,11 @@
         <artifactId>iiif-apis</artifactId>
         <version>0.3.9</version>
       </dependency>
+      <dependency>
+         <groupId>com.fasterxml.jackson.datatype</groupId>
+         <artifactId>jackson-datatype-jsr310</artifactId>
+         <version>${jackson.version}</version>
+      </dependency>
 <!--       <dependency> -->
 <!--         only for version management iterators depends in different versions from -->
 <!--               de.digitalcollections.iiif:iiif-apis:0.3.9 -->
