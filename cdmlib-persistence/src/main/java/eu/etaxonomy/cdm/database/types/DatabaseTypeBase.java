@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.database.DbcpSaveDataSource;
 
 /**
  * @author a.mueller
- *
  */
 abstract class DatabaseTypeBase implements IDatabaseType {
 	private static final Logger logger = LogManager.getLogger(DatabaseTypeBase.class);
