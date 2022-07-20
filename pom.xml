@@ -1281,6 +1281,13 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>fop</artifactId>
         <version>2.7</version>
+        <exclusions>
+          <exclusion>
+            <!-- we use jcl-over-slf4j instead -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.odftoolkit</groupId>
