@@ -63,6 +63,11 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
+    <dependency>
+        <!-- use as replacement for commons-logging used in httpclient but excluded, see parent pom. Further info: (https://www.slf4j.org/legacy.html) --> 
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
    
     <!-- AptView -->
     <dependency>
