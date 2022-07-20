@@ -1270,13 +1270,6 @@
         <version>2.12.2</version>
         <!-- checked 2022-06 -->
       </dependency>
-      <!-- >batik-ext required by Xerces 2.11.0 for class ElementTraversal, 
-        as this is not included anymore in xml-apis 2.x -->
-<!--       <dependency> -->
-<!--         <groupId>org.apache.xmlgraphics</groupId> -->
-<!--         <artifactId>batik-ext</artifactId> -->
-<!--         <version>1.13</version> -->
-<!--       </dependency> -->
       <dependency> <!-- required by cdmlib-print -->
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>fop</artifactId>

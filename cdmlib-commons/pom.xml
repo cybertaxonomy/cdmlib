@@ -53,7 +53,6 @@
 	</dependency>
 
     <!--  ImageMetadata  -->
-    
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-imaging</artifactId>
