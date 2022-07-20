@@ -51,7 +51,7 @@
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
     <jakarta.mail.version>1.5.6</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
-    <doclint>none</doclint>   
+    <doclint>none</doclint>
   </properties>
   
   <scm>
@@ -876,6 +876,7 @@
       </dependency>
       
       <dependency>
+        <!-- should not be in use anymore -->
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>1.2.17</version>
