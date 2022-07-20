@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
@@ -242,7 +243,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         int pnParentTaxa = 0;
         for (Relationship rel : taxonConcept.getHasRelationship()){
             Assert.assertNotNull(rel.getFromTaxon());
-            System.out.println(rel.getFromTaxon().getIdentifier().toString());
+//            System.out.println(rel.getFromTaxon().getIdentifier().toString());
             if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:synyonms:")){
                 nSynonyms++;
             }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:r")){
