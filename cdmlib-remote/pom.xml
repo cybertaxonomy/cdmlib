@@ -89,9 +89,13 @@
           <groupId>org.springframework</groupId>
           <artifactId>spring-mock</artifactId>
         </exclusion>
-         <exclusion>
+        <exclusion>
           <groupId>log4j</groupId>
           <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

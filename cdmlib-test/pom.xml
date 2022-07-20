@@ -100,7 +100,20 @@
         <groupId>org.unitils</groupId>
         <artifactId>unitils-core</artifactId>
         <scope>compile</scope>
+        <exclusions>
+          <exclusion>
+            <!-- we use jcl-over-slf4j instead (see below) -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
     </dependency>
+    <dependency>
+        <!-- use as replacement for above commons-logging (https://www.slf4j.org/legacy.html) --> 
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-database</artifactId>

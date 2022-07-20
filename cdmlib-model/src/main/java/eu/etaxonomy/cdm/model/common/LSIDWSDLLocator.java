@@ -18,8 +18,8 @@ import java.net.URL;
 
 import javax.wsdl.xml.WSDLLocator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.InputSource;
 
 import com.ibm.wsdl.util.StringUtils;
@@ -34,7 +34,8 @@ import com.ibm.wsdl.util.StringUtils;
  * @author Owen Burroughs
  */
 public class LSIDWSDLLocator implements WSDLLocator {
-	private static Log log = LogFactory.getLog(LSIDWSDLLocator.class);
+
+	private static Logger logger = LogManager.getLogger();
 
 	 private Reader baseReader = null;
 	 private Reader importReader = null;
@@ -191,8 +192,8 @@ public class LSIDWSDLLocator implements WSDLLocator {
 			}
 			importBase = (url == null) ? relativeLocation : url.toString();
 		} catch (Exception e) {
-            log.error(e.toString());
-            log.error(e.getMessage());
+            logger.error(e.toString());
+            logger.error(e.getMessage());
 			// If we have not tried using a non-ClassLoader route, try it
 			// now
 			// as a last resort.
@@ -207,8 +208,8 @@ public class LSIDWSDLLocator implements WSDLLocator {
 					importBase = (url == null) ? relativeLocation : url
 							.toString();
 				} catch (Exception e2) {
-					 log.error(e2.toString());
-					 log.error("Cannot find " + importBase + " so setting importBase to unknownImportURI");
+					 logger.error(e2.toString());
+					 logger.error("Cannot find " + importBase + " so setting importBase to unknownImportURI");
 					// we can't find the import so set a temporary value for
 					// the import URI. This is
 					// necessary to avoid a NullPointerException in
@@ -216,7 +217,7 @@ public class LSIDWSDLLocator implements WSDLLocator {
 					importBase = "unknownImportURI";
 				}
 			} else {
-				log.error("Cannot find " + importBase + " so setting importBase to unknownImportURI");
+				logger.error("Cannot find " + importBase + " so setting importBase to unknownImportURI");
 				// we can't find the import so set a temporary value for the
 				// import URI. This is
 				// necessary to avoid a NullPointerException in
