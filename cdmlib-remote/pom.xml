@@ -165,12 +165,17 @@
       <!-- for xml serialization (net.sf.json.xml.XMLSerializer) -->
       <groupId>xom</groupId>
       <artifactId>xom</artifactId>
-<!--       <exclusions> -->
+      <exclusions>
+        <exclusion>
+          <!-- has overlap with jakarta-regexp -->
+          <groupId>xalan</groupId>
+          <artifactId>xalan</artifactId>
+        </exclusion>
 <!--         <exclusion> -->
 <!--           <groupId>xml-apis</groupId> -->
 <!--           <artifactId>xml-apis</artifactId> -->
 <!--         </exclusion> -->
-<!--       </exclusions> -->
+      </exclusions>
     </dependency>
 
     <!-- swagger -->
