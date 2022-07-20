@@ -1040,18 +1040,15 @@
         <version>0.3.9</version>
       </dependency>
       <dependency>
-         <groupId>com.fasterxml.jackson.datatype</groupId>
-         <artifactId>jackson-datatype-jsr310</artifactId>
-         <version>${jackson.version}</version>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
-<!--       <dependency> -->
-<!--         only for version management iterators depends in different versions from -->
-<!--               de.digitalcollections.iiif:iiif-apis:0.3.9 -->
-<!--       	<groupId>org.dmfs</groupId> -->
-<!--       	<artifactId>iterators</artifactId> -->
-<!--       	<version>1.5</version> -->
-<!--       </dependency> -->
-      <!--         -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-parameter-names</artifactId>
+        <version>${jackson.version}</version>
+    </dependency>
       <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>
