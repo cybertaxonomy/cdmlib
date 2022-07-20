@@ -129,6 +129,7 @@
         <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
+      <!-- MediaInfoServiceReader uses dozer -->
       <groupId>com.github.dozermapper</groupId>
       <artifactId>dozer-core</artifactId>
     </dependency>
