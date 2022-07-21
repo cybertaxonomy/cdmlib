@@ -680,7 +680,7 @@
           <artifactId>jakarta.activation-api</artifactId>
           <version>1.2.2</version>
       </dependency>
-      <!--  JAB END -->
+      <!--  JAXB END -->
       
 	  <dependency>
 	    <!-- only for version management org.apache.ant:ant depends in different versions from 
