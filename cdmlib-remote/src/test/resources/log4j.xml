@@ -19,14 +19,9 @@
       <AppenderRef ref="STDOUT"/>
       <!-- <AppenderRef ref="FILE"/> -->
     </Root>    
-<!-- 
-##
-## NOTICE !!!!
-## no need to configure a FileAppender here
-## use eu.etaxonomy.cdm.opt.config.LoggingConfigurer instead
-## 
-## NOTE AM: needs to be checked if still valid
--->
+
+    <!--  NOTE by AM: probably most of these filters are not needed as they are only relevant
+                      for running in CDM Server, but logging is defined there -->
     <Logger name="eu.etaxonomy.cdm" level="info"/>
     <!-- ### avoid vast amount of "getCitation not yet implemented" & "getProblems not yet implemented" messages -->
     <Logger name="eu.etaxonomy.cdm.model.name.TaxonName" level="error"/>
