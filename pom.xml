@@ -712,6 +712,7 @@
         <artifactId>jcl-over-slf4j</artifactId>
         <version>${slf4j.version}</version>
       </dependency>
+      
       <!-- ******* testing ******* -->
       <dependency>
         <groupId>junit</groupId>
@@ -762,6 +763,7 @@
             <artifactId>hibernate</artifactId>
           </exclusion>
           <exclusion>
+            <!-- we use log4j-slf4j-impl -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
           </exclusion>
