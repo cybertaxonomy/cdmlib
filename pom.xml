@@ -700,12 +700,6 @@
         <artifactId>log4j-slf4j-impl</artifactId>
         <version>${log4j.version}</version>
       </dependency>
-	  <dependency>
-        <!-- try to generally exclude -nop as we try to use log4j12, this is done already for unitils -->
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-nop</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
       <!-- dozer depends on jcl-over-slf4j -->
       <dependency>
         <groupId>org.slf4j</groupId>
