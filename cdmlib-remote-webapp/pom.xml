@@ -55,7 +55,7 @@
       <properties>
         <integrationTest.jvmArgs.cdm.datasource>h2_cdm_blank</integrationTest.jvmArgs.cdm.datasource>
         <integrationTest.jvmArgs.cdm.forceSchemaCreate>true</integrationTest.jvmArgs.cdm.forceSchemaCreate>
-        <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j.properties</integrationTest.log4j.configuration>
+        <integrationTest.jvmArgs.log4j.configuration>${project.build.directory}/target/test-classes/log4j.xml</integrationTest.jvmArgs.log4j.configuration>
       </properties>
       <build>
         <plugins>
