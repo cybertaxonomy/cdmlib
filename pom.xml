@@ -1580,6 +1580,12 @@
         <version>1.5.1</version>     
         <!-- checked 2020-08 -->
       </dependency>
+	  <dependency>
+        <groupId>javax.el</groupId>
+        <artifactId>javax.el-api</artifactId>
+        <version>3.0.0</version>
+        <!-- checked 2020-08 -->
+	  </dependency>
       <dependency>
           <groupId>jakarta.validation</groupId>
           <artifactId>jakarta.validation-api</artifactId>
