@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v527_529.SchemaUpdater_5271_5290;
@@ -96,6 +97,27 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
         description = "México Distrito Federal";
         label = "México Distrito Federal";
         TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm, description, label, abbrev, uuidEnglish);
+
+        //#9785 Add missing unit_ids
+        stepName = "Add missing unit_ids";
+        String query = "UPDATE DescriptionElementBase deb LEFT OUTER JOIN DefinedTermBase fe ON fe.id = deb.feature_id"
+                + "SET deb.unit_id = ("
+                + "        SELECT MN2.recommendedMeasurementUnits_id"
+                + "        FROM DefinedTermBase fe2 INNER JOIN DefinedTermBase_MeasurementUnit MN2 ON MN2.Feature_id = fe2.id"
+                + "        WHERE fe.id = fe2.id AND (fe2.DTYPE = 'Feature' OR fe2.DTYPE = 'Character')"
+                + "        GROUP BY fe2.id"
+                + "        HAVING COUNT(*) = 1"
+                + ")"
+                + "WHERE deb.DTYPE = 'QuantitativeData' AND deb.unit_id IS NULL"
+                + "AND fe.id IN ("
+                + "    SELECT fe.id "
+                + "    FROM DefinedTermBase fe INNER JOIN DefinedTermBase_MeasurementUnit MN ON MN.Feature_id = fe.id INNER JOIN DefinedTermBase mu ON MN.recommendedMeasurementUnits_id = mu.id"
+                + "    WHERE fe.DTYPE = 'Feature' OR fe.DTYPE = 'Character'"
+                + "    GROUP BY fe.id, mu.id"
+                + "    HAVING COUNT(*) = 1"
+                + ")";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, size)
+             .withErrorRecovery("SQL statement for adding missing measurement unit_ids failed");
 
 		return stepList;
     }

@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -33,7 +34,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 	private final Map<DatabaseTypeEnum, String> auditQueryMap = new HashMap<>();
 
 	private boolean includeAudit = false;
-//	private String tableName;
+	private boolean withErrorRecovery = false;
+	private String errorRecoveryMessage;
 
 // *************************** FACTORY ********************************/
 
@@ -78,7 +80,6 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 		boolean audit = StringUtils.isNotBlank(defaultQueryForAuditedTables);
 		return new SimpleSchemaUpdaterStep(stepList, stepName, defaultQuery, audit, null, defaultQueryForAuditedTables);
 	}
-
 
 //************************ CONSTRUCTOR ***********************************/
 
@@ -140,12 +141,17 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 	private boolean executeQuery(ICdmDataSource datasource,  String replacedQuery, SchemaUpdateResult result) {
 		try {
 			datasource.executeUpdate(replacedQuery);
+			return true;
 		} catch (SQLException e) {
 			logger.error(e);
-			result.addException(e, "Unexpected SQL Exception", getStepName());
-			return false;
+			if (withErrorRecovery) {
+			    result.addException(e, "Unexpected SQL Exception", getStepName());
+			    return false;
+			}else {
+			    result.addError(errorRecoveryMessage, e, getStepName());
+			    return true;
+			}
 		}
-		return true;
 	}
 
 	private void makeAuditedQuery(DatabaseTypeEnum dbType, String tableName, boolean addTable){
@@ -213,6 +219,17 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
             throw new IllegalArgumentException("TableName must not be blank");
         }
         makeAuditedQuery(null, nonAuditedTableName, true);
+        return this;
+    }
+
+    /**
+     * Setting error recovery will not make the step fail if the query execution
+     * throws an exception. Only an error will be reported with the given
+     * <code>message</code>.
+     */
+    public SimpleSchemaUpdaterStep withErrorRecovery(String message) {
+        this.withErrorRecovery = true;
+        this.errorRecoveryMessage = message;
         return this;
     }
 
