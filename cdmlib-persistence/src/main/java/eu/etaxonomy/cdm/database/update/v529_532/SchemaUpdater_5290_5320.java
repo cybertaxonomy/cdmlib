@@ -90,6 +90,13 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
         String indexColumn = "rights_id";
         UniqueIndexDropper.NewInstance(stepList, tableName, indexColumn, INCLUDE_AUDIT);
 
+        //#9830 Add accent to México Distrito Federal
+        stepName = "";
+        uuidTerm = UUID.fromString("565751f1-613e-4ddc-bfbb-4b54f2267971");
+        description = "México Distrito Federal";
+        label = "México Distrito Federal";
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm, description, label, abbrev, uuidEnglish);
+
 		return stepList;
     }
 }
