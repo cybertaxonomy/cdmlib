@@ -976,12 +976,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * If cdmBase is not sourceable nothing happens.
 	 * TODO Move to DbImportBase once this exists.
 	 * TODO also implemented in DbImportObjectCreationMapper (reduce redundance)
-	 * @param rs
-	 * @param cdmBase
-	 * @param dbIdAttribute
-	 * @param namespace
-	 * @param citation
-	 * @throws SQLException
 	 */
 	public OriginalSourceBase addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
 		if (cdmBase instanceof ISourceable ){
@@ -1009,20 +1003,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return null;
 	}
 
-	/**
-	 * @see #addOriginalSource(CdmBase, Object, String, Reference)
-	 * @param rs
-	 * @param cdmBase
-	 * @param dbIdAttribute
-	 * @param namespace
-	 * @param citation
-	 * @throws SQLException
-	 */
 	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, Reference citation) throws SQLException {
 		Object id = rs.getObject(dbIdAttribute);
 		addOriginalSource(cdmBase, id, namespace, citation);
 	}
-
 
 	/**
 	 * If the child taxon is missing genus or species epithet information and the rank is below <i>genus</i>

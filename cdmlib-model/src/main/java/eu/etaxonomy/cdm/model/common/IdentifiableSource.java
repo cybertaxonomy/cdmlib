@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;

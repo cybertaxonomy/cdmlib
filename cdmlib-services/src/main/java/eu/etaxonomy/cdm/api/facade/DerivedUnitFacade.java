@@ -21,7 +21,8 @@ import java.util.Set;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.common.URI;
@@ -60,7 +61,6 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
-import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -2339,11 +2339,6 @@ public class DerivedUnitFacade {
 	/**
 	 * Creates an {@link IOriginalSource orignal source} or type ,
 	 * adds it to the specimen and returns it.
-	 *
-	 * @param reference
-	 * @param microReference
-	 * @param originalNameString
-	 * @return
 	 */
 	public IdentifiableSource addSource(OriginalSourceType type, Reference reference, String microReference, String originalNameString) {
 		IdentifiableSource source = IdentifiableSource.NewInstance(type, null, null, reference, microReference);
@@ -2362,17 +2357,13 @@ public class DerivedUnitFacade {
 	}
 
 	//*** identifiers ***/
-
-
     public void addIdentifier(Identifier identifier) {
         this.baseUnit().addIdentifier(identifier);
     }
-
 	@Transient
 	public List<Identifier> getIdentifiers() {
 	    return baseUnit().getIdentifiers();
 	}
-
 	public void removeIdentifier(Identifier identifier) {
 	    this.baseUnit().removeIdentifier(identifier);
 	}
@@ -2382,18 +2373,11 @@ public class DerivedUnitFacade {
 		return baseUnit().getRights();
 	}
 
-	/**
-	 * @return the collection
-	 */
+	//collection
 	@Transient
 	public Collection getCollection() {
 		return ! checkDerivedUnit()? null :  derivedUnit.getCollection();
 	}
-
-	/**
-	 * @param collection
-	 *            the collection to set
-	 */
 	public void setCollection(Collection collection) {
 		testDerivedUnit();
 		derivedUnit.setCollection(collection);
