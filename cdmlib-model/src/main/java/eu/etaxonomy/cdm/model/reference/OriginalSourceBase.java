@@ -57,7 +57,6 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * @author m.doering
  * @since 08-Nov-2007 13:06:22
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OriginalSource", propOrder = {
     "type",
@@ -338,6 +337,7 @@ public abstract class OriginalSourceBase
      */
     public boolean equalsByShallowCompare(OriginalSourceBase other) {
 
+
         int thisCitationId = -1;
         int otherCitationId = -1;
         if(this.getCitation() != null) {
@@ -354,13 +354,12 @@ public abstract class OriginalSourceBase
             return false;
         }
 
-        OriginalSourceBase theOther = other;
-        if(!StringUtils.equals(this.getIdInSource(), theOther.getIdInSource())
-                || !CdmUtils.nullSafeEqual(this.getIdNamespace(), theOther.getIdNamespace())
-                || !CdmUtils.nullSafeEqual(this.getType(), theOther.getType())
-                || TimePeriod.equalsNullAndEmptySafe(accessed, theOther.getAccessed())
-                || !CdmUtils.nullSafeEqual(this.getCdmSource(), theOther.getCdmSource())
-                || !CdmUtils.nullSafeEqual(this.getLinks(), theOther.getLinks())) {
+        if(!StringUtils.equals(this.getIdInSource(), other.getIdInSource())
+                || !CdmUtils.nullSafeEqual(this.getIdNamespace(), other.getIdNamespace())
+                || !CdmUtils.nullSafeEqual(this.getType(), other.getType())
+                || TimePeriod.equalsNullAndEmptySafe(accessed, other.getAccessed())
+                || !CdmUtils.nullSafeEqual(this.getCdmSource(), other.getCdmSource())
+                || !CdmUtils.nullSafeEqual(this.getLinks(), other.getLinks())) {
             return false;
         }
 

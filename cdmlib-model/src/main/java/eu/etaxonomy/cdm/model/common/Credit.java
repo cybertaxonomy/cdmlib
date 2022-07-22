@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Entity;
@@ -19,7 +18,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -29,13 +29,13 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 /**
  * @author a.mueller
  * @since 23.03.2009
- * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Credit")
 @Entity
 @Audited
-public class Credit extends LanguageStringBase implements Cloneable{
+public class Credit extends LanguageStringBase {
+
 	private static final long serialVersionUID = 5763391127298427701L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(Credit.class);
@@ -81,9 +81,6 @@ public class Credit extends LanguageStringBase implements Cloneable{
 
 //*********************** GETTER /SETTER *****************************/
 
-	/**
-	 * @return the agent
-	 */
 	public AgentBase getAgent() {
 		return agent;
 	}
@@ -91,10 +88,6 @@ public class Credit extends LanguageStringBase implements Cloneable{
 		this.agent = agent;
 	}
 
-
-	/**
-	 * @return the abbreviatedText
-	 */
 	public String getAbbreviatedText() {
 		return abbreviatedText;
 	}
@@ -116,6 +109,8 @@ public class Credit extends LanguageStringBase implements Cloneable{
 		//no changes to: agent
 		return result;
 	}
+
+// ************************ STRING ****************************/
 
     @Override
     public String toString() {

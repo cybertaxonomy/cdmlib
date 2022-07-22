@@ -70,18 +70,18 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
 		UUID uuidEnglish = Language.uuidEnglish;
 		TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm, description, label, abbrev, uuidEnglish);
 
-	    //#10057 add accessed columns
-        stepName = "Add accessed_start";
+	    //#10057 add accessed columns to OriginalSourceBase
+        stepName = "Add accessed_start to OriginalSourceBase";
         tableName = "OriginalSourceBase";
         String newColumnName = "accessed_start";
         int size = 50;
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
 
-        stepName = "Add accessed_end";
+        stepName = "Add accessed_end to OriginalSourceBase";
         newColumnName = "accessed_end";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
 
-        stepName = "Add accessed_freetext";
+        stepName = "Add accessed_freetext to OriginalSourceBase";
         newColumnName = "accessed_freetext";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
