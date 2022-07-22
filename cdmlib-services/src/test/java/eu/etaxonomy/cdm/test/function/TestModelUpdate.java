@@ -131,7 +131,7 @@ public class TestModelUpdate {
 	 */
 	private void updateRemoteWebappTestH2(){
 	    System.out.println("Update remoteWebappTestH2");
-	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
+	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib2\\cdmlib-remote-webapp\\";
 	    updateH2(pathToProject);
 	}
 
