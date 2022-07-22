@@ -31,10 +31,10 @@ public class TypeDesignationBaseTest extends EntityTestBase {
         SpecimenTypeDesignationStatus status = SpecimenTypeDesignationStatus.HOLOTYPE();
         Reference citation = ReferenceFactory.newBook();
         String microCitation = "p. 123";
-        String originalNameString = "orig. name";
+        String originalInfo = "orig. info";
         boolean isNotDesignated = true;
         SpecimenTypeDesignation originalDesignation = name1.addSpecimenTypeDesignation(specimen, status,
-                citation, microCitation, originalNameString, isNotDesignated, false);
+                citation, microCitation, originalInfo, isNotDesignated, false);
         Registration registration1 = Registration.NewInstance();
         registration1.addTypeDesignation(originalDesignation);
 

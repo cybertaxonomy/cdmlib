@@ -966,7 +966,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
     public OriginalSourceBase addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation, String originalInformation)  {
         OriginalSourceBase source = addOriginalSource(cdmBase, idAttributeValue, namespace, citation);
         if (source != null && isNotBlank(originalInformation)){
-            source.setOriginalNameString(originalInformation);
+            source.setOriginalInfo(originalInformation);
         }
         return source;
     }

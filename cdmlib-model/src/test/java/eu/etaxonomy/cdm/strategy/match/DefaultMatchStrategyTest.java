@@ -322,7 +322,7 @@ public class DefaultMatchStrategyTest extends TermTestBase {
 //		//name relations
 //		botName2.addBasionym(botName3, book1, "p.22", null);
 //		Specimen specimen1 = Specimen.NewInstance();
-//		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalNameString", false, true);
+//		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalInfo", false, true);
 //
 //		//descriptions
 //		TaxonNameDescription description1 = TaxonNameDescription.NewInstance();

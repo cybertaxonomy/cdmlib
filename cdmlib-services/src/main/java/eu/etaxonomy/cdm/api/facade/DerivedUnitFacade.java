@@ -2340,9 +2340,9 @@ public class DerivedUnitFacade {
 	 * Creates an {@link IOriginalSource orignal source} or type ,
 	 * adds it to the specimen and returns it.
 	 */
-	public IdentifiableSource addSource(OriginalSourceType type, Reference reference, String microReference, String originalNameString) {
+	public IdentifiableSource addSource(OriginalSourceType type, Reference reference, String microReference, String originalInfo) {
 		IdentifiableSource source = IdentifiableSource.NewInstance(type, null, null, reference, microReference);
-		source.setOriginalNameString(originalNameString);
+		source.setOriginalInfo(originalInfo);
 		addSource(source);
 		return source;
 	}

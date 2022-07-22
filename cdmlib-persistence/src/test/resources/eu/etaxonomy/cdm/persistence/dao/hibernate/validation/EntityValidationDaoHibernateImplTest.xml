@@ -22,7 +22,7 @@
 		ENTITYVALIDATION_ID="1" PROPERTYPATH="titleCache" INVALIDVALUE="Foo" SEVERITY="Error"
 		MESSAGE="You did something wrong with the title cache" VALIDATOR="com.example.TitleCacheValidator" />
 	<ENTITYCONSTRAINTVIOLATION ID="2" CREATED="2008-12-10 09:56:07.0" UUID="2d2fbff6-fd5c-4e5f-b2b6-8b06b896642f"
-		ENTITYVALIDATION_ID="2" PROPERTYPATH="originalNameString" INVALIDVALUE="Bar" SEVERITY="Error"
+		ENTITYVALIDATION_ID="2" PROPERTYPATH="originalINFO" INVALIDVALUE="Bar" SEVERITY="Error"
 		MESSAGE="Bar is not a valid value for original name string" VALIDATOR="com.example.NameValidator" />
 	<ENTITYCONSTRAINTVIOLATION ID="3" CREATED="2008-12-10 09:56:07.0" UUID="39b78238-0aa8-4f1e-8f42-3502b0270e89"
 		ENTITYVALIDATION_ID="2" PROPERTYPATH="doubtful" INVALIDVALUE="3" SEVERITY="Warning" MESSAGE="doubtful must be either 1 or 0"

@@ -79,7 +79,7 @@ public class IdentifiableSource
    public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference
             reference, String microReference, String originalInfo){
         IdentifiableSource result = NewInstance(type, id, idNamespace, reference, microReference);
-        result.setOriginalNameString(originalInfo);
+        result.setOriginalInfo(originalInfo);
         return result;
     }
 

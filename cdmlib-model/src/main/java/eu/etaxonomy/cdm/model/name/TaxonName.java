@@ -2039,11 +2039,11 @@ public class TaxonName
 
     @Override
     @Transient
-    public void setOriginalNameString(String originalNameString){
-        if (isNotBlank(originalNameString)){
-            this.getNomenclaturalSource(true).setOriginalNameString(originalNameString);
+    public void setOriginalInfo(String originalInfo){
+        if (isNotBlank(originalInfo)){
+            this.getNomenclaturalSource(true).setOriginalInfo(originalInfo);
         }else if (this.getNomenclaturalSource() != null){
-            this.getNomenclaturalSource().setOriginalNameString(null);
+            this.getNomenclaturalSource().setOriginalInfo(null);
             checkNullSource();
         }
     }
@@ -2443,7 +2443,7 @@ public class TaxonName
      * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
      * @param  citation					the reference for this new designation
      * @param  citationMicroReference	the string with the details (generally pages) within the reference
-     * @param  originalNameString		the taxon name string used in the reference to assert this designation
+     * @param  originalInfo     		any information from the original source, might be the name as written in the source (#10097)
      * @param  isRejectedType			the boolean status for a rejected name type designation
      * @param  isConservedType			the boolean status for a conserved name type designation
      * @param  isLectoType				the boolean status for a lectotype name type designation
@@ -2459,14 +2459,14 @@ public class TaxonName
     public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies,
                 Reference citation,
                 String citationMicroReference,
-                String originalNameString,
+                String originalName,
                 NameTypeDesignationStatus status,
                 boolean isRejectedType,
                 boolean isConservedType,
                 /*boolean isLectoType, */
                 boolean isNotDesignated,
                 boolean addToAllHomotypicNames) {
-        NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, status, isRejectedType, isConservedType, isNotDesignated);
+        NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalName, status, isRejectedType, isConservedType, isNotDesignated);
         //nameTypeDesignation.setLectoType(isLectoType);
         addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
         return nameTypeDesignation;
@@ -2479,7 +2479,7 @@ public class TaxonName
      * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
      * @param  citation					the reference for this new designation
      * @param  citationMicroReference	the string with the details (generally pages) within the reference
-     * @param  originalNameString		the taxon name string used in the reference to assert this designation
+     * @param  originalInfo     		any information from the original source, might be the name as written in the source (#10097)
      * @param  status                   the name type designation status
      * @param  addToAllHomotypicNames	the boolean indicating whether the name type designation should be
      * 									added to all taxon names of the homotypical group this taxon name belongs to
@@ -2492,10 +2492,10 @@ public class TaxonName
     public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies,
                 Reference citation,
                 String citationMicroReference,
-                String originalNameString,
+                String originalInfo,
                 NameTypeDesignationStatus status,
                 boolean addToAllHomotypicNames) {
-        NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, status, citation, citationMicroReference, originalNameString);
+        NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, status, citation, citationMicroReference, originalInfo);
         addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
         return nameTypeDesignation;
     }
@@ -2527,7 +2527,7 @@ public class TaxonName
      * @param  status					the specimen type designation status
      * @param  citation					the reference for this new specimen type designation
      * @param  citationMicroReference	the string with the details (generally pages) within the reference
-     * @param  originalNameString		the taxon name used in the reference to assert this designation
+     * @param  originalInfo     		any information from the original source, might be the name as written in the source (#10097)
      * @param  isNotDesignated			the boolean status for a specimen type designation without specimen type
      * @param  addToAllHomotypicNames	the boolean indicating whether the specimen type designation should be
      * 									added to all taxon names of the homotypical group the typified
@@ -2543,10 +2543,10 @@ public class TaxonName
                 SpecimenTypeDesignationStatus status,
                 Reference citation,
                 String citationMicroReference,
-                String originalNameString,
+                String originalInfo,
                 boolean isNotDesignated,
                 boolean addToAllHomotypicNames) {
-        SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated);
+        SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalInfo, isNotDesignated);
         addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
         return specimenTypeDesignation;
     }
@@ -2558,9 +2558,9 @@ public class TaxonName
                 boolean isVerbatim,
                 Reference citation,
                 String citationMicroReference,
-                String originalNameString,
+                String originalInfo,
                 boolean addToAllHomotypicNames) {
-        TextualTypeDesignation textualTypeDesignation = TextualTypeDesignation.NewInstance(text, language, isVerbatim, citation, citationMicroReference, originalNameString);
+        TextualTypeDesignation textualTypeDesignation = TextualTypeDesignation.NewInstance(text, language, isVerbatim, citation, citationMicroReference, originalInfo);
         addTypeDesignation(textualTypeDesignation, addToAllHomotypicNames);
         return textualTypeDesignation;
     }

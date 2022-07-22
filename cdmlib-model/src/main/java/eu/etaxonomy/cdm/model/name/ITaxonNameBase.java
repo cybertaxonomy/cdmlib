@@ -370,10 +370,10 @@ public interface ITaxonNameBase
     public void setOriginalSpelling(TaxonName originalSpelling);
 
     /**
-     * Sets the orginal name string in the nomenclatural source.
+     * Sets the original info in the nomenclatural source.
      * Creates the source if it does not exist.
      */
-    public void setOriginalNameString(String originalNameString);
+    public void setOriginalInfo(String originalInfo);
 
     /**
      * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.
@@ -517,7 +517,7 @@ public interface ITaxonNameBase
      * @param  typeSpecies              the taxon name to be used as type of <i>this</i> taxon name
      * @param  citation                 the reference for this new designation
      * @param  citationMicroReference   the string with the details (generally pages) within the reference
-     * @param  originalNameString       the taxon name string used in the reference to assert this designation
+     * @param  originalInfo             any information from the original source, might be the name as written in the source (#10097)
      * @param  isRejectedType           the boolean status for a rejected name type designation
      * @param  isConservedType          the boolean status for a conserved name type designation
      * @param  isLectoType              the boolean status for a lectotype name type designation
@@ -530,7 +530,7 @@ public interface ITaxonNameBase
      * @see                             TypeDesignationBase#isNotDesignated()
      */
     public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies, Reference citation,
-            String citationMicroReference, String originalNameString, NameTypeDesignationStatus status,
+            String citationMicroReference, String originalInfo, NameTypeDesignationStatus status,
             boolean isRejectedType, boolean isConservedType,
             /*boolean isLectoType, */
             boolean isNotDesignated, boolean addToAllHomotypicNames);
@@ -542,7 +542,7 @@ public interface ITaxonNameBase
      * @param  typeSpecies              the taxon name to be used as type of <i>this</i> taxon name
      * @param  citation                 the reference for this new designation
      * @param  citationMicroReference   the string with the details (generally pages) within the reference
-     * @param  originalNameString       the taxon name string used in the reference to assert this designation
+     * @param  originalInfo             any information from the original source, might be the name as written in the source (#10097)
      * @param  status                   the name type designation status
      * @param  addToAllHomotypicNames   the boolean indicating whether the name type designation should be
      *                                  added to all taxon names of the homotypical group this taxon name belongs to
@@ -552,7 +552,7 @@ public interface ITaxonNameBase
      * @see                             TypeDesignationBase#isNotDesignated()
      */
     public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies, Reference citation,
-            String citationMicroReference, String originalNameString, NameTypeDesignationStatus status,
+            String citationMicroReference, String originalInfo, NameTypeDesignationStatus status,
             boolean addToAllHomotypicNames);
 
     /**
@@ -569,7 +569,7 @@ public interface ITaxonNameBase
      * @param  status                   the specimen type designation status
      * @param  citation                 the reference for this new specimen type designation
      * @param  citationMicroReference   the string with the details (generally pages) within the reference
-     * @param  originalNameString       the taxon name used in the reference to assert this designation
+     * @param  originalInfo             any information from the original source, might be the name as written in the source (#10097)
      * @param  isNotDesignated          the boolean status for a specimen type designation without specimen type
      * @param  addToAllHomotypicNames   the boolean indicating whether the specimen type designation should be
      *                                  added to all taxon names of the homotypical group the typified
@@ -581,7 +581,7 @@ public interface ITaxonNameBase
      * @see                             TypeDesignationBase#isNotDesignated()
      */
     public SpecimenTypeDesignation addSpecimenTypeDesignation(DerivedUnit typeSpecimen, SpecimenTypeDesignationStatus status,
-            Reference citation, String citationMicroReference, String originalNameString, boolean isNotDesignated,
+            Reference citation, String citationMicroReference, String originalInfo, boolean isNotDesignated,
             boolean addToAllHomotypicNames);
 
     /**
@@ -590,15 +590,15 @@ public interface ITaxonNameBase
      *
      * @param text                      the text
      * @param language                  the language of the text, if no language is defined {@link Language#UNDETERMINED()} is used
-     * @param isVerbatim                wether or not this the text is a verbatim text from a reference
-     * @param  citation                 the reference for this new specimen type designation
-     * @param  citationMicroReference   the string with the details (generally pages) within the reference
-     * @param  originalNameString       the taxon name used in the reference to assert this designation
-     * @param  addToAllHomotypicNames   the boolean indicating whether the specimen type designation should be
+     * @param isVerbatim                whether or not this the text is a verbatim text from a reference
+     * @param citation                  the reference for this new specimen type designation
+     * @param citationMicroReference    the string with the details (generally pages) within the reference
+     * @param originalInfo              any information from the original source, might be the name as written in the source (#10097)
+     * @param addToAllHomotypicNames    the boolean indicating whether the specimen type designation should be
      * @return
      */
     TextualTypeDesignation addTextualTypeDesignation(String text, Language language, boolean isVerbatim,
-            Reference citation, String citationMicroReference, String originalNameString,
+            Reference citation, String citationMicroReference, String originalInfo,
             boolean addToAllHomotypicNames);
 
 

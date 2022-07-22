@@ -66,12 +66,12 @@ public abstract class SingleSourcedEntityBase
 	}
 
     protected SingleSourcedEntityBase(Reference reference, String microReference,
-            String originalNameString) {
+            String originalInfo) {
         super();
         this.setCitation(reference);
         this.setCitationMicroReference(microReference);
-        if (StringUtils.isNotEmpty(originalNameString)){
-            getSource(true).setOriginalNameString(originalNameString);
+        if (StringUtils.isNotEmpty(originalInfo)){
+            getSource(true).setOriginalInfo(originalInfo);
         }
     }
 

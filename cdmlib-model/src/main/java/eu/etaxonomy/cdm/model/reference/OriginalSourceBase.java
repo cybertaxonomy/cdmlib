@@ -62,9 +62,9 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "type",
 	"idInSource",
     "idNamespace",
-    "originalNameString",
     "citation",
     "citationMicroReference",
+    "originalInfo",
     "cdmSource",
     "links"
 })
@@ -114,8 +114,8 @@ public abstract class OriginalSourceBase
     @XmlElement(name = "CitationMicroReference")
     private String citationMicroReference;
 
-    @XmlElement(name = "OriginalNameString")
-    private String originalNameString;
+    @XmlElement(name = "OriginalInfo")
+    private String originalInfo;
 
     @XmlElement(name = "CdmSource")
     @XmlIDREF
@@ -192,11 +192,11 @@ public abstract class OriginalSourceBase
         this.citationMicroReference = citationMicroReference;
     }
 
-    public String getOriginalNameString(){
-        return this.originalNameString;
+    public String getOriginalInfo(){
+        return this.originalInfo;
     }
-    public void setOriginalNameString(String originalNameString){
-        this.originalNameString = originalNameString;
+    public void setOriginalInfo(String originalInfo){
+        this.originalInfo = originalInfo;
     }
 
 	@Override
@@ -268,7 +268,7 @@ public abstract class OriginalSourceBase
 		}
 
 		//no changes to: type, idInSource, idNamespace,
-		//   citation, citationMicroReference, originalNameString
+		//   citation, citationMicroReference, originalInfo
 		return result;
 	}
 
@@ -293,7 +293,7 @@ public abstract class OriginalSourceBase
 	        && (excludeType || this.type == null)
 	        && this.getCitation() == null
 	        && isBlank(this.getCitationMicroReference())
-	        && isBlank(this.getOriginalNameString())
+	        && isBlank(this.getOriginalInfo())
 	        && isBlank(this.getIdInSource())
 	        && isBlank(this.getIdNamespace())
 	        && this.links.isEmpty()
@@ -332,7 +332,7 @@ public abstract class OriginalSourceBase
 
         if(thisCitationId != otherCitationId
                 || !StringUtils.equals(this.getCitationMicroReference(), other.getCitationMicroReference())
-                || !StringUtils.equals(this.getOriginalNameString(), other.getOriginalNameString())
+                || !StringUtils.equals(this.getOriginalInfo(), other.getOriginalInfo())
                         ){
             return false;
         }

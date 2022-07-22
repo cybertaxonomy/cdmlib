@@ -72,9 +72,9 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 	}
 
 //	public SourcedEntityBase(Reference citation, String citationMicroReference,
-//			String originalNameString) {
+//			String originalInfo) {
 //		this.citationMicroReference = citationMicroReference;
-//		this.originalNameString = originalNameString;
+//		this.originalInfo = originalInfo;
 //		this.citation = citation;
 //	}
 
@@ -166,10 +166,10 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 //     * @param citation the source as a {@link Reference reference}
 //     * @param microReference the details (e.g. page number) in the reference
 //     * @param nameUsedInSource the taxon name used in the source
-//     * @param originalNameString the name as text used in the source
+//     * @param originalInfo the name as text used in the source
 //     */
-//    public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
-//        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+//    public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalInfo){
+//        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microReference, nameUsedInSource, originalInfo);
 //        addSource(newSource);
 //    }
 

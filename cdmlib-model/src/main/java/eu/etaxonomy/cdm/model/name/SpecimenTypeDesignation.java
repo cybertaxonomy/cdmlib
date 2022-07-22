@@ -87,14 +87,14 @@ public class SpecimenTypeDesignation
 //	 * @param status				the type designation status
 //	 * @param citation				the reference source for the new designation
 //	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-//	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+//	 * @param originalInfo       	any information from the original source, might be the name as written in the source (#10097)
 //	 * @see							#SpecimenTypeDesignation(DerivedUnit, TypeDesignationStatus, Reference, String, String)
 //	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
 //	 * @see							occurrence.DerivedUnit
 //	 */
 //	protected static SpecimenTypeDesignation NewInstance2(DerivedUnit specimen, TypeDesignationStatus status,
-//			Reference citation, String citationMicroReference, String originalNameString){
-//		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString);
+//			Reference citation, String citationMicroReference, String originalInfo){
+//		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalInfo);
 //		return specTypeDesig;
 //	}
 
@@ -121,7 +121,7 @@ public class SpecimenTypeDesignation
 	 * @param citation				the reference source for the new designation
 	 * @param citationMicroReference	the string with the details describing
 	 * 								the exact localisation within the reference
-	 * @param originalNameString	the taxon name string used originally in the
+	 * @param originalInfo         	any information from the original source, might be the name as written in the source (#10097)
 	 * 								reference source for the new designation
 	 * @param isNotDesignated		the boolean flag indicating whether there is no specimen type at all for
 	 * 								<i>this</i> specimen type designation
@@ -131,8 +131,8 @@ public class SpecimenTypeDesignation
 	 * @see							eu.etaxonomy.cdm.model.occurrence.DerivedUnit
 	 */
 	protected SpecimenTypeDesignation(DerivedUnit specimen, SpecimenTypeDesignationStatus status, Reference citation, String citationMicroReference,
-			String originalNameString, boolean isNotDesignated) {
-		super(citation, citationMicroReference, originalNameString, isNotDesignated);
+			String originalInfo, boolean isNotDesignated) {
+		super(citation, citationMicroReference, originalInfo, isNotDesignated);
 		this.setTypeSpecimen(specimen);
 		this.setTypeStatus(status);
 	}

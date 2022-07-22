@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -113,7 +114,7 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 		TaxonName typeName = checkTaxonNameType(toObject);
 
 		boolean addToAllHomotypicNames = false; //TODO check if this is correct
-		String originalNameString = null; //TODO what is this
+		String originalInfo = null; //TODO what is this
 
 		NameTypeDesignationStatus status = this.designationStatus;
 		if (designationStatusValue != null){
@@ -123,7 +124,7 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 				status = transformer.transformNameTypeDesignationStatus(designationStatusValue);
 			}
 		}
-		typifiedName.addNameTypeDesignation(typeName, citation, microCitation, originalNameString, status, addToAllHomotypicNames);
+		typifiedName.addNameTypeDesignation(typeName, citation, microCitation, originalInfo, status, addToAllHomotypicNames);
 
 		return typifiedName;
 	}

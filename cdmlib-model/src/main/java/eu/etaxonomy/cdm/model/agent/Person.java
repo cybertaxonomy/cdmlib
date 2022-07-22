@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  * For a short abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
  * is to be used.<BR>
  * For other alternative (string-)names {@link eu.etaxonomy.cdm.model.reference.OriginalSourceBase OriginalSource} instances must be created
- * and the attribute {@link eu.etaxonomy.cdm.model.common.OriginalSourceBase#getOriginalNameString() originalNameString} must be used.
+ * and the attribute {@link eu.etaxonomy.cdm.model.common.OriginalSourceBase#getOriginalInfo() originalInfo} must be used.
  * <P>
  * This class corresponds to: <ul>
  * <li> Person according to the TDWG ontology

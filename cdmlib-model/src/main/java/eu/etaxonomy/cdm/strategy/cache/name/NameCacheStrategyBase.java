@@ -216,15 +216,15 @@ public abstract class NameCacheStrategyBase
         //Hibernate.initialize(currentName.getRelationsToThisName());
         TaxonName originalName = currentName.getOriginalSpelling();
         if (originalName != null){
-            String originalNameString;
+            String originalInfo;
             tags.add(TaggedText.NewSeparatorInstance(" [as \""));
             if (!originalName.isNonViral()){
-                originalNameString = originalName.getTitleCache();
-                tags.add(new TaggedText(TagEnum.name, originalNameString));
+                originalInfo = originalName.getTitleCache();
+                tags.add(new TaggedText(TagEnum.name, originalInfo));
             }else{
                 INonViralName originalNvName = CdmBase.deproxy(originalName);
-                originalNameString = makeOriginalNameString(originalNvName, tags);
-                for (String split : originalNameString.split(" ")){
+                originalInfo = makeOriginalInfo(originalNvName, tags);
+                for (String split : originalInfo.split(" ")){
                     if (split.matches(NonViralNameParserImplRegExBase.infraSpeciesMarker)
                             || split.matches(NonViralNameParserImplRegExBase.oldInfraSpeciesMarker)) {
                         tags.add(new TaggedText(TagEnum.rank, split));
@@ -239,7 +239,7 @@ public abstract class NameCacheStrategyBase
         }
     }
 
-    private String makeOriginalNameString(INonViralName originalName,
+    private String makeOriginalInfo(INonViralName originalName,
             List<TaggedText> currentNameTags) {
         //use cache if necessary
         String cacheToUse = null;
@@ -255,21 +255,21 @@ public abstract class NameCacheStrategyBase
         }
         //use atomized data
         //get originalNameParts array
-        String originalNameString = originalName.getNameCache();
-        if (originalNameString == null){
-            originalNameString = originalName.getTitleCache();
+        String originalInfo = originalName.getNameCache();
+        if (originalInfo == null){
+            originalInfo = originalName.getTitleCache();
         }
-        if (originalNameString == null){  //should not happen
-            originalNameString = originalName.getFullTitleCache();
+        if (originalInfo == null){  //should not happen
+            originalInfo = originalName.getFullTitleCache();
         }
-        String[] originalNameSplit = originalNameString.split("\\s+");
+        String[] originalNameSplit = originalInfo.split("\\s+");
 
         //get current name parts
         String currentNameString = createString(currentNameTags);
         String[] currentNameSplit = currentNameString.split("\\s+");
 
         //compute string
-        String result = originalNameString;
+        String result = originalInfo;
         Integer firstDiff = null;
         Integer lastDiff = -1;
         for (int i = 0; i < Math.min(originalNameSplit.length, currentNameSplit.length); i++){

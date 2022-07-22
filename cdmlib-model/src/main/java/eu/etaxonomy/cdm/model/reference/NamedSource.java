@@ -72,16 +72,17 @@ public class NamedSource extends NamedSourceBase {
         return result;
     }
 
-    public static NamedSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
+    public static NamedSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference,
+            TaxonName nameUsedInSource, String originalInfo){
         NamedSource result = NewInstance(type, id, idNamespace, citation, microReference);
         result.setNameUsedInSource(nameUsedInSource);
-        result.setOriginalNameString(originalNameString);
+        result.setOriginalInfo(originalInfo);
         return result;
     }
 
     public static NamedSource NewInstance(OriginalSourceType type, String id, String idNamespace,
-        Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString, ICdmTarget target){
-        NamedSource result = NewInstance(type, id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+        Reference citation, String microReference, TaxonName nameUsedInSource, String originalInfo, ICdmTarget target){
+        NamedSource result = NewInstance(type, id, idNamespace, citation, microReference, nameUsedInSource, originalInfo);
         result.setCdmSource(target);
         return result;
     }
@@ -93,10 +94,10 @@ public class NamedSource extends NamedSourceBase {
     }
 
 
-    public static NamedSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
+    public static NamedSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonName nameUsedInSource, String originalInfo){
         NamedSource result = NewPrimarySourceInstance(citation, microReference);
         result.setNameUsedInSource(nameUsedInSource);
-        result.setOriginalNameString(originalNameString);
+        result.setOriginalInfo(originalInfo);
         return result;
     }
 

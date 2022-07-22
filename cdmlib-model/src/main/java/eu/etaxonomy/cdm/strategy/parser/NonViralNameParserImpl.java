@@ -406,10 +406,10 @@ public class NonViralNameParserImpl
      * Tries to create the best name (without authors) that makes an original spelling name for the nameToBeFilled.
      */
     private void handleOriginalSpelling(INonViralName nameToBeFilled) {
-        if (nameToBeFilled.getNomenclaturalSource()== null || CdmUtils.isBlank(nameToBeFilled.getNomenclaturalSource().getOriginalNameString())){
+        if (nameToBeFilled.getNomenclaturalSource()== null || CdmUtils.isBlank(nameToBeFilled.getNomenclaturalSource().getOriginalInfo())){
             return;
         }
-        String originalNameString = nameToBeFilled.getNomenclaturalSource().getOriginalNameString();
+        String originalInfo = nameToBeFilled.getNomenclaturalSource().getOriginalInfo();
 
         final int n = 5;
         String nameSplit[] = new String[n];
@@ -418,7 +418,7 @@ public class NonViralNameParserImpl
         nameSplit[2] = nameToBeFilled.getSpecificEpithet();
         nameSplit[3] = nameToBeFilled.getRank()== null? null : nameToBeFilled.getRank().getAbbreviation();
         nameSplit[4] = nameToBeFilled.getInfraSpecificEpithet();
-        String originalNameSplit[] = originalNameString.split(" ");
+        String originalNameSplit[] = originalInfo.split(" ");
 
         int bestOffset = -1;
         int bestDiff = Integer.MAX_VALUE;
@@ -465,7 +465,7 @@ public class NonViralNameParserImpl
         originalName.setInfraSpecificEpithet(finalSplit[4]);
 
         nameToBeFilled.setOriginalSpelling(originalName);
-        nameToBeFilled.setOriginalNameString(null);
+        nameToBeFilled.setOriginalInfo(null);
         return;
     }
 
@@ -521,7 +521,7 @@ public class NonViralNameParserImpl
 	}
 
 	/**
-     * Extracts the original spelling string and adds it to the original source as <code>originalNameString</code>.
+     * Extracts the original spelling string and adds it to the original source as <code>originalInfo</code>.
      * The original spelling part is deleted from the reference String.
      * @return  String the new (shortend) reference String
      */
@@ -534,7 +534,7 @@ public class NonViralNameParserImpl
             String originalSpellingPhrase = hasOrginalSpellingMatcher.group(0);
             String originalSpellingStr = originalSpellingPhrase.substring(originalSpellingStart.length());
             originalSpellingStr = originalSpellingStr.substring(0, originalSpellingStr.length() - originalSpellingEnd.length()+1);
-            nameToBeFilled.setOriginalNameString(originalSpellingStr);
+            nameToBeFilled.setOriginalInfo(originalSpellingStr);
             fullString = fullString.replace(originalSpellingPhrase, "").trim();
         }
 

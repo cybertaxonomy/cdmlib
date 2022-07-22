@@ -995,7 +995,7 @@ public class FullCoverageDataGenerator {
 		//source
 		IdentifiableSource source = identifiableEntity.addSource(OriginalSourceType.Import, "id", "idNamespace",
 				getReference(), "123");
-		source.setOriginalNameString("original name");
+		source.setOriginalInfo("original name");
 
 		//LSID
 		 try {

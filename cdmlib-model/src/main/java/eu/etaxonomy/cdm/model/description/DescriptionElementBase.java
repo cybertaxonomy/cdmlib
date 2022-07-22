@@ -473,12 +473,12 @@ public abstract class DescriptionElementBase
      * @param reference the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
      * @param nameUsedInSource the taxon name used in the source
-     * @param originalNameString the name as text used in the source
+     * @param originalInfo any information as original mentioned in the text
      */
     public DescriptionElementSource addSource(OriginalSourceType type, String idInSource, String idNamespace,
-            Reference reference, String microReference, TaxonName nameUsedInSource, String originalNameString){
+            Reference reference, String microReference, TaxonName nameUsedInSource, String originalInfo){
         DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace,
-                reference, microReference, nameUsedInSource, originalNameString);
+                reference, microReference, nameUsedInSource, originalInfo);
         addSource(newSource);
         return newSource;
     }

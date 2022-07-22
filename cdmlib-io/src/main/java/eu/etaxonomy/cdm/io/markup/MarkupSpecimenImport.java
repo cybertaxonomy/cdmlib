@@ -293,7 +293,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			if (collectionAndType.matches(notDesignatedRE)){
 				SpecimenTypeDesignation desig = SpecimenTypeDesignation.NewInstance();
 				desig.setNotDesignated(true);
-//				name.addSpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames)
+//				name.addSpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalInfo, isNotDesignated, addToAllHomotypicNames)
 				name.addTypeDesignation(desig, true);
 			}else if(collectionAndType.matches(designatedRE)){
 				String designatedBy = null;

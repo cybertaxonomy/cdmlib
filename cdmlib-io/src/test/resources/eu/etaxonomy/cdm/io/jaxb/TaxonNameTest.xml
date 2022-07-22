@@ -261,7 +261,7 @@
     </References>
     <TypeDesignations>
         <name:SpecimenTypeDesignation id="1" uuid="urn-uuid-0fdae5a6-9fad-435f-846a-8ea492938375">
-            <common:OriginalNameString>Arum gratum</common:OriginalNameString>
+            <common:OriginalInfo>Arum gratum</common:OriginalInfo>
             <common:Citation>urn-uuid-8528d6ad-b246-4a3b-b30b-cfb8549476c7</common:Citation>
             <name:TypifiedNames>
               <name:TypifiedName>urn-uuid-ff5d2897-51e1-4352-a23d-678b7d9026bf</name:TypifiedName>
@@ -271,7 +271,7 @@
             <name:TypeStatus>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</name:TypeStatus>
         </name:SpecimenTypeDesignation>
         <name:NameTypeDesignation id="2" uuid="urn-uuid-8db5df84-fca4-4e8f-aed2-4b349dfa31d7">
-            <common:OriginalNameString></common:OriginalNameString>
+            <common:OriginalInfo></common:OriginalInfo>
             <common:Citation>urn-uuid-ea590de1-cb10-400e-8b0d-f7aa4b47cea9</common:Citation>
             <name:TypifiedNames>
               <name:TypifiedName>urn-uuid-d399030c-906f-437c-90d2-3f5c89d87376</name:TypifiedName>
@@ -283,7 +283,7 @@
             <name:TypeName>urn-uuid-75664369-645b-46cd-b133-493cbcd27cb5</name:TypeName>
         </name:NameTypeDesignation>
         <name:NameTypeDesignation id="3" uuid="urn-uuid-b6a88f54-c8dd-41ea-91e6-ed459494f8fd">
-            <common:OriginalNameString>Sphinx atropos</common:OriginalNameString>
+            <common:OriginalInfo>Sphinx atropos</common:OriginalInfo>
             <common:Citation>urn-uuid-ea590de1-cb10-400e-8b0d-f7aa4b47cea9</common:Citation>
             <name:TypifiedNames>
               <name:TypifiedName>urn-uuid-51ab21d1-d65b-4fb0-9814-98bd411df231</name:TypifiedName>
@@ -462,7 +462,7 @@
             <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
             <name:RelationsFromThisName>
                 <name:RelationFromThisName id="3" uuid="urn-uuid-2e0ee760-fdcb-11dd-87af-0800200c9a66" isDoubtful="false">
-                    <common:OriginalNameString></common:OriginalNameString>
+                    <common:OriginalInfo></common:OriginalInfo>
                     <common:Citation>urn-uuid-db5d02b5-e6f2-4376-ab02-6e67fc8f8ff1</common:Citation>
                     <name:RelatedFrom>urn-uuid-37c1b483-582a-478c-acb0-a49bbc4417e5</name:RelatedFrom>
                     <name:RelatedTo>urn-uuid-b47e0874-1701-435f-a8f1-cadc25b99efb</name:RelatedTo>

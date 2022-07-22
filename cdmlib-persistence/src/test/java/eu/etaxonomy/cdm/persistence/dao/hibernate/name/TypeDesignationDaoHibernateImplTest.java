@@ -160,7 +160,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		desig1.setUuid(UUID.fromString("ceca086e-e8d3-444e-abfb-c47f76835130"));
 
 //		//REMOVE
-//		desig1.setOriginalNameString("orig");
+//		desig1.setOriginalInfo("orig");
 //
 		name1.addTypeDesignation(desig1, true);
 

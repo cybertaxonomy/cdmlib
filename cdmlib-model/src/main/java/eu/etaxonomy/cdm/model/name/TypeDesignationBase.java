@@ -140,13 +140,13 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      *
      * @param citation				the reference source for the new designation
      * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-     * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+     * @param originalInfo	any information from the original source, might be the name as written in the source (#10097)
      * @see							#TypeDesignationBase()
      * @see							#isNotDesignated()
      * @see							TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString) {
-        this(citation, citationMicroReference, originalNameString, false);
+    protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalInfo) {
+        this(citation, citationMicroReference, originalInfo, false);
     }
 
     /**
@@ -157,15 +157,15 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      *
      * @param citation				the reference source for the new designation
      * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-     * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+     * @param originalInfo	any information from the original source, might be the name as written in the source (#10097)
      * @param isNotDesignated		the boolean flag indicating whether there is no type at all for
      * 								<i>this</i> type designation
      * @see							#TypeDesignationBase()
      * @see							#isNotDesignated()
      * @see							TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
-        this(NamedSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
+    protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalInfo, boolean notDesignated){
+        this(NamedSource.NewPrimarySourceInstance(citation, citationMicroReference, null, originalInfo), notDesignated);
     }
 
     /**
@@ -175,15 +175,13 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * the former designation).
      *
      * @param source                the reference source for the new designation
-     * @param originalNameString    the taxon name string used originally in the reference source for the new designation
      * @param isNotDesignated       the boolean flag indicating whether there is no type at all for
      *                              <i>this</i> type designation
      * @see                         #TypeDesignationBase()
      * @see                         #isNotDesignated()
      * @see                         TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(NamedSource designationSource, String originalNameString, boolean notDesignated){
-        super();
+    protected TypeDesignationBase(NamedSource designationSource, boolean notDesignated){
         this.notDesignated = notDesignated;
         this.designationSource = designationSource;
     }
