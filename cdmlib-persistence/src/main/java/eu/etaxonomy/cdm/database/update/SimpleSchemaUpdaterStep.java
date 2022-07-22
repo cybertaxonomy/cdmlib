@@ -145,11 +145,12 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 		} catch (SQLException e) {
 			logger.error(e);
 			if (withErrorRecovery) {
+			    result.addWarning(errorRecoveryMessage, this, e.getMessage());
+//			    (errorRecoveryMessage, e, getStepName());
+			    return true;
+			}else {
 			    result.addException(e, "Unexpected SQL Exception", getStepName());
 			    return false;
-			}else {
-			    result.addError(errorRecoveryMessage, e, getStepName());
-			    return true;
 			}
 		}
 	}
