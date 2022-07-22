@@ -42,14 +42,15 @@ public class Credit extends LanguageStringBase {
 
 // ********************** FACTORY **********************************************/
 
-    public static Credit NewInstance(AgentBase agent, String text){
-        return NewInstance(agent, text, null, Language.DEFAULT());
+    public static Credit NewInstance(AgentBase agent, TimePeriod timePeriod, String text){
+        return NewInstance(agent, timePeriod, text, null, Language.DEFAULT());
     }
 
-    public static Credit NewInstance(AgentBase agent, String text, String abbreviatedText, Language language){
+    public static Credit NewInstance(AgentBase agent, TimePeriod timePeriod, String text, String abbreviatedText, Language language){
         Credit result = new Credit(text, language);
         result.setAgent(agent);
         result.setAbbreviatedText(abbreviatedText);
+        result.setTimePeriod(timePeriod);
         return result;
     }
 
@@ -88,7 +89,14 @@ public class Credit extends LanguageStringBase {
 		this.agent = agent;
 	}
 
-	public String getAbbreviatedText() {
+    public TimePeriod getTimePeriod() {
+        return timePeriod;
+    }
+    public void setTimePeriod(TimePeriod timePeriod) {
+        this.timePeriod = timePeriod;
+    }
+
+    public String getAbbreviatedText() {
 		return abbreviatedText;
 	}
 	public void setAbbreviatedText(String abbreviatedText) {

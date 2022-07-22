@@ -211,7 +211,8 @@ public class FullCoverageDataGenerator {
 		ref.addAnnotation(annotation);
 		handleAnnotatableEntity(annotation);
 
-		Credit credit = Credit.NewInstance(Person.NewInstance(), "refCredit", "rc", Language.DEFAULT());
+		Credit credit = Credit.NewInstance(Person.NewInstance(), TimePeriodParser.parseString("22.4.2022-12.5.2023"),
+		        "refCredit", "rc", Language.DEFAULT());
 		ref.addCredit(credit);
 		handleAnnotatableEntity(credit);
 
@@ -965,7 +966,7 @@ public class FullCoverageDataGenerator {
 
 		//Credits
 		Person creditor = Person.NewTitledInstance("Creditor");
-		Credit credit = Credit.NewInstance(creditor, "credit");
+		Credit credit = Credit.NewInstance(creditor, TimePeriod.NewInstance(DateTime.now(), DateTime.now()), "credit");
 		identifiableEntity.addCredit(credit);
 
 		//Extension

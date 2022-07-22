@@ -545,8 +545,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		article1.addRights(rights1);
 		article2.addRights(rights2);
 
-		Credit credit1 = Credit.NewInstance(Team.NewInstance(), "credit1");
-		Credit credit2 = Credit.NewInstance(Team.NewInstance(), "credit2");
+		Credit credit1 = Credit.NewInstance(Team.NewInstance(), TimePeriod.NewInstance(2002), "credit1");
+		Credit credit2 = Credit.NewInstance(Team.NewInstance(), TimePeriod.NewInstance(2015), "credit2");
 
 		article1.addCredit(credit1);
 		article2.addCredit(credit2);
@@ -700,7 +700,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		book1.setAuthorship(team2);
 		book2.setAuthorship(team3);
 
-		Credit credit1 = Credit.NewInstance(team3, "credit1");
+		Credit credit1 = Credit.NewInstance(team3, TimePeriod.NewInstance(1955), "credit1");
 		book2.addCredit(credit1);
 
 		agentDao.save(team1);
@@ -933,7 +933,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		String emailAddress2 = "Email2";
 		team2.addEmailAddress(emailAddress2);
 
-		Credit credit1 = Credit.NewInstance(team2, "credit1");
+		Credit credit1 = Credit.NewInstance(team2, TimePeriod.NewInstance(2008), "credit1");
 		book1.addCredit(credit1);
 
 		agentDao.save(team1);

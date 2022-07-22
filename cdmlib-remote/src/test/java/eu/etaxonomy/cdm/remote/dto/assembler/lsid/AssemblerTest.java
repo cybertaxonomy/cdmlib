@@ -194,7 +194,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setReferenceAbstract("referenceAbstract");
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());
-        bookSection.addCredit(Credit.NewInstance(authorship, "Credits to the authorship"));
+        bookSection.addCredit(Credit.NewInstance(authorship, null, "Credits to the authorship"));
         bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 
