@@ -311,13 +311,14 @@ public abstract class OriginalSourceBase
 	        && isBlank(this.getOriginalInfo())
 	        && isBlank(this.getIdInSource())
 	        && isBlank(this.getIdNamespace())
-	        && this.accessed == null || this.accessed.isEmpty()
+	        && (this.accessed == null || this.accessed.isEmpty())
 	        && this.links.isEmpty()
 	        && this.cdmSource == null
            ;
 	}
 
 //************************ toString ***************************************/
+
 	@Override
 	public String toString(){
 		if (isNotBlank(idInSource) || isNotBlank(idNamespace) ){
