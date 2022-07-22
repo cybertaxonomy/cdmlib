@@ -85,6 +85,21 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
         newColumnName = "accessed_freetext";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
+        //#10057 add timePeriod columns to Credit
+        tableName = "Credit";
+        stepName = "Add timePeriod_start to Credit";
+        newColumnName = "timePeriod_start";
+        size = 50;
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
+
+        stepName = "Add timePeriod_end to Credit";
+        newColumnName = "timePeriod_end";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
+
+        stepName = "Add timePeriod_freetext to Credit";
+        newColumnName = "timePeriod_freetext";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
         //#9901 Remove unique key Media_RightsInfo.rights_id
         stepName = "Remove unique key Media_RightsInfo.rights_id";
         tableName = "Media_RightsInfo";

@@ -63,6 +63,9 @@ public class Credit extends LanguageStringBase implements Cloneable{
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private AgentBase<?> agent;
 
+    @XmlElement(name = "TimePeriod", type= String.class)
+    private TimePeriod timePeriod = TimePeriod.NewInstance();
+
 	@XmlElement(name = "AbbreviatedText")
 	private String abbreviatedText;
 
@@ -105,6 +108,11 @@ public class Credit extends LanguageStringBase implements Cloneable{
 	public Credit clone() throws CloneNotSupportedException{
 
 	    Credit result = (Credit)super.clone();
+
+	    if (this.timePeriod != null) {
+	        result.timePeriod = this.timePeriod.clone();
+	    }
+
 		//no changes to: agent
 		return result;
 	}
