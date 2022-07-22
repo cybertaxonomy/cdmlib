@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -99,6 +100,14 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
         stepName = "Add timePeriod_freetext to Credit";
         newColumnName = "timePeriod_freetext";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+        //#10097
+        stepName = "Rename originalNameString to originalInfo";
+        tableName = "OriginalSourceBase";
+        String oldColumnName = "originalNameString";
+        newColumnName = "originalInfo";
+        size = 255;
+        ColumnNameChanger.NewVarCharInstance(stepList, stepName, tableName, oldColumnName, newColumnName, size, INCLUDE_AUDIT);
 
         //#9901 Remove unique key Media_RightsInfo.rights_id
         stepName = "Remove unique key Media_RightsInfo.rights_id";
