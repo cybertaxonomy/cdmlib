@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -66,6 +67,21 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
 		String abbrev = null;
 		UUID uuidEnglish = Language.uuidEnglish;
 		TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm, description, label, abbrev, uuidEnglish);
+
+	    //#10057 add accessed columns
+        stepName = "Add accessed_start";
+        tableName = "OriginalSourceBase";
+        String newColumnName = "accessed_start";
+        int size = 50;
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
+
+        stepName = "Add accessed_end";
+        newColumnName = "accessed_end";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, size, INCLUDE_AUDIT);
+
+        stepName = "Add accessed_freetext";
+        newColumnName = "accessed_freetext";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
 
 		return stepList;

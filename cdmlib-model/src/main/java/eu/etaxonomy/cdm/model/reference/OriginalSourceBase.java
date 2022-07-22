@@ -45,6 +45,7 @@ import org.springframework.util.Assert;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -64,6 +65,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "idNamespace",
     "citation",
     "citationMicroReference",
+    "accessed",
     "originalInfo",
     "cdmSource",
     "links"
@@ -113,6 +115,9 @@ public abstract class OriginalSourceBase
     //publication. {if the citationMicroReference exists then there must be also a reference}
     @XmlElement(name = "CitationMicroReference")
     private String citationMicroReference;
+
+    @XmlElement(name = "Accessed", type= String.class)
+    private TimePeriod accessed = TimePeriod.NewInstance();
 
     @XmlElement(name = "OriginalInfo")
     private String originalInfo;
@@ -190,6 +195,13 @@ public abstract class OriginalSourceBase
     @Override
     public void setCitationMicroReference(String citationMicroReference){
         this.citationMicroReference = citationMicroReference;
+    }
+
+    public TimePeriod getAccessed() {
+        return accessed;
+    }
+    public void setAccessed(TimePeriod accessed) {
+        this.accessed = accessed;
     }
 
     public String getOriginalInfo(){
