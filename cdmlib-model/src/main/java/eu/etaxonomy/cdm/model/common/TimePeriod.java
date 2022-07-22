@@ -594,6 +594,34 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         return hashCode;
     }
 
+    /**
+     * Tests, if time period 1 and time period 2 are equal with <code>null</code> and
+     * <code>empty</code> time periods all handled similar.<BR><BR>
+     * <code>
+     * equalsNullAndEmptySafe(null, null)  = true<BR>
+     * equalsNullAndEmptySafe(null, empty)  = true<BR>
+     * equalsNullAndEmptySafe(empty, null)  = true<BR>
+     * equalsNullAndEmptySafe(empty, empty)  = true<BR>
+     * equalsNullAndEmptySafe(null, not-empty)  = false<BR>
+     * equalsNullAndEmptySafe(empty, not-empty)  = false<BR>
+     * equalsNullAndEmptySafe(not-empty, null)  = false<BR>
+     * equalsNullAndEmptySafe(not-empty, empty)  = false<BR>
+     * equalsNullAndEmptySafe(not-empty1, not-empty2)  = not-empty.equals(not-empty2)<BR>
+     * </code>
+     */
+    @SuppressWarnings("null")
+    public static boolean equalsNullAndEmptySafe(TimePeriod timePeriod1, TimePeriod timePeriod2) {
+        boolean tp1Empty = timePeriod1 == null || timePeriod1.isEmpty();
+        boolean tp2Empty = timePeriod2 == null || timePeriod2.isEmpty();
+        if (tp1Empty && tp2Empty) {
+            return true;
+        }else if (tp1Empty || tp2Empty) {
+            return false;
+        }else {
+            return timePeriod1.equals(timePeriod2);
+        }
+    }
+
 //*********** CLONE **********************************/
 
     @Override

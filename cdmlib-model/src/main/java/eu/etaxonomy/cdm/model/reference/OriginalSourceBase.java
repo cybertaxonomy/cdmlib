@@ -279,6 +279,10 @@ public abstract class OriginalSourceBase
 		    result.setCdmSource(this.cdmSource.getTarget());
 		}
 
+        if (this.accessed != null) {
+            result.accessed = this.accessed.clone();
+        }
+
 		//no changes to: type, idInSource, idNamespace,
 		//   citation, citationMicroReference, originalInfo
 		return result;
@@ -308,6 +312,7 @@ public abstract class OriginalSourceBase
 	        && isBlank(this.getOriginalInfo())
 	        && isBlank(this.getIdInSource())
 	        && isBlank(this.getIdNamespace())
+	        && this.accessed == null || this.accessed.isEmpty()
 	        && this.links.isEmpty()
 	        && this.cdmSource == null
            ;
@@ -353,6 +358,7 @@ public abstract class OriginalSourceBase
         if(!StringUtils.equals(this.getIdInSource(), theOther.getIdInSource())
                 || !CdmUtils.nullSafeEqual(this.getIdNamespace(), theOther.getIdNamespace())
                 || !CdmUtils.nullSafeEqual(this.getType(), theOther.getType())
+                || TimePeriod.equalsNullAndEmptySafe(accessed, theOther.getAccessed())
                 || !CdmUtils.nullSafeEqual(this.getCdmSource(), theOther.getCdmSource())
                 || !CdmUtils.nullSafeEqual(this.getLinks(), theOther.getLinks())) {
             return false;
