@@ -130,6 +130,7 @@ public class TestModelUpdate {
 	 * Requires that the local path to the database is adapted
 	 */
 	private void updateRemoteWebappTestH2(){
+	    System.out.println("Update remoteWebappTestH2");
 	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
 	    updateH2(pathToProject);
 	}
@@ -139,6 +140,7 @@ public class TestModelUpdate {
      * Requires that the local path to the database is adapted
      */
     private void updateTaxEditorH2(){
+        System.out.println("Update TaxEditorTestH2");
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
         updateH2(pathToProject);
     }
@@ -148,6 +150,7 @@ public class TestModelUpdate {
      * Requires that the local path to the database is adapted
      */
     private void updateVaadinH2(){
+        System.out.println("Update VaadinTestH2");
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin2\\";
         updateH2(pathToProject);
     }
