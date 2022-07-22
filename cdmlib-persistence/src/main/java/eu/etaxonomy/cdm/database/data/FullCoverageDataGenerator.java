@@ -996,6 +996,7 @@ public class FullCoverageDataGenerator {
 		//source
 		IdentifiableSource source = identifiableEntity.addSource(OriginalSourceType.Import, "id", "idNamespace",
 				getReference(), "123");
+		source.setAccessed(TimePeriod.NewInstance(2020, 2021));
 		source.setOriginalInfo("original name");
 
 		//LSID
