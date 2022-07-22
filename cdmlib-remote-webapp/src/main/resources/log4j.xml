@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ###############################################################################
 #
-# This log4j.properties file will be used when running executing
-# cdmlib-remote-webapp directly in a servelet container like jetty
+# This log4j.xml file will be used when running executing
+# cdmlib-remote-webapp directly in a servelet container like jetty.
+# But be aware, the CDM Server has its own logging configuration file.
 #
 ###############################################################################
 #
