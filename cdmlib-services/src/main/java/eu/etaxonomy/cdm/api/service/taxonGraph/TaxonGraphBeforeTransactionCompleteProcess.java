@@ -27,7 +27,6 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PreDeleteEvent;
 
 import eu.etaxonomy.cdm.api.application.IRunAs;
-import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
 import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -307,9 +306,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess
       finally {
           if (getSession() != null ) {
               // temporarySession.close(); // no need to close the session since the session is configured for auto close, see createTempSession()
-              if(origLoggerLevel != null){
-                  LogUtils.setLevel("org.hibernate.SQL", origLoggerLevel);
-              }
           }
       }
     }

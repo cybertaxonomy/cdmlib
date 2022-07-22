@@ -102,9 +102,13 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     }
 
     @Before
-    public void resetPasswordResetService() throws InterruptedException {
+    public void setLogLevel() {
         LogUtils.setLevel(logger, Level.DEBUG);
-        LogUtils.setLevel(PasswordResetRequest.class, Level.TRACE);
+    }
+
+    @Before
+    public void resetPasswordResetService() throws InterruptedException {
+//        LogUtils.setLevel(PasswordResetRequest.class, Level.TRACE);
         // speed up testing
         passwordResetService.setRateLimiterTimeout(Duration.ofMillis(rateLimiterTimeout));
         passwordResetService.setRate(maxRequestRate);
