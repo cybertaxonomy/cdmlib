@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
+import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v527_529.SchemaUpdater_5271_5290;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
@@ -83,6 +84,11 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
         newColumnName = "accessed_freetext";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
+        //#9901 Remove unique key Media_RightsInfo.rights_id
+        stepName = "Remove unique key Media_RightsInfo.rights_id";
+        tableName = "Media_RightsInfo";
+        String indexColumn = "rights_id";
+        UniqueIndexDropper.NewInstance(stepList, tableName, indexColumn, INCLUDE_AUDIT);
 
 		return stepList;
     }
