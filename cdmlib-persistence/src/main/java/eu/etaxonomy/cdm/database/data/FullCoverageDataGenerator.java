@@ -761,11 +761,7 @@ public class FullCoverageDataGenerator {
 		handleIdentifiableEntity(reference);
 
 		cdmBases.add(reference);
-
 	}
-
-
-
 
 	private void createOccurrence(List<CdmBase> cdmBases) {
 
