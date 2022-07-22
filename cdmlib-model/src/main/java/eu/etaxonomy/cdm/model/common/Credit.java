@@ -64,6 +64,7 @@ public class Credit extends LanguageStringBase {
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private AgentBase<?> agent;
 
+	//#9908
     @XmlElement(name = "TimePeriod", type= String.class)
     private TimePeriod timePeriod = TimePeriod.NewInstance();
 

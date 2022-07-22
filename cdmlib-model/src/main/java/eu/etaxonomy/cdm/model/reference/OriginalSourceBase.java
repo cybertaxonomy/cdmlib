@@ -115,9 +115,11 @@ public abstract class OriginalSourceBase
     @XmlElement(name = "CitationMicroReference")
     private String citationMicroReference;
 
+    //#10057
     @XmlElement(name = "Accessed", type= String.class)
     private TimePeriod accessed = TimePeriod.NewInstance();
 
+    //#10097
     @XmlElement(name = "OriginalInfo")
     private String originalInfo;
 
