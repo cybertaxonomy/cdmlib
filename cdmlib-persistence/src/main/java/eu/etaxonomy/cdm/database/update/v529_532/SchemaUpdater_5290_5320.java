@@ -124,16 +124,16 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
 
         //#9785 Add missing unit_ids
         stepName = "Add missing unit_ids";
-        String query = "UPDATE DescriptionElementBase deb LEFT OUTER JOIN DefinedTermBase fe ON fe.id = deb.feature_id"
-                + "SET deb.unit_id = ("
+        String query = "UPDATE DescriptionElementBase deb LEFT OUTER JOIN DefinedTermBase fe ON fe.id = deb.feature_id "
+                + " SET deb.unit_id = ("
                 + "        SELECT MN2.recommendedMeasurementUnits_id"
                 + "        FROM DefinedTermBase fe2 INNER JOIN DefinedTermBase_MeasurementUnit MN2 ON MN2.Feature_id = fe2.id"
                 + "        WHERE fe.id = fe2.id AND (fe2.DTYPE = 'Feature' OR fe2.DTYPE = 'Character')"
                 + "        GROUP BY fe2.id"
                 + "        HAVING COUNT(*) = 1"
-                + ")"
-                + "WHERE deb.DTYPE = 'QuantitativeData' AND deb.unit_id IS NULL"
-                + "AND fe.id IN ("
+                + ") "
+                + " WHERE deb.DTYPE = 'QuantitativeData' AND deb.unit_id IS NULL "
+                + " AND fe.id IN ("
                 + "    SELECT fe.id "
                 + "    FROM DefinedTermBase fe INNER JOIN DefinedTermBase_MeasurementUnit MN ON MN.Feature_id = fe.id INNER JOIN DefinedTermBase mu ON MN.recommendedMeasurementUnits_id = mu.id"
                 + "    WHERE fe.DTYPE = 'Feature' OR fe.DTYPE = 'Character'"
