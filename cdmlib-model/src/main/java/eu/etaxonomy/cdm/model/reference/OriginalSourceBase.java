@@ -338,7 +338,6 @@ public abstract class OriginalSourceBase
      */
     public boolean equalsByShallowCompare(OriginalSourceBase other) {
 
-
         int thisCitationId = -1;
         int otherCitationId = -1;
         if(this.getCitation() != null) {
@@ -358,7 +357,7 @@ public abstract class OriginalSourceBase
         if(!StringUtils.equals(this.getIdInSource(), other.getIdInSource())
                 || !CdmUtils.nullSafeEqual(this.getIdNamespace(), other.getIdNamespace())
                 || !CdmUtils.nullSafeEqual(this.getType(), other.getType())
-                || TimePeriod.equalsNullAndEmptySafe(accessed, other.getAccessed())
+                || !TimePeriod.equalsNullAndEmptySafe(accessed, other.getAccessed())
                 || !CdmUtils.nullSafeEqual(this.getCdmSource(), other.getCdmSource())
                 || !CdmUtils.nullSafeEqual(this.getLinks(), other.getLinks())) {
             return false;
