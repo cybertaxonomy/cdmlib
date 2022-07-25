@@ -43,19 +43,17 @@
     </dependency>
     <!-- GIS/KML -->
 	<dependency>
-	    <groupId>de.micromata.jak</groupId>
-	    <artifactId>JavaAPIforKml</artifactId>
-        <exclusions>
-          <!-- need to exclude jaxb-impl since it depends on an old version  -->
-          <exclusion>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-          </exclusion>
-        </exclusions>
+	  <!-- OLD: <groupId>de.micromata.jak</groupId> -->
+	  <groupId>uk.m0nom</groupId>
+	  <artifactId>JavaAPIforKml</artifactId>
+      <exclusions>
+        <!-- need to exclude jaxb-impl since it depends on an old version  -->
+		<!-- not sure if this is still true since we moved to uk.m0nom version -->
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+		</exclusion>
+      </exclusions>
 	</dependency>
 	<dependency>
 	    <groupId>org.geotools</groupId>
