@@ -43,17 +43,21 @@
     </dependency>
     <!-- GIS/KML -->
 	<dependency>
-	  <!-- OLD: <groupId>de.micromata.jak</groupId> -->
-	  <groupId>uk.m0nom</groupId>
-	  <artifactId>JavaAPIforKml</artifactId>
-      <exclusions>
-        <!-- need to exclude jaxb-impl since it depends on an old version  -->
-		<!-- not sure if this is still true since we moved to uk.m0nom version -->
-        <exclusion>
-          <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-impl</artifactId>
-		</exclusion>
-      </exclusions>
+	    <groupId>de.micromata.jak</groupId>
+        <!-- new groupID uk.m0nom does not work yet on jenkins, saying class Klm was not found for whatever reason; locally it works -->
+	    <!-- new groupId is better as it references a more recent jaxb version -->
+        <artifactId>JavaAPIforKml</artifactId>
+        <exclusions>
+          <!-- need to exclude jaxb-impl since it depends on an old version  -->
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+          </exclusion>
+        </exclusions>
 	</dependency>
 	<dependency>
 	    <groupId>org.geotools</groupId>
