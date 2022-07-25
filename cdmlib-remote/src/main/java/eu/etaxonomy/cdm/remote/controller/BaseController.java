@@ -17,7 +17,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -28,7 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.mapping.Map;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -168,10 +168,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         if(c instanceof Set){
             // sets need to be sorted to have a defined order
             List<CdmBase> list = new ArrayList<>(c);
-            java.util.Collections.sort(list, new Comparator<CdmBase>() {
-
-                @Override
-                public int compare(CdmBase o1, CdmBase o2) {
+            java.util.Collections.sort(list, (o1, o2)-> {
                     if (o1 == null && o2 == null){
                         return 0;
                     }else if (o1 == null){
@@ -181,7 +178,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
                     }
                     return Integer.compare(o1.getId(), o2.getId());
                 }
-            });
+            );
             c = list;
         }
 
@@ -207,36 +204,6 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         return objectFromProperty;
     }
 
-    private Class<?> propertyClass(T instance, String baseName) {
-        PropertyDescriptor propertyDescriptor = null;
-        Class<?> c = null;
-        try {
-            propertyDescriptor = PropertyUtils.getPropertyDescriptor(instance, baseName);
-            if(propertyDescriptor != null){
-                c =  propertyDescriptor.getClass();
-            }
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return c;
-    }
-
-    /**
-     * @param <SUB_T>
-     * @param clazz
-     * @param uuid
-     * @param response
-     * @param pathProperties
-     * @return
-     * @throws IOException
-     */
     @SuppressWarnings("unchecked")
     protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz,
             UUID uuid, HttpServletResponse response, List<String> pathProperties)
@@ -249,15 +216,6 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         return (SUB_T) cdmBaseObject;
     }
 
-    /**
-     * @param <SUB_T>
-     * @param clazz
-     * @param uuid
-     * @param response
-     * @param pathProperty
-     * @return
-     * @throws IOException
-     */
     @SuppressWarnings("unchecked")
     protected final <SUB_T extends T> SUB_T getCdmBaseInstance(Class<SUB_T> clazz, UUID uuid, HttpServletResponse response, String pathProperty)
             throws IOException {
@@ -269,42 +227,17 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         return (SUB_T) cdmBaseObject;
     }
 
-    /**
-     * @param uuid
-     * @param response
-     * @param pathProperty
-     * @return
-     * @throws IOException
-     */
     protected final T getCdmBaseInstance(UUID uuid, HttpServletResponse response, String pathProperty)
             throws IOException {
         return getCdmBaseInstance(baseClass, uuid, response, Arrays
                 .asList(new String[] { pathProperty }));
     }
 
-
-    /**
-     * @param uuid
-     * @param response
-     * @param pathProperties
-     * @return
-     * @throws IOException
-     */
     protected final T getCdmBaseInstance(UUID uuid, HttpServletResponse response, List<String> pathProperties)
             throws IOException {
         return getCdmBaseInstance(baseClass, service, uuid, response, pathProperties);
     }
 
-    /**
-     * @param <CDM_BASE>
-     * @param clazz
-     * @param service
-     * @param uuid
-     * @param response
-     * @param pathProperties
-     * @return
-     * @throws IOException
-     */
     protected final <CDM_BASE extends CdmBase> CDM_BASE getCdmBaseInstance(
             Class<CDM_BASE> clazz, IService<CDM_BASE> service, UUID uuid,
             HttpServletResponse response, List<String> pathProperties)
@@ -338,13 +271,6 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         return pathProperties;
     }
 
-    /**
-     * @param instance
-     * @param baseName
-     * @param response
-     * @return
-     * @throws IOException
-     */
     private final Object invokeProperty(T instance,
             String baseName, HttpServletResponse response) throws IOException {
 
@@ -415,13 +341,6 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         return (S)result;
     }
 
-
-    /**
-     * @param subtreeUuid
-     * @param response
-     * @return
-     * @throws IOException
-     */
     protected TaxonNode getSubtreeOrError(UUID subtreeUuid, ITaxonNodeService taxonNodeService, HttpServletResponse response) throws IOException {
         TaxonNode subtree = null;
         if (subtreeUuid != null){
@@ -510,6 +429,4 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
        }
     }
 */
-
-
 }
