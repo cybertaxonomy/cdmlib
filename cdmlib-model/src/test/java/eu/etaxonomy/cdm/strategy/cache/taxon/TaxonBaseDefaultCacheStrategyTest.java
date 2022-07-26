@@ -20,6 +20,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -231,6 +232,9 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         taxonBase.setTitleCache(null, false);
         Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1983", taxonBase.getTitleCache());
 
+        VerbatimTimePeriod accessed = TimePeriodParser.parseStringVerbatim("5 Mar 2014");
+        taxonBase.getSecSource().setAccessed(accessed);
+        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 2014", taxonBase.getTitleCache());
     }
 
     @Test

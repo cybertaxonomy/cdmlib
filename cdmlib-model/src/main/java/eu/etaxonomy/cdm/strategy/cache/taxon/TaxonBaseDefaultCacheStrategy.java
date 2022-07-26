@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -163,6 +164,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
         Reference sec = taxonBase.getSec();
         sec = HibernateProxyHelper.deproxy(sec);
+        TimePeriod sourceAccessed = taxonBase.getSecSource() == null ? null : taxonBase.getSecSource().getAccessed();
+
         String secRef;
         if (sec == null){
             //missing sec
@@ -179,15 +182,19 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     sec.getAuthorship() != null &&
                     isNotBlank(sec.getAuthorship().getTitleCache()) &&
                     isNotBlank(sec.getYear())){
-                secRef = OriginalSourceFormatter.INSTANCE.format(sec, null);  //microRef is handled later
+                secRef = OriginalSourceFormatter.INSTANCE.format(sec, null, sourceAccessed);  //microRef is handled later
             }else if ((sec.isDynamic())
                     && titleExists(sec)){  //maybe we should also test protected caches (but which one, the abbrev cache or the titleCache?
                 secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
-                String secDate = sec.getYear();
-                if (isBlank(secDate) && sec.getAccessed() != null){
-                    secDate = String.valueOf(sec.getAccessed().getYear());
+                String year = sourceAccessed == null? null:sourceAccessed.getYear();
+                if (isBlank(year) && sec.getAccessed() != null){
+                    year = String.valueOf(sec.getAccessed().getYear());
                 }
-                secRef = CdmUtils.concat(" ", secRef, secDate);
+                if (isBlank(year) && sec.getYear() != null){
+                    year = sec.getYear();
+                }
+
+                secRef = CdmUtils.concat(" ", secRef, year);
             }else{
                 secRef = sec.getTitleCache();
                 //TODO maybe not always correct
