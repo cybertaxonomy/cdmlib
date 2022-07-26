@@ -261,13 +261,13 @@ public class TaxonNode
      * <code>true</code> if status is {@link TaxonNodeStatus#EXCLUDED} or any
      * of its child status
      */
-    public boolean isExcluded() {return isKindOf(TaxonNodeStatus.EXCLUDED);}
+    public boolean isExcluded() {return isOrIsKindOf(TaxonNodeStatus.EXCLUDED);}
 
     /**
      * <code>true</code> if status is {@link TaxonNodeStatus#EXCLUDED} but not
      * a sub-status (more specific excluded status)
      */
-    public boolean isExcludedOnly() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
+    public boolean isExcludedExact() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
 
     public boolean isGeographicallyExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED_GEO);}
 
@@ -989,11 +989,11 @@ public class TaxonNode
         return CdmUtils.nullSafeEqual(this.status, status);
     }
 
-    private boolean isKindOf(TaxonNodeStatus status) {
+    private boolean isOrIsKindOf(TaxonNodeStatus status) {
         if (this.status == null) {
             return status == null;
         }else {
-            return this.status.isKindOf(status);
+            return hasStatus(status) || this.status.isKindOf(status);
         }
     }
 

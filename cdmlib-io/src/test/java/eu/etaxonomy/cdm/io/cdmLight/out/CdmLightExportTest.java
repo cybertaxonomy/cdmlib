@@ -212,7 +212,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
             //unpublished/excluded/note
             String unpublishedLine = getLine(taxonResult, subspeciesUnpublishedTaxonUuid);
-            String expectedExcluded = "\"1\",\"0\",\"0\",\"My status note\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref: 27\",\"0\"";
+            String expectedExcluded = "\"\",\"0\",\"0\",\"0\",\"1\",\"1\",\"0\",\"0\",\"0\",\"0\",\"0\",\"Excluded\",\"My status note\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref: 27\",\"0\"";
             Assert.assertTrue(unpublishedLine.contains(expectedExcluded));
 
             //references

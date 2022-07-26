@@ -376,16 +376,16 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = taxon.isPublish() ? "1" : "0";
 
                     //taxon node
-                    csvLine[table.getIndex(CdmLightExportTable.INCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.INCLUDED)] = taxonNode.getStatus() == null  ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isDoubtful() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isUnplaced() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_ONLY)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_GEO)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_TAX)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOM)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.UNCERTAIN_APPLICATION)] = taxonNode.isUnplaced() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = taxonNode.isDoubtful() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_EXACT)] = taxonNode.isExcludedExact() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_GEO)] = taxonNode.isGeographicallyExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_TAX)] = taxonNode.isTaxonomicallyExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOM)] = taxonNode.isNomenclaturallyExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.UNCERTAIN_APPLICATION)] = taxonNode.isUncertainApplication() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = taxonNode.isUnresolved() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_STATUS)] = taxonNode.getStatus() == null ? null : taxonNode.getStatus().getLabel();
                     Map<Language, LanguageString> notesMap = taxonNode.getStatusNote();
                     String statusNotes = "";
