@@ -46,9 +46,9 @@ public class TaxonNodeStatusComparator implements Comparator<TaxonNodeStatus> {
         if (CdmUtils.nullSafeEqual(status1, status2)){
             return 0;
         }else if (status1 == null){
-            return 1;
+            return -1;  //null status or doubtful should be put on top
         }else if (status2 == null){
-            return -1;
+            return 1;
         }else {
             //for now we use the natural order
             return status1.compareTo(status2);
