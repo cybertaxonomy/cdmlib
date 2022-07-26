@@ -21,7 +21,9 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author k.luther
  * @since 18.03.2010
  */
-public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator implements Serializable {
+public class TaxonNodeByRankAndNameComparator
+        extends TaxonNodeByNameComparator
+        implements Serializable {
 
     private static final long serialVersionUID = 2596641007876609704L;
 
@@ -75,7 +77,7 @@ public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator 
             return rankOrder;
         }else {
             List<TaggedText> taggedText1 = getTaggedText(node1);
-            List<TaggedText> taggedText2 = getTaggedText(node2);;
+            List<TaggedText> taggedText2 = getTaggedText(node2);
 
             if (taggedText1 != null && taggedText2 != null){
                 //same rank, order by name
