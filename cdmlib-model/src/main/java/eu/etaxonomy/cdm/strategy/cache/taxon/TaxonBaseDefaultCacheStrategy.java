@@ -180,7 +180,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     isNotBlank(sec.getAuthorship().getTitleCache()) &&
                     isNotBlank(sec.getYear())){
                 secRef = OriginalSourceFormatter.INSTANCE.format(sec, null);  //microRef is handled later
-            }else if ((sec.isWebPage() || sec.isDatabase() || sec.isMap())
+            }else if ((sec.isDynamic())
                     && titleExists(sec)){  //maybe we should also test protected caches (but which one, the abbrev cache or the titleCache?
                 secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
                 String secDate = sec.getYear();

@@ -1183,6 +1183,14 @@ public class Reference
     public boolean isPrintedUnit() {
         return this.getType().isPrintedUnit();
     }
+    /**
+     * @return <code>true</code> if the type of this reference
+     *         supports the {@link IDynamicReference} interface. Currently these are
+     *         webpages, databases and maps.
+     */
+    public boolean isDynamic() {
+        return this.getType().isDynamic();
+    }
 
 //*************************** CACHE STRATEGIES ******************************/
 

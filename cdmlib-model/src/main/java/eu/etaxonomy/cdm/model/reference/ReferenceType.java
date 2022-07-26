@@ -302,6 +302,14 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
     public boolean isSectionOnly() {
         return this == Section;
     }
+    /**
+     * @return <code>true</code> if this type supports references implementing
+     *         the {@link IDynamicReference} interface. Currently these are
+     *         webpages, databases and maps.
+     */
+    public boolean isDynamic() {
+        return this == WebPage || this == Database || this == Map;
+    }
 
     /**
      * Returns <code>true</code> if the type of the reference originally corresponded to a cache strategy
