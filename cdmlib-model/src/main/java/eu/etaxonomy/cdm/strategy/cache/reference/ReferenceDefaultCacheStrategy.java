@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -125,7 +126,7 @@ public class ReferenceDefaultCacheStrategy
         }
         if(reference.getAccessed() != null){
             //TODO still a bit preliminary, also brackets may change in future
-            result = result + " [accessed " + getAccessedString(reference.getAccessed()) +"]";
+            result = result + getAccessedPart(reference);
         }
         return result == null ? null : result.trim();
     }
@@ -136,6 +137,13 @@ public class ReferenceDefaultCacheStrategy
                 author.getNomenclaturalTitleCache(), isAbbrev, trim);
         String result = addAuthorYear(authorStr, reference, useFullDatePublished);
         return result;
+    }
+
+    public String getAccessedPart(Reference reference) {
+        if (reference.getAccessed() == null) {
+            return null;
+        }
+        return " [accessed " + getAccessedString(reference.getAccessed()) +"]";
     }
 
     private String getAccessedString(DateTime accessed) {

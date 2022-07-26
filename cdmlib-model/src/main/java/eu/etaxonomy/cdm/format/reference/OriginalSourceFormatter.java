@@ -14,9 +14,11 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -61,18 +63,22 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
      * @param reference the reference to format
      * @param citationDetail the microreference (page, figure, etc.), if <code>null</code> also the colon separator is not used
      */
-    public String format(Reference reference, String citationDetail){
+    public String format(Reference reference, String microReference){
+        return format(reference, microReference, null);
+    }
+
+    public String format(Reference reference, String microReference, TimePeriod accessed){
         if (reference == null){
             return null;
         }
 
         if(reference.isProtectedTitleCache()){
-            return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
+            return handleCitationDetailInTitleCache(reference, microReference, accessed);
         }
         TeamOrPersonBase<?> authorship = reference.getAuthorship();
         String authorStr = "";
         if (authorship == null) {
-            return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
+            return handleCitationDetailInTitleCache(reference, microReference, accessed);
         }
         authorship = CdmBase.deproxy(authorship);
         if (authorship instanceof Person){
@@ -87,27 +93,51 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
                 authorStr = TeamDefaultCacheStrategy.INSTANCE_ET_AL_2().getFamilyTitle(team);
             }
         }
-        String result = CdmUtils.concat(" ", authorStr, getShortCitationDate(reference, withYearBrackets, citationDetail));
+        String result = CdmUtils.concat(" ", authorStr, getShortCitationDateAndDetail(reference, microReference, accessed));
 
         return result;
     }
 
-    private String getShortCitationDate(Reference reference, boolean withBrackets, String citationDetail) {
+    private String getShortCitationDateAndDetail(Reference reference, String microReference, TimePeriod accessed) {
+        String dateStr = getDateString(reference, accessed);
+        return getShortTimePeriodAndDetail(dateStr, microReference, withYearBrackets);
+    }
+
+    private String getDateString(Reference reference, TimePeriod accessed) {
         String result = null;
-        if (reference.getDatePublished() != null && !reference.getDatePublished().isEmpty()) {
-            if (isNotBlank(reference.getDatePublished().getFreeText())){
-                result = reference.getDatePublished().getFreeText();
-            }else if (isNotBlank(reference.getYear()) ){
-                result = reference.getYear();
-            }
-            if (isNotBlank(citationDetail)){
-                result = Nz(result) + ": " + citationDetail;
-            }
-            if (isNotBlank(result) && withBrackets){
-                result = "(" + result + ")";
-            }
+        if (!isEmpty(accessed)) {
+            return timePeriodString(accessed);
+        } else if (reference.getAccessed() != null) {
+            TimePeriod refAccessed = TimePeriod.NewInstance(reference.getAccessed());
+            return timePeriodString(refAccessed);
+        }else if (!isEmpty(reference.getDatePublished())) {
+            return timePeriodString(reference.getDatePublished()) ;
         }else if (reference.getInReference() != null){
-            result = getShortCitationDate(reference.getInReference(), withBrackets, citationDetail);
+            return getDateString(reference.getInReference(), null);
+        }else {
+            return result;
+        }
+    }
+
+    private String getShortTimePeriodAndDetail(String dateStr, String microReference, boolean withBrackets) {
+        String result = dateStr;
+        if (isNotBlank(microReference)){
+            result = Nz(result) + ": " + microReference;
+        }
+        if (isNotBlank(result) && withBrackets){
+            result = "(" + result + ")";
+        }
+        return result;
+    }
+
+    private String timePeriodString(TimePeriod timePeriod) {
+        String result = null;
+        if (timePeriod != null) {
+            if (isNotBlank(timePeriod.getFreeText())){
+                result = timePeriod.getFreeText();
+            }else if (isNotBlank(timePeriod.getYear()) ){
+                result = timePeriod.getYear();
+            }
         }
         return result;
     }
@@ -127,20 +157,59 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
      * it is concatenated with separator ":"
      * @return the concatenated string
      */
-    private String handleCitationDetailInTitleCache(String titleCache, String citationDetail) {
-        if (isBlank(citationDetail)){
-            return titleCache;
-        }else if (isBlank(titleCache)){
-            return ": " + citationDetail;
-        }else if (citationDetail.length() <= 3){
-            if (titleCache.contains(": " + citationDetail)){
-                return titleCache;
-            }
-        }else{
-            if (titleCache.contains(citationDetail)){
-                return titleCache;
+    private String handleCitationDetailInTitleCache(Reference reference, String citationDetail, TimePeriod accessed) {
+        String titleCache = reference.getTitleCache();
+
+        //remove reference.accessed
+        if (reference.cacheStrategy() instanceof ReferenceDefaultCacheStrategy) {
+            String accessedPart = ((ReferenceDefaultCacheStrategy)reference.cacheStrategy()).getAccessedPart(reference);
+            if (isNotBlank(accessedPart) && titleCache.contains(accessedPart)) {
+                titleCache = titleCache.replace(accessedPart, "").trim();
             }
         }
-        return titleCache + ": " + citationDetail;
+
+        //remove date published
+        String datePublishedStr = timePeriodString(reference.getDatePublished());
+        if (isNotBlank(datePublishedStr)) {
+            String compareStr = datePublishedStr + ": ";
+            if (titleCache.startsWith(compareStr)){
+                titleCache = titleCache.substring(compareStr.length());
+            }
+        }
+
+        String dateStr = getDateString(reference, accessed);
+        if (isBlank(citationDetail) && isBlank(dateStr)){
+            return titleCache;
+        }
+        if (isBlank(titleCache)){
+            return getShortCitationDateAndDetail(reference, citationDetail, accessed);
+        }
+
+        //is citationDetail included in titleCache?
+        if (isNotBlank(citationDetail)) {
+            if (citationDetail.length() <= 3){
+                if (titleCache.contains(": " + citationDetail)){
+                    citationDetail = null;
+                }
+            }else{
+                if (titleCache.contains(citationDetail)){
+                    citationDetail = null;
+                }
+            }
+        }
+
+        //is accessed date included in titleCache?
+        if (isNotBlank(dateStr)) {
+            if (titleCache.endsWith(dateStr) || titleCache.contains(dateStr + ": ")){
+                dateStr = null;
+            }
+        }
+
+        String dateAndDetail = getShortCitationDateAndDetail(reference, citationDetail, accessed);
+        return titleCache + " " + dateAndDetail;
+    }
+
+    private boolean isEmpty(TimePeriod timePeriod) {
+        return timePeriod == null || timePeriod.isEmpty();
     }
 }
