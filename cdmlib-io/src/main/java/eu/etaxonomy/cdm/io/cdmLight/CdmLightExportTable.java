@@ -61,7 +61,6 @@ public enum CdmLightExportTable {
     protected static final String PLACEMENT_REF_FK = "PlacementReference_Fk";
     protected static final String PLACEMENT_REFERENCE = "PlacementReference";
 
-
     //pro parte / misapplied
     protected static final String SYN_SEC_REFERENCE_FK = "SynSecReference_Fk";
     protected static final String SYN_SEC_REFERENCE = "SynSecReference";

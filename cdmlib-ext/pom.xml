@@ -46,6 +46,7 @@
 	    <groupId>de.micromata.jak</groupId>
         <!-- new groupID uk.m0nom does not work yet on jenkins, saying class Klm was not found for whatever reason; locally it works -->
 	    <!-- new groupId is better as it references a more recent jaxb version -->
+        <!-- it is probably a Java 11 issue, so try again after upgrade -->
         <artifactId>JavaAPIforKml</artifactId>
         <exclusions>
           <!-- need to exclude jaxb-impl since it depends on an old version  -->

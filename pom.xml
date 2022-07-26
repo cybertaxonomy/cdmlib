@@ -173,6 +173,7 @@
       <name>JBoss Repository</name>
       <url>https://repository.jboss.org</url>
     </repository>  -->
+    <!-- required for org.geotools:gt-opengis/gt-referencing/gt-epsg-wkt/gt-main -->    
     <repository>
     	<id>OSGeo Repository</id>
     	<url>https://repo.osgeo.org/repository/release/</url>
