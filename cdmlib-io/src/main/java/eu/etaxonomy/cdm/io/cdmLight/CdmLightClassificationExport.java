@@ -386,6 +386,7 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOM)] = taxonNode.isExcluded() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.UNCERTAIN_APPLICATION)] = taxonNode.isUnplaced() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = taxonNode.isDoubtful() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.STATUS)] = taxonNode.getStatus() == null ? "Included" : taxonNode.getStatus().getLabel();
                     Map<Language, LanguageString> notesMap = taxonNode.getStatusNote();
                     String statusNotes = "";
                     if (!notesMap.isEmpty() && notesMap.size() == 1) {

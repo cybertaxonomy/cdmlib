@@ -63,6 +63,7 @@ public enum CdmLightExportTable {
     protected static final String EXCLUDED_NOM = "ExcludedNom";
     protected static final String UNCERTAIN_APPLICATION = "UncertainApplication";
     protected static final String UNRESOLVED = "PlacementUnresolved";
+    protected static final String PLACEMENT_STATUS = "PlacementStatus";
     protected static final String PUBLISHED = "Published";
     protected static final String PLACEMENT_NOTES = "PlacementNotes";
     protected static final String PLACEMENT_REF_FK = "PlacementReference_Fk";
@@ -355,7 +356,7 @@ public enum CdmLightExportTable {
 
     final static String[] taxonColumns(){
         return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SEC_SUBNAME_FK, SEC_SUBNAME, SEC_SUBNAME_AUTHORS, APPENDED_PHRASE, SORT_INDEX,
-                INCLUDED, DOUBTFUL, UNPLACED, EXCLUDED, EXCLUDED_ONLY, EXCLUDED_GEO, EXCLUDED_TAX, EXCLUDED_NOM, UNCERTAIN_APPLICATION, UNRESOLVED,
+                INCLUDED, DOUBTFUL, UNPLACED, EXCLUDED, EXCLUDED_ONLY, EXCLUDED_GEO, EXCLUDED_TAX, EXCLUDED_NOM, UNCERTAIN_APPLICATION, UNRESOLVED, PLACEMENT_STATUS,
                 PLACEMENT_NOTES, PLACEMENT_REF_FK, PLACEMENT_REFERENCE, PUBLISHED};
     }
 
