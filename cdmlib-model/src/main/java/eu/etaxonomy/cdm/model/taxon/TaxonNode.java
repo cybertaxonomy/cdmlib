@@ -257,7 +257,27 @@ public class TaxonNode
     //#8281 indicates a preliminary placement
     public boolean isDoubtful() {return hasStatus(TaxonNodeStatus.DOUBTFUL);}
 
-    public boolean isExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
+    /**
+     * <code>true</code> if status is {@link TaxonNodeStatus#EXCLUDED} or any
+     * of its child status
+     */
+    public boolean isExcluded() {return isKindOf(TaxonNodeStatus.EXCLUDED);}
+
+    /**
+     * <code>true</code> if status is {@link TaxonNodeStatus#EXCLUDED} but not
+     * a sub-status (more specific excluded status)
+     */
+    public boolean isExcludedOnly() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
+
+    public boolean isGeographicallyExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED_GEO);}
+
+    public boolean isTaxonomicallyExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED_TAX);}
+
+    public boolean isNomenclaturallyExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED_NOM);}
+
+    public boolean isUncertainApplication() {return hasStatus(TaxonNodeStatus.UNCERTAIN_APPLICATION);}
+
+    public boolean isUnresolved() {return hasStatus(TaxonNodeStatus.UNRESOLVED);}
 
 //************************************************************/
 
@@ -967,6 +987,14 @@ public class TaxonNode
 
     private boolean hasStatus(TaxonNodeStatus status) {
         return CdmUtils.nullSafeEqual(this.status, status);
+    }
+
+    private boolean isKindOf(TaxonNodeStatus status) {
+        if (this.status == null) {
+            return status == null;
+        }else {
+            return this.status.isKindOf(status);
+        }
     }
 
 //*********************** CLONE ********************************************************/

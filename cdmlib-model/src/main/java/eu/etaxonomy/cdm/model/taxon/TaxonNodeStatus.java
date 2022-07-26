@@ -21,10 +21,17 @@ import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
+ * The status for the placement (taxon node) of taxon/name in classification.
+ *
+ * For more information on the status see #10096, #9005, #8281
+ *
  * @author a.mueller
  * @since 26.05.2020
  */
 public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
+
+    //TODO maybe we want a status "Included" too, instead of making TaxonNode.status an optional
+    //     attribute (see comments in #10096 attachement)
 
     //0  - see #8281
     /**
@@ -42,11 +49,55 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
 
     //2
     /**
-     * The taxon for some reason is excluded from the treatment this {@link TaxonNode} belongs too.
+     * The taxon or name for any reason is excluded from the treatment this {@link TaxonNode} belongs too.
+     * See sub status for more specific reasons.
      */
     @XmlEnumValue("Excluded")
-    EXCLUDED(UUID.fromString("23d259b6-2d7e-4df6-8745-0e24fbe63187"), "Excluded", "EXC", Character.toString((char)248), null)
-    ;
+    EXCLUDED(UUID.fromString("23d259b6-2d7e-4df6-8745-0e24fbe63187"), "Excluded", "EXC", Character.toString((char)248), null),
+
+    //3
+    /**
+     * Taxon or name excluded, geographically out of scope. <BR>
+     * E.g. a taxon that does not occur in the region of the flora treatment.
+     */
+    @XmlEnumValue("Excluded_geo")
+    EXCLUDED_GEO(UUID.fromString("a76c0fa8-e04d-421c-ac10-07a3c6770d45"), "Excluded geo.", "EXCG", Character.toString((char)248)+"g", EXCLUDED),
+
+    //4
+    /**
+     * Taxon or name excluded, taxonomically out of scope. <BR>
+     * E.g. name being a taxon name or synonym belonging to a taxon that is not part of the treatment.
+     */
+    @XmlEnumValue("Excluded_tax")
+    EXCLUDED_TAX(UUID.fromString("689a5821-e59d-4ec2-ae33-2331bdb39f34"), "Excluded tax.", "EXCT", Character.toString((char)248)+"t", EXCLUDED),
+
+    //5
+    /**
+     * Name excluded for nomenclatural reasons. <BR>
+     * E.g. an effectively published name ascribing the name to an author who merely and correctly cited an earlier name.
+     */
+    @XmlEnumValue("Excluded_nom")
+    EXCLUDED_NOM(UUID.fromString("b4484183-6f19-4901-af96-0ab6183cebfb"), "Excluded nom.", "EXCN", Character.toString((char)248)+"n", EXCLUDED),
+
+    //6
+    /**
+     * Name of verified uncertain application <BR>
+     * E.g. an effectively published name ascribing the name to an author who merely and correctly cited an earlier name.<BR>
+     * Alternative symbol: ↑ or u+2BD1 (https://unicode-table.com/en/2BD1/)
+     */
+    @XmlEnumValue("Uncertain_app")
+    UNCERTAIN_APPLICATION(UUID.fromString("c87ea64a-f3d3-41fe-a4c5-dd6a8697fc46"), "Uncertain application", "UNA", Character.toString((char)248)+"a", EXCLUDED),
+
+    //6
+    /**
+     * Name of verified uncertain application <BR>
+     * E.g. an effectively published name ascribing the name to an author who merely and correctly cited an earlier name.<BR>
+     * Alternative symbol: ↑ or u+2BD1 (https://unicode-table.com/en/2BD1/)
+     */
+    @XmlEnumValue("Unresolved")
+    UNRESOLVED(UUID.fromString("ce6f2430-9662-4b78-8fc2-48b5fa9fd37e"), "Unresolved", "UNR", "u", null),
+
+;
 
 // **************** END ENUM **********************/
 
