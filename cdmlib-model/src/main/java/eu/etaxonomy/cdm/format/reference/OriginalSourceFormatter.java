@@ -127,7 +127,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         if (isNotBlank(result) && withBrackets){
             result = "(" + result + ")";
         }
-        return result;
+        return Nz(result);
     }
 
     private String timePeriodString(TimePeriod timePeriod) {
@@ -206,7 +206,8 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
 
         String dateAndDetail = getShortCitationDateAndDetail(reference, citationDetail, accessed);
-        return titleCache + " " + dateAndDetail;
+        String result = titleCache + (dateAndDetail.startsWith(":")? "": " ") + dateAndDetail;
+        return result.trim();
     }
 
     private boolean isEmpty(TimePeriod timePeriod) {
