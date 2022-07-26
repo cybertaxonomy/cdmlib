@@ -37,34 +37,13 @@ public class TaxonNodeByRankAndNameComparator
             return -1;
         }
 
-	    boolean node1Excluded = node1.isExcluded();
-        boolean node2Excluded = node2.isExcluded();
-        boolean node1Unplaced = node1.isUnplaced();
-        boolean node2Unplaced = node2.isUnplaced();
-
         if (node1.getUuid().equals(node2.getUuid())){
             return 0;
         }
         //They should both be put to the end (first unplaced then excluded)
-        if (node2Excluded && !node1Excluded){
-            return -1;
-        }
-        if (node2Unplaced && !(node1Unplaced || node1Excluded)){
-            return -1;
-        }
-
-        if (node1Excluded && !node2Excluded){
-            return 1;
-        }
-        if (node1Unplaced && !(node2Unplaced || node2Excluded)){
-            return 1;
-        }
-
-        if (node1Unplaced && node2Excluded){
-            return -1;
-        }
-        if (node2Unplaced && node1Excluded){
-            return 1;
+        int nodeResult = compareNodes(node1, node2);
+        if (nodeResult != 0){
+            return nodeResult;
         }
 
         Integer rankTax1 = getRankOrder(node1);
@@ -105,6 +84,10 @@ public class TaxonNodeByRankAndNameComparator
                 return node1.getUuid().compareTo(node2.getUuid());
             }
         }
+    }
+
+    private int compareNodes(TaxonNode node1, TaxonNode node2) {
+        return TaxonNodeStatusComparator.INSTANCE().compare(node1.getStatus(), node2.getStatus());
     }
 
     private List<TaggedText> getTaggedText(TaxonNode node) {

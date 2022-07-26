@@ -14,13 +14,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 
 /**
  * Comparator that compares two TaxonNode instances by the titleCache of their
@@ -100,20 +98,8 @@ public class TaxonNodeByNameComparator
         }
     }
 
-    protected int compareNodes(TaxonNode node1, TaxonNode node2) {
-
-        TaxonNodeStatus status1 = node1.getStatus();
-        TaxonNodeStatus status2 = node2.getStatus();
-
-        if (CdmUtils.nullSafeEqual(status1, status2)){
-            return 0;
-        }else if (status1 == null){
-            return 1;
-        }else if (status2 == null){
-            return -1;
-        }else {
-            return status1.compareTo(status2);
-        }
+    private int compareNodes(TaxonNode node1, TaxonNode node2) {
+        return TaxonNodeStatusComparator.INSTANCE().compare(node1.getStatus(), node2.getStatus());
     }
 
     private String createSortableTitleCache(TaxonNode taxonNode) {
