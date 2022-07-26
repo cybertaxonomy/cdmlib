@@ -244,11 +244,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		return result;
 	}
 
-	/**
-     * @param state
-     * @param ioList
-     * @return
-     */
     private List<Integer> countSteps(ExportStateBase state, List<ICdmExport> ioList) {
         //do invoke for each class
         List<Integer> result = new ArrayList<>();
@@ -271,12 +266,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
         return result;
     }
 
-
-    /**
-     * @param state
-     * @param config
-     * @return
-     */
     private <CONFIG extends T>  List<ICdmExport> makeIoList(ExportStateBase state, CONFIG config) {
 
         List<ICdmExport> result = new ArrayList<>();
