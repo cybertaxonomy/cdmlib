@@ -376,9 +376,15 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = taxon.isPublish() ? "1" : "0";
 
                     //taxon node
+                    csvLine[table.getIndex(CdmLightExportTable.INCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isExcluded() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isUnplaced() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isDoubtful() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_GEO)] = taxonNode.isExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_TAX)] = taxonNode.isExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOM)] = taxonNode.isExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.UNCERTAIN_APPLICATION)] = taxonNode.isUnplaced() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = taxonNode.isDoubtful() ? "1" : "0";
                     Map<Language, LanguageString> notesMap = taxonNode.getStatusNote();
                     String statusNotes = "";
                     if (!notesMap.isEmpty() && notesMap.size() == 1) {
@@ -390,7 +396,7 @@ public class CdmLightClassificationExport
                             statusNotes = notesMap.values().iterator().next().getText();
                         }
                     }
-                    csvLine[table.getIndex(CdmLightExportTable.STATUS_NOTES)] = statusNotes;
+                    csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_NOTES)] = statusNotes;
 
                     if (taxonNode.getSource() != null) {
                         csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_REF_FK)] = getId(state, taxonNode.getSource().getCitation());
