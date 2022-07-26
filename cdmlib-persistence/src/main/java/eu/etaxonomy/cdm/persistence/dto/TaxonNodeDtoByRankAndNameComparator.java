@@ -23,8 +23,10 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author k.luther
  * @since 18.03.2010
  */
-public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Comparator<TaxonNodeDto> {
-	private static final long serialVersionUID = 2596641007876609704L;
+public class TaxonNodeDtoByRankAndNameComparator
+        implements Serializable, Comparator<TaxonNodeDto> {
+
+    private static final long serialVersionUID = 2596641007876609704L;
 
 	@Override
     public int compare(TaxonNodeDto node1, TaxonNodeDto node2) {

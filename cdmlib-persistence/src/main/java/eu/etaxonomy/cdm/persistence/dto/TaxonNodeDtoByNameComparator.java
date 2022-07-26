@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -23,9 +24,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 /**
  * @author k.luther/a.kohlbecker
  * @since 09.03.2018
- *
  */
-public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<TaxonNodeDto> implements Serializable, Comparator<TaxonNodeDto>, ITaxonNodeComparator<TaxonNodeDto>{
+public class TaxonNodeDtoByNameComparator
+        extends AbstractStringComparator<TaxonNodeDto>
+        implements Serializable, ITaxonNodeComparator<TaxonNodeDto>{
 
     private static final long serialVersionUID = -5939529760454590279L;
 
@@ -113,7 +115,6 @@ public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<Taxon
         return nameTitleCache;
     }
 
-
     @Override
     public boolean isIgnoreHybridSign() {
         return ignoreHybridSign;
@@ -131,7 +132,4 @@ public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<Taxon
     public void setSortInfraGenericFirst(boolean infraGenericFirst) {
         this.sortInfraGenericFirst = infraGenericFirst;
     }
-
 }
-
-
