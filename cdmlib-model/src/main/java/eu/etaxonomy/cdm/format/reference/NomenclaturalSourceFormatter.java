@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.format.reference;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.format.CdmFormatterBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -80,6 +81,7 @@ public class NomenclaturalSourceFormatter
     * @see                    TaxonName#getNomenclaturalReference()
     */
     public String format(Reference reference, String microReference){
+
         if (isNotBlank(microReference)){
             microReference = microReference.startsWith(":") ? microReference : getBeforeMicroReference() + microReference;
         }else{

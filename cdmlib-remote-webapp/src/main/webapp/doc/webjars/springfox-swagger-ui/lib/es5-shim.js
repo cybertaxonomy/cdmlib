@@ -37,7 +37,7 @@
      * Required reading: http://javascriptweblog.wordpress.com/2011/12/05/extending-javascript-natives/
      */
 
-    // Shortcut to an often accessed properties, in order to avoid multiple
+    // Shortcut to often accessed properties, in order to avoid multiple
     // dereference that costs universally. This also holds a reference to known-good
     // functions.
     var $Array = Array;

@@ -353,7 +353,7 @@ public class NomenclaturalSourceFormatterTest {
     }
 
     @Test
-    public void testBookGetTitleCache2(){
+    public void testBookGetTitleCache(){
         //series
         IBook book1 = ReferenceFactory.newBook();
         book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");

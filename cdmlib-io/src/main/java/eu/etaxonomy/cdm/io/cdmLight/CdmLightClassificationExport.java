@@ -801,13 +801,11 @@ public class CdmLightClassificationExport
                     }
                     state.getProcessor().put(table, source, csvLine);
                 }
-
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling single source "
                     + cdmBaseStr(element) + ": " + e.getMessage());
         }
-
     }
 
     private void handleDistributionFacts(CdmLightExportState state, Taxon taxon,
@@ -1342,7 +1340,7 @@ public class CdmLightClassificationExport
                     synonymsInGroup = acceptedTaxon.getSynonymsInGroup(group, comparator);
                 }
 
-                synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(HibernateProxyHelper.deproxy(synonym.getName(), TaxonName.class)));
+                synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(HibernateProxyHelper.deproxy(synonym.getName())));
 
             }else{
                 typifiedNames.addAll(group.getTypifiedNames());
@@ -1362,9 +1360,6 @@ public class CdmLightClassificationExport
         }
     }
 
-    /**
-     * @param specimenType
-     */
     private void handleSpecimenType_(CdmLightExportState state, SpecimenTypeDesignation specimenType) {
         if (specimenType.getTypeSpecimen() != null){
             DerivedUnit specimen =  specimenType.getTypeSpecimen();
