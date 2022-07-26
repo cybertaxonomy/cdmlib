@@ -380,6 +380,7 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isExcluded() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isExcluded() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_ONLY)] = taxonNode.isExcluded() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_GEO)] = taxonNode.isExcluded() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_TAX)] = taxonNode.isExcluded() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOM)] = taxonNode.isExcluded() ? "1" : "0";
