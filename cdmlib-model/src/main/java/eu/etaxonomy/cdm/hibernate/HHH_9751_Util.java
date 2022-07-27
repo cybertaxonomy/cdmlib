@@ -18,6 +18,9 @@ import org.hibernate.LazyInitializationException;
  * Helper class to remove null values from collections which are left over artifacts due to
  * https://hibernate.atlassian.net/browse/HHH-9751
  *
+ * Note by AM: HHH-9751 is closed as duplicate in the meanwhile, the remaining issue is
+ *             https://hibernate.atlassian.net/browse/HHH-9979
+ *
  * @author a.kohlbecker
  * @since Jun 13, 2016
  */
@@ -30,9 +33,6 @@ public class HHH_9751_Util {
      * @return the number of null values removed from the collection
      */
     static public int removeAllNull(Collection<?> collection) {
-        if (true) {
-            return 0;
-        }
         int cnt = 0;
         try {
 
