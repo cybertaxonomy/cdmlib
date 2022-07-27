@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.longrunningService;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -58,8 +57,8 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
     @ExpectedDataSet
     public void testTermNode() {
         try {
-            Field sortIndexField = TermNode.class.getDeclaredField("sortIndex");
-            sortIndexField.setAccessible(true);
+//            Field sortIndexField = TermNode.class.getDeclaredField("sortIndex");
+//            sortIndexField.setAccessible(true);
 
             SortIndexUpdaterConfigurator config = SortIndexUpdaterConfigurator
                     .NewInstance(false, true, false);
@@ -68,7 +67,7 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
 
             Assert.assertEquals("No exception should be thrown during sortindex update", 0, result.getExceptions().size());
 
-        } catch (NoSuchFieldException | SecurityException e1) {
+        } catch (SecurityException e1) {  //NoSuchFieldException |
             Assert.fail("sortIndex field not found");
         }
     }
