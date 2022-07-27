@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertNotNull;
@@ -12,15 +20,15 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
-
-	@SpringBeanByType
-	IPolytomousKeyNodeService service;
+public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
-	IPolytomousKeyService keyService;
+	private IPolytomousKeyNodeService service;
+
+	@SpringBeanByType
+	private IPolytomousKeyService keyService;
 
 	/****************** TESTS *****************************/
 
@@ -34,11 +42,10 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
 	}
 
 	@Test
-    //@DataSet(value="CommonServiceImplTest.xml")
     public final void testDelete(){
 
         PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
-        UUID uuidKey =  keyService.save(key).getUuid();
+        keyService.save(key);
         PolytomousKeyNode node = PolytomousKeyNode.NewInstance("Test statement");
         key.setRoot(node);
         key.setStartNumber(0);
@@ -47,7 +54,7 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
         //child.setKey(key);
 
         node.addChild(child,0);
-        UUID uuidNode = service.save(node).getUuid();
+        service.save(node);
 
         PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement Nr 3");
         //child.setKey(key);
@@ -60,7 +67,6 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
 
         child1.addChild(child2,0);
         UUID uuidChild1 = service.save(child1).getUuid();
-
 
         node = service.load(uuidChild1);
         UUID uuidChild2 = node.getChildAt(0).getUuid();
@@ -79,16 +85,8 @@ public class PolytomousKeyNodeServiceTest extends CdmIntegrationTest{
         assertNull(node);
         node = service.load(uuidChild2);
         assertNull(node);
-
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

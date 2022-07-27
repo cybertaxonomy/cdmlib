@@ -183,8 +183,8 @@ public class PolytomousKey
     }
 
     /**
-     * This method should be used by Hibernate only. If we want to make this
-     * method public we have to think about biderionality and also what should
+     * This method should be used by hibernate only. If we want to make this
+     * method public we have to think about bidirectionality and also what should
      * happen with the old root node.
      *
      * @see #getRoot()
