@@ -92,7 +92,7 @@ import net.sf.cglib.proxy.MethodProxy;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class AssemblerTest extends UnitilsJUnit4 {
 
-    public static final Logger logger = LogManager.getLogger(AssemblerTest.class);
+    public static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private Mapper mapper;

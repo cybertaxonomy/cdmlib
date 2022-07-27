@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.hibernate;
 
 import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 
 /**
@@ -22,7 +23,7 @@ import org.hibernate.LazyInitializationException;
  */
 public class HHH_9751_Util {
 
-    private static final Logger logger = LogManager.getLogger(HHH_9751_Util.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * @param collection
