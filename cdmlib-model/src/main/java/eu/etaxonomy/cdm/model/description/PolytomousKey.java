@@ -127,7 +127,7 @@ public class PolytomousKey
 
     @XmlElement(name = "Root")
     @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
     private PolytomousKeyNode root;
 
     @XmlElement(name = "StartNumber")
