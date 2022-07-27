@@ -164,7 +164,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlSchemaType(name = "IDREF")
 //	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKey key;
 
 	@XmlElementWrapper(name = "Children")
@@ -177,8 +176,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElement(name = "Parent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
-	@ManyToOne(fetch = FetchType.LAZY, targetEntity = PolytomousKeyNode.class)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id")
 	private PolytomousKeyNode parent;
 
