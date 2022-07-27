@@ -1039,8 +1039,9 @@ public class StatisticsDaoHibernateImpl
 		// "where tn.uuid in (:parents) ";
 
 		// just for testing, but does not work anyway
-		String queryString = "select distinct chn.uuid from TaxonNode tn "
-				+ "join tn.childNodes as chn " + "where tn.uuid = :parent ";
+		String queryString = "SELECT DISTINCT chn.uuid FROM TaxonNode tn "
+				+ " JOIN tn.childNodes as chn "
+		        + " WHERE tn.uuid = :parent ";
 
 		Query<UUID> query = getSession().createQuery(queryString, UUID.class);
 
