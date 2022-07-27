@@ -80,7 +80,6 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "parent",
     "treeIndex",
     "childNodes",
-    "sortIndex",
     "countChildren",
     "agentRelations",
     "synonymToBeUsed",

@@ -141,7 +141,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
         "key",
         "parent",
         "children",
-		"sortIndex",
 		"nodeNumber",
 		"statement",
 		"question",

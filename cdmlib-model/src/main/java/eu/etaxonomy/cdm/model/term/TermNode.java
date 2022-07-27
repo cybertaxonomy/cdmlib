@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.model.description.State;
 @XmlType(name = "TermNode", propOrder = {
 		"parent",
 		"treeIndex",
-		"sortIndex",
 		"children",
 		"onlyApplicableIf",
 		"inapplicableIf"
