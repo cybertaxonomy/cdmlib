@@ -87,6 +87,74 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         assertNull(node);
     }
 
+    @Test  //8127  //5536
+    public final void testMerge(){
+        String[] tableNames = new String[] {"POLYTOMOUSKEY","POLYTOMOUSKEYNODE","POLYTOMOUSKEYNODE_AUD"};
+        logger.warn(tableNames);
+
+        //create key with 2 child nodes
+        PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
+        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement child1");
+        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement child2");
+        key.getRoot().addChild(child1);
+        key.getRoot().addChild(child2);
+        keyService.save(key);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        PolytomousKeyNode rootNode = service.find(key.getRoot().getUuid());
+        rootNode.getChildren().get(0);  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        PolytomousKeyNode child1b = rootNode.getChildren().get(0);
+        rootNode.getChildren().remove(child1b);
+        PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance("Test statement child3");
+        rootNode.addChild(child3);
+        service.merge(rootNode);
+
+        commitAndStartNewTransaction(tableNames);
+        System.out.println("NEXT");
+
+        //test result
+        rootNode = service.find(key.getRoot().getUuid());
+        rootNode.getChildren();
+        Assert.assertEquals(2, rootNode.getChildren().size());
+        Assert.assertEquals(child2.getUuid(), rootNode.getChildren().get(0).getUuid());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
+        commitAndStartNewTransaction();
+
+        //same with key
+        //load root node and make it detached
+        PolytomousKey keyLoaded = keyService.find(key.getUuid());
+        rootNode = keyLoaded.getRoot();
+        rootNode.getChildren().get(0);  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        rootNode.getChildren().remove(rootNode.getChildren().get(0));
+        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child4");
+        rootNode.addChild(child4);
+
+        @SuppressWarnings("unused")
+        PolytomousKey mergedKey = keyService.merge(keyLoaded);
+
+        //NOTE: for historical reasons interesting to know, that if not using orphan removal
+        //      resorting the index does not take place if not touching the children list somehow.
+        //      The sortindex starts than at some number > 0 and may contain nulls.
+        //      If touching the list like below the index starts at 0 but
+        //      mergedKey.getRoot().getChildren().size();
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = service.find(key.getRoot().getUuid());
+        rootNode.getChildren();
+        Assert.assertEquals(2, rootNode.getChildren().size());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(0).getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }
