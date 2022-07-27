@@ -56,11 +56,11 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
             children.add(child);
         }
         PolytomousKeyNode parent = node.getParent();
-        parent = HibernateProxyHelper.deproxy(parent, PolytomousKeyNode.class);
+        parent = HibernateProxyHelper.deproxy(parent);
         PolytomousKey key = null;
         if (parent == null){
             key = node.getKey();
-            key = HibernateProxyHelper.deproxy(key, PolytomousKey.class);
+            key = HibernateProxyHelper.deproxy(key);
         }
 
         if(!deleteChildren){

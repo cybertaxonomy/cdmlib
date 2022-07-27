@@ -95,7 +95,7 @@ public class TermNode <T extends DefinedTermBase>
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex", nullable=true)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", orphanRemoval=true, targetEntity=TermNode.class)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})  //TODO , CascadeType.DELETE makes sense but needs testing in TaxEditor first
 	private List<TermNode<T>> children = new ArrayList<>();
 
     @XmlElementWrapper(name = "OnlyApplicableIf")
