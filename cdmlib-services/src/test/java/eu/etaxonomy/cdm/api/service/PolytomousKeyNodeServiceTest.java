@@ -32,9 +32,6 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
 
 	/****************** TESTS *****************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#setDao(eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao)}.
-	 */
 	@Test
 	public final void testSetDao() {
 		Assert.assertNotNull(service);
@@ -44,6 +41,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
 	@Test
     public final void testDelete(){
 
+	    //create key
         PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
         keyService.save(key);
         PolytomousKeyNode node = PolytomousKeyNode.NewInstance("Test statement");
@@ -51,26 +49,23 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         key.setStartNumber(0);
 
         PolytomousKeyNode child = PolytomousKeyNode.NewInstance("Test statement Nr 2");
-        //child.setKey(key);
-
         node.addChild(child,0);
         service.save(node);
 
         PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement Nr 3");
-        //child.setKey(key);
-
         child.addChild(child1,0);
         UUID uuidChild = service.save(child).getUuid();
 
         PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement Nr 4");
-        //child.setKey(key);
-
         child1.addChild(child2,0);
         UUID uuidChild1 = service.save(child1).getUuid();
 
+        //assert key
         node = service.load(uuidChild1);
         UUID uuidChild2 = node.getChildAt(0).getUuid();
         assertNotNull(node);
+
+        //delete
         service.delete(uuidChild1, false);
         node = service.load(uuidChild1);
         assertNull(node);

@@ -541,7 +541,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * Refresh numbering of key nodes starting from root.
-	 *
 	 */
 	public void refreshNodeNumbering() {
 		updateNodeNumbering(getKey().getRoot(), getKey().getStartNumber());

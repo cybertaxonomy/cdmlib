@@ -205,7 +205,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     public void testIndexMoveNode() {
         //in feature tree
         @SuppressWarnings("unused")
-        TermTree<Feature> featureTree = termTreeService.load(featureTreeUuid);
+        TermTree<?> featureTree = termTreeService.load(featureTreeUuid);
         node2 = termNodeService.load(node2Uuid);
         node3 = termNodeService.load(node3Uuid);
         node3.addChild(node2);
