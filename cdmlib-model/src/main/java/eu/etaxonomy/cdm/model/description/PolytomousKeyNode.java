@@ -169,18 +169,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	@XmlElementWrapper(name = "Children")
 	@XmlElement(name = "Child")
-	// @OrderColumn("sortIndex") //JPA 2.0 same as @IndexColumn
-	// @IndexColumn does not work because not every PolytomousKeyNode has a parent.
-	// But only NotNull will solve the problem (otherwise
-	// we will need a join table
-	// http://stackoverflow.com/questions/2956171/jpa-2-0-ordercolumn-annotation-in-hibernate-3-5
-	// http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-collection-extratype-indexbidir
-	// see also https://forum.hibernate.org/viewtopic.php?p=2392563
-	// http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390
-	// reading works, but writing doesn't
-	//
 	@OrderColumn(name = "sortIndex", nullable=true)  //, base = 0
-//	@OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private List<PolytomousKeyNode> children = new ArrayList<>();
@@ -192,11 +181,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = PolytomousKeyNode.class)
 	@JoinColumn(name = "parent_id")
 	private PolytomousKeyNode parent;
-
-	//see comment on children @IndexColumn
-	//see also https://dev.e-taxonomy.eu/redmine/issues/3722, #4278
-	@Transient
-	private Integer sortIndex = -1;
 
 	@XmlElement(name = "Statement")
 	@XmlIDREF

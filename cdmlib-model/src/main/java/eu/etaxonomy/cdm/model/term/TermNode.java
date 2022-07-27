@@ -98,13 +98,6 @@ public class TermNode <T extends DefinedTermBase>
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<TermNode<T>> children = new ArrayList<>();
 
-    //see https://dev.e-taxonomy.eu/redmine/issues/3722
-    //see https://dev.e-taxonomy.eu/redmine/issues/4200
-    //see https://dev.e-taxonomy.eu/redmine/issues/8127
-    //see https://dev.e-taxonomy.eu/redmine/issues/10067
-    @Transient
-    private Integer sortIndex;
-
     @XmlElementWrapper(name = "OnlyApplicableIf")
     @XmlElement(name = "OnlyApplicableIf")
     @XmlIDREF
