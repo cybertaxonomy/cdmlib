@@ -125,7 +125,7 @@ public class TaxonNode
     //see https://dev.e-taxonomy.eu/redmine/issues/8127
     //see https://dev.e-taxonomy.eu/redmine/issues/10067
     @OrderColumn(name="sortIndex", nullable=true)
-    @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="parent", fetch=FetchType.LAZY, orphanRemoval=true)
     //do not cascade
     private List<TaxonNode> childNodes = new ArrayList<>();
 
