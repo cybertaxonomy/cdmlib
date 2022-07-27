@@ -116,20 +116,6 @@ public class TaxonNode
 //    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private TaxonNode parent;
 
-    @XmlElement(name = "treeIndex")
-    @Column(length=255)
-    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
-    private String treeIndex;
-
-    @XmlElement(name = "classification")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-//	TODO @NotNull // avoids creating a UNIQUE key for this field
-    @IndexedEmbedded(includeEmbeddedObjectId=true)
-    private Classification classification;
-
     @XmlElementWrapper(name = "childNodes")
     @XmlElement(name = "childNode")
     @XmlIDREF
@@ -145,6 +131,20 @@ public class TaxonNode
 
     @XmlElement(name = "countChildren")
     private int countChildren;
+
+    @XmlElement(name = "treeIndex")
+    @Column(length=255)
+    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
+    private String treeIndex;
+
+    @XmlElement(name = "classification")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+//	TODO @NotNull // avoids creating a UNIQUE key for this field
+    @IndexedEmbedded(includeEmbeddedObjectId=true)
+    private Classification classification;
 
     @XmlElementWrapper(name = "agentRelations")
     @XmlElement(name = "agentRelation")
