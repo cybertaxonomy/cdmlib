@@ -40,7 +40,15 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public <S extends T> S save(S newInstance) throws DataAccessException;
 
-    public T merge(T transientObject) throws DataAccessException;
+    public T merge(T transientEntity) throws DataAccessException;
+
+    /**
+     * Same as {@link #merge(CdmBase)} but with the possibility to fully remove
+     * further objects from the database during the same session.
+     * This may become necessary if these objects were deleted from the detached object graph
+     * and are not handled via Cascade.REMOVE or orphanRemoval.
+     */
+    public T merge(T transientEntity, Collection<CdmBase> removedObjects) throws DataAccessException;
 
     /**
      * This method allows for the possibility of returning the input transient
@@ -53,12 +61,12 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * This method returns the root merged transient entity as well as all newly merged
      * persistent entities within the return object.
      *
-     * @param transientObject
+     * @param transientEntity
      * @param returnTransientEntity
      * @return transient or persistent object depending on the value of returnTransientEntity
      * @throws DataAccessException
      */
-    public MergeResult<T> merge(T transientObject, boolean returnTransientEntity) throws DataAccessException;
+    public MergeResult<T> merge(T transientEntity, boolean returnTransientEntity) throws DataAccessException;
 
     /**
      * Obtains the specified LockMode on the supplied object

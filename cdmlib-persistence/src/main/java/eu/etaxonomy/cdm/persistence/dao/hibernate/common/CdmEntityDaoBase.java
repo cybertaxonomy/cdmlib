@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -78,10 +79,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         extends DaoBase
         implements ICdmEntityDao<T> {
 
-    private static final Logger logger = LogManager.getLogger(CdmEntityDaoBase.class);
+    private static final Logger logger = LogManager.getLogger();
+
+    @Autowired
+    private ICdmGenericDao genericDao;
 
     protected int flushAfterNo = 1000; // large numbers may cause synchronisation errors
-                                        // when commiting the session
+                                        // when committing the session
     protected Class<T> type;
 
     @Autowired
@@ -309,6 +313,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             logger.debug("dao merge end");
         }
         return persistentObject;
+    }
+
+    @Override
+    public T merge(T transientEntity, Collection<CdmBase> detachedObjectsToRemove) throws DataAccessException{
+        T result = merge(transientEntity);
+        for (CdmBase detachedObject : detachedObjectsToRemove) {
+            CdmBase persistedObject = genericDao.find(CdmBase.deproxy(detachedObject.getClass()), detachedObject.getUuid());
+            if (persistedObject != null) {
+                genericDao.delete(persistedObject);
+            }
+        }
+        return result;
     }
 
     @Override

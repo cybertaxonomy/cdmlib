@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -230,6 +231,18 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Transactional(readOnly = false)
     public T merge(T newInstance) {
         return dao.merge(newInstance);
+    }
+
+    /**
+     * Same as #merge(T) but with the possibility to fully remove further entities
+     * from the database during the same session. This may become necessary if these
+     * entities were deleted from the detached object graph and are not handled
+     * via Cascade.REMOVE or orphanRemoval, e.g. when children were removed
+     * from its parents and not used elsewhere anymore.
+     */
+    @Override
+    public T merge(T detachedObject, CdmBase... removedObjects) {
+        return dao.merge(detachedObject, Arrays.asList(removedObjects));
     }
 
     @Override

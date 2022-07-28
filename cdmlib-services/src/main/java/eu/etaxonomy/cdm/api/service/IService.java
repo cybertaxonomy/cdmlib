@@ -22,6 +22,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.event.spi.MergeEvent;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -272,6 +273,8 @@ public interface IService<T extends ICdmBase>{
      * @return the persisted entity
      */
     public T merge(T detachedObject);
+
+    public T merge(T detachedObject, CdmBase... removedObjects);
 
     /**
      * Returns a paged list of entities of type <T> optionally restricted
