@@ -18,15 +18,13 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.TermNode;
-import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author cmathew
@@ -65,9 +63,10 @@ public class PostMergeEntityListener implements MergeEventListener {
                 event.getResult() != null && CdmBase.class.isAssignableFrom(event.getResult().getClass())) {
             CdmBase original = (CdmBase) event.getOriginal();
             CdmBase result = (CdmBase) event.getResult();
-            removeNullFromCollections(result);
+            handleTreeNodes(result, original, event, copiedAlready);
             if(original != null && Hibernate.isInitialized(original) && original.getId() == 0 &&
                     result != null && Hibernate.isInitialized(result) && result.getId() > 0) {
+                //AM (2022-07-28): why do we set the id here to the original
                 original.setId(result.getId());
                 Set<CdmBase> newEntities = newEntitiesMap.get(event.getSession());
                 if(newEntities != null) {
@@ -77,35 +76,42 @@ public class PostMergeEntityListener implements MergeEventListener {
         }
     }
 
-    private static void removeNullFromCollections(Object entity) {
-        if (entity != null){
-            Class<?> entityClazz = entity.getClass();
+    private static void handleTreeNodes(CdmBase result, CdmBase original, MergeEvent event, Map copiedAlready) {
+        EventSource session = event.getSession();
+        if (original != null){
+            Class<?> entityClazz = original.getClass();
 
-            if (TaxonNode.class.isAssignableFrom(entityClazz)){
-                //do nothing (remove if #8127/#3722 is fully solved
+            if (ITreeNode.class.isAssignableFrom(entityClazz)){  //TaxonNode or TermNode
+                //TODO #10101
             } else if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
-//                PolytomousKeyNode node = (PolytomousKeyNode) entity;
-//                if (node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
-//                    node.removeNullValueFromChildren();
-//                    for (PolytomousKeyNode childNode: node.getChildren()){
-//                        removeNullFromCollections(childNode);
-//                    }
+                // #10101 the following code tried to handle orphanRemoval for key nodes that were
+                // really removed from the graph. Generally the removal worked but it was not possible at this
+                // place to guarantee that the node which was removed from the parent was not used elsewhere
+                // (has a new parent). For this one needs to retrieve the new state of the node (or of its new parent).
+                // But this is not difficult or impossible at this point as the node is not part of the graph to
+                // to be merged or if it is because its new parent is part of the graph also, it is not guaranteed
+                // that it has already treated so far.
+                // Maybe it can better be handled by another type of listener therefore I keep this code here.
+                // See #10101 for further information on this issue and how it was solved.
+                // The implementation was partly copied from https://stackoverflow.com/questions/812364/how-to-determine-collection-changes-in-a-hibernate-postupdateeventlistener
+
+//                PolytomousKeyNode resultPkn = (PolytomousKeyNode)result;
+//                //copied from https://stackoverflow.com/questions/812364/how-to-determine-collection-changes-in-a-hibernate-postupdateeventlistener
+//                PersistenceContext pc = session.getPersistenceContext();
+//                CollectionEntry childrenEntry = pc.getCollectionEntry((PersistentCollection)resultPkn.getChildren());
+//                List<PolytomousKeyNode> childrenEntrySnapshot = (List<PolytomousKeyNode>)childrenEntry.getSnapshot();
+//                if (childrenEntrySnapshot != null) {
+//                    for (PolytomousKeyNode snapshotChild: childrenEntrySnapshot){
+//                        if (!resultPkn.getChildren().contains(snapshotChild)) {
+//                            EntityEntry currentChild = pc.getEntry(snapshotChild);
+//                            Object parent = currentChild == null ? null :
+//                                currentChild.getLoadedValue("parent");
+//                            if (parent == null || parent == resultPkn) {
+//                                session.delete(snapshotChild);
+//                            }
+//                        }
+//                   }
 //                }
-                  //do nothing (remove if #8127/#3722 is fully solved
-            }else if (PolytomousKey.class.isAssignableFrom(entityClazz)){
-//                PolytomousKey key = (PolytomousKey) entity;
-//                PolytomousKeyNode node = key.getRoot();
-//                if (node != null && node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
-////                    node.removeNullValueFromChildren();
-//                    for (PolytomousKeyNode childNode: node.getChildren()){
-//                        removeNullFromCollections(childNode);
-//                    }
-//                }
-                //do nothing (remove if #8127/#3722 is fully solved
-            }else if(TermTree.class.isAssignableFrom(entityClazz)){
-                //do nothing (remove if #8127/#3722 is fully solved
-            } else if (TermNode.class.isAssignableFrom(entityClazz)){
-                //do nothing (remove if #8127/#3722 is fully solved
             }
         }
     }

@@ -169,8 +169,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElementWrapper(name = "Children")
 	@XmlElement(name = "Child")
 	@OrderColumn(name = "sortIndex", nullable=true)  //, base = 0
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", orphanRemoval=true)
-	@Cascade({ CascadeType.ALL })
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent") //no orphanRemoval (#10101)
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private List<PolytomousKeyNode> children = new ArrayList<>();
 
 	@XmlElement(name = "Parent")
