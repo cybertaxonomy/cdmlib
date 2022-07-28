@@ -559,7 +559,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	private int updateNodeNumbering(PolytomousKeyNode node,int nodeN) {
 		int newNodeN = nodeN;
-		if (node.isLeaf()) {
+		if (node == null) {
+		    //do nothing
+		}else if (node.isLeaf()) {
 			node.setNodeNumber(null);
 		} else {
 			node.setNodeNumber(nodeN);
