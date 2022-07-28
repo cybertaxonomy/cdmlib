@@ -16,11 +16,13 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTest {
 
@@ -87,7 +89,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         assertNull("Child4 should be deleted with child3 this time", loaded4);
     }
 
-    @Test  //8127  //5536
+    @Test  //8127  //5536 //10101
     public final void testMerge(){
 
         //create key with 2 child nodes
@@ -105,12 +107,12 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         commitAndStartNewTransaction(); //detach
 
         //replace nodes and merge
-        PolytomousKeyNode child1b = rootNode.getChildren().get(0);
-        rootNode.getChildren().remove(child1b);
+        PolytomousKeyNode childToRemove = rootNode.getChildren().get(0);
+        rootNode.removeChild(childToRemove);
         PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance("Test statement child3");
         rootNode.addChild(child3);
         service.merge(rootNode);
-
+        service.delete(childToRemove.getUuid(), false);
         commitAndStartNewTransaction(tableNames);
 
         //test result
@@ -119,6 +121,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         Assert.assertEquals(2, rootNode.getChildren().size());
         Assert.assertEquals(child2.getUuid(), rootNode.getChildren().get(0).getUuid());
         Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3, service.count(PolytomousKeyNode.class));
         commitAndStartNewTransaction();
 
         System.out.println("NEXT");
@@ -130,12 +133,14 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         commitAndStartNewTransaction(); //detach
 
         //replace nodes and merge
-        rootNode.getChildren().remove(rootNode.getChildren().get(0));
+        childToRemove = rootNode.getChildren().get(0);
+        rootNode.removeChild(childToRemove);
         PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child4");
         rootNode.addChild(child4);
 
         @SuppressWarnings("unused")
         PolytomousKey mergedKey = keyService.merge(keyLoaded);
+        service.delete(childToRemove.getUuid(), false);
 
         //NOTE: for historical reasons interesting to know, that if not using orphan removal
         //      resorting the index does not take place if not touching the children list somehow.
@@ -150,7 +155,51 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         Assert.assertEquals(2, rootNode.getChildren().size());
         Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(0).getUuid());
         Assert.assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3, service.count(PolytomousKeyNode.class));
+    }
 
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public void testMergeWithMove() {
+
+        //create key with 2 child nodes
+        PolytomousKey key = PolytomousKey.NewTitledInstance("Move test PolytomousKey");
+        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement child1");
+        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement child2");
+        key.getRoot().addChild(child1);
+        key.getRoot().addChild(child2);
+        keyService.save(key);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        PolytomousKey keyLoaded = keyService.find(key.getUuid());
+        PolytomousKeyNode rootNode = keyLoaded.getRoot();
+        rootNode.getChildren().get(1).getChildren().size();  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        PolytomousKeyNode childMove = rootNode.getChildren().get(0);
+        PolytomousKeyNode newParentNode = rootNode.getChildren().get(1);
+        newParentNode.addChild(childMove);
+        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child3");
+        rootNode.addChild(child4);
+
+        @SuppressWarnings("unused")
+        PolytomousKey mergedKey = keyService.merge(keyLoaded);
+        //no removed child to delete here
+        //service.delete(childToRemove.getUuid(), false);
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = service.find(key.getRoot().getUuid());
+        rootNode.getChildren();
+        Assert.assertEquals(2, rootNode.getChildren().size());
+        PolytomousKeyNode firstChild = rootNode.getChildren().get(0);
+        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+        Assert.assertEquals(1, firstChild.getChildren().size());
+        Assert.assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
+        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4, service.count(PolytomousKeyNode.class));
     }
 
     @Override

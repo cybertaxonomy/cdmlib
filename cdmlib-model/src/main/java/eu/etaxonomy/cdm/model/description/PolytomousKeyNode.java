@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -543,7 +544,11 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * Refresh numbering of key nodes starting from root.
 	 */
 	public void refreshNodeNumbering() {
-		updateNodeNumbering(getKey().getRoot(), getKey().getStartNumber());
+		try {
+            updateNodeNumbering(getKey().getRoot(), getKey().getStartNumber());
+        } catch (LazyInitializationException e) {
+            //stop updating if nodes are not initialized
+        }
 	}
 
 	/**
