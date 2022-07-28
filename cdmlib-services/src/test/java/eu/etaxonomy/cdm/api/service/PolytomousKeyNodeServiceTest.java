@@ -37,6 +37,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
 	/****************** TESTS *****************************/
 
 	@Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public final void testSetDao() {
 		Assert.assertNotNull(service);
 		Assert.assertNotNull(keyService);
@@ -90,6 +91,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
     }
 
     @Test  //8127  //5536 //10101
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testMerge(){
 
         //create key with 2 child nodes
