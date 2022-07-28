@@ -51,7 +51,7 @@ public class PostMergeEntityListener implements MergeEventListener {
 
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
-        //Note AM: TODO is there a reason wyh we neglect onMerge in this case?
+        //Note AM: TODO is there a reason why we neglect onMerge in this case?
         //         Shouldn't we do something like "onMerge(event, new HashMap<>());"
 //        Object entity = event.getEntity();
     }
@@ -84,8 +84,8 @@ public class PostMergeEntityListener implements MergeEventListener {
             if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
                 //For some reason the children list needs to be read once
                 //to guarantee that the sortindex starts with zero
-                PolytomousKeyNode resultPkn = (PolytomousKeyNode)result;
-                resultPkn.getChildren().size();
+                PolytomousKeyNode resultNode = (PolytomousKeyNode)result;
+                resultNode.getChildren().size();
 
                 // #10101 the following code tried to handle orphanRemoval for key nodes that were
                 // really removed from the graph. Generally the removal worked but it was not possible at this
@@ -100,15 +100,15 @@ public class PostMergeEntityListener implements MergeEventListener {
 
 //                EventSource session = event.getSession();
 //                PersistenceContext pc = session.getPersistenceContext();
-//                CollectionEntry childrenEntry = pc.getCollectionEntry((PersistentCollection)resultPkn.getChildren());
+//                CollectionEntry childrenEntry = pc.getCollectionEntry((PersistentCollection)resultNode.getChildren());
 //                List<PolytomousKeyNode> childrenEntrySnapshot = (List<PolytomousKeyNode>)childrenEntry.getSnapshot();
 //                if (childrenEntrySnapshot != null) {
 //                    for (PolytomousKeyNode snapshotChild: childrenEntrySnapshot){
-//                        if (!resultPkn.getChildren().contains(snapshotChild)) {
+//                        if (!resultNode.getChildren().contains(snapshotChild)) {
 //                            EntityEntry currentChild = pc.getEntry(snapshotChild);
 //                            Object parent = currentChild == null ? null :
 //                                currentChild.getLoadedValue("parent");
-//                            if (parent == null || parent == resultPkn) {
+//                            if (parent == null || parent == resultNode) {
 //                                session.delete(snapshotChild);
 //                            }
 //                        }
@@ -117,11 +117,8 @@ public class PostMergeEntityListener implements MergeEventListener {
             } else if (ITreeNode.class.isAssignableFrom(entityClazz)){ //TaxonNode or TermNode
                 //See PolytomousKeyNode above
                 //Not yet tested if necessary here, too.
-
-                //preliminary removed to test if related to LIE issues in TaxEditor test
-//                ITreeNode<?> resultNode = (ITreeNode<?>)result;
-//                resultNode.getChildNodes().size();
-
+                ITreeNode<?> resultNode = (ITreeNode<?>)result;
+                resultNode.getChildNodes().size();
             }
         }
     }
