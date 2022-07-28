@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
 import org.hibernate.event.spi.PreUpdateEvent;
@@ -41,6 +43,8 @@ public class CdmPreDataChangeListener
 
     private static final long serialVersionUID = -7581071903134036209L;
 
+    private static final Logger logger = LogManager.getLogger();
+
     @Override
     public boolean onPreUpdate(PreUpdateEvent event) {
         try {
@@ -55,9 +59,10 @@ public class CdmPreDataChangeListener
                 }
             }
             insertUpdateMerge(event.getEntity());
-        } finally {
-            return false;
+        } catch(Exception e) {
+            logger.warn("There was an exception in onPreUpdate(): " + e.getMessage());
         }
+        return false;
     }
 
     @Override
@@ -80,10 +85,10 @@ public class CdmPreDataChangeListener
                 }
             }
             insertUpdateMerge(entity);
-        } finally {
-            //TODO AM: why do we always return false? How to test if this could be changed. Are there exceptions swallowed this way?
-            return false;
+        } catch(Exception e) {
+            logger.warn("There was an exception in onPreInsert(): " + e.getMessage());
         }
+        return false;
     }
 
     //from former SaveOrUpdateEntityListener
