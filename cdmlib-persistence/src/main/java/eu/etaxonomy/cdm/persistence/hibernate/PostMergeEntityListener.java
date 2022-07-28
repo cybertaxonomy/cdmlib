@@ -84,6 +84,12 @@ public class PostMergeEntityListener implements MergeEventListener {
             if (ITreeNode.class.isAssignableFrom(entityClazz)){  //TaxonNode or TermNode
                 //TODO #10101
             } else if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
+
+                //For some reason the children list needs to be read once
+                //to guarantee that the sortindex starts with zero
+                PolytomousKeyNode resultPkn = (PolytomousKeyNode)result;
+                resultPkn.getChildren().size();
+
                 // #10101 the following code tried to handle orphanRemoval for key nodes that were
                 // really removed from the graph. Generally the removal worked but it was not possible at this
                 // place to guarantee that the node which was removed from the parent was not used elsewhere
@@ -96,8 +102,6 @@ public class PostMergeEntityListener implements MergeEventListener {
                 // The implementation was partly copied from https://stackoverflow.com/questions/812364/how-to-determine-collection-changes-in-a-hibernate-postupdateeventlistener
 
 //                EventSource session = event.getSession();
-//                PolytomousKeyNode resultPkn = (PolytomousKeyNode)result;
-//                //copied from https://stackoverflow.com/questions/812364/how-to-determine-collection-changes-in-a-hibernate-postupdateeventlistener
 //                PersistenceContext pc = session.getPersistenceContext();
 //                CollectionEntry childrenEntry = pc.getCollectionEntry((PersistentCollection)resultPkn.getChildren());
 //                List<PolytomousKeyNode> childrenEntrySnapshot = (List<PolytomousKeyNode>)childrenEntry.getSnapshot();
