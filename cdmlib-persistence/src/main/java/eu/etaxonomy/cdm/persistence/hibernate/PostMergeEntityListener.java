@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 
@@ -79,7 +78,6 @@ public class PostMergeEntityListener implements MergeEventListener {
     }
 
     private static void handleTreeNodes(CdmBase result, CdmBase original, MergeEvent event, Map copiedAlready) {
-        EventSource session = event.getSession();
         if (original != null){
             Class<?> entityClazz = original.getClass();
 
@@ -97,6 +95,7 @@ public class PostMergeEntityListener implements MergeEventListener {
                 // See #10101 for further information on this issue and how it was solved.
                 // The implementation was partly copied from https://stackoverflow.com/questions/812364/how-to-determine-collection-changes-in-a-hibernate-postupdateeventlistener
 
+//                EventSource session = event.getSession();
 //                PolytomousKeyNode resultPkn = (PolytomousKeyNode)result;
 //                //copied from https://stackoverflow.com/questions/812364/how-to-determine-collection-changes-in-a-hibernate-postupdateeventlistener
 //                PersistenceContext pc = session.getPersistenceContext();
