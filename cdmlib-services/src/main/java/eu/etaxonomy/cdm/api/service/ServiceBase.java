@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -109,8 +110,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         return result;
     }
 
-
-
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
@@ -122,7 +121,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     public List<T> find(Set<UUID> uuidSet) {
         return dao.list(uuidSet, null, null, null, null);
     }
-
 
     @Override
     @Transactional(readOnly = true)

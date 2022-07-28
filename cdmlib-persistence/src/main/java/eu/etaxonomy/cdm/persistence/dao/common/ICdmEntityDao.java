@@ -127,7 +127,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     /**
      * @param persistentObject
-     * @return
      * @throws DataAccessException
      */
     public UUID delete(T persistentObject) throws DataAccessException;

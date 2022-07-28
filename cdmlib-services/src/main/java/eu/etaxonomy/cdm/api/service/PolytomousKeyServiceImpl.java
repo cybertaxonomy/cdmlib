@@ -136,9 +136,8 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 	@Override
 	public DeleteResult delete(PolytomousKey key){
-	    //DeleteResult result = new DeleteResult();
-	    PolytomousKeyNode root = key.getRoot();
 
+	    PolytomousKeyNode root = key.getRoot();
 
 	    DeleteResult result = isDeletable(key.getUuid(), null);
 	    DeleteResult resultRoot = new DeleteResult();
@@ -147,7 +146,6 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
     	        if (root != null){
     	           // root.setKey(null);
     	            resultRoot = nodeService.delete(root.getUuid(), true);
-
     	        }
     	    }catch(Exception e){
     	        result.addException(e);

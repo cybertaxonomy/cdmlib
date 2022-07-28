@@ -23,7 +23,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
@@ -671,8 +672,7 @@ public class TaxonDaoHibernateImpl
             }
         }
 
-       return super.delete(taxonBase);
-
+        return super.delete(taxonBase);
     }
 
     @Override

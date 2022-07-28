@@ -25,12 +25,12 @@ import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 /**
  * @author a.kohlbecker
  * @since 24.03.2011
- *
  */
 @Service
 @Transactional(readOnly = false)
-public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<PolytomousKeyNode, IPolytomousKeyNodeDao> implements IPolytomousKeyNodeService {
-
+public class PolytomousKeyNodeServiceImpl
+        extends VersionableServiceBase<PolytomousKeyNode, IPolytomousKeyNodeDao>
+        implements IPolytomousKeyNodeService {
 
 	@Override
     @Autowired
@@ -71,9 +71,7 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
                     dao.saveOrUpdate(child);
                     result.addUpdatedObject(child);
                 }
-
             }
-
 
             dao.saveOrUpdate(node);
             result.addUpdatedObject(node);
@@ -102,7 +100,5 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
         }
 
         return result;
-
     }
-
 }
