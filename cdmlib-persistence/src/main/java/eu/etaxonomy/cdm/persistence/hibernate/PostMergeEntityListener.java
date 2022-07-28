@@ -81,10 +81,7 @@ public class PostMergeEntityListener implements MergeEventListener {
         if (original != null){
             Class<?> entityClazz = original.getClass();
 
-            if (ITreeNode.class.isAssignableFrom(entityClazz)){  //TaxonNode or TermNode
-                //TODO #10101
-            } else if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
-
+            if (PolytomousKeyNode.class.isAssignableFrom(entityClazz)){
                 //For some reason the children list needs to be read once
                 //to guarantee that the sortindex starts with zero
                 PolytomousKeyNode resultPkn = (PolytomousKeyNode)result;
@@ -117,6 +114,12 @@ public class PostMergeEntityListener implements MergeEventListener {
 //                        }
 //                   }
 //                }
+            } else if (ITreeNode.class.isAssignableFrom(entityClazz)){ //TaxonNode or TermNode
+                //See PolytomousKeyNode above
+                //Not yet tested if necessary here, too.
+                ITreeNode<?> resultNode = (ITreeNode<?>)result;
+                resultNode.getChildNodes().size();
+
             }
         }
     }
