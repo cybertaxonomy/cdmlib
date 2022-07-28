@@ -555,9 +555,6 @@ public class TaxonNode
         }
     }
 
-
-
-
     @Override
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
@@ -567,7 +564,7 @@ public class TaxonNode
 
         ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
-            HibernateProxyHelper.deproxy(childNode, TaxonNode.class);
+            HibernateProxyHelper.deproxy(childNode);
             node.deleteChildNode(childNode);
         }
         taxon.removeTaxonNode(node);

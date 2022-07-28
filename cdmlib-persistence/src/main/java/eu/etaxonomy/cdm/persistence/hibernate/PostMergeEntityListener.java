@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 public class PostMergeEntityListener implements MergeEventListener {
 
     private static final long serialVersionUID = 1565797119368313987L;
-    private static final Logger logger = LogManager.getLogger(PostMergeEntityListener.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<>();
 
