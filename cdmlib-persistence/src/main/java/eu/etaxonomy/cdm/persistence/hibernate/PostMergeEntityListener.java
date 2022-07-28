@@ -52,6 +52,8 @@ public class PostMergeEntityListener implements MergeEventListener {
 
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
+        //Note AM: TODO is there a reason wyh we neglect onMerge in this case?
+        //         Shouldn't we do something like "onMerge(event, new HashMap<>());"
 //        Object entity = event.getEntity();
     }
 
