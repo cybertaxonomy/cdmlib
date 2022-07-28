@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 public class PostMergeEntityListener implements MergeEventListener {
 
     private static final long serialVersionUID = 1565797119368313987L;
-    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger(PostMergeEntityListener.class);
 
     private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<>();
@@ -118,19 +117,25 @@ public class PostMergeEntityListener implements MergeEventListener {
                 //See PolytomousKeyNode above
                 //Not yet tested if necessary here, too.
 
-                //#10101
-                //preliminary disabled as it seems to be the cause
-                //for failing TaxEditor tests in TaxonNameEditorTest
-                //methods
-                //    * addDeleteAddHomotypicSynonym,
-                //    * addDeleteAddHomotypicSynonymWithAnnotations
-                //    * addHeterotypicSynonym
-                //    * testAddHomotypicSynonym
-                //All due to failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.taxon.TaxonNode.childNodes, could not initialize proxy - no Session
-                //We need to check if this is an issue in the test behavior or in the solution itself
-                //
-//                ITreeNode<?> resultNode = (ITreeNode<?>)result;
-//                resultNode.getChildNodes().size();
+                try {
+                    ITreeNode<?> resultNode = (ITreeNode<?>)result;
+                    resultNode.getChildNodes().size();
+                } catch (Exception e) {
+                    //#10101
+                    //preliminary catched and logged as it seems to be the cause
+                    //for failing TaxEditor tests in TaxonNameEditorTest
+                    //methods
+                    //    * addDeleteAddHomotypicSynonym,
+                    //    * addDeleteAddHomotypicSynonymWithAnnotations
+                    //    * addHeterotypicSynonym
+                    //    * testAddHomotypicSynonym
+                    //All due to failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.taxon.TaxonNode.childNodes, could not initialize proxy - no Session
+                    //We need to check if this is an issue in the test behavior or in the solution itself.
+                    //We could also try to atleast add a check if the children list is attached to a session
+                    //before initializing it.
+                    //
+                    logger.warn("Error in PostMergeEntityListener during handleTreeNodes: " + e.getMessage());
+                }
             }
         }
     }
