@@ -298,7 +298,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      */
     public void printDataSet(OutputStream out, String ... includeTableNames) {
         dbTablePrinter.printDataSet(out, includeTableNames);
-
     }
 
     /**

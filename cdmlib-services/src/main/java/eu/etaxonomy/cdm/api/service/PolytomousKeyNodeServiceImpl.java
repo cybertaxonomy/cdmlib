@@ -46,8 +46,8 @@ public class PolytomousKeyNodeServiceImpl
         DeleteResult result = new DeleteResult();
         PolytomousKeyNode node = dao.findByUuid(nodeUUID);
         node = HibernateProxyHelper.deproxy(node);
-        if(node == null) {
-           // result.addException(new Exception("The polytomouskey node was already deleted."));;
+        if (node == null) {
+           // result.addException(new Exception("The polytomouskey node was already deleted."));
             return result;
         }
         List<PolytomousKeyNode> children = new ArrayList<>();
@@ -64,7 +64,6 @@ public class PolytomousKeyNodeServiceImpl
         }
 
         if(!deleteChildren){
-
             for (PolytomousKeyNode child: children){
                 if (!child.equals(node)){
                     parent.addChild(child);

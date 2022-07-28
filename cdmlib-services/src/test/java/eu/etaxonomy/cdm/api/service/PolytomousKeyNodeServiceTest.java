@@ -24,6 +24,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTest {
 
+    String[] tableNames = new String[]{"POLYTOMOUSKEY","POLYTOMOUSKEYNODE","POLYTOMOUSKEYNODE_AUD"};
+
 	@SpringBeanByType
 	private IPolytomousKeyNodeService service;
 
@@ -44,48 +46,49 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
 	    //create key
         PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
         keyService.save(key);
-        PolytomousKeyNode node = PolytomousKeyNode.NewInstance("Test statement");
-        key.setRoot(node);
+        PolytomousKeyNode root1 = PolytomousKeyNode.NewInstance("Test statement");
+        key.setRoot(root1);
         key.setStartNumber(0);
 
-        PolytomousKeyNode child = PolytomousKeyNode.NewInstance("Test statement Nr 2");
-        node.addChild(child,0);
-        service.save(node);
+        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement Nr 2");
+        UUID uuidChild2 = child2.getUuid();
+        root1.addChild(child2,0);
+        service.save(root1);
 
-        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement Nr 3");
-        child.addChild(child1,0);
-        UUID uuidChild = service.save(child).getUuid();
+        PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance("Test statement Nr 3");
+        UUID uuidChild3 = child3.getUuid();
+        child2.addChild(child3, 0);
+        service.save(child2).getUuid();
 
-        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement Nr 4");
-        child1.addChild(child2,0);
-        UUID uuidChild1 = service.save(child1).getUuid();
+        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement Nr 4");
+        UUID uuidChild4 = child4.getUuid();
+        child3.addChild(child4, 0);
+        service.save(child3).getUuid();
 
         //assert key
-        node = service.load(uuidChild1);
-        UUID uuidChild2 = node.getChildAt(0).getUuid();
-        assertNotNull(node);
+        PolytomousKeyNode loaded3 = service.load(uuidChild3);
+        assertNotNull(loaded3);
 
-        //delete
-        service.delete(uuidChild1, false);
-        node = service.load(uuidChild1);
-        assertNull(node);
-        node = service.load(uuidChild2);
-        assertNotNull(node);
+        //assert delete without children
+        service.delete(uuidChild3, false);
+        loaded3 = service.load(uuidChild3);
+        assertNull(loaded3);
+        PolytomousKeyNode loaded4 = service.load(uuidChild4);
+        assertNotNull("Child4 should be moved to "
+                + "parent child2 but not removed completely", loaded4);
 
-        node = service.load(uuidChild);
-
-        assertNotNull(node);
-        service.delete(uuidChild, true);
-        node = service.load(uuidChild);
-        assertNull(node);
-        node = service.load(uuidChild2);
-        assertNull(node);
+        //assert delete with children
+        PolytomousKeyNode loaded2 = service.load(uuidChild2);
+        assertNotNull(loaded2);
+        service.delete(uuidChild2, true);
+        loaded2 = service.load(uuidChild2);
+        assertNull(loaded2);
+        loaded4 = service.load(uuidChild4);
+        assertNull("Child4 should be deleted with child3 this time", loaded4);
     }
 
     @Test  //8127  //5536
     public final void testMerge(){
-        String[] tableNames = new String[] {"POLYTOMOUSKEY","POLYTOMOUSKEYNODE","POLYTOMOUSKEYNODE_AUD"};
-        logger.warn(tableNames);
 
         //create key with 2 child nodes
         PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
@@ -109,7 +112,6 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         service.merge(rootNode);
 
         commitAndStartNewTransaction(tableNames);
-        System.out.println("NEXT");
 
         //test result
         rootNode = service.find(key.getRoot().getUuid());
@@ -119,6 +121,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
         commitAndStartNewTransaction();
 
+        System.out.println("NEXT");
         //same with key
         //load root node and make it detached
         PolytomousKey keyLoaded = keyService.find(key.getUuid());

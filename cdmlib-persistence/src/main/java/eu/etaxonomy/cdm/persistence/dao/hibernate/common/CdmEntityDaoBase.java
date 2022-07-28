@@ -388,6 +388,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             return null;
         }
 
+        // Ben Clark:
         // Merge the object in if it is detached
         //
         // I think this is preferable to catching lazy initialization errors
