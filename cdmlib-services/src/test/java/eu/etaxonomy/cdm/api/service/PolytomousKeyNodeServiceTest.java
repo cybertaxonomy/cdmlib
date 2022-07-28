@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -113,8 +114,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         rootNode.removeChild(childToRemove);
         PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance("Test statement child3");
         rootNode.addChild(child3);
-        service.merge(rootNode);
-        service.delete(childToRemove.getUuid(), false);
+        service.merge(rootNode, childToRemove);
         commitAndStartNewTransaction(tableNames);
 
         //test result
@@ -126,7 +126,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         Assert.assertEquals("Should be root + 2 children", 3, service.count(PolytomousKeyNode.class));
         commitAndStartNewTransaction();
 
-        System.out.println("NEXT");
+//        System.out.println("NEXT");
         //same with key
         //load root node and make it detached
         PolytomousKey keyLoaded = keyService.find(key.getUuid());
@@ -141,13 +141,13 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         rootNode.addChild(child4);
 
         @SuppressWarnings("unused")
-        PolytomousKey mergedKey = keyService.merge(keyLoaded);
-        service.delete(childToRemove.getUuid(), false);
+        PolytomousKey mergedKey = keyService.merge(keyLoaded, childToRemove);
 
-        //NOTE: for historical reasons interesting to know, that if not using orphan removal
+        //NOTE: maybe interesting to know, that if not using orphan removal
         //      resorting the index does not take place if not touching the children list somehow.
         //      The sortindex starts than at some number > 0 and may contain nulls.
-        //      If touching the list like below the index starts at 0 but
+        //      If touching the list like below the index starts at 0. This is now
+        //      automatically handled in PostMergeEntityListener.
         //      mergedKey.getRoot().getChildren().size();
 
         commitAndStartNewTransaction(tableNames);
@@ -185,11 +185,9 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         newParentNode.addChild(childMove);
         PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child3");
         rootNode.addChild(child4);
-
         @SuppressWarnings("unused")
-        PolytomousKey mergedKey = keyService.merge(keyLoaded);
         //no removed child to delete here
-        //service.delete(childToRemove.getUuid(), false);
+        PolytomousKey mergedKey = keyService.merge(keyLoaded, new CdmBase[]{});
 
         commitAndStartNewTransaction(tableNames);
 
