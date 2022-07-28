@@ -117,8 +117,20 @@ public class PostMergeEntityListener implements MergeEventListener {
             } else if (ITreeNode.class.isAssignableFrom(entityClazz)){ //TaxonNode or TermNode
                 //See PolytomousKeyNode above
                 //Not yet tested if necessary here, too.
-                ITreeNode<?> resultNode = (ITreeNode<?>)result;
-                resultNode.getChildNodes().size();
+
+                //#10101
+                //preliminary disabled as it seems to be the cause
+                //for failing TaxEditor tests in TaxonNameEditorTest
+                //methods
+                //    * addDeleteAddHomotypicSynonym,
+                //    * addDeleteAddHomotypicSynonymWithAnnotations
+                //    * addHeterotypicSynonym
+                //    * testAddHomotypicSynonym
+                //All due to failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.taxon.TaxonNode.childNodes, could not initialize proxy - no Session
+                //We need to check if this is an issue in the test behavior or in the solution itself
+                //
+//                ITreeNode<?> resultNode = (ITreeNode<?>)result;
+//                resultNode.getChildNodes().size();
             }
         }
     }
