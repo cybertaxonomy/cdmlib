@@ -382,9 +382,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public UUID delete(T persistentObject) throws DataAccessException {
-        if (persistentObject == null) {
-            logger.warn(type.getName() + " was 'null'");
+    public UUID delete(T objectToDelete) throws DataAccessException {
+        if (objectToDelete == null) {
+            logger.info(type.getName() + " was 'null'");
+            return null;
+        } else if (!objectToDelete.isPersited()) {
+            logger.info(type.getName() + " was not persisted yet");
             return null;
         }
 
@@ -394,7 +397,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         // I think this is preferable to catching lazy initialization errors
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
-        persistentObject = (T) getSession().merge(persistentObject);
+        T persistentObject = (T) getSession().merge(objectToDelete);
         getSession().delete(persistentObject);
         return persistentObject.getUuid();
     }
