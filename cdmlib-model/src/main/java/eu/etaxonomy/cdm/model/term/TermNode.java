@@ -93,7 +93,7 @@ public class TermNode <T extends DefinedTermBase>
     @XmlElement(name = "Child")
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex", nullable=true)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class) //orphanRemoval=true,
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class) //no orphanRemoval (#10101)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})  //TODO , CascadeType.DELETE makes sense but needs testing in TaxEditor first
 	private List<TermNode<T>> children = new ArrayList<>();
 

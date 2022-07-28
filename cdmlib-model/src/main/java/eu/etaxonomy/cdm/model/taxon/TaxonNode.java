@@ -121,9 +121,10 @@ public class TaxonNode
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
     //see https://dev.e-taxonomy.eu/redmine/issues/4200
     //see https://dev.e-taxonomy.eu/redmine/issues/8127
-    //see https://dev.e-taxonomy.eu/redmine/issues/10067
+    //see https://dev.e-taxonomy.eu/redmine/issues/5211
+    //see https://dev.e-taxonomy.eu/redmine/issues/5536
     @OrderColumn(name="sortIndex", nullable=true)
-    @OneToMany(mappedBy="parent", fetch=FetchType.LAZY) // , orphanRemoval=true
+    @OneToMany(mappedBy="parent", fetch=FetchType.LAZY) //no orphanRemoval (#10101)
     //do not cascade
     private List<TaxonNode> childNodes = new ArrayList<>();
 
