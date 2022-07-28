@@ -117,8 +117,10 @@ public class PostMergeEntityListener implements MergeEventListener {
             } else if (ITreeNode.class.isAssignableFrom(entityClazz)){ //TaxonNode or TermNode
                 //See PolytomousKeyNode above
                 //Not yet tested if necessary here, too.
-                ITreeNode<?> resultNode = (ITreeNode<?>)result;
-                resultNode.getChildNodes().size();
+
+                //preliminary removed to test if related to LIE issues in TaxEditor test
+//                ITreeNode<?> resultNode = (ITreeNode<?>)result;
+//                resultNode.getChildNodes().size();
 
             }
         }
