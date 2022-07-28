@@ -61,8 +61,9 @@ public class CdmPreDataChangeListener
             insertUpdateMerge(event.getEntity());
         } catch(Exception e) {
             logger.warn("There was an exception in onPreUpdate(): " + e.getMessage());
+        }finally {
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -87,8 +88,9 @@ public class CdmPreDataChangeListener
             insertUpdateMerge(entity);
         } catch(Exception e) {
             logger.warn("There was an exception in onPreInsert(): " + e.getMessage());
+        }finally {
+            return false;
         }
-        return false;
     }
 
     //from former SaveOrUpdateEntityListener
