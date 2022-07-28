@@ -67,7 +67,7 @@ public class PostMergeEntityListener implements MergeEventListener {
             handleTreeNodes(result, original, event, copiedAlready);
             if(original != null && Hibernate.isInitialized(original) && original.getId() == 0 &&
                     result != null && Hibernate.isInitialized(result) && result.getId() > 0) {
-                //AM (2022-07-28): why do we set the id here to the original
+                //see IService#merge(detachedObject, returnTransientEntity)
                 original.setId(result.getId());
                 Set<CdmBase> newEntities = newEntitiesMap.get(event.getSession());
                 if(newEntities != null) {

@@ -268,10 +268,10 @@ public interface IService<T extends ICdmBase>{
     /**
      * Copy the state of the given object onto the persistent object with the same identifier.
      *
-     * @param transientObject the entity to be merged
-     * @return The unique identifier of the persisted entity
+     * @param detachedObject the detached entity to be merged
+     * @return the persisted entity
      */
-    public T merge(T transientObject);
+    public T merge(T detachedObject);
 
     /**
      * Returns a paged list of entities of type <T> optionally restricted
