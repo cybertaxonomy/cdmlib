@@ -146,7 +146,7 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
     @Test
     public void testGetTaggedTextMisappliedNameProParte() {
 
-        inverse = true;
+        inverse = true;  //this is the default visible on taxon pages
         TaxonRelationshipType type = TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR();
         String manInverseSymbol = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getInverseSymbol();
         String symbol = type.getSymbol();
@@ -157,7 +157,7 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         //#10082
         Assert.assertEquals("We split the inverse symbol here", manInverseSymbol + " \"Abies alba\" sensu Macfarlane 1918, p.p., err. sec. Cheek 1919: 123", str);
 
-        //inverse
+        //direct (we do not (yet) split the symbol
         tags = formatter.getTaggedText(taxonRel, !inverse, languages);
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);

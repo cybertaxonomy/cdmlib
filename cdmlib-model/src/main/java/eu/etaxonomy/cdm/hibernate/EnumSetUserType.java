@@ -17,7 +17,8 @@ import java.util.EnumSet;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -28,7 +29,8 @@ import org.jadira.usertype.spi.shared.AbstractUserType;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 /**
- * User type for EnumSet
+ * User type for EnumSet (#7957, open issue #10109).
+ *
  * @author a.mueller
  * @since 25-02-2019
  */
