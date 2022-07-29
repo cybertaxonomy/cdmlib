@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.ArrayList;
@@ -81,7 +80,6 @@ public class TermNode <T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=TermNode.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@JoinColumn(name="parent_id")
 	private TermNode<T> parent;
 
