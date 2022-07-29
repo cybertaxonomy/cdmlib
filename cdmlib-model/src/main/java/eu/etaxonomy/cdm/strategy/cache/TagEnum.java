@@ -92,7 +92,7 @@ public enum TagEnum {
      * a separator for name in source of secundum reference(for TaxonBase)
      */
     secNameInSourceSeparator,
-    
+
 //    /**
 //     * a secundum reference as used in a misapplied name (for TaxonRelationship)
 //     */

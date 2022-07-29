@@ -51,6 +51,7 @@ public class TaxonRelationshipFormatter {
     private static final String AUCT = "auct.";
     private static final String SENSU_SEPARATOR = " sensu ";
     private static final String SEC_SEPARATOR = " sec. ";
+    private static final String PRO_PARTE_SEPARATOR = ", ";
     private static final String DETAIL_SEPARATOR = ": ";
     private static final String INVERT_SYMBOL = "<-"; //TODO
     private static final String UNDEFINED_SYMBOL = "??";  //TODO
@@ -166,11 +167,11 @@ public class TaxonRelationshipFormatter {
         //p.p.
         if (isMisapplied) {
             if (isProParteMAN(type, inverse)) {
-                builder.addSeparator(", ");
+                builder.addSeparator(PRO_PARTE_SEPARATOR);
                 symbol = "p.p.";
                 builder.add(TagEnum.symbol, symbol);
             } else if (isPartialMAN(type, inverse)) {
-                builder.addSeparator(", ");
+                builder.addSeparator(PRO_PARTE_SEPARATOR);
                 symbol = "part.";
                 builder.add(TagEnum.symbol, symbol);
             }

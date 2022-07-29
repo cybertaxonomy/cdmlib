@@ -171,8 +171,6 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         str = TaggedCacheHelper.createString(tags);
         //#10082
         Assert.assertEquals("We split the inverse symbol here", manInverseSymbol + " \"Abies alba\" sensu Macfarlane 1918, part., err. sec. Cheek 1919: 123", str);
-
-
     }
 
     @Test
