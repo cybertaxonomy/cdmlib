@@ -42,7 +42,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -139,7 +138,6 @@ public abstract class DescriptionElementBase
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @OrderColumn(name="sortIndex")
-    @ListIndexBase(value=0)  //not really needed as this is the default
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<Media> media = new ArrayList<>();
 
