@@ -72,11 +72,11 @@ public class TaxonRelationshipFormatter {
 
     }
 
-    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse, List<Language> languages) {
-        return getTaggedText(taxonRelationship, reverse, languages, false);
+    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean inverse, List<Language> languages) {
+        return getTaggedText(taxonRelationship, inverse, languages, false);
     }
 
-    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse,
+    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean inverse,
             List<Language> languages, boolean withoutName) {
 
         if (taxonRelationship == null){
@@ -84,10 +84,10 @@ public class TaxonRelationshipFormatter {
         }
 
         TaxonRelationshipType type = taxonRelationship.getType();
-        boolean isMisapplied = (type == null ? false : type.isMisappliedName() && reverse);
+        boolean isMisapplied = (type == null ? false : type.isMisappliedName() && inverse);
         boolean isSynonym = type == null? false : type.isAnySynonym();
 
-        Taxon relatedTaxon = reverse? taxonRelationship.getFromTaxon()
+        Taxon relatedTaxon = inverse? taxonRelationship.getFromTaxon()
                 : taxonRelationship.getToTaxon();
 
         if (relatedTaxon == null){
@@ -102,7 +102,7 @@ public class TaxonRelationshipFormatter {
         TaggedTextBuilder builder = new TaggedTextBuilder();
 
         //rel symbol
-        String symbol = doubtfulRelationStr + getSymbol(type, reverse, languages);
+        String symbol = doubtfulRelationStr + getSymbol(type, inverse, languages);
         builder.add(TagEnum.symbol, symbol);
 
         //name
@@ -223,37 +223,37 @@ public class TaxonRelationshipFormatter {
 
     /**
      * @param type the taxon relationship type
-     * @param reverse is the relationship used reverse
+     * @param inverse is the relationship used inverse
      * @param languages list of preferred languages
      * @return the symbol for the taxon relationship
      */
-    private String getSymbol(TaxonRelationshipType type, boolean reverse, List<Language> languages) {
+    private String getSymbol(TaxonRelationshipType type, boolean inverse, List<Language> languages) {
         if (type == null){
             return UNDEFINED_SYMBOL;
         }
 
         //symbol
-        String symbol = reverse? type.getInverseSymbol():type.getSymbol();
+        String symbol = inverse? type.getInverseSymbol():type.getSymbol();
         if (isNotBlank(symbol)){
             return symbol;
         }
 
         boolean isSymmetric = type.isSymmetric();
         //symmetric inverted symbol
-        String invertedSymbol = reverse? type.getSymbol() : type.getInverseSymbol();
+        String invertedSymbol = inverse? type.getSymbol() : type.getInverseSymbol();
         if (isSymmetric && isNotBlank(invertedSymbol)){
             return invertedSymbol;
         }
 
         //abbrev label
-        Representation representation = reverse? type.getPreferredRepresentation(languages): type.getPreferredInverseRepresentation(languages);
+        Representation representation = inverse? type.getPreferredRepresentation(languages): type.getPreferredInverseRepresentation(languages);
         String abbrevLabel = representation.getAbbreviatedLabel();
         if (isNotBlank(abbrevLabel)){
             return abbrevLabel;
         }
 
         //symmetric inverted abbrev label
-        Representation invertedRepresentation = reverse? type.getPreferredInverseRepresentation(languages):type.getPreferredRepresentation(languages);
+        Representation invertedRepresentation = inverse? type.getPreferredInverseRepresentation(languages):type.getPreferredRepresentation(languages);
         String invertedAbbrevLabel = invertedRepresentation.getAbbreviatedLabel();
         if (isSymmetric && isNotBlank(invertedAbbrevLabel)){
             return invertedAbbrevLabel;
