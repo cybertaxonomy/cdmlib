@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -50,9 +51,15 @@ public class PostMergeEntityListener implements MergeEventListener {
 
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
-        //Note AM: TODO is there a reason why we neglect onMerge in this case?
-        //         Shouldn't we do something like "onMerge(event, new HashMap<>());"
-//        Object entity = event.getEntity();
+        //Note AM: Added in context of working on #10101, it was unclear to me
+        //         why this method was not implemented before. Debugging the merge process
+        //         revealed that this method was primarily called on the first entity
+        //         to merge (as copied already is not necessary then).
+        //         So setting the ID and adding to the newEntitiesMap seems
+        //         not to be implemented for entities handle only here.
+        //         Needs intensive testing if there is not maybe a reason why the method
+        //         was not implemented.
+        onMerge(event, new HashMap<>());
     }
 
     @Override
