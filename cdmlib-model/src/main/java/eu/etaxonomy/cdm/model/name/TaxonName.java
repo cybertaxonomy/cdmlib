@@ -353,8 +353,9 @@ public class TaxonName
     @XmlElement(name = "NameCache")
     @Fields({
         @Field(name = "nameCache_tokenized"),
-        @Field(store = Store.YES, index = Index.YES, analyzer = @Analyzer(impl = org.apache.lucene.analysis.core.KeywordAnalyzer.class))
+        @Field(store = Store.YES, index = Index.YES, analyze = Analyze.YES)
     })
+    @Analyzer(impl = org.apache.lucene.analysis.core.KeywordAnalyzer.class)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
     @NotEmpty(groups = Level2.class) // implicitly NotNull
