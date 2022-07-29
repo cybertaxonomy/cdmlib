@@ -169,7 +169,7 @@ public class TaxonRelationshipFormatter {
                 builder.addSeparator(", ");
                 symbol = "p.p.";
                 builder.add(TagEnum.symbol, symbol);
-            } else if (isProParteMAN(type, inverse)) {
+            } else if (isPartialMAN(type, inverse)) {
                 builder.addSeparator(", ");
                 symbol = "part.";
                 builder.add(TagEnum.symbol, symbol);
