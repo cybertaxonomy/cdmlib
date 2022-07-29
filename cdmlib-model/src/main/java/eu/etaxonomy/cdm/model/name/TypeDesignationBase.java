@@ -98,6 +98,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     private T typeStatus;
 
     //the source for the lectotypification (or similar)
+    //#8017, #9332
     @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
