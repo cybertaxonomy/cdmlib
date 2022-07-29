@@ -104,9 +104,6 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         languages = null;
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter#getTaggedText(eu.etaxonomy.cdm.model.taxon.TaxonRelationship, boolean, java.util.List)}.
-     */
     @Test
     public void testGetTaggedTextMisappliedName() {
 
@@ -142,7 +139,7 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         fromTaxon.setDoubtful(true);
         tags = formatter.getTaggedText(taxonRel, inverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
+    //    System.out.println(str);
         Assert.assertEquals(inverseSymbol + " ?\u202F\"Abies alba\" auct., err. sec. Cheek 1919: 123", str);
     }
 
@@ -163,7 +160,6 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         tags = formatter.getTaggedText(taxonRel, !inverse, languages);
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals(symbol + " Pinus pinova Mill. sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
-
     }
 
     @Test
@@ -189,7 +185,6 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals(SYMBOL + " Pinus pinova Mill. sensu stricto sec. ToSecAuthor 1928, rel. sec. Cheek 1919: 123", str);
 
-
         toTaxon.setSec(null);
         tags = formatter.getTaggedText(taxonRel, inverse, languages);
         str = TaggedCacheHelper.createString(tags);
@@ -205,7 +200,6 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         tags = formatter.getTaggedText(taxonRel, inverse, languages);
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals("?" + SYMBOL + " Pinus pinova Mill. sec. ???, rel. sec. Cheek 1919: 123", str);
-
     }
 
     @Test
@@ -260,21 +254,21 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
 
         tags = formatter.getTaggedText(taxonRel, inverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
+    //    System.out.println(str);
         Assert.assertTrue(str.contains("rel. sec. Macfarlane & Cheek 1919"));
 
         //add third member
         secRelTeam.addTeamMember(toSecAuthor);
         tags = formatter.getTaggedText(taxonRel, inverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
+   //     System.out.println(str);
         Assert.assertTrue(str.contains("rel. sec. Macfarlane & al. 1919"));
 
         //add et al.
         secRelTeam.setHasMoreMembers(true);
         tags = formatter.getTaggedText(taxonRel, inverse, languages);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
+    //    System.out.println(str);
         Assert.assertTrue(str.contains("rel. sec. Macfarlane & al. 1919"));
 
     }
@@ -310,9 +304,8 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         fromTaxon.setDoubtful(true);
         tags = formatter.getTaggedText(taxonRel, inverse, languages, WITHOUT_NAME);
         str = TaggedCacheHelper.createString(tags);
-        System.out.println(str);
+     //   System.out.println(str);
         Assert.assertEquals(inverseSymbol + " ?\u202F auct., err. sec. Cheek 1919: 123", str);
-
     }
 
     @Test
@@ -349,7 +342,5 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         tags = formatter.getTaggedText(taxonRel, inverse, languages, WITHOUT_NAME);
         str = TaggedCacheHelper.createString(tags);
         Assert.assertEquals("?" + SYMBOL + " sec. ???, rel. sec. Cheek 1919: 123", str);
-
     }
-
 }

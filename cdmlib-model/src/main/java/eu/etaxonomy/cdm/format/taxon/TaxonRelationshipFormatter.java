@@ -57,6 +57,8 @@ public class TaxonRelationshipFormatter {
 
     private static TaxonRelationshipFormatter instance;
 
+// ************************* FACTORY ************************/
+
     public static TaxonRelationshipFormatter NewInstance(){
         return new TaxonRelationshipFormatter();
     }
@@ -68,9 +70,11 @@ public class TaxonRelationshipFormatter {
         return instance;
     }
 
-    private TaxonRelationshipFormatter(){
+// ******************* CONSTRUCTOR ************************/
 
-    }
+    private TaxonRelationshipFormatter(){}
+
+// ********************** METHODS ***************************/
 
     public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean inverse, List<Language> languages) {
         return getTaggedText(taxonRelationship, inverse, languages, false);
