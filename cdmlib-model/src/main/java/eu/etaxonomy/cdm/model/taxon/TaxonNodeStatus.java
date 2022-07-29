@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
@@ -101,7 +102,7 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
      * Alternative symbol: ↑ or u+2BD1 (https://unicode-table.com/en/2BD1/)
      */
     @XmlEnumValue("Unresolved")
-    UNRESOLVED(UUID.fromString("ce6f2430-9662-4b78-8fc2-48b5fa9fd37e"), "Unresolved", "Unresolved name – to be further revised", "UNR", "u", null),
+    UNRESOLVED(UUID.fromString("ce6f2430-9662-4b78-8fc2-48b5fa9fd37e"), "Unresolved", "Unresolved name "+UTF8.EN_DASH+" to be further revised", "UNR", "u", null),
 
 ;
 
