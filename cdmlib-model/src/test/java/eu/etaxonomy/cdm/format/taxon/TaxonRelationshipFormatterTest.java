@@ -148,13 +148,14 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
 
         inverse = true;
         TaxonRelationshipType type = TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR();
-        String inverseSymbol = type.getInverseSymbol();
+        String manInverseSymbol = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getInverseSymbol();
         String symbol = type.getSymbol();
         taxonRel.setType(type);
 
         List<TaggedText> tags = formatter.getTaggedText(taxonRel, inverse, languages);
         String str = TaggedCacheHelper.createString(tags);
-        Assert.assertEquals(inverseSymbol + " \"Abies alba\" sensu Macfarlane 1918, err. sec. Cheek 1919: 123", str);
+        //#10082
+        Assert.assertEquals("We split the inverse symbol here", manInverseSymbol + " \"Abies alba\" sensu Macfarlane 1918, p.p., err. sec. Cheek 1919: 123", str);
 
         //inverse
         tags = formatter.getTaggedText(taxonRel, !inverse, languages);

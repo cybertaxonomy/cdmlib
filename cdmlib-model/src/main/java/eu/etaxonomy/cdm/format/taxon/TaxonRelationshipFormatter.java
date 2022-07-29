@@ -163,6 +163,20 @@ public class TaxonRelationshipFormatter {
             }
         }
 
+        //p.p.
+        if (isMisapplied) {
+            if (isProParteMAN(type, inverse)) {
+                builder.addSeparator(", ");
+                symbol = "p.p.";
+                builder.add(TagEnum.symbol, symbol);
+            } else if (isProParteMAN(type, inverse)) {
+                builder.addSeparator(", ");
+                symbol = "part.";
+                builder.add(TagEnum.symbol, symbol);
+            }
+        }
+
+        //rel sec
         List<TaggedText> relSecTags = getReferenceTags(taxonRelationship.getCitation(),
                 taxonRelationship.getCitationMicroReference(),true);
         if (!relSecTags.isEmpty()){
@@ -239,6 +253,10 @@ public class TaxonRelationshipFormatter {
         //symbol
         String symbol = inverse? type.getInverseSymbol():type.getSymbol();
         if (isNotBlank(symbol)){
+            //handle p.p. MAN specific #10082
+            if (isProParteMAN(type, inverse) || isPartialMAN(type, inverse)) {
+                return TaxonRelationshipType.MISAPPLIED_NAME_FOR().getInverseSymbol();
+            }
             return symbol;
         }
 
@@ -274,6 +292,14 @@ public class TaxonRelationshipFormatter {
         }
 
         return UNDEFINED_SYMBOL;
+    }
+
+    private boolean isPartialMAN(TaxonRelationshipType type, boolean inverse) {
+        return inverse && type.getUuid().equals(TaxonRelationshipType.uuidPartialMisappliedNameFor);
+    }
+
+    private boolean isProParteMAN(TaxonRelationshipType type, boolean inverse) {
+        return inverse && type.getUuid().equals(TaxonRelationshipType.uuidProParteMisappliedNameFor);
     }
 
     private boolean isNotBlank(String str) {
