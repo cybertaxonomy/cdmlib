@@ -267,6 +267,48 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
     }
 
 
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public void testSaveDetachedWithMove() {
+
+        //create key with 2 child nodes
+        PolytomousKey key = PolytomousKey.NewTitledInstance("Move test PolytomousKey");
+        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement child1");
+        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement child2");
+        key.getRoot().addChild(child1);
+        key.getRoot().addChild(child2);
+        keyService.save(key);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        PolytomousKey keyLoaded = keyService.find(key.getUuid());
+        PolytomousKeyNode rootNode = keyLoaded.getRoot();
+        rootNode.getChildren().get(1).getChildren().size();  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        PolytomousKeyNode childMove = rootNode.getChildren().get(0);
+        PolytomousKeyNode newParentNode = rootNode.getChildren().get(1);
+        newParentNode.addChild(childMove);
+        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child3");
+        rootNode.addChild(child4);
+        //no removed child to delete here
+        keyService.saveOrUpdate(keyLoaded) ;
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = service.find(key.getRoot().getUuid());
+        rootNode.getChildren();
+        Assert.assertEquals(2, rootNode.getChildren().size());
+        PolytomousKeyNode firstChild = rootNode.getChildren().get(0);
+        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+        Assert.assertEquals(1, firstChild.getChildren().size());
+        Assert.assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
+        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4, service.count(PolytomousKeyNode.class));
+    }
+
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }
