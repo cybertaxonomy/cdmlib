@@ -402,7 +402,8 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
 
         //load root node and make it detached
         TermNode<Feature> rootNode = termNodeService.find(tree.getRoot().getUuid());
-        rootNode.getChildNodes().get(0);  //initialize children
+        TermNode<?> r = rootNode.getChildNodes().get(0).getGraph().getRoot();  //initialize children
+//        termTreeService.find(tree.getRoot().getUuid());  //initialize tree as it is used later for term type comparison when adding a child
         commitAndStartNewTransaction(); //detach
 
         //replace nodes and merge
