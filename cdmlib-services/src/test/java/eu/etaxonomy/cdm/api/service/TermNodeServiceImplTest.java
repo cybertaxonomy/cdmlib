@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -49,6 +50,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Oct 30, 2020
  */
 public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
+
+    private static String[] tableNames = new String[]{"TERMCOLLECTION","TERMRELATION"};
 
     private static final String sep = ITreeNode.separator;
     private static final String pref = ITreeNode.treePrefix;
@@ -271,6 +274,219 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         commitAndStartNewTransaction(/*new String[]{"TaxonNode"}*/);
         tree1 = termTreeService.load(featureTreeUuid);
         assertNull(tree1);
+    }
+
+    @Test  //#8127  //#5536 //#10101
+    @Ignore  //test still throws exception, see #10101
+//    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public final void testMergeDetached(){
+        int termNodesAtStart = termNodeService.count(TermNode.class);
+
+        //create tree with 2 child nodes
+        TermType type = TermType.Feature;
+        TermTree<Feature> tree = TermTree.NewInstance(type);
+        TermNode<Feature> child1 = tree.getRoot().addChild(Feature.COMMON_NAME());
+        TermNode<Feature> child2 = tree.getRoot().addChild(Feature.DISTRIBUTION());
+        termTreeService.save(tree);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        TermNode<Feature> rootNode = termNodeService.find(tree.getRoot().getUuid());
+        rootNode.getChildNodes().get(0);  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        TermNode<Feature> childToRemove = rootNode.getChildNodes().get(0);
+        rootNode.removeChild(childToRemove);
+        TermNode<Feature> child3 =rootNode.addChild(Feature.ADDITIONAL_PUBLICATION());
+        TermNode<Feature> mergedRootNode = termNodeService.merge(rootNode, childToRemove);
+//        System.out.println("Workaround: " + mergedRootNode.getChildCount());
+        commitAndStartNewTransaction(tableNames);
+
+        //test result
+        rootNode = termNodeService.find(tree.getRoot().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        Assert.assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3 + termNodesAtStart, termNodeService.count(TermNode.class));
+        commitAndStartNewTransaction();
+
+//        System.out.println("NEXT");
+        //same with key
+        //load root node and make it detached
+        TermTree<Feature> treeLoaded = termTreeService.find(tree.getUuid());
+        rootNode = treeLoaded.getRoot();
+        rootNode.getChildNodes().get(0);  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        childToRemove = rootNode.getChildNodes().get(0);
+        rootNode.removeChild(childToRemove);
+        TermNode<Feature> child4 = rootNode.addChild(Feature.DESCRIPTION());
+
+        @SuppressWarnings("unused")
+        TermTree<Feature> mergedKey = termTreeService.merge(treeLoaded, childToRemove);
+
+        //NOTE: maybe interesting to know, that if not using orphan removal
+        //      resorting the index does not take place if not touching the children list somehow.
+        //      The sortindex starts than at some number > 0 and may contain nulls.
+        //      If touching the list like below the index starts at 0. This is now
+        //      automatically handled in PostMergeEntityListener.
+        //      mergedKey.getRoot().getChildren().size();
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = termNodeService.find(tree.getRoot().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3 +termNodesAtStart, termNodeService.count(TermNode.class));
+    }
+
+    @Test
+//    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public void testMergeDetachedWithMove() {
+        int termNodesAtStart = termNodeService.count(TermNode.class);
+
+        //create key with 2 child nodes
+        TermType type = TermType.Feature;
+        TermTree<Feature> tree = TermTree.NewInstance(type);
+        TermNode<Feature> child1 = tree.getRoot().addChild(Feature.COMMON_NAME());
+        TermNode<Feature> child2 = tree.getRoot().addChild(Feature.DISTRIBUTION());
+        termTreeService.save(tree);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        TermTree<Feature> keyLoaded = termTreeService.find(tree.getUuid());
+        TermNode<Feature> rootNode = keyLoaded.getRoot();
+        rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        TermNode<Feature> childMove = rootNode.getChildNodes().get(0);
+        TermNode<Feature> newParentNode = rootNode.getChildNodes().get(1);
+        newParentNode.addChild(childMove);
+        TermNode<Feature> child4 =rootNode.addChild(Feature.ANATOMY());
+
+        @SuppressWarnings("unused")
+        //no removed child to delete here
+        TermTree<Feature> mergedTree = termTreeService.merge(keyLoaded, new CdmBase[]{});
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = termNodeService.find(tree.getRoot().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        TermNode<Feature> firstChild = rootNode.getChildNodes().get(0);
+        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals(1, firstChild.getChildNodes().size());
+        Assert.assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
+        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4 + termNodesAtStart, termNodeService.count(TermNode.class));
+    }
+
+    @Test  //8127  //5536 //10101
+    //  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public final void testSaveDetached(){
+        int termNodesAtStart = termNodeService.count(TermNode.class);
+
+        //create tree with 2 child nodes
+        TermType type = TermType.Feature;
+        TermTree<Feature> tree = TermTree.NewInstance(type);
+        TermNode<Feature> child1 = tree.getRoot().addChild(Feature.COMMON_NAME());
+        TermNode<Feature> child2 = tree.getRoot().addChild(Feature.DISTRIBUTION());
+        termTreeService.save(tree);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        TermNode<Feature> rootNode = termNodeService.find(tree.getRoot().getUuid());
+        rootNode.getChildNodes().get(0);  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        TermNode<Feature> childToRemove = rootNode.getChildNodes().get(0);
+        rootNode.removeChild(childToRemove);
+        TermNode<Feature> child3 =rootNode.addChild(Feature.ADDITIONAL_PUBLICATION());
+        termNodeService.saveOrUpdate(rootNode);
+        termNodeService.delete(childToRemove);
+        commitAndStartNewTransaction(tableNames);
+
+        //test result
+        rootNode = termNodeService.find(tree.getRoot().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        Assert.assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3 + termNodesAtStart, termNodeService.count(TermNode.class));
+        commitAndStartNewTransaction();
+
+//      System.out.println("NEXT");
+        //same with tree
+        //load root node and make it detached
+        TermTree<Feature> treeLoaded = termTreeService.find(tree.getUuid());
+        rootNode = treeLoaded.getRoot();
+        rootNode.getChildNodes().get(0);  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        childToRemove = rootNode.getChildNodes().get(0);
+        rootNode.removeChild(childToRemove);
+        TermNode<Feature> child4 = rootNode.addChild(Feature.DESCRIPTION());
+        termTreeService.saveOrUpdate(treeLoaded);
+        termNodeService.delete(childToRemove);  //workaround for missing combined method
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = termNodeService.find(tree.getRoot().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3 +termNodesAtStart, termNodeService.count(TermNode.class));
+    }
+
+    @Test
+//  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+  public void testSaveDetachedWithMove() {
+
+        int termNodesAtStart = termNodeService.count(TermNode.class);
+
+        //create trees with 2 child nodes
+        TermType type = TermType.Feature;
+        TermTree<Feature> tree = TermTree.NewInstance(type);
+        TermNode<Feature> child1 = tree.getRoot().addChild(Feature.COMMON_NAME());
+        TermNode<Feature> child2 = tree.getRoot().addChild(Feature.DISTRIBUTION());
+        termTreeService.save(tree);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        TermTree<Feature> keyLoaded = termTreeService.find(tree.getUuid());
+        TermNode<Feature> rootNode = keyLoaded.getRoot();
+        rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        TermNode<Feature> childMove = rootNode.getChildNodes().get(0);
+        TermNode<Feature> newParentNode = rootNode.getChildNodes().get(1);
+        newParentNode.addChild(childMove);
+        TermNode<Feature> child4 =rootNode.addChild(Feature.ANATOMY());
+
+        //no removed child to delete here
+        termTreeService .saveOrUpdate(keyLoaded);
+
+       commitAndStartNewTransaction(tableNames);
+
+        rootNode = termNodeService.find(tree.getRoot().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        TermNode<Feature> firstChild = rootNode.getChildNodes().get(0);
+        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals(1, firstChild.getChildNodes().size());
+        Assert.assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
+        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4 + termNodesAtStart, termNodeService.count(TermNode.class));
     }
 
     @Override
