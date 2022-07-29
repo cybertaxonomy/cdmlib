@@ -169,11 +169,11 @@ public class TaxonRelationshipFormatter {
             if (isProParteMAN(type, inverse)) {
                 builder.addSeparator(PRO_PARTE_SEPARATOR);
                 symbol = "p.p.";
-                builder.add(TagEnum.symbol, symbol);
+                builder.add(TagEnum.inlineSymbol, symbol);  //using type symbol here does not work as symbol is always rendered to left, not inline by dataportal
             } else if (isPartialMAN(type, inverse)) {
                 builder.addSeparator(PRO_PARTE_SEPARATOR);
                 symbol = "part.";
-                builder.add(TagEnum.symbol, symbol);
+                builder.add(TagEnum.inlineSymbol, symbol);  //using type symbol here does not work as symbol is always rendered to left, not inline by dataportal
             }
         }
 

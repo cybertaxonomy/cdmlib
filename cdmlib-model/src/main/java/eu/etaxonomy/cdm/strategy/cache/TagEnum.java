@@ -120,6 +120,10 @@ public enum TagEnum {
      * like taxon relationships.
      */
     symbol,
+    /**
+     * Like symbol but to be rendered inline, not to the left
+     */
+    inlineSymbol,
 	;
 
 
