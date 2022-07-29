@@ -89,7 +89,7 @@ public class DescriptiveDataSetService
         extends IdentifiableServiceBase<DescriptiveDataSet, IDescriptiveDataSetDao>
         implements IDescriptiveDataSetService {
 
-    private static Logger logger = LogManager.getLogger(DescriptiveDataSetService.class);
+    private static Logger logger = LogManager.getLogger();
 
     @Autowired
     private IOccurrenceService occurrenceService;
@@ -503,25 +503,23 @@ public class DescriptiveDataSetService
         @SuppressWarnings("unchecked")
         List<UUID> result = query.list();
         List<DescriptionBaseDto> list = new ArrayList<>();
-        list.addAll(descriptionService.loadDtos(new HashSet(result)));
+        list.addAll(descriptionService.loadDtos(new HashSet<>(result)));
 
         if (list.isEmpty()){
             return null;
         }else {
-		List<DescriptionBaseDto> correctTypeOnly = new ArrayList<>();
-		for (DescriptionBaseDto dto: list) {
-			if (dto.getTypes().contains(descriptionType)) {
-				correctTypeOnly.add(dto);
-			}
-		}
-		if (correctTypeOnly.isEmpty()) {
-			return null;
-		}else {
-			return correctTypeOnly.get(0);
-		}
+    		List<DescriptionBaseDto> correctTypeOnly = new ArrayList<>();
+    		for (DescriptionBaseDto dto: list) {
+    			if (dto.getTypes().contains(descriptionType)) {
+    				correctTypeOnly.add(dto);
+    			}
+    		}
+    		if (correctTypeOnly.isEmpty()) {
+    			return null;
+    		}else {
+    			return correctTypeOnly.get(0);
+    		}
         }
-
-//        return list.get(0);
     }
 
     @Override
