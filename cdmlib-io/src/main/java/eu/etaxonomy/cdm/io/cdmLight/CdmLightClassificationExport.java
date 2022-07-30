@@ -1921,7 +1921,9 @@ public class CdmLightClassificationExport
                         if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM())
                                 || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())
                                 || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()))
-                                || (rel.getType().equals(NameRelationshipType.UNSPECIFIC_NON()))){
+                                || (rel.getType().equals(NameRelationshipType.UNSPECIFIC_NON()))
+                                || (rel.getType().equals(NameRelationshipType.AVOIDS_HOMONYM_OF()))
+                                ){
                             nonNames.add(rel);
                         }else if (!rel.getType().isBasionymRelation()){
                             otherRelationships.add(rel);
