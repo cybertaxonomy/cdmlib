@@ -35,59 +35,57 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  *
  * @author Andreas Kohlbecker
  * @since Dec 19, 2011
- *
  */
 public class DescriptionBaseClassBridge extends AbstractClassBridge {
 
     @Override
     public void set(String name, Object entity, Document document, LuceneOptions luceneOptions) {
 
-            if (entity instanceof TaxonDescription) {
-
-                Taxon taxon = ((TaxonDescription)entity).getTaxon();
-
-                if (taxon != null) {
-
-                    idFieldBridge.set(name + "taxon.id", taxon.getId(), document, idFieldOptions);
-
-                    Field titleCachefield = new TextField(name + "taxon.titleCache", taxon.getTitleCache(), Store.YES);
-                    document.add(titleCachefield);
-
-                    // this should not be necessary since the IdentifiableEntity.titleCache already has the according annotation
-                    /*
-                    Field titleCacheSortfield = new SortedDocValuesField(
-                            name + "taxon.titleCache__sort",
-                            new BytesRef(taxon.getTitleCache())
-                            );
-                    LuceneDocumentUtility.setOrReplaceDocValueField(titleCacheSortfield, document);
-                    */
-
-                    Field uuidfield = new StringField(name + "taxon.uuid", taxon.getUuid().toString(), Store.YES);
-                    document.add(uuidfield);
-
-                    for(TaxonNode node : taxon.getTaxonNodes()){
-                        if(node.getClassification() != null){
-                            idFieldBridge.set(name + "taxon.taxonNodes.classification.id",
-                                    node.getClassification().getId(), document, idFieldOptions);
-                        }
-                        if(node.treeIndex() != null){
-                            Field treeIndexField = new StringField("inDescription.taxon.taxonNodes.treeIndex",
-                                    node.treeIndex(),
-                                    Store.YES
-                                    );
-                            document.add(treeIndexField);
-                        }
-                    }
-                }
-
+        if (entity instanceof TaxonDescription) {
+            handleTaxonDescription(name, (TaxonDescription)entity, document);
+        }
+        if (entity instanceof TaxonNameDescription) {
+            TaxonName taxonName = ((TaxonNameDescription) entity).getTaxonName();
+            if (taxonName != null) {
+                idFieldBridge.set(name + "taxonName.id", taxonName.getId(), document, idFieldOptions);
             }
-            if (entity instanceof TaxonNameDescription) {
-                TaxonName taxonName = ((TaxonNameDescription) entity).getTaxonName();
-                if (taxonName != null) {
-                    idFieldBridge.set(name + "taxonName.id", taxonName.getId(), document, idFieldOptions);
-                }
-            }
+        }
     }
 
+    private void handleTaxonDescription(String name, TaxonDescription entity, Document document) {
+        Taxon taxon = entity.getTaxon();
+        if (taxon != null) {
 
+            idFieldBridge.set(name + "taxon.id", taxon.getId(), document, idFieldOptions);
+
+            Field titleCachefield = new TextField(name + "taxon.titleCache", taxon.getTitleCache(), Store.YES);
+            document.add(titleCachefield);
+
+            // this should not be necessary since the IdentifiableEntity.titleCache already has the according annotation
+            /*
+            Field titleCacheSortfield = new SortedDocValuesField(
+                    name + "taxon.titleCache__sort",
+                    new BytesRef(taxon.getTitleCache())
+                    );
+            LuceneDocumentUtility.setOrReplaceDocValueField(titleCacheSortfield, document);
+            */
+
+            Field uuidfield = new StringField(name + "taxon.uuid", taxon.getUuid().toString(), Store.YES);
+            document.add(uuidfield);
+
+            for(TaxonNode node : taxon.getTaxonNodes()){
+                if(node.getClassification() != null){
+                    idFieldBridge.set(name + "taxon.taxonNodes.classification.id",
+                            node.getClassification().getId(), document, idFieldOptions);
+                }
+                if(node.treeIndex() != null){
+                    Field treeIndexField = new StringField("inDescription.taxon.taxonNodes.treeIndex",
+                            node.treeIndex(),
+                            Store.YES
+                            );
+                    document.add(treeIndexField);
+                }
+            }
+        }
+    }
 }

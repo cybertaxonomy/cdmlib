@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.api.service.lsid.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 @Service("lsidDataService")
 @Transactional
 public class LsidDataServiceImpl implements LSIDDataService {
-	private static final Logger logger = Logger.getLogger(LsidDataServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger(LsidDataServiceImpl.class);
 
 	private LSIDRegistry lsidRegistry;
 	

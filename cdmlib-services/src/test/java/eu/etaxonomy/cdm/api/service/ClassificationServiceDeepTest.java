@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTest{
 
-    private static final Logger logger = Logger.getLogger(ClassificationServiceDeepTest.class);
+    private static final Logger logger = LogManager.getLogger(ClassificationServiceDeepTest.class);
 
     @SpringBeanByType
     private IClassificationService service;

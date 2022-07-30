@@ -33,7 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -75,32 +76,9 @@ import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 public class User extends CdmBase implements UserDetails {
 
     private static final long serialVersionUID = 6582191171369439163L;
-    private static final Logger logger = Logger.getLogger(User.class);
+    private static final Logger logger = LogManager.getLogger(User.class);
 
     public static final String USERNAME_REGEX = "[A-Za-z0-9_\\.\\-]+";
-
- // **************************** FACTORY *****************************************/
-
-    public static User NewInstance(String username, String pwd){
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(pwd);
-
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(true);
-
-        return user;
-    }
-
-    public static User NewInstance(String personTitle, String username, String pwd){
-        User user = NewInstance(username, pwd);
-        Person userPerson = Person.NewTitledInstance(personTitle);
-        user.setPerson(userPerson);
-
-        return user;
-    }
 
 //***************************** Fields *********************** /
 
@@ -187,11 +165,33 @@ public class User extends CdmBase implements UserDetails {
     @Transient
     private Set<AuthorityBase> transientAuthorities;  //authorities of this user and of all groups the user belongs to
 
+// **************************** FACTORY *****************************************/
+
+    public static User NewInstance(String username, String pwd){
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(pwd);
+
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setEnabled(true);
+
+        return user;
+    }
+
+    public static User NewInstance(String personTitle, String username, String pwd){
+        User user = NewInstance(username, pwd);
+        Person userPerson = Person.NewTitledInstance(personTitle);
+        user.setPerson(userPerson);
+
+        return user;
+    }
+
 //***************************** Constructor *********************** /
 
-    protected User(){
-        super();
-    }
+    //for internal use only, *packet* private required by bytebuddy
+    User(){}
 
 // ***************************** GETTER / SETTER ******************************/
 

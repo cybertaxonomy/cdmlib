@@ -15,7 +15,7 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.validation.constraint.NameMustFollowCodeValidator;
  */
 public class NameMustFollowCodeTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(NameMustFollowCodeTest.class);
+    private static final Logger logger = LogManager.getLogger(NameMustFollowCodeTest.class);
 
 	private TaxonName nonViralName;
     private TaxonName viralName;

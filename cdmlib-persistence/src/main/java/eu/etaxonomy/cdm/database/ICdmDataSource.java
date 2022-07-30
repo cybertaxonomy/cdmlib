@@ -48,7 +48,8 @@ public interface ICdmDataSource
 	 */
 	@Deprecated
     public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql,
-            Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass);
+            Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass,
+            String byteCodeProvider);
 
 	/**
 	 * @param hbm2dll schema validation

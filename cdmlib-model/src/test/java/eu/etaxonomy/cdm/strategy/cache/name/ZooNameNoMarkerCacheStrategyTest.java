@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ZooNameNoMarkerCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(ZooNameNoMarkerCacheStrategyTest.class);
 
 	private TaxonNameDefaultCacheStrategy strategy;
 	private TaxonName familyName;

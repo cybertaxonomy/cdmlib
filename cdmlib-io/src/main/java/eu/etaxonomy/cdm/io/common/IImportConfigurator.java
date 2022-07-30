@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.UUID;
@@ -65,8 +64,6 @@ public interface IImportConfigurator extends IIoConfigurator {
         }
     }
 
-
-
     public boolean isValid();
 
     /**
@@ -77,14 +74,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 
     /* ****************** GETTER/SETTER **************************/
 
-    /**
-     * @return the doReferences
-     */
     public CHECK getCheck();
-
-    /**
-     * @param doReferences the doReferences to set
-     */
     public void setCheck(CHECK check);
 
     /**
@@ -125,8 +115,6 @@ public interface IImportConfigurator extends IIoConfigurator {
      */
     public Reference getSourceReference();
 
-
-
     /**
      * Any object that represents the Source. The implementing class must cast this to
      * the correct class type
@@ -164,26 +152,21 @@ public interface IImportConfigurator extends IIoConfigurator {
     public void setClassificationUuid(UUID treeUuid);
 
     /**
-      * If one wants do define the uuid of the accepted taxa (except for missaplied names) this can be
-      * done here
-      * @return
-      */
-     public UUID getSecUuid();
+     * If one wants do define the uuid of the accepted taxa (except for missaplied names) this can be
+     * done here
+     */
+    public UUID getSecUuid();
     public void setSecUuid(UUID secUuid);
-
 
     /**
      * Returns the transformer used during import
-     * @return
      */
     public IInputTransformer getTransformer();
-
     /**
      * Sets the transformer used during import
      * @param transformer
      */
     public void setTransformer(IInputTransformer transformer);
-
 
     /**
      * Defines if term loading should take place if a new application controller
@@ -205,5 +188,4 @@ public interface IImportConfigurator extends IIoConfigurator {
      * @return
      */
     public boolean isCreateNew();
-
 }

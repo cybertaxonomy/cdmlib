@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +59,7 @@ public class CommonServiceImpl
         implements ICommonService {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(CommonServiceImpl.class);
 
     @Autowired
     private IOriginalSourceDao originalSourceDao;

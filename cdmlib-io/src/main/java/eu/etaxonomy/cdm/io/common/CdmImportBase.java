@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -94,7 +95,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             implements ICdmImport<CONFIG, STATE>{
 
     private static final long serialVersionUID = 8730012744209195616L;
-    private static final Logger logger = Logger.getLogger(CdmImportBase.class);
+    private static final Logger logger = LogManager.getLogger(CdmImportBase.class);
 
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;
@@ -628,9 +629,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	/**
 	 * Returns a feature if it exists, null otherwise.
 	 * @see #getFeature(ImportStateBase, UUID, String, String, String, TermVocabulary)
-	 * @param state
-	 * @param uuid
-	 * @return
 	 */
 	protected Feature getFeature(STATE state, UUID uuid){
 		return getFeature(state, uuid, null, null, null, null);
@@ -640,12 +638,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * Returns a feature for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the feature exists in the database, if not creating it anew (with vocabulary etc.).
 	 * If label, text and labelAbbrev are all <code>null</code> no feature is created.
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
 	 */
 	protected Feature getFeature(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc){
 		if (uuid == null){
@@ -653,7 +645,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		Feature feature = state.getFeature(uuid);
 		if (feature == null){
-			feature = (Feature)getTermService().find(uuid);
+			feature = (Feature)CdmBase.deproxy(getTermService().find(uuid));
 			if (feature == null && ! hasNoLabel(label, description, labelAbbrev)){
 				feature = Feature.NewInstance(description, label, labelAbbrev);
 				feature.setUuid(uuid);
@@ -675,13 +667,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
      * checking if the uuid has already been used in this import, if not
      * checking if the status type exists in the database, if not creating it anew (with vocabulary etc.).
      * If label, text and labelAbbrev are all <code>null</code> no status type is created.
-     * @param state
-     * @param uuid
-     * @param label
-     * @param text
-     * @param language
-     * @param labelAbbrev
-     * @return
      */
     protected NomenclaturalStatusType getNomenclaturalStatusType(STATE state, UUID uuid, String label,
             String description, String labelAbbrev, Language language, TermVocabulary<NomenclaturalStatusType> voc){
@@ -981,7 +966,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
     public OriginalSourceBase addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation, String originalInformation)  {
         OriginalSourceBase source = addOriginalSource(cdmBase, idAttributeValue, namespace, citation);
         if (source != null && isNotBlank(originalInformation)){
-            source.setOriginalNameString(originalInformation);
+            source.setOriginalInfo(originalInformation);
         }
         return source;
     }
@@ -991,12 +976,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * If cdmBase is not sourceable nothing happens.
 	 * TODO Move to DbImportBase once this exists.
 	 * TODO also implemented in DbImportObjectCreationMapper (reduce redundance)
-	 * @param rs
-	 * @param cdmBase
-	 * @param dbIdAttribute
-	 * @param namespace
-	 * @param citation
-	 * @throws SQLException
 	 */
 	public OriginalSourceBase addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
 		if (cdmBase instanceof ISourceable ){
@@ -1024,20 +1003,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return null;
 	}
 
-	/**
-	 * @see #addOriginalSource(CdmBase, Object, String, Reference)
-	 * @param rs
-	 * @param cdmBase
-	 * @param dbIdAttribute
-	 * @param namespace
-	 * @param citation
-	 * @throws SQLException
-	 */
 	public void addOriginalSource(ResultSet rs, CdmBase cdmBase, String dbIdAttribute, String namespace, Reference citation) throws SQLException {
 		Object id = rs.getObject(dbIdAttribute);
 		addOriginalSource(cdmBase, id, namespace, citation);
 	}
-
 
 	/**
 	 * If the child taxon is missing genus or species epithet information and the rank is below <i>genus</i>

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 public class DwcaTypesRecord extends DwcaRecordBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaTypesRecord.class);
+	private static final Logger logger = LogManager.getLogger(DwcaTypesRecord.class);
 
 	private String bibliographicCitation;
 	private TypeDesignationStatusBase<?> typeStatus;

@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,8 @@ import net.sf.json.JsonConfig;
  */
 @Component
 public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
-    private static final Logger logger = Logger
-            .getLogger(LocalXMLEntityFactory.class);
+
+    private static final Logger logger = LogManager.getLogger(LocalXMLEntityFactory.class);
 
     private final JsonView xmlView;
 

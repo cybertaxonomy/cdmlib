@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.print.out.odf;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.dom.element.OdfStyleBase;
 import org.odftoolkit.odfdom.dom.element.style.StyleParagraphPropertiesElement;
@@ -26,7 +26,7 @@ import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
  */
 public class StylesFactory implements IStyleNames{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(StylesFactory.class);
+	private static final Logger logger = LogManager.getLogger(StylesFactory.class);
 
 	OdfOfficeStyles officeStyles;
 	OdfDefaultStyle defaultStyle;

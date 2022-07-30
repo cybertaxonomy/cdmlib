@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.HashMap;
@@ -20,11 +19,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-
 
 /**
  * The class representing categories of relationships between {@link DefinedTermBase terms}
@@ -43,11 +42,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
  * @author m.doering
  * @since 08-Nov-2007 13:06:17
  */
-/**
- * @author a.mueller
- * @since 28.02.2019
- *
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermRelationshipType")
 @XmlRootElement(name = "TermRelationshipType")
@@ -56,9 +50,10 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 //@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class TermRelationshipType extends RelationshipTermBase<TermRelationshipType> {
-	private static final long serialVersionUID = 6575652105931691670L;
+
+    private static final long serialVersionUID = 6575652105931691670L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermRelationshipType.class);
+	private static final Logger logger = LogManager.getLogger(TermRelationshipType.class);
 
 	protected static Map<UUID, TermRelationshipType> termMap = null;
 
@@ -72,16 +67,14 @@ public class TermRelationshipType extends RelationshipTermBase<TermRelationshipT
 		return new TermRelationshipType(term, label, labelAbbrev, symmetric, transitive);
 	}
 
-
 //********************************** CONSTRUCTOR *********************************/
 
-  	/**
-  	 * @deprecated for inner (hibernate) use only
-  	 */
+	//for hibernate use only, *packet* private required by bytebuddy
   	@Deprecated
-  	protected TermRelationshipType() {
+  	TermRelationshipType() {
 		super(TermType.TermRelationType);
 	}
+
 	/**
 	 * Class constructor: creates an additional term relationship type
 	 * instance with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}),
@@ -104,7 +97,6 @@ public class TermRelationshipType extends RelationshipTermBase<TermRelationshipT
 		super(TermType.TaxonRelationshipType, term, label, labelAbbrev, symmetric, transitive);
 	}
 
-
 //************************** METHODS ********************************
 
 	@Override
@@ -119,7 +111,6 @@ public class TermRelationshipType extends RelationshipTermBase<TermRelationshipT
             return termMap.get(uuid);
         }
 	}
-
 
 	/**
 	 * Returns the term relationship type "is same as". This
@@ -171,8 +162,6 @@ public class TermRelationshipType extends RelationshipTermBase<TermRelationshipT
 		return getTermByUuid(uuidKindOf);
 	}
 
-
-
 	@Override
     protected void setDefaultTerms(TermVocabulary<TermRelationshipType> termVocabulary) {
 		termMap = new HashMap<>();
@@ -180,7 +169,6 @@ public class TermRelationshipType extends RelationshipTermBase<TermRelationshipT
 			termMap.put(term.getUuid(), term);
 		}
 	}
-
 
     @Override
     public TermRelationshipType readCsvLine(Class<TermRelationshipType> termClass,

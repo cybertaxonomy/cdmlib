@@ -10,7 +10,6 @@
     http://www.springframework.org/schema/tx 
     http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
-    <!-- requires at least spring 2.5.4 -->
     <context:property-override location="classpath:eu/etaxonomy/cdm/persistence/override.properties-testPersistentDataSource"/>
     
    <!-- IS THIS REALY NEEDED? a.kohlbecker 25.11.2015
@@ -23,7 +22,7 @@
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLCorrectedDialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2CorrectedDialect</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>

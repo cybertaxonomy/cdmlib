@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.remote;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 /**
@@ -17,7 +18,7 @@ import org.junit.Test;
  */
 public class ClassificationIT extends WebServiceTestBase  {
 
-    public static final Logger logger = Logger.getLogger(ClassificationIT.class);
+    public static final Logger logger = LogManager.getLogger(ClassificationIT.class);
 
     @Test
     public void checkInstanceIsOnline(){

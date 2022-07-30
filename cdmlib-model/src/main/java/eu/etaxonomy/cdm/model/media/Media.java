@@ -24,6 +24,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -35,12 +36,11 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -90,7 +90,7 @@ public class Media
 
     private static final long serialVersionUID = -1927421567263473658L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(Media.class);
+    private static final Logger logger = LogManager.getLogger(Media.class);
 
     // TODO once hibernate annotations support custom collection type
     // private MultilanguageText title = new MultilanguageText();
@@ -292,8 +292,8 @@ public class Media
 
     @Transient
     public String getTitleCacheByLanguage(Language lang){
-        if (getCacheStrategy() != null){
-            return ((MediaDefaultCacheStrategy)getCacheStrategy()).getTitleCacheByLanguage(this, lang);
+        if (cacheStrategy() != null){
+            return ((MediaDefaultCacheStrategy)cacheStrategy()).getTitleCacheByLanguage(this, lang);
         }else{
             return null;
         }

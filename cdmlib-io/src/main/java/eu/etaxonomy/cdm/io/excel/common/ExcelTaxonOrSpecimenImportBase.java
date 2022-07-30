@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportState<CONFIG, ROW>, CONFIG extends ExcelImportConfiguratorBase, ROW extends ExcelRowBase>
             extends ExcelImportBase<STATE, CONFIG, ROW> {
-	private static final Logger logger = Logger.getLogger(ExcelTaxonOrSpecimenImportBase.class);
+	private static final Logger logger = LogManager.getLogger(ExcelTaxonOrSpecimenImportBase.class);
 
 
 	protected static final String CDM_UUID_COLUMN = "(?i)(CdmUuid)";

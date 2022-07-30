@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -35,7 +35,7 @@ public class UpdateResult implements Serializable{
     private static final long serialVersionUID = -7040027587709706700L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(UpdateResult.class);
+    private static final Logger logger = LogManager.getLogger(UpdateResult.class);
 
     private Status status = Status.OK;
 

@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostDeleteEventListener;
 import org.hibernate.event.spi.PostInsertEvent;
@@ -44,7 +44,7 @@ public class CdmPostDataChangeObservableListener implements
 {
 	private static final long serialVersionUID = -8764348096490526927L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmPostDataChangeObservableListener.class);
+	private static final Logger logger = LogManager.getLogger(CdmPostDataChangeObservableListener.class);
 
 	/**
 	 * if this is set to true, observers have to be notified manually by calling

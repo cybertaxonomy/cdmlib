@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -35,7 +35,7 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
 
     private SpecimenTypeDesignation newSpecimenTypeDesignation;
 
-    private static final Logger logger = Logger.getLogger(DerivedUnitConverter.class);
+    private static final Logger logger = LogManager.getLogger(DerivedUnitConverter.class);
 
     /**
      * @param specimenTypeDesignation

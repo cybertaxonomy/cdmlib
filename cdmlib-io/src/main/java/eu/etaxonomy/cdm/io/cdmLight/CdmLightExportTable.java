@@ -49,12 +49,25 @@ public enum CdmLightExportTable {
     protected static final String PARENT_FK = "Parent_Fk";
     protected static final String SEC_REFERENCE_FK = "SecReference_Fk";
     protected static final String SEC_REFERENCE = "SecReference";
+    protected static final String SEC_SUBNAME_FK = "SecSubName_Fk";
+    protected static final String SEC_SUBNAME = "SecSubName";
+    protected static final String SEC_SUBNAME_AUTHORS = "SecSubNameAuthors";
     protected static final String SORT_INDEX = "SortIndex";
+    protected static final String INCLUDED = "PlacementIncluded";
+    protected static final String DOUBTFUL = "PlacementDoubtful";
     protected static final String UNPLACED = "Unplaced";
     protected static final String EXCLUDED = "Excluded";
-    protected static final String DOUBTFUL = "PlacementDoubtful";
+    protected static final String EXCLUDED_EXACT = "ExcludedExact";
+    protected static final String EXCLUDED_GEO = "ExcludedGeo";
+    protected static final String EXCLUDED_TAX = "ExcludedTax";
+    protected static final String EXCLUDED_NOM = "ExcludedNom";
+    protected static final String UNCERTAIN_APPLICATION = "UncertainApplication";
+    protected static final String UNRESOLVED = "PlacementUnresolved";
+    protected static final String PLACEMENT_STATUS = "PlacementStatus";
     protected static final String PUBLISHED = "Published";
-    protected static final String STATUS_NOTES = "StatusNotes";
+    protected static final String PLACEMENT_NOTES = "PlacementNotes";
+    protected static final String PLACEMENT_REF_FK = "PlacementReference_Fk";
+    protected static final String PLACEMENT_REFERENCE = "PlacementReference";
 
     //pro parte / misapplied
     protected static final String SYN_SEC_REFERENCE_FK = "SynSecReference_Fk";
@@ -114,7 +127,7 @@ public enum CdmLightExportTable {
     protected static final String COMB_EX_AUTHORTEAM_FK = "PublishingExAuthorTeam_Fk";
     protected static final String COMB_AUTHORTEAM_FK = "PublishingAuthorTeam_Fk";
     protected static final String AUTHOR_TEAM_STRING = "AuthorTeamString";
-    protected static final String NAME_USED_IN_SOURCE = "NameUsedInSource_Fk";
+    protected static final String NAME_USED_IN_SOURCE_FK = "NameUsedInSource_Fk";
    // protected static final String REFERENCE_FK = "Reference_Fk"
     protected static final String PUBLICATION_TYPE = "PublicationType";
     protected static final String ABBREV_TITLE = "AbbreviatedTitle";
@@ -337,12 +350,14 @@ public enum CdmLightExportTable {
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
                 DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, VERBATIM_DATE, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
-                HOMOTYPIC_GROUP_SEQ, PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT, FULL_NAME_WITH_REF, NAME_USED_IN_SOURCE, APPENDED_PHRASE
+                HOMOTYPIC_GROUP_SEQ, PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT, FULL_NAME_WITH_REF, NAME_USED_IN_SOURCE_FK, APPENDED_PHRASE
         };
     }
 
     final static String[] taxonColumns(){
-        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX, EXCLUDED, STATUS_NOTES, PUBLISHED, UNPLACED, DOUBTFUL, APPENDED_PHRASE};
+        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SEC_SUBNAME_FK, SEC_SUBNAME, SEC_SUBNAME_AUTHORS, APPENDED_PHRASE, SORT_INDEX,
+                INCLUDED, DOUBTFUL, UNPLACED, EXCLUDED, EXCLUDED_EXACT, EXCLUDED_GEO, EXCLUDED_TAX, EXCLUDED_NOM, UNCERTAIN_APPLICATION, UNRESOLVED, PLACEMENT_STATUS,
+                PLACEMENT_NOTES, PLACEMENT_REF_FK, PLACEMENT_REFERENCE, PUBLISHED};
     }
 
     final static String[] synonymColumns(){

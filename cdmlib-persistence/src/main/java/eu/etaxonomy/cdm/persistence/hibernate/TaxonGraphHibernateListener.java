@@ -13,7 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -36,9 +37,10 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  *
  * @author a.kohlbecker
  * @since Sep 27, 2018
- *
  */
 public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener {
+
+    private static final Logger logger = LogManager.getLogger(TaxonGraphHibernateListener.class);
 
     private static final long serialVersionUID = 5062518307839173935L;
 
@@ -68,7 +70,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
                     event.getSession().getActionQueue().registerProcess(processorInstance);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException | SecurityException e) {
-                    Logger.getLogger(TaxonGraphHibernateListener.class).error("Error creating new instance of " + type.toString(), e);
+                    logger.error("Error creating new instance of " + type.toString(), e);
                 }
             }
         }
@@ -85,7 +87,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
                     event.getSession().getActionQueue().registerProcess(processorInstance);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException | SecurityException e) {
-                    Logger.getLogger(TaxonGraphHibernateListener.class).error("Error creating new instance of " + type.toString(), e);
+                    logger.error("Error creating new instance of " + type.toString(), e);
                 }
             }
         }
@@ -102,7 +104,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
                     event.getSession().getActionQueue().registerProcess(processorInstance);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException | SecurityException e) {
-                    Logger.getLogger(TaxonGraphHibernateListener.class).error("Error creating new instance of " + type.toString(), e);
+                    logger.error("Error creating new instance of " + type.toString(), e);
                 }
             }
         }
@@ -136,6 +138,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
                 postInsertEventConstructorArgTypes[i] = ptype;
                 postUpdateEventConstructorArgTypes[i] = ptype;
                 preDeleteEventConstructorArgTypes[i] = ptype;
+                i++;
             }
             postInsertEventConstructor = type.getConstructor(postInsertEventConstructorArgTypes);
             postUpdateEventConstructor = type.getConstructor(postUpdateEventConstructorArgTypes);

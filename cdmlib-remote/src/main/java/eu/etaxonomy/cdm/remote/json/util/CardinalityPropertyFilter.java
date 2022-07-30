@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import net.sf.json.util.PropertyFilter;
@@ -21,7 +21,7 @@ import net.sf.json.util.PropertyFilter;
 public class CardinalityPropertyFilter implements PropertyFilter {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CardinalityPropertyFilter.class);
+    private static final Logger logger = LogManager.getLogger(CardinalityPropertyFilter.class);
 
     boolean includeToOneRelations = true;
 

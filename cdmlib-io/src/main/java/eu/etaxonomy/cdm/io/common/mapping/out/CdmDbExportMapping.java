@@ -14,7 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -30,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFORM>, CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM, Source>, TRANSFORM extends IExportTransformer>
         extends CdmIoMapping {
 
-    private static final Logger logger = Logger.getLogger(CdmDbExportMapping.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private PreparedStatement preparedStatement;
 	private String dbTableName;

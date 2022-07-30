@@ -268,7 +268,7 @@ public class DataSet implements IExportData {
 
     @XmlElementWrapper(name = "GrantedAuthorities")
     @XmlElement(name = "GrantedAuthority", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = GrantedAuthorityImpl.class)
-    protected List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+    protected List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
     public List<AgentBase> getAgents() {
         return agents;

@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.ResIterator;
@@ -21,7 +23,6 @@ import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.description.Character;
 
 /**
- *
  * @author pplitzner
  * @since Aug 28, 2019
  */
@@ -31,8 +32,7 @@ public class CharacterOwlImport
 
     private static final long serialVersionUID = -3659780404413458511L;
 
-    static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(CharacterOwlImport.class);
-
+    private final static Logger logger = LogManager.getLogger();
 
     @Override
     protected boolean doCheck(StructureTreeOwlImportState state) {

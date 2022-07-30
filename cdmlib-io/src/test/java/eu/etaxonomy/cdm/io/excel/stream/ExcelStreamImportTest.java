@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExcelStreamImportTest.class);
+	private static final Logger logger = LogManager.getLogger(ExcelStreamImportTest.class);
 
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;

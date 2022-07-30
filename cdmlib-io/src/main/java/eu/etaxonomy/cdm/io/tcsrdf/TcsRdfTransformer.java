@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.tcsrdf;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 public final class TcsRdfTransformer {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TcsRdfTransformer.class);
+	private static final Logger logger = LogManager.getLogger(TcsRdfTransformer.class);
 
 
 	//TypeDesignation

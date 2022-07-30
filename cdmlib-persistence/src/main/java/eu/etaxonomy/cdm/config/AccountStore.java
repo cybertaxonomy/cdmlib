@@ -17,14 +17,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
 
 public class AccountStore {
 
-    private static Logger logger = Logger.getLogger(AccountStore.class);
+    private static Logger logger = LogManager.getLogger(AccountStore.class);
 
     public final static File accountsFile = new File(ConfigFileUtil.perUserCdmFolderFallback() + File.separator + ".dbaccounts.properties");
 

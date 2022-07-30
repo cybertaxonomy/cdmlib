@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.hibernate.envers.RevisionType;
 import org.joda.time.DateTime;
@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.remote.view.oaipmh.dc.ListRecordsView;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class OaiPmhViewTest extends UnitilsJUnit4 {
 
-    public static final Logger logger = Logger.getLogger(OaiPmhViewTest.class);
+    public static final Logger logger = LogManager.getLogger(OaiPmhViewTest.class);
 
     @SpringBeanByName
     private Marshaller marshaller;

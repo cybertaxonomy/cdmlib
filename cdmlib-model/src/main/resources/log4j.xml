@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+    <File name="FILE" fileName="cdmlib-commons.log" append="true" header="%d{dd MMM yyyy}">
+      <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
+    </File>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
+      <AppenderRef ref="STDOUT"/>
+      <!-- <AppenderRef ref="FILE"/> -->
+    </Root>
+    <Logger name="eu.etaxonomy.cdm.common" level="warn"/>
+    <Logger name="org.hibernate.orm.deprecation" level="error"/>
+  </Loggers>
+</Configuration>

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.application;
 
 import java.io.FileNotFoundException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -36,7 +36,7 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 //    private final String[] tableNames = new String[]{"USERACCOUNT", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL", "CDMMETADATA", "PERMISSIONGROUP"};
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
+	private static final Logger logger = LogManager.getLogger(TaxonServiceImplTest.class);
 
     @SpringBeanByType
     private ITaxonService taxonService;

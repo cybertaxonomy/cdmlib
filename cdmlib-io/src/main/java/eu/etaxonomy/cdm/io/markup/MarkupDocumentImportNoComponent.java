@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.net.MalformedURLException;
@@ -24,7 +23,8 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -45,14 +45,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 
-
 /**
  * @author a.mueller
- *
  */
 public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupDocumentImportNoComponent.class);
+	private static final Logger logger = LogManager.getLogger(MarkupDocumentImportNoComponent.class);
 
 	private final MarkupKeyImport keyImport;
 
@@ -173,7 +171,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			if (isMyEndingElement(next, parentEvent)) {
 				Set<PolytomousKeyNode> keyNodesToSave = state.getPolytomousKeyNodesToSave();
 				//better save the key then the nodes
-				Set<PolytomousKey> keySet = new HashSet<PolytomousKey>();
+				Set<PolytomousKey> keySet = new HashSet<>();
 				for (PolytomousKeyNode node : keyNodesToSave){
 					PolytomousKey key = node.getKey();
 					keySet.add(key);
@@ -207,10 +205,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		return;
 	}
 
-	/**
-	 * @param taxon
-	 * @param lastTaxon
-	 */
 	private TaxonNode doTaxonRelation(MarkupImportState state, Taxon taxon, Taxon lastTaxon, Location dataLocation) {
 
 		if (state.isTaxonInClassification() == false){
@@ -285,13 +279,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		return node;
 	}
 
-
-
-	/**
-	 * @param state
-	 * @param dataLocation
-	 * @return
-	 */
 	private Classification makeTree(MarkupImportState state, Location dataLocation) {
 		Classification result = state.getTree(null);
 		if (result == null) {
@@ -537,6 +524,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	 */
 	private Taxon createTaxonAndName(MarkupImportState state,
 			Map<String, Attribute> attributes, StartElement event) {
+
 		INonViralName name;
 		Rank rank = null;  //Rank.SPECIES(); // default
 		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS, "cultivated");

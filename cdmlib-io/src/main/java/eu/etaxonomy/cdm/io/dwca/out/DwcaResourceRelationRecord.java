@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
  */
 public class DwcaResourceRelationRecord extends DwcaRecordBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaResourceRelationRecord.class);
+	private static final Logger logger = LogManager.getLogger(DwcaResourceRelationRecord.class);
 
 	private DwcaId resourceRelationshipId;
 	private UUID relatedResourceId;

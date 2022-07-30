@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @param <STATE>
  */
 public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>, T extends IDbImportTransformed> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
-	private static final Logger logger = Logger.getLogger(DbImportNameTypeDesignationMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportNameTypeDesignationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 
@@ -113,7 +114,7 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 		TaxonName typeName = checkTaxonNameType(toObject);
 
 		boolean addToAllHomotypicNames = false; //TODO check if this is correct
-		String originalNameString = null; //TODO what is this
+		String originalInfo = null; //TODO what is this
 
 		NameTypeDesignationStatus status = this.designationStatus;
 		if (designationStatusValue != null){
@@ -123,7 +124,7 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 				status = transformer.transformNameTypeDesignationStatus(designationStatusValue);
 			}
 		}
-		typifiedName.addNameTypeDesignation(typeName, citation, microCitation, originalNameString, status, addToAllHomotypicNames);
+		typifiedName.addNameTypeDesignation(typeName, citation, microCitation, originalInfo, status, addToAllHomotypicNames);
 
 		return typifiedName;
 	}

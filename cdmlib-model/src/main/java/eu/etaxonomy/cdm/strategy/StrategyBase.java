@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -32,7 +32,7 @@ public abstract class StrategyBase
 
     private static final long serialVersionUID = -274791080847215663L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(StrategyBase.class);
+	private static final Logger logger = LogManager.getLogger(StrategyBase.class);
 
 	abstract protected UUID getUuid();
 

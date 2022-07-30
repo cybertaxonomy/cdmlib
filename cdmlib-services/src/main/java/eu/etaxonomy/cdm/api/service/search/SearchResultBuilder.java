@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.MultiTermQuery;
@@ -39,11 +39,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  */
 public class SearchResultBuilder implements ISearchResultBuilder {
 
-    public static final Logger logger = Logger.getLogger(SearchResultBuilder.class);
+    public static final Logger logger = LogManager.getLogger(SearchResultBuilder.class);
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder#createResultSetFromIds(eu.etaxonomy.cdm.search.LuceneSearch, org.apache.lucene.search.TopDocs, eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao, java.lang.String)
-     */
     private Query query;
     /**
      * fragmentNumber - max number of sentence fragments to return

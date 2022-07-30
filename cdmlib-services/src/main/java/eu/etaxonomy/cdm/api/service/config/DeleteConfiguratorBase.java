@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.config;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * Base class for delete configurators.
@@ -22,6 +22,6 @@ public abstract class DeleteConfiguratorBase implements Serializable {
 
     private static final long serialVersionUID = 8841790311273474123L;
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DeleteConfiguratorBase.class);
+	private static final Logger logger = LogManager.getLogger(DeleteConfiguratorBase.class);
 
 }

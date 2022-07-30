@@ -12,7 +12,7 @@
     	<!--  The property beanDefinitionFile defaults to "datasources.xml" in {USER_HOME}./cdmLibrary 
     	
     	WARNING !!!
-    	The beanDefinitionFile now mus be configured in 
+    	The beanDefinitionFile now must be configured in 
     	eu.etaxonomy.cdm.database.DataSourceBeanLoader
     	
     	-->

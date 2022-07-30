@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.ListIndexBase;
@@ -68,14 +69,12 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 })
 @XmlRootElement(name = "Team")
 @Entity
-//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Team extends TeamOrPersonBase<Team> {
 
     private static final long serialVersionUID = 97640416905934622L;
-	public static final Logger logger = Logger.getLogger(Team.class);
+	public static final Logger logger = LogManager.getLogger(Team.class);
 
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache = false;
@@ -310,10 +309,10 @@ public class Team extends TeamOrPersonBase<Team> {
 			return this.nomenclaturalTitleCache;
 		}
 		if (nomenclaturalTitleCache == null){
-			this.nomenclaturalTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+			this.nomenclaturalTitleCache = cacheStrategy().getNomenclaturalTitleCache(this);
 		}else{
 			//as long as team members do not inform the team about changes the cache must be created new each time
-		    nomenclaturalTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+		    nomenclaturalTitleCache = cacheStrategy().getNomenclaturalTitleCache(this);
 		}
 		return nomenclaturalTitleCache;
 	}
@@ -348,15 +347,23 @@ public class Team extends TeamOrPersonBase<Team> {
 
     //#4311
     @Override
-    public String getCollectorTitleCache() {
+    public String getCollectorTitleCache(){
         if (protectedCollectorTitleCache == PROTECTED){
             return this.collectorTitleCache;
         }
         if (collectorTitleCache == null){
-            this.collectorTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+            this.collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
         }else{
-            //as long as team members do not inform the team about changes the cache must be created new each time
-            collectorTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+            try {
+
+                //as long as team members do not inform the team about changes the cache must be created new each time
+                collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
+            } catch (Exception e) {
+                //see #10090, getCollectorTitleCache is called e.g. if team is a secundum author, in this case if members are not initialized by BeanInitializer, however, jsonlib later tries to initialize the team (the exception is swallowed so it is not critical but a stacktrace is logged, which is not necessary)
+                //see also comment on TitleAndNameCacheAutoInitializer.initialize() for TaxonBase
+                if (logger.isDebugEnabled()){logger.debug("LIE during getCollectorTitleCache");}
+                return collectorTitleCache;
+            }
         }
         return collectorTitleCache;
     }
@@ -409,7 +416,7 @@ public class Team extends TeamOrPersonBase<Team> {
         if (this.protectedNomenclaturalTitleCache == false){
             String oldNomTitleCache = this.nomenclaturalTitleCache;
 
-            String newNomTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+            String newNomTitleCache = cacheStrategy().getNomenclaturalTitleCache(this);
 
             if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newNomTitleCache) ){
                 this.setNomenclaturalTitleCache(null, false);
@@ -426,7 +433,7 @@ public class Team extends TeamOrPersonBase<Team> {
         }
         if (this.protectedCollectorTitleCache == false){
             String oldCollTitleCache = this.collectorTitleCache;
-            String newCollTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+            String newCollTitleCache = cacheStrategy().getCollectorTitleCache(this);
 
             if ( oldCollTitleCache == null || ! oldCollTitleCache.equals(newCollTitleCache) ){
                  this.setCollectorTitleCache(null, false);

@@ -17,7 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -36,7 +37,7 @@ import net.sf.json.util.PropertyFilter;
  */
 public abstract class AbstractBeanProcessor<T extends Object> implements JsonBeanProcessor{
 
-    public static final Logger logger = Logger.getLogger(AbstractBeanProcessor.class);
+    public static final Logger logger = LogManager.getLogger(AbstractBeanProcessor.class);
 
     private Set<String> excludes = new HashSet<>();
 
@@ -114,7 +115,7 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
             }
 
             try {
-                // ------ reusing snippet from JSONOnbject._fromBean()
+                // ------ reusing snippet from JSONObject._fromBean()
                 Class<?> type = prop.getPropertyType();
                 Object value = PropertyUtils.getProperty( bean, key );
 

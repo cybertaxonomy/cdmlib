@@ -14,7 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -36,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
         implements ICdmExporter<T>, ApplicationContextAware {
 
-    private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultExport.class);
+    private static final Logger logger = LogManager.getLogger(CdmApplicationAwareDefaultExport.class);
 
 	protected ApplicationContext applicationContext;
 
@@ -45,7 +46,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-
 
 	//Constants
 	final static boolean OBLIGATORY = true;
@@ -244,11 +244,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		return result;
 	}
 
-	/**
-     * @param state
-     * @param ioList
-     * @return
-     */
     private List<Integer> countSteps(ExportStateBase state, List<ICdmExport> ioList) {
         //do invoke for each class
         List<Integer> result = new ArrayList<>();
@@ -271,12 +266,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
         return result;
     }
 
-
-    /**
-     * @param state
-     * @param config
-     * @return
-     */
     private <CONFIG extends T>  List<ICdmExport> makeIoList(ExportStateBase state, CONFIG config) {
 
         List<ICdmExport> result = new ArrayList<>();

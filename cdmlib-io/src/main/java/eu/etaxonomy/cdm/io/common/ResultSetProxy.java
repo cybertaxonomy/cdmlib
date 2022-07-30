@@ -32,7 +32,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * Some ResultSets do not allow asking twice for the same column value. This proxy solves this
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
  */
 public class ResultSetProxy implements ResultSet {
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ResultSetProxy.class);
+    private static final Logger logger = LogManager.getLogger(ResultSetProxy.class);
 
 // ************************** FACTORY METHODS *********************************/
 

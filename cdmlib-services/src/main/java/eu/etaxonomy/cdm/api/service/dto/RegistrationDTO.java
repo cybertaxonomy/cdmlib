@@ -14,18 +14,20 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -46,7 +48,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 public class RegistrationDTO {
 
-    private static final Logger logger = Logger.getLogger(RegistrationDTO.class);
+    private static final Logger logger = LogManager.getLogger(RegistrationDTO.class);
 
     private String summary = "";
 
@@ -60,7 +62,7 @@ public class RegistrationDTO {
 
     private EntityReference name = null;
 
-    private TypeDesignationSetManager typeDesignationManager;
+    private TypeDesignationSetContainer typeDesignationSetContainer;
 
     private Registration reg;
 
@@ -79,7 +81,7 @@ public class RegistrationDTO {
     /**
      * @param reg
      * @param typifiedName should be provided for registrations for TypeDesignations
-     * @throws RegistrationValidationException
+     * @throws TypeDesignationSetException
      */
     public RegistrationDTO(Registration reg) {
 
@@ -113,11 +115,11 @@ public class RegistrationDTO {
         case TYPIFICATION:
         default:
             try {
-                typeDesignationManager = new TypeDesignationSetManager(reg.getTypeDesignations());
+                typeDesignationSetContainer = TypeDesignationSetContainer.NewDefaultInstance(reg.getTypeDesignations());
                 summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true)
-                        .toTaggedText(typeDesignationManager));
+                        .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedCacheHelper.createString(summaryTaggedText);
-            } catch (RegistrationValidationException e) {
+            } catch (TypeDesignationSetException e) {
                 validationProblems.add("Validation errors: " + e.getMessage());
             }
             break;
@@ -138,8 +140,8 @@ public class RegistrationDTO {
     public RegistrationDTO(Registration reg, TaxonName typifiedName, Reference publication) {
         this.reg = reg;
         citation = publication;
-        // create a TypeDesignationSetManager with only a reference to the typifiedName for validation
-        typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+        // create a TypeDesignationSetContainer with only a reference to the typifiedName for validation
+        typeDesignationSetContainer = new TypeDesignationSetContainer(typifiedName);
         makeBibliographicCitationStrings();
         makeNomenclaturalCitationString();
     }
@@ -246,36 +248,46 @@ public class RegistrationDTO {
     }
 
     public EntityReference getTypifiedNameRef() {
-        return typeDesignationManager != null ? typeDesignationManager.getTypifiedNameAsEntityRef() : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getTypifiedNameAsEntityRef() : null;
     }
 
     public TaxonName typifiedName() {
-        return typeDesignationManager != null ? typeDesignationManager.getTypifiedName() : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getTypifiedName() : null;
     }
 
     public EntityReference getNameRef() {
         return name;
     }
 
-    public LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
-        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets() : null;
+    public Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> getOrderedTypeDesignationSets() {
+        return typeDesignationSetContainer != null ?
+                typeDesignationSetKeyToTypedEntity(typeDesignationSetContainer.getOrderedTypeDesignationSets()) : null;
     }
 
-    public TypeDesignationWorkingSet getTypeDesignationWorkingSet(TypedEntityReference baseEntityReference) {
-        return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets().get(baseEntityReference) : null;
+    private Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> typeDesignationSetKeyToTypedEntity(
+            Map<VersionableEntity,TypeDesignationSet> orderedTypeDesignationSets) {
+        Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> result = new LinkedHashMap<>(orderedTypeDesignationSets.size());
+
+        orderedTypeDesignationSets.entrySet().forEach(e->
+            result.put(TypeDesignationSet.makeEntityReference(e.getKey()), e.getValue()));
+        return result;
     }
 
-    public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(TypedEntityReference baseEntityReference) {
+    public TypeDesignationSet getTypeDesignationSet(VersionableEntity baseEntity) {
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getOrderedTypeDesignationSets().get(baseEntity) : null;
+    }
+
+    public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(VersionableEntity baseEntity) {
         Set<TypeDesignationBase> typeDesignations = new HashSet<>();
-        TypeDesignationWorkingSet workingSet = getTypeDesignationWorkingSet(baseEntityReference);
-        for(TypeDesignationDTO ref :  workingSet.getTypeDesignations()){
+        TypeDesignationSet workingSet = getTypeDesignationSet(baseEntity);
+        for(TypeDesignationDTO<?> ref :  workingSet.getTypeDesignations()){
             typeDesignations.add(findTypeDesignation(ref));
         }
         return typeDesignations;
     }
 
-    public NameTypeDesignation getNameTypeDesignation(TypedEntityReference baseEntityReference) {
-        Set<TypeDesignationBase> typeDesignations = getTypeDesignationsInWorkingSet(baseEntityReference);
+    public NameTypeDesignation getNameTypeDesignation(VersionableEntity baseEntity) {
+        Set<TypeDesignationBase> typeDesignations = getTypeDesignationsInWorkingSet(baseEntity);
         if(typeDesignations.size() == 1){
             TypeDesignationBase<?> item = typeDesignations.iterator().next();
             return (NameTypeDesignation)item ;
@@ -290,11 +302,11 @@ public class RegistrationDTO {
     }
 
     private TypeDesignationBase<?> findTypeDesignation(TypeDesignationDTO ref) {
-        return typeDesignationManager != null ? typeDesignationManager.findTypeDesignation(ref.getUuid()) : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.findTypeDesignation(ref.getUuid()) : null;
     }
 
     public Collection<TypeDesignationBase<?>> typeDesignations() {
-        return typeDesignationManager != null ? typeDesignationManager.getTypeDesignations() : null;
+        return typeDesignationSetContainer != null ? typeDesignationSetContainer.getTypeDesignations() : null;
     }
 
     private void makeNomenclaturalCitationString() {

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.model.location;
 
 import java.text.ParseException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class PointTest extends EntityTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PointTest.class);
+	private static final Logger logger = LogManager.getLogger(PointTest.class);
 
 	private Point point1;
 	private Point point2;

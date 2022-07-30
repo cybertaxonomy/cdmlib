@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -47,7 +48,7 @@ public abstract class SingleSourcedEntityBase
 
     static final long serialVersionUID = 2035568689268762760L;
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SingleSourcedEntityBase.class);
+	private static final Logger logger = LogManager.getLogger(SingleSourcedEntityBase.class);
 
     //the source for this single sourced entity
     @XmlElement(name = "source")
@@ -65,12 +66,12 @@ public abstract class SingleSourcedEntityBase
 	}
 
     protected SingleSourcedEntityBase(Reference reference, String microReference,
-            String originalNameString) {
+            String originalInfo) {
         super();
         this.setCitation(reference);
         this.setCitationMicroReference(microReference);
-        if (StringUtils.isNotEmpty(originalNameString)){
-            getSource(true).setOriginalNameString(originalNameString);
+        if (StringUtils.isNotEmpty(originalInfo)){
+            getSource(true).setOriginalInfo(originalInfo);
         }
     }
 

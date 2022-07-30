@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.ext.openurl;
 
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlServiceWrapper.ReferenceType;
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class OpenUrlReference extends Reference {
 
     private static final long serialVersionUID = 5523159432429746682L;
-    public static final Logger logger = Logger.getLogger(OpenUrlReference.class);
+    public static final Logger logger = LogManager.getLogger(OpenUrlReference.class);
 
 	private static final String PAGETHUMB_BASE_URI = "http://www.biodiversitylibrary.org/pagethumb/";
 
@@ -51,24 +52,16 @@ public class OpenUrlReference extends Reference {
 		return itemUri;
 	}
 
-	/**
-	 * @param titleUri the titleUri to set
-	 */
+    public URI getTitleUri() {
+        return titleUri;
+    }
 	public void setTitleUri(URI titleUri) {
 		this.titleUri = titleUri;
 	}
 
 
 	/**
-	 * @return the titleUri
-	 */
-	public URI getTitleUri() {
-		return titleUri;
-	}
-
-
-	/**
-	 * Splits the id from the base ulr of the id urls used in bhl. For example the url string http://www.biodiversitylibrary.org/item/16772 will be split into
+	 * Splits the id from the base url of the id urls used in bhl. For example the url string http://www.biodiversitylibrary.org/item/16772 will be split into
 	 * <ol>
 	 * <li>http://www.biodiversitylibrary.org/item</li>
 	 * <li>16772</li>
@@ -88,18 +81,11 @@ public class OpenUrlReference extends Reference {
 		}
 	}
 
-	/**
-	 * @param referenceType the referenceType to set
-	 */
+    public ReferenceType getReferenceType() {
+        return referenceType;
+    }
 	public void setReferenceType(ReferenceType referenceType) {
 		this.referenceType = referenceType;
-	}
-
-	/**
-	 * @return the referenceType
-	 */
-	public ReferenceType getReferenceType() {
-		return referenceType;
 	}
 
 	/**

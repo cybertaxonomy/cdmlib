@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -87,6 +88,12 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         if (!secTags.isEmpty()){
             tags.add(new TaggedText(TagEnum.separator, secSeparator));
             tags.addAll(secTags);
+            List<TaggedText> secNameUsedInSourceTags = getSecNameUsedInSourceTags(taxonBase);
+            if (!secNameUsedInSourceTags.isEmpty()){
+                tags.add(new TaggedText(TagEnum.secNameInSourceSeparator, " (sub "));
+                tags.addAll(secNameUsedInSourceTags);
+                tags.add(new TaggedText(TagEnum.secNameInSourceSeparator, ")"));
+            }
         }else if (isMisapplication && isBlank(taxonBase.getAppendedPhrase())){
             tags.add(new TaggedText(TagEnum.appendedPhrase, "auct."));
         }
@@ -114,9 +121,17 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         List<TaggedText> tags = new ArrayList<>();
         TaxonName name = CdmBase.deproxy(taxonBase.getName());
 
+        getNameTags(tags, name, (useNameCache || taxonBase.isUseNameCache()));
+        if (isNotBlank(taxonBase.getAppendedPhrase())){
+            tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
+        }
+        return tags;
+    }
+
+    private List<TaggedText> getNameTags(List<TaggedText> tags, TaxonName name, boolean useNameCache) {
         if (name != null){
-            INameCacheStrategy nameCacheStrategy = name.getCacheStrategy();
-            useNameCache = (useNameCache || taxonBase.isUseNameCache()) && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy;
+            INameCacheStrategy nameCacheStrategy = name.cacheStrategy();
+            useNameCache = useNameCache && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy;
             if (useNameCache){
                 INonViralNameCacheStrategy nvnCacheStrategy = (INonViralNameCacheStrategy)nameCacheStrategy;
                 List<TaggedText> nameCacheTags = nvnCacheStrategy.getTaggedName(name);
@@ -127,19 +142,30 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 List<TaggedText> statusTags = nameCacheStrategy.getNomStatusTags(name, true, true);
                 tags.addAll(statusTags);
             }
-            if (isNotBlank(taxonBase.getAppendedPhrase())){
-                tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
-            }
         }
 
         return tags;
     }
+
+    private List<TaggedText> getSecNameUsedInSourceTags(T taxonBase) {
+        List<TaggedText> tags = new ArrayList<>();
+        if (taxonBase.getSecSource()!=null && taxonBase.getSecSource().getNameUsedInSource() != null) {
+            //if names are equal there is no need for now to show the "sub" name
+            if (!taxonBase.getSecSource().getNameUsedInSource().equals(taxonBase.getName())) {
+                getNameTags(tags, taxonBase.getSecSource().getNameUsedInSource(), true);
+            }
+        }
+        return tags;
+    }
+
 
     private List<TaggedText> getSecundumTags(T taxonBase, boolean isMisapplication) {
         List<TaggedText> tags = new ArrayList<>();
 
         Reference sec = taxonBase.getSec();
         sec = HibernateProxyHelper.deproxy(sec);
+        TimePeriod sourceAccessed = taxonBase.getSecSource() == null ? null : taxonBase.getSecSource().getAccessed();
+
         String secRef;
         if (sec == null){
             //missing sec
@@ -152,19 +178,23 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         else{
             //existing sec
             if (sec.isProtectedTitleCache() == false &&
-                    sec.getCacheStrategy() != null &&
+                    sec.cacheStrategy() != null &&
                     sec.getAuthorship() != null &&
                     isNotBlank(sec.getAuthorship().getTitleCache()) &&
                     isNotBlank(sec.getYear())){
-                secRef = OriginalSourceFormatter.INSTANCE.format(sec, null);  //microRef is handled later
-            }else if ((sec.isWebPage() || sec.isDatabase() || sec.isMap())
+                secRef = OriginalSourceFormatter.INSTANCE.format(sec, null, sourceAccessed);  //microRef is handled later
+            }else if ((sec.isDynamic())
                     && titleExists(sec)){  //maybe we should also test protected caches (but which one, the abbrev cache or the titleCache?
                 secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
-                String secDate = sec.getYear();
-                if (isBlank(secDate) && sec.getAccessed() != null){
-                    secDate = String.valueOf(sec.getAccessed().getYear());
+                String year = sourceAccessed == null? null:sourceAccessed.getYear();
+                if (isBlank(year) && sec.getAccessed() != null){
+                    year = String.valueOf(sec.getAccessed().getYear());
                 }
-                secRef = CdmUtils.concat(" ", secRef, secDate);
+                if (isBlank(year) && sec.getYear() != null){
+                    year = sec.getYear();
+                }
+
+                secRef = CdmUtils.concat(" ", secRef, year);
             }else{
                 secRef = sec.getTitleCache();
                 //TODO maybe not always correct

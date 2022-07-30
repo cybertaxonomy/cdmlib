@@ -20,7 +20,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,12 +32,13 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -142,7 +142,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
         "key",
         "parent",
         "children",
-		"sortIndex",
 		"nodeNumber",
 		"statement",
 		"question",
@@ -155,7 +154,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
-	private static final Logger logger = Logger.getLogger(PolytomousKeyNode.class);
+
+	private static final Logger logger = LogManager.getLogger(PolytomousKeyNode.class);
 
 	// This is the main key a node belongs to. Although other keys may also
 	// reference <code>this</code> node, a node usually belongs to a given key.
@@ -164,37 +164,21 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlSchemaType(name = "IDREF")
 //	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKey key;
 
 	@XmlElementWrapper(name = "Children")
 	@XmlElement(name = "Child")
-	// @OrderColumn("sortIndex") //JPA 2.0 same as @IndexColumn
-	// @IndexColumn does not work because not every PolytomousKeyNode has a parent.
-	// But only NotNull will solve the problem (otherwise
-	// we will need a join table
-	// http://stackoverflow.com/questions/2956171/jpa-2-0-ordercolumn-annotation-in-hibernate-3-5
-	// http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-collection-extratype-indexbidir
-	// see also https://forum.hibernate.org/viewtopic.php?p=2392563
-	// http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390
-	// reading works, but writing doesn't
-	//
 	@OrderColumn(name = "sortIndex", nullable=true)  //, base = 0
-	@OrderBy("sortIndex")
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent") //no orphanRemoval (#10101)
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private List<PolytomousKeyNode> children = new ArrayList<>();
 
 	@XmlElement(name = "Parent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
-	@ManyToOne(fetch = FetchType.LAZY, targetEntity = PolytomousKeyNode.class)
-	@JoinColumn(name = "parent_id" /*, insertable=false, updatable=false, nullable=false */)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_id")
 	private PolytomousKeyNode parent;
-
-	// see comment on children @IndexColumn
-	private Integer sortIndex = -1;
 
 	@XmlElement(name = "Statement")
 	@XmlIDREF
@@ -214,7 +198,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})  remove cascade #5755
+    //remove cascade #5755
 	private Feature feature;
 
 	@XmlElement(name = "Taxon")
@@ -298,19 +282,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	//see #4278 and #4200, alternatively can be private and use deproxy(this, PolytomousKeyNode.class)
 	protected void setSortIndex(Integer sortIndex) {
-		this.sortIndex = sortIndex;
+//      sortIndex = sortIndex;  old #3722
+        //do nothing
 	}
 
-	/**
-	 * @return
-	 */
+
 	public PolytomousKey getKey() {
 		return key;
 	}
-
-	/**
-	 * @param key
-	 */
 	public void setKey(PolytomousKey key) {
 		this.key = key;
 	}
@@ -470,25 +449,16 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
-		if (children.contains(null)){
-		    HHH_9751_Util.removeAllNull(children);
-		    updateSortIndex();
-		}
-		if(nodeNumber == null) {
-            	nodeNumber = getMaxNodeNumberFromRoot() + 1;
-        }
 
+		if(nodeNumber == null) {
+		    nodeNumber = getMaxNodeNumberFromRoot() + 1;
+        }
 
 		children.add(index, child);
 		child.setKey(this.getKey());
 
-		updateSortIndex();
-		child.setSortIndex(index);
 		child.setParent(this);
-		//this.removeNullValueFromChildren();
 	}
-
-
 
 	/**
 	 * Removes the given polytomous key node from the list of
@@ -526,12 +496,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (child != null) {
 			children.remove(index);
 			child.setParent(null);
-			// TODO workaround (see sortIndex doc)
-			for (int i = 0; i < children.size(); i++) {
-				PolytomousKeyNode childAt = children.get(i);
-				childAt.setSortIndex(i);
-			}
-			child.setSortIndex(null);
+//			// TODO workaround (see sortIndex doc)
+//			for (int i = 0; i < children.size(); i++) {
+//				PolytomousKeyNode childAt = children.get(i);
+//				childAt.setSortIndex(i);
+//			}
+//			child.setSortIndex(null);
 			child.setNodeNumber(null);
 		}
 		refreshNodeNumbering();
@@ -542,14 +512,11 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	/**
 	 * Returns the current maximum value of the node number in the entire key
 	 * starting from the root.
-	 *
-	 * @return
 	 */
 	private int getMaxNodeNumberFromRoot() {
 		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();
 		int rootNumber = this.getKey().getStartNumber();
 
-		rootKeyNode.updateSortIndex();
 		return getMaxNodeNumber(rootNumber, rootKeyNode);
 	}
 
@@ -562,7 +529,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	private int getMaxNodeNumber(int maxNumber, PolytomousKeyNode parent) {
 		if (parent.getNodeNumber() != null) {
 			maxNumber = (maxNumber < parent.getNodeNumber()) ? parent.getNodeNumber() : maxNumber;
-			parent.removeNullValueFromChildren();
 			for (PolytomousKeyNode child : parent.getChildren()) {
 			    if (parent == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating the max node number.");
@@ -576,10 +542,13 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	/**
 	 * Refresh numbering of key nodes starting from root.
-	 *
 	 */
 	public void refreshNodeNumbering() {
-		updateNodeNumbering(getKey().getRoot(), getKey().getStartNumber());
+		try {
+            updateNodeNumbering(getKey().getRoot(), getKey().getStartNumber());
+        } catch (LazyInitializationException e) {
+            //stop updating if nodes are not initialized
+        }
 	}
 
 	/**
@@ -590,14 +559,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	private int updateNodeNumbering(PolytomousKeyNode node,int nodeN) {
 		int newNodeN = nodeN;
-		if (node.isLeaf()) {
+		if (node == null) {
+		    //do nothing
+		}else if (node.isLeaf()) {
 			node.setNodeNumber(null);
 		} else {
 			node.setNodeNumber(nodeN);
 			newNodeN++;
 			List<PolytomousKeyNode> children = node.getChildren();
-			HHH_9751_Util.removeAllNull(children);
-			updateSortIndex();
 			for (PolytomousKeyNode child : children) {
 				if (node == child){
 					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
@@ -640,7 +609,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * node. If the list does not contain this node then -1 will be returned.
 	 *
 	 * @param node
-	 *            the feature node the position of which is being searched
+	 *            the polytomous key node the position of which is searched
 	 * @see #addChild(PolytomousKeyNode, int)
 	 * @see #removeChild(int)
 	 */
@@ -653,7 +622,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 
 	/**
-	 * Returns the boolean value indicating if <i>this</i> feature node has
+	 * Returns the boolean value indicating if <i>this</i> polytomous key node has
 	 * children (false) or not (true). A node without children is at the
 	 * bottommost level of a tree and is called a leaf.
 	 *
@@ -844,6 +813,12 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	    }
 	}
 
+    public Taxon removeTaxon() {
+        Taxon result = taxon;
+        this.taxon = null;
+        return result;
+    }
+
     private boolean emptyChildNodeExists() {
         for (PolytomousKeyNode child : this.children){
             if (child.getStatement() == null && child.getQuestion() == null && child.getChildren().isEmpty()
@@ -871,9 +846,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		PolytomousKeyNode result;
 		try {
 			result = (PolytomousKeyNode) super.clone();
-			result.children = new ArrayList<PolytomousKeyNode>();
+			result.children = new ArrayList<>();
 
-			result.modifyingText = new HashMap<Language, LanguageString>();
+			result.modifyingText = new HashMap<>();
 			for (Entry<Language, LanguageString> entry : this.modifyingText
 					.entrySet()) {
 				result.putModifyingText(entry.getValue());
@@ -887,20 +862,4 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		}
 	}
 
-    public Taxon removeTaxon() {
-        Taxon result = taxon;
-        this.taxon = null;
-        return result;
-    }
-
-    private void updateSortIndex(){
-        HHH_9751_Util.removeAllNull(children);
-        for (int i = 0; i < children.size(); i++) {
-            children.get(i).setSortIndex(i);
-        }
-    }
-
-    public void removeNullValueFromChildren(){
-        updateSortIndex();
-    }
 }

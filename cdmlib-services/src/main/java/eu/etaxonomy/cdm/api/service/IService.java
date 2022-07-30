@@ -22,6 +22,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.event.spi.MergeEvent;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -30,7 +31,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import javassist.tools.rmi.ObjectNotFoundException;
 
 /**
  * @author a.kohlbecker
@@ -230,8 +230,9 @@ public interface IService<T extends ICdmBase>{
      * object usually is a proxy object except for the case when it was already initialized
      * before in the same session.<BR>
      * This methods wraps {@link Session#load(Class, java.io.Serializable)}.<BR>
-     * It does not check, if the object really exists but throws an {@link ObjectNotFoundException}
+     * It does not check, if the object really exists but throws an
      * exception when no record with the given id exists in the database.
+     *
      * @return
      *         the (uninitialized proxy) object
      */
@@ -268,10 +269,12 @@ public interface IService<T extends ICdmBase>{
     /**
      * Copy the state of the given object onto the persistent object with the same identifier.
      *
-     * @param transientObject the entity to be merged
-     * @return The unique identifier of the persisted entity
+     * @param detachedObject the detached entity to be merged
+     * @return the persisted entity
      */
-    public T merge(T transientObject);
+    public T merge(T detachedObject);
+
+    public T merge(T detachedObject, CdmBase... removedObjects);
 
     /**
      * Returns a paged list of entities of type <T> optionally restricted

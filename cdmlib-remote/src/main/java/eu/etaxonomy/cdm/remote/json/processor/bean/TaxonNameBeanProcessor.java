@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import net.sf.json.JSONObject;
@@ -24,7 +24,7 @@ import net.sf.json.JsonConfig;
  */
 public class TaxonNameBeanProcessor extends AbstractCdmBeanProcessor<TaxonName> {
 
-    public static final Logger logger = Logger.getLogger(TaxonNameBeanProcessor.class);
+    public static final Logger logger = LogManager.getLogger(TaxonNameBeanProcessor.class);
 
     private boolean skipTaggedName = false;
 

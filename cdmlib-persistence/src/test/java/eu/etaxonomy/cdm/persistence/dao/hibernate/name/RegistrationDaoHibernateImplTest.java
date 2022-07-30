@@ -180,7 +180,7 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         assertEquals("List should have 4 entries", 4, registrationList.size());
         registrationList = registrationDao.list( desigRef, null, 3, null,null);
         assertEquals("List should have 3 entries", 3, registrationList.size());
-        registrationList = registrationDao.list( desigRef, null, 3, 2,null);
+        registrationList = registrationDao.list( desigRef, null, 3, 2, null);
         assertEquals("List should have 2 entries", 2, registrationList.size());
 
         registrationList = registrationDao.list( fullNullReferenceOptional, statusList, null, null,null);

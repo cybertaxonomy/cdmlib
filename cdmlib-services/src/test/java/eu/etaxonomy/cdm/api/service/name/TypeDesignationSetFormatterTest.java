@@ -15,7 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  */
 public class TypeDesignationSetFormatterTest extends TermTestBase{
 
-    //variables and setup were copied from TypeDesignationSetManagerTest
+    //variables and setup were copied from TypeDesignationSetContainerTest
     //not all of them are in use yet
     private NameTypeDesignation ntd;
     private NameTypeDesignation ntd_LT;
@@ -60,7 +60,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
     private SpecimenTypeDesignation std_LT;
     private SpecimenTypeDesignation std_IT_2;
     private SpecimenTypeDesignation std_IT_3;
-    private SpecimenTypeDesignation mtd_HT_published;
+    private SpecimenTypeDesignation mstd_HT_published;
     private SpecimenTypeDesignation mtd_IT_unpublished;
     private Reference book;
     private Team team;
@@ -143,8 +143,8 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         std_IT_3.setTypeSpecimen(specimen_IT_3);
         std_IT_3.setTypeStatus(SpecimenTypeDesignationStatus.ISOTYPE());
 
-        mtd_HT_published = SpecimenTypeDesignation.NewInstance();
-        mtd_HT_published.setId(5);
+        mstd_HT_published = SpecimenTypeDesignation.NewInstance();
+        mstd_HT_published.setId(5);
         MediaSpecimen mediaSpecimen_published = (MediaSpecimen)DerivedUnit.NewInstance(SpecimenOrObservationType.Media);
         Media media = Media.NewInstance();
         Reference ref = ReferenceFactory.newGeneric();
@@ -152,8 +152,8 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         media.addSource(IdentifiableSource.NewPrimaryMediaSourceInstance(ref, "p.33"));
         mediaSpecimen_published.setMediaSpecimen(media);
         createDerivationEvent(fu_1, mediaSpecimen_published);
-        mtd_HT_published.setTypeSpecimen(mediaSpecimen_published);
-        mtd_HT_published.setTypeStatus(SpecimenTypeDesignationStatus.HOLOTYPE());
+        mstd_HT_published.setTypeSpecimen(mediaSpecimen_published);
+        mstd_HT_published.setTypeStatus(SpecimenTypeDesignationStatus.HOLOTYPE());
 
         mtd_IT_unpublished = SpecimenTypeDesignation.NewInstance();
         mtd_IT_unpublished.setId(6);
@@ -174,7 +174,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
     }
 
     @Test
-    public void testNameTypeDesignationTaggedText() throws RegistrationValidationException {
+    public void testNameTypeDesignationTaggedText() throws TypeDesignationSetException {
 
         @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> tds = new ArrayList<>();
@@ -185,7 +185,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 
         typifiedName.addTypeDesignation(ntd, false);
 
-        TypeDesignationSetManager manager = new TypeDesignationSetManager(tds);
+        TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance(tds);
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
         String text = formatter.format(manager);
         Assert.assertEquals("Prionus L.\u202F\u2013\u202FNametype: Prionus coriatius L.", text);
@@ -209,7 +209,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
     }
 
     @Test
-    public void testSpecimenTypeDesignationTaggedTextWithStatus() throws RegistrationValidationException {
+    public void testSpecimenTypeDesignationTaggedTextWithStatus() throws TypeDesignationSetException {
 
         @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> tds = new ArrayList<>();
@@ -223,13 +223,13 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         statusSource.setTitle("Status test");
         std_HT.getTypeSpecimen().addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
 
-        TypeDesignationSetManager manager = new TypeDesignationSetManager(tds);
+        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
 
-        String text = formatter.format(manager);
+        String text = formatter.format(container);
         Assert.assertEquals("Prionus coriatius L.\u202F\u2013\u202FType: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA 1234, destroyed)", text);
 
-        List<TaggedText> taggedText = formatter.toTaggedText(manager);
+        List<TaggedText> taggedText = formatter.toTaggedText(container);
         Assert.assertEquals("first entry should be the typified name",
                 new TaggedText(TagEnum.name, "Prionus coriatius L.",TypedEntityReference.fromEntity(typifiedName, false)), taggedText.get(0));
 //        Assert.assertEquals("fourth entry should be the name type nameCache",
@@ -245,5 +245,27 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 //        Assert.assertEquals("fourth entry should be the name type titleCache",
 //                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(3)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
 //        Assert.assertEquals("there should be 4 tags only", 4, taggedText.size());
+    }
+
+    //#10089
+    @Test
+    public void testOrderedByStatusNotBaseEntity() throws TypeDesignationSetException {
+
+        @SuppressWarnings("rawtypes")
+        List<TypeDesignationBase> tds = new ArrayList<>();
+        tds.add(std_HT);
+        tds.add(std_IT_3);
+
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+
+        typifiedName.addTypeDesignation(std_HT, false);
+        typifiedName.addTypeDesignation(std_IT_3, false);
+
+        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
+        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(false, false, false);
+        String text = formatter.format(container);
+        int holotypeIndex = text.indexOf("holotype");
+        Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );
     }
 }

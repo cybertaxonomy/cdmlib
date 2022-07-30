@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -42,7 +43,7 @@ public abstract class NamedSourceBase extends OriginalSourceBase {
 
     private static final long serialVersionUID = 4262357256080305268L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DescriptionElementSource.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionElementSource.class);
 
 // ************************* FIELDS ********************************/
 
@@ -55,10 +56,7 @@ public abstract class NamedSourceBase extends OriginalSourceBase {
 
 //*********************** CONSTRUCTOR ******************************/
 
-    //for hibernate use only
-    /**
-     * @deprecated for internal use only
-     */
+    //for hibernate bytecode generation only, protected required by subclasses
     @Deprecated
     protected NamedSourceBase(){}
 

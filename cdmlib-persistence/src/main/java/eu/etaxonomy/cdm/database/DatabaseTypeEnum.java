@@ -16,11 +16,11 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.Dialect;
 
 import eu.etaxonomy.cdm.database.types.H2DatabaseType;
-import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 import eu.etaxonomy.cdm.database.types.MariaDbDatabaseType;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
@@ -37,18 +37,17 @@ import eu.etaxonomy.cdm.database.types.SybaseDatabaseType;
  *
  */
 public enum DatabaseTypeEnum {
-	HSqlDb(1),
-	MySQL(2),
-	ODBC(3),
-	PostgreSQL(4),
-	Oracle(5),
-	//SqlServer2000(6),
-	SqlServer2005(7),
-	Sybase(8),
-	H2(9),
-	SqlServer2008(10),
-    SqlServer2012(11),
-    MariaDB(12),  //not yet tested
+	MySQL(1),
+	ODBC(2),
+	PostgreSQL(3),
+	Oracle(4),
+	//SqlServer2000(5),
+	SqlServer2005(6),
+	Sybase(7),
+	H2(8),
+	SqlServer2008(9),
+    SqlServer2012(10),
+    MariaDB(11),  //not yet tested
     ;
 
 //	/**
@@ -64,28 +63,26 @@ public enum DatabaseTypeEnum {
 		switch(i)
         {
         	case 1:
-        		this.dbType = new HSqlDbDatabaseType(); break;
-        	case 2:
         		this.dbType = new MySQLDatabaseType(); break;
-        	case 3:
+        	case 2:
         		this.dbType = new OdbcDatabaseType(); break;
-        	case 4:
+        	case 3:
             	this.dbType = new PostgreSQLDatabaseType(); break;
-        	case 5:
+        	case 4:
              	this.dbType = new OracleDatabaseType(); break;
-//            case 6:
+//            case 5:
 //            	this.dbType = new SqlServer2000DatabaseType(); break;
-            case 7:
+            case 6:
             	this.dbType = new SqlServer2005DatabaseType(); break;
-            case 8:
+            case 7:
             	this.dbType = new SybaseDatabaseType(); break;
-            case 9:
+            case 8:
             	this.dbType = new H2DatabaseType(); break;
-            case 10:
+            case 9:
                 this.dbType = new SqlServer2008DatabaseType(); break;
-            case 11:
+            case 10:
                 this.dbType = new SqlServer2012DatabaseType(); break;
-            case 12:
+            case 11:
                 this.dbType = new MariaDbDatabaseType(); break;
             default:
                 throw new RuntimeException("Database type not handled");
@@ -97,7 +94,7 @@ public enum DatabaseTypeEnum {
 	}
 
  	//Logger
-	private static final Logger logger = Logger.getLogger(DatabaseTypeEnum.class);
+	private static final Logger logger = LogManager.getLogger(DatabaseTypeEnum.class);
 	protected IDatabaseType dbType;
 
 
@@ -256,8 +253,6 @@ public enum DatabaseTypeEnum {
             return MySQL;
         }else if (product.toLowerCase().matches("\\.*mariadb\\.*")) {
             return MariaDB;
-        }else if (product.toLowerCase().matches("\\.*hsqldb\\.*")) {
-            return HSqlDb;
         }else if (product.toLowerCase().matches("\\.*oracle\\.*")) {
             return Oracle;
         }else if (product.toLowerCase().matches("\\.*sybase\\.*")) {

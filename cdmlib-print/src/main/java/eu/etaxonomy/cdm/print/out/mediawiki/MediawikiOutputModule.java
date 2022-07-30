@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -27,7 +27,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -41,28 +42,25 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 /**
  * @author l.morris, s.buers
  * @since Sep 11, 2013
- * 
  */
 public class MediawikiOutputModule extends PublishOutputModuleBase {
 
-	private static final Logger logger = Logger
-			.getLogger(MediawikiOutputModule.class);
+	private static final Logger logger = LogManager.getLogger(MediawikiOutputModule.class);
 
 	public static String STYLESHEET_RESOURCE_DEFAULT = "src/main/resources/stylesheets/mediawiki/multipages.xsl";
-	
-	
+
 	// default wiki - exportparameter
 	public String prefix="";
 	public String sourceUrl="";
-	public String username="CDM Mediawiki Exporter"; 
-	
+	public String username="CDM Mediawiki Exporter";
+
 	public MediawikiOutputModule(String mediaWikiPagePrefix, String sourceUrl){
 		super();
 		this.sourceUrl = sourceUrl;
 		this.prefix=mediaWikiPagePrefix+":";
 	}
-	
-	
+
+
 	public MediawikiOutputModule(String sourceUrl) {
 		super();
 		this.sourceUrl = sourceUrl;
@@ -79,14 +77,15 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 	}
 
 
-	public void output(Document document, File exportFolder,
+	@Override
+    public void output(Document document, File exportFolder,
 			IProgressMonitor progressMonitor) {
 
-		
+
 		super.output(document, exportFolder, progressMonitor);
-		
-		
-		
+
+
+
 		try {
 
 			// URL xslURL = new
@@ -102,7 +101,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 			out = new java.io.BufferedOutputStream(out);
 
 			// validate namespace
-			
+
 //			System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
 //		             "net.sf.saxon.om.DocumentBuilderFactoryImpl");
 			DocumentBuilderFactory factory = DocumentBuilderFactory
@@ -149,7 +148,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 				// Result result = new SAXResult();
 				StreamResult result = new StreamResult(out);
 
-				// Run XSLT transformation 
+				// Run XSLT transformation
 				transformer.setParameter("prefix", prefix);
 				transformer.setParameter("username", username);
 				transformer.setParameter("cdm-url", sourceUrl);
@@ -185,7 +184,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 		  File xmlFile = new File("/home/sybille/development/mediawiki/kick_off/ericaceae_source.xml");
 		  Document document1=null;
 		try {
-			document1 = (Document) testbuilder.build(xmlFile);
+			document1 = testbuilder.build(xmlFile);
 		} catch (JDOMException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -199,7 +198,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.cdm.print.out.IPublishOutputModule#getOutputFileSuffix()
 	 */
@@ -208,7 +207,8 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 		return "xml";
 	}
 
-	public InputStream getDefaultXsltInputStream() {
+	@Override
+    public InputStream getDefaultXsltInputStream() {
 		return MediawikiOutputModule.class
 				.getResourceAsStream(STYLESHEET_RESOURCE_DEFAULT);
 	}
@@ -220,7 +220,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 				.NewRemoteInstance();
 		configurator.setExportFolder(new File("src/main/resources/tmp"));
 		// try out my own xml:
-				
+
 		Document document = useExternalXMLSource();
 
 		outputModule.output(document, configurator.getExportFolder(),
@@ -229,9 +229,10 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 	}
 
 	// like this or change modifier in abstract superclass?
-	public String generateFilenameWithDate(String name) {
+	@Override
+    public String generateFilenameWithDate(String name) {
 		return super.generateFilenameWithDate(name);
-		
+
 	}
 
 }

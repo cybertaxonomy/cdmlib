@@ -10,13 +10,15 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -43,7 +45,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
             implements IService<T>, ApplicationContextAware {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ServiceBase.class);
+    private static final Logger logger = LogManager.getLogger(ServiceBase.class);
 
     protected ApplicationContext appContext;
 
@@ -109,8 +111,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         return result;
     }
 
-
-
     @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
@@ -122,7 +122,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     public List<T> find(Set<UUID> uuidSet) {
         return dao.list(uuidSet, null, null, null, null);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -232,6 +231,18 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Transactional(readOnly = false)
     public T merge(T newInstance) {
         return dao.merge(newInstance);
+    }
+
+    /**
+     * Same as #merge(T) but with the possibility to fully remove further entities
+     * from the database during the same session. This may become necessary if these
+     * entities were deleted from the detached object graph and are not handled
+     * via Cascade.REMOVE or orphanRemoval, e.g. when children were removed
+     * from its parents and not used elsewhere anymore.
+     */
+    @Override
+    public T merge(T detachedObject, CdmBase... removedObjects) {
+        return dao.merge(detachedObject, Arrays.asList(removedObjects));
     }
 
     @Override

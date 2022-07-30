@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest {
 
-	private static Logger logger = Logger.getLogger(CacheStrategyGeneratorTest.class);
+	private static Logger logger = LogManager.getLogger(CacheStrategyGeneratorTest.class);
 
 	private TaxonBase<?> cdmBase;
 

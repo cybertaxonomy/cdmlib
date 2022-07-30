@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.http.HttpException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class MediaInfoFileReaderTest {
 
     private static final String OFFLINE = "OFFLINE";
 
-    public static final Logger logger = Logger.getLogger(MediaInfoFileReaderTest.class);
+    public static final Logger logger = LogManager.getLogger(MediaInfoFileReaderTest.class);
 
     private URI jpegUri;
     private URI tiffUri;

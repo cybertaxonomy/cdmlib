@@ -1,9 +1,18 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.aspectj;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.Signature;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -15,7 +24,8 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  * CdmBase defines the rest of the ProeprtyChangeSupport like listener registration 
  */
 public aspect PropertyChangeAspect {
-	static Logger logger = Logger.getLogger(PropertyChangeAspect.class);
+
+	static Logger logger = LogManager.getLogger(PropertyChangeAspect.class);
 	
 //	pointcut execAdder(CdmBase cb): target(cb) && execution(void CdmBase+.add*(..) );  //once implemented we may want to remove addToSetWithChangeEvent and remove... from CdmBase
 	
@@ -31,7 +41,6 @@ public aspect PropertyChangeAspect {
 	pointcut execSetter(CdmBase cb): target(cb) && execution(void CdmBase+.set*(..) );
 //	/** *********** OLD ***********************/
 //	pointcut callSetter( CdmBase b ) : call( * CdmBase+.set*(..) ) && target( b );
-
 
 
 	/**

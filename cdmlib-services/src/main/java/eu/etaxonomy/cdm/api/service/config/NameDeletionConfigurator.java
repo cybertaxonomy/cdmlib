@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 
@@ -25,7 +25,7 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
     private static final long serialVersionUID = 76414245247942488L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NameDeletionConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(NameDeletionConfigurator.class);
 
 	private boolean removeAllNameRelationships = false;
 	private boolean ignoreIsBasionymFor = false;

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.permission.voter;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
  */
 public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetEntityStates> {
 
-    public static final Logger logger = Logger.getLogger(CdmPermissionVoter.class);
+    public static final Logger logger = LogManager.getLogger(CdmPermissionVoter.class);
 
     private static final EnumSet<CRUD> DELETE = EnumSet.of(CRUD.DELETE);
 

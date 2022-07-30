@@ -14,6 +14,7 @@ import java.util.List;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
@@ -56,14 +57,17 @@ public class DescriptionElementBeanProcessor extends AbstractModifiableThingBean
             TextData textdata = (TextData) bean;
             LanguageString languageString;
             //textdata.getSources().iterator().next()
-            if(Hibernate.isInitialized(textdata.getMultilanguageText())){
-                languageString = MultilanguageTextHelper.getPreferredLanguageString(textdata.getMultilanguageText(), languages);
-                if(languageString != null){
-                    json.element("multilanguageText_L10n", languageString, jsonConfig);
-                }
-                if(!isReplaceMultilanguageText()){
-                    json.element("multilanguageText", textdata.getMultilanguageText().values(), jsonConfig);
-                }
+            textdata = HibernateProxyHelper.deproxy(textdata, TextData.class);
+            if(Hibernate.isInitialized(textdata)){
+	            if(Hibernate.isInitialized(textdata.getMultilanguageText())){
+	                languageString = MultilanguageTextHelper.getPreferredLanguageString(textdata.getMultilanguageText(), languages);
+	                if(languageString != null){
+	                    json.element("multilanguageText_L10n", languageString, jsonConfig);
+	                }
+	                if(!isReplaceMultilanguageText()){
+	                    json.element("multilanguageText", textdata.getMultilanguageText().values(), jsonConfig);
+	                }
+	            }
             }
         }
         return json;

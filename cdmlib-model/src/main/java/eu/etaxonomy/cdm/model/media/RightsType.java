@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -38,45 +39,33 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class RightsType extends DefinedTermBase<RightsType> {
-	private static final long serialVersionUID = -5823263624000932116L;
-	private static final Logger logger = Logger.getLogger(RightsType.class);
+
+    private static final long serialVersionUID = -5823263624000932116L;
+	private static final Logger logger = LogManager.getLogger(RightsType.class);
 
 	protected static Map<UUID, RightsType> termMap = null;
 
+//************************** FACTORY METHODS **********************************/
 
-	/**
-	 * Factory method
-	 * @return
-	 */
 	public static RightsType NewInstance(){
-		logger.debug("NewInstance");
 		return new RightsType();
 	}
 
-	/**
-	 * Factory method
-	 * @return
-	 */
 	public static RightsType NewInstance(String text, String label, String labelAbbrev){
 		return new RightsType(text, label, labelAbbrev);
 	}
 
 //***************** CONSTRUCTOR **************************************/
 
-	//for javassist only
+	//for hibernate use only, *packet* private required by bytebuddy
 	@Deprecated
-	protected RightsType() {
+	RightsType() {
 		super(TermType.RightsType);
 	}
 
-	/**
-	 * Constructor
-	 */
 	private RightsType(String term, String label, String labelAbbrev) {
 		super(TermType.RightsType, term, label, labelAbbrev);
 	}
-
-
 
 // ************************************* MTEHODS ***************************************************/
 

@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -26,7 +26,7 @@ import net.sf.json.JsonConfig;
  */
 public class RepresentationBeanProcessor extends AbstractCdmBeanProcessor<Representation> {
 
-    public static final Logger logger = Logger.getLogger(RepresentationBeanProcessor.class);
+    public static final Logger logger = LogManager.getLogger(RepresentationBeanProcessor.class);
 
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[] {
 //            "representations",

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
  */
 public class NamedAreaLevellRow {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NamedAreaLevellRow.class);
+	private static final Logger logger = LogManager.getLogger(NamedAreaLevellRow.class);
 
 	private UUID uuid = null; 
 	private String label = null;

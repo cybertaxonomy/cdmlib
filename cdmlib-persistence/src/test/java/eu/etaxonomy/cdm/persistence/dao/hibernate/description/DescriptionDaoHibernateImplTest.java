@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -147,7 +148,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxon");
 
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
 
         List<TaxonDescription> descriptions = descriptionDao.searchDescriptionByDistribution(namedAreas, null, 10,2,orderHints,propertyPaths);
@@ -223,7 +224,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     public void testCountDescriptionElements() {
 
         long numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, null);
-        assertEquals("expecting 37 description elements in total", 37, numberOfDescriptionElements);
+        assertEquals("expecting 38 description elements in total", 38, numberOfDescriptionElements);
 
         numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, TextData.class);
         assertEquals("expecting 4 description elements of type TextData", 4, numberOfDescriptionElements);
@@ -243,7 +244,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     public void testGetDescriptionElements() {
 
         List<TextData> elements = descriptionDao.getDescriptionElements(null, null, null, null, null, null, null);
-        assertEquals("expecting 37 description elements in total", 37, elements.size());
+        assertEquals("expecting 38 description elements in total", 38, elements.size());
 
         elements = descriptionDao.getDescriptionElements(null, null, null, TextData.class, null, null, null);
         assertEquals("expecting 4 description elements of type TextData", 4, elements.size());
@@ -620,6 +621,14 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertEquals(3, list.size());
     }
 
+    
+    @Test
+    @DataSet
+    public void testGetNodeOfIndividualAssociationForSpecimen() {
+    	List<SortableTaxonNodeQueryResult> list = descriptionDao.getNodeOfIndividualAssociationForSpecimen(UUID.fromString("4c3231a9-336e-4b21-acf2-129683627de4"), null);
+    	Assert.assertEquals(1, list.size());
+    
+    }
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }

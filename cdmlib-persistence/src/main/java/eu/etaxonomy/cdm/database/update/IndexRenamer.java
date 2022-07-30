@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.database.update;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class IndexRenamer extends SchemaUpdaterStepBase {
-    private static final Logger logger = Logger.getLogger(IndexRenamer.class);
+    private static final Logger logger = LogManager.getLogger(IndexRenamer.class);
 
     private String tableName;
 

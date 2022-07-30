@@ -9,7 +9,7 @@
     </bean>
     <constraint-definition annotation="eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames">
         <validated-by include-existing-validators="false">
-            <value>eu.etaxonomy.cdm.validation.constraint.NoDuplicateNamesValidator</value>
+            <value>eu.etaxonomy.cdm.api.validation.constraint.NoDuplicateNamesValidator</value>
         </validated-by>
     </constraint-definition>
 </constraint-mappings>

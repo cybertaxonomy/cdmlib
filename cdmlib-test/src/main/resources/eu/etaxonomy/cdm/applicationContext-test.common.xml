@@ -63,10 +63,6 @@
                 <prop key="hibernate.search.default.exclusive_index_use">false</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2CorrectedDialectTest</prop>
                 <prop key="implicitNamingStrategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"</prop>
-                <!-- hsqldb v. <1.9 has a bug (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
-                    due to which it is not possible to use batch updates, so we need to disable
-                    hibernate batching when using hsqldb in the app context: -->
-                <prop key="hibernate.jdbc.batch_size">0</prop>
             </props>
         </property>
     </bean>

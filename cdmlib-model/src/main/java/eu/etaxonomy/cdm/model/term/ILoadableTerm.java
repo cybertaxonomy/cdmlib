@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.List;
@@ -18,9 +17,11 @@ import au.com.bytecode.opencsv.CSVWriter;
 public interface ILoadableTerm<T extends IDefinedTerm>{
 
 	/**
-	 * Fills the {@link ILoadableTerm term} with contents from a csvLine. If the csvLine represents the default language
-	 * the csvLine attributes are merged into the existing default language and the default Language is returned.
-	 * @return
+	 * Fills the {@link ILoadableTerm term} with contents from a csvLine. If the csvLine
+	 * represents the default language the csvLine attributes are merged into the
+	 * existing default language and the default Language is returned.
+	 * <BR>
+	 * Typically the first 5 strings are UUID, URI, label, description and abbreviated label.
 	 */
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId);
 

@@ -11,9 +11,10 @@ package eu.etaxonomy.cdm.persistence.hibernate.replace;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -31,10 +32,11 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author ben.clark
  * @since 22.12.2009
  */
+@Ignore
 public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(ReferringObjectMetadataFactoryTest.class);
+	private static Logger logger = LogManager.getLogger(ReferringObjectMetadataFactoryTest.class);
 
 	@SpringBeanByType
 	private ReferringObjectMetadataFactory referringObjectMetadataFactory;

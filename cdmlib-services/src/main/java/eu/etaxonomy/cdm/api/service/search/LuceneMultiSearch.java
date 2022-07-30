@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class LuceneMultiSearch extends LuceneSearch {
 
-    public static final Logger logger = Logger.getLogger(LuceneMultiSearch.class);
+    public static final Logger logger = LogManager.getLogger(LuceneMultiSearch.class);
 
     private final Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<>();
 

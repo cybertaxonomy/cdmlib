@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
@@ -30,7 +30,7 @@ public class Abcd206ImportState
         extends SpecimenImportStateBase<Abcd206ImportConfigurator, Abcd206ImportState>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Abcd206ImportState.class);
+	private static final Logger logger = LogManager.getLogger(Abcd206ImportState.class);
 
 	private String prefix;
 

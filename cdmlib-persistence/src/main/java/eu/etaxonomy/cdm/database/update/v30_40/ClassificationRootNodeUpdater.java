@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @since 15.12.2013
  */
 public class ClassificationRootNodeUpdater extends SchemaUpdaterStepBase {
-	private static final Logger logger = Logger.getLogger(ClassificationRootNodeUpdater.class);
+	private static final Logger logger = LogManager.getLogger(ClassificationRootNodeUpdater.class);
 
 	private static final String stepName = "Update Classification Root Nodes";
 

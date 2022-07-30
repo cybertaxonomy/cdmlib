@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -70,7 +70,7 @@ public class TaxonInteraction
         implements IMultiLanguageTextHolder{
 
     private static final long serialVersionUID = -5014025677925668627L;
-	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
+	private static final Logger logger = LogManager.getLogger(TaxonInteraction.class);
 
 	@XmlElement(name = "Description")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)

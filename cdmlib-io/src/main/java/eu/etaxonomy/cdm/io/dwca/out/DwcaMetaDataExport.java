@@ -11,16 +11,17 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord.FieldEntry;
 
 /**
@@ -32,7 +33,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 
     private static final long serialVersionUID = -4033439569151252697L;
 
-    private static final Logger logger = Logger.getLogger(DwcaMetaDataExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaMetaDataExport.class);
 
 	protected static final String fileName = "meta.xml";
 
@@ -44,9 +45,6 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		this.ioName = this.getClass().getSimpleName();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();

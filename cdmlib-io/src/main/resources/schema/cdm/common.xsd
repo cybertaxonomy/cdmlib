@@ -383,7 +383,7 @@
       <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
           <xs:element name="CitationMicroReference" type="xs:string" minOccurs="0"/>
-          <xs:element name="OriginalNameString" type="xs:string" minOccurs="0"/>
+          <xs:element name="OriginalInfo" type="xs:string" minOccurs="0"/>
           <xs:element name="Citation" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>

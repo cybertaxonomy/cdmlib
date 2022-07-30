@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,7 +27,7 @@ import org.junit.Test;
  */
 public class ParserProblemTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ParserProblemTest.class);
+	private static final Logger logger = LogManager.getLogger(ParserProblemTest.class);
 
 	/**
 	 * @throws java.lang.Exception

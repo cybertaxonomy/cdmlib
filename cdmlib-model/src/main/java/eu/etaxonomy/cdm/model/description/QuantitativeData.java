@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotEmpty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,12 +30,11 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -78,7 +78,7 @@ public class QuantitativeData
         extends DescriptionElementBase {
 
 	private static final long serialVersionUID = -2755806455420051488L;
-	private static final Logger logger = Logger.getLogger(QuantitativeData.class);
+	private static final Logger logger = LogManager.getLogger(QuantitativeData.class);
 
 	@XmlElement(name = "MeasurementUnit")
 	@XmlIDREF

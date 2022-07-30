@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.reference;
 
 import java.util.ArrayList;
@@ -17,12 +16,12 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
-
 
 /**
  * The reference type is used to define the type of a {@link Reference reference}.<BR>
@@ -33,8 +32,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @author a.mueller
  * @since 20.09.2009
  */
-
-//TODO hierarchies, see https://dev.e-taxonomy.eu/redmine/issues/3619
+//TODO hierarchies, see #3619
 @XmlEnum
 public enum ReferenceType implements IEnumTerm<ReferenceType> {
 
@@ -113,7 +111,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
 	;
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ReferenceType.class);
+	private static final Logger logger = LogManager.getLogger(ReferenceType.class);
 
 
 	private ReferenceType(UUID uuid, String defaultString, String key, ReferenceType parent){
@@ -303,6 +301,14 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
      */
     public boolean isSectionOnly() {
         return this == Section;
+    }
+    /**
+     * @return <code>true</code> if this type supports references implementing
+     *         the {@link IDynamicReference} interface. Currently these are
+     *         webpages, databases and maps.
+     */
+    public boolean isDynamic() {
+        return this == WebPage || this == Database || this == Map;
     }
 
     /**

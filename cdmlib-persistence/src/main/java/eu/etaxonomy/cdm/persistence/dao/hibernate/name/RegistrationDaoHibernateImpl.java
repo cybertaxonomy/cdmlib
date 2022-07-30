@@ -17,15 +17,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -36,11 +36,11 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Repository
 public class RegistrationDaoHibernateImpl
-            extends AnnotatableDaoImpl<Registration>
+            extends AnnotatableDaoBaseImpl<Registration>
             implements IRegistrationDao {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(RegistrationDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(RegistrationDaoHibernateImpl.class);
 
     public RegistrationDaoHibernateImpl() {
         super(Registration.class);
@@ -52,8 +52,7 @@ public class RegistrationDaoHibernateImpl
         if (isVolatile(reference)){
             return Long.valueOf(0);
         }
-        Query query = makeReferenceQuery(reference, includedStatus, true);
-        @SuppressWarnings("unchecked")
+        Query<Long> query = makeReferenceQuery(reference, includedStatus, true, Long.class);
         List<Long> list = query.list();
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
@@ -66,19 +65,12 @@ public class RegistrationDaoHibernateImpl
             return Collections.emptyList();
         }
 
-        Query query = makeReferenceQuery(reference, includedStatus, false);
+        Query<Registration> query = makeReferenceQuery(reference, includedStatus, false, Registration.class);
 
-        // TODO complete ....
-        if(limit != null /*&&  !doCount*/) {
-            query.setMaxResults(limit);
-            if(start != null) {
-                query.setFirstResult(start);
-            }
-        }
+        addLimitAndStart(query, limit, start);
 
         //TODO order hints do not work with queries
 
-        @SuppressWarnings("unchecked")
         List<Registration> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -89,9 +81,9 @@ public class RegistrationDaoHibernateImpl
         return reference != null && reference.isPresent() && reference.get().getId() == 0;
     }
 
-    private Query makeReferenceQuery(Optional<Reference> reference,
+    private <R extends Object> Query<R> makeReferenceQuery(Optional<Reference> reference,
             Collection<RegistrationStatus> includedStatus,
-            boolean isCount) {
+            boolean isCount, Class<R> returnClass) {
 
         String select = "SELECT " + (isCount? " count(DISTINCT r) as cn ": "DISTINCT r ");
         String from = " FROM Registration r LEFT JOIN r.typeDesignations desig "
@@ -130,7 +122,7 @@ public class RegistrationDaoHibernateImpl
         }
 
         String hql = select + from + where + orderBy;
-        Query query = getSession().createQuery(hql);
+        Query<R> query = getSession().createQuery(hql, returnClass);
         if (reference != null && reference.isPresent()){
             query.setParameter("ref", reference.get());
         }
@@ -146,10 +138,9 @@ public class RegistrationDaoHibernateImpl
     @Override
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
-        Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
+        Query<Long> query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
                 taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, true, null);
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
-        @SuppressWarnings("unchecked")
         List<Long> list = query.list();
         //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
@@ -160,7 +151,7 @@ public class RegistrationDaoHibernateImpl
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Query query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
+        Query<Registration> query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
                 taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, false, orderHints);
 
         if(limit != null /*&&  !doCount*/) {
@@ -170,10 +161,7 @@ public class RegistrationDaoHibernateImpl
             }
         }
 
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
-        @SuppressWarnings("unchecked")
         List<Registration> results = query.list();
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;

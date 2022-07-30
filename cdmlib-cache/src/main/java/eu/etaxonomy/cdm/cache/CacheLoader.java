@@ -15,7 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -31,7 +32,7 @@ import net.sf.ehcache.Element;
  */
 public class CacheLoader {
 
-    private static final Logger logger = Logger.getLogger(CacheLoader.class);
+    private static final Logger logger = LogManager.getLogger(CacheLoader.class);
 
     private static boolean isRecursiveEnabled = true;
 

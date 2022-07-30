@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 public class LanguageStringDaoImpl 
 extends LanguageStringBaseDaoImpl<LanguageString> implements ILanguageStringDao {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LanguageStringDaoImpl.class);
+	private static final Logger logger = LogManager.getLogger(LanguageStringDaoImpl.class);
 
 	public LanguageStringDaoImpl() {
 		super(LanguageString.class); 

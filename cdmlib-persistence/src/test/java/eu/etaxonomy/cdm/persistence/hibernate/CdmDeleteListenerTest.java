@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.junit.Assert;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmDeleteListenerTest.class);
+	private static final Logger logger = LogManager.getLogger(CdmDeleteListenerTest.class);
 
 	@SpringBeanByType
 	private ITaxonNameDao taxonNameDao;

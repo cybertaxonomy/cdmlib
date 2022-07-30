@@ -1,15 +1,16 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -22,11 +23,11 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 /**
  * @author a.mueller
  * @since 15.03.2010
- * @version 1.0
  */
 public class ExportTransformerBase implements IExportTransformer {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExportTransformerBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
 	public Object getKeyByFeature(Feature feature) throws UndefinedTransformerMethodException {
@@ -45,7 +46,7 @@ public class ExportTransformerBase implements IExportTransformer {
 		String warning = "getKeyByLanguage is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getCacheByLanguage(eu.etaxonomy.cdm.model.common.Language)
 	 */
@@ -85,20 +86,20 @@ public class ExportTransformerBase implements IExportTransformer {
 		String warning = "getKeyByNamedArea is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
+
 	@Override
 	public String getCacheByNamedArea(NamedArea area) throws UndefinedTransformerMethodException{
 		String warning = "getCacheByNamedArea is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
+
 	@Override
 	public String getCacheByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException {
 		String warning = "getCacheByNomStatus is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-	
-	
+
+
 	@Override
 	public Object getKeyByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByNomStatus is not yet implemented in implementing transformer class";
@@ -115,5 +116,5 @@ public class ExportTransformerBase implements IExportTransformer {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-		
+
 }

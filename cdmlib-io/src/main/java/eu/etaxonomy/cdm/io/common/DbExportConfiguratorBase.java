@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -27,7 +27,7 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase, TR
 
     private static final long serialVersionUID = 3776529518379378810L;
     @SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(DbExportConfiguratorBase.class);
+	private static Logger logger = LogManager.getLogger(DbExportConfiguratorBase.class);
 
 
 	public enum IdType{

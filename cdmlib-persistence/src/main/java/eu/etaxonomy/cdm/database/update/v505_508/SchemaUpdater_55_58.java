@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.database.update.v505_508;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.update.AllowNullUpdater;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.database.update.v50_55.SchemaUpdater_50_55;
 public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SchemaUpdater_55_58.class);
+	private static final Logger logger = LogManager.getLogger(SchemaUpdater_55_58.class);
 
 	private static final String startSchemaVersion = "5.5.0.0.20190221";
 	private static final String endSchemaVersion = "5.8.0.0.201906020";

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.strategy.parser;
 
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
 
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.common.UTF8;
  */
 public abstract class NonViralNameParserImplRegExBase  {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NonViralNameParserImplRegExBase.class);
+	private static final Logger logger = LogManager.getLogger(NonViralNameParserImplRegExBase.class);
 
 	// good regex intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 

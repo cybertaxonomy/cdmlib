@@ -24,103 +24,27 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 /**
  * @author cmathew
  * @since 31 Jul 2015
- *
  */
 public interface IIOService {
 
     public ExportResult export(IExportConfigurator configurator);
 
-
-    /**
-     * @param configurator
-     * @param importData
-     * @param type
-     * @return
-     */
     public UUID monitImportData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type);
 
-    /**
-     * @param configurator
-     * @param importData
-     * @param type
-     * @return
-     */
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type);
 
-    /**
-     * @param configurator
-     * @param importData
-     * @return
-     */
     public ImportResult importDataFromUri(IImportConfigurator configurator, byte[] importData);
 
-    /**
-     * @param configurator
-     * @param importData
-     * @return
-     */
     public ImportResult importDataFromInputStream(IImportConfigurator configurator, byte[] importData);
 
-
-    /**
-     * @param configurator
-     * @return
-     */
     ImportResult importDataFromStream(SpecimenImportConfiguratorBase configurator);
 
-
-    /**
-     * @param configurators
-     * @return
-     */
     ImportResult importDataFromStream(List<Abcd206ImportConfigurator> configurators);
 
-//    /**
-//     * @param configurators
-//     * @return
-//     */
-//    ImportResult updateSortIndex(SortIndexUpdaterConfigurator config);
-
-
-//    /**
-//     * @param config
-//     * @return
-//     */
-//    ImportResult updateCaches(CacheUpdaterConfigurator config);
-
-
-//    /**
-//     * @param configurator
-//     * @param importData
-//     * @param type
-//     * @return
-//     */
-//    UUID monitUpdateData(IImportConfigurator configurator);
-
-
-//    /**
-//     * @param configurator
-//     * @return
-//     */
-//    ImportResult updateData(SecundumForSubtreeConfigurator configurator);
-
-    /**
-     * @param configurator
-     * @return
-     */
     ImportResult updateDistributionData(ExcelDistributionUpdateConfigurator configurator);
-    /**
-     * @param configurator
-     * @param type
-     * @return
-     */
+
     UUID monitExportData(IExportConfigurator configurator);
 
-
-    /**
-     * @param configurator
-     * @return
-     */
     ImportResult importRISData(RisReferenceImportConfigurator configurator);
 
 }

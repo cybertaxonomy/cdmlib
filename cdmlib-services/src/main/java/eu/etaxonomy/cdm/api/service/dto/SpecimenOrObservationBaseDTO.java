@@ -286,6 +286,8 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.derivatives.addAll(derivatives);
         updateTreeDependantData();
     }
+    
+    
 
     /**
      * To be overwritten by implementing classes to

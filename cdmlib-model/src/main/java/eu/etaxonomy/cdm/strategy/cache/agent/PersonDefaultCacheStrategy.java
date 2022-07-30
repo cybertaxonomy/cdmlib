@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -27,7 +27,7 @@ public class PersonDefaultCacheStrategy
 
 	private static final long serialVersionUID = -6184639515553953112L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PersonDefaultCacheStrategy.class);
+	private static final Logger logger = LogManager.getLogger(PersonDefaultCacheStrategy.class);
 
 	final static UUID uuid = UUID.fromString("9abda0e1-d5cc-480f-be38-40a510a3f253");
 

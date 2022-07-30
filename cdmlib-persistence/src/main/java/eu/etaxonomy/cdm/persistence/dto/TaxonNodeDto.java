@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -76,7 +77,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     private String treeIndex = null;
     private Integer sortIndex = null;
-    private boolean taxonIsPublish = true;
+    private Boolean taxonIsPublish = true;
 
 
     public TaxonNodeDto(ITaxonTreeNode taxonNode) {
@@ -91,12 +92,23 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(uuid, id, nameTitleCache, taxonTitleCache);
 
     }
+    public TaxonNodeDto(UUID uuid, Integer id, UUID taxonUuid, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status, List<LanguageString> statusNote){
+    	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
+    	this.status = status;
+    	this.taxonIsPublish = taxonIsPublished;
+    	for (LanguageString str: statusNote) {
+    		this.statusNote.put(str.getLanguage(), str.getText());
+    	}
+	this.taxonUuid = taxonUuid;
+    }
 
-    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid) {
+    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid) {
         super(uuid, id, nameTitleCache, taxonTitleCache);
         this.rankOrderIndex = rankOrderIndex;
         this.parentUUID = parentUuid;
         this.treeIndex = treeIndex;
+        this.sortIndex = sortIndex;
+        this.classificationUUID = classificationUuid;
     }
 
     public TaxonNodeDto(UUID uuid, Integer id, String titleCache, Integer rankOrderIndex) {
@@ -273,6 +285,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     }
 
     public Map<Language, String> getStatusNote() {
-        return Collections.unmodifiableMap(statusNote);
+        return statusNote;
     }
 }

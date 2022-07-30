@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.sandbox.queries.FuzzyLikeThisQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -32,7 +31,6 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +60,6 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -91,7 +88,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
@@ -112,14 +108,13 @@ import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-
 @Service
 @Transactional(readOnly = true)
 public class NameServiceImpl
           extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
           implements INameService {
 
-    static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
+    static private final Logger logger = LogManager.getLogger(NameServiceImpl.class);
 
     @Autowired
     private IOccurrenceService occurrenceService;
@@ -129,9 +124,6 @@ public class NameServiceImpl
     private ITaxonService taxonService;
     @Autowired
     private ICommonService commonService;
-    @Autowired
-    @Qualifier("sourcedEntityDao")
-    private ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
     @Autowired
     private INomenclaturalStatusDao nomStatusDao;
     @Autowired
@@ -253,9 +245,8 @@ public class NameServiceImpl
             result.setError();
             return result;
         }
-        for (SpecimenOrObservationBase original : derivedFrom.getOriginals()) {
+        for (SpecimenOrObservationBase<?> original : derivedFrom.getOriginals()) {
             DerivationEvent.NewSimpleInstance(original, duplicate, derivedFrom.getType());
-
         }
         duplicate.setAccessionNumber(accessionNumber);
         duplicate.setBarcode(barcode);
@@ -278,7 +269,7 @@ public class NameServiceImpl
     @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
     	if(typeDesignation != null && typeDesignation .isPersited()){
-    		typeDesignation = HibernateProxyHelper.deproxy(sourcedEntityDao.load(typeDesignation.getUuid()), TypeDesignationBase.class);
+    		typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignation.getUuid()));
     	}
 
         DeleteResult result = new DeleteResult();
@@ -289,14 +280,13 @@ public class NameServiceImpl
             removeSingleDesignation(name, typeDesignation);
         }else if (name != null){
             @SuppressWarnings("rawtypes")
-            Set<TypeDesignationBase<?>> designationSet = new HashSet(name.getTypeDesignations());
+            Set<TypeDesignationBase> designationSet = new HashSet<>(name.getTypeDesignations());
             for (TypeDesignationBase<?> desig : designationSet){
                 desig = CdmBase.deproxy(desig);
                 removeSingleDesignation(name, desig);
             }
         }else if (typeDesignation != null){
-            @SuppressWarnings("unchecked")
-            Set<TaxonName> nameSet = new HashSet(typeDesignation.getTypifiedNames());
+            Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
             for (TaxonName singleName : nameSet){
                 singleName = CdmBase.deproxy(singleName);
                 removeSingleDesignation(singleName, typeDesignation);
@@ -312,14 +302,10 @@ public class NameServiceImpl
     @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(sourcedEntityDao.load(typeDesignationUuid), TypeDesignationBase.class);
+        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignationUuid));
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
-    /**
-     * @param name
-     * @param typeDesignation
-     */
     @Transactional
     private void removeSingleDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation) {
 
@@ -371,17 +357,12 @@ public class NameServiceImpl
                         name.removeNameRelationship(rel);
                     }
                 }
-
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * @param name
-     * @return
-     */
     private Set<NameRelationship> getModifiableSet(Set<NameRelationship> relations) {
         Set<NameRelationship> rels = new HashSet<NameRelationship>();
         for (NameRelationship rel : relations){
@@ -392,7 +373,6 @@ public class NameServiceImpl
 
 //********************* METHODS ****************************************************************//
 
-
     /**
      * TODO candidate for harmonization
      * new name findByName
@@ -401,7 +381,7 @@ public class NameServiceImpl
     @Deprecated
     public List<TaxonName> getNamesByNameCache(String nameCache){
         boolean includeAuthors = false;
-        List result = dao.findByName(includeAuthors, nameCache, MatchMode.EXACT, null, null, null, null);
+        List<TaxonName> result = dao.findByName(includeAuthors, nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
     }
 
@@ -452,9 +432,6 @@ public class NameServiceImpl
         return new DefaultPagerImpl<TaxonNameParts>(pageIndex, count, pageSize, results);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Pager<TaxonNameParts> findTaxonNameParts(TaxonNamePartsFilter filter, String namePartQueryString,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
@@ -597,7 +574,7 @@ public class NameServiceImpl
             results = dao.getHybridNames(name, type, pageSize, pageNumber,orderHints,propertyPaths);
         }
 
-        return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -620,9 +597,9 @@ public class NameServiceImpl
             int maxNoOfResults,
             List<Language> languages,
             boolean highlightFragments) {
+
         String similarity = Float.toString(accuracy);
         String searchSuffix = "~" + similarity;
-
 
         Builder finalQueryBuilder = new Builder();
         finalQueryBuilder.setDisableCoord(false);
@@ -777,7 +754,6 @@ public class NameServiceImpl
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
-        @SuppressWarnings("rawtypes")
         List<SearchResult<TaxonName>> searchResults = searchResultBuilder.createResultSet(
                 topDocs, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
@@ -805,12 +781,9 @@ public class NameServiceImpl
         // --- execute search
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
-
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
-        @SuppressWarnings("rawtypes")
         List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
 
         return searchResults;
@@ -830,12 +803,10 @@ public class NameServiceImpl
 
         // --- execute search
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
-        @SuppressWarnings("rawtypes")
         List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
 
         return searchResults;
@@ -854,7 +825,6 @@ public class NameServiceImpl
         LuceneSearch luceneSearch = prepareFindByExactNameSearch(null, name, wildcard, languages, highlightFragments);
 
         // --- execute search
-
 
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
 

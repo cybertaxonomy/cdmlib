@@ -15,7 +15,7 @@ import static org.junit.Assert.fail;
 
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class AnnotationTest extends EntityTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AnnotationTest.class);
+	private static final Logger logger = LogManager.getLogger(AnnotationTest.class);
 
 	private static final String TEST_URI_STR = "http://test.abc.de";
 

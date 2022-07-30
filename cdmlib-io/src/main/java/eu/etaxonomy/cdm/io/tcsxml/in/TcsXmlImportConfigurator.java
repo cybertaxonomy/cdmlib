@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
 public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(TcsXmlImportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(TcsXmlImportConfigurator.class);
 
 	//TODO
 	private static IInputTransformer defaultTransformer = null;

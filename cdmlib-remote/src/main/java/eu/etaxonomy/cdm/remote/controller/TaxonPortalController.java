@@ -22,7 +22,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -91,7 +91,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
 public class TaxonPortalController extends TaxonController{
 
-    public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
+    public static final Logger logger = LogManager.getLogger(TaxonPortalController.class);
 
     @Autowired
     private INameService nameService;
@@ -124,7 +124,11 @@ public class TaxonPortalController extends TaxonController{
             "name.rank.representations",
             "name.status.type.representations",
             "name.status.source.citation",
-            "sec.authorship"
+            "secSource.nameUsedInSource.$",
+            "secSource.nameUsedInSource.nomenclaturalSource.citation.authorship",
+            "secSource.nameUsedInSource.nomenclaturalSource.citation.inReference.authorship",
+            "secSource.citation.authorship.$",
+            "secSource.citation.inReference.authorship.$"
 //            "descriptions" // TODO remove
 
             }));
@@ -145,8 +149,10 @@ public class TaxonPortalController extends TaxonController{
             "name.nomenclaturalSource.citation.authorship",
             "name.nomenclaturalSource.citation.inReference.authorship",
             "taxonNodes.classification",
-            "sec.authorship"
-            }));
+            "secSource.nameUsedInSource.$",
+            "secSource.citation.authorship.$",
+            "secSource.citation.inReference.authorship.$"
+          	}));
 
     public static final EntityInitStrategy SYNONYMY_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             // initialize homotypical and heterotypical groups; needs synonyms
@@ -160,7 +166,7 @@ public class TaxonPortalController extends TaxonController{
             "synonyms.name.combinationAuthorship.$",
             "synonyms.secSource.citation.authorship.$",
             "synonyms.secSource.citation.inReference.authorship.$",
-
+            "synonyms.secSource.nameUsedInSource.$",
             "name.typeDesignations",
 
             "name.homotypicalGroup.$",
@@ -235,9 +241,14 @@ public class TaxonPortalController extends TaxonController{
             "taxonNodes.statusNote.*",
             "taxonNodes.taxon.name",
             "taxonNodes.taxon.secSource.citation",
+            "taxonNodes.taxon.secSource.nameUsedInSource.$",
+            "taxonNodes.taxon.secSource.citation.authorship.$",
+            "taxonNodes.taxon.secSource.citation.inReference.authorship.$",
             "taxonNodes.source.citation.authorship",
             "taxonNodes.source.citation.inReference.authorship",
             "acceptedTaxon.taxonNodes.classification",
+            "secSource.nameUsedInSource"
+            
     }));
 
     @Override

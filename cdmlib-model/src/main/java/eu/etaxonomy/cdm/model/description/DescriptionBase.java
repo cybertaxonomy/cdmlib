@@ -33,7 +33,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -44,7 +45,6 @@ import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.FieldBridge;
 
-import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
@@ -94,7 +94,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         implements ICdmTarget{
 
     private static final long serialVersionUID = 5504218413819040193L;
-    private static final Logger logger = Logger.getLogger(DescriptionBase.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionBase.class);
 
     @XmlElement( name = "DescribedSpecimenOrObservation")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -208,7 +208,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see    	   		#getDescriptionSources()
      */
     public void addElement(DescriptionElementBase element) {
-        HHH_9751_Util.removeAllNull(this.descriptionElements);
         if (element.getInDescription() != null){
             element.getInDescription().removeElement(element);
         }
@@ -221,7 +220,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @param elements
      */
     public void addElements(DescriptionElementBase ... elements) {
-        HHH_9751_Util.removeAllNull(this.descriptionElements);
         for (DescriptionElementBase element : elements){
     		addElement(element);
     	}
@@ -236,7 +234,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see     		#addElement(DescriptionElementBase)
      */
     public void removeElement(DescriptionElementBase element) {
-        HHH_9751_Util.removeAllNull(this.descriptionElements);
         this.descriptionElements.remove(element);
         element.setInDescription(null);
     }

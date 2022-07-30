@@ -19,7 +19,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.feature.SchemaException;
 import org.locationtech.jts.geom.Coordinate;
 import org.opengis.feature.simple.SimpleFeature;
@@ -55,7 +56,7 @@ import tec.uom.se.quantity.Quantities;
  */
 public class KMLDocumentBuilder {
 
-	private final static Logger logger = Logger.getLogger(KMLDocumentBuilder.class);
+	private final static Logger logger = LogManager.getLogger(KMLDocumentBuilder.class);
 
 	private Set<SpecimenOrObservationBase> occSet = new HashSet<>();
 

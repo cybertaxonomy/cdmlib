@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -99,7 +99,7 @@ public interface ICdmGenericDao {
 	 * @throws NullPointerException
 	 * @throws MergeException
 	 */
-	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
+	public <T extends CdmBase> void merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
 
 	/**
 	 * Computes if cdmBase2 can be merged into cdmBase1. This is usually the case when both
@@ -118,7 +118,7 @@ public interface ICdmGenericDao {
 	 * @throws NullPointerException
 	 * @throws MergeException
 	 */
-	public <T extends CdmBase> boolean  isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
+	public <T extends CdmBase> boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
 
 	/**
      * Returns a list of matching persistent objects according to the match strategy

@@ -529,8 +529,6 @@ public class ReferencingObjectFormatter {
         return result;
     }
 
-
-
     private static String getCache(StateData stateData,
             Language defaultLanguage) {
         String cache = null;
@@ -562,7 +560,6 @@ public class ReferencingObjectFormatter {
         String mainElementLabel = mainElementLabel(desc);
         return concatWithMainElement(mainElementLabel, cache);
     }
-
 
     /**
      * Returns the label of the main element (taxon, specimen or name) for

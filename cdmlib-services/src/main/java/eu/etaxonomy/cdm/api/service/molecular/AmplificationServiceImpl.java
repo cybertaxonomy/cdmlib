@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service.molecular;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Transactional(readOnly = true)
 public class AmplificationServiceImpl extends AnnotatableServiceBase<Amplification, IAmplificationDao> implements IAmplificationService{
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AmplificationServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger(AmplificationServiceImpl.class);
 
     @Override
     @Autowired

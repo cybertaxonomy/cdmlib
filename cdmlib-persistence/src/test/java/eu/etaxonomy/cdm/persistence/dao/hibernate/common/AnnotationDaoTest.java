@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.assertEquals;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -33,6 +33,9 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
 public class AnnotationDaoTest extends CdmIntegrationTest {
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger(AnnotationDaoTest.class);
 
 	@SpringBeanByType
 	private IAnnotationDao annotationDao;
@@ -50,23 +53,23 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assert annotatedObj != null : "annotatedObj must exist";
 
 		long numberOfAnnotations = annotationDao.countAnnotations(annotatedObj, null);
-		assertEquals("countAnnotations should return 4",4,numberOfAnnotations);
+		assertEquals("countAnnotations should return 4", 4, numberOfAnnotations);
 	}
 
 	@Test
 	public void testGetAnnotations() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
 		assert annotatedObj != null : "annotatedObj must exist";
-		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		List<OrderHint> orderHints = new ArrayList<>();
 		orderHints.add(new OrderHint("created", SortOrder.ASCENDING));
-		List<String> propertyPaths = new ArrayList<String>();
+		List<String> propertyPaths = new ArrayList<>();
 //		propertyPaths.add("annotatedObj");
 		propertyPaths.add("createdBy");
 
-		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, null,null,null,orderHints,propertyPaths);
+		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, null, null, null, orderHints, propertyPaths);
 		assertNotNull("getAnnotations should return a List",annotations);
 		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
-		assertEquals("getAnnotations should return 4",4,annotations.size());
+		assertEquals("getAnnotations should return 4", 4, annotations.size());
 	}
 
 	@Test
@@ -78,7 +81,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assert markerType != null : "markerType must exist";
 
 		long numberOfAnnotations = annotationDao.countAnnotations(annotatedObj, markerType);
-		assertEquals("countAnnotations should return 2",2,numberOfAnnotations);
+		assertEquals("countAnnotations should return 2", 2, numberOfAnnotations);
 	}
 
 	@Test
@@ -89,9 +92,9 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assert markerType != null : "markerType must exist";
 
 		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, markerType,null,null,null,null);
-		assertNotNull("getAnnotations should return a List",annotations);
-		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
-		assertEquals("getAnnotations should return 2",2,annotations.size());
+		assertNotNull("getAnnotations should return a List", annotations);
+		assertFalse("the list should contain Annotation instances", annotations.isEmpty());
+		assertEquals("getAnnotations should return 2", 2, annotations.size());
 	}
 
 	@Test
@@ -101,7 +104,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assert markerType != null : "markerType must exist";
 
 		long numberOfAnnotations = annotationDao.count((User)null, markerType);
-		assertEquals("countAnnotations should return 2",2,numberOfAnnotations);
+		assertEquals("countAnnotations should return 2", 2, numberOfAnnotations);
 	}
 
 	@Test
@@ -110,14 +113,11 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assert markerType != null : "markerType must exist";
 
 		List<Annotation> annotations = annotationDao.list((User)null, markerType, null, null, null, null);
-		assertNotNull("getAnnotations should return a List",annotations);
-		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
-		assertEquals("getAnnotations should return 2",2,annotations.size());
+		assertNotNull("getAnnotations should return a List", annotations);
+		assertFalse("the list should contain Annotation instances", annotations.isEmpty());
+		assertEquals("getAnnotations should return 2", 2, annotations.size());
 	}
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

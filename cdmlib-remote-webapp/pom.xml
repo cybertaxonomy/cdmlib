@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.31.0</version>
+    <version>5.32.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cdmlib-remote-webapp</artifactId>
@@ -55,7 +55,7 @@
       <properties>
         <integrationTest.jvmArgs.cdm.datasource>h2_cdm_blank</integrationTest.jvmArgs.cdm.datasource>
         <integrationTest.jvmArgs.cdm.forceSchemaCreate>true</integrationTest.jvmArgs.cdm.forceSchemaCreate>
-        <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j.properties</integrationTest.log4j.configuration>
+        <integrationTest.jvmArgs.log4j.configuration>${project.build.directory}/target/test-classes/log4j.xml</integrationTest.jvmArgs.log4j.configuration>
       </properties>
       <build>
         <plugins>
@@ -179,10 +179,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>xpp3</groupId>
-      <artifactId>xpp3</artifactId>
-    </dependency>
 
     <!-- swagger -->
     <dependency>
@@ -200,6 +196,7 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
     </dependency>
+    <!-- needed here? It is already mentioned in cdmlib-model -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>

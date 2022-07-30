@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.stream.IReader;
@@ -40,7 +40,7 @@ public class GbifVernacularNameCsv2CdmConverter
 		    implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(GbifVernacularNameCsv2CdmConverter.class);
+	private static final Logger logger = LogManager.getLogger(GbifVernacularNameCsv2CdmConverter.class);
 	private static final String CORE_ID = "coreId";
 
 	/**

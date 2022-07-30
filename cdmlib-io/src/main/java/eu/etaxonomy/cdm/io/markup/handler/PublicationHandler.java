@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.markup.handler;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.io.common.XmlImportBase;
  */
 public class PublicationHandler extends ImportHandlerBase{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PublicationHandler.class);
+	private static final Logger logger = LogManager.getLogger(PublicationHandler.class);
 	
 	private boolean isInPublication;
 	private ImportHandlerBase currentHandler = null;

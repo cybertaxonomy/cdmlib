@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.fetch;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class CdmFetch {
-	private static final Logger logger = Logger.getLogger(CdmFetch.class);
+	private static final Logger logger = LogManager.getLogger(CdmFetch.class);
 
 	public static CdmFetch NO_FETCH() {return new CdmFetch(0);}
 	public static CdmFetch FETCH_NOTHING() {return new CdmFetch(0);}

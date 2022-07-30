@@ -3,7 +3,7 @@
  */
 package eu.etaxonomy.cdm.print;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  * @version 1.0
  */
 public class Publisher {
-	private static final Logger logger = Logger.getLogger(Publisher.class);	
+	private static final Logger logger = LogManager.getLogger(Publisher.class);	
 	
 	
 	/**

@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -112,7 +113,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
            implements  IPublishable, IIntextReferenceTarget{
 
     private static final long serialVersionUID = -3589185949928938529L;
-    private static final Logger logger = Logger.getLogger(TaxonBase.class);
+    private static final Logger logger = LogManager.getLogger(TaxonBase.class);
 
     public static final String ACC_TAXON_BRIDGE_PREFIX = "accTaxon";
 
@@ -165,14 +166,8 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
 
 // ************* CONSTRUCTORS *************/
 
-    /**
-     * Class constructor: creates a new empty (abstract) taxon.
-     *
-     * @see 	#TaxonBase(TaxonName, Reference)
-     */
-    protected TaxonBase(){
-        super();
-    }
+    //for hibernate use only, *packet* private required by bytebuddy and subclasses
+    TaxonBase(){}
 
     /**
      * Class constructor: creates a new (abstract) taxon with the
@@ -194,14 +189,14 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
 
     @Override
     protected void initDefaultCacheStrategy() {
-        this.cacheStrategy = (S)new TaxonBaseDefaultCacheStrategy();
+        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy();
     }
 
 //********* METHODS **************************************/
 
     @Transient
     public List<TaggedText> getTaggedTitle(){
-        return getCacheStrategy().getTaggedTitle(this);
+        return cacheStrategy().getTaggedTitle(this);
     }
 
     /**

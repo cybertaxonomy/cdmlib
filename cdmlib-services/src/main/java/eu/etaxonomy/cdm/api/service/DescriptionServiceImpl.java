@@ -21,8 +21,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -112,7 +112,7 @@ public class DescriptionServiceImpl
         extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao>
         implements IDescriptionService {
 
-    private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionServiceImpl.class);
 
     protected IDescriptionElementDao descriptionElementDao;
     protected ITermTreeDao featureTreeDao;
@@ -1079,15 +1079,15 @@ public class DescriptionServiceImpl
 
     }
 
+    // FIXME Query should not be used in service layer
     @Override
     public DescriptionBaseDto loadDto(UUID descriptionUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
-        Query query =  getSession().createQuery(sqlSelect);
-        List<UUID> uuids = new ArrayList<UUID>();
+        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
+        List<UUID> uuids = new ArrayList<>();
         uuids.add(descriptionUuid);
         query.setParameterList("uuid", uuids);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
@@ -1124,15 +1124,15 @@ public class DescriptionServiceImpl
         }else{
             return null;
         }
-
     }
+
+    // FIXME Query should not be used in service layer
     @Override
     public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuids) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
-        Query query =  getSession().createQuery(sqlSelect);
+        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
         query.setParameterList("uuid", descriptionUuids);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
@@ -1141,9 +1141,8 @@ public class DescriptionServiceImpl
 
             //get categorical data
             sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
-            query =  getSession().createQuery(sqlSelect);
+            query = getSession().createQuery(sqlSelect, Object[].class);
             query.setParameter("uuid", dto.getDescriptionUuid());
-            @SuppressWarnings("unchecked")
             List<Object[]>  resultCat = query.list();
             List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
 
@@ -1159,57 +1158,44 @@ public class DescriptionServiceImpl
             dto.getElements().addAll(listCategorical);
             //get quantitative data
             sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
-            query =  getSession().createQuery(sqlSelect);
+            query = getSession().createQuery(sqlSelect, Object[].class);
             query.setParameter("uuid",  dto.getDescriptionUuid());
-            @SuppressWarnings("unchecked")
-            List<Object[]>  resultQuant = query.list();
+            List<Object[]> resultQuant = query.list();
             List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
             dto.getElements().addAll(listQuant);
-
         }
         return list;
-
     }
 
+    // FIXME Query should not be used in service layer
     @Override
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect();
-        Query query =  getSession().createQuery(sqlSelect);
+        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
         query.setParameter("uuid", taxonUuid);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-
         List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
 
         return list;
-
     }
 
     @Override
     public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid) {
-      //get specimen used in description
-      //get individial associations with this specimen
-      //get taxon node for the classification
-      @SuppressWarnings("unchecked")
-      List<SortableTaxonNodeQueryResult> result =  dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
+        //get specimen used in description
+        //get individial associations with this specimen
+        //get taxon node for the classification
+        List<SortableTaxonNodeQueryResult> result =  dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
 
-      if (!result.isEmpty()){
-         List<TaxonNodeDto> dtos = taxonNodeDao.createNodeDtos(result);
-         if (dtos.size() == 1){
-             return dtos.get(0);
-         }else{
-             logger.debug("There is more than one taxon associated to the specimen with uuid: " + specimenUuid + " return the first in the list");
-             return dtos.get(0);
-         }
-      }
-
-
-
+        if (!result.isEmpty()){
+            List<TaxonNodeDto> dtos = taxonNodeDao.createNodeDtos(result);
+            if (dtos.size() == 1){
+                return dtos.get(0);
+            }else{
+                logger.debug("There is more than one taxon associated to the specimen with uuid: " + specimenUuid + " return the first in the list");
+                return dtos.get(0);
+            }
+        }
         return null;
     }
-
-
-
-
 }

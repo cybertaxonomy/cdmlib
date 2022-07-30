@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.database.update;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>>
             implements IUpdater<U> {
 
-	private static final Logger logger = Logger.getLogger(UpdaterBase.class);
+	private static final Logger logger = LogManager.getLogger(UpdaterBase.class);
 
 	protected List<T> list;
 	protected String startVersion;

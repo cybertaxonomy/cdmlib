@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.proxy.HibernateProxy;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,6 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
@@ -51,7 +54,6 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import javassist.util.proxy.Proxy;
 
 public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
@@ -246,13 +248,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
-    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml")
+    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy.xml")
+    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy-result.xml")
     //test if TaxonNode.remove(index) works correctly with proxies
-    public void testSortindexForJavassist(){
+    public void testSortindexForHibernateProxy(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
     	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
-    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
+    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof HibernateProxy);
     	Taxon firstTopLevelTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode childNode = classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
@@ -261,13 +263,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
-    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist2-result.xml")
+    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy.xml")
+    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy2-result.xml")
     //test if TaxonNode.addNode(node) works correctly with proxies
-    public void testSortindexForJavassist2(){
+    public void testSortindexForHibernateProxy2(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
     	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
-    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
+    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof HibernateProxy);
     	Taxon newTaxon = Taxon.NewInstance(null, null);
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode newNode = classification.addChildTaxon(newTaxon, 0, null, null);
@@ -406,12 +408,58 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
         List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); // cant use "*" here since this is not supported by the method under test
         assertNotNull(result);
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         assertEquals("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7", result.get(0).getUuid().toString()); // Acherontia(Fabricius, 1798) rank: Genus
         assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(1).getUuid().toString()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
         assertEquals("770239f6-4fa8-496b-8738-fe8f7b2ad519", result.get(2).getUuid().toString()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
         assertEquals("4f73adcc-a535-4fbe-a97a-c05ee8b12191", result.get(3).getUuid().toString()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
     }
+    
+    @Test
+    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    public final void testGetTaxonNodeDtoCheckSortIndex(){
+
+        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); 
+        assertEquals(5, result.size());
+       
+        assertTrue(0 == result.get(0).getSortIndex()); // Acherontia(Fabricius, 1798) rank: Genus
+        assertTrue(0 == result.get(1).getSortIndex()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
+        assertTrue(1 == result.get(2).getSortIndex()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
+        assertTrue(0 == result.get(3).getSortIndex()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
+    
+    
+    }
+    
+    @Test
+    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    public final void testGetTaxonNodeDtoCheckStatus(){
+
+        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); 
+        assertEquals(5, result.size());
+       
+        assertEquals(TaxonNodeStatus.UNPLACED, result.get(0).getStatus()); // Acherontia(Fabricius, 1798) rank: Genus
+        assertEquals(null, result.get(1).getStatus());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
+        assertEquals(null, result.get(2).getStatus());  // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
+        assertEquals(TaxonNodeStatus.EXCLUDED, result.get(3).getStatus());  // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
+    
+    
+    }
+
+    @Test
+    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    public final void testGetTaxonNodeDtoCheckNote(){
+
+        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
+        assertEquals(5, result.size());
+
+        assertNotNull(result.get(3).getStatusNote()); // Acherontia(Fabricius, 1798) rank: Genus
+        assertNotNull(result.get(4).getStatusNote());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
+//        assertEquals(null, result.get(2).getStatus());  // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
+//        assertEquals(TaxonNodeStatus.EXCLUDED, result.get(3).getStatus());  // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
+//
+
+    }
+
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

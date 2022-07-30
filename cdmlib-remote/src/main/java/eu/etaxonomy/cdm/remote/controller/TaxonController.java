@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -76,14 +77,13 @@ import io.swagger.annotations.Api;
  *
  * @author a.kohlbecker
  * @since 20.07.2009
- *
  */
 @Controller
 @Api("taxon")
 @RequestMapping(value = {"/taxon/{uuid}"})
 public class TaxonController extends AbstractIdentifiableController<TaxonBase, ITaxonService>{
 
-    public static final Logger logger = Logger.getLogger(TaxonController.class);
+    public static final Logger logger = LogManager.getLogger(TaxonController.class);
 
     @Autowired
     private IOccurrenceService occurrenceService;
@@ -103,6 +103,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "taxonNodes.classification",
             "taxonNodes.parent",
+            "taxonNodes.parent.childNodes",   //currently needed to compute sortindex //TODO improve
             "taxonNodes.taxon.name",
             "taxonNodes.taxon.secSource.citation",
             "taxonNodes.statusNote",
@@ -246,25 +247,30 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
-    public Set<TaxonNodeDto>  doGetTaxonNodes(
+    public Collection<TaxonNodeDto>  doGetTaxonNodes(
             @PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
-        TaxonBase<?> taxonBase;
+        //this should be done by treeIndex as parameter, but as first implementation we get the node and then the treeinde
+        String subTreeIndex = null;
         if (subtreeUuid != null){
-            taxonBase = doGet(taxonUuid, subtreeUuid, request, response);
-        }else{
-            taxonBase = service.load(taxonUuid, NO_UNPUBLISHED, getTaxonNodeInitStrategy().getPropertyPaths());
+        	TaxonNode subtree = getSubtreeOrError(subtreeUuid, nodeService, response);
+        	subTreeIndex = subtree != null? subtree.treeIndex(): null;
         }
-        if(taxonBase instanceof Taxon){
-            return ((Taxon)taxonBase).getTaxonNodes().stream().map(e -> new TaxonNodeDto(e)).collect(Collectors.toSet());
-        } else {
-            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-            return null;
+        try {
+        	return nodeService.getTaxonNodeDtosFromTaxon(taxonUuid, subTreeIndex);
+        }catch(Exception e) {
+        		 HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+                 return null;
         }
+        
+    	
+    	
+           
+        
     }
 
     protected  EntityInitStrategy getTaxonNodeInitStrategy() {

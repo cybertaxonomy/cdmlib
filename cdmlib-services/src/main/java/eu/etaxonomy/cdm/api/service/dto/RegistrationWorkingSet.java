@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -49,16 +49,16 @@ public class RegistrationWorkingSet {
 
     }
 
-    public RegistrationWorkingSet(List<RegistrationDTO> registrationDTOs) throws RegistrationValidationException {
+    public RegistrationWorkingSet(List<RegistrationDTO> registrationDTOs) throws TypeDesignationSetException {
         validateAndAddDTOs(registrationDTOs, null);
     }
 
     /**
      * @param candidated
-     * @throws RegistrationValidationException
+     * @throws TypeDesignationSetException
      *
      */
-    private void validateAndAdd(Set<Registration> candidates) throws RegistrationValidationException {
+    private void validateAndAdd(Set<Registration> candidates) throws TypeDesignationSetException {
         List<RegistrationDTO> dtos = new ArrayList<>(registrationDTOs.size());
         candidates.forEach(reg -> dtos.add(new RegistrationDTO(reg)));
         validateAndAddDTOs(dtos, null);
@@ -70,15 +70,15 @@ public class RegistrationWorkingSet {
      * citation of the {@link TypeDesignations}. In case the citation is a section and this section is
      * having an in-reference the in-reference will be used instead.
      * Registration with a differing publication are not added to
-     * the working set, instead a {@link RegistrationValidationException} is thrown which is a container for
+     * the working set, instead a {@link TypeDesignationSetException} is thrown which is a container for
      * all validation problems.
      *
      * @param candidates
      * @param problems
      *    Problems detected in prior validation and processing passed to this method to be completed. Can be <code>null</code>.
-     * @throws RegistrationValidationException
+     * @throws TypeDesignationSetException
      */
-    private void validateAndAddDTOs(List<RegistrationDTO> candidates, List<String> problems) throws RegistrationValidationException {
+    private void validateAndAddDTOs(List<RegistrationDTO> candidates, List<String> problems) throws TypeDesignationSetException {
         if(problems == null){
             problems = new ArrayList<>();
         }
@@ -100,7 +100,7 @@ public class RegistrationWorkingSet {
         }
 
         if(!problems.isEmpty()){
-            throw new RegistrationValidationException("", problems);
+            throw new TypeDesignationSetException("", problems);
         }
 
     }
@@ -122,15 +122,15 @@ public class RegistrationWorkingSet {
 
     /**
      * @param reg
-     * @throws RegistrationValidationException
+     * @throws TypeDesignationSetException
      */
-    public void add(Registration reg) throws RegistrationValidationException {
+    public void add(Registration reg) throws TypeDesignationSetException {
         Set<Registration> candidates = new HashSet<>();
         candidates.add(reg);
         validateAndAdd(candidates);
     }
 
-    public void add(RegistrationDTO regDTO) throws RegistrationValidationException {
+    public void add(RegistrationDTO regDTO) throws TypeDesignationSetException {
         validateAndAddDTOs(Arrays.asList(regDTO), null);
     }
 

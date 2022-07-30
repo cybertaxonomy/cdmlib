@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
- * NOTE: This class was moved here from TypeDesignationWorkingSet to allow to be used
+ * NOTE: This class was moved here from TypeDesignationSet to allow to be used
  * in model compare classes.
  *
  * @author a.kohlbecker

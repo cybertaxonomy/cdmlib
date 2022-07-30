@@ -110,7 +110,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         }
         //
         taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class,
-                new Object[] { new RunAsAdmin(runAsAuthenticationProvider) }, new Class[] { IRunAs.class });
+                new Object[] { new RunAsAdmin(runAsAuthenticationProvider), prefDao}, new Class[] { IRunAs.class, IPreferenceDao.class} );
     }
 
     @After
@@ -152,7 +152,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     /**
-     * Test for TaxonGraphException when TaxonName.nomenclaturalSource == nulll
+     * Test for TaxonGraphException when TaxonName.nomenclaturalSource == null
      */
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
@@ -183,7 +183,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     /**
-     * Test for TaxonGraphException when TaxonName.nomenclaturalSource.citation == nulll
+     * Test for TaxonGraphException when TaxonName.nomenclaturalSource.citation == null
      */
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
@@ -387,7 +387,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
 
     /**
-     * exactly the same as {@link #testRemoveNomenclaturalSource()}
+     * Exactly the same as {@link #testRemoveNomenclaturalSource()}
      * but removing the citation of the source indirectly via setNomenclaturalReference()
      */
     @Test

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -76,7 +76,7 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
 
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CdmClass.class);
+    private static final Logger logger = LogManager.getLogger(CdmClass.class);
 
     @SuppressWarnings("unchecked")
     private CdmClass(Class<? extends CdmBase> clazz, String key, boolean isDescribed,

@@ -23,7 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @since 20.10.2008
  */
 public class UnitsGatheringArea {
-    private static final Logger logger = Logger.getLogger(UnitsGatheringArea.class);
+    private static final Logger logger = LogManager.getLogger(UnitsGatheringArea.class);
 
     private static final boolean DEBUG = false;
 

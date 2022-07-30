@@ -24,7 +24,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -61,7 +62,7 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
 
     private static final long serialVersionUID = 3405969418194981401L;
-    private static final Logger logger = Logger.getLogger(TimePeriod.class);
+    private static final Logger logger = LogManager.getLogger(TimePeriod.class);
 
     public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
     public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
@@ -592,6 +593,34 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
                     (end == null? 39: end.hashCode()) +
                     (freeText == null? 41: freeText.hashCode());
         return hashCode;
+    }
+
+    /**
+     * Tests, if time period 1 and time period 2 are equal with <code>null</code> and
+     * <code>empty</code> time periods all handled similar.<BR><BR>
+     * <code>
+     * equalsNullAndEmptySafe(null, null)  = true<BR>
+     * equalsNullAndEmptySafe(null, empty)  = true<BR>
+     * equalsNullAndEmptySafe(empty, null)  = true<BR>
+     * equalsNullAndEmptySafe(empty, empty)  = true<BR>
+     * equalsNullAndEmptySafe(null, not-empty)  = false<BR>
+     * equalsNullAndEmptySafe(empty, not-empty)  = false<BR>
+     * equalsNullAndEmptySafe(not-empty, null)  = false<BR>
+     * equalsNullAndEmptySafe(not-empty, empty)  = false<BR>
+     * equalsNullAndEmptySafe(not-empty1, not-empty2)  = not-empty.equals(not-empty2)<BR>
+     * </code>
+     */
+    @SuppressWarnings("null")
+    public static boolean equalsNullAndEmptySafe(TimePeriod timePeriod1, TimePeriod timePeriod2) {
+        boolean tp1Empty = timePeriod1 == null || timePeriod1.isEmpty();
+        boolean tp2Empty = timePeriod2 == null || timePeriod2.isEmpty();
+        if (tp1Empty && tp2Empty) {
+            return true;
+        }else if (tp1Empty || tp2Empty) {
+            return false;
+        }else {
+            return timePeriod1.equals(timePeriod2);
+        }
     }
 
 //*********** CLONE **********************************/

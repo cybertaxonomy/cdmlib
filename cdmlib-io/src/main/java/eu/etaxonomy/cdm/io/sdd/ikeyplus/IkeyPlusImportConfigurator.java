@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.io.sdd.ikeyplus;
 
 import eu.etaxonomy.cdm.common.URI;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  *
  */
 public class IkeyPlusImportConfigurator extends ImportConfiguratorBase<IkeyPlusImportState, URI> {
-    public static final Logger logger = Logger.getLogger(IkeyPlusImportConfigurator.class);
+    public static final Logger logger = LogManager.getLogger(IkeyPlusImportConfigurator.class);
 
     private static IInputTransformer defaultTransformer = null;
 

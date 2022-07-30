@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
 @Transactional(readOnly = true)
 public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISequenceDao> implements ISequenceService{
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PreferenceServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger(PreferenceServiceImpl.class);
 
     @Autowired
     IOccurrenceService occurrenceService;

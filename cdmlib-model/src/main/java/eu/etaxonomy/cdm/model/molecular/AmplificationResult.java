@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -92,7 +92,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 public class AmplificationResult extends AnnotatableEntity{
 
 	private static final long serialVersionUID = -8614860617229484621L;
-	private static final Logger logger = Logger.getLogger(AmplificationResult.class);
+	private static final Logger logger = LogManager.getLogger(AmplificationResult.class);
 
     /** @see #getDnaSample() */
 	@XmlElement( name = "DnaSample")

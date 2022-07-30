@@ -25,9 +25,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -55,13 +54,12 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
 
     private static final long serialVersionUID = -7832621515891195623L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TermRelationBase.class);
+    private static final Logger logger = LogManager.getLogger(TermRelationBase.class);
 
     @XmlElement(name = "TermGraph")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=TermTree.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE}) //TODO this usage is incorrect, needed only for OneToMany, check why it is here, can it be removed??
      //TODO Val #3379
 //    @NotNull
     private GRAPH graph;
@@ -88,7 +86,9 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
 
  // ******************** CONSTRUCTOR ***************************************/
 
-    protected TermRelationBase(){}
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
+    TermRelationBase(){}
 
     protected TermRelationBase(TermType termType) {
         this.termType = termType;

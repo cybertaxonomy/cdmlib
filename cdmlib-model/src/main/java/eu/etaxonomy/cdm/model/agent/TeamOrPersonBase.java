@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -46,7 +46,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
             implements INomenclaturalAuthor {
 
     private static final long serialVersionUID = 5216821307314001961L;
-    public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
+    public static final Logger logger = LogManager.getLogger(TeamOrPersonBase.class);
 
     //under construction #4311
     @XmlElement(name="CollectorTitleCache")
@@ -111,19 +111,19 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
 
     @SuppressWarnings("unchecked")
     private String generateNomenclaturalTitleCache() {
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             return this.getClass() + ": " + this.getUuid();
         }else{
-            return getCacheStrategy().getNomenclaturalTitleCache((T)this);
+            return cacheStrategy().getNomenclaturalTitleCache((T)this);
         }
     }
 
     @SuppressWarnings("unchecked")
     private String generateCollectorTitleCache() {
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             return this.getClass() + ": " + this.getUuid();
         }else{
-            return getCacheStrategy().getCollectorTitleCache((T)this);
+            return cacheStrategy().getCollectorTitleCache((T)this);
         }
     }
 
@@ -152,7 +152,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         if (agent.isProtectedTitleCache()){
             return agent.getTitleCache();
         }else{
-            return this.getCacheStrategy().getFullTitle(agent);
+            return this.cacheStrategy().getFullTitle(agent);
         }
     }
 

@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -22,7 +22,7 @@ public abstract class EndNoteImportBase
         extends CdmImportBase<EndnoteImportConfigurator, EndnoteImportState> {
 
     private static final long serialVersionUID = 6644348267081220104L;
-    private static final Logger logger = Logger.getLogger(EndNoteImportBase.class);
+    private static final Logger logger = LogManager.getLogger(EndNoteImportBase.class);
 
 	protected Element getXmlElement(EndnoteImportConfigurator tcsConfig){
 		Element root = tcsConfig.getSourceRoot();

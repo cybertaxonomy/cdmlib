@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation.constraint;
 
 import javax.validation.ConstraintValidator;
@@ -18,7 +17,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors;
-
 
 public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 		ConstraintValidator<BasionymsMustShareEpithetsAndAuthors, NameRelationship> {
@@ -54,7 +52,6 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 	                //remove duplicate violation as it does not give more information
 //					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentEpithets.message}").addNode("toName").addNode("nameCache").addConstraintViolation();
 				}
-
 
 				//compare nomRefs and details for zoological names
 				//why only for zooNames?

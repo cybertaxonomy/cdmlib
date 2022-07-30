@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Primer;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -31,14 +31,11 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 @Repository
-public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implements IPrimerDao{
+public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> implements IPrimerDao{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(PrimerDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(PrimerDaoHibernateImpl.class);
 
-    /**
-     * @param type
-     */
     public PrimerDaoHibernateImpl() {
         super(Primer.class);
     }
@@ -48,15 +45,13 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         List<UuidAndTitleCache<Primer>> list = new ArrayList<UuidAndTitleCache<Primer>>();
         Session session = getSession();
 
-        Query query = session.createQuery("select uuid, id, label from Primer");
+        Query<Object[]> query = session.createQuery("select uuid, id, label from Primer", Object[].class);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
             list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
         }
-
         return list;
     }
 
@@ -71,25 +66,17 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         return findByParam(Primer.class, "label", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
-
-        Session session = getSession();
 
         String queryString = "SELECT uuid, id, label FROM Prime ";
 
         if ( pattern != null){
             queryString += " WHERE ";
             queryString += " label LIKE :pattern";
-
         }
 
-        Query query;
-        query = session.createQuery(queryString);
-
+        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
 
         if (limitOfInitialElements != null){
             query.setMaxResults(limitOfInitialElements);
@@ -101,14 +88,11 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
               query.setParameter("pattern", pattern);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
         List<UuidAndTitleCache<Primer>> list = new ArrayList<>();
         for(Object[] object : result){
             list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0],(Integer)object[1], (String)object[2]));
         }
-
         return list;
     }
-
 }

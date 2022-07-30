@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportTruncatedStringMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportTruncatedStringMapper.class);
 
 
     private String longTextAttribute;

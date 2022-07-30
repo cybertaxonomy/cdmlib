@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 //TODO remove ANNOTATABLE by ISourcable (but this is not CDMBase yet therefore not trivial
 public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CDMBASE, STATE>  {
-	private static final Logger logger = Logger.getLogger(DbImportMethodMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportMethodMapper.class);
 
 	//******************************* ATTRIBUTES ***************************************/
 

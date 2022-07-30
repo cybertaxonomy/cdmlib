@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -36,7 +35,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = false)
-public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<PolytomousKey, IPolytomousKeyDao> implements IPolytomousKeyService {
+public class PolytomousKeyServiceImpl
+        extends IdentifiableServiceBase<PolytomousKey, IPolytomousKeyDao>
+        implements IPolytomousKeyService {
 
 	private IIdentificationKeyDao identificationKeyDao;
 
@@ -136,9 +137,8 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 	@Override
 	public DeleteResult delete(PolytomousKey key){
-	    //DeleteResult result = new DeleteResult();
-	    PolytomousKeyNode root = key.getRoot();
 
+	    PolytomousKeyNode root = key.getRoot();
 
 	    DeleteResult result = isDeletable(key.getUuid(), null);
 	    DeleteResult resultRoot = new DeleteResult();
@@ -147,7 +147,6 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
     	        if (root != null){
     	           // root.setKey(null);
     	            resultRoot = nodeService.delete(root.getUuid(), true);
-
     	        }
     	    }catch(Exception e){
     	        result.addException(e);

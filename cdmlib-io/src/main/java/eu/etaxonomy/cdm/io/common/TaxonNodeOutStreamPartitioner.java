@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -34,7 +34,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
         implements ITaxonNodeOutStreamPartitioner {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TaxonNodeOutStreamPartitioner.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNodeOutStreamPartitioner.class);
 
 
     private static final List<String> defaultPropertyPaths = Arrays.asList(new String[]{"taxon","taxon.name"});

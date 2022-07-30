@@ -21,7 +21,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.spi.RegionFactory;
 import org.jdom.Attribute;
 import org.jdom.Element;
@@ -48,7 +49,7 @@ public class CdmPersistentDataSource
         implements ICdmPersistentSource {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
+    private static final Logger logger = LogManager.getLogger(CdmPersistentDataSource.class);
 
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
 
@@ -73,13 +74,6 @@ public class CdmPersistentDataSource
 	 */
 	public final static CdmPersistentDataSource NewDefaultInstance() throws DataSourceNotFoundException {
 		return NewInstance("default");
-	}
-
-	/**
-	 * Returns the default CdmDataSource
-	 */
-	public final static CdmPersistentDataSource NewLocalHsqlInstance() throws DataSourceNotFoundException{
-		return NewInstance("localDefaultHsql");
 	}
 
 	/**
@@ -272,9 +266,9 @@ public class CdmPersistentDataSource
     @Override
     @Deprecated
     public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql,
-            Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
+            Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass, String byteCodeProvider){
         HibernateConfiguration hibernateConfig = HibernateConfiguration.NewInstance(showSql, formatSql,
-                registerSearchListener, null, cacheProviderClass);
+                registerSearchListener, null, cacheProviderClass, byteCodeProvider);
         return this.getHibernatePropertiesBean(hbm2dll, hibernateConfig);
     }
 
@@ -283,13 +277,14 @@ public class CdmPersistentDataSource
             HibernateConfiguration hibernateConfig) {
 
         if (hibernateConfig == null){
-            hibernateConfig = new HibernateConfiguration();
+            hibernateConfig = HibernateConfiguration.NewDefaultInstance();
         }
-        boolean showSql = hibernateConfig.getShowSql(HibernateConfiguration.SHOW_SQL_DEFAULT);
-        boolean formatSql = hibernateConfig.getFormatSql(HibernateConfiguration.SHOW_SQL_DEFAULT);
-        boolean registerAuditing = hibernateConfig.getRegisterEnvers(HibernateConfiguration.REGISTER_ENVERS_DEFAULT);
-        boolean registerSearchListener = hibernateConfig.getRegisterSearch(HibernateConfiguration.REGISTER_SEARCH_DEFAULT);
-        Class<? extends RegionFactory> cacheProviderClass = hibernateConfig.getCacheProviderClass(HibernateConfiguration.CACHE_PROVIDER_DEFAULT);
+        boolean showSql = hibernateConfig.getShowSql();
+        boolean formatSql = hibernateConfig.getFormatSql();
+        boolean registerAuditing = hibernateConfig.getRegisterEnvers();
+        boolean registerSearchListener = hibernateConfig.getRegisterSearch();
+        Class<? extends RegionFactory> cacheProviderClass = hibernateConfig.getCacheProviderClass();
+        String byteCodeProvider = hibernateConfig.getByteCodeProvider();
 
 		//Hibernate default values
 		if (hbm2dll == null){
@@ -297,7 +292,7 @@ public class CdmPersistentDataSource
 		}
 
 		return makeHibernatePropertiesBean(getDatabaseType(), hbm2dll, showSql, formatSql, registerAuditing,
-		        registerSearchListener, cacheProviderClass);
+		        registerSearchListener, cacheProviderClass, byteCodeProvider);
 	}
 
 	/**

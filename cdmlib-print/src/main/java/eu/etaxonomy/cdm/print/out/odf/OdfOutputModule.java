@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.print.out.odf;
 import java.io.File;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.transform.XSLTransformException;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
@@ -28,8 +29,8 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  * @since Apr 20, 2010
  */
 public class OdfOutputModule extends PublishOutputModuleBase {
-	private static final Logger logger = Logger
-		.getLogger(OdfOutputModule.class);
+
+	private static final Logger logger = LogManager.getLogger(OdfOutputModule.class);
 
 	public static String STYLESHEET_RESOURCE_DEFAULT = "/stylesheets/odf/cdmToOdfText.xsl";
 

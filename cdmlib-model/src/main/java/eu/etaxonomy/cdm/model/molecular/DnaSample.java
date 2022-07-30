@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -62,14 +63,10 @@ public class DnaSample extends DerivedUnit {
 
 	private static final long serialVersionUID = -2978411330023671805L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DnaSample.class);
+	private static final Logger logger = LogManager.getLogger(DnaSample.class);
 
 // ****************** FACTORY METHOD *****************/
 
-	/**
-	 * Factory method
-	 * @return a new and empty DnaSample
-	 */
 	public static DnaSample NewInstance(){
 		return new DnaSample(SpecimenOrObservationType.DnaSample);
 	}
@@ -79,9 +76,6 @@ public class DnaSample extends DerivedUnit {
     }
 
 // ************** ATTRIBUTES ****************************/
-
-//	@XmlElement(name = "BankNumber")
-//	private String bankNumber;
 
 	@XmlElementWrapper(name = "Sequences")
 	@XmlElement(name = "sequence")
@@ -108,15 +102,11 @@ public class DnaSample extends DerivedUnit {
 
 // ******************* CONSTRUCTOR *************************/
 
-    /**
-     * @deprecated for hibernate use only
-     */
+    //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
-	protected DnaSample() {  //protected for Javassist, otherwise private
-		super();
-	}
+	DnaSample() {}
 
-	private  DnaSample(SpecimenOrObservationType type) {  //protected for Javassist, otherwise private
+	private  DnaSample(SpecimenOrObservationType type) {
         super(type);
     }
 

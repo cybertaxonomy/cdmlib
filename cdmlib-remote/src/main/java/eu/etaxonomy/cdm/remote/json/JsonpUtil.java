@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.remote.json;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.kohlbecker
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 public class JsonpUtil {
 
-    public static final Logger logger = Logger.getLogger(JsonpUtil.class);
+    public static final Logger logger = LogManager.getLogger(JsonpUtil.class);
 
     /**
      * @param request

@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.io.taxonx2013;
 import eu.etaxonomy.cdm.common.URI;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 
 public class TaxonXXMLFieldGetter {
 
-    private static final Logger logger = Logger.getLogger(TaxonXXMLFieldGetter.class);
+    private static final Logger logger = LogManager.getLogger(TaxonXXMLFieldGetter.class);
     private final Document doc;
 
 

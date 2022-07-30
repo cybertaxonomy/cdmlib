@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -37,7 +37,7 @@ public class DerivedUnitFacadeCacheStrategy
 
     private static final long serialVersionUID = 1578628591216605619L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategy.class);
+	private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeCacheStrategy.class);
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 

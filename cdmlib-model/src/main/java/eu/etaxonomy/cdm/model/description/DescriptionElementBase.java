@@ -38,10 +38,10 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -103,7 +103,7 @@ public abstract class DescriptionElementBase
 
     private static final long serialVersionUID = 5000910777835755905L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
+    private static final Logger logger = LogManager.getLogger(DescriptionElementBase.class);
 
     //type, category of information. In structured descriptions characters
     @XmlElement(name = "Feature")
@@ -138,7 +138,6 @@ public abstract class DescriptionElementBase
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @OrderColumn(name="sortIndex")
-    @ListIndexBase(value=0)  //not really needed as this is the default
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<Media> media = new ArrayList<>();
 
@@ -472,12 +471,12 @@ public abstract class DescriptionElementBase
      * @param reference the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
      * @param nameUsedInSource the taxon name used in the source
-     * @param originalNameString the name as text used in the source
+     * @param originalInfo any information as original mentioned in the text
      */
     public DescriptionElementSource addSource(OriginalSourceType type, String idInSource, String idNamespace,
-            Reference reference, String microReference, TaxonName nameUsedInSource, String originalNameString){
+            Reference reference, String microReference, TaxonName nameUsedInSource, String originalInfo){
         DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace,
-                reference, microReference, nameUsedInSource, originalNameString);
+                reference, microReference, nameUsedInSource, originalInfo);
         addSource(newSource);
         return newSource;
     }

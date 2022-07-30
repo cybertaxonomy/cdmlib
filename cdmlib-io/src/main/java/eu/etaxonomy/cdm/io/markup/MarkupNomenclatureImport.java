@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.util.HashMap;
@@ -19,7 +18,8 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -50,14 +50,11 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @since 30.05.2012
- *
  */
 public class MarkupNomenclatureImport extends MarkupImportBase {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupNomenclatureImport.class);
-
-
-//	private NonViralNameParserImpl parser = new NonViralNameParserImpl();
+	private static final Logger logger = LogManager.getLogger(MarkupNomenclatureImport.class);
 
 	private final MarkupSpecimenImport specimenImport;
 
@@ -121,7 +118,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		state.setLatestAuthorInHomotype(null);
 		// TODO handle missing end element
 		throw new IllegalStateException("Homotypes has no closing tag");
-
 	}
 
 	private void handleNameType(MarkupImportState state, XMLEventReader reader,
@@ -181,7 +177,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 		// TODO handle missing end element
 		throw new IllegalStateException("Homotypes has no closing tag");
-
 	}
 
 	/**
@@ -214,6 +209,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
             name = createNameByCode(state, null);
             Taxon acc = state.getCurrentTaxon();
             Taxon misapplied = Taxon.NewInstance(name, null);
+            this.save(acc, state); //we got a transient object exception later in the taxon otherwise
+            this.save(misapplied, state);
             misappliedRelation = acc.addMisappliedName(misapplied, null, null);
         }else if (!isNameType && ACCEPTED.equalsIgnoreCase(classValue)) {
 			isSynonym = false;

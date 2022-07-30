@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -85,7 +86,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     private static final long serialVersionUID = 4838214337140859787L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
+    private static final Logger logger = LogManager.getLogger(TypeDesignationBase.class);
 
     @XmlElement(name = "IsNotDesignated")
     private boolean notDesignated;
@@ -97,6 +98,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     private T typeStatus;
 
     //the source for the lectotypification (or similar)
+    //#8017, #9332
     @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -139,13 +141,13 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      *
      * @param citation				the reference source for the new designation
      * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-     * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+     * @param originalInfo	any information from the original source, might be the name as written in the source (#10097)
      * @see							#TypeDesignationBase()
      * @see							#isNotDesignated()
      * @see							TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString) {
-        this(citation, citationMicroReference, originalNameString, false);
+    protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalInfo) {
+        this(citation, citationMicroReference, originalInfo, false);
     }
 
     /**
@@ -156,15 +158,15 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      *
      * @param citation				the reference source for the new designation
      * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-     * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+     * @param originalInfo	any information from the original source, might be the name as written in the source (#10097)
      * @param isNotDesignated		the boolean flag indicating whether there is no type at all for
      * 								<i>this</i> type designation
      * @see							#TypeDesignationBase()
      * @see							#isNotDesignated()
      * @see							TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
-        this(NamedSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
+    protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalInfo, boolean notDesignated){
+        this(NamedSource.NewPrimarySourceInstance(citation, citationMicroReference, null, originalInfo), notDesignated);
     }
 
     /**
@@ -174,15 +176,13 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * the former designation).
      *
      * @param source                the reference source for the new designation
-     * @param originalNameString    the taxon name string used originally in the reference source for the new designation
      * @param isNotDesignated       the boolean flag indicating whether there is no type at all for
      *                              <i>this</i> type designation
      * @see                         #TypeDesignationBase()
      * @see                         #isNotDesignated()
      * @see                         TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(NamedSource designationSource, String originalNameString, boolean notDesignated){
-        super();
+    protected TypeDesignationBase(NamedSource designationSource, boolean notDesignated){
         this.notDesignated = notDesignated;
         this.designationSource = designationSource;
     }

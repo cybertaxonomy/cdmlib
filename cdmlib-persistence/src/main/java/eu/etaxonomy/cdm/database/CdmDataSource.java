@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.MutablePropertyValues;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 public class CdmDataSource extends CdmDataSourceBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
+	private static final Logger logger = LogManager.getLogger(CdmDataSource.class);
 
 	private DatabaseTypeEnum dbType;
 	private String database;
@@ -205,9 +205,9 @@ public class CdmDataSource extends CdmDataSourceBase {
     @Override
     @Deprecated
     public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql,
-            Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
+            Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass, String byteCodeProvider){
         HibernateConfiguration hibernateConfig = HibernateConfiguration.NewInstance(showSql, formatSql,
-                registerSearchListener, null, cacheProviderClass);
+                registerSearchListener, null, cacheProviderClass, byteCodeProvider);
         return getHibernatePropertiesBean(hbm2dll, hibernateConfig);
     }
 
@@ -215,7 +215,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
 	        HibernateConfiguration hibernateConfig){
         if (hibernateConfig == null){
-            hibernateConfig = new HibernateConfiguration();  //empty
+            hibernateConfig = HibernateConfiguration.NewDefaultInstance();  //empty
         }
 
         boolean showSql = hibernateConfig.getShowSql(this.showSql);
@@ -223,6 +223,7 @@ public class CdmDataSource extends CdmDataSourceBase {
         boolean registerAuditing = hibernateConfig.getRegisterEnvers(this.registerAuditing);
         boolean registerSearchListener = hibernateConfig.getRegisterSearch(this.registerSearchListener);
         Class<? extends RegionFactory> cacheProviderClass = hibernateConfig.getCacheProviderClass(this.cacheProviderClass);
+        String byteCodeProvider = hibernateConfig.getByteCodeProvider(HibernateConfiguration.BYTECODE_PROVIDER_DEFAULT);
 
 		//Hibernate default values
 		if (hbm2dll == null){
@@ -230,7 +231,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		}
 
 		AbstractBeanDefinition bd = makeHibernatePropertiesBean(dbType, hbm2dll, showSql, formatSql, registerAuditing,
-                registerSearchListener, cacheProviderClass);
+                registerSearchListener, cacheProviderClass, byteCodeProvider);
 		return bd;
 	}
 

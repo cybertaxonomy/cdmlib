@@ -23,7 +23,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
@@ -71,7 +72,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class MarkupSpecimenImport extends MarkupImportBase  {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupSpecimenImport.class);
+	private static final Logger logger = LogManager.getLogger(MarkupSpecimenImport.class);
 
 	private static final String ALTERNATIVE_COLLECTION_TYPE_STATUS = "alternativeCollectionTypeStatus";
 	private static final String ALTERNATIVE_COLLECTOR = "alternativeCollector";
@@ -292,7 +293,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			if (collectionAndType.matches(notDesignatedRE)){
 				SpecimenTypeDesignation desig = SpecimenTypeDesignation.NewInstance();
 				desig.setNotDesignated(true);
-//				name.addSpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames)
+//				name.addSpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalInfo, isNotDesignated, addToAllHomotypicNames)
 				name.addTypeDesignation(desig, true);
 			}else if(collectionAndType.matches(designatedRE)){
 				String designatedBy = null;
@@ -876,27 +877,19 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		throw new IllegalStateException("<SpecimenType> has no closing tag");
 	}
 
-
-
-	/**
-     * @param text
-     * @return
-     */
     private String removeTrailingPunctuation(String text) {
-        while (isPunctuation(text.substring(text.length()-1))){
+        while (text.length() > 0 && isPunctuation(text.substring(text.length()-1))){
             text = text.substring(0, text.length()-1).trim();
         }
         return text;
     }
 
-
     private TeamOrPersonBase<?> createCollector(MarkupImportState state, String collectorStr) {
 		return createAuthor(state, collectorStr);
 	}
 
-
 	public List<DescriptionElementBase> handleMaterialsExamined(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature feature, TaxonDescription defaultDescription) throws XMLStreamException {
-		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+		List<DescriptionElementBase> result = new ArrayList<>();
 		//reset current areas
 		state.removeCurrentAreas();
 		while (reader.hasNext()) {
@@ -908,7 +901,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				state.removeCurrentAreas();
 				return result;
 			} else if (isStartingElement(next, SUB_HEADING)) {
-//				Map<String, Object> inlineMarkup = new HashMap<String, Object>();
+//				Map<String, Object> inlineMarkup = new HashMap<>();
 				String text = getCData(state, reader, next, true);
 				if (isFeatureHeading(state, next, text)){
 					feature = makeHeadingFeature(state, next, text, feature);

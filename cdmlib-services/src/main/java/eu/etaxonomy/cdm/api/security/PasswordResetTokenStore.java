@@ -24,5 +24,4 @@ public class PasswordResetTokenStore extends AbstractRequestTokenStore<PasswordR
         PasswordResetRequest token = new PasswordResetRequest(user.getUsername(), userEmailAddress, randomToken, tokenLifetimeMinutes);
         return token;
     }
-
 }

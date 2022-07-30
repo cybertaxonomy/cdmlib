@@ -15,7 +15,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  */
 public class AbcdParseUtility {
 
-    private static final Logger logger = Logger.getLogger(AbcdParseUtility.class);
+    private static final Logger logger = LogManager.getLogger(AbcdParseUtility.class);
 
     public static URI parseFirstUri(NodeList nodeList, SpecimenImportReport report){
         URI uri = null;

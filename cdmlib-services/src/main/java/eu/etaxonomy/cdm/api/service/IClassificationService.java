@@ -248,6 +248,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
+    //FIXME seems not to be used anymore
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(TaxonNode taxonNode, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
 
     /**

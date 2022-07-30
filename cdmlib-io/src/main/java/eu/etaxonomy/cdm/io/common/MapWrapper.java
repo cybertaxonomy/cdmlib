@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  */
 public class MapWrapper<T extends CdmBase> {
-	private static Logger logger = Logger.getLogger(MapWrapper.class);
+	private static Logger logger = LogManager.getLogger(MapWrapper.class);
 
 	private Map internalMap;
 	private IService<CdmBase> service = null; 

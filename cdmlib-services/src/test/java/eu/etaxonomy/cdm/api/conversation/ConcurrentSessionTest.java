@@ -20,7 +20,7 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 @Transactional(TransactionMode.DISABLED)
 public class ConcurrentSessionTest extends CdmIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(ConcurrentSessionTest.class);
+    private static final Logger logger = LogManager.getLogger(ConcurrentSessionTest.class);
 
     @SpringBeanByType
     private SessionFactory sessionFactory;

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -55,8 +55,8 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     @Override
     public long count(TaxonNodeFilter filter){
         String queryStr = query(filter, "count(*) as n ");
-        Query query = getSession().createQuery(queryStr);
-        long result = (Long)query.uniqueResult();
+        Query<Long> query = getSession().createQuery(queryStr, Long.class);
+        long result = query.uniqueResult();
 
         return result;
     }
@@ -64,8 +64,8 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     @Override
     public List<UUID> listUuids(TaxonNodeFilter filter){
         String queryStr = query(filter, "tn.uuid");
-        Query query = getSession().createQuery(queryStr);
-        List<UUID> list = castToUuidList(query.list());
+        Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
+        List<UUID> list = query.list();
 
         list = deduplicate(list);
         return list;
@@ -74,10 +74,8 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
     @Override
     public List<Integer> idList(TaxonNodeFilter filter){
         String queryStr = query(filter, "tn.id");
-        Query query = getSession().createQuery(queryStr);
-
-        List<Integer> list = castToIntegerList(query.list());
-
+        Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
+        List<Integer> list = query.list();
         list = deduplicate(list);
         return list;
     }
@@ -159,8 +157,8 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         areaIds.add(area.getId());
         String queryStr = String.format("SELECT includes.uuid FROM DefinedTermBase t inner join t.includes includes WHERE t.uuid = '%s'",
                 area.getUuid().toString());
-        Query query = getSession().createQuery(queryStr);
-        List<UUID> childAreas = castToUuidList(query.list());
+        Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
+        List<UUID> childAreas = query.list();
         for (UUID childArea : childAreas) {
             areaIds.addAll(getChildAreasRecursively(childArea));
         }
@@ -289,7 +287,6 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
             String uuid = singleFilter.getUuid().toString();
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
             result = String.format("(%s%s(tn.classification.uuid = '%s'))", result, op, uuid);
-            System.out.println(result);
             isFirst = false;
         }
         return result;
@@ -309,10 +306,6 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         return result;
     }
 
-
-    /**
-     * @param subtreeFilter
-     */
     private void initializeSubtreeIndex(List<LogicFilter<TaxonNode>> subtreeFilter) {
         for (LogicFilter<TaxonNode> filter : subtreeFilter){
             if (filter.getTreeIndex() == null){
@@ -323,24 +316,12 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
                 }
             }
         }
-
     }
-
 
     /**
      * Returns the HQL string for this operation
-     *
      */
     private String op2Hql(Op op){
         return op == Op.NOT ? " AND NOT " : op.toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<UUID> castToUuidList(List<?> queryList){
-        return (List<UUID>) queryList;
-    }
-    @SuppressWarnings("unchecked")
-    private List<Integer> castToIntegerList(List<?> queryList){
-        return (List<Integer>) queryList;
     }
 }

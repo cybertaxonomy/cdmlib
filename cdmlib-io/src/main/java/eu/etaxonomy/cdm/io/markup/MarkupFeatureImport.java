@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.util.ArrayList;
@@ -22,13 +21,15 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -48,11 +49,11 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author a.mueller
  * @since 30.05.2012
- *
  */
 public class MarkupFeatureImport extends MarkupImportBase {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupFeatureImport.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger(MarkupFeatureImport.class);
 
 	protected static final String MODS_TITLEINFO = "titleInfo";
 
@@ -186,8 +187,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 
 	/**
      * Creates a full description text from the mark
-     * @param cachedEvents
-     * @return
      */
     private String makeFullDescriptionText(List<XMLEvent> events) {
         String result = "";
@@ -198,16 +197,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
         return result;
     }
 
-    /**
-	 * @param state
-	 * @param reader
-	 * @param taxonDescription
-	 * @param isDescription
-	 * @param lastDescriptionElement
-	 * @param next
-	 * @return
-	 * @throws XMLStreamException
-	 */
 	public DescriptionElementBase makeFeatureFigureRef(MarkupImportState state, XMLEventReader reader,TaxonDescription taxonDescription,
 					boolean isDescription, DescriptionElementBase lastDescriptionElement, Reference sourceReference, XMLEvent next) throws XMLStreamException {
 		FigureDataHolder figureHolder = handleFigureRef(state, reader, next);
@@ -247,18 +236,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		return lastDescriptionElement;
 	}
 
-	/**
-	 * @param state
-	 * @param reader
-	 * @param feature
-	 * @param taxonDescription
-	 * @param lastDescriptionElement
-	 * @param distributionList
-	 * @param next
-	 * @return
-	 * @throws XMLStreamException
-	 * @throws
-	 */
 	private DescriptionElementBase makeFeatureString(MarkupImportState state,XMLEventReader reader, Feature feature,
 				TaxonDescription taxonDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next, Boolean isFreetext) throws XMLStreamException {
 
@@ -327,14 +304,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 	}
 
-	/**
-	 * @param classValue
-	 * @param state
-	 * @param parentEvent
-	 * @param parentFeature
-	 * @return
-	 * @throws UndefinedTransformerMethodException
-	 */
 	private Feature makeFeature(String classValue, MarkupImportState state, XMLEvent parentEvent, Feature parentFeature) {
 		UUID uuid;
 		try {
@@ -345,7 +314,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 				classValue = "<%s>" + classValue;
 				classValue = String.format(classValue, parentFeature.getTitleCache());
 			}
-
 
 			//get existing feature
 			if (classValue.endsWith(".")){
@@ -527,15 +495,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		throw new IllegalStateException("RefPart has no closing tag");
 	}
 
-
-	/**
-	 * @param state
-	 * @param reader
-	 * @param classValue
-	 * @param feature
-	 * @param next
-	 * @throws XMLStreamException
-	 */
 	private void makeFeatureHeading(MarkupImportState state, XMLEventReader reader, String classValue, Feature feature, XMLEvent next) throws XMLStreamException {
 		String heading = handleHeading(state, reader, next);
 		if (StringUtils.isNotBlank(heading)) {
@@ -558,15 +517,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 	}
 
-
-	/**
-	 * @param state
-	 * @param reader
-	 * @param feature
-	 * @param taxon
-	 * @param next
-	 * @throws XMLStreamException
-	 */
 	private void makeFeatureWriter(MarkupImportState state,XMLEventReader reader, Feature feature, Taxon taxon, XMLEvent next) throws XMLStreamException {
 		WriterDataHolder writer = handleWriter(state, reader, next);
 		if (isNotBlank(writer.writer)) {
@@ -647,55 +597,52 @@ public class MarkupFeatureImport extends MarkupImportBase {
      * @see #handleHabitat(MarkupImportState, XMLEventReader, XMLEvent)
 	 */
 	private String handleAltitude(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
-	        checkNoAttributes(parentEvent);
-	        Taxon taxon = state.getCurrentTaxon();
-	        // TODO which ref to take?
-	        Reference sourceReference = state.getConfig().getSourceReference();
+        checkNoAttributes(parentEvent);
+        Taxon taxon = state.getCurrentTaxon();
+        // TODO which ref to take?
+        Reference sourceReference = state.getConfig().getSourceReference();
 
-	        boolean isTextMode = true;
-	        String text = "";
-	        while (reader.hasNext()) {
-	            XMLEvent next = readNoWhitespace(reader);
-	            if (isMyEndingElement(next, parentEvent)) {
-	                Feature feature = getFeature(
-	                        state,
-	                        MarkupTransformer.uuidExtractedAltitude,
-	                        "Extracted Altitude",
-	                        "An altitude that was extracted from a habitat text",
-	                        "extr. alt.", null);
-	                //TODO try to make quantitative data
-	                TextData altitude = TextData.NewInstance(feature);
-	                altitude.putText(getDefaultLanguage(state), text);
-	                altitude.addPrimaryTaxonomicSource(sourceReference);
-	                TaxonDescription description = getExtractedMarkupMarkedDescription(state, taxon, sourceReference);
+        boolean isTextMode = true;
+        String text = "";
+        while (reader.hasNext()) {
+            XMLEvent next = readNoWhitespace(reader);
+            if (isMyEndingElement(next, parentEvent)) {
+                Feature feature = getFeature(
+                        state,
+                        MarkupTransformer.uuidExtractedAltitude,
+                        "Extracted Altitude",
+                        "An altitude that was extracted from a habitat text",
+                        "extr. alt.", null);
+                //TODO try to make quantitative data
+                TextData altitude = TextData.NewInstance(feature);
+                altitude.putText(getDefaultLanguage(state), text);
+                altitude.addPrimaryTaxonomicSource(sourceReference);
+                TaxonDescription description = getExtractedMarkupMarkedDescription(state, taxon, sourceReference);
 
-	                description.addElement(altitude);
+                description.addElement(altitude);
 
-	                return text;
-	            } else if (next.isCharacters()) {
-	                if (! isTextMode) {
-	                    String message = "String is not in text mode";
-	                    fireWarningEvent(message, next, 6);
-	                } else {
-	                    text += next.asCharacters().getData();
-	                }
-	            } else if (isStartingElement(next, BR)) {
-	                    text += "<br/>";
-	                    isTextMode = false;
-	            } else if (isEndingElement(next, BR)) {
-	                    isTextMode = true;
-	            } else {
-	                String type = next.toString();
-	                String location = String.valueOf(next.getLocation().getLineNumber());
-	                System.out.println("MarkupFeatureImport.handleAltitude: Unexpected element in habitat: " + type + ":  " + location);
-	                handleUnexpectedElement(next);
-	            }
-	        }
-	        throw new IllegalStateException("<Habitat> has no closing tag");
-	    }
-
-
-
+                return text;
+            } else if (next.isCharacters()) {
+                if (! isTextMode) {
+                    String message = "String is not in text mode";
+                    fireWarningEvent(message, next, 6);
+                } else {
+                    text += next.asCharacters().getData();
+                }
+            } else if (isStartingElement(next, BR)) {
+                    text += "<br/>";
+                    isTextMode = false;
+            } else if (isEndingElement(next, BR)) {
+                    isTextMode = true;
+            } else {
+                String type = next.toString();
+                String location = String.valueOf(next.getLocation().getLineNumber());
+                System.out.println("MarkupFeatureImport.handleAltitude: Unexpected element in habitat: " + type + ":  " + location);
+                handleUnexpectedElement(next);
+            }
+        }
+        throw new IllegalStateException("<Habitat> has no closing tag");
+    }
 
 	private FigureDataHolder handleFigureRef(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent)
 			throws XMLStreamException {
@@ -741,7 +688,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 
 	private List<DescriptionElementBase> makeCommonNameString(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
 
-		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+		List<DescriptionElementBase> result = new ArrayList<>();
 
 		checkNoAttributes(parentEvent);
 
@@ -773,12 +720,11 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 		}
 		throw new IllegalStateException("closing tag is missing");
-
-
 	}
 
 	private List<DescriptionElementBase> makeVernacularNames(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
-		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+
+	    List<DescriptionElementBase> result = new ArrayList<>();
 		checkNoAttributes(parentEvent);
 
 		while (reader.hasNext()) {
@@ -796,7 +742,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 		}
 		throw new IllegalStateException("closing tag is missing");
-
 	}
 
 	private void makeVernacularNamesSubHeading(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
@@ -824,7 +769,6 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 		}
 		throw new IllegalStateException("closing tag is missing");
-
 	}
 
 	private NamedArea getCommonNameArea(String text) {
@@ -844,8 +788,9 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	}
 
 	private List<CommonTaxonName> makeSingleVernacularName(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
-		checkNoAttributes(parentEvent);
-		List<CommonTaxonName> result = new ArrayList<CommonTaxonName>();
+
+	    checkNoAttributes(parentEvent);
+		List<CommonTaxonName> result = new ArrayList<>();
 
 		Language language = state.getDefaultLanguage();
 		while (reader.hasNext()) {
@@ -994,8 +939,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 	}
 
-
-	private String handleHeading(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+	private String handleHeading(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 		String text = "";
@@ -1016,9 +960,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			}
 		}
 		throw new IllegalStateException("<String> has no closing tag");
-
 	}
-
 
 	private List<Reference> handleReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		// attributes

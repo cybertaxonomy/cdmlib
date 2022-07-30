@@ -21,7 +21,8 @@ import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFileReader;
@@ -56,7 +57,7 @@ import net.sf.json.JSONObject;
  */
 public class GbifJsonOccurrenceParser {
 
-    private static final Logger logger = Logger.getLogger(GbifJsonOccurrenceParser.class);
+    private static final Logger logger = LogManager.getLogger(GbifJsonOccurrenceParser.class);
 
     private static final String DATASET_KEY = "datasetKey";
     private static final String DATASET_PROTOCOL = "protocol";

@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 public class DwcaResourceRelationExport extends DwcaDataExportBase {
     private static final long serialVersionUID = 33810773244068812L;
 
-    private static final Logger logger = Logger.getLogger(DwcaResourceRelationExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaResourceRelationExport.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/ResourceRelationship";
 	protected static final String fileName = "resourceRelationship.txt";

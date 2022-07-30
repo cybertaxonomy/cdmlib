@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 public class VocabularyCreator extends SchemaUpdaterStepBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(VocabularyCreator.class);
+	private static final Logger logger = LogManager.getLogger(VocabularyCreator.class);
 
 // **************************** STATIC METHODS ********************************/
 

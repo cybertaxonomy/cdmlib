@@ -15,6 +15,7 @@ import java.util.Optional;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -42,6 +43,8 @@ import eu.etaxonomy.cdm.model.permission.User;
 @Transactional(readOnly = false)
 public class PasswordResetService extends AccountSelfManagementService implements IPasswordResetService {
 
+    private static Logger logger = LogManager.getLogger(PasswordResetService.class);
+
     @Autowired
     @Qualifier("passwordResetTokenStore")
     IAbstractRequestTokenStore<PasswordResetRequest, User> passwordResetTokenStore;
@@ -51,7 +54,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
     public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException, EmailAddressNotFoundException {
 
         try {
-            // give calling methods an bit time to register the Listeners to the Future
+            // give calling methods a bit time to register the Listeners to the Future
             Thread.sleep(10);
         } catch (InterruptedException e1) {
             // IGNORE

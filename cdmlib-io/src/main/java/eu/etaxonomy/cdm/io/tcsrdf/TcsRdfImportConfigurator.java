@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -39,7 +39,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
     private static final long serialVersionUID = -8987364078779275820L;
 
 
-    private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger(TcsRdfImportConfigurator.class);
 
 
 	//TODO

@@ -16,41 +16,41 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
+
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 /**
  * Utility class which manages the persistent source settings
  * in the datasource datasource config
- * 
- * @author cmathew
  *
+ * @author cmathew
  */
 public class CdmPersistentSourceUtils {
-	private static final Logger logger = Logger.getLogger(CdmPersistentSourceUtils.class);
-		
-	
-	
+
+	private static final Logger logger = LogManager.getLogger(CdmPersistentSourceUtils.class);
+
 	/**
-	 * Returns the directory containing the datasource config file 
-	 * @return
+	 * Returns the directory containing the datasource config file
 	 */
 	public static String getResourceDirectory(){
 		try {
-			File f = CdmApplicationUtils.getWritableResourceDir();
+			File f = CdmPersistenceUtils.getWritableResourceDir();
 			return f.getPath();
 		} catch (IOException e) {
 			logger.error(e);
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Returns the datasource config file input stream.
-	 * 
+	 *
 	 * @return data source config file input stream
 	 */
 	public static FileInputStream getCdmSourceInputStream(){
@@ -58,10 +58,10 @@ public class CdmPersistentSourceUtils {
 		File file = new File(dir + File.separator +  CdmPersistentXMLSource.CDMSOURCE_FILE_NAME);
 		return fileInputStream(file);
 	}
-	
+
 	/**
 	 * Returns the datasource config file outputStream.
-	 * 
+	 *
 	 * @return data source config file outputStream
 	 */
 	public static FileOutputStream getCdmSourceOutputStream(){
@@ -72,8 +72,8 @@ public class CdmPersistentSourceUtils {
 
 	/**
 	 * Returns a FileInputStream object from a File object
-	 * 
-	 * @param file 
+	 *
+	 * @param file
 	 * @return FileInputStream object
 	 */
 	public static FileInputStream fileInputStream(File file){
@@ -81,15 +81,15 @@ public class CdmPersistentSourceUtils {
 			FileInputStream fis = new FileInputStream(file);
 			return fis;
 		} catch (FileNotFoundException e) {
-			logger.warn("File " + file == null?"null":file.getAbsolutePath() + " does not exist in the file system");
+			logger.warn("File " + (file == null?"null":file.getAbsolutePath()) + " does not exist in the file system");
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Returns a FileOututStream object from a File object
-	 * 
-	 * @param file 
+	 *
+	 * @param file
 	 * @return FileOututStream object
 	 */
 	public static FileOutputStream fileOutputStream(File file){
@@ -101,11 +101,11 @@ public class CdmPersistentSourceUtils {
 			return null;
 		}
 	}
-	
+
 
 	/**
 	 * Returns the jdom Element representing the data source bean in the config file.
-	 * 
+	 *
 	 * @param beanName , of the element to be retrieved
 	 * @return jdom Element representing the data source bean in the config file.
 	 */
@@ -123,11 +123,11 @@ public class CdmPersistentSourceUtils {
 			return xmlBean;
 		}
 	}
-	
+
 
 	/**
 	 * Returns the jdom Element corresponding to the cdm source name and type in the config file.
-	 * 
+	 *
 	 * @param cdmSourceName , of the element to be retrieved
 	 * @param postFix , indicating the type of cdm source
 	 * @return jdom Element corresponding to the cdm source name and type in the config file.
@@ -135,12 +135,12 @@ public class CdmPersistentSourceUtils {
 	public static Element getCdmSourceBeanXml(String cdmSourceName, String postFix){
 		return getCdmSourceBeanXml(getBeanName(cdmSourceName, postFix));
 	}
-	
+
 
 
 	/**
 	 * Converts input parameters to bean name.
-	 * 
+	 *
 	 * @param cdmSourceName , of the element to be retrieved
 	 * @param postFix , indicating the type of cdm source
 	 * @return bean name corresponding to the cdm source name and type in the config file.
@@ -148,21 +148,21 @@ public class CdmPersistentSourceUtils {
 	public static String getBeanName(String cdmSourceName, String postFix){
 		return cdmSourceName == null? null : cdmSourceName + postFix;
 	}
-	
-	
+
+
 	/**
 	 * Deletes a CDM persistent source from the source config file.
-	 * 
+	 *
 	 * @param cdmPersistentSource , CDM persistent source object
 	 */
 	public static void delete (ICdmPersistentSource cdmPersistentSource) {
 		delete(cdmPersistentSource.getBeanName());
 	}
-	
+
 
 	/**
 	 * Deletes a CDM persistent source from the source config file.
-	 * 
+	 *
 	 * @param beanName , CDM persistent source bean name
 	 */
 	public static void delete (String beanName){
@@ -170,17 +170,17 @@ public class CdmPersistentSourceUtils {
 		if (bean != null){
 			Document doc = bean.getDocument();
 			bean.detach();
-			saveToXml(doc, 
-					CdmPersistentSourceUtils.getCdmSourceOutputStream(), 
+			saveToXml(doc,
+					CdmPersistentSourceUtils.getCdmSourceOutputStream(),
 					XmlHelp.prettyFormat );
 		}
 	}
-	
-	
+
+
 	/**
 	 * Returns the property value of a CDM persistent source object bean
 	 * from the source config file.
-	 * 
+	 *
 	 * @param bean , CDM persistent source object bean
 	 * @param property , whose value is to be retrieved
 	 * @return value of requested property
@@ -195,5 +195,4 @@ public class CdmPersistentSourceUtils {
 			return strProperty;
 		}
 	}
-
 }

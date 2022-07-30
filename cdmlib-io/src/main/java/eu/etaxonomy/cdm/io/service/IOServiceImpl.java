@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
@@ -57,18 +58,12 @@ public class IOServiceImpl implements IIOService {
 
     @Autowired
     IProgressMonitorService progressMonitorService;
-//
-//    @Autowired
-//    @Qualifier("defaultUpdate")
-//    CdmApplicationAwareDefaultUpdate cdmUpdate;
-
 
     @Override
     public ExportResult export(IExportConfigurator config) {
         config.setTarget(TARGET.EXPORT_DATA);
         return cdmExport.execute(config);
     }
-
 
     @Override
     public UUID monitImportData(final IImportConfigurator configurator, final byte[] importData, final SOURCE_TYPE type) {
@@ -111,24 +106,6 @@ public class IOServiceImpl implements IIOService {
         return uuid;
     }
 
-//    @Override
-//    public UUID monitUpdateData(final IImportConfigurator configurator) {
-//        RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
-//            @Override
-//            public Serializable doRun(IRemotingProgressMonitor monitor) {
-//
-//                configurator.setProgressMonitor(monitor);
-//                ImportResult result =updateData((SecundumForSubtreeConfigurator)configurator);
-//
-//                return result;
-//            }
-//        };
-//        UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
-//        monitorThread.setPriority(3);
-//        monitorThread.start();
-//        return uuid;
-//    }
-
     @Override
     public ImportResult importData(IImportConfigurator configurator, byte[] importData, SOURCE_TYPE type) {
         ImportResult result;
@@ -146,19 +123,12 @@ public class IOServiceImpl implements IIOService {
         }
     }
 
-//    @Override
-//    public ImportResult updateData(SecundumForSubtreeConfigurator configurator) {
-//        ImportResult result;
-//
-//        result = cdmImport.invoke(configurator);
-//        return result;
-//    }
-
     @Override
     public ImportResult importDataFromUri(IImportConfigurator configurator, byte[] importData) {
         ImportResult result;
 
-        ImportConfiguratorBase config = (ImportConfiguratorBase)configurator;
+        @SuppressWarnings("unchecked")
+        ImportConfiguratorBase<?, URI> config = (ImportConfiguratorBase<?,URI>)configurator;
         String suffix = ".import";
         String prefix = "cdm-";
         FileOutputStream stream = null;
@@ -167,7 +137,7 @@ public class IOServiceImpl implements IIOService {
             Path tempFilePath = Files.createTempFile(prefix, suffix);
             stream = new FileOutputStream(tempFilePath.toFile());
             stream.write(importData);
-            config.setSource(tempFilePath.toUri());
+            config.setSource(new URI(tempFilePath.toUri()));
             result = cdmImport.invoke(config);
      //       Files.delete(tempFilePath);
         } catch (Exception e) {
@@ -220,33 +190,6 @@ public class IOServiceImpl implements IIOService {
             return result;
     }
 
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public ImportResult updateSortIndex(SortIndexUpdaterConfigurator config) {
-//        ImportResult result = new ImportResult();
-//
-//        result = cdmImport.invoke(config);
-//        return result;
-//    }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public ImportResult updateCaches(CacheUpdaterConfigurator config) {
-//        ImportResult result = new ImportResult();
-//
-//        result = cdmImport.invoke(config);
-//        return result;
-//    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ImportResult updateDistributionData(ExcelDistributionUpdateConfigurator configurator) {
         ImportResult result = new ImportResult();
@@ -254,18 +197,10 @@ public class IOServiceImpl implements IIOService {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ImportResult importRISData(RisReferenceImportConfigurator configurator) {
         ImportResult result = new ImportResult();
         result = cdmImport.invoke(configurator);
         return result;
     }
-
-
-
-
-
 }

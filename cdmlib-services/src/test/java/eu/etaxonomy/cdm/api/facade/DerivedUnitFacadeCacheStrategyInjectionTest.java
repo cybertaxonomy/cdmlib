@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.facade;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,7 +64,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
         extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyInjectionTest.class);
+	private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeCacheStrategyInjectionTest.class);
 
     @SpringBeanByType
     private IOccurrenceService occService;
@@ -216,7 +217,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
         Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
     }
 
-    //Test if even a hibernate proxy (javassist) class correctly loads the DerivedUnitCacheStrategy.
+    //Test if even a hibernate proxy class correctly loads the DerivedUnitCacheStrategy.
     @Test
     @DataSet
     public void testPersistedDerivedUnit(){

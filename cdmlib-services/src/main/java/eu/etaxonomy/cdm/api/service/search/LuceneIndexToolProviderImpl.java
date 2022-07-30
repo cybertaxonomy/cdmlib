@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.kohlbecker
  * @since Sep 18, 2013
- *
  */
 @Component
 public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
@@ -41,17 +40,13 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
     @Autowired
     private SessionFactory sessionFactory;
 
-    private final Map<Class<? extends CdmBase>, QueryParser> queryParsers = new HashMap<Class<? extends CdmBase>, QueryParser>();
-    private final Map<Class<? extends CdmBase>, QueryParser> complexPhraseQueryParsers = new HashMap<Class<? extends CdmBase>, QueryParser>();
+    private final Map<Class<? extends CdmBase>, QueryParser> queryParsers = new HashMap<>();
+    private final Map<Class<? extends CdmBase>, QueryParser> complexPhraseQueryParsers = new HashMap<>();
 
-    /**
-     * @param sessionfactory
-     * @return
-     */
+
     private SearchFactory getCurrentSearchFactory() {
         return Search.getFullTextSession(sessionFactory.getCurrentSession()).getSearchFactory();
     }
-
 
     /**
      * TODO the abstract base class DescriptionElementBase can not be used, so

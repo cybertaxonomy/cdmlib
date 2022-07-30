@@ -156,9 +156,9 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 
 //******************* CONSTRUCTOR ***********************************/
 
-	//for hibernate/javassist use only
+    //for hibernate use only, *packet* private required by bytebuddy
 	@Deprecated
-	protected DefinedTerm(){super(TermType.Unknown);}
+	DefinedTerm(){super(TermType.Unknown);}
 
 	protected DefinedTerm(TermType termType){
 	    super(termType);

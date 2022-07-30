@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.database;
 
 import java.util.EnumSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.springframework.security.core.Authentication;
 
@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.permission.Role;
 public class PermissionDeniedException extends HibernateException {
     private static final long serialVersionUID = 6993452039967589921L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(PermissionDeniedException.class);
+    private static final Logger logger = LogManager.getLogger(PermissionDeniedException.class);
 
     /**
      * @param message

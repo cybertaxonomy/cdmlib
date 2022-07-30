@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 import java.util.List;
 
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.permission.Group;
@@ -31,10 +31,10 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 
 	@Override
 	public Group findGroupByName(String groupName) {
-		Query query = getSession().createQuery("select g from Group g where g.name = :name");
+		Query<Group> query = getSession().createQuery("select g from Group g where g.name = :name", Group.class);
 		query.setParameter("name",groupName);
 
-		Group group = (Group)query.uniqueResult();
+		Group group = query.uniqueResult();
 		if(group != null) {
 		  Hibernate.initialize(group.getGrantedAuthorities());
 		  Hibernate.initialize(group.getMembers());
@@ -45,37 +45,19 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 
 	@Override
     public List<String> listNames(Integer pageSize, Integer pageNumber) {
-		Query query = getSession().createQuery("select g.name from Group g");
+		Query<String> query = getSession().createQuery("SELECT g.name FROM Group g", String.class);
+		this.addPageSizeAndNumber(query, pageSize, pageNumber);
 
-		if(pageSize != null) {
-		    query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		        query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
-		    }
-		}
-
-        @SuppressWarnings("unchecked")
         List<String> result = query.list();
         return result;
 	}
 
 	@Override
     public List<String> listMembers(Group group, Integer pageSize,	Integer pageNumber) {
-		Query query = getSession().createQuery("select m.username from Group g join g.members m where g = :group");
+		Query<String> query = getSession().createQuery("SELECT m.username FROM Group g JOIN g.members m WHERE g = :group", String.class);
 		query.setParameter("group", group);
+		this.addPageSizeAndNumber(query, pageSize, pageNumber);
 
-		if(pageSize != null) {
-		    query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		        query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
-		    }
-		}
-
-		@SuppressWarnings("unchecked")
         List<String> result = query.list();
 		return result;
 	}

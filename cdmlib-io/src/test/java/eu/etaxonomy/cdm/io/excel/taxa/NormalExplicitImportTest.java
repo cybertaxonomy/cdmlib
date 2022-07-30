@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NormalExplicitImportTest.class);
+	private static final Logger logger = LogManager.getLogger(NormalExplicitImportTest.class);
 
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;

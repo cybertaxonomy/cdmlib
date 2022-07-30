@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
-
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -54,18 +53,8 @@ public class MediaSpecimen extends DerivedUnit {
 
 	private static final long serialVersionUID = -5717424451590705378L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MediaSpecimen.class);
+	private static final Logger logger = LogManager.getLogger(MediaSpecimen.class);
 
-// ****************** FACTORY METHOD *****************/
-
-	/**
-	 * Factory method.
-	 * @param type must be {@link SpecimenOrObservationType#Media} or a subtype of it.
-	 * @return
-	 */
-	public static MediaSpecimen NewInstance(SpecimenOrObservationType type){
-		return new MediaSpecimen(type);
-	}
 
 // ************** ATTRIBUTES ****************************/
 
@@ -76,9 +65,19 @@ public class MediaSpecimen extends DerivedUnit {
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Media mediaSpecimen;
 
+// ****************** FACTORY METHOD *****************/
+
+    /**
+     * Factory method.
+     * @param type must be {@link SpecimenOrObservationType#Media} or a subtype of it.
+     */
+    public static MediaSpecimen NewInstance(SpecimenOrObservationType type){
+        return new MediaSpecimen(type);
+    }
+
 // ******************* CONSTRUCTOR *************************/
 
-	private MediaSpecimen() {
+    private MediaSpecimen() {
 		this(SpecimenOrObservationType.Media);
 	}
 

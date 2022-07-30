@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
@@ -33,7 +33,7 @@ public class TaxonExcelImportState
             extends ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonExcelImportState.class);
+	private static final Logger logger = LogManager.getLogger(TaxonExcelImportState.class);
 
     /** Already processed authors */
 	private Set<String> authors = new HashSet<>();

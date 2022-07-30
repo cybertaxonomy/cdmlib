@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -93,7 +94,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 
     private static final long serialVersionUID = -3053225700018294809L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CdmBase.class);
+    private static final Logger logger = LogManager.getLogger(CdmBase.class);
 
     protected static final int CLOB_LENGTH = 65536;
 
@@ -313,21 +314,26 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     }
 
     /**
-     * These methods are present due to HHH-1517 - that in a one-to-many
-     * relationship with a superclass at the "one" end, the proxy created
-     * by hibernate is the superclass, and not the subclass, resulting in
+     * These methods are present due to HHH-1517 (https://hibernate.atlassian.net/browse/HHH-1517)
+     * - that in a one-to-many relationship with a superclass at the "one" end, the
+     * proxy created by hibernate is the superclass, and not the subclass, resulting in
      * a ClassCastException when you try to cast it.
      *
      * Hopefully this will be resolved through improvements with the creation of
      * proxy objects by hibernate and the following methods will become redundant,
      * but for the time being . . .
+     *
+     * Note AM (2022-06-16): maybe for pure casting this method is not reqired anymore and also
+     *       deproxing might be obsolete in most cases since the current bytecode
+     *       provider "bytebuddy" probably casts and handles proxies correctly.
+     *
      * @param <T>
      * @param object
      * @param clazz
      * @return
      * @throws ClassCastException
      */
-    //non-static does not work because javassist already unwrapps the proxy before calling the method
+    //non-static does not work because the bytecodeprovider already unwrapps the proxy before calling the method
      public static <T extends CdmBase> T deproxy(Object object, Class<T> clazz) throws ClassCastException {
          return HibernateProxyHelper.deproxy(object, clazz);
      }

@@ -25,7 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery.Builder;
@@ -113,7 +113,7 @@ public class OccurrenceServiceImpl
         extends IdentifiableServiceBase<SpecimenOrObservationBase, IOccurrenceDao>
         implements IOccurrenceService {
 
-    static private final Logger logger = Logger.getLogger(OccurrenceServiceImpl.class);
+    static private final Logger logger = LogManager.getLogger(OccurrenceServiceImpl.class);
 
     @Autowired
     private IDescriptionService descriptionService;

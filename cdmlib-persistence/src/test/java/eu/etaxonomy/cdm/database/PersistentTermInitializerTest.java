@@ -37,14 +37,6 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 		assertNotNull("TermInitializer should exist",persistentTermInitializer);
 	}
 
-//  As firstPass is not used anymore we also do not need this test
-//	@Test
-//	@DataSet("TermsDataSet.xml")
-//	public void testFirstPass() {
-//		Map<UUID, DefinedTermBase> persistedTerms = new HashMap<>();
-//		persistentTermInitializer.firstPass(VocabularyEnum.Rank, persistedTerms);
-//	}
-
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.term.DefaultTermInitializer#initialize()}.
 	 */

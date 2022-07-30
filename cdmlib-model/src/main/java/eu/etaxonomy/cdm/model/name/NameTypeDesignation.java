@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -59,7 +60,7 @@ public class NameTypeDesignation
         extends TypeDesignationBase<NameTypeDesignationStatus>  {
 
 	private static final long serialVersionUID = 8478663508862210879L;
-	final static Logger logger = Logger.getLogger(NameTypeDesignation.class);
+	final static Logger logger = LogManager.getLogger(NameTypeDesignation.class);
 
 	@XmlElement(name = "IsRejectedType")
 	private boolean rejectedType;
@@ -98,8 +99,8 @@ public class NameTypeDesignation
 	 *
 	 * @param typeName				the taxon name used as a type
 	 * @param citation				the reference source for the new designation
-	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @param citationMicroReference the string with the details describing the exact localisation within the reference
+	 * @param originalInfo	        any information from the original source, might be the name as written in the source (#10097)
 	 * @param isRejectedType		the boolean flag indicating whether the competent authorities rejected
 	 * 								<i>this</i> name type designation
 	 * @param isConservedType		the boolean flag indicating whether the competent authorities conserved
@@ -111,8 +112,8 @@ public class NameTypeDesignation
 	 * @see							TaxonName#addNameTypeDesignation(TaxonName, Reference, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation(TaxonName typeName, NameTypeDesignationStatus status,
-			Reference citation, String citationMicroReference, String originalNameString) {
-		super(citation, citationMicroReference, originalNameString);
+			Reference citation, String citationMicroReference, String originalInfo) {
+		super(citation, citationMicroReference, originalInfo);
 		this.setTypeName(typeName);
 		this.setTypeStatus(status);
 	}
@@ -126,7 +127,7 @@ public class NameTypeDesignation
 	 * @param typeName				the taxon name used as a type
 	 * @param citation				the reference source for the new designation
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @param originalInfo	any information from the original source, might be the name as written in the source (#10097)
 	 * @param isRejectedType		the boolean flag indicating whether the competent authorities rejected
 	 * 								<i>this</i> name type designation
 	 * @param isConservedType		the boolean flag indicating whether the competent authorities conserved
@@ -140,13 +141,13 @@ public class NameTypeDesignation
 	protected NameTypeDesignation(	TaxonName typeName,
 									Reference citation,
 									String citationMicroReference,
-									String originalNameString,
+									String originalInfo,
 									NameTypeDesignationStatus status,
 									boolean rejectedType,
 									boolean conservedType,
 									boolean isNotDesignated
 								) {
-		this(typeName, status, citation, citationMicroReference, originalNameString);
+		this(typeName, status, citation, citationMicroReference, originalInfo);
 		this.setNotDesignated(isNotDesignated);
 		this.rejectedType = rejectedType;
 		this.conservedType = conservedType;

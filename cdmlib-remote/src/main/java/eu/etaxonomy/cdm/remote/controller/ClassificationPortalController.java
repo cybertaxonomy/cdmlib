@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -43,7 +43,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/classification/{uuid}"})
 public class ClassificationPortalController extends ClassificationController {
 
-    public static final Logger logger = Logger.getLogger(ClassificationPortalController.class);
+    public static final Logger logger = LogManager.getLogger(ClassificationPortalController.class);
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
             "source.citation.authorship",

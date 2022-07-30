@@ -12,7 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,7 +55,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class DefaultMergeStrategyTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DefaultMergeStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(DefaultMergeStrategyTest.class);
 
 	private DefaultMergeStrategy bookMergeStrategy;
 	private Reference book1;
@@ -176,7 +177,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 
 	@Test
 	public void testInvokeReferences() throws MergeException {
-		IReferenceCacheStrategy cacheStrategy1 = book1.getCacheStrategy();
+		IReferenceCacheStrategy cacheStrategy1 = book1.cacheStrategy();
 		int id = book1.getId();
 		UUID uuid = book1.getUuid();
 		try {
@@ -208,7 +209,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInReference());
 
 		//Transient
-		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.getCacheStrategy());
+		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.cacheStrategy());
 
 		//UserType
 		Assert.assertSame("Created must be created2", created2, book1.getCreated());
@@ -276,7 +277,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		//name relations
 		botName2.addBasionym(botName3, book1, "p.22", null, null);
 		DerivedUnit specimen1 = DerivedUnit.NewPreservedSpecimenInstance();
-		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalNameString", false, true);
+		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalInfo", false, true);
 
 		//descriptions
 		TaxonNameDescription description1 = TaxonNameDescription.NewInstance();

@@ -14,9 +14,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,7 +89,7 @@ public class DescriptiveDataSetService
         extends IdentifiableServiceBase<DescriptiveDataSet, IDescriptiveDataSetDao>
         implements IDescriptiveDataSetService {
 
-    private static Logger logger = Logger.getLogger(DescriptiveDataSetService.class);
+    private static Logger logger = LogManager.getLogger();
 
     @Autowired
     private IOccurrenceService occurrenceService;
@@ -144,14 +145,14 @@ public class DescriptiveDataSetService
             }
             DescriptionBaseDto descDto = descriptionService.loadDto(description);
             RowWrapperDTO<?> rowWrapper = null;
-            if (descDto.getTaxonDto() != null &&
+            if (descDto != null && descDto.getTaxonDto() != null &&
                     (descDto.getTypes().contains(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION)
                             || descDto.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC)
                             || descDto.getTypes().contains(DescriptionType.SECONDARY_DATA)
                             )){
                 rowWrapper = createTaxonRowWrapper(descDto, datasetDto.getUuid());
             }
-            else if (descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
+            else if (descDto != null &&descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
                     !descDto.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))){
                 rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid);
             }
@@ -207,7 +208,7 @@ public class DescriptiveDataSetService
     private DescriptionBaseDto recurseDefaultDescription(TaxonNodeDto node, DescriptiveDataSetBaseDto dataSet){
         DescriptionBaseDto defaultDescription = null;
         if(node!=null && node.getTaxonUuid()!=null){
-            defaultDescription = getTaxonDescriptionForDescriptiveDataSetAndType(dataSet, node.getUuid(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
+            defaultDescription = getTaxonDescriptionForDescriptiveDataSetAndType(dataSet, node.getTaxonUuid(), DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION);
             if(defaultDescription==null && node.getParentUUID()!=null){
                 defaultDescription = recurseDefaultDescription(taxonNodeService.dto(node.getParentUUID()), dataSet);
             }
@@ -491,22 +492,33 @@ public class DescriptiveDataSetService
     @Override
     public DescriptionBaseDto getTaxonDescriptionForDescriptiveDataSetAndType(DescriptiveDataSetBaseDto dataSet, UUID taxonUuid, DescriptionType descriptionType){
         Session session = getSession();
-        String queryString = "SELECT d.uuid FROM DescriptiveDataSet a JOIN a.descriptions as d JOIN d.taxon t WHERE t.uuid = :taxonuuid AND a.uuid = :dataSetUuid and d.type = :descriptionType";
+        String queryString = "SELECT d.uuid FROM DescriptiveDataSet a JOIN a.descriptions as d JOIN d.taxon t WHERE t.uuid = :taxonuuid AND a.uuid = :dataSetUuid ";  // and :descriptionType IN d.types
 
-        Query query;
-        query = session.createQuery(queryString);
+        Query<UUID> query;
+        query = session.createQuery(queryString, UUID.class);
         query.setParameter("taxonuuid", taxonUuid);
         query.setParameter("dataSetUuid", dataSet.getUuid());
-        query.setParameter("descriptionType", descriptionType);
+//        query.setParameter("descriptionType", descriptionType.getKey());
 
-        @SuppressWarnings("unchecked")
-        List<UUID> result = query.list();
+        List<UUID> result = query.getResultList();
         List<DescriptionBaseDto> list = new ArrayList<>();
-        list.addAll(descriptionService.loadDtos(new HashSet(result)));
+        list.addAll(descriptionService.loadDtos(new HashSet<>(result)));
+
         if (list.isEmpty()){
             return null;
+        }else {
+    		List<DescriptionBaseDto> correctTypeOnly = new ArrayList<>();
+    		for (DescriptionBaseDto dto: list) {
+    			if (dto.getTypes().contains(descriptionType)) {
+    				correctTypeOnly.add(dto);
+    			}
+    		}
+    		if (correctTypeOnly.isEmpty()) {
+    			return null;
+    		}else {
+    			return correctTypeOnly.get(0);
+    		}
         }
-        return list.get(0);
     }
 
     @Override
@@ -756,11 +768,11 @@ public class DescriptiveDataSetService
             clone.getSources().forEach(source -> {
                 if(descriptionElementBase instanceof CategoricalData){
                     TextData label = new DefaultCategoricalDescriptionBuilder().build((CategoricalData) descriptionElementBase, Arrays.asList(new Language[]{Language.DEFAULT()}));
-                    source.setOriginalNameString(label.getText(Language.DEFAULT()));
+                    source.setOriginalInfo(label.getText(Language.DEFAULT()));
                 }
                 else if(descriptionElementBase instanceof QuantitativeData){
                     TextData label = new DefaultQuantitativeDescriptionBuilder().build((QuantitativeData) descriptionElementBase, Arrays.asList(new Language[]{Language.DEFAULT()}));
-                    source.setOriginalNameString(label.getText(Language.DEFAULT()));
+                    source.setOriginalInfo(label.getText(Language.DEFAULT()));
                 }
             });
         }

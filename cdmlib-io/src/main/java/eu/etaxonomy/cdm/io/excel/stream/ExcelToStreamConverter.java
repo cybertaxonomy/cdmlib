@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  */
 public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 
-	private static Logger logger = Logger.getLogger(ExcelToStreamConverter.class);
+	private static Logger logger = LogManager.getLogger(ExcelToStreamConverter.class);
 
 	private URI source;
 

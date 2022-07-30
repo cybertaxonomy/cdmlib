@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.application;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.intercept.RunAsUserToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -31,7 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class RunAsAuthenticator {
 
-    public static final Logger logger = Logger.getLogger(RunAsAuthenticator.class);
+    public static final Logger logger = LogManager.getLogger(RunAsAuthenticator.class);
 
     /**
      * must match the key in eu/etaxonomy/cdm/services_security.xml
@@ -60,7 +60,7 @@ public class RunAsAuthenticator {
        authentication = securityContext.getAuthentication();
 
 
-       Collection<GrantedAuthority> rules = new ArrayList<GrantedAuthority>();
+       Collection<GrantedAuthority> rules = new ArrayList<>();
        rules.add(ga);
        RunAsUserToken adminToken = new RunAsUserToken(
                RUN_AS_KEY,

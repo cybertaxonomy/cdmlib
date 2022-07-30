@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(OccurrenceServiceTest.class);
+    private static final Logger logger = LogManager.getLogger(OccurrenceServiceTest.class);
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;

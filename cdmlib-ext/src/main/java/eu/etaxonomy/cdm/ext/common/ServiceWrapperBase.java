@@ -22,7 +22,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -35,7 +36,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class ServiceWrapperBase<T extends CdmBase> {
 
-	public static final Logger logger = Logger.getLogger(ServiceWrapperBase.class);
+	public static final Logger logger = LogManager.getLogger(ServiceWrapperBase.class);
 
 	private URL baseUrl;
 

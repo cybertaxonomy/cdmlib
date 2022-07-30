@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -64,7 +64,7 @@ public class StatisticalMeasurementValue
          implements IModifiable{
 
 	private static final long serialVersionUID = -3576311887760351982L;
-	private static final Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
+	private static final Logger logger = LogManager.getLogger(StatisticalMeasurementValue.class);
 
     @XmlElement(name = "Value")
     @Columns(columns={@Column(name="value", precision = 18, scale = 9), @Column(name="value_scale")})

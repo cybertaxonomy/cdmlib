@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  */
 public class NomenclaturalStatusTypeTest extends EntityTestBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NomenclaturalStatusTypeTest.class);
+	private static final Logger logger = LogManager.getLogger(NomenclaturalStatusTypeTest.class);
 
 	private static final UUID uuidDoubtful = UUID.fromString("0ffeb39e-872e-4c0f-85ba-a4150d9f9e7d");
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");

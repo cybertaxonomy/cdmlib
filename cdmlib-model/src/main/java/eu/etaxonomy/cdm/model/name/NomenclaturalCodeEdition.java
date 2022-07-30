@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
@@ -257,7 +257,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(NomenclaturalCodeEdition.class);
+    private static final Logger logger = LogManager.getLogger(NomenclaturalCodeEdition.class);
 
     private static final String WIKIDATA_BASE_URL = "https://www.wikidata.org/wiki/";
 

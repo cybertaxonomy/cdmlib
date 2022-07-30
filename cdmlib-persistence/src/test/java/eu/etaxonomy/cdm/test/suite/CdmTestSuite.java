@@ -9,22 +9,20 @@
 
 package eu.etaxonomy.cdm.test.suite;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import eu.etaxonomy.cdm.database.CdmDataSourceTest;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnumTest;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotationDaoTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBaseTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBaseTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.term.DefinedTermDaoImplTest;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.TaxonGraphTest;
 
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(
-        {
+@Suite.SuiteClasses({
+            AnnotationDaoTest.class,
+            CdmEntityDaoBaseTest.class,
+            TaxonGraphTest.class
             //database
 //			CdmDataSourceTest.class,
 //			DatabaseEnumTest.class,
@@ -32,8 +30,8 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.term.DefinedTermDaoImplTest;
             //dao.common
 //			CdmEntityDaoBaseTest.class,
 //			DaoBaseTest.class,
-            DefinedTermDaoImplTest.class,
-            IdentifiableDaoBaseTest.class
+//            DefinedTermDaoImplTest.class,
+//            IdentifiableDaoBaseTest.class
 
             //dao.Taxon
 //			TaxonDaoHibernateImplTest.class
@@ -41,7 +39,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.term.DefinedTermDaoImplTest;
     )
 public class CdmTestSuite {
     @SuppressWarnings("unused")
-    private static final  Logger logger = Logger.getLogger(CdmTestSuite.class);
+    private static final  Logger logger = LogManager.getLogger(CdmTestSuite.class);
 
     // the class remains completely empty,
     // being used only as a holder for the above annotations
@@ -50,15 +48,19 @@ public class CdmTestSuite {
     public static void consoleRun() {
         org.junit.runner.JUnitCore.runClasses(
                 //database
-                CdmDataSourceTest.class,
-                DatabaseTypeEnumTest.class,
-                //dao.common
+//                CdmDataSourceTest.class,
+//                DatabaseTypeEnumTest.class,
+//                //dao.common
+//                CdmEntityDaoBaseTest.class,
+//                DaoBaseTest.class,
+//                DefinedTermDaoImplTest.class,
+//                IdentifiableDaoBaseTest.class,
+//                //dao.Taxon
+//                TaxonDaoHibernateImplTest.class
+
+                AnnotationDaoTest.class,
                 CdmEntityDaoBaseTest.class,
-                DaoBaseTest.class,
-                DefinedTermDaoImplTest.class,
-                IdentifiableDaoBaseTest.class,
-                //dao.Taxon
-                TaxonDaoHibernateImplTest.class
+                TaxonGraphTest.class
                     );
     }
 }

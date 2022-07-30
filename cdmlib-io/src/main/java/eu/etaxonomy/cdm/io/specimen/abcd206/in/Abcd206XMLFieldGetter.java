@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 public class Abcd206XMLFieldGetter {
 
-    private static final Logger logger = Logger.getLogger(Abcd206Import.class);
+    private static final Logger logger = LogManager.getLogger(Abcd206Import.class);
     private final Abcd206DataHolder dataHolder;
     private final String prefix;
     private String path = "";

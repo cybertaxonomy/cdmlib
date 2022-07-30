@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotEmpty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,13 +26,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.validation.Level2;
 
@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 public class CategoricalData extends DescriptionElementBase {
 
     private static final long serialVersionUID = -6298361966947668998L;
-    private static final Logger logger = Logger.getLogger(CategoricalData.class);
+    private static final Logger logger = LogManager.getLogger(CategoricalData.class);
 
     //whether the sequence of ordered states is important
     @XmlElement(name = "OrderRelevant")

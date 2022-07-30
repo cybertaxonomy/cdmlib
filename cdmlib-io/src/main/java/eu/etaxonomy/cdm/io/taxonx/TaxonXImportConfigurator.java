@@ -13,7 +13,7 @@ import java.io.InputStream;
 import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @version 1.0
  */
 public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(TaxonXImportConfigurator.class);
 
 	//if true the information in the mods part (taxonxHeader)
 	private boolean doMods = true;

@@ -32,6 +32,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -44,7 +45,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -57,7 +59,6 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -199,7 +200,7 @@ public class TaxonName
                 INomenclaturalStanding {
 
     private static final long serialVersionUID = -791164269603409712L;
-    private static final Logger logger = Logger.getLogger(TaxonName.class);
+    private static final Logger logger = LogManager.getLogger(TaxonName.class);
 
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
@@ -577,13 +578,7 @@ public class TaxonName
 
 // *************** FACTORY METHODS ********************************/
 
-    //see TaxonNameFactory
-    /**
-     * @param code
-     * @param rank
-     * @param homotypicalGroup
-     * @return
-     */
+    //TODO move to TaxonNameFactory
     protected static TaxonName NewInstance(NomenclaturalCode code, Rank rank,
             HomotypicalGroup homotypicalGroup) {
 
@@ -603,15 +598,8 @@ public class TaxonName
 
 // ************* CONSTRUCTORS *************/
 
-    /**
-     * Class constructor: creates a new empty taxon name.
-     * @param code
-     *
-     * @see #TaxonName(Rank)
-     * @see #TaxonName(HomotypicalGroup)
-     * @see #TaxonName(Rank, HomotypicalGroup)
-     */
-    protected TaxonName() {}
+    //for hibernate use only, *packet* private required by bytebuddy
+    TaxonName() {}
 
     /**
      * Class constructor: creates a new taxon name instance
@@ -628,7 +616,6 @@ public class TaxonName
      * @see    					 #TaxonName(HomotypicalGroup)
      */
     protected TaxonName(NomenclaturalCode type, Rank rank, HomotypicalGroup homotypicalGroup) {
-        this();
         setNameType(type);
         this.setRank(rank);
         if (homotypicalGroup == null){
@@ -1395,11 +1382,11 @@ public class TaxonName
 
     @Override
     public String generateFullTitle(){
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
-            return getCacheStrategy().getFullTitleCache(this);
+            return cacheStrategy().getFullTitleCache(this);
         }
     }
 
@@ -1443,14 +1430,14 @@ public class TaxonName
     @Override
     @Transient
     public List<TaggedText> getTaggedName(){
-        INameCacheStrategy strat = getCacheStrategy();
+        INameCacheStrategy strat = cacheStrategy();
         return strat.getTaggedTitle(this);
     }
 
     @Override
     @Transient
     public List<TaggedText> getTaggedFullTitle() {
-        INameCacheStrategy strat = getCacheStrategy();
+        INameCacheStrategy strat = cacheStrategy();
         return strat.getTaggedFullTitle(this);
     }
 
@@ -1544,11 +1531,11 @@ public class TaxonName
      */
     @Override
     public String generateAuthorship(){
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
-            return getCacheStrategy().getAuthorshipCache(this);
+            return cacheStrategy().getAuthorshipCache(this);
         }
     }
 
@@ -1875,11 +1862,11 @@ public class TaxonName
      * @see     #getNameCache()
      */
     protected String generateNameCache(){
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.toString());
             return null;
         }else{
-            return getCacheStrategy().getNameCache(this);
+            return cacheStrategy().getNameCache(this);
         }
     }
 
@@ -2053,11 +2040,11 @@ public class TaxonName
 
     @Override
     @Transient
-    public void setOriginalNameString(String originalNameString){
-        if (isNotBlank(originalNameString)){
-            this.getNomenclaturalSource(true).setOriginalNameString(originalNameString);
+    public void setOriginalInfo(String originalInfo){
+        if (isNotBlank(originalInfo)){
+            this.getNomenclaturalSource(true).setOriginalInfo(originalInfo);
         }else if (this.getNomenclaturalSource() != null){
-            this.getNomenclaturalSource().setOriginalNameString(null);
+            this.getNomenclaturalSource().setOriginalInfo(null);
             checkNullSource();
         }
     }
@@ -2457,7 +2444,7 @@ public class TaxonName
      * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
      * @param  citation					the reference for this new designation
      * @param  citationMicroReference	the string with the details (generally pages) within the reference
-     * @param  originalNameString		the taxon name string used in the reference to assert this designation
+     * @param  originalInfo     		any information from the original source, might be the name as written in the source (#10097)
      * @param  isRejectedType			the boolean status for a rejected name type designation
      * @param  isConservedType			the boolean status for a conserved name type designation
      * @param  isLectoType				the boolean status for a lectotype name type designation
@@ -2473,14 +2460,14 @@ public class TaxonName
     public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies,
                 Reference citation,
                 String citationMicroReference,
-                String originalNameString,
+                String originalName,
                 NameTypeDesignationStatus status,
                 boolean isRejectedType,
                 boolean isConservedType,
                 /*boolean isLectoType, */
                 boolean isNotDesignated,
                 boolean addToAllHomotypicNames) {
-        NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, status, isRejectedType, isConservedType, isNotDesignated);
+        NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalName, status, isRejectedType, isConservedType, isNotDesignated);
         //nameTypeDesignation.setLectoType(isLectoType);
         addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
         return nameTypeDesignation;
@@ -2493,7 +2480,7 @@ public class TaxonName
      * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
      * @param  citation					the reference for this new designation
      * @param  citationMicroReference	the string with the details (generally pages) within the reference
-     * @param  originalNameString		the taxon name string used in the reference to assert this designation
+     * @param  originalInfo     		any information from the original source, might be the name as written in the source (#10097)
      * @param  status                   the name type designation status
      * @param  addToAllHomotypicNames	the boolean indicating whether the name type designation should be
      * 									added to all taxon names of the homotypical group this taxon name belongs to
@@ -2506,10 +2493,10 @@ public class TaxonName
     public NameTypeDesignation addNameTypeDesignation(TaxonName typeSpecies,
                 Reference citation,
                 String citationMicroReference,
-                String originalNameString,
+                String originalInfo,
                 NameTypeDesignationStatus status,
                 boolean addToAllHomotypicNames) {
-        NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, status, citation, citationMicroReference, originalNameString);
+        NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, status, citation, citationMicroReference, originalInfo);
         addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
         return nameTypeDesignation;
     }
@@ -2541,7 +2528,7 @@ public class TaxonName
      * @param  status					the specimen type designation status
      * @param  citation					the reference for this new specimen type designation
      * @param  citationMicroReference	the string with the details (generally pages) within the reference
-     * @param  originalNameString		the taxon name used in the reference to assert this designation
+     * @param  originalInfo     		any information from the original source, might be the name as written in the source (#10097)
      * @param  isNotDesignated			the boolean status for a specimen type designation without specimen type
      * @param  addToAllHomotypicNames	the boolean indicating whether the specimen type designation should be
      * 									added to all taxon names of the homotypical group the typified
@@ -2557,10 +2544,10 @@ public class TaxonName
                 SpecimenTypeDesignationStatus status,
                 Reference citation,
                 String citationMicroReference,
-                String originalNameString,
+                String originalInfo,
                 boolean isNotDesignated,
                 boolean addToAllHomotypicNames) {
-        SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated);
+        SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalInfo, isNotDesignated);
         addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
         return specimenTypeDesignation;
     }
@@ -2572,9 +2559,9 @@ public class TaxonName
                 boolean isVerbatim,
                 Reference citation,
                 String citationMicroReference,
-                String originalNameString,
+                String originalInfo,
                 boolean addToAllHomotypicNames) {
-        TextualTypeDesignation textualTypeDesignation = TextualTypeDesignation.NewInstance(text, language, isVerbatim, citation, citationMicroReference, originalNameString);
+        TextualTypeDesignation textualTypeDesignation = TextualTypeDesignation.NewInstance(text, language, isVerbatim, citation, citationMicroReference, originalInfo);
         addTypeDesignation(textualTypeDesignation, addToAllHomotypicNames);
         return textualTypeDesignation;
     }
@@ -3610,7 +3597,7 @@ public class TaxonName
         //updates the authorship cache if necessary and via the listener updates all higher caches
         if (protectedAuthorshipCache == false){
             String oldCache = this.authorshipCache;
-            String newCache = getCacheStrategy().getAuthorshipCache(this);
+            String newCache = cacheStrategy().getAuthorshipCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setAuthorshipCache(null, false);
                 this.getAuthorshipCache();
@@ -3624,7 +3611,7 @@ public class TaxonName
         //updates the name cache if necessary and via the listener updates all higher caches
         if (protectedNameCache == false){
             String oldCache = this.nameCache;
-            String newCache = getCacheStrategy().getNameCache(this);
+            String newCache = cacheStrategy().getNameCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setNameCache(null, false);
                 this.getNameCache();
@@ -3637,7 +3624,7 @@ public class TaxonName
     private boolean updateFullTitleCache() {
         if (protectedFullTitleCache == false){
             String oldCache = this.fullTitleCache;
-            String newCache = getTruncatedCache(getCacheStrategy().getFullTitleCache(this));
+            String newCache = getTruncatedCache(cacheStrategy().getFullTitleCache(this));
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setFullTitleCache(null, false);
                 this.getFullTitleCache();

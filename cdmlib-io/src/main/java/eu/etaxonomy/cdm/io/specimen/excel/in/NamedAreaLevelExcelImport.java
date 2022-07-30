@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -33,7 +33,7 @@ public class NamedAreaLevelExcelImport
 
     private static final long serialVersionUID = 6790172880945153291L;
 
-    private static final Logger logger = Logger.getLogger(NamedAreaLevelExcelImport.class);
+    private static final Logger logger = LogManager.getLogger(NamedAreaLevelExcelImport.class);
 
 	private static final String WORKSHEET_NAME = "AreaLevels";
 

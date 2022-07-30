@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonRelationshipDao;
 
 /**
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonRelationshipDao;
 @Repository
 @Qualifier("taxonRelationshipDaoHibernateImpl")
 public class TaxonRelationshipDaoHibernateImpl
-        extends AnnotatableDaoImpl<TaxonRelationship>
+        extends AnnotatableDaoBaseImpl<TaxonRelationship>
         implements ITaxonRelationshipDao{
 
     public TaxonRelationshipDaoHibernateImpl() {

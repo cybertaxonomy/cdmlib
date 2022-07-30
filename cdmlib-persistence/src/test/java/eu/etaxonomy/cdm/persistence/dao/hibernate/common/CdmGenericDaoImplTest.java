@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -171,7 +172,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
+    private static final Logger logger = LogManager.getLogger(CdmGenericDaoImplTest.class);
 
 	@SpringBeanByType
 	private CdmGenericDaoImpl cdmGenericDao;
@@ -545,8 +546,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		article1.addRights(rights1);
 		article2.addRights(rights2);
 
-		Credit credit1 = Credit.NewInstance(Team.NewInstance(), "credit1");
-		Credit credit2 = Credit.NewInstance(Team.NewInstance(), "credit2");
+		Credit credit1 = Credit.NewInstance(Team.NewInstance(), TimePeriod.NewInstance(2002), "credit1");
+		Credit credit2 = Credit.NewInstance(Team.NewInstance(), TimePeriod.NewInstance(2015), "credit2");
 
 		article1.addCredit(credit1);
 		article2.addCredit(credit2);
@@ -700,7 +701,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		book1.setAuthorship(team2);
 		book2.setAuthorship(team3);
 
-		Credit credit1 = Credit.NewInstance(team3, "credit1");
+		Credit credit1 = Credit.NewInstance(team3, TimePeriod.NewInstance(1955), "credit1");
 		book2.addCredit(credit1);
 
 		agentDao.save(team1);
@@ -933,7 +934,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		String emailAddress2 = "Email2";
 		team2.addEmailAddress(emailAddress2);
 
-		Credit credit1 = Credit.NewInstance(team2, "credit1");
+		Credit credit1 = Credit.NewInstance(team2, TimePeriod.NewInstance(2008), "credit1");
 		book1.addCredit(credit1);
 
 		agentDao.save(team1);

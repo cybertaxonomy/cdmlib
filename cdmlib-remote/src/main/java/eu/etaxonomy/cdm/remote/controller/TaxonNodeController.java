@@ -15,7 +15,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,9 +39,12 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("taxonNode")
 @RequestMapping(value = {"/taxonNode/{uuid}"})
+//NOTE by AM: it seems that TaxonNodeController does not inherit from BaseController
+//            because doGet method return type is a TaxonNodeDTO not TaxonNode as expected
+//            by BaseController
 public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNodeService> {
 
-    public static final Logger logger = Logger.getLogger(TaxonNodeController.class);
+    public static final Logger logger = LogManager.getLogger(TaxonNodeController.class);
 
     @Override
     @Autowired
@@ -54,7 +58,7 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
     public TaxonNodeDto doGetParent(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response
+            @SuppressWarnings("unused") HttpServletResponse response
             ) {
 
         logger.info("doGetParent() " + requestPathAndQuery(request));

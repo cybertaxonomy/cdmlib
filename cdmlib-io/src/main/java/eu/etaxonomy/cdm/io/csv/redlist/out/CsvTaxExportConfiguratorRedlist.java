@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -35,7 +35,7 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
     private static final long serialVersionUID = 423795815976481982L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CsvTaxExportConfiguratorRedlist.class);
+	private static final Logger logger = LogManager.getLogger(CsvTaxExportConfiguratorRedlist.class);
 
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";

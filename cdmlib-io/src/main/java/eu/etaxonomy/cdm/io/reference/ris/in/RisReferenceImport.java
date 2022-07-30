@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -48,7 +48,7 @@ public class RisReferenceImport
 
     private static final long serialVersionUID = 7022034669942979722L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(RisReferenceImport.class);
+    private static final Logger logger = LogManager.getLogger(RisReferenceImport.class);
 
     @Override
     protected void doInvoke(RisReferenceImportState state) {

@@ -37,7 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -141,10 +143,10 @@ public class Reference
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
                    IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
                    IThesis,IWebPage, IPersonalCommunication,
-                   INomenclaturalReference, IReference, IIntextReferenceTarget {
+                   IIntextReferenceTarget {
 
     private static final long serialVersionUID = -2034764545042691295L;
-	private static final Logger logger = Logger.getLogger(Reference.class);
+	private static final Logger logger = LogManager.getLogger(Reference.class);
 
 //  from E+M import (still needed?)
 //	@Column(length=255)
@@ -366,6 +368,9 @@ public class Reference
 
 // *********************** CONSTRUCTOR ************************/
 
+    //for hibernate use only, *packet* private required by bytebuddy
+    //TODO currenctly still protected as OpenUrlReference inherits from Reference
+    //     this should be fixed
     protected Reference(){
 		this(ReferenceType.Generic);  //just in case someone uses constructor
 	}
@@ -577,7 +582,7 @@ public class Reference
 
 	@Override
     public void setPublisher(String publisher) {
-		this.publisher = isBlank(publisher)? null : publisher;
+		this.publisher = StringUtils.truncate(isBlank(publisher)? null : publisher, 255);
 	}
 
 	@Override
@@ -813,11 +818,11 @@ public class Reference
 	// TODO implement
 	@Transient
 	public String getCitation(){
-		if (getCacheStrategy() == null){
+		if (cacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
 		}else{
-			return getCacheStrategy().getTitleCache(this);
+			return cacheStrategy().getTitleCache(this);
 		}
 	}
 
@@ -828,7 +833,7 @@ public class Reference
 	}
 
     public String generateAbbrevTitle() {
-		return getCacheStrategy().getNomenclaturalTitleCache(this);
+		return cacheStrategy().getNomenclaturalTitleCache(this);
 	}
 
 	/**
@@ -942,7 +947,7 @@ public class Reference
     @Transient
     public String getNomenclaturalCitation(String microReference) {
 		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getLabel();
-		if (getCacheStrategy() == null){
+		if (cacheStrategy() == null){
 		    throw new IllegalStateException("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 		}else{
 		    return NomenclaturalSourceFormatter.INSTANCE().format(this, microReference);
@@ -1178,6 +1183,14 @@ public class Reference
     public boolean isPrintedUnit() {
         return this.getType().isPrintedUnit();
     }
+    /**
+     * @return <code>true</code> if the type of this reference
+     *         supports the {@link IDynamicReference} interface. Currently these are
+     *         webpages, databases and maps.
+     */
+    public boolean isDynamic() {
+        return this.getType().isDynamic();
+    }
 
 //*************************** CACHE STRATEGIES ******************************/
 
@@ -1199,9 +1212,9 @@ public class Reference
        if (this.protectedAbbrevTitleCache == false){
            String oldAbbrevTitleCache = this.abbrevTitleCache;
 
-           String newAbbrevTitleCache = getTruncatedCache(getCacheStrategy().getNomenclaturalTitleCache(this));
+           String newAbbrevTitleCache = getTruncatedCache(cacheStrategy().getNomenclaturalTitleCache(this));
            if (newAbbrevTitleCache.equals("")){
-               newAbbrevTitleCache = getCacheStrategy().getTitleCache(this);
+               newAbbrevTitleCache = cacheStrategy().getTitleCache(this);
            }
 
            if ( oldAbbrevTitleCache == null || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){

@@ -27,7 +27,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -64,7 +65,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @since 17.11.2008
  */
 public class EditGeoServiceUtilities {
-    private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
+    private static final Logger logger = LogManager.getLogger(EditGeoServiceUtilities.class);
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
 

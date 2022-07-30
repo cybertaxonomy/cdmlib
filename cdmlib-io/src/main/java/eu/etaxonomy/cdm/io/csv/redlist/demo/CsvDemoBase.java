@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
@@ -55,7 +55,7 @@ public abstract class CsvDemoBase
             implements ICdmExport<CsvDemoExportConfigurator, CsvDemoExportState>{
 
     private static final long serialVersionUID = -2962456879635841019L;
-    private static final Logger logger = Logger.getLogger(CsvDemoBase.class);
+    private static final Logger logger = LogManager.getLogger(CsvDemoBase.class);
 
 	protected static final boolean IS_CORE = true;
 

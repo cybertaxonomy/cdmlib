@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ReverseComparator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private Reference sec;
     private Reference ref1;
@@ -168,9 +169,8 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         botName2.addBasionym(botName4);
 
         list.addAll(taxon1.getSynonyms());
-
-        UUID uuidFirst = UUID.fromString("000000972-d164-4cb5-9a1e-d6216cc858f6");
-        UUID uuidSecond = UUID.fromString("ffffff972-d164-4cb5-9a1e-d6216cc858f6");
+        UUID uuidFirst =  UUID.fromString("00000001-fd5f-4a91-bf28-ea432bd1dab5");
+        UUID uuidSecond = UUID.fromString("ffffffff-fd5f-4a91-bf28-ea432bd1dab5");
         Assert.assertTrue(uuidFirst.toString().compareTo(uuidSecond.toString())<-1);
 
         botName4.getHomotypicalGroup().setUuid(uuidFirst);

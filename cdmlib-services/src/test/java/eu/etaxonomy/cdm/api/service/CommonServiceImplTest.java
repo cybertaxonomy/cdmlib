@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  */
 public class CommonServiceImplTest extends CdmIntegrationTest {
 
-	private static final Logger logger = Logger.getLogger(CommonServiceImplTest.class);
+	private static final Logger logger = LogManager.getLogger(CommonServiceImplTest.class);
 
 	@SpringBeanByType
 	private ICommonService service;

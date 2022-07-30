@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping;
 import eu.etaxonomy.cdm.io.stream.mapping.InMemoryMapping;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
  */
 public class StreamPartitioner<ITEM extends IConverterInput>
             implements INamespaceReader<IReader<MappedCdmBase<? extends CdmBase>>>{
-	private static final Logger logger = Logger.getLogger(StreamPartitioner.class);
+	private static final Logger logger = LogManager.getLogger(StreamPartitioner.class);
 
 	private final int partitionSize;
 	private final LookAheadStream<ITEM> inStream;

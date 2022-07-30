@@ -4,7 +4,7 @@ import java.io.IOException;
 import eu.etaxonomy.cdm.common.URI;
 
 import org.apache.http.HttpException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +30,7 @@ public class ExcelStreamImport
 
     private static final long serialVersionUID = -1067536880817966304L;
 
-    private static final Logger logger = Logger.getLogger(ExcelStreamImport.class);
+    private static final Logger logger = LogManager.getLogger(ExcelStreamImport.class);
 
 
 	@Override

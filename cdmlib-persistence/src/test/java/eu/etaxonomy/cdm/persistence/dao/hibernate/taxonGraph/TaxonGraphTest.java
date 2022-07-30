@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
@@ -44,6 +46,9 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Sep 27, 2018
  */
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger(TaxonGraphTest.class);
 
     enum EventType{
         INSERT, UPDATE;
@@ -87,14 +92,12 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     protected static UUID uuid_t_trachelomonas_s_var_a = UUID.fromString("3f14c528-e191-4a6f-b2a9-36c9a3fc7eee");
 
     public AbstractHibernateTaxonGraphProcessor taxonGraphProcessor(){
-        AbstractHibernateTaxonGraphProcessor processor = new AbstractHibernateTaxonGraphProcessor() {
-
+        AbstractHibernateTaxonGraphProcessor processor = new AbstractHibernateTaxonGraphProcessor(prefDao) {
             @Override
             public Session getSession() {
                 return nameDao.getSession();
             }
         };
-
         return processor;
     }
 
@@ -105,8 +108,11 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testnewTaxonName() throws TaxonGraphException{
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
+    public void testNewTaxonName() throws TaxonGraphException{
 
         setUuidPref();
 
@@ -129,7 +135,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testChangeNomRef() throws TaxonGraphException{
 
         setUuidPref();
@@ -155,7 +164,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testChangeRank() throws TaxonGraphException{
 
         setUuidPref();
@@ -180,7 +192,10 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testChangeGenus() throws TaxonGraphException{
 
         setUuidPref();
@@ -211,14 +226,17 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet
+    })
     public void testChangeSpecificEpithet_of_InfraSpecific() throws TaxonGraphException{
 
         setUuidPref();
 
         TaxonName n_trachelomonas_o_var_d = nameDao.load(uuid_n_trachelomonas_o_var_d);
-
-        List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, nameDao.load(uuid_n_trachelomonas), true);
+        TaxonName n_trachelomonas = nameDao.load(uuid_n_trachelomonas);
+        List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, n_trachelomonas, true);
         Assert.assertEquals("One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas' expected", 1, edges.size());
         edges = taxonGraphDao.edges(n_trachelomonas_o_var_d, nameDao.load(uuid_n_trachelomonas_o), true);
         Assert.assertEquals("One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas oviformis' expected", 1, edges.size());
@@ -241,7 +259,6 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
 
     @Override
-    // @Test
     public void createTestDataSet() throws FileNotFoundException {
 
         TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();

@@ -15,10 +15,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.kohlbecker
  * @since Oct 14, 2018
- *
  */
 public interface ICdmEntityUuidCacher extends ICdmCacher {
 
     CdmBase getFromCache(UUID uuid);
-
 }

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.test.suite;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.io.specimen.excel.in.ExcelSpecimenImportExampleTest;
     )
 public class CdmTestSuite {
     @SuppressWarnings("unused")
-    private static final  Logger logger = Logger.getLogger(CdmTestSuite.class);
+    private static final  Logger logger = LogManager.getLogger(CdmTestSuite.class);
 
     // the class remains completely empty,
     // being used only as a holder for the above annotations

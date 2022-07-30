@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.ReadableDuration;
@@ -21,7 +21,7 @@ import org.joda.time.ReadableDuration;
  * @version 1.0
  */
 public class PartitionerProfiler {
-	private static final Logger logger = Logger.getLogger(PartitionerProfiler.class);
+	private static final Logger logger = LogManager.getLogger(PartitionerProfiler.class);
 	
 	ResultSetPartitioner partitioner;
 	

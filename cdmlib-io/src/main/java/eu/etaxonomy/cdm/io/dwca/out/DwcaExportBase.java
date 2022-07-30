@@ -21,7 +21,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
@@ -39,7 +39,7 @@ public abstract class DwcaExportBase
     private static final long serialVersionUID = -3214410418410044139L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DwcaExportBase.class);
+    private static final Logger logger = LogManager.getLogger(DwcaExportBase.class);
 
     protected static final boolean IS_CORE = true;
 

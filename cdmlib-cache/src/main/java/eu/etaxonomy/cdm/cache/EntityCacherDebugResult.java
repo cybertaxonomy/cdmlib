@@ -16,7 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
@@ -24,6 +25,7 @@ import org.hibernate.proxy.LazyInitializer;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -35,7 +37,7 @@ import net.sf.ehcache.Element;
  */
 public class EntityCacherDebugResult {
 
-    private static final Logger logger = Logger.getLogger(EntityCacherDebugResult.class);
+    private static final Logger logger = LogManager.getLogger(EntityCacherDebugResult.class);
 
     private Map<CdmEntityInfo, CdmEntityInfo> duplicateCdmEntityMap;
 
@@ -504,7 +506,7 @@ public class EntityCacherDebugResult {
                     } else {
                         className = "InitialisedHibernateProxy";
                     }
-                    label = "[" + className + "] " + fieldName;
+                    label = fieldName + ": [" + className + "]";
                 } else if(object instanceof PersistentCollection) {
                     PersistentCollection pc = ((PersistentCollection)object);
                     if(!pc.wasInitialized()) {
@@ -512,26 +514,24 @@ public class EntityCacherDebugResult {
                     } else {
                         className = "InitialisedPersistentCollection";
                     }
-                    label = "[" + className + "] " + fieldName;
+                    label = fieldName + ": [" + className + "]";
                 } else if(object instanceof Collection) {
-                    label = "[" + className + "] " + fieldName + " : " + String.valueOf(((Collection)object).size());
+                    label = fieldName + ": [" + className + "] : " + String.valueOf(((Collection)object).size());
                 } else if(object instanceof Map) {
-                    label = "[" + className + "] " + fieldName + " : " + String.valueOf(((Map)object).size());
+                    label = fieldName + ": [" + className + "] : " + String.valueOf(((Map)object).size());
                 } else if(object instanceof CdmBase) {
                     String objectLabel = "-- not fully initialized for toString() --";
                     try {
-
                         objectLabel = object.toString();
-                    } catch(LazyInitializationException e){
+                    } catch(LazyInitializationException e){}
 
-                    }
-                    label = getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "] " + fieldName + " : " + objectLabel;
+                    label = CdmUtils.concat(": ", fieldName, objectLabel) + ": " + getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "]";
                 } else {
-                    label = "[" + className + "] " + fieldName + " : " + object.toString();
+                    label = fieldName + ": [" + className + "] : " + object.toString();
                 }
                 label += " {"+ System.identityHashCode(object) + "}";
             } else {
-                label = "[NULL] " + fieldName;
+                label = fieldName + ": [NULL]";
             }
             return label;
         }

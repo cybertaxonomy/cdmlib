@@ -6,33 +6,41 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.proxy.HibernateProxy;
+
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
  * @since 03.03.2009
  */
 public class HibernateProxyHelper {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(HibernateProxyHelper.class);
 
+	@SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger(HibernateProxyHelper.class);
 
 	// ************************** Hibernate proxies *******************/
 	/**
 	 * Deproxy and cast the given object to the given class.
-	 * If clazz is <code>null</code>. If object is not an instance of HibernateProxy no
-	 * deproxy is performed.
+	 * clazz must not be <code>null</code> if object is instance of {@link HibernateProxy}.
+	 * If object is not an instance of HibernateProxy no deproxy is performed.
 	 *
-	 * @param object
-	 * @param clazz
+     * Note AM (2022-06-16): maybe for pure casting this method is not reqired anymore and also
+     *       deproxing might be obsolete in most cases since the current bytecode
+     *       provider "bytebuddy" probably casts and handles proxies correctly.
+     *
+     * @see CdmBase#deproxy(Object, Class) for further information
+     *
+	 * @param object the object to cast
+	 * @param clazz the class to cast to
 	 * @return the casted and deproxied object
 	 * @throws ClassCastException
 	 */

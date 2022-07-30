@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>>
       implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 
-	private static final Logger logger = Logger.getLogger(PartitionableConverterBase.class);
+	private static final Logger logger = LogManager.getLogger(PartitionableConverterBase.class);
 
 	protected STATE state;
 	protected CONFIG config;  //for convenience only (must always be same as state.getConfig())

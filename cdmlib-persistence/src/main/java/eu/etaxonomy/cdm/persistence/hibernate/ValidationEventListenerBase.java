@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
  */
 @SuppressWarnings("serial")
 public abstract class ValidationEventListenerBase implements PostInsertEventListener, PostUpdateEventListener{
-    private static final Logger logger = Logger.getLogger(ValidationEventListenerBase.class);
+    private static final Logger logger = LogManager.getLogger(ValidationEventListenerBase.class);
 
     private ValidationExecutor validationExecutor;
 

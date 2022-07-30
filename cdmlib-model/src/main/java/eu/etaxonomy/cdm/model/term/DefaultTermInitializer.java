@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.term.init.ITermInitializer;
 import eu.etaxonomy.cdm.model.term.init.ITermLoader;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.term.init.TermLoader;
 public class DefaultTermInitializer implements ITermInitializer {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DefaultTermInitializer.class);
+	private static final Logger logger = LogManager.getLogger(DefaultTermInitializer.class);
 	protected ITermLoader termLoader = new TermLoader();
 
 	private boolean omit = false;

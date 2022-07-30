@@ -20,14 +20,13 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
- * This subclass of {@link DescriptionElementSource} exists to
+ * This subclass of {@link NamedSourceBase} exists to
  * support bidirectionality for sources of type
  * {@link OriginalSourceType#SecundumReference}.
  * This is necessary e.g. to support recognition of state changes of the
@@ -63,8 +62,9 @@ public class SecundumSource extends NamedSourceBase {
 
 //*********************** CONSTRUCTOR ******************************/
 
+    //*packet* private required by bytebuddy
     @SuppressWarnings("deprecation")
-    public SecundumSource(){
+    SecundumSource(){
         setType(OriginalSourceType.PrimaryTaxonomicSource);
         initListener();
     }

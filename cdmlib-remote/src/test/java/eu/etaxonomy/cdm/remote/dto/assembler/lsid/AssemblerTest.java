@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
@@ -90,7 +92,7 @@ import net.sf.cglib.proxy.MethodProxy;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class AssemblerTest extends UnitilsJUnit4 {
 
-    public static final Logger logger = Logger.getLogger(AssemblerTest.class);
+    public static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private Mapper mapper;
@@ -192,7 +194,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setReferenceAbstract("referenceAbstract");
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());
-        bookSection.addCredit(Credit.NewInstance(authorship, "Credits to the authorship"));
+        bookSection.addCredit(Credit.NewInstance(authorship, null, "Credits to the authorship"));
         bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 
@@ -241,7 +243,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         int pnParentTaxa = 0;
         for (Relationship rel : taxonConcept.getHasRelationship()){
             Assert.assertNotNull(rel.getFromTaxon());
-            System.out.println(rel.getFromTaxon().getIdentifier().toString());
+//            System.out.println(rel.getFromTaxon().getIdentifier().toString());
             if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:synyonms:")){
                 nSynonyms++;
             }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:r")){
@@ -437,7 +439,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         }
 
         @Override
-        public Class getPersistentClass() {
+        public Class<?> getPersistentClass() {
             // TODO Auto-generated method stub
             return null;
         }
@@ -451,7 +453,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         @Override
         public void initialize() throws HibernateException {
             // TODO Auto-generated method stub
-
         }
 
         @Override
@@ -463,24 +464,21 @@ public class AssemblerTest extends UnitilsJUnit4 {
         @Override
         public void setIdentifier(Serializable arg0) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void setImplementation(Object arg0) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void setUnwrap(boolean arg0) {
             // TODO Auto-generated method stub
-
         }
 
 		@Override
 		public Object getImplementation(
-				org.hibernate.engine.spi.SessionImplementor session)
+		        SharedSessionContractImplementor session)
 				throws HibernateException {
 			// TODO Auto-generated method stub
 			return null;
@@ -501,26 +499,18 @@ public class AssemblerTest extends UnitilsJUnit4 {
 		@Override
 		public void setReadOnly(boolean readOnly) {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void setSession(
-				org.hibernate.engine.spi.SessionImplementor session)
+		        SharedSessionContractImplementor session)
 				throws HibernateException {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void unsetSession() {
 			// TODO Auto-generated method stub
-
 		}
-
     }
-
-
-
-
 }

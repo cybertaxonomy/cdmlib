@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
@@ -15,12 +14,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.spi.shared.AbstractUserType;
 
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
 
@@ -32,7 +31,7 @@ import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
 public class ShiftUserType  extends AbstractUserType implements UserType {
 	private static final long serialVersionUID = -2507496252811101383L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ShiftUserType.class);
+	private static final Logger logger = LogManager.getLogger(ShiftUserType.class);
 
 	private static final String SHIFT_SEPARATOR = ";";
 	private static final String ATTR_SEPARATOR = ",";
@@ -43,7 +42,6 @@ public class ShiftUserType  extends AbstractUserType implements UserType {
 	public Object deepCopy(Object o) throws HibernateException {
 		return o;  //do we need more?
 	}
-
 
 	@Override
 	public Serializable disassemble(Object value) throws HibernateException {
@@ -66,7 +64,7 @@ public class ShiftUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public Shift[] nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+	public Shift[] nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
         String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 
@@ -100,7 +98,7 @@ public class ShiftUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
             StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);

@@ -26,7 +26,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 public class CdmUtils {
 
-    private static final Logger logger = Logger.getLogger(CdmUtils.class);
+    private static final Logger logger = LogManager.getLogger();
 
     static private boolean urlIsJarOrBundle(URL url){
         return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
@@ -369,16 +370,13 @@ public class CdmUtils {
     }
 
     /**
-     * Tests if two objects are equal or both null. Otherwise returns false
-     * @param obj1
-     * @param obj2
-     * @return
+     * Tests if two objects are equal or both null. Otherwise returns <code>false</code>.
      */
     public static boolean nullSafeEqual(Object obj1, Object obj2) {
         if (obj1 == null){
             return obj2 == null;
         }
-        return (obj1.equals(obj2));
+        return (obj1 == obj2) || (obj1.equals(obj2));
     }
 
     /**

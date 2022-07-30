@@ -12,11 +12,11 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.stereotype.Repository;
@@ -130,14 +130,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());
 
-				if(pageSize != null) {
-			        query.setMaxResults(pageSize);
-			        if(pageNumber != null) {
-			            query.setFirstResult(pageNumber * pageSize);
-			        } else {
-			    	    query.setFirstResult(0);
-			        }
-			    }
+				addPageSizeAndNumber(query, pageSize, pageNumber);
 				List<MediaKey> results = query.getResultList();
 				defaultBeanInitializer.initializeAll(results, propertyPaths);
 				return results;
@@ -150,9 +143,9 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 	@Override
     public List<Rights> getRights(Media media, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("MediaDaoHibernateImpl.getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-		Query query = getSession().createQuery("select rights from Media media join media.rights rights where media = :media");
+		Query<Rights> query = getSession().createQuery("select rights from Media media join media.rights rights where media = :media", Rights.class);
 		query.setParameter("media",media);
-		setPagingParameter(query, pageSize, pageNumber);
+		addPageSizeAndNumber(query, pageSize, pageNumber);
 		List<Rights> results = query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
@@ -161,12 +154,10 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 	@Override
     public long countRights(Media media) {
 		checkNotInPriorView("MediaDaoHibernateImpl.countRights(Media t)");
-		Query query = getSession().createQuery("select count(rights) from Media media join media.rights rights where media = :media");
+		Query<Long> query = getSession().createQuery("select count(rights) from Media media join media.rights rights where media = :media", Long.class);
 		query.setParameter("media",media);
-		return (Long)query.uniqueResult();
+		return query.uniqueResult();
 	}
-
-
 
 	@Override
 	public void rebuildIndex() {
@@ -180,5 +171,4 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		}
 		fullTextSession.flushToIndexes();
 	}
-
 }

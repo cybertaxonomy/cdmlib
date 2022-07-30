@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -29,7 +29,7 @@ public abstract class DbImportConfiguratorBase<STATE extends DbImportStateBase>
 
     private static final long serialVersionUID = 3474072167155099394L;
 	@SuppressWarnings("unused")
-    private static Logger logger = Logger.getLogger(DbImportConfiguratorBase.class);
+    private static Logger logger = LogManager.getLogger(DbImportConfiguratorBase.class);
 
 	private Method userTransformationMethod;
 

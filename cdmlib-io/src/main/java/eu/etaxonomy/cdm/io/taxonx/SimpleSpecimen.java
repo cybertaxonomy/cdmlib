@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.taxonx;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
  * @version 1.0
  */
 public class SimpleSpecimen {
-	private static final Logger logger = Logger.getLogger(SimpleSpecimen.class);
+	private static final Logger logger = LogManager.getLogger(SimpleSpecimen.class);
 
 	private GatheringEvent gatheringEvent;
 	private FieldUnit fieldUnit;

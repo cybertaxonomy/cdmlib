@@ -12,7 +12,7 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.junit.Assert;
 import org.springframework.core.io.ClassPathResource;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
  */
 public class PubTest {
 
-	private static final Logger logger = Logger.getLogger(PubTest.class);
+	private static final Logger logger = LogManager.getLogger(PubTest.class);
 
 	private static PublishConfigurator configurator;
 

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+    <File name="FILE" fileName="cdmlib-commons.log" append="true" header="%d{dd MMM yyyy}">
+      <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
+    </File>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
+      <AppenderRef ref="STDOUT"/>
+      <!-- <AppenderRef ref="FILE"/> -->
+    </Root>
+    <Logger name="eu.etaxonomy.cdm.common" level="warn"/>
+    
+    <Logger name="org.dbunit" level="warn"/>
+    <!-- Logger name="eu.etaxonomy.cdm" level="info"/ -->
+    <!-- Logger name="eu.etaxonomy.cdm.database.init" level="debug"/ -->
+    <!-- Logger name="eu.etaxonomy.cdm.database.update" level="info"/ -->
+    <!-- Logger name="org.hibernate.engine.query" level="trace"/ -->
+    
+    <!-- Logger name="org.hibernate.envers.event.AuditEventListener" level="debug"/ -->
+    <!-- Logger name="org.hibernate.util.JDBCExceptionReporter" level="error"/ -->
+    <!-- Logger name="org.hibernate.hql.ast.AST" level="debug"/ -->
+    <!-- Logger name="org.hibernate.hql" level="debug"/ -->
+    <!-- Logger name="org.hibernate.jdbc" level="info"/ -->
+    
+    <!-- log just the SQL
+         to log more context specific use this snipped in the code:
+         LogUtils.setLevel(logger, Level.TRACE) -->
+    <!-- Logger name="org.hibernate.SQL" level="trace"/ -->
+    <!-- Logger name="org.hibernate.type" level="trace"/ -->
+    <!-- Logger name="org.hibernate.tool.hbm2ddl" level="warn"/ -->
+    
+    <!-- Logger name="org.hibernate.cache" level="debug"/ -->
+    
+    <!-- enable the following line if you want to track down connection
+         leakages when using DriverManagerConnectionProvider -->
+    <!-- Logger name="org.hibernate.connection.DriverManagerConnectionProvider" level="debug"/ -->
+    
+    <Logger name="org.hibernate.orm.deprecation" level="error"/>
+  </Loggers>
+</Configuration>
+
+<!-- 
+   ### *** Profiling Logger ************ ###
+
+#log4j.logger.org.springframework.aop.interceptor.PerformanceMonitorInterceptor=TRACE, profiling
+### Profiling output
+#log4j.appender.profiling=org.apache.log4j.RollingFileAppender
+#log4j.appender.profiling.File=profiling.log
+#log4j.appender.profiling.MaxFileSize=1024KB
+#log4j.appender.profiling.MaxBackupIndex=1
+#log4j.appender.profiling.layout=org.apache.log4j.PatternLayout
+#log4j.appender.profiling.layout.conversionPattern=%d,%p,%m%n
+
+### log dbUnit data loading
+#log4j.appender.org.unitils.dbunit=debug
+#log4j.appender.org.dbunit=debug
+#log4j.appender.org.dbunit.database.statement=debug
+#log4j.appender.org.dbunit.database.DatabaseConfig=trace  -->
+
+

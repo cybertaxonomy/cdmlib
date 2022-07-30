@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.MappingException;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
@@ -52,14 +52,14 @@ import org.hibernate.type.Type;
  *
  * @author Andreas Kohlbecker, 2012
  */
-//TODO this class has been moved to cdmlib-persistence preliminarily. It should be moved to
+//TODO this class has been moved to cdmlib-persistence preliminary. It should be moved to
 //cdmlib-test again as it should be used only in test. Currently this is not possible because
 //sessionFactory bean has a dependsOn relationship to this class and this creates problems in remote-webapp
 //as the been is not available.
 //see also TableGeneratorGlobalOverride
 public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
-	private static final Logger logger = Logger.getLogger(TableGenerator.class);
+	private static final Logger logger = LogManager.getLogger(TableGenerator.class);
 
 	@Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {

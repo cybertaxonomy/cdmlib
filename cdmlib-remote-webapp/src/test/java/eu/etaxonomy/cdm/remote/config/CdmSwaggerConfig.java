@@ -17,7 +17,8 @@ import java.util.Collection;
 
 import javax.persistence.Entity;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -44,7 +45,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 public class CdmSwaggerConfig {
 
-    public static final Logger logger = Logger.getLogger(CdmSwaggerConfig.class);
+    public static final Logger logger = LogManager.getLogger(CdmSwaggerConfig.class);
 
     Collection<Class<? extends Object>> allCdmTypes = null;
 

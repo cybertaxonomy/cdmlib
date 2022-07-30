@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.print;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Text;
@@ -23,7 +23,7 @@ import org.jdom.xpath.XPath;
  * @version 1.0
  */
 public class XMLHelper {
-	private static final Logger logger = Logger.getLogger(XMLHelper.class);
+	private static final Logger logger = LogManager.getLogger(XMLHelper.class);
 	
 	public enum EntityType{
 		CLASSIFICATION("Classification"), 

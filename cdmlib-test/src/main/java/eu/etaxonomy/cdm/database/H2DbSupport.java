@@ -9,9 +9,9 @@ import java.util.Set;
 import org.unitils.core.dbsupport.DbSupport;
 
 public class H2DbSupport extends DbSupport {
-        
+
         /**
-         * Creates support for HsqlDb databases.
+         * Creates support for H2 databases.
          */
         public H2DbSupport() {
                 super("h2");

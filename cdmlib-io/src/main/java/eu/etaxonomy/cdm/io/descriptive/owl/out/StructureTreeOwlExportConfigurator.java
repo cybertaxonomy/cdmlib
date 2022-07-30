@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -27,7 +27,7 @@ public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<S
     private static final long serialVersionUID = -4360021755279592592L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(StructureTreeOwlExportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(StructureTreeOwlExportConfigurator.class);
 
     private List<UUID> featureTreeUuids = new ArrayList<>();
     private List<UUID> vocabularyUuids = new ArrayList<>();

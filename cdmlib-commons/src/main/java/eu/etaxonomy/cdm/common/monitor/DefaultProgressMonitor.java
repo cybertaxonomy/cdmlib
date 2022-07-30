@@ -11,8 +11,9 @@ package eu.etaxonomy.cdm.common.monitor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This is a console style progress monitor with prints the progress information to configured {@link Logger} with level {@link Level#INFO}
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
 public class DefaultProgressMonitor implements IProgressMonitor {
 
     private static final long serialVersionUID = 8782649283568146667L;
-    private static final Logger logger = Logger.getLogger(DefaultProgressMonitor.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final DefaultProgressMonitor NewInstance(){
         return new DefaultProgressMonitor();
@@ -90,7 +91,6 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 //      this.workDone = this.workDone +  work;
     }
 
-
     @Override
     public void internalWorked(double work) {
         computeWorked(work);
@@ -146,10 +146,6 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         return result;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void waitForFeedback() {
         if(feedbackLock == null) {
@@ -169,9 +165,6 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFeedback(Serializable feedback) {
         synchronized (feedbackLock) {
@@ -181,27 +174,16 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Serializable getFeedback() {
         return feedback;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean getIsWaitingForFeedback() {
         return isWaitingForFeedback;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void waitForFeedback(long feedbackWaitTimeout) {
         if(feedbackWaitTimeout <= 0 ) {
@@ -211,44 +193,24 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         waitForFeedback();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasFeedbackWaitTimedOut() {
        long now = System.currentTimeMillis();
        return isWaitingForFeedback && (now - feedbackWaitStartTime > feedbackWaitTimeout);
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getOwner() {
         return owner;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt() {
         // do nothing
     }
-
-
-
 }

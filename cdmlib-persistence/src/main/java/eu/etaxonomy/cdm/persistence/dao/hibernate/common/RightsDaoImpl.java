@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -26,17 +26,15 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 /**
  * @author k.luther
  * @since 15.02.2017
- *
  */
 @Repository
 public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements IRightsDao  {
-    private static final Logger logger = Logger.getLogger(RightsDaoImpl.class);
-    /**
-     * @param type
-     */
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger(RightsDaoImpl.class);
+
     public RightsDaoImpl(Class rightsClass) {
         super(rightsClass);
-
     }
 
     public RightsDaoImpl(){
@@ -59,11 +57,9 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
 //            queryString += " OR type.titleCache LIKE :pattern";
         }
 
-
-
-         Query query;
+        Query<Object[]> query;
         //if (pattern != null){
-            query = session.createQuery(queryString);
+            query = session.createQuery(queryString, Object[].class);
 //      }else{
 //          query = session.createQuery("SELECT " +"r.uuid, r.id, r.titleCache, ab.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.authorship AS ab ");//"select uuid, titleCache from " + type.getSimpleName());
 //      }
@@ -78,9 +74,7 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
               query.setParameter("pattern", pattern);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-
         for(Object[] object : result){
             if (object[2] == null && object[3] == null && object[4] == null &&  object[5] == null &&  object[6] == null){
                 continue;
@@ -113,11 +107,8 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
             }
 
             list.add(new UuidAndTitleCache<Rights>(Rights.class, (UUID) object[0],(Integer)object[1], rightsText));
-
         }
 
         return list;
     }
-
-
 }

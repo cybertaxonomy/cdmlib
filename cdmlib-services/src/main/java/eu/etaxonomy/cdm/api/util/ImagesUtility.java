@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @since Jan 27, 2010
  */
 public class ImagesUtility {
-	private static final Logger logger = Logger.getLogger(ImagesUtility.class);
+	private static final Logger logger = LogManager.getLogger(ImagesUtility.class);
 
 	/**
 	 * Quick and dirty method to get an element's first image file.

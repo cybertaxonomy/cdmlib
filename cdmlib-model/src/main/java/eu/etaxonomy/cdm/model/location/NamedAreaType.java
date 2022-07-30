@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @Audited
 public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 	private static final long serialVersionUID = 8280172429797206548L;
-	private static final Logger logger = Logger.getLogger(NamedAreaType.class);
+	private static final Logger logger = LogManager.getLogger(NamedAreaType.class);
 
 	protected static Map<UUID, NamedAreaType> termMap = null;
 

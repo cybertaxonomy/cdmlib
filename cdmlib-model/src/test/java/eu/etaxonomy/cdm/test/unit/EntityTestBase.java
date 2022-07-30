@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.test.unit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.test.TermTestBase;
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  */
 public abstract class EntityTestBase extends TermTestBase {
 
-    private static Logger logger = Logger.getLogger(EntityTestBase.class);
+    private static Logger logger = LogManager.getLogger(EntityTestBase.class);
 
 	protected Class<CdmBase> clazzToTest = clazzToTest();
 	protected Class<CdmBase> clazzToTest(){

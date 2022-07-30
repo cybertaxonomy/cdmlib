@@ -18,7 +18,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
@@ -44,7 +45,7 @@ public class OccurrenceStatus
         extends SingleSourcedEntityBase {
 
     private static final long serialVersionUID = 623891726208046243L;
-    private static Logger logger = Logger.getLogger(OccurrenceStatus.class);
+    private static Logger logger = LogManager.getLogger(OccurrenceStatus.class);
 
 	@XmlElement(name = "OccurrenceStatusType")
     @XmlIDREF
@@ -87,7 +88,8 @@ public class OccurrenceStatus
 
 // ************************ CONSTRUCTOR *************************/
 
-	protected OccurrenceStatus() {
+    //*packet* private required by bytebuddy
+	OccurrenceStatus() {
         super();
     }
 

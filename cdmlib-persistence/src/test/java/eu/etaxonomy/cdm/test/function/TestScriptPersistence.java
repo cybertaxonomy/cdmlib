@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.test.function;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 
 public class TestScriptPersistence {
-	private static final Logger logger = Logger.getLogger(TestScriptPersistence.class);
+	private static final Logger logger = LogManager.getLogger(TestScriptPersistence.class);
 
 	private void test(){
 		System.out.println("Start Datasource");

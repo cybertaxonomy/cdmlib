@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.remote.config;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.Profile;
 @ImportResource(locations="classpath:/eu/etaxonomy/cdm/remoting-services.xml")
 public class RemotingWebServices {
 
-    public static final Logger logger = Logger.getLogger(RemotingWebServices.class);
+    public static final Logger logger = LogManager.getLogger(RemotingWebServices.class);
 
     public RemotingWebServices() {
         logger.info("========================================");

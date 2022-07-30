@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.stream;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
@@ -45,7 +45,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
         extends CdmImportBase<CONFIG, STATE>{
 
     private static final long serialVersionUID = -125414263689509881L;
-    private static final Logger logger = Logger.getLogger(StreamImportBase.class);
+    private static final Logger logger = LogManager.getLogger(StreamImportBase.class);
 
 
 	protected void makeSourceRef(STATE state) {

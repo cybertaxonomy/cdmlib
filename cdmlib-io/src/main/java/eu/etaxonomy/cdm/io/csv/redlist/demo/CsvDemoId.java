@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
  */
 public class CsvDemoId {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CsvDemoId.class);
+	private static final Logger logger = LogManager.getLogger(CsvDemoId.class);
 
 	private Integer intId;
 	private String strId;

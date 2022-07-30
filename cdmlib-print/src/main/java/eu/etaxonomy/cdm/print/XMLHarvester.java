@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  * @version 1.0
  */
 public class XMLHarvester {
-	private static final Logger logger = Logger.getLogger(XMLHarvester.class);
+	private static final Logger logger = LogManager.getLogger(XMLHarvester.class);
 
 	private IXMLEntityFactory factory;
 
@@ -322,7 +322,6 @@ public class XMLHarvester {
 	 */
 	private void populateChildren(Element taxonNodeElement){
 
-		logger.setLevel(Level.INFO);
 		logger.info("populating branch");
 
 		List<Element> childNodeElements = factory.getChildNodes(taxonNodeElement);
@@ -335,7 +334,7 @@ public class XMLHarvester {
 	}
 
 	private void populatePolytomousKey(Element taxonElement){
-		logger.setLevel(Level.INFO);
+
 		logger.info("populating Polytomous key");
 		logger.info("populating Polytomous key taxonElement " + XMLHelper.getUuid(taxonElement) + " name " + XMLHelper.getTitleCache(taxonElement));
 

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.description.AggregationMode;
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public class TestAggregations {
 
-	private static final Logger logger = Logger.getLogger(TestAggregations.class);
+	private static final Logger logger = LogManager.getLogger(TestAggregations.class);
 
 	private void testNewConfigControler(){
 	    logger.debug("start");

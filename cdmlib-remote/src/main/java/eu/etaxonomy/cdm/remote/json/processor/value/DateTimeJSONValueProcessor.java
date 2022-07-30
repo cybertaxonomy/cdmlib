@@ -6,10 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -20,39 +20,29 @@ import net.sf.json.processors.JsonValueProcessor;
 /**
  * @author n.hoffmann
  * @since 24.07.2008
- * @version 1.0
  */
 public class DateTimeJSONValueProcessor implements JsonValueProcessor {
-	private static Logger logger = Logger
-			.getLogger(DateTimeJSONValueProcessor.class);
+
+	@SuppressWarnings("unused")
+    private static Logger logger = LogManager.getLogger(DateTimeJSONValueProcessor.class);
 
 	private static DateTimeFormatter iso8601Format = ISODateTimeFormat.dateTime();
 
-	/* (non-Javadoc)
-	 * @see net.sf.json.processors.JsonValueProcessor#processArrayValue(java.lang.Object, net.sf.json.JsonConfig)
-	 */
 	@Override
     public Object processArrayValue(Object object, JsonConfig jsonConfig) {
 		DateTime dateTime = (DateTime) object;
-        return formatDateTime(object);
+        return formatDateTime(dateTime);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.json.processors.JsonValueProcessor#processObjectValue(java.lang.String, java.lang.Object, net.sf.json.JsonConfig)
-	 */
 	@Override
     public Object processObjectValue(String key, Object object,
 			JsonConfig jsonConfig) {
-	    return formatDateTime(object);
+	    return formatDateTime((DateTime)object);
 	}
 
-    /**
-     * @param object
-     * @return
-     */
-    public Object formatDateTime(Object object) {
+    Object formatDateTime(DateTime object) {
         if(object != null){
-	        DateTime dateTime = (DateTime) object;
+	        DateTime dateTime = object;
 	        // WARNING! null means now!
 	        return DateTimeJSONValueProcessor.iso8601Format.print(dateTime);
 	    } else {

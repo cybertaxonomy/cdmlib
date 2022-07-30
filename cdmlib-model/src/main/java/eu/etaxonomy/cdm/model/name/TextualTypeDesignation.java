@@ -84,9 +84,9 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
     }
 
     public static TextualTypeDesignation NewInstance(String text, Language language, boolean isVerbatim,
-            Reference citation, String citationMicroReference, String originalNameString) {
+            Reference citation, String citationMicroReference, String originalInfo) {
         TextualTypeDesignation result = new TextualTypeDesignation(text, language, isVerbatim,
-                citation, citationMicroReference, originalNameString);
+                citation, citationMicroReference, originalInfo);
         return result;
     }
 
@@ -96,8 +96,8 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
         super();
     }
 
-    protected TextualTypeDesignation(String text, Language language, boolean isVerbatim, Reference citation, String citationMicroReference, String originalNameString) {
-        super(citation, citationMicroReference, originalNameString);
+    protected TextualTypeDesignation(String text, Language language, boolean isVerbatim, Reference citation, String citationMicroReference, String originalInfo) {
+        super(citation, citationMicroReference, originalInfo);
         language = Language.UNDETERMINED();
         LanguageString ls = LanguageString.NewInstance(text, language);
         this.putText(ls);

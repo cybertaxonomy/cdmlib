@@ -12,7 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -20,7 +21,6 @@ import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
-
 
 /**
  * Updates the CdmPreference NomenclaturalCode  #3658
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  */
 public class VocabularyOrderUpdater extends SchemaUpdaterStepBase {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(VocabularyOrderUpdater.class);
+    private static final Logger logger = LogManager.getLogger(VocabularyOrderUpdater.class);
 
 	private static final String stepName = "Update vocabulary order";
 
@@ -69,14 +69,6 @@ public class VocabularyOrderUpdater extends SchemaUpdaterStepBase {
 	    return;
 	}
 
-    /**
-     * @param datasource
-     * @param monitor
-     * @param caseType
-     * @param result
-     * @param dat
-     * @throws SQLException
-     */
     private void invokeSingle(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
             SchemaUpdateResult result, String[] dat) throws SQLException {
         String query = "UPDATE DefinedTermBase "
@@ -85,5 +77,4 @@ public class VocabularyOrderUpdater extends SchemaUpdaterStepBase {
         datasource.executeUpdate(query);
 
     }
-
 }

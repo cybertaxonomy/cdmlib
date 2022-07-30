@@ -1,9 +1,18 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,18 +35,13 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
 /**
- *
  * @author s.buers Service to provide statistic data of the database elements
  */
-
 @Service
 @Transactional
 public class StatisticsServiceImpl implements IStatisticsService {
 
-	private static final Logger logger = Logger
-			.getLogger(StatisticsServiceImpl.class);
-
-
+	private static final Logger logger = LogManager.getLogger(StatisticsServiceImpl.class);
 
 	// this does not make sense, we just count nothing if no type is given.
 	// the one who calls this service should check that there are types given!

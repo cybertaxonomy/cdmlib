@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 public class QueryFactory {
 
-    public static final Logger logger = Logger.getLogger(QueryFactory.class);
+    public static final Logger logger = LogManager.getLogger(QueryFactory.class);
 
     protected ILuceneIndexToolProvider toolProvider;
 
@@ -305,6 +305,9 @@ public class QueryFactory {
         String latitudeFieldName = fieldName + "_HSSI_Latitude";
         String longitudeFieldName = fieldName + "_HSSI_Longitude";
 
+        //for Lucene 6+
+//        Query latQuery= DoublePoint.newRangeQuery(latitudeFieldName, boundingBox.getLowerLeft().getLatitude(),
+//                boundingBox.getUpperRight().getLatitude());
         Query latQuery= NumericRangeQuery.newDoubleRange(
                 latitudeFieldName, boundingBox.getLowerLeft().getLatitude(),
                 boundingBox.getUpperRight().getLatitude(), true, true
@@ -312,12 +315,21 @@ public class QueryFactory {
 
         Builder longQueryBuilder = new Builder();
         if ( boundingBox.getLowerLeft().getLongitude() <= boundingBox.getUpperRight().getLongitude() ) {
-            longQueryBuilder.add(NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
-                    boundingBox.getUpperRight().getLongitude(), true, true ), Occur.MUST);
+            //for Lucene 6+
+//            longQueryBuilder.add(DoublePoint.newRangeQuery( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+//                    boundingBox.getUpperRight().getLongitude()), Occur.MUST);
+              longQueryBuilder.add(NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+                      boundingBox.getUpperRight().getLongitude(), true, true), Occur.MUST);
+
         }
         else {
+            //for Lucene 6+
+//            longQueryBuilder.add( DoublePoint.newRangeQuery( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+//                    180.0), BooleanClause.Occur.SHOULD );
             longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
-                    180.0, true, true ), BooleanClause.Occur.SHOULD );
+                    180.0, true, true), BooleanClause.Occur.SHOULD );
+//            longQueryBuilder.add( DoublePoint.newRangeQuery( longitudeFieldName, -180.0,
+//                    boundingBox.getUpperRight().getLongitude()), BooleanClause.Occur.SHOULD );
             longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
                     boundingBox.getUpperRight().getLongitude(), true, true ), BooleanClause.Occur.SHOULD );
         }
@@ -390,7 +402,6 @@ public class QueryFactory {
 
         classFilterBuilder.add(termQuery, Occur.SHOULD);
         BooleanQuery classFilter = classFilterBuilder.build();
-        classFilter.setBoost(0);
 
         filteredQueryBuilder.add(query, Occur.MUST);
         filteredQueryBuilder.add(classFilter, Occur.MUST); // TODO using Occur.FILTER might be improve performance but causes wrong results

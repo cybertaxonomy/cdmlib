@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.model.term.init;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author AM
@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 public class TermNotFoundException extends Exception {
 	private static final long serialVersionUID = 4288479011948189304L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermNotFoundException.class);
+	private static final Logger logger = LogManager.getLogger(TermNotFoundException.class);
 	
 	
 	/**

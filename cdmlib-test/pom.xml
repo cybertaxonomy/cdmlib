@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.31.0</version>
+    <version>5.32.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -26,7 +26,7 @@
                   <id>generate-ddl-create</id>
                   <phase>process-classes</phase>
                   <goals>
-                      <goal>run</goal>
+                  <!--    <goal>run</goal>  -->
                   </goals>
                   <configuration>
                       <target>
@@ -100,6 +100,13 @@
         <groupId>org.unitils</groupId>
         <artifactId>unitils-core</artifactId>
         <scope>compile</scope>
+        <exclusions>
+          <exclusion>
+            <!-- we use jcl-over-slf4j instead-->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
     </dependency>
     <dependency>
       <groupId>org.unitils</groupId>
@@ -196,6 +203,18 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <!-- has overlaps with jakarta-activation -->
+          <groupId>javax.activation</groupId>
+          <artifactId>javax.activation-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <!-- we use jakarta.xml.bind-api instead -->
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>

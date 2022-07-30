@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import static org.junit.Assert.assertEquals;
@@ -40,7 +45,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author a.mueller
  * @since 2014/06/13
- *
  */
 public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
@@ -56,7 +60,6 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     @SpringBeanByType
     private IDefinedTermDao termDao;
 
-
     private final UUID europeUuid = UUID.fromString("e860871c-3a14-4ef2-9367-bbd92586c95b");
     private final UUID germanyUuid = UUID.fromString("7b7c2db5-aa44-4302-bdec-6556fd74b0b9");
     private final UUID denmarkUuid = UUID.fromString("f818c97e-fd61-42fe-9d75-d433f8cb349c");
@@ -71,7 +74,6 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     private final UUID uuidNode4 = UUID.fromString("2e6ca5d6-2fc8-4f0c-a3fe-03e596dd8afe");
     private final UUID uuidNode5 = UUID.fromString("e01f56c7-0315-450b-a05b-881d21adf02b");
     private final UUID uuidNodeUnpublished = UUID.fromString("96888466-f40e-43ed-a17d-cdc62bdf0ff0");
-
 
     private Classification classification1;
     private TaxonNode node1;
@@ -140,8 +142,6 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         nodeUnpublished = node3.addChildTaxon(taxonUnpublished, citation, microCitation);
         nodeUnpublished.setUuid(uuidNodeUnpublished);
         nodeUnpublished = taxonNodeDao.save(nodeUnpublished);
-
-
 
         //MergeResult result = taxonNodeDao.merge(node5, true);
         //node5 = (TaxonNode) result.getMergedEntity();
@@ -327,7 +327,6 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         filter = TaxonNodeFilter.NewSubtreeInstance(node3.getUuid());
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 3 children should be returned", 3, listUuid.size());
-
 
         filter = TaxonNodeFilter.NewSubtreeInstance(taxon1.getUuid());
         listUuid = filterDao.listUuids(filter);

@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -71,7 +71,7 @@ public class NomenclaturalStatusType
 
 	private static final long serialVersionUID = 1337101678484153972L;
 
-	private static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
+	private static Logger logger = LogManager.getLogger(NomenclaturalStatusType.class);
 
 	//Botanical uuids
 	public static final UUID uuidIcnafpNomStatusVocabulary = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");

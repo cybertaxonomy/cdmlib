@@ -98,12 +98,13 @@ public class CdmAuthority extends AuthorityBase {
 
 // *************************** CONSTRUCTOR ********************************/
 
-    //for hibernate use only
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
     private CdmAuthority(){}
 
     private CdmAuthority(PermissionClass permissionClass, String property, EnumSet<CRUD> operations,
             UUID targetUuid) {
-        super();
+        this();
         this.permissionClass = permissionClass;
         this.property = property;
         setOperations(operations);

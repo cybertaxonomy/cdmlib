@@ -16,6 +16,6 @@ package eu.etaxonomy.cdm.model.reference;
  * This class corresponds, according to the TDWG ontology, partially to the
  * publication type term (from PublicationTypeTerm): "ComputerProgram".
  */
-public interface IDatabase extends IAuthoredPublicationBase{
+public interface IDatabase extends IAuthoredPublicationBase, IDynamicReference {
 
 }

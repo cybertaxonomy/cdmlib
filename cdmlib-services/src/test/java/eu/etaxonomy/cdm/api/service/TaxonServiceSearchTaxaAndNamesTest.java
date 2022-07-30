@@ -15,8 +15,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +61,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrationTest {
 
-    private static Logger logger = Logger.getLogger(TaxonServiceSearchTaxaAndNamesTest.class);
+    private static Logger logger = LogManager.getLogger(TaxonServiceSearchTaxaAndNamesTest.class);
 
     private static final String ABIES_BALSAMEA_UUID = "f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8";
 

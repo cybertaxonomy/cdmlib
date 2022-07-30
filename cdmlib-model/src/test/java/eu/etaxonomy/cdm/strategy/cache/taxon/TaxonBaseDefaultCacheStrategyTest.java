@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,9 +20,11 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -45,7 +48,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonBaseDefaultCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(TaxonBaseDefaultCacheStrategyTest.class);
 
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";
@@ -98,6 +101,16 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         name.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxon.getTitleCache());
 	}
+
+    @Test
+    public void testGetTitleCacheWithNameUsedInSource() {
+        Taxon taxon = Taxon.NewInstance(name, sec);
+        TaxonName nameUsedInSource = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        nameUsedInSource.setGenusOrUninomial("Pinus");
+        nameUsedInSource.setSpecificEpithet("blanca");
+        taxon.getSecSource().setNameUsedInSource(nameUsedInSource);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl. (sub Pinus blanca)", taxon.getTitleCache());
+    }
 
 	//same as for accepted taxa but with syn. sec. instead of sec.
     @Test
@@ -219,13 +232,16 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         taxonBase.setTitleCache(null, false);
         Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1983", taxonBase.getTitleCache());
 
+        VerbatimTimePeriod accessed = TimePeriodParser.parseStringVerbatim("5 Mar 2014");
+        taxonBase.getSecSource().setAccessed(accessed);
+        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 2014", taxonBase.getTitleCache());
     }
 
     @Test
     public void testMisapplication(){
         //assert default (taxon without relation)
         Taxon man = Taxon.NewInstance(name, sec);
-        ITaxonCacheStrategy<Taxon> cacheStrategy = man.getCacheStrategy();
+        ITaxonCacheStrategy<Taxon> cacheStrategy = man.cacheStrategy();
         assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
 
         //make it a MAN only

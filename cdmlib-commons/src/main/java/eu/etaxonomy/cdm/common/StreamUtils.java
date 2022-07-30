@@ -17,7 +17,8 @@ import java.io.StringBufferInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.kohlbecker
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
  */
 public class StreamUtils {
 
-	public static final Logger logger = Logger.getLogger(StreamUtils.class);
+	public static final Logger logger = LogManager.getLogger();
 	private static final int BUFFER_SIZE = 4096;
 
 	/**

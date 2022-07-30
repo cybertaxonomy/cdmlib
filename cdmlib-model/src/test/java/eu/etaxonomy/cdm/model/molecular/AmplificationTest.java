@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 public class AmplificationTest {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(AmplificationTest.class);
+	private static Logger logger = LogManager.getLogger(AmplificationTest.class);
 
 	private UUID uuid = UUID.fromString("11e6b2d5-3eb5-4434-9c56-5bb4c1102147");
 	

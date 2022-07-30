@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database.types;
 
 import org.hibernate.dialect.DB2Dialect;
@@ -46,9 +45,6 @@ public class Db2DatabaseType extends DatabaseTypeBase {
 		return urlString + ds.getServer() + ":" + port + dbSeparator + ds.getDatabase();
     }
 	
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
-     */
     public String getDatabaseNameByConnectionString(String connectionString){
     	String result;
     	result = getDatabasePartOfConnectionString(connectionString,dbSeparator);
@@ -63,6 +59,4 @@ public class Db2DatabaseType extends DatabaseTypeBase {
     public Db2DatabaseType() {
     	init (typeName, classString, urlString, defaultPort, hibernateDialect );
 	}
-
-
 }

@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.io.tropicos.in;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.csv.in.CsvImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -72,9 +72,6 @@ public class TropicosNameImportConfigurator extends CsvImportConfiguratorBase {
         this.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{

@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.validation.Level2;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 public class Marker extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -7474489691871404610L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Marker.class);
+	private static final Logger logger = LogManager.getLogger(Marker.class);
 
     @XmlElement(name = "Flag")
 	private boolean flag;

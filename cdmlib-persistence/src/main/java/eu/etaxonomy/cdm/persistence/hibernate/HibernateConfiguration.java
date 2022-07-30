@@ -17,12 +17,12 @@ import org.hibernate.envers.boot.internal.EnversIntegrator;
 /**
  * @author a.mueller
  * @since 03.08.2017
- *
  */
 public class HibernateConfiguration implements Serializable{
 
     private static final long serialVersionUID = -894395918847594447L;
 
+    //properties
     public final static String SHOW_SQL = "hibernate.show_sql";
 
     public final static String FORMAT_SQL = "hibernate.format_sql";
@@ -33,35 +33,43 @@ public class HibernateConfiguration implements Serializable{
 
     public final static String CACHE_PROVIDER_CLASS = "hibernate.cache.region.factory_class";
 
+    public final static String BYTECODE_PROVIDER = "hibernate.bytecode.provider";
+
+    //default values
 
     public static final boolean SHOW_SQL_DEFAULT = false;
     public static final boolean FORMAT_SQL_DEFAULT = false;
     public static final boolean REGISTER_SEARCH_DEFAULT = false;
     public static final boolean REGISTER_ENVERS_DEFAULT = true;
-
     public static final Class<? extends RegionFactory> CACHE_PROVIDER_DEFAULT = NoCachingRegionFactory.class;
+    public final static String BYTECODE_PROVIDER_DEFAULT = "bytebuddy";
 
-    /**
-     * @return
-     */
+    //*************************** FACTORY METHODS **************************************/
+
     public static HibernateConfiguration NewDefaultInstance() {
         HibernateConfiguration result = NewInstance(SHOW_SQL_DEFAULT, FORMAT_SQL_DEFAULT,
-                REGISTER_SEARCH_DEFAULT, REGISTER_ENVERS_DEFAULT, CACHE_PROVIDER_DEFAULT);
+                REGISTER_SEARCH_DEFAULT, REGISTER_ENVERS_DEFAULT, CACHE_PROVIDER_DEFAULT,
+                BYTECODE_PROVIDER_DEFAULT);
         return result;
     }
 
     public static HibernateConfiguration NewInstance(Boolean showSql, Boolean formatSql,
             Boolean registerSearch, Boolean registerEnvers,
-            Class<? extends RegionFactory> cacheProviderClass) {
+            Class<? extends RegionFactory> cacheProviderClass,
+            String byteCodeProvider) {
         HibernateConfiguration result = new HibernateConfiguration();
         result.setShowSql(showSql);
         result.setFormatSql(formatSql);
         result.setRegisterSearch(registerSearch);
         result.setRegisterEnvers(registerEnvers);
         result.setCacheProviderClass(cacheProviderClass);
+        result.setByteCodeProvider(byteCodeProvider);
         return result;
     }
 
+    private HibernateConfiguration() {
+        super();
+    }
 
     private Boolean showSql = null;
 
@@ -72,6 +80,8 @@ public class HibernateConfiguration implements Serializable{
     private Boolean registerEnvers = null;
 
     private Class<? extends RegionFactory> cacheProviderClass = null;
+
+    private String byteCodeProvider;
 
 // *********** GETTERS /SETTERS ****************************/
 
@@ -125,13 +135,22 @@ public class HibernateConfiguration implements Serializable{
         this.cacheProviderClass = cacheProviderClass;
     }
 
-// ******************** toString *******************************/
+    public String getByteCodeProvider() {
+        return byteCodeProvider;
+    }
+    public String getByteCodeProvider(String byteCodeProvider) {
+        return this.byteCodeProvider != null ? this.byteCodeProvider : byteCodeProvider;
+    }
+    public void setByteCodeProvider(String byteCodeProvider) {
+        this.byteCodeProvider = byteCodeProvider;
+    }
+
+    // ******************** toString *******************************/
+
     @Override
     public String toString() {
         return "HibernateConfiguration [showSql=" + showSql + ", formatSql=" + formatSql + ", registerSearch="
                 + registerSearch + ", registerEnvers=" + registerEnvers + ", cacheProviderClass=" + cacheProviderClass
-                + "]";
+                + ", byteCodeProvider=" + byteCodeProvider + "]";
     }
-
-
 }

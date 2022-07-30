@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.common;
 import java.util.Comparator;
 
 /**
+ * Compares two {@link String}s null safe using the String.compareTo method.
+ *
  * @author a.mueller
  * @since 10.01.2020
  */

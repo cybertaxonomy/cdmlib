@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -48,7 +48,7 @@ public class DistributionImport
 
     private static final long serialVersionUID = 7765309119416657235L;
 
-    private static final Logger logger = Logger.getLogger(DistributionImport.class);
+    private static final Logger logger = LogManager.getLogger(DistributionImport.class);
 
     /* used */
     private static final String EDIT_NAME_COLUMN = "EDIT";

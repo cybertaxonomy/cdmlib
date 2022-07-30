@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -68,7 +68,7 @@ public abstract class VersionableEntity
 
     private static final long serialVersionUID = 1409299200302758513L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
+	private static final Logger logger = LogManager.getLogger(VersionableEntity.class);
 
 	@XmlElement(name ="Updated", type = String.class)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)

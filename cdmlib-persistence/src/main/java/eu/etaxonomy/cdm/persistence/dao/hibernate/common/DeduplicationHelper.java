@@ -15,9 +15,9 @@ import java.util.Set;
 import javax.naming.Reference;
 
 import org.apache.commons.lang.UnhandledException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.MappingException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.internal.SessionImpl;
@@ -26,6 +26,7 @@ import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.collection.OneToManyPersister;
 import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.query.Query;
 import org.hibernate.type.AnyType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -59,7 +60,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  * @author a.mueller
  */
 public class DeduplicationHelper {
-	private static final Logger logger = Logger.getLogger(DeduplicationHelper.class);
+	private static final Logger logger = LogManager.getLogger(DeduplicationHelper.class);
 
 	private final SessionImpl session;
 	private final CdmGenericDaoImpl genericDao;
@@ -231,16 +232,6 @@ public class DeduplicationHelper {
 		return superClass.isAssignableFrom(class1) && superClass.isAssignableFrom(class2);
 	}
 
-	/**
-	 * @param <T>
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param clazz
-	 * @param sessionFactory
-	 * @throws MergeException
-	 * @throws ClassNotFoundException
-	 * @throws NoSuchFieldException
-	 */
 	private <T extends CdmBase> void mergeExternal(T cdmBase1, T cdmBase2, Class<T> clazz,
 			Session session) throws MergeException {
 //		handleAnnotations
@@ -303,13 +294,6 @@ public class DeduplicationHelper {
 		}
 	}
 
-
-	/**
-	 * @param <T>
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param session
-	 */
 	private <T> void handleAnnotationsEtc(T cdmBase1, T cdmBase2, Session session) {
 		//when handling annotations and other elements linked via @Any an JDBC errors occurs
 		//due to the unique column constraint in the association table on the column referencing
@@ -530,9 +514,9 @@ public class DeduplicationHelper {
 		        String hql = " UPDATE " + className + " c "
 		                + " SET c."+propertyName+" = :newValue "
 		                + " WHERE c.id = :id ";
-		        Query query = session.createQuery(hql);
-		        query.setEntity("newValue", cdmBase1);
-		        query.setInteger("id",referencingObject.getId());
+		        Query<?> query = session.createQuery(hql);
+		        query.setParameter("newValue", cdmBase1);
+		        query.setParameter("id",referencingObject.getId());
 		        int rowCount = query.executeUpdate();
 		        if (logger.isDebugEnabled()){logger.debug("Rows affected: " + rowCount);}
 		        session.refresh(referencingObject);
@@ -552,7 +536,7 @@ public class DeduplicationHelper {
 		             * WHERE id IN (SELECT * FROM IntextReference
 		             *
 		             */
-		            System.out.println("IntextReference found");
+//		            System.out.println("IntextReference found");
 		        }
 	        }
 	    }

@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.io.stream.StreamItem;
 public class DwcaZipToStreamConverterTest {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaZipToStreamConverterTest.class);
+	private static final Logger logger = LogManager.getLogger(DwcaZipToStreamConverterTest.class);
 
 	private URI uri;
 	private DwcaZipToStreamConverter<?> converter;

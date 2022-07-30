@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  *
  */
 public class TestTaxonNameParserBotanicalNameImpl {
-	private static final Logger logger = Logger.getLogger(TestTaxonNameParserBotanicalNameImpl.class);
+	private static final Logger logger = LogManager.getLogger(TestTaxonNameParserBotanicalNameImpl.class);
 
 	final private String strNameFamily = "Asteraceae";
 	final private String strNameGenus = "Abies Müller";

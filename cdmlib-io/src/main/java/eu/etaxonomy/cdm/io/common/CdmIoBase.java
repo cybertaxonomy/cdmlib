@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -40,7 +40,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
         implements ICdmIO<STATE>, IIoObservable {
 
     private static final long serialVersionUID = -2216451655392574659L;
-    private static final Logger logger = Logger.getLogger(CdmIoBase.class);
+    private static final Logger logger = LogManager.getLogger(CdmIoBase.class);
 
     private final Set<IIoObserver> observers = new HashSet<>();
     protected String ioName = null;

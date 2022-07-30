@@ -19,9 +19,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.term.AvailableForIdentifiableBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -42,7 +43,7 @@ public class ExtensionType extends AvailableForIdentifiableBase<ExtensionType> {
 
 	private static final long serialVersionUID = -7761963794004133427L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExtensionType.class);
+	private static final Logger logger = LogManager.getLogger(ExtensionType.class);
 
 	private static final UUID uuidXmlFragment = UUID.fromString("ea109c1c-e69b-4e6d-9079-1941b9ee2991");
 	private static final UUID uuidRdfFragment = UUID.fromString("f3684e25-dcad-4c1e-a5d8-16cddf1c4f5b");

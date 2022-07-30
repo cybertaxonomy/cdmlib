@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.hibernate.search;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -22,20 +22,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 /**
  * Adds fields for related to and related from taxon relations.
  *
- *
  * @author a.kohlbecker
  * @since Sep 24, 2013
- *
  */
 public class TaxonRelationshipClassBridge extends AbstractClassBridge {
 
-    public static final Logger logger = Logger.getLogger(TaxonRelationshipClassBridge.class);
+    public static final Logger logger = LogManager.getLogger(TaxonRelationshipClassBridge.class);
 
     private static final String FROM = ".from.";
     private static final String TO = ".to.";
 
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
+
         if(value instanceof Taxon){
 
             String fieldName = name;
@@ -54,35 +53,27 @@ public class TaxonRelationshipClassBridge extends AbstractClassBridge {
         } else {
             logger.error("Unsupported type " + value.getClass());
         }
-
     }
 
-    /**
-     * @param name
-     * @param document
-     * @param directionName
-     * @param relations
-     */
     private void addRelationsFields(String name, Document document, String directionName,
             Set<TaxonRelationship> relations) {
-        Taxon relTaxon;
 
 
         for(TaxonRelationship rel : relations){
 
+            Taxon relTaxon;
             if(directionName.equals(FROM)){
                 relTaxon = rel.getFromTaxon();
             } else {
                 relTaxon = rel.getToTaxon();
             }
 
-            Field relfield = new StringField(
+            Field relField = new StringField(
                     name + "relation." + (rel.getType() != null ? rel.getType().getUuid().toString() : "NULL") + directionName + "id",
                     Integer.toString(relTaxon.getId()),
                     idFieldOptions.getStore());
-            relfield.setBoost(idFieldOptions.getBoost());
-            document.add(relfield);
+            relField.setBoost(idFieldOptions.getBoost());
+            document.add(relField);
         }
     }
-
 }

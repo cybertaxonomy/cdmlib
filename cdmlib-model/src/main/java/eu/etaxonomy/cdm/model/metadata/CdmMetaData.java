@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.metadata;
 
 import java.util.ArrayList;
@@ -19,7 +18,8 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -38,7 +38,7 @@ public class CdmMetaData extends CdmBase{
 
     private static final long serialVersionUID = -3033376680593279078L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmMetaData.class);
+	private static final Logger logger = LogManager.getLogger(CdmMetaData.class);
 
 	private static final String UNNAMED = "- UNNAMED -";
 
@@ -53,7 +53,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = CdmVersion.V_05_29_00.versionString;
+	private static final String dbSchemaVersion = CdmVersion.V_05_32_00.versionString;
 
 	public enum CdmVersion {
 	    V_05_12_00("5.12.0.0.20191202"),
@@ -73,7 +73,8 @@ public class CdmMetaData extends CdmBase{
         V_05_25_01("5.25.1.0.20210702"),
         V_05_27_00("5.27.0.0.20210913"),
         V_05_27_01("5.27.1.0.20210922"),
-        V_05_29_00("5.29.0.0.20211122")
+        V_05_29_00("5.29.0.0.20211122"),
+        V_05_32_00("5.32.0.0.20220807")
         ;
         private String versionString;
 	    private CdmVersion(String versionString){

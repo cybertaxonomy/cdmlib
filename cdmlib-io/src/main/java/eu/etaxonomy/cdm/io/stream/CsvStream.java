@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -33,7 +33,7 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
     private static final long serialVersionUID = -4828538731087241715L;
 
     @SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(CsvStream.class);
+	private static Logger logger = LogManager.getLogger(CsvStream.class);
 
 	private final CSVReader csvReader;
 	private final ArchiveEntryBase archiveEntry;

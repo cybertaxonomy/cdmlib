@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -28,8 +29,9 @@ import eu.etaxonomy.cdm.model.description.TextData;
  * @since 06.02.2012
  */
 public class DbTextDataMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbTextDataMapper.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private final List<Language> languages;
 	private boolean restrictToGivenLanguages;

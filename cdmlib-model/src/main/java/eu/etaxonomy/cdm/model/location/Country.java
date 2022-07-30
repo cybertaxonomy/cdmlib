@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class Country extends NamedArea {
 
     private static final long serialVersionUID = -6791671976199722843L;
-	private static final Logger logger = Logger.getLogger(Country.class);
+	private static final Logger logger = LogManager.getLogger(Country.class);
 
 	/**
 	 * 2 character ISO 3166 Country codes

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class PresenceAbsenceTermTest extends EntityTestBase {
 
-	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermTest.class);
+	private static final Logger logger = LogManager.getLogger(PresenceAbsenceTermTest.class);
 
 	@Test
 	public void testReadCsvLineList() {

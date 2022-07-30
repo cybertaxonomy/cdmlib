@@ -13,7 +13,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +26,7 @@ import org.junit.Test;
  */
 public class DatabaseTypeEnumTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DatabaseTypeEnumTest.class);
+	private static final Logger logger = LogManager.getLogger(DatabaseTypeEnumTest.class);
 	private static DatabaseTypeEnum dbEnum;
 	private static DatabaseTypeEnum dbEnumSql2005;
 
@@ -75,7 +76,7 @@ public class DatabaseTypeEnumTest {
 	 */
 	@Test
 	public void testGetDefaultPort() {
-		assertEquals(9001, DatabaseTypeEnum.HSqlDb.getDefaultPort());
+		assertEquals(9092, DatabaseTypeEnum.H2.getDefaultPort());
 	}
 
 	/**
@@ -104,22 +105,19 @@ public class DatabaseTypeEnumTest {
 	@Test
 	public void testGetAllTypes() {
 		List<DatabaseTypeEnum> typeList = DatabaseTypeEnum.getAllTypes();
-		assertEquals(11, typeList.size());
-		assertEquals(DatabaseTypeEnum.HSqlDb, typeList.get(0));
-		assertEquals(DatabaseTypeEnum.MySQL, typeList.get(1));
-		assertEquals(DatabaseTypeEnum.ODBC, typeList.get(2));
-		assertEquals(DatabaseTypeEnum.PostgreSQL, typeList.get(3));
-		assertEquals(DatabaseTypeEnum.Oracle, typeList.get(4));
-	//	assertEquals(DatabaseTypeEnum.SqlServer2000, typeList.get(5));
-		assertEquals(DatabaseTypeEnum.SqlServer2005, typeList.get(5));
-		assertEquals(DatabaseTypeEnum.Sybase, typeList.get(6));
-		assertEquals(DatabaseTypeEnum.H2, typeList.get(7));
-		assertEquals(DatabaseTypeEnum.SqlServer2008, typeList.get(8));
-        assertEquals(DatabaseTypeEnum.SqlServer2012, typeList.get(9));
-        assertEquals(DatabaseTypeEnum.MariaDB, typeList.get(10));
-
+		assertEquals(10, typeList.size());
+		assertEquals(DatabaseTypeEnum.MySQL, typeList.get(0));
+		assertEquals(DatabaseTypeEnum.ODBC, typeList.get(1));
+		assertEquals(DatabaseTypeEnum.PostgreSQL, typeList.get(2));
+		assertEquals(DatabaseTypeEnum.Oracle, typeList.get(3));
+	//	assertEquals(DatabaseTypeEnum.SqlServer2000, typeList.get(4));
+		assertEquals(DatabaseTypeEnum.SqlServer2005, typeList.get(4));
+		assertEquals(DatabaseTypeEnum.Sybase, typeList.get(5));
+		assertEquals(DatabaseTypeEnum.H2, typeList.get(6));
+		assertEquals(DatabaseTypeEnum.SqlServer2008, typeList.get(7));
+        assertEquals(DatabaseTypeEnum.SqlServer2012, typeList.get(8));
+        assertEquals(DatabaseTypeEnum.MariaDB, typeList.get(9));
 	}
-
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#byDriverClass(java.lang.String)}.

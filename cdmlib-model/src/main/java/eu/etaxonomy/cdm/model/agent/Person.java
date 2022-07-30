@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -43,7 +44,6 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
-import javassist.compiler.ast.Keyword;
 
 /**
  * This class represents human beings, living or dead.<BR>
@@ -53,7 +53,7 @@ import javassist.compiler.ast.Keyword;
  * For a short abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
  * is to be used.<BR>
  * For other alternative (string-)names {@link eu.etaxonomy.cdm.model.reference.OriginalSourceBase OriginalSource} instances must be created
- * and the attribute {@link eu.etaxonomy.cdm.model.common.OriginalSourceBase#getOriginalNameString() originalNameString} must be used.
+ * and the attribute {@link eu.etaxonomy.cdm.model.common.OriginalSourceBase#getOriginalInfo() originalInfo} must be used.
  * <P>
  * This class corresponds to: <ul>
  * <li> Person according to the TDWG ontology
@@ -86,7 +86,7 @@ import javassist.compiler.ast.Keyword;
 public class Person extends TeamOrPersonBase<Person>{
 
     private static final long serialVersionUID = 4153566493065539763L;
-	public static final Logger logger = Logger.getLogger(Person.class);
+	public static final Logger logger = LogManager.getLogger(Person.class);
 
     @XmlElement(name="NomenclaturalTitle")
     @Field(index=Index.YES)
@@ -467,7 +467,7 @@ public class Person extends TeamOrPersonBase<Person>{
     private boolean updateNomenclaturalCache() {
         //updates the nomenclaturalTitleCache if necessary
         String oldCache = this.nomenclaturalTitleCache;
-        String newCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+        String newCache = cacheStrategy().getNomenclaturalTitleCache(this);
         if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
 //            this.setNomenclaturalTitleCache(null, false);
             this.getNomenclaturalTitleCache();
@@ -479,7 +479,7 @@ public class Person extends TeamOrPersonBase<Person>{
     private boolean updateCollectorCache() {
         //updates the collectorTitleCache if necessary
         String oldCache = this.collectorTitleCache;
-        String newCache = getCacheStrategy().getCollectorTitleCache(this);
+        String newCache = cacheStrategy().getCollectorTitleCache(this);
         if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
 //            this.setNomenclaturalTitleCache(null, false);
             this.getCollectorTitleCache();

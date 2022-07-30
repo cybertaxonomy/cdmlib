@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  *
  */
 public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = Logger.getLogger(DescriptionElementDaoHibernateImplTest.class);
+	private static final Logger logger = LogManager.getLogger(DescriptionElementDaoHibernateImplTest.class);
 
 	@SpringBeanByType
 	IDescriptionElementDao descriptionElementDao;

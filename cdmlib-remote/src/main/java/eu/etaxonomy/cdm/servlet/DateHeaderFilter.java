@@ -20,7 +20,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.util.NestedServletException;
 
 /**
@@ -30,10 +31,10 @@ import org.springframework.web.util.NestedServletException;
  *
  * @author a.kohlbecker
  * @since Jan 17, 2020
- *
  */
 public class DateHeaderFilter implements Filter {
 
+    private static final Logger logger = LogManager.getLogger(DateHeaderFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -46,7 +47,7 @@ public class DateHeaderFilter implements Filter {
 
         try {
             OffsetDateTime dateTime = OffsetDateTime.now();
-            // from chain.doFilter() NestedServletExceptions with NPEs may bubble up from
+            // from chain.doFilter() NestedServletExceptions with NPEs may bubble up
             // from controller methods which miss proper handling of not found entities or the like
             // (HTTP 404 : uuid not found)
             // These situations are caught below and logged at info level for debugging purposes
@@ -57,18 +58,18 @@ public class DateHeaderFilter implements Filter {
             httpServletResponse.setHeader("Date", dateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
         } catch ( NullPointerException e) {
             // see above and #9185
-            Logger.getLogger(this.getClass()).info("Can not add data header: " + e.getMessage());
+            logger.info("Can not add data header: " + e.getMessage());
         } catch (NestedServletException e) {
             // see above and #9185
             if(e.getCause() != null && e.getCause() instanceof NullPointerException) {
-                Logger.getLogger(this.getClass()).info("Can not add data header: " + e.getCause());
+                logger.info("Can not add data header: " + e.getCause());
             } else {
                 // higher level in this case as these are unexpected
-                Logger.getLogger(this.getClass()).warn("Can not add data header.", e);
+                logger.warn("Can not add data header.", e);
             }
         } catch (Exception e) {
             // higher level in this case as these are unexpected
-            Logger.getLogger(this.getClass()).warn("Can not add data header.", e);
+            logger.warn("Can not add data header.", e);
         }
     }
 
@@ -76,5 +77,4 @@ public class DateHeaderFilter implements Filter {
     public void destroy() {
         // Nothing to do
     }
-
 }

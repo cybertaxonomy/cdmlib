@@ -31,7 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -76,7 +78,7 @@ public class TextData
         implements IMultiLanguageTextHolder, Cloneable{
 
     private static final long serialVersionUID = -2165015581278282615L;
-    private static final Logger logger = Logger.getLogger(TextData.class);
+    private static final Logger logger = LogManager.getLogger(TextData.class);
 
     //@XmlElement(name = "MultiLanguageText", type = MultilanguageText.class)
     @XmlElement(name = "MultiLanguageText")
@@ -305,10 +307,13 @@ public class TextData
         //workaround for key problem
         if(! isHashMapHibernateBugFixed){
             HashMap<Language, LanguageString> tmp = new HashMap<>();
-            tmp.putAll(multilanguageText);
-            multilanguageText.clear();
-            multilanguageText.putAll(tmp);
-
+            try {
+	            tmp.putAll(multilanguageText);
+	            multilanguageText.clear();
+	            multilanguageText.putAll(tmp);
+            }catch(LazyInitializationException e) {
+            	//do nothing
+            }
             isHashMapHibernateBugFixed = true;
         }
     }
@@ -438,9 +443,6 @@ public class TextData
 
 //*********************************** CLONE *****************************************/
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         Map<Language, LanguageString> multiLangText = getMultilanguageText();

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class SpecimenRow extends ExcelRowBase{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SpecimenRow.class);
+	private static final Logger logger = LogManager.getLogger(SpecimenRow.class);
 
 	private String basisOfRecord;
 

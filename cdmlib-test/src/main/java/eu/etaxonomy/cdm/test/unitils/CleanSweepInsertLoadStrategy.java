@@ -19,7 +19,8 @@ import java.net.URL;
 import java.sql.SQLException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
@@ -38,7 +39,7 @@ import org.unitils.util.FileUtils;
  */
 public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
 
-    protected static final Logger logger = Logger.getLogger(CleanSweepInsertLoadStrategy.class);
+    protected static final Logger logger = LogManager.getLogger();
 
     private static String clearDataResource = "eu/etaxonomy/cdm/database/ClearDBDataSet.xml";
 

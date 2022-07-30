@@ -88,6 +88,11 @@ public enum TagEnum {
      * a secundum micro reference (for TaxonBase)
      */
     secMicroReference,
+    /**
+     * a separator for name in source of secundum reference(for TaxonBase)
+     */
+    secNameInSourceSeparator,
+
 //    /**
 //     * a secundum reference as used in a misapplied name (for TaxonRelationship)
 //     */
@@ -115,6 +120,10 @@ public enum TagEnum {
      * like taxon relationships.
      */
     symbol,
+    /**
+     * Like symbol but to be rendered inline, not to the left
+     */
+    inlineSymbol,
 	;
 
 
@@ -147,7 +156,7 @@ public enum TagEnum {
 	 * @return <code>true</code> if type is separator or postSeparator
 	 */
 	public boolean isSeparator(){
-		return this == separator || this == postSeparator;
+		return this == separator || this == postSeparator || this == secNameInSourceSeparator;
 	}
 	public boolean isHybridSign(){
 		return this == hybridSign;

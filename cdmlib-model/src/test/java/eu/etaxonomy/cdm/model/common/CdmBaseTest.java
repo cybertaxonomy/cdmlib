@@ -24,7 +24,7 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class CdmBaseTest extends EntityTestBase{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmBaseTest.class);
+	private static final Logger logger = LogManager.getLogger(CdmBaseTest.class);
 
 	static CdmBase cdmBase;
 

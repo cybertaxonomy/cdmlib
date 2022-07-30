@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
  */
 public class DbImportObjectCreationMapper<ANNOTATABLE extends AnnotatableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<ANNOTATABLE, STATE> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportObjectCreationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 

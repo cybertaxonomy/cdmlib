@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
  */
 public class TcsXmlImportState extends ImportStateBase<TcsXmlImportConfigurator, TcsXmlImportBase>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TcsXmlImportState.class);
+	private static final Logger logger = LogManager.getLogger(TcsXmlImportState.class);
 
 	//TODO make it better
 	private Map<String, CommonTaxonName> commonNameMap = null;

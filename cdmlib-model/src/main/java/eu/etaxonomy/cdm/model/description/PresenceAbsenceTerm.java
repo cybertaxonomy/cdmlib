@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -79,7 +79,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 
     private static final long serialVersionUID = 1036807546935584396L;
-	private static final Logger logger = Logger.getLogger(PresenceAbsenceTerm.class);
+	private static final Logger logger = LogManager.getLogger(PresenceAbsenceTerm.class);
 
 	//presence base
 	public static final UUID uuidPresent = UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");

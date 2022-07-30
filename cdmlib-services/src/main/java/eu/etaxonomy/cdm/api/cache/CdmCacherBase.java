@@ -1,8 +1,17 @@
+/**
+* Copyright (C) 2014 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.cache;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
@@ -22,7 +31,7 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  */
 public abstract class CdmCacherBase implements ICdmUuidCacher {
 
-    public static final Logger logger = Logger.getLogger(CdmCacherBase.class);
+    public static final Logger logger = LogManager.getLogger(CdmCacherBase.class);
 
     @Autowired
     public CacheManager cacheManager;

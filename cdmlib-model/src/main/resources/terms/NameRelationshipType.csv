@@ -12,5 +12,6 @@
 "e6439f95-bcac-4ebb-a8b5-69fa5ce79e6a",,"is conserved against","is conserved against","","is rejected in favour of","is rejected in favour of","",FALSE,FALSE,"VA","OD"
 "a176c9ad-b4c2-4c57-addd-90373f8270eb",,"is validated by","is validated by","","is validating","is validating","",FALSE,FALSE,"NO","NO"
 "a25ee4c1-863a-4dab-9499-290bf9b89639",,"is later validated by","is later validated by","","is later validating","is later validating","",FALSE,FALSE,"NO","NO"
-"1dab357f-2e12-4511-97a4-e5153589e6a6",,"is blocking name for","is blocking name for","","is new combination blocked by","is new combination blocked by","",FALSE,FALSE,"NO","NO"
+"1dab357f-2e12-4511-97a4-e5153589e6a6",,"is blocking name for","is blocking name for","","has blocking name","has blocking name","",FALSE,FALSE,"NO","NO"
+"c7d59ab9-a8c6-4645-a990-04c698f2c123",,"avoids homonym of","This relationship relates the replacement name to the blocking name in a situation where a new combination for a name (replaced synonym) is blocked by a name (blocking name) and therefore a new name (replacement name) is created.","","causes replacement name","This (inverse) relationship relates a name (blocking name) that blocks the creation of a new combination to the new name (replacement name).","",FALSE,FALSE,"NO","NO"
 "78360e2a-159d-4e2f-893e-8666805840fa",,"'non' (has no relation with)","a not further defined 'non' relationship between name A and name B","","has an unilateral 'non' relation from","has an unilateral 'non' relation from","","FALSE","FALSE","NO","NO"

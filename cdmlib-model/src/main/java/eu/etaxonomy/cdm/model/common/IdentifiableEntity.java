@@ -25,6 +25,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,7 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -45,7 +47,6 @@ import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -71,7 +72,7 @@ import eu.etaxonomy.cdm.validation.Level2;
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
  * All subclasses inherit the ability to store additional properties that are stored as {@link Extension Extensions}, basically a string value with a type term.
  * Any number of right statements can be attached as well as multiple {@link OriginalSourceBase} objects.
- * Original sources carry a reference to the source, an ID within that source and the original title/label of this object as it was used in that source (originalNameString).
+ * Original sources carry a reference to the source, an ID within that source and the original title/label of this object as it was used in that source (originalInfo).
  * A Taxon for example that was taken from 2 sources like FaunaEuropaea and IPNI would have two originalSource objects.
  * The originalSource representing that taxon as it was found in IPNI would contain IPNI as the reference, the IPNI id of the taxon and the name of the taxon exactly as it was used in IPNI.
  *
@@ -96,7 +97,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
 
     private static final long serialVersionUID = 7912083412108359559L;
-    private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
+    private static final Logger logger = LogManager.getLogger(IdentifiableEntity.class);
 
     @XmlTransient
     public static final boolean PROTECTED = true;
@@ -172,7 +173,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlTransient
     @Transient
-    protected S cacheStrategy;
+    protected IIdentifiableEntityCacheStrategy cacheStrategy;
 
     protected IdentifiableEntity(){
         initListener();
@@ -279,7 +280,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             String oldTitleCache = this.titleCache;
 
             @SuppressWarnings("unchecked")
-            String newTitleCache = getCacheStrategy().getTitleCache(this);
+            String newTitleCache = cacheStrategy().getTitleCache(this);
 
             if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){
                 this.setTitleCache(null, false);
@@ -303,8 +304,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @return <code>true</code> if some cache was updated, <code>false</code> otherwise
      */
     public boolean updateCaches(S entityCacheStrategy){
-        S oldCacheStrategy = this.getCacheStrategy();
-        this.cacheStrategy = entityCacheStrategy != null? entityCacheStrategy : this.getCacheStrategy();
+        S oldCacheStrategy = this.cacheStrategy();
+        this.cacheStrategy = entityCacheStrategy != null? entityCacheStrategy : this.cacheStrategy();
         boolean result = this.updateCaches();
         this.cacheStrategy = oldCacheStrategy;
         return result;
@@ -670,11 +671,13 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @return  the cache strategy used for <i>this</i> identifiable entity
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
-    public S getCacheStrategy() {
+    @Transient
+    @java.beans.Transient
+    public S cacheStrategy() {
         if (this.cacheStrategy == null){
             initDefaultCacheStrategy();
         }
-        return this.cacheStrategy;
+        return (S)this.cacheStrategy;
     }
     public void setCacheStrategy(S cacheStrategy) {
         this.cacheStrategy = cacheStrategy;
@@ -682,11 +685,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @Override
     public String generateTitle() {
-        if (getCacheStrategy() == null){
+        if (cacheStrategy() == null){
             //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
             return this.getClass() + ": " + this.getUuid();
         }else{
-            S cacheStrategy = getCacheStrategy();
+            S cacheStrategy = cacheStrategy();
             return cacheStrategy.getTitleCache(this);
         }
     }

@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  */
 public class UsernameConstraintUpdater
         extends SchemaUpdaterStepBase {
-	private static final Logger logger = Logger.getLogger(UsernameConstraintUpdater.class);
+	private static final Logger logger = LogManager.getLogger(UsernameConstraintUpdater.class);
 
 	private String tableName;
 

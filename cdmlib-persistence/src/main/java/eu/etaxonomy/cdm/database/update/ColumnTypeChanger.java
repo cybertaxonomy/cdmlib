@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.database.update;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -26,7 +26,7 @@ public class ColumnTypeChanger
 
     private static final String _OLDXXX = "_oldxxx";
 
-    private static final Logger logger = Logger.getLogger(ColumnTypeChanger.class);
+    private static final Logger logger = LogManager.getLogger(ColumnTypeChanger.class);
 
 	private final String columnName;
 	private final Datatype newColumnType;

@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.test.function;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -41,13 +42,13 @@ import eu.etaxonomy.cdm.model.description.TemporalData;
 public class TestModelUpdate {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TestModelUpdate.class);
+	private static final Logger logger = LogManager.getLogger(TestModelUpdate.class);
 
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm527" : "cdm529");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm529" : "cdm532");
 //		database = "cdm_test1";
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
@@ -129,7 +130,8 @@ public class TestModelUpdate {
 	 * Requires that the local path to the database is adapted
 	 */
 	private void updateRemoteWebappTestH2(){
-	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
+	    System.out.println("Update remoteWebappTestH2");
+	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib2\\cdmlib-remote-webapp\\";
 	    updateH2(pathToProject);
 	}
 
@@ -138,6 +140,7 @@ public class TestModelUpdate {
      * Requires that the local path to the database is adapted
      */
     private void updateTaxEditorH2(){
+        System.out.println("Update TaxEditorTestH2");
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
         updateH2(pathToProject);
     }
@@ -147,6 +150,7 @@ public class TestModelUpdate {
      * Requires that the local path to the database is adapted
      */
     private void updateVaadinH2(){
+        System.out.println("Update VaadinTestH2");
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin2\\";
         updateH2(pathToProject);
     }

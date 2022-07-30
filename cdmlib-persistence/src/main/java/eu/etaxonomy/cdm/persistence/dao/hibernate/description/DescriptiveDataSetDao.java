@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -41,19 +40,17 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 public class DescriptiveDataSetDao
         extends IdentifiableDaoBase<DescriptiveDataSet>
         implements IDescriptiveDataSetDao {
-	private static final Logger logger = Logger.getLogger(DescriptiveDataSetDao.class);
 
-	 @Autowired
-	 private ITermTreeDao termTreeDao;
+    private static final Logger logger = LogManager.getLogger(DescriptiveDataSetDao.class);
 
-	 @Autowired
-     private IDefinedTermDao termDao;
+	@Autowired
+	private ITermTreeDao termTreeDao;
 
-	 @Autowired
-     private ITaxonNodeDao nodeDao;
+	@Autowired
+    private IDefinedTermDao termDao;
 
-	 @Autowired
-     private IDescriptionDao descriptionDao;
+	@Autowired
+    private ITaxonNodeDao nodeDao;
 
 	public DescriptiveDataSetDao() {
 		super(DescriptiveDataSet.class);
@@ -62,17 +59,9 @@ public class DescriptiveDataSetDao
 	@Override
     public Map<DescriptionBase, Set<DescriptionElementBase>> getDescriptionElements(DescriptiveDataSet descriptiveDataSet, Set<Feature> features, Integer pageSize,	Integer pageNumber,	List<String> propertyPaths) {
 		checkNotInPriorView("DescriptiveDataSetDao.getDescriptionElements(DescriptiveDataSet descriptiveDataSet, Set<Feature> features, Integer pageSize,Integer pageNumber, List<String> propertyPaths)");
-		Query query = getSession().createQuery("SELECT description FROM DescriptiveDataSet descriptiveDataSet JOIN DescriptiveDataSet.descriptions description ORDER BY description.titleCache ASC");
+		Query<DescriptionBase> query = getSession().createQuery("SELECT description FROM DescriptiveDataSet descriptiveDataSet JOIN DescriptiveDataSet.descriptions description ORDER BY description.titleCache ASC", DescriptionBase.class);
 
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-	        if(pageNumber != null) {
-	        	query.setFirstResult(pageNumber * pageSize);
-	        } else {
-	        	query.setFirstResult(0);
-	        }
-	    }
-		@SuppressWarnings("unchecked")
+		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<DescriptionBase> descriptions = query.list();
 		Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<>();
 		for(DescriptionBase description : descriptions) {
@@ -104,26 +93,24 @@ public class DescriptiveDataSetDao
 //
 //			Example: from Order order where order.items[0].id = 1234
 
-
 			//feature
 			String strQueryTreeId = "SELECT ws.descriptiveSystem.id FROM DescriptiveDataSet dds join dds.descriptiveSystem tree WHERE dds.uuid = :descriptiveDataSetUuid ";
-			Query queryTree = getSession().createQuery(strQueryTreeId);
+			Query<Integer> queryTree = getSession().createQuery(strQueryTreeId, Integer.class);
 			queryTree.setParameter("descriptiveDataSetUuid", descriptiveDataSetUuid);
-			List<?> trees = queryTree.list();
-
+			List<Integer> trees = queryTree.list();
 
 			String ftSelect = "SELECT feature.id FROM TermNode node join node.feature as feature " +
 					" WHERE node.featureTree.id in (:trees) ";
-			Query ftQuery = getSession().createQuery(ftSelect);
+			Query<Integer> ftQuery = getSession().createQuery(ftSelect, Integer.class);
 			ftQuery.setParameterList("trees", trees);
-			List<?> features = ftQuery.list();
+			List<Integer> features = ftQuery.list();
 
 			String strClass = (clazz == null )? "DescriptionElementBase" : clazz.getSimpleName();
 
 			String fetch = "";
-			if (clazz.equals(CategoricalData.class)){
+			if (clazz!= null && clazz.equals(CategoricalData.class)){
 				fetch = " left join fetch el.states stateList join fetch stateList.state ";
-			}else if (clazz.equals(QuantitativeData.class)){
+			}else if (clazz!=null && clazz.equals(QuantitativeData.class)){
 				fetch = " left join fetch el.statisticalValues valueList join fetch valueList.type ";
 			}
 
@@ -140,7 +127,7 @@ public class DescriptiveDataSetDao
 					+ " and feature.id in (:features)  "
 				+ " order by taxon.uuid asc, feature.uuid asc"
 				;
-			Query query = getSession().createQuery(strQuery);
+			Query<Object[]> query = getSession().createQuery(strQuery, Object[].class);
 
 			query.setParameter("descriptiveDataSetUuid", descriptiveDataSetUuid);
 			query.setParameter("clazz", clazz.getSimpleName());
@@ -149,7 +136,6 @@ public class DescriptiveDataSetDao
 			//NOTE: Paging does not work with fetch
 
 			// fill result
-			@SuppressWarnings("unchecked")
             List<Object[]> list = query.list();
 			for (Object[] listEntry : list){
 				UUID taxonUuid = (UUID)listEntry[0];
@@ -171,11 +157,8 @@ public class DescriptiveDataSetDao
 					if (logger.isDebugEnabled()){logger.debug("feature set already exists");}
 				}
 				featureSet.add(data);
-
 			}
-
 //			defaultBeanInitializer.initialize(
-
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -183,9 +166,6 @@ public class DescriptiveDataSetDao
 		}
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<DescriptiveDataSet>> getDescriptiveDataSetUuidAndTitleCache(Integer limitOfInitialElements,
             String pattern) {
@@ -199,9 +179,7 @@ public class DescriptiveDataSetDao
 
         }
 
-        Query query;
-        query = session.createQuery(queryString);
-
+        Query<Object[]> query = session.createQuery(queryString, Object[].class);
 
         if (limitOfInitialElements != null){
             query.setMaxResults(limitOfInitialElements);
@@ -213,7 +191,6 @@ public class DescriptiveDataSetDao
               query.setParameter("pattern", pattern);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
         List<UuidAndTitleCache<DescriptiveDataSet>> list = new ArrayList<>();
         for(Object[] object : result){
@@ -225,22 +202,16 @@ public class DescriptiveDataSetDao
 
     private List<UUID> getNodeUuidsForDescriptiveDataSet(UUID uuid) {
         Session session = getSession();
-
+       
         String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.taxonSubtreeFilter as t WHERE a.uuid = :uuid";
-
-
-        Query query;
-        query = session.createQuery(queryString);
+        Query<UUID> query = session.createQuery(queryString, UUID.class);
         query.setParameter("uuid", uuid);
 
-
-        @SuppressWarnings("unchecked")
         List<UUID> result = query.list();
         List<UUID> list = new ArrayList<>();
         for(UUID object : result){
             list.add(object);
         }
-
         return list;
     }
 
@@ -248,11 +219,9 @@ public class DescriptiveDataSetDao
         Session session = getSession();
         String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.descriptions as t WHERE a.uuid = :uuid";
 
-        Query query;
-        query = session.createQuery(queryString);
+        Query<UUID> query = session.createQuery(queryString, UUID.class);
         query.setParameter("uuid", uuid);
 
-        @SuppressWarnings("unchecked")
         List<UUID> result = query.list();
         List<UUID> list = new ArrayList<>();
         for(UUID object : result){
@@ -261,20 +230,14 @@ public class DescriptiveDataSetDao
         return list;
     }
 
-
-
-
-
-
     @Override
     public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid) {
         String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()
                 + " WHERE a.uuid = :uuid"
                 + " ORDER BY a.titleCache";
-        Query query =  getSession().createQuery(queryString);
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("uuid", uuid);
 
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         List<DescriptiveDataSetBaseDto> list = DescriptiveDataSetBaseDto.descriptiveDataSetBaseDtoListFrom(result);
@@ -297,7 +260,7 @@ public class DescriptiveDataSetDao
         }
         //get taxon nodes
         List<UUID> nodeUuids = getNodeUuidsForDescriptiveDataSet(uuid);
-        List<TaxonNodeDto> nodeDtos = nodeDao.getTaxonNodeDtos(nodeUuids);
+        List<TaxonNodeDto> nodeDtos = nodeDao.getTaxonNodeDtosWithoutParent(nodeUuids);
         Set<TaxonNodeDto> nodeSet = new HashSet<>(nodeDtos);
         dto.setSubTreeFilter(nodeSet);
 

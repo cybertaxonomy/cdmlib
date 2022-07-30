@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  *
  */
 public class ImportHelper {
-	private static final Logger logger = Logger.getLogger(ImportHelper.class);
+	private static final Logger logger = LogManager.getLogger(ImportHelper.class);
 
 	public static final boolean OVERWRITE = true;
 	public static final boolean  NO_OVERWRITE = false;

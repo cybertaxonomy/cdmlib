@@ -21,13 +21,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.NonUniqueObjectException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
@@ -52,7 +52,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -61,6 +60,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -73,20 +73,19 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
- * @author a.mueller FIXME CdmEntityDaoBase is abstract, can it be annotated
- *         with @Repository?
+ * Hibernate implementation for {@link ICdmEntityDao}.
  */
-@Repository
 public abstract class CdmEntityDaoBase<T extends CdmBase>
         extends DaoBase
         implements ICdmEntityDao<T> {
 
-    private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    protected int flushAfterNo = 1000; // large numbers may cause
-                                       // synchronisation errors when commiting
-                                       // the session !!
+    @Autowired
+    private ICdmGenericDao genericDao;
 
+    protected int flushAfterNo = 1000; // large numbers may cause synchronisation errors
+                                        // when committing the session
     protected Class<T> type;
 
     @Autowired
@@ -317,6 +316,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
+    public T merge(T transientEntity, Collection<CdmBase> detachedObjectsToRemove) throws DataAccessException{
+        T result = merge(transientEntity);
+        for (CdmBase detachedObject : detachedObjectsToRemove) {
+            CdmBase persistedObject = genericDao.find(CdmBase.deproxy(detachedObject.getClass()), detachedObject.getUuid());
+            if (persistedObject != null) {
+                genericDao.delete(persistedObject);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public UUID saveOrUpdate(T transientObject) throws DataAccessException {
         if (transientObject == null) {
             logger.warn("Object to save should not be null. NOP");
@@ -387,18 +398,22 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public UUID delete(T persistentObject) throws DataAccessException {
-        if (persistentObject == null) {
-            logger.warn(type.getName() + " was 'null'");
+    public UUID delete(T objectToDelete) throws DataAccessException {
+        if (objectToDelete == null) {
+            logger.info(type.getName() + " was 'null'");
+            return null;
+        } else if (!objectToDelete.isPersited()) {
+            logger.info(type.getName() + " was not persisted yet");
             return null;
         }
 
+        // Ben Clark:
         // Merge the object in if it is detached
         //
         // I think this is preferable to catching lazy initialization errors
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
-        persistentObject = (T) getSession().merge(persistentObject);
+        T persistentObject = (T) getSession().merge(objectToDelete);
         getSession().delete(persistentObject);
         return persistentObject.getUuid();
     }
@@ -439,11 +454,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     @Override
     public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException {
         Session session = getSession();
-        FlushMode currentFlushMode = session.getFlushMode();
+        FlushMode currentFlushMode = session.getHibernateFlushMode();
         try {
             // set flush mode to manual so that the session does not flush
             // when before performing the query
-            session.setFlushMode(FlushMode.MANUAL);
+            session.setHibernateFlushMode(FlushMode.MANUAL);
             Criteria crit = session.createCriteria(type);
             crit.add(Restrictions.eq("uuid", uuid));
             crit.addOrder(Order.desc("created"));
@@ -460,7 +475,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         } finally {
             // set back the session flush mode
             if (currentFlushMode != null) {
-                session.setFlushMode(currentFlushMode);
+                session.setHibernateFlushMode(currentFlushMode);
             }
         }
     }
@@ -734,10 +749,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return criteria;
     }
 
-    /**
-     * @param clazz
-     * @return
-     */
     private Criteria criterionForType(Class<? extends T> clazz) {
         return  getSession().createCriteria(entityType(clazz));
     }
@@ -964,28 +975,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return type;
     }
 
-    protected void setPagingParameter(Query query, Integer pageSize, Integer pageIndex) {
-        if (pageSize != null) {
-            query.setMaxResults(pageSize);
-            if (pageIndex != null) {
-                query.setFirstResult(pageIndex * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-    }
-
-    protected void setPagingParameter(AuditQuery query, Integer pageSize, Integer pageIndex) {
-        if (pageSize != null) {
-            query.setMaxResults(pageSize);
-            if (pageIndex != null) {
-                query.setFirstResult(pageIndex * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-    }
-
     @Override
     public long count(T example, Set<String> includeProperties) {
         Criteria criteria = getSession().createCriteria(example.getClass());
@@ -1109,15 +1098,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return result;
     }
 
-    /**
-     *
-     * @param clazz
-     * @param param
-     * @param queryString
-     * @param matchmode
-     * @param criterion
-     * @return
-     */
     @Override
     public long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
             List<Criterion> criterion) {
@@ -1186,14 +1166,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return criteria;
     }
 
-
     @Override
     public <S extends T> List<S> findByParamWithRestrictions(Class<S> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
         List<Restriction<?>> allRestrictions = new ArrayList<>();
-        allRestrictions.add(new Restriction<String>(param, matchmode, queryString));
+        allRestrictions.add(new Restriction<>(param, matchmode, queryString));
         if(restrictions != null){
             allRestrictions.addAll(restrictions);
         }
@@ -1207,7 +1186,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         List<S> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
-
     }
 
     @Override
@@ -1215,7 +1193,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             MatchMode matchmode, List<Restriction<?>> restrictions) {
 
         List<Restriction<?>> allRestrictions = new ArrayList<>();
-        allRestrictions.add(new Restriction<String>(param, matchmode, queryString));
+        allRestrictions.add(new Restriction<>(param, matchmode, queryString));
         if(restrictions != null){
             allRestrictions.addAll(restrictions);
         }
@@ -1242,11 +1220,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     private class PropertySelectorImpl implements PropertySelector {
 
-        private final Set<String> includeProperties;
-        /**
-         *
-         */
         private static final long serialVersionUID = -3175311800911570546L;
+
+        private final Set<String> includeProperties;
 
         public PropertySelectorImpl(Set<String> includeProperties) {
             this.includeProperties = includeProperties;
@@ -1260,7 +1236,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 return false;
             }
         }
-
     }
 
     private class CriterionWithOperator {
@@ -1268,14 +1243,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         Restriction.Operator operator;
         Criterion criterion;
 
-
         public CriterionWithOperator(Operator operator, Criterion criterion) {
             super();
             this.operator = operator;
             this.criterion = criterion;
         }
-
-
     }
 
     /**
@@ -1295,11 +1267,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return criteria;
     }
 
-    /**
-     * @param clazz
-     * @param auditEvent
-     * @return
-     */
     protected AuditQuery makeAuditQuery(Class<? extends CdmBase> clazz, AuditEvent auditEvent) {
         AuditQuery query = null;
 

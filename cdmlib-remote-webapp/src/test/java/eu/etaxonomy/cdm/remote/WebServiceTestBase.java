@@ -8,21 +8,19 @@
 */
 package eu.etaxonomy.cdm.remote;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.springframework.web.client.RestTemplate;
 
-
 /**
  * @author a.kohlbecker
  * @since Feb 22, 2016
- *
  */
 public class WebServiceTestBase extends Assert {
 
-    public static final Logger logger = Logger.getLogger(WebServiceTestBase.class);
-
+    public static final Logger logger = LogManager.getLogger(WebServiceTestBase.class);
 
     private int port = 9180;
     private String baseUri = "";
@@ -57,5 +55,4 @@ public class WebServiceTestBase extends Assert {
         logger.debug("httpGetJson: " + uri.toString());
         return template.getForObject(uri.toString(), String.class);
     }
-
 }

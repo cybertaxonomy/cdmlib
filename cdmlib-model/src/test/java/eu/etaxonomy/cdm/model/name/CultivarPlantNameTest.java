@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import org.junit.Test;
 public class CultivarPlantNameTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CultivarPlantNameTest.class);
+	private static final Logger logger = LogManager.getLogger(CultivarPlantNameTest.class);
 
 	private static ICultivarPlantName name1;
 

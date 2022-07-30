@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 @Service
 @Transactional(readOnly = true)
 public class RightsServiceImpl extends AnnotatableServiceBase<Rights, IRightsDao> implements IRightsService {
-    private static final Logger logger = Logger.getLogger(RightsServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(RightsServiceImpl.class);
     /**
      * {@inheritDoc}
      */

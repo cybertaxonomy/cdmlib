@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -52,7 +53,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 
     private static final long serialVersionUID = -5614669050360359126L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SourcedEntityBase.class);
+	private static final Logger logger = LogManager.getLogger(SourcedEntityBase.class);
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "Source")
@@ -60,6 +61,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     //TODO should be Set<SOURCE> but this currently throws exception in DefaultMergeStrategyTest
+    //TODO once fixed, fix also IdentifiableDao.getSources() generics
     private Set<OriginalSourceBase> sources = new HashSet<>();
 
 // ************ CONSTRUCTOR ********************************************/
@@ -69,11 +71,10 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 		super();
 	}
 
-//
 //	public SourcedEntityBase(Reference citation, String citationMicroReference,
-//			String originalNameString) {
+//			String originalInfo) {
 //		this.citationMicroReference = citationMicroReference;
-//		this.originalNameString = originalNameString;
+//		this.originalInfo = originalInfo;
 //		this.citation = citation;
 //	}
 
@@ -165,10 +166,10 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 //     * @param citation the source as a {@link Reference reference}
 //     * @param microReference the details (e.g. page number) in the reference
 //     * @param nameUsedInSource the taxon name used in the source
-//     * @param originalNameString the name as text used in the source
+//     * @param originalInfo the name as text used in the source
 //     */
-//    public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
-//        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+//    public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalInfo){
+//        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microReference, nameUsedInSource, originalInfo);
 //        addSource(newSource);
 //    }
 

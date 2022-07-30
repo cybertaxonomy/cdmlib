@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -50,9 +51,9 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class PolytomousKeyGeneratorTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(PolytomousKeyGeneratorTest.class);
+    private static final Logger logger = LogManager.getLogger(PolytomousKeyGeneratorTest.class);
 
-    private static final boolean debug = true;
+    private static final boolean debug = false;
 
     private static final String GT_3 = " > 3.0";
 //    private static final String GT_3_5 = " > 3.5";

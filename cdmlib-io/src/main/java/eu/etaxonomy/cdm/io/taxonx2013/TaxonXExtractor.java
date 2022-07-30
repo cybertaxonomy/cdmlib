@@ -34,7 +34,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -86,7 +86,7 @@ public class TaxonXExtractor {
     private final Map<String,String> namesAsked = new HashMap<>();
     private final Map<String,Rank>ranksAsked = new HashMap<>();
 
-    Logger logger = Logger.getLogger(TaxonXExtractor.class);
+    Logger logger = LogManager.getLogger(TaxonXExtractor.class);
 
     public class ReferenceBuilder{
         private int nbRef=0;

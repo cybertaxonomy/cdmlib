@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.io.stream.excel;
 import java.io.InputStream;
 import eu.etaxonomy.cdm.common.URI;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -23,7 +23,7 @@ public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBas
     private static final long serialVersionUID = 5093164389086186710L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExcelStreamImportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(ExcelStreamImportConfigurator.class);
 
 	private static final String DEFAULT_REF_TITLE = "Excel Stream Import";
 

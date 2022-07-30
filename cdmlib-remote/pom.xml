@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.31.0</version>
+    <version>5.32.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -89,6 +89,14 @@
           <groupId>org.springframework</groupId>
           <artifactId>spring-mock</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -150,23 +158,23 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
-    <dependency>
-      <groupId>xpp3</groupId>
-      <artifactId>xpp3</artifactId>
-    </dependency>
 
     <!-- JsonView -->
     <dependency>
       <!-- for xml serialization (net.sf.json.xml.XMLSerializer) -->
       <groupId>xom</groupId>
       <artifactId>xom</artifactId>
-<!--       <exclusions> -->
+      <exclusions>
+        <exclusion>
+          <!-- has overlap with jakarta-regexp -->
+          <groupId>xalan</groupId>
+          <artifactId>xalan</artifactId>
+        </exclusion>
 <!--         <exclusion> -->
 <!--           <groupId>xml-apis</groupId> -->
 <!--           <artifactId>xml-apis</artifactId> -->
 <!--         </exclusion> -->
-<!--       </exclusions> -->
+      </exclusions>
     </dependency>
 
     <!-- swagger -->
@@ -180,11 +188,19 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
     </dependency>
+    
     <!-- iif -->
     <dependency>
       <groupId>de.digitalcollections.iiif</groupId>
       <artifactId>iiif-apis</artifactId>
     </dependency>
+    
+    <!-- needed only until problems in LoggingConfigurator are solved -->
+<!--    <dependency>-->
+<!--      <groupId>log4j</groupId>-->
+<!--      <artifactId>log4j</artifactId>-->
+<!--    </dependency>-->
+    
   </dependencies>
 </project>
 

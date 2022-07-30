@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -91,14 +91,14 @@ import io.swagger.annotations.Api;
 public class NameCatalogueController extends AbstractController<TaxonName, INameService> implements ResourceLoaderAware {
 
 
-    private static final Logger logger = Logger.getLogger(NameCatalogueController.class);
+    private static final Logger logger = LogManager.getLogger(NameCatalogueController.class);
 
     private ResourceLoader resourceLoader;
 
     /** Taxonomic status 'accepted' string */
     public static final String ACCEPTED_NAME_STATUS = "accepted";
 
-    /** Taxonpmic status 'synonym' string */
+    /** Taxonomic status 'synonym' string */
     public static final String SYNONYM_STATUS = "synonym";
 
     /** Flag 'doubtful' strings */
@@ -262,6 +262,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     public ModelAndView doGetNameSearchDocumentation(
             HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
         Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-default.apt");
@@ -392,8 +393,8 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
             // if search is successful then get related information , else return error
             if (nameSearchList != null && !nameSearchList.isEmpty()) {
-                NameSearch ns = new NameSearch();
-                ns.setRequest(query);
+                NameSearch nameSearch = new NameSearch();
+                nameSearch.setRequest(query);
 
                 for (DocumentSearchResult searchResult : nameSearchList) {
                     for(Document doc : searchResult.getDocs()) {
@@ -411,7 +412,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         }
                     }
                     // update name search object
-                    ns.addToResponseList(doc.getValues("titleCache")[0],
+                    nameSearch.addToResponseList(doc.getValues("titleCache")[0],
                             doc.getValues("nameCache")[0],
                             searchResult.getMaxScore(),
                             doc.getValues("uuid")[0].toString(),
@@ -419,7 +420,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                             mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon"+AcceptedTaxonBridge.DOC_KEY_UUID_SUFFIX)));
                     }
                 }
-                nsList.add(ns);
+                nsList.add(nameSearch);
 
             } else {
                 ErrorResponse er = new ErrorResponse();
@@ -1457,7 +1458,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     }
 
     private List<Classification> getClassificationList(int limit) {
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
         List<Classification> clist = classificationService.listClassifications(limit, 0, orderHints, VOC_CLASSIFICATION_INIT_STRATEGY);
         return clist;

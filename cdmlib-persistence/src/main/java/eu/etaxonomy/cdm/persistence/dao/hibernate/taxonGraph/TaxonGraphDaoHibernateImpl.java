@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,8 @@ import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmPreferenceCache;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
@@ -47,22 +51,31 @@ import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
  * <code>TaxonGraphBeforeTransactionCompleteProcess</code> is instantiated and
  * used in the {@link TaxonGraphHibernateListener}.
  *
- *
  * @author a.kohlbecker
  * @since Sep 26, 2018
  */
 @Repository("taxonGraphDao")
-@Transactional(readOnly = true)
-public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProcessor implements ITaxonGraphDao {
+@Transactional(readOnly = true) //NOTE by AM (2022-5): not sure if this is really needed, tests run without transactional, usually transaction borders are not defined in persistence, but this class is used a bit differently so I am not sure; keep it as it is for now to not brake working code
+public class TaxonGraphDaoHibernateImpl
+        extends AbstractHibernateTaxonGraphProcessor
+        implements ITaxonGraphDao, InitializingBean {
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger(TaxonGraphDaoHibernateImpl.class);
+
+    public TaxonGraphDaoHibernateImpl(IPreferenceDao preferenceDao) {
+        super(preferenceDao);
+    }
 
     private TaxonRelationshipType relType = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
-
-    // private static final Logger logger = Logger.getLogger(TaxonGraphDaoHibernateImpl.class);
 
     public static final PrefKey CDM_PREF_KEY_SEC_REF_UUID = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.TaxonGraphSecRefUuid);
 
     @Autowired
     private ITaxonDao taxonDao;
+
+    @Autowired
+    private IPreferenceDao preferenceDao;
 
     @Override
     protected TaxonRelationshipType relType() {
@@ -76,7 +89,9 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
     public List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex) {
 
-        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, false);
+        Query<TaxonGraphEdgeDTO> query = prepareTaxonGraphEdgeDTOs(
+                fromTaxonUuid, toTaxonUuid, type, includeUnpublished, false, TaxonGraphEdgeDTO.class);
+
 
         if(pageSize != null) {
             query.setMaxResults(pageSize);
@@ -87,9 +102,7 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
             }
         }
 
-        @SuppressWarnings("unchecked")
         List<TaxonGraphEdgeDTO> result = query.list();
-
         return result;
     }
 
@@ -97,20 +110,14 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
     public long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished) {
 
-        Query query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true);
-        Long count = (Long) query.uniqueResult();
+        Query<Long> query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true, Long.class);
+        Long count = query.uniqueResult();
         return count;
     }
 
-    /**
-     * @param fromTaxonUuid
-     * @param toTaxonUuid
-     * @param type
-     * @param includeUnpublished
-     * @return
-     */
-    protected Query prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
-            boolean includeUnpublished, boolean doCount) {
+    protected <R extends Object> Query<R> prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+            boolean includeUnpublished, boolean doCount, Class<R> returnedClass) {
+
         Session session = getSession();
         String hql = "";
         if(doCount){
@@ -151,7 +158,7 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
             }
         }
 
-        Query query = session.createQuery(hql);
+        Query<R> query = session.createQuery(hql, returnedClass);
         query.setParameter("reltype", type);
         query.setParameter("regStatus", RegistrationStatus.PUBLISHED);
         if(fromTaxonUuid != null){
@@ -179,6 +186,12 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
     @Override
     public List<TaxonGraphEdgeDTO> edges(UUID fromtaxonUuid, UUID toTaxonUuid, boolean includeUnpublished) throws TaxonGraphException{
         return listTaxonGraphEdgeDTOs(fromtaxonUuid, toTaxonUuid, relType(), includeUnpublished, null, null);
+    }
+
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        CdmPreferenceCache.instance(preferenceDao);
     }
 
     @Override

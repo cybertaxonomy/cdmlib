@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -21,14 +22,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 
-    public TaxonNodeNaturalComparator(){
-		super();
-	}
-
-	@SuppressWarnings("null")
-    @Override
+	@Override
 	public int compare(TaxonNode node1, TaxonNode node2) {
-	   // System.out.println("compare node 1: "+ node1.getTaxon().getTitleCache() + " - node 2: " + node2.getTaxon().getTitleCache());
 	    if (node1.equals(node2)) {
 	        return 0;
         }
@@ -56,36 +51,35 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 			return node1.getSortIndex().compareTo(node2.getSortIndex());
 		}
 		String lastEqualAncestorTreeIndex = "";
-		List<TaxonNode> ancestorAndNode= new ArrayList<>();
-		ancestorAndNode.add(node1);
-		ancestorAndNode.addAll(node1.getAncestorList());
-		java.util.Collections.sort(ancestorAndNode, new TreeIndexComparator());
 
+		List<TaxonNode> ancestorAndNode1= new ArrayList<>();
+		ancestorAndNode1.add(node1);
+		ancestorAndNode1.addAll(node1.getAncestorList());
+		Collections.sort(ancestorAndNode1, new TreeIndexComparator());
 
 		List<TaxonNode> ancestorAndNode2= new ArrayList<>();
         ancestorAndNode2.add(node2);
         ancestorAndNode2.addAll(node2.getAncestorList());
-        java.util.Collections.sort(ancestorAndNode2, new TreeIndexComparator());
+        Collections.sort(ancestorAndNode2, new TreeIndexComparator());
 
 		for (int i = 0; i < splitNode1.length; i++){
 			if (!splitNode1[i].equals(splitNode2[i])){
-				// take the last equal ancestor and compare the sortindex
-				if (lastEqualAncestorTreeIndex != null){
-					TaxonNode lastEqualTreeIndexAncestorNode1 = null;
-					TaxonNode lastEqualTreeIndexAncestorNode2 = null;
-					for (TaxonNode next1 :ancestorAndNode){
-						if (next1.treeIndex().equals(lastEqualAncestorTreeIndex+"#"+splitNode1[i]+ "#") ){
-						    lastEqualTreeIndexAncestorNode1 = next1;
-						}
+			    // take the last equal ancestor and compare the sortindex
+				TaxonNode lastEqualTreeIndexAncestorNode1 = null;
+				TaxonNode lastEqualTreeIndexAncestorNode2 = null;
+				for (TaxonNode next1 :ancestorAndNode1){
+					if (next1.treeIndex().equals(lastEqualAncestorTreeIndex+"#"+splitNode1[i]+ "#") ){
+					    lastEqualTreeIndexAncestorNode1 = next1;
 					}
-					for (TaxonNode next2 :ancestorAndNode2){
-
-						if (next2.treeIndex().equals(lastEqualAncestorTreeIndex+"#"+splitNode2[i]+ "#")){
-						    lastEqualTreeIndexAncestorNode2 = next2;
-						}
-					}
-					return lastEqualTreeIndexAncestorNode1.getSortIndex().compareTo(lastEqualTreeIndexAncestorNode2.getSortIndex());
 				}
+				for (TaxonNode next2 :ancestorAndNode2){
+					if (next2.treeIndex().equals(lastEqualAncestorTreeIndex+"#"+splitNode2[i]+ "#")){
+					    lastEqualTreeIndexAncestorNode2 = next2;
+					}
+				}
+				if (lastEqualTreeIndexAncestorNode1 != null && lastEqualTreeIndexAncestorNode2 != null) {
+				    return lastEqualTreeIndexAncestorNode1.getSortIndex().compareTo(lastEqualTreeIndexAncestorNode2.getSortIndex());
+				} //TODO do we need "else" here?
 			}
 			if (!splitNode1[i].equals("")){
 			    lastEqualAncestorTreeIndex = lastEqualAncestorTreeIndex+"#"+splitNode1[i];

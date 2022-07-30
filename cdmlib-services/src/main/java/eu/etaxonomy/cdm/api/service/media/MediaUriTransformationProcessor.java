@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
  */
 public class MediaUriTransformationProcessor {
 
-    private static final Logger logger = Logger.getLogger(MediaUriTransformationProcessor.class);
+    private static final Logger logger = LogManager.getLogger(MediaUriTransformationProcessor.class);
 
     private List<MediaUriTransformation> transformations = new ArrayList<>();
 

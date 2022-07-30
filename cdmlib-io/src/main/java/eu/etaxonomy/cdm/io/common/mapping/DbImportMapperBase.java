@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class DbImportMapperBase<STATE extends DbImportStateBase<?,?>>  {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportMapperBase.class);
+	private static final Logger logger = LogManager.getLogger(DbImportMapperBase.class);
 
 	private STATE state;
 	private String tableName;

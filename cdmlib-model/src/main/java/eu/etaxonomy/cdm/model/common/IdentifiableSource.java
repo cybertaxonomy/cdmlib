@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
@@ -39,7 +40,7 @@ public class IdentifiableSource
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(IdentifiableSource.class);
+	private static final Logger logger = LogManager.getLogger(IdentifiableSource.class);
 
 //********************************* FACTORY ********************************************************/
 
@@ -78,7 +79,7 @@ public class IdentifiableSource
    public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference
             reference, String microReference, String originalInfo){
         IdentifiableSource result = NewInstance(type, id, idNamespace, reference, microReference);
-        result.setOriginalNameString(originalInfo);
+        result.setOriginalInfo(originalInfo);
         return result;
     }
 

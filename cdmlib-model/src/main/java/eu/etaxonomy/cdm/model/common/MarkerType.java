@@ -20,11 +20,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 
+import eu.etaxonomy.cdm.model.term.AvailableForIdentifiableBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 
 	private static final long serialVersionUID = -9117424749919907396L;
-	public static final Logger logger = Logger.getLogger(MarkerType.class);
+	public static final Logger logger = LogManager.getLogger(MarkerType.class);
 
 	private static final UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");
 	private static final UUID uuidToBeChecked = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");

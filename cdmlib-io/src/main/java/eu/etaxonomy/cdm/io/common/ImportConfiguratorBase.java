@@ -350,5 +350,4 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
     public void setRegisterAuditing(boolean registerAuditing) {
         this.hibernateConfig.setRegisterEnvers(registerAuditing);
     }
-
 }

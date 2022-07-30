@@ -4,29 +4,83 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.31.0</version>
+    <version>5.32.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-cache</artifactId>
   <name>CDM Entity Cache</name>
   <description>CDM Entity Cache</description>
   <build>
     <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                    <phase>compile</phase> 
+                    <goals>
+                        <!-- goal 'java'  has problems with closing threads, therefore use exec -->
+                        <goal>exec</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <executable>java</executable>
+                <arguments>
+                    <argument>-classpath</argument>
+                    <classpath />
+                    <argument>eu.etaxonomy.cdm.cache.CdmModelCacher</argument>
+                </arguments>
+            </configuration>
+        </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+      <!--  <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <versionRange>[3.0.0,)</versionRange>
+                    <phase>compile</phase>
+                    <goals>
+                      <goal>exec</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>  -->
+      </plugins>
+    </pluginManagement>
   </build>
   <dependencies>
-  <dependency>
+    <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-services</artifactId>
     </dependency>
+    <dependency>  
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+    </dependency>
     <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-test</artifactId>
-        <scope>test</scope>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-test</artifactId>
+      <scope>test</scope>
     </dependency>
    </dependencies>
-  
 </project>

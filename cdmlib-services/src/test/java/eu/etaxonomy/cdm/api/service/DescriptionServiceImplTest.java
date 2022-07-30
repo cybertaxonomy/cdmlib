@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static Logger logger = Logger.getLogger(DescriptionServiceImplTest.class);
+    private static Logger logger = LogManager.getLogger(DescriptionServiceImplTest.class);
 
     @SpringBeanByType
     private IDescriptionService service;

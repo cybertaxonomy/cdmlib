@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 @Ignore /* IGNORE in Suite */
 public class TestC3P0Configuration{
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TestC3P0Configuration.class);
+    private static final Logger logger = LogManager.getLogger(TestC3P0Configuration.class);
 
 	CdmApplicationController appController;
 

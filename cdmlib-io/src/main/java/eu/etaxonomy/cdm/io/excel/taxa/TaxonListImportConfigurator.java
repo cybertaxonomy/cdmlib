@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import eu.etaxonomy.cdm.common.URI;
-
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
@@ -17,14 +16,11 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 /**
  * @author k.luther
  * @since 21.02.2018
- *
  */
 public class TaxonListImportConfigurator extends ExcelImportConfiguratorBase {
 
-    /**
-     * @param uri
-     * @param destination
-     */
+    private static final long serialVersionUID = 866658153336029112L;
+
     protected TaxonListImportConfigurator(URI uri, ICdmDataSource destination) {
         super(uri, destination);
 
@@ -33,22 +29,14 @@ public class TaxonListImportConfigurator extends ExcelImportConfiguratorBase {
         return new TaxonListImportConfigurator(uri, destination);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <STATE extends ImportStateBase> STATE getNewState() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void makeIoClassList() {
         // TODO Auto-generated method stub
-
     }
-
 }

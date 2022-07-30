@@ -71,8 +71,9 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
 
 //*************************** CONSTRUCTOR *************************************/
 
-    @SuppressWarnings("deprecation")
-    protected TermCollection(){}
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
+    TermCollection(){}
 
     protected TermCollection(TermType type){
         super(type);

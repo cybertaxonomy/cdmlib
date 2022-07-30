@@ -15,11 +15,9 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 /**
  * @author a.kohlbecker
  * @since 24.03.2011
- *
  */
 public interface IPolytomousKeyNodeService extends IVersionableService<PolytomousKeyNode> {
 
     public DeleteResult delete(UUID nodeUuid, boolean deleteChildren);
-
 
 }

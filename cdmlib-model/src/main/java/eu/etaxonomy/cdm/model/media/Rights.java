@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -58,7 +58,7 @@ public class Rights extends LanguageStringBase {
 
 	private static final long serialVersionUID = 4920749849951432284L;
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(Rights.class);
+    private static final Logger logger = LogManager.getLogger(Rights.class);
 
 	//external location of copyright text
 	@XmlElement(name = "URI")

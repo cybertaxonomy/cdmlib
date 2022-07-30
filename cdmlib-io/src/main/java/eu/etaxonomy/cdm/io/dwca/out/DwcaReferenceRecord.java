@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
  */
 public class DwcaReferenceRecord extends DwcaRecordBase{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaReferenceRecord.class);
+	private static final Logger logger = LogManager.getLogger(DwcaReferenceRecord.class);
 
 	private String isbnIssn;
 	private URI uri;

@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -47,7 +47,7 @@ public class MeasurementUnit
 
     private static final long serialVersionUID = 4904519152652248312L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MeasurementUnit.class);
+	private static final Logger logger = LogManager.getLogger(MeasurementUnit.class);
 
 	public static final UUID uuidMeter = UUID.fromString("8bef5055-789c-41e5-bea2-8dc2ea8ecdf6");
 	private static final UUID uuidSecond = UUID.fromString("7cb20e73-d3c3-4290-bb55-98f7d1e76670");

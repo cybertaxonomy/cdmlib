@@ -19,7 +19,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,15 +53,13 @@ import io.swagger.annotations.Api;
 /**
  * @author l.morris
  * @since Feb 21, 2013
- *
  */
 @Controller
 @Api("polytomousKeyDTO")
 @RequestMapping(value = {"/dto/polytomousKey/"})
 public class PolytomousKeyNodeDtoController extends AbstractController<PolytomousKey, IPolytomousKeyService> {
 
-    public static final Logger logger = Logger
-            .getLogger(PolytomousKeyNodeDtoController.class);
+    public static final Logger logger = LogManager.getLogger(PolytomousKeyNodeDtoController.class);
 
     private static final List<String> KEY_INIT_STRATEGY = Arrays.asList(new String[]{
             "root.children"

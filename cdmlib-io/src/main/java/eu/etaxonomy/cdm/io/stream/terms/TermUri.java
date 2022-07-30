@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.stream.terms;
 
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 
@@ -157,7 +157,7 @@ public enum TermUri {
 	;
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermUri.class);
+	private static final Logger logger = LogManager.getLogger(TermUri.class);
 
 
 	private URI uri;

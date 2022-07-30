@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * @version 1.0
  */
 public class DbImportMarkerCreationMapper extends DbImportSupplementCreationMapperBase<Marker, AnnotatableEntity, DbImportStateBase<?, ?>, MarkerType> {
-	private static final Logger logger = Logger.getLogger(DbImportMarkerCreationMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportMarkerCreationMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
 	

@@ -25,7 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -65,6 +65,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since Dec 16, 2010
  */
 public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
+
+    private static String[] tableNames = new String[]{"CLASSIFICATION","TAXONNODE"};
 
     @SpringBeanByType
 	private ITaxonNodeService taxonNodeService;
@@ -127,13 +129,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     private TaxonNode node4;
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
-	 */
 	@Test
 	@DataSet
 	public final void testMakeTaxonNodeASynonymOfAnotherTaxonNode() {
@@ -1262,6 +1257,186 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         nodes.add(pinusDto);
         commonParentNodeDto = taxonNodeService.findCommonParentDto(nodes);
         assertEquals(classificationRootNodeDto.getUuid(), commonParentNodeDto.getUuid());
+    }
+
+    @Test  //8127  //5536 //10101
+    @Ignore // see #10101
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public final void testMergeDetached(){
+
+        //create classifications with 2 child nodes
+        Classification tree = Classification.NewInstance("Classification");
+        TaxonNode child1 = tree.getRootNode().addChildTaxon(Taxon.NewInstance(null, null), null);
+        TaxonNode child2 = tree.getRootNode().addChildTaxon(null, null);
+        classificationService.save(tree);
+        taxonNodeService.save(child1);
+        taxonNodeService.save(child2);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        TaxonNode rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
+        rootNode.getChildNodes().get(0).getChildNodes().size();  //initialize children
+        rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        TaxonNode childToRemove = rootNode.getChildNodes().get(0);
+        rootNode.deleteChildNode(childToRemove);
+        TaxonNode child3 =rootNode.addChildTaxon(null, null);
+        taxonNodeService.merge(rootNode, childToRemove);
+        commitAndStartNewTransaction(tableNames);
+
+        //test result
+        rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        Assert.assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3, taxonNodeService.count(TaxonNode.class));
+        commitAndStartNewTransaction();
+
+//      System.out.println("NEXT");
+        //same with classification
+        //load root node and make it detached
+        Classification treeLoaded = classificationService.find(tree.getUuid());
+        rootNode = treeLoaded.getRootNode();
+        rootNode.getChildNodes().get(0);  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        childToRemove = rootNode.getChildNodes().get(0);
+        rootNode.deleteChildNode(childToRemove);
+        TaxonNode child4 = rootNode.addChildTaxon(null, null);
+
+        @SuppressWarnings("unused")
+        Classification mergedClassification = classificationService.merge(treeLoaded, childToRemove);
+
+      //NOTE: maybe interesting to know, that if not using orphan removal
+      //      resorting the index does not take place if not touching the children list somehow.
+      //      The sortindex starts than at some number > 0 and may contain nulls.
+      //      If touching the list like below the index starts at 0. This is now
+      //      automatically handled in PostMergeEntityListener.
+      //      mergedKey.getRoot().getChildren().size();
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = taxonNodeService.find(classification.getRootNode().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3, taxonNodeService.count(TaxonNode.class));
+    }
+
+    @Test   //#10101
+    @Ignore //see #10101
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public void testMergeDetachedWithMove() {
+
+        //create classification with 2 child nodes
+        Classification tree = Classification.NewInstance("Classification");
+        TaxonNode child1 = tree.getRootNode().addChildTaxon(null, null);
+        TaxonNode child2 = tree.getRootNode().addChildTaxon(null, null);
+        classificationService.save(tree);
+        taxonNodeService.save(child1);
+        taxonNodeService.save(child2);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        Classification keyLoaded = classificationService.find(tree.getUuid());
+        TaxonNode rootNode = keyLoaded.getRootNode();
+        rootNode.getChildNodes().get(0).getChildNodes().size();  //initialize children
+        rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        TaxonNode childMove = rootNode.getChildNodes().get(0);
+        TaxonNode newParentNode = rootNode.getChildNodes().get(1);
+        TaxonNode child3 = newParentNode.addChildNode(childMove, null, null);
+        TaxonNode child4 =rootNode.addChildTaxon(null, null);
+        taxonNodeService.saveOrUpdate(child4);
+
+        @SuppressWarnings("unused")
+        //no removed child to delete here
+        Classification mergedTree = classificationService.merge(keyLoaded, new CdmBase[]{});
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        TaxonNode firstChild = rootNode.getChildNodes().get(0);
+        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals(1, firstChild.getChildNodes().size());
+        Assert.assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
+        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4, taxonNodeService.count(TaxonNode.class));
+    }
+
+    @Test //#10101
+    @Ignore  //see #10101
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public final void testSaveDetached(){
+
+        //create classifications with 2 child nodes
+        Classification tree = Classification.NewInstance("Classification");
+        TaxonNode child1 = tree.getRootNode().addChildTaxon(Taxon.NewInstance(null, null), null);
+        TaxonNode child2 = tree.getRootNode().addChildTaxon(null, null);
+        classificationService.save(tree);
+        taxonNodeService.save(child1);
+        taxonNodeService.save(child2);
+        commitAndStartNewTransaction();
+
+        //load root node and make it detached
+        TaxonNode rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
+        rootNode.getChildNodes().get(0).getChildNodes().size();  //initialize children
+        rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        TaxonNode childToRemove = rootNode.getChildNodes().get(0);
+        rootNode.deleteChildNode(childToRemove);
+        TaxonNode child3 =rootNode.addChildTaxon(null, null);
+        taxonNodeService.saveOrUpdate(rootNode);
+        taxonNodeService.delete(childToRemove.getUuid());  //combined method like in merge does not yet exist for saveOrUpdate
+        commitAndStartNewTransaction(tableNames);
+
+        //test result
+        rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        Assert.assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3, taxonNodeService.count(TaxonNode.class));
+        commitAndStartNewTransaction();
+
+//      System.out.println("NEXT");
+        //same with classification
+        //load root node and make it detached
+        Classification treeLoaded = classificationService.find(tree.getUuid());
+        rootNode = treeLoaded.getRootNode();
+        rootNode.getChildNodes().get(0);  //initialize children
+        commitAndStartNewTransaction(); //detach
+
+        //replace nodes and merge
+        childToRemove = rootNode.getChildNodes().get(0);
+        rootNode.deleteChildNode(childToRemove);
+        TaxonNode child4 = rootNode.addChildTaxon(null, null);
+
+        //TODO can't work yet as TaxonNodes are not cascaded on purpose
+        classificationService.saveOrUpdate(treeLoaded);
+        taxonNodeService.delete(childToRemove.getUuid());
+
+        commitAndStartNewTransaction(tableNames);
+
+        rootNode = taxonNodeService.find(classification.getRootNode().getUuid());
+        rootNode.getChildNodes();
+        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        Assert.assertEquals("Should be root + 2 children", 3, taxonNodeService.count(TaxonNode.class));
+
+        //TODO implement testSaveDetachedWithMove like in TermNode and PolytomousKeyNode service tests
     }
 
     @Test

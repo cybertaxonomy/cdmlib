@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.model.media;
 
 import java.util.HashSet;
@@ -25,7 +24,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class MediaRepresentationPart extends VersionableEntity {
 	private static final long serialVersionUID = -1674422508643785796L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);
+	private static final Logger logger = LogManager.getLogger(MediaRepresentationPart.class);
 
 	// where the media file is stored
 	@XmlElement(name = "URI")

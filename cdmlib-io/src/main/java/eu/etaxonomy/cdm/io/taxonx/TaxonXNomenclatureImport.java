@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class TaxonXNomenclatureImport
         extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>  {
 
     private static final long serialVersionUID = 796115831082828758L;
-    private static final Logger logger = Logger.getLogger(TaxonXNomenclatureImport.class);
+    private static final Logger logger = LogManager.getLogger(TaxonXNomenclatureImport.class);
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;
@@ -194,7 +195,7 @@ public class TaxonXNomenclatureImport
 	private boolean doSpecimenType(TaxonXImportConfigurator config, Element elType, Element elTypeLoc, TaxonName taxonName){
 		Reference citation = null;
 		String citationMicroReference = null;
-		String originalNameString = null;
+		String originalInfo = null;
 		boolean isNotDesignated = true;
 		boolean addToAllHomotypicNames = true;
 
@@ -212,11 +213,11 @@ public class TaxonXNomenclatureImport
 		if (typeLocMap != null && typeLocMap.size() >0){
 			for (DerivedUnit specimen : typeLocMap.keySet()){
 				SpecimenTypeDesignationStatus status = typeLocMap.get(specimen);
-				taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
+				taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalInfo, isNotDesignated, addToAllHomotypicNames);
 			}
 		}else{ // no type_loc
 			SpecimenTypeDesignationStatus status = null;
-			taxonName.addSpecimenTypeDesignation(simpleSpecimen.getSpecimen(), status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
+			taxonName.addSpecimenTypeDesignation(simpleSpecimen.getSpecimen(), status, citation, citationMicroReference, originalInfo, isNotDesignated, addToAllHomotypicNames);
 		}
 		return true;
 	}
@@ -392,11 +393,11 @@ public class TaxonXNomenclatureImport
 	private boolean doNameTypeDesignation(TaxonName name, TaxonName type, NameTypeDesignationStatus status/*, boolean isLectoType*/){
 		Reference citation = null;
 		String citationMicroReference = null;
-		String originalNameString = null;
+		String originalInfo = null;
 		boolean addToAllHomotypicNames = true;
 
-//		name.addNameTypeDesignation(type, citation, citationMicroReference, originalNameString, status, addToAllHomotypicNames);
-		name.addNameTypeDesignation(type, citation, citationMicroReference, originalNameString,status, false, false, /*isLectoType, */false, addToAllHomotypicNames);
+//		name.addNameTypeDesignation(type, citation, citationMicroReference, originalInfo, status, addToAllHomotypicNames);
+		name.addNameTypeDesignation(type, citation, citationMicroReference, originalInfo,status, false, false, /*isLectoType, */false, addToAllHomotypicNames);
 		return true;
 	}
 
@@ -439,7 +440,7 @@ public class TaxonXNomenclatureImport
 						logger.warn("Is this really only a collection string? : "  + tmpCollString + getBracketSourceName(config));
 					}
 					DerivedUnit specimen;
-					specimen = (DerivedUnit)originalSpecimen.clone();
+					specimen = originalSpecimen.clone();
 					String title = originalSpecimen.getTitleCache();
 					title = title + "(" + tmpCollString + ")";
 					specimen.setTitleCache(title, true );
@@ -516,12 +517,12 @@ public class TaxonXNomenclatureImport
 						if (taxonName != null){
 							Reference citation = null;
 							String citationMicroReference = null;
-							String originalNameString = null;
+							String originalInfo = null;
 							boolean isNotDesignated = true;
 							boolean addToAllHomotypicNames = true;
-							DerivedUnit specimen = (DerivedUnit)originalSpecimen.clone();
+							DerivedUnit specimen = originalSpecimen.clone();
 							unlazyTypeDesignation(config, taxonName);
-							taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
+							taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalInfo, isNotDesignated, addToAllHomotypicNames);
 							result = true;
 						}
 					}

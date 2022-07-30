@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -47,7 +50,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class OwlImportUtil {
 
-    static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(OwlImportUtil.class);
+    private final static Logger logger = LogManager.getLogger();
 
     private static void addFeatureProperties(Feature feature, Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         if(termResource.hasProperty(OwlUtil.propFeatureIsCategorical)){

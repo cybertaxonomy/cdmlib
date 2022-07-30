@@ -21,7 +21,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,6 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -103,7 +103,7 @@ public class TaxonNodeServiceImpl
            extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao>
            implements ITaxonNodeService{
 
-    private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNodeServiceImpl.class);
 
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
@@ -164,8 +164,6 @@ public class TaxonNodeServiceImpl
                 }
             }
         }
-
-        HHH_9751_Util.removeAllNull(childNodes);
 
         if (recursive == false && sortMode != null){
             Comparator<TaxonNode> comparator = sortMode.comparator();
@@ -1417,7 +1415,6 @@ public class TaxonNodeServiceImpl
         //add children
         if (config.isDoRecursive()){
             List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
-            HHH_9751_Util.removeAllNull(originalChildNodes);
 
             for (TaxonNode originalChildNode : originalChildNodes) {
                 cloneTaxonRecursive(originalChildNode, childNodeClone, config);
@@ -1445,5 +1442,9 @@ public class TaxonNodeServiceImpl
         return dao.getTaxonNodeDtos(nodeUuids);
     }
 
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex) {
+        return dao.getTaxonNodeDtosFromTaxon(taxonUuid, subTreeIndex);
+    }
 
 }

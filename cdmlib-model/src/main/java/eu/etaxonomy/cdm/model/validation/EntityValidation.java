@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
@@ -70,7 +70,7 @@ public class EntityValidation extends CdmBase {
     private static final long serialVersionUID = 9120571815593117363L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(EntityValidation.class);
+    private static final Logger logger = LogManager.getLogger(EntityValidation.class);
 
     public static EntityValidation newInstance() {
         return new EntityValidation();

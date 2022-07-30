@@ -12,11 +12,11 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.helpers.DefaultValidationEventHandler;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 public class WarningTolerantValidationEventHandler extends
 		DefaultValidationEventHandler {
-	private static final Logger logger = Logger.getLogger(WarningTolerantValidationEventHandler.class);
+	private static final Logger logger = LogManager.getLogger(WarningTolerantValidationEventHandler.class);
 	
 	public boolean handleEvent(ValidationEvent validationEvent) {
 		// ignore warnings

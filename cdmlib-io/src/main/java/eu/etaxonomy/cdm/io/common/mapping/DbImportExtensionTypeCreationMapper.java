@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 public class DbImportExtensionTypeCreationMapper<STATE extends DbImportStateBase<?,?>>
         extends DbImportDefinedTermCreationMapperBase<ExtensionType, IdentifiableEntity, DbImportStateBase<?,?>> {
 
-	private static final Logger logger = Logger.getLogger(DbImportExtensionTypeCreationMapper.class);
+	private static final Logger logger = LogManager.getLogger(DbImportExtensionTypeCreationMapper.class);
 
 //******************************** FACTORY METHOD ***************************************************/
 

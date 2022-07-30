@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -29,7 +29,7 @@ public class StructureTreeOwlExportState extends ExportStateBase<StructureTreeOw
     private Model model;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(StructureTreeOwlExportState.class);
+    private static final Logger logger = LogManager.getLogger(StructureTreeOwlExportState.class);
 
     public StructureTreeOwlExportState(StructureTreeOwlExportConfigurator config) {
         super(config);

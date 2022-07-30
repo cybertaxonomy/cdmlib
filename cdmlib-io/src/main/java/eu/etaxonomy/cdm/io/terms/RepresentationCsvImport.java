@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -45,7 +45,7 @@ public class RepresentationCsvImport
             extends SimpleImport<RepresentationCsvImportConfigurator, File>{
 
     private static final long serialVersionUID = -5600766240192189822L;
-    private static Logger logger = Logger.getLogger(RepresentationCsvImport.class);
+    private static Logger logger = LogManager.getLogger(RepresentationCsvImport.class);
 
     @Override
     protected void doInvoke(RepresentationCsvImportConfigurator config) {

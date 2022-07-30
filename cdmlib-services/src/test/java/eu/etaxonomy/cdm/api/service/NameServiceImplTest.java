@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -74,7 +74,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(NameServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger(NameServiceImplTest.class);
 
     private static final UUID NAME1_UUID = UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384");
     private static final int NAME1_ID = 10;

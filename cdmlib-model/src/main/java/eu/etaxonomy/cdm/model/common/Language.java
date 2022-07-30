@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class Language extends DefinedTermBase<Language> {
 
     private static final long serialVersionUID = -5030610079904074217L;
-    private static final Logger logger = Logger.getLogger(Language.class);
+    private static final Logger logger = LogManager.getLogger(Language.class);
 
     public static final UUID uuidLanguageVocabulary = UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de");
 

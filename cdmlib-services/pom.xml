@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.31.0</version>
+    <version>5.32.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -73,6 +73,10 @@
       <artifactId>lucene-suggest</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-sandbox</artifactId>
+    </dependency>
+    <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <!-- <exclusions> -->
@@ -91,9 +95,20 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-context-support</artifactId>
     </dependency>
+    <dependency>  
+        <groupId>net.sf.ehcache</groupId>
+        <artifactId>ehcache</artifactId>
+    </dependency>
     <dependency>
         <groupId>com.sun.mail</groupId>
+        <!-- is now jakarate.mail, but wait with update until spring-context-support upgrades -->
         <artifactId>javax.mail</artifactId>
+        <exclusions>
+            <exclusion>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
     <dependency>
         <groupId>org.subethamail</groupId>
@@ -114,6 +129,7 @@
         <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
+      <!-- MediaInfoServiceReader uses dozer -->
       <groupId>com.github.dozermapper</groupId>
       <artifactId>dozer-core</artifactId>
     </dependency>

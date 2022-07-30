@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.taxonx;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 public final class TaxonXTransformer {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonXTransformer.class);
+	private static final Logger logger = LogManager.getLogger(TaxonXTransformer.class);
  
 	//Facts
 	public static int FACT_DESCRIPTION = 1;

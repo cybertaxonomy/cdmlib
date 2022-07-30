@@ -27,15 +27,12 @@ public class RegistrationDtoBeanProcessor extends AbstractBeanProcessor<Registra
                 "blockedBy",
                 "blocked",
                 "submitterUserName"
-                );
+            );
     }
-
-
 
     @Override
     public JSONObject processBeanSecondStep(RegistrationDTO bean, JSONObject json, JsonConfig jsonConfig) {
         // nothing to do here
         return json;
     }
-
 }

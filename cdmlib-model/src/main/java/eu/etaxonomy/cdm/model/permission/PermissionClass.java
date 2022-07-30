@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -87,16 +88,16 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     TAXONRELATIONSHIP("TaxonRelationship"),
     TEAMORPERSONBASE("TeamOrPerson"),
     TERMVOCABULARY("TermVocabulary"),
+    TEXTUALTYPEDESIGNATION("TextualTypeDesignation"),
     USER("User"),
     ;
 
-    public static final Logger logger = Logger.getLogger(PermissionClass.class);
+    public static final Logger logger = LogManager.getLogger();
 
     private PermissionClass(String key){
         //we have no UUIDs defined yet, but needed for tests
         this(UUID.randomUUID(), key, key, null);
     }
-
 
     private PermissionClass(UUID uuid, String defaultString, String key){
         this(uuid, defaultString, key, null);
@@ -169,10 +170,6 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
         return permissionClass;
     }
 
-    /**
-     * @param o
-     * @return
-     */
     private static PermissionClass doValueOf(Class<?> clazz) {
         try{
             String normalizedName = clazz.getSimpleName().toUpperCase();
@@ -181,9 +178,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
             if (CdmBase.class.isAssignableFrom(clazz)){
                 return doValueOf(clazz.getSuperclass());
             }
-
         }
         return null;
     }
-
 }

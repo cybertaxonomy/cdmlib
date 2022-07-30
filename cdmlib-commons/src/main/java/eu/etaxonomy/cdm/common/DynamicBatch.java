@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * DynamicBatch: a JVM resources aware batch manager.
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  */
 public class DynamicBatch {
 
-    public static final Logger logger = Logger.getLogger(DynamicBatch.class);
+    public static final Logger logger = LogManager.getLogger();
 
     int batchSize;
     int batchItemCount = -1;

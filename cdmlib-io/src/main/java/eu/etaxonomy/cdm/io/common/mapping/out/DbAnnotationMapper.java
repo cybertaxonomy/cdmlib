@@ -14,7 +14,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -34,7 +35,7 @@ public class DbAnnotationMapper
             extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbAnnotationMapper.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private final String annotationPrefix;
 	private String separator = ";";

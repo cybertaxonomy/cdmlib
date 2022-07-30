@@ -9,6 +9,7 @@
 				name="custom-enhanced-table",
 				strategy = "eu.etaxonomy.cdm.persistence.hibernate.TableGenerator",
 				parameters = {
+				    @Parameter(name="table_name", value = "hibernate_sequences"),
 				    @Parameter(name="optimizer", value = "pooled"),
 				    /* initial_value = increment_size as proposed to fix an issue with pooled optimizer
 				     * http://opensource.atlassian.com/projects/hibernate/browse/HHH-3608?focusedCommentId=37112&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_37112
@@ -31,7 +32,8 @@
 				name="enhanced-table",
 				strategy = "org.hibernate.id.enhanced.TableGenerator",
 				parameters = {
-				    @Parameter(name="optimizer", value = "pooled"),
+				    @Parameter(name="table_name", value = "hibernate_sequences"),
+	                @Parameter(name="optimizer", value = "pooled"),
 				    /* initial_value = increment_size as proposed to fix an issue with pooled optimizer
 				     * http://opensource.atlassian.com/projects/hibernate/browse/HHH-3608?focusedCommentId=37112&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_37112
 				     */

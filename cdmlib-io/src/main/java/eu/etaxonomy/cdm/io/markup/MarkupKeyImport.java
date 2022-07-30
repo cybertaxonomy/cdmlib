@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 public class MarkupKeyImport  extends MarkupImportBase  {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MarkupKeyImport.class);
+	private static final Logger logger = LogManager.getLogger(MarkupKeyImport.class);
 
 
 	public MarkupKeyImport(MarkupDocumentImport docImport) {

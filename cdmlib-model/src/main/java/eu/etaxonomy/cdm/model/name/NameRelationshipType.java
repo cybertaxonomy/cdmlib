@@ -23,7 +23,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -70,7 +71,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
         implements INomenclaturalStanding {
 
     private static final long serialVersionUID = 8504916205254159334L;
-	static Logger logger = Logger.getLogger(NameRelationshipType.class);
+	static Logger logger = LogManager.getLogger(NameRelationshipType.class);
 
 	private static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
 	private static final UUID uuidMisspelling = UUID.fromString("c6f9afcb-8287-4a2b-a6f6-4da3a073d5de");
@@ -84,6 +85,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	private static final UUID uuidValidatedByName = UUID.fromString("a176c9ad-b4c2-4c57-addd-90373f8270eb");
 	private static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
+	private static final UUID uuidAvoidsHomonymOf = UUID.fromString("c7d59ab9-a8c6-4645-a990-04c698f2c123");
 	private static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
 	private static final UUID uuidNonUnspecific = UUID.fromString("78360e2a-159d-4e2f-893e-8666805840fa");
 
@@ -545,7 +547,17 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see NomenclaturalStatusType#NOVUM()
 	 */
 	public static final NameRelationshipType BLOCKING_NAME_FOR(){
-	  return  findTermByUuid(uuidBlockingNameFor);
+	  return findTermByUuid(uuidBlockingNameFor);
+	}
+
+	/**
+	 * This relationship relates the replacement name to the blocking name
+	 * in a situation where a new combination for a name (replaced synonym)
+	 * is blocked by a name (blocking name) and therefore a new name (replacement name) is created.
+	 * @return
+	 */
+	public static final NameRelationshipType AVOIDS_HOMONYM_OF() {
+	   return findTermByUuid(uuidAvoidsHomonymOf);
 	}
 
 	/**

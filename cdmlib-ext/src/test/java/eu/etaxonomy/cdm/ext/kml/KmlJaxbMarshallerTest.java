@@ -3,7 +3,6 @@ package eu.etaxonomy.cdm.ext.kml;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -12,8 +11,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,26 +23,24 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 public class KmlJaxbMarshallerTest {
-	
-	Kml kml;
-	
-	Logger logger;
-	
+
+	private Kml kml;
+
+    private static final Logger logger = LogManager.getLogger(KmlJaxbMarshallerTest.class);
+
+
 	@Before
 	public void makeKML() {
 		FieldUnit fu = FieldUnit.NewInstance();
 		fu.setGatheringEvent(GatheringEvent.NewInstance());
 		fu.getGatheringEvent().setExactLocation(Point.NewInstance(-112.292238941097, 36.09520916122063, null, null));
-		
+
 		KMLDocumentBuilder builder = new KMLDocumentBuilder();
 		builder.addSpecimenOrObservationBase(fu);
 		kml = builder.build();
-		
-		logger = Logger.getLogger(this.getClass());
-		logger.setLevel(Level.DEBUG);
 	}
-	
-	
+
+
 	@Test
 	public void marshallTest() throws JAXBException, IOException {
 

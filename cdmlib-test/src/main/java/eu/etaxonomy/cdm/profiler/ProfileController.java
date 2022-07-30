@@ -6,17 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.profiler;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.yourkit.api.Controller;
+
 //TODO move to common
 public class ProfileController {
 
-
-    private static final Logger logger = Logger.getLogger(ProfileController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static Controller controller;
     private static int memSnapshotCnt = 0;

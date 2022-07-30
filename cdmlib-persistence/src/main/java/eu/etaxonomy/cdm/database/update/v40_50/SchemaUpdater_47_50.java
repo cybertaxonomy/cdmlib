@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SchemaUpdater_47_50.class);
+	private static final Logger logger = LogManager.getLogger(SchemaUpdater_47_50.class);
 	private static final String endSchemaVersion = "5.0.0.0.20180514";
 	private static final String startSchemaVersion = "4.7.0.0.201710040000";
 

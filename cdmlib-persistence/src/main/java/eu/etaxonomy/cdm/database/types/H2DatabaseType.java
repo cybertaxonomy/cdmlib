@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database.types;
 
 import java.io.File;
@@ -14,22 +13,22 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2CorrectedDialect;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.LocalH2;
-
+import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 /**
  * @author a.mueller
- *
  */
 public class H2DatabaseType extends DatabaseTypeBase {
-	private static final Logger logger = Logger.getLogger(H2DatabaseType.class);
+
+	private static final Logger logger = LogManager.getLogger(H2DatabaseType.class);
 
 	//typeName
 	private final String typeName = "H2 Database";
@@ -72,7 +71,6 @@ public class H2DatabaseType extends DatabaseTypeBase {
         }
     }
 
-
 	@Override
 	public String getServerNameByConnectionString(String connectionString) {
 		String result;
@@ -90,7 +88,6 @@ public class H2DatabaseType extends DatabaseTypeBase {
 		}
 		return result;
 	}
-
 
 	@Override
 	public String getDatabaseNameByConnectionString(String connectionString) {
@@ -129,7 +126,6 @@ public class H2DatabaseType extends DatabaseTypeBase {
 		return result;
 	}
 
-
 	public H2DatabaseType() {
 		init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
@@ -151,7 +147,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 
 	private static final String getDefaultPath(){
 		try{
-			File path = CdmApplicationUtils.getWritableResourceDir();
+			File path = CdmPersistenceUtils.getWritableResourceDir();
 			String subPath = File.separator + "h2" + File.separator + "LocalH2";
 			return  path + subPath;
 		}catch(IOException e){
@@ -159,6 +155,4 @@ public class H2DatabaseType extends DatabaseTypeBase {
 			throw new RuntimeException(e);
 		}
 	}
-
-
 }

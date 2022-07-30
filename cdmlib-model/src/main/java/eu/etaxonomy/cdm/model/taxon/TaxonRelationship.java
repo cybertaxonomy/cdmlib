@@ -21,10 +21,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -59,7 +61,7 @@ public class TaxonRelationship
         extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
     private static final long serialVersionUID = 1378437971941534653L;
-    static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
+    static private final Logger logger = LogManager.getLogger(TaxonRelationship.class);
 
     @XmlElement(name = "RelatedFrom")
     @XmlIDREF
@@ -67,6 +69,7 @@ public class TaxonRelationship
     @ManyToOne(fetch=FetchType.EAGER)
 //    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
+    @ContainedIn  //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the related taxon to fully work
     private Taxon relatedFrom;
 
     @XmlElement(name = "RelatedTo")
@@ -75,6 +78,7 @@ public class TaxonRelationship
     @ManyToOne(fetch=FetchType.EAGER)
 //  @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
+    @ContainedIn
     private Taxon relatedTo;
 
     @XmlElement(name = "Type")
@@ -90,6 +94,8 @@ public class TaxonRelationship
     @ManyToOne
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private TaxonomicOperation operation;
+
+// *************************** CONSTRUCTOR ********************************/
 
     /**
      * @deprecated for hibernate only, don't use
@@ -114,6 +120,8 @@ public class TaxonRelationship
     protected TaxonRelationship(Taxon from, Taxon to, TaxonRelationshipType type, Reference citation, String citationMicroReference) {
         super(from, to, type, citation, citationMicroReference);
     }
+
+// *********************** GETTER / SETTER *************************/
 
     /**
      * Returns the {@link Taxon taxon} involved as a source in <i>this</i>

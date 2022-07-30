@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
@@ -29,7 +29,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmPreferenceLookup;
+import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmPreferenceCache;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 
@@ -59,13 +60,12 @@ import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
  *
  * @author a.kohlbecker
  * @since Oct 4, 2018
- *
  */
 public abstract class AbstractHibernateTaxonGraphProcessor {
 
-    private static final Logger logger = Logger.getLogger(AbstractHibernateTaxonGraphProcessor.class);
+    private static final Logger logger = LogManager.getLogger(AbstractHibernateTaxonGraphProcessor.class);
 
-    EnumSet<ReferenceType> referenceSectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
+    private EnumSet<ReferenceType> referenceSectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
 
     private Reference secReference = null;
 
@@ -78,41 +78,27 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return relType;
     }
 
+    protected IPreferenceDao preferenceDao;
 
-    /**
-     * MUST ONLY BE USED IN TESTS
-     */
-    @Deprecated
-    protected UUID secReferenceUUID;
-
-
-    /**
-     * MUST ONLY BE USED IN TESTS
-     */
-    @Deprecated
-    protected void setSecReferenceUUID(UUID uuid){
-        secReferenceUUID = uuid;
+    public AbstractHibernateTaxonGraphProcessor(IPreferenceDao preferenceDao) {
+        this.preferenceDao = preferenceDao;
     }
 
     public UUID getSecReferenceUUID(){
-        if(secReferenceUUID != null){
-            return secReferenceUUID;
-        } else {
-            CdmPreference pref = CdmPreferenceLookup.instance().get(TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID);
-            UUID uuid = null;
-            if(pref != null && pref.getValue() != null){
-                try {
-                    uuid = UUID.fromString(pref.getValue());
-                } catch (Exception e) {
-                    // TODO is logging only ok?
-                    logger.error(e);
-                }
+        CdmPreference pref = CdmPreferenceCache.instance(preferenceDao).get(TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID);
+        UUID uuid = null;
+        if(pref != null && pref.getValue() != null){
+            try {
+                uuid = UUID.fromString(pref.getValue());
+            } catch (Exception e) {
+                // TODO is logging only ok?
+                logger.error(e);
             }
-            if(uuid == null){
-                logger.error("missing cdm property: " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
-            }
-            return uuid;
         }
+        if(uuid == null){
+            logger.error("missing cdm property: " + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getSubject() + TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID.getPredicate());
+        }
+        return uuid;
     }
 
     /**
@@ -120,14 +106,13 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      * is expected to be stored in the CDM perferences under the preference key
      * {@link TaxonGraphDaoHibernateImpl#CDM_PREF_KEY_SEC_REF_UUID}
      *
-     *
      * @return The reference for all taxa in the graph
      */
     public Reference secReference(){
         if(secReference == null){
-            Query q = getSession().createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid");
+            Query<Reference> q = getSession().createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid", Reference.class);
             q.setParameter("uuid", getSecReferenceUUID());
-            secReference = (Reference) q.uniqueResult();
+            secReference = q.uniqueResult();
             if(secReference == null){
                 Reference missingRef = ReferenceFactory.newGeneric();
                 UUID uuid = getSecReferenceUUID();
@@ -362,10 +347,6 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return conceptRef;
     }
 
-    /**
-     * @param name
-     * @return
-     */
     protected List<TaxonName> relatedHigherNames(TaxonName name) {
 
         List<TaxonName> relatedNames = new ArrayList<>();
@@ -400,14 +381,9 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return relatedNames;
     }
 
-    /**
-     * @param name
-     * @return
-     */
     protected List<TaxonName> relatedLowerNames(TaxonName name) {
 
         List<TaxonName> relatedNames = new ArrayList<>();
-
         if(name.getRank().isGenus()){
             if(name.getGenusOrUninomial() != null){
                 List<TaxonName> names = listNamesAtRank(Rank.SPECIES(), name.getGenusOrUninomial(), null);
@@ -436,18 +412,11 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return relatedNames;
     }
 
-
-    /**
-     * @param taxon
-     */
     protected List<TaxonRelationship> taxonGraphRelationsFrom(Taxon taxon, Reference citation) {
         List<TaxonRelationship> relations = getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedFrom);
         return relations;
     }
 
-    /**
-     * @param taxon
-     */
     protected List<TaxonRelationship> taxonGraphRelationsTo(Taxon taxon, Reference citation) {
         List<TaxonRelationship> relations = getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedTo);
         return relations;
@@ -458,7 +427,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(specificEpithet != null){
             hql += " AND n.specificEpithet = :specificEpithet";
         }
-        Query q = getSession().createQuery(hql);
+        Query<TaxonName> q = getSession().createQuery(hql, TaxonName.class);
 
         q.setParameter("rank", rank);
         q.setParameter("genusOrUninomial", genusOrUninomial);
@@ -475,7 +444,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(specificEpithet != null){
             hql += " AND n.specificEpithet = :specificEpithet";
         }
-        Query q = getSession().createQuery(hql);
+        Query<TaxonName> q = getSession().createQuery(hql, TaxonName.class);
 
         q.setParameter("rankOrderIndex", rank.getOrderIndex());
         q.setParameter("genusOrUninomial", genusOrUninomial);
@@ -483,18 +452,15 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
             q.setParameter("specificEpithet", specificEpithet);
         }
 
-        @SuppressWarnings("unchecked")
         List<TaxonName> result = q.list();
         return result;
     }
 
     /**
-     *
      * @param relatedTaxon required
      * @param type required
      * @param citation can be null
      * @param direction required
-     * @return
      */
     protected List<TaxonRelationship> getTaxonRelationships(Taxon relatedTaxon, TaxonRelationshipType type, Reference citation, Direction direction){
 
@@ -503,16 +469,13 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(citation != null){
             hql += " AND rel.source.citation = :citation";
         }
-        Query q = getSession().createQuery(hql);
+        Query<TaxonRelationship> q = getSession().createQuery(hql, TaxonRelationship.class);
         q.setParameter("relatedTaxon", relatedTaxon);
         q.setParameter("type", type);
         if(citation != null){
             q.setParameter("citation", citation);
         }
-        @SuppressWarnings("unchecked")
         List<TaxonRelationship> rels = q.list();
         return rels;
     }
-
-
 }

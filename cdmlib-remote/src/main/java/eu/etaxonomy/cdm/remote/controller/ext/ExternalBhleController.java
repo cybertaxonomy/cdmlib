@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +44,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = { "/ext/bhl-e/" })
 public class ExternalBhleController {
 
-    public static final Logger logger = Logger.getLogger(ExternalBhleController.class);
+    public static final Logger logger = LogManager.getLogger(ExternalBhleController.class);
 
     public static String baseUrl = "http://gso.gbv.de/sru/DB=2.1/";
 

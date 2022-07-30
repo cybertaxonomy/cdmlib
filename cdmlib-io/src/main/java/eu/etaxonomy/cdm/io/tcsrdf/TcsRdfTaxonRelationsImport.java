@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
     private static final long serialVersionUID = 7473543276142564219L;
 
-    private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsImport.class);
+    private static final Logger logger = LogManager.getLogger(TcsRdfTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
 

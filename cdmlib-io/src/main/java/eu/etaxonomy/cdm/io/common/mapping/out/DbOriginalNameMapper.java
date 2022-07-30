@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -22,11 +23,11 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
 public class DbOriginalNameMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbOriginalNameMapper.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private boolean isCache = false;
 
@@ -47,7 +48,7 @@ public class DbOriginalNameMapper extends DbSingleAttributeExportMapperBase<DbEx
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(OriginalSourceBase.class)){
 			OriginalSourceBase source = CdmBase.deproxy(cdmBase, OriginalSourceBase.class);
-			String nameString = source.getOriginalNameString();
+			String nameString = source.getOriginalInfo();
 			TaxonName name = null;
 			if (source.isInstanceOf(NamedSourceBase.class)){
 			    NamedSourceBase descSource = CdmBase.deproxy(source, NamedSourceBase.class);

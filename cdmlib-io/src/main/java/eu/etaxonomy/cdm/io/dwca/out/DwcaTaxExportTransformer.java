@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.out.ExportTransformerBase;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 public class DwcaTaxExportTransformer extends ExportTransformerBase {
 
-    private static final Logger logger = Logger.getLogger(DwcaTaxExportTransformer.class);
+    private static final Logger logger = LogManager.getLogger(DwcaTaxExportTransformer.class);
 
 	private static TermMapping nomStatusMapping;
 	private static TermMapping rankMapping;

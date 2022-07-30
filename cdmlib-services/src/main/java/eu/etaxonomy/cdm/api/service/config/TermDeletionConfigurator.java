@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 
@@ -24,7 +24,7 @@ public class TermDeletionConfigurator extends DeleteConfiguratorBase {
 
     private static final long serialVersionUID = 213038079829537335L;
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermDeletionConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(TermDeletionConfigurator.class);
 
 	private boolean deleteIncludedTerms = false;
 

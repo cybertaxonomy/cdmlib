@@ -23,8 +23,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.junit.Assert;
 import org.junit.Before;
@@ -85,7 +86,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
-    private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
+    private static Logger logger = LogManager.getLogger(TaxonServiceSearchTest.class);
 
     private static final int BENCHMARK_ROUNDS = 300;
 
@@ -95,12 +96,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private static final UUID CLASSIFICATION_ALT_UUID = UUID.fromString("d7c741e3-ae9e-4a7d-a566-9e3a7a0b51ce");
     private static final UUID ABIES_SUBALPINA_UUID = UUID.fromString("9fee273c-c819-4f1f-913a-cd910465df51");
     private static final UUID ABIES_LASIOCARPA_UUID = UUID.fromString("9ce1fecf-c1ad-4127-be01-85d5d9f847ce");
+    private static final UUID ABIES_KAWAKAMII_SEC_KOMAROV_UUID = UUID.fromString("e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1");
 
     private static final UUID ROOTNODE_CLASSIFICATION_5000 = UUID.fromString("a8266e45-091f-432f-87ae-c625e6aa9bbc");
 
     private static final UUID DESC_ABIES_BALSAMEA_UUID = UUID.fromString("900108d8-e6ce-495e-b32e-7aad3099135e");
     private static final UUID DESC_ABIES_ALBA_UUID = UUID.fromString("ec8bba03-d993-4c85-8472-18b14942464b");
-    private static final UUID DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = UUID.fromString("e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1");
 
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 
@@ -129,7 +130,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private Set<Class<? extends CdmBase>> typesToIndex = null;
 
     private NamedArea germany;
-    private NamedArea france;
     private NamedArea russia;
     private NamedArea canada;
 
@@ -141,7 +141,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         typesToIndex.add(TaxonRelationship.class);
 
         germany =  Country.GERMANY();
-        france = Country.FRANCE();
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
 
@@ -1033,7 +1032,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "kawakamii", (Classification)null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entities", 1, pager.getCount().intValue());
         //unpublished misapplied name
-        Taxon misapplied = (Taxon)taxonService.find(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
+        Taxon misapplied = (Taxon)taxonService.find(ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
         misapplied.setPublish(false);
         commitAndStartNewTransaction();
         pager = taxonService.findTaxaAndNamesByFullText(
@@ -1111,8 +1110,43 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Expecting 3 entity", 3, pager.getCount().intValue());
         Set<UUID> uuids = getTaxonUuidSet(pager);
         Assert.assertTrue("The real synonym should be contained", uuids.contains(ABIES_SUBALPINA_UUID));
-        Assert.assertTrue("The pro parte synonym should be contained",uuids.contains(ABIES_LASIOCARPA_UUID));
-        Assert.assertTrue("The misapplied name should be contained",uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("The pro parte synonym should be contained", uuids.contains(ABIES_LASIOCARPA_UUID));
+        Assert.assertTrue("The misapplied name should be contained", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+
+        //test with area filter
+        Set<NamedArea> area_germany = new HashSet<>();
+        area_germany.add(germany);
+        Set<PresenceAbsenceTerm> statusNative = new HashSet<>();
+        statusNative.add(PresenceAbsenceTerm.NATIVE());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", (Classification)null, subtree, area_germany, statusNative, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 3 entity", 3, pager.getCount().intValue());
+        uuids = getTaxonUuidSet(pager);
+        Assert.assertTrue("The real synonym should be contained", uuids.contains(ABIES_SUBALPINA_UUID));
+        Assert.assertTrue("The pro parte synonym should be contained", uuids.contains(ABIES_LASIOCARPA_UUID));
+        Assert.assertTrue("The misapplied name should be contained", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+
+        //test failing area filter (test for a distribution/status that does not exist in DB)
+        Set<PresenceAbsenceTerm> absent = new HashSet<>();
+        absent.add(PresenceAbsenceTerm.ABSENT());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", (Classification)null, subtree, area_germany, absent, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 0 entity", 0, pager.getCount().intValue());
+        uuids = getTaxonUuidSet(pager);
+
+        //test failing area filter (test for a distribution/status that is attached to taxon which has no synonym and not misapplied name)
+        Set<NamedArea> area_russia = new HashSet<>();
+        area_russia.add(russia);
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", (Classification)null, subtree, area_russia, absent, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting only the accepted taxon Abies alba to be contained", 1, pager.getCount().intValue());
+        uuids = getTaxonUuidSet(pager);
+        Assert.assertTrue("The accepted synonym should be contained", uuids.contains(ABIES_ALBA_UUID));
     }
 
     @Test
@@ -1199,28 +1233,33 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    @Ignore //ignore until #7487 is fixed
     public final void testFindTaxaAndNamesByFullText_AreaFilter_7487() throws IOException, LuceneParseException, LuceneMultiSearchException {
+
+        //refresh index
         refreshLuceneIndex();
+
+        //search parameters (subtree and distribution)
         TaxonNode subtree = null;
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
         a_germany_canada_russia.add(canada);
         a_germany_canada_russia.add(russia);
-
         Set<PresenceAbsenceTerm> present_native = new HashSet<>();
         present_native.add(PresenceAbsenceTerm.PRESENT());
         present_native.add(PresenceAbsenceTerm.NATIVE());
 
+        //search
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+
+        //assert
         Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
         Set<UUID> uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
         Assert.assertTrue("Pro parte synonym of balsamea should be in", uuids.contains(ABIES_LASIOCARPA_UUID));
 
-        //pro parte syn => partial syn
+        //change pro parte syn => partial syn
         Taxon t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
         Set<TaxonRelationship> relsTo = t_abies_balsamea.getProParteAndPartialSynonymRelations();
         Assert.assertEquals(1, relsTo.size());
@@ -1233,38 +1272,64 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
-//        Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
-//        uuids = this.getTaxonUuidSet(pager);
-//        Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
-//        Assert.assertTrue("Partial synonym of balsamea should be in", uuids.contains(ABIES_LASIOCARPA_UUID));
+        Assert.assertEquals("Synonyms with matching area filter", 2, pager.getCount().intValue());
+        uuids = this.getTaxonUuidSet(pager);
+        Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
+        Assert.assertTrue("Partial synonym of balsamea should be in", uuids.contains(ABIES_LASIOCARPA_UUID));
 
-        ///MISAPPLIED
+        //MISAPPLIED
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+
+        //test with ordinary MAN
         Assert.assertEquals("misappliedNames with matching area & status filter", 3, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
-        Assert.assertTrue("Misapplied name should be in", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Misapplied name should be in", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Abies balsamea should be in", uuids.contains(ABIES_BALSAMEA_UUID));
+        Assert.assertTrue("Abies alba should be in", uuids.contains(ABIES_ALBA_UUID));
 
+        //change MAN to proparte MAN
         t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
         relsTo = t_abies_balsamea.getMisappliedNameRelations();
         Assert.assertEquals(1, relsTo.size());
         taxonRelation = relsTo.iterator().next();
-        Assert.assertEquals(taxonRelation.getFromTaxon().getUuid(), DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
+        Assert.assertEquals(taxonRelation.getFromTaxon().getUuid(), ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
         taxonRelation.setType(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR());
         taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
-        //strange it works here before fixing #7487 already
+        //should still give the same result
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
-        Assert.assertEquals("misappliedNames with matching area & status filter", 3, pager.getCount().intValue());
+        Assert.assertEquals("misapplied names with matching area & status filter", 3, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
-        Assert.assertTrue("Pro parte misapplied name should be in", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Pro parte misapplied name should be in", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Abies balsamea should be in", uuids.contains(ABIES_BALSAMEA_UUID));
+        Assert.assertTrue("Abies alba should be in", uuids.contains(ABIES_ALBA_UUID));
+
+        //change proparte MAN to partial MAN
+        t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
+        relsTo = t_abies_balsamea.getMisappliedNameRelations();
+        Assert.assertEquals(1, relsTo.size());
+        taxonRelation = relsTo.iterator().next();
+        Assert.assertEquals(taxonRelation.getFromTaxon().getUuid(), ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
+        taxonRelation.setType(TaxonRelationshipType.PARTIAL_MISAPPLIED_NAME_FOR());
+        taxonService.saveOrUpdate(t_abies_balsamea);
+        commitAndStartNewTransaction(null);
+
+        //should still give the same result
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames, TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished),
+                "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("misapplied names with matching area & status filter", 3, pager.getCount().intValue());
+        uuids = this.getTaxonUuidSet(pager);
+        Assert.assertTrue("Partial misapplied name should be in", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Abies balsamea should be in", uuids.contains(ABIES_BALSAMEA_UUID));
+        Assert.assertTrue("Abies alba should be in", uuids.contains(ABIES_ALBA_UUID));
 
     }
-
 
     @Test
     @DataSet
@@ -1318,7 +1383,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("Accepted taxon with area should be in", uuids.contains(ABIES_BALSAMEA_UUID));
         Assert.assertTrue("Synonym of balsamea should be in", uuids.contains(ABIES_SUBALPINA_UUID));
         Assert.assertTrue("Pro parte synonym of balsamea should be in", uuids.contains(ABIES_LASIOCARPA_UUID));
-        Assert.assertFalse("Misapplied name should NOT be in", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertFalse("Misapplied name should NOT be in", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms, TaxaAndNamesSearchMode.includeUnpublished),
@@ -1357,7 +1422,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, subtree, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", 1, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
-        Assert.assertTrue("Misapplied name should  be in", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Misapplied name should  be in", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
 
 
         // 1. remove existing taxon relation
@@ -1375,7 +1440,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("misappliedNames with matching area & status filter, should match nothing now", 0, pager.getCount().intValue());
 
         // 2. now add abies_kawakamii_sensu_komarov as misapplied name for t_abies_alba and search for misapplications in Russia: ABSENT
-        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
+        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
         Taxon t_abies_alba = (Taxon)taxonService.find(ABIES_ALBA_UUID);
         t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
         taxonService.update(t_abies_kawakamii_sensu_komarov);
@@ -1386,45 +1451,65 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
         uuids = this.getTaxonUuidSet(pager);
-        Assert.assertTrue("Misapplied name should  be in", uuids.contains(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Assert.assertTrue("Misapplied name should  be in", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
 
     }
 
     @Test
     @DataSet
     //https://dev.e-taxonomy.eu/redmine/issues/5477
+    // for general testing of misapplied names see also #testFindTaxaAndNamesByFullText_synonymsAndMisapplied_7486
     public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
+        refreshLuceneIndex();
         TaxonNode subtree = null;
         Set<NamedArea> a_germany_canada_russia = new HashSet<>();
         a_germany_canada_russia.add(germany);
         a_germany_canada_russia.add(canada);
         a_germany_canada_russia.add(russia);
 
-
         Set<PresenceAbsenceTerm> absent = new HashSet<>();
         absent.add(PresenceAbsenceTerm.ABSENT());
 
-        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(DESC_ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
-        Taxon t_abies_alba = (Taxon)taxonService.find(ABIES_ALBA_UUID);
+        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(ABIES_KAWAKAMII_SEC_KOMAROV_UUID); //id=5006
+        Taxon t_abies_alba = (Taxon)taxonService.find(ABIES_ALBA_UUID); //id=5001
         t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
 
         /* Since the upgrade from hibernate search 4 to 5.5
          * triggering an update of t_abies_alba is no longer sufficient to also update the
          * document of t_abies_kawakamii_sensu_komarov in the lucene index.
-         * the last test in testFindTaxaAndNamesByFullText_AreaFilter() failed in this case.
-         * This situation is reproduced here:
+         * The last test in testFindTaxaAndNamesByFullText_AreaFilter() failed in this case.
+         * This situation is reproduced here.
+         * In record TaxonBase.id = 5006 there should be 2 fields "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id", one
+         * with value 5003 and the other one with value 5001. The later should be newly created.
+         * You find this in the index after running refreshLuceneIndex() (see below) but not after
+         * only calling commitAndStartNewTransaction().
          */
         taxonService.update(t_abies_alba);
 
         commitAndStartNewTransaction(null);
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
-                  EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                  "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
-        Assert.assertEquals("misappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
-    }
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
 
+        if (pager.getCount().intValue() == 1) {
+            Assert.assertEquals("MisappliedNames with matching area & status filter, should find one", 1, pager.getCount().intValue());
+            Assert.assertEquals("Misapplied name found should be taxon with id 5006", 5006, pager.getRecords().get(0).getEntity().getId());
+        }else {
+            //run the query again after refreshing the lucene index to test if it is
+            //only an index refresh problem or a general problem
+            refreshLuceneIndex();
+            pager = taxonService.findTaxaAndNamesByFullText(
+                    EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                    "Abies", null, subtree, a_germany_canada_russia, absent, null, true, null, null, null, null);
+            if (pager.getCount().intValue() == 1) {
+                Assert.fail("The index was only correctly updated after fully refreshing the lucene index");
+            } else {
+                Assert.fail("The query on the lucene index generally does not work anymore");
+            }
+        }
+    }
 
     /**
      * Regression test for #3119: fulltext search: Entity always null whatever search
@@ -1458,9 +1543,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, CdmBase.deproxy(pager.getRecords().get(0).getEntity()).getClass());
         Assert.assertEquals("Expecting Taxon ", ABIES_BALSAMEA_UUID, pager.getRecords().get(0).getEntity().getUuid());
-
     }
-
 
     @Test
     @DataSet
@@ -1575,9 +1658,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         logger.info("Benchmark result - [find taxon by CommonName via lucene] : " + duration + "ms (" + BENCHMARK_ROUNDS + " benchmark rounds )");
     }
 
-    /**
-     *
-     */
+
     private void refreshLuceneIndex() {
 
 //        commitAndStartNewTransaction(null);
@@ -1624,7 +1705,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         if(level == null){
             level = Level.DEBUG;
         }
-        if(logger.isEnabledFor(level)){
+        if(logger.isEnabled(level)){
             StringBuilder b = new StringBuilder();
             b.append("\n");
             int i = 0;

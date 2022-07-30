@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonNameDefaultCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(TaxonNameDefaultCacheStrategyTest.class);
 
     private TaxonNameDefaultCacheStrategy strategy;
 
@@ -472,7 +472,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         subSpeciesName.setOriginalSpelling(originalName);
 
-        List<TaggedText> taggedFullTitle = subSpeciesName.getCacheStrategy().getTaggedFullTitle(subSpeciesName);
+        List<TaggedText> taggedFullTitle = subSpeciesName.cacheStrategy().getTaggedFullTitle(subSpeciesName);
         Assert.assertEquals(7, taggedFullTitle.size());
         Assert.assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
         Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
@@ -484,7 +484,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         originalName.setInfraSpecificEpithet("peta");
         originalName.setNameCache(null, false);
-        taggedFullTitle = subSpeciesName.getCacheStrategy().getTaggedFullTitle(subSpeciesName);
+        taggedFullTitle = subSpeciesName.cacheStrategy().getTaggedFullTitle(subSpeciesName);
         Assert.assertEquals(9, taggedFullTitle.size());
         Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
         Assert.assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));

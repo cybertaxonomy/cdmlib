@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.specimen.SpecimenDataHolder;
 
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenDataHolder;
  */
 public class Abcd206DataHolder extends SpecimenDataHolder{
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(Abcd206DataHolder.class);
+    private static final Logger logger = LogManager.getLogger(Abcd206DataHolder.class);
 
     //per import
 

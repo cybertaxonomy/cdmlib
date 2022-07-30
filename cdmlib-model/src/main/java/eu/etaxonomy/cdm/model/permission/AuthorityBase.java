@@ -44,7 +44,7 @@ public abstract class AuthorityBase extends CdmBase{
 
  // ************* CONSTRUCTOR ********************/
 
-    protected AuthorityBase() {
-        super();
-    }
+    //for hibernate use only, *packet* private required by bytebuddy
+    @Deprecated
+    AuthorityBase() {}
 }

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,14 +79,14 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = { "kml" })
 public class KmlController extends BaseController<TaxonBase, ITaxonService> {
 
-    public static final Logger logger = Logger.getLogger(KmlController.class);
+    public static final Logger logger = LogManager.getLogger(KmlController.class);
 
     @Autowired
     private IEditGeoService geoservice;
 
     @Autowired
     private IOccurrenceService occurrenceService;
-    
+
     @Autowired
     private INameService nameService;
 
@@ -106,12 +106,12 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
     public void setService(ITaxonService service) {
         this.service = service;
     }
-    
+
     /**
      * TODO This controller method replaces the general {@link OptionsController} which has been disabled temporarily.
      * The {@link OptionsController} was causing problems in some situations by blocking POST requests to other controllers.
      * This mainly happened in the taxeditor project where the integration test could not be run due to the cdm remote instance which
-     * did not allow POST requests to the /remoting-public/user.service  
+     * did not allow POST requests to the /remoting-public/user.service
      */
     @RequestMapping(
             value = "/**",
@@ -120,7 +120,7 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
     public ResponseEntity options() {
         return new ResponseEntity(HttpStatus.OK);
     }
-    
+
     /**
      * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
      * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
@@ -145,16 +145,16 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
         logger.info("doGetSpecimensOrOccurencesKml() " + requestPathAndQuery(request));
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
-        
+
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.load(uuidList, null);
-        
+
         specimensOrObersvations = specimensOrObersvations.stream().filter(s -> s != null).collect(Collectors.toList());
 
         Kml kml = geoservice.occurrencesToKML(specimensOrObersvations, specimenOrObservationTypeColors);
-   
+
         return kml;
     }
-    
+
     /**
      * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
      * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
@@ -179,9 +179,9 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
         logger.info("doGetTypeDesignationsKml() " + requestPathAndQuery(request));
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
-        
+
         List<TypeDesignationBase<?>> typeDesignations = nameService.loadTypeDesignations(uuidList, Arrays.asList("typeSpecimen"));
-        
+
         List<SpecimenOrObservationBase> specimensOrObersvations = typeDesignations.stream()
         		.filter(td -> td != null && td instanceof SpecimenTypeDesignation)
         		.map(SpecimenTypeDesignation.class::cast)
@@ -190,10 +190,10 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
         		.collect(Collectors.toList());
 
         Kml kml = geoservice.occurrencesToKML(specimensOrObersvations, specimenOrObservationTypeColors);
-   
+
         return kml;
     }
-    
+
     /**
      * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
      * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
@@ -226,7 +226,7 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
 				relationshipInversUuids, maxDepth, response);
 
         Kml kml = geoservice.occurrencesToKML(specimensOrObersvations, specimenOrObservationTypeColors);
-   
+
         return kml;
     }
 
@@ -237,7 +237,7 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
 
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, (List<String>)null);
 
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(

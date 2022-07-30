@@ -25,7 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -62,7 +63,7 @@ public class DeterminationEvent extends EventBase {
 
 	private static final long serialVersionUID = 5065341354427569773L;
 
-	private static final Logger logger = Logger.getLogger(DeterminationEvent.class);
+	private static final Logger logger = LogManager.getLogger(DeterminationEvent.class);
 
 	@XmlElement(name = "IdentifiedUnit")
 	@XmlIDREF
@@ -129,7 +130,8 @@ public class DeterminationEvent extends EventBase {
 
 //*********************** CONSTRUCTOR ********************************/
 
-	protected DeterminationEvent() {
+    //for hibernate use only, *packet* private required by bytebuddy
+	DeterminationEvent() {
 		super();
 	}
 

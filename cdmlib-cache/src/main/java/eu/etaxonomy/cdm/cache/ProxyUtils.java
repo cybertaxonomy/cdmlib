@@ -27,6 +27,7 @@ import org.hibernate.collection.internal.PersistentSortedSet;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
+import org.hibernate.proxy.pojo.bytebuddy.SerializableProxy;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -142,7 +143,7 @@ public class ProxyUtils {
      * otherwise <code>o</code> is returned.
      */
     public static <T extends Object> T deproxyIfInitialized(T o) {
-        if(o != null && o instanceof HibernateProxy) {
+        if(o instanceof HibernateProxy) {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
             if(!hli.isUninitialized()) {
                 @SuppressWarnings("unchecked")
@@ -151,7 +152,7 @@ public class ProxyUtils {
             }
         }
 
-        if(o != null && o instanceof PersistentCollection) {
+        if(o instanceof PersistentCollection) {
             PersistentCollection pc = ((PersistentCollection)o);
             if(pc.wasInitialized()) {
                 @SuppressWarnings("unchecked")
@@ -159,6 +160,10 @@ public class ProxyUtils {
                 return result;
             }
         }
+        if (o instanceof SerializableProxy) {
+            throw new RuntimeException("Serializable bytebuddy proxy not yet handled");
+        }
+
         return o;
     }
 

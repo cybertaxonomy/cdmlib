@@ -23,7 +23,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.UUIDEditor;
 import org.springframework.context.ApplicationContext;
@@ -99,7 +99,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
 
 
-    private static final Logger logger = Logger.getLogger(ChecklistDemoController.class);
+    private static final Logger logger = LogManager.getLogger(ChecklistDemoController.class);
 
     /**
      * Helper method, which allows to convert strings directly into uuids.

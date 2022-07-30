@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
  *
  * @author Andreas Kohlbecker
  * @since Jun 4, 2012
- *
  */
 public class MultilanguageTextFieldBridge implements FieldBridge {
 
@@ -51,17 +50,13 @@ public class MultilanguageTextFieldBridge implements FieldBridge {
             Field allField = new TextField(name + ".ALL",
                     languageString.getText(),
                     luceneOptions.getStore());
-            allField.setBoost(luceneOptions.getBoost());
             document.add(allField);
 
             Field langField = new TextField(name + "." + languageString.getLanguage().getUuid(),
                     languageString.getText(),
                     luceneOptions.getStore()
                     );
-            allField.setBoost(luceneOptions.getBoost());
             document.add(langField);
         }
-
     }
-
 }

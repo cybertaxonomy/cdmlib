@@ -15,7 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -31,7 +32,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 13.02.2012
  */
 public class DbSimpleFilterMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
-	private static final Logger logger = Logger.getLogger(DbSimpleFilterMapper.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * Returns a filter mapper which filters out objects which have

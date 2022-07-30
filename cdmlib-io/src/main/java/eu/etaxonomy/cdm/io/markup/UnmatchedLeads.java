@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 public class UnmatchedLeads {
-	private static final Logger logger = Logger.getLogger(UnmatchedLeads.class);
+	private static final Logger logger = LogManager.getLogger(UnmatchedLeads.class);
 
 
 	private final Map<UnmatchedLeadsKey, Set<PolytomousKeyNode>> map = new HashMap<UnmatchedLeadsKey, Set<PolytomousKeyNode>>();

@@ -1,7 +1,14 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,11 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -36,7 +44,6 @@ import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
  * @author s.buers
  *
  */
-
 @Repository
 public class StatisticsDaoHibernateImpl
         extends DaoBase
@@ -48,8 +55,7 @@ public class StatisticsDaoHibernateImpl
 	private static final int REFERENCE_LINK_RECURSION_DEPTH = 1;
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = Logger
-			.getLogger(StatisticsDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(StatisticsDaoHibernateImpl.class);
 
 	@Override
 	public Long countDescriptiveSourceReferences() {
@@ -281,13 +287,6 @@ public class StatisticsDaoHibernateImpl
 //		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
-	 * countTaxaInClassification(java.lang.Class,
-	 * eu.etaxonomy.cdm.model.taxon.Classification)
-	 */
 	@Override
 	public Long countTaxaInClassification(Class<? extends TaxonBase> clazz,
 			Classification classification) {
@@ -313,12 +312,13 @@ public class StatisticsDaoHibernateImpl
 		else if (clazz.equals(Synonym.class)) {
 			// criteria= getSession().createCriteria(TaxonNode.class);
 
-			Query query = getSession().createQuery(
+			Query<Long> query = getSession().createQuery(
 					"SELECT COUNT(DISTINCT s.uuid) FROM TaxonNode tn "
 							+ " JOIN tn.taxon.synonyms as s "
-							+ " WHERE tn.classification=:classification ");
+							+ " WHERE tn.classification=:classification ",
+							Long.class);
 			query.setParameter("classification", classification);
-			return (Long) query.uniqueResult();
+			return query.uniqueResult();
 		}
 		// this should never happen:
 		return null;
@@ -376,12 +376,13 @@ public class StatisticsDaoHibernateImpl
 
 	@Override
     public Long countNomenclaturalReferences() {
-		Query query = getSession()
+		Query<Long> query = getSession()
 				.createQuery(
 						" SELECT COUNT(DISTINCT ns.citation) "
 						+ " FROM TaxonName n"
-						+ " JOIN n.nomenclaturalSource ns ");
-		return (Long) query.uniqueResult();
+						+ " JOIN n.nomenclaturalSource ns ",
+						Long.class);
+		return query.uniqueResult();
 	}
 
 	@Override
@@ -959,11 +960,11 @@ public class StatisticsDaoHibernateImpl
 		// MAYDO catch error if queries deliver wrong type
 		Set<UUID> ids = new HashSet<>();
 		for (String queryString : queryStrings) {
-		    System.out.println(queryString);
-		    Query query = getSession().createQuery(queryString);
+//		    System.out.println(queryString);
+		    Query<UUID> query = getSession().createQuery(queryString, UUID.class);
 
-			List<String> queryParameters = new ArrayList<>(
-					Arrays.asList(query.getNamedParameters()));
+		    Set<String> parameterNames = query.getParameterMetadata().getNamedParameterNames();
+			List<String> queryParameters = new ArrayList<>(parameterNames);
 
 			if (parameters != null) {
 				for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -974,9 +975,7 @@ public class StatisticsDaoHibernateImpl
 				}
 			}
 
-			@SuppressWarnings("unchecked")
             List<UUID> queryList = query.list();
-
 			ids.addAll(queryList);
 		}
 		return ids;
@@ -993,18 +992,18 @@ public class StatisticsDaoHibernateImpl
 			List<String> queryStrings, Map<String, Object> parameters) {
 
 		// MAYDO catch error if queries deliver wrong type
-		Query query;
+		Query<Long> query;
 		Long all = new Long(0);
 		Long result;
 
 
 		for (String queryString : queryStrings) {
 
-			query = getSession().createQuery(queryString);
+			query = getSession().createQuery(queryString, Long.class);
 
 			//add matching parameters to query
-			List<String> queryParameters = new ArrayList<>(
-					Arrays.asList(query.getNamedParameters()));
+			Set<String> parameterNames = query.getParameterMetadata().getNamedParameterNames();
+            List<String> queryParameters = new ArrayList<>(parameterNames);
 
 			if (parameters != null) {
 				for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -1014,7 +1013,7 @@ public class StatisticsDaoHibernateImpl
 					}
 				}
 			}
-			result=(Long)query.uniqueResult();
+			result=query.uniqueResult();
 			all += result;
 		}
 		return all;
@@ -1040,10 +1039,11 @@ public class StatisticsDaoHibernateImpl
 		// "where tn.uuid in (:parents) ";
 
 		// just for testing, but does not work anyway
-		String queryString = "select distinct chn.uuid from TaxonNode tn "
-				+ "join tn.childNodes as chn " + "where tn.uuid = :parent ";
+		String queryString = "SELECT DISTINCT chn.uuid FROM TaxonNode tn "
+				+ " JOIN tn.childNodes as chn "
+		        + " WHERE tn.uuid = :parent ";
 
-		Query query = getSession().createQuery(queryString);
+		Query<UUID> query = getSession().createQuery(queryString, UUID.class);
 
 		parents.add(rootUuid);
 		uuids.add(rootUuid);

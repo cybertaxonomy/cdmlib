@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate;
 
 import java.sql.PreparedStatement;
@@ -14,12 +13,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.spi.shared.AbstractUserType;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
@@ -34,7 +33,7 @@ import org.joda.time.Partial;
 public class PartialUserType extends AbstractUserType implements UserType /* extends AbstractSingleColumnUserType<Partial, String, ColumnMapper<Partial,String>> implements UserType */ {
 	private static final long serialVersionUID = -5323104403077597869L;
 
-	private static final Logger logger = Logger.getLogger(PartialUserType.class);
+	private static final Logger logger = LogManager.getLogger(PartialUserType.class);
 
 	//not required
 	public final static PartialUserType INSTANCE = new PartialUserType();
@@ -45,7 +44,7 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 
 
 	@Override
-	public Partial nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+	public Partial nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		String partial = (String)StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 		Partial result = new Partial();
@@ -88,7 +87,7 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 
     @Override
 	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index,
-			SessionImplementor session) throws HibernateException, SQLException {
+	        SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		if (isEmptyOrNull((Partial)value)){
 			StandardBasicTypes.STRING.nullSafeSet(preparedStatement, null, index, session);
 		}else {
@@ -155,9 +154,7 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 	}
 
 	@Override
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		return Partial.class;
 	}
-
 }
-

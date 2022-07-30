@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 public class CsvNameExport extends CsvNameExportBase {
     private static final long serialVersionUID = 7289805663701807425L;
 
-    private static final Logger logger = Logger.getLogger(CsvNameExport.class);
+    private static final Logger logger = LogManager.getLogger(CsvNameExport.class);
 
     @Autowired
     private IEditGeoService geoService;

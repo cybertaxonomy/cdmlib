@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
 public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGrantedAuthorityConverter {
 
     private static final long serialVersionUID = -41894743719582595L;
-    public static final Logger logger = Logger.getLogger(CdmAuthority.class);
+    public static final Logger logger = LogManager.getLogger(CdmAuthority.class);
 
     private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<>();
 

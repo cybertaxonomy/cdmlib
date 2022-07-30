@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  */
 public class TermMapping {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(TermMapping.class);
+	private static Logger logger = LogManager.getLogger(TermMapping.class);
 
 	private static final String COMMENT = "//";
 

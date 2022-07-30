@@ -21,8 +21,9 @@ import java.util.regex.Pattern;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
 import eu.etaxonomy.cdm.api.security.IAbstractRequestTokenStore;
 import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
 import eu.etaxonomy.cdm.api.service.IUserService;
+import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 
@@ -48,7 +50,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
 
     private static final double maxRequestRate = 4.0;
 
-    Logger logger = Logger.getLogger(AccountRegistrationServiceTest.class);
+    Logger logger = LogManager.getLogger(AccountRegistrationServiceTest.class);
 
     private static final int rateLimiterTimeout = 200;
     private static final String userName = "pwdResetTestUser";
@@ -94,8 +96,8 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
 
     @Before
     public void accountRegistrationService() throws InterruptedException {
-        logger.setLevel(Level.DEBUG);
-        Logger.getLogger(PasswordResetRequest.class).setLevel(Level.TRACE);
+        LogUtils.setLevel(logger, Level.DEBUG);
+        LogUtils.setLevel(PasswordResetRequest.class, Level.TRACE);
         // speed up testing
         accountRegistrationService.setRateLimiterTimeout(Duration.ofMillis(rateLimiterTimeout));
         accountRegistrationService.setRate(maxRequestRate);

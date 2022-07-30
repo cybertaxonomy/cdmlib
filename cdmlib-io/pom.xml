@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.31.0</version>
+    <version>5.32.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -63,11 +63,21 @@
     </dependency>
     <dependency>
  		<groupId>org.apache.jena</groupId>
- 		<artifactId>jena-tdb</artifactId>	
+ 		<artifactId>jena-tdb</artifactId>
+ 		<exclusions>
+ 		  <exclusion>
+ 		    <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+ 		  </exclusion>
+ 		  <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+ 		</exclusions>
 	</dependency>
     <dependency>
-        <groupId>org.docx4j</groupId>
-        <artifactId>docx4j</artifactId>
+      <groupId>org.docx4j</groupId>
+      <artifactId>docx4j-JAXB-Internal</artifactId>
     </dependency>
     <dependency>
       <groupId>xml-resolver</groupId>

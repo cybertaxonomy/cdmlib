@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.stream;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  */
 public class StreamItem implements IConverterInput<StreamItem> {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(StreamItem.class);
+	private static Logger logger = LogManager.getLogger(StreamItem.class);
 
 	public TermUri term;
 	public Map<String, String> map;

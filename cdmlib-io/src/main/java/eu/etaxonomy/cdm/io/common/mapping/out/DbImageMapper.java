@@ -12,7 +12,8 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -33,7 +34,7 @@ public class DbImageMapper
             implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImageMapper.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	public static DbImageMapper NewInstance(String dbAttributeString){
 		return new DbImageMapper(dbAttributeString, null);

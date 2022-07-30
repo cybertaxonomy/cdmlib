@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class DwcaTaxonExport extends DwcaDataExportBase {
     private static final long serialVersionUID = -3770976064909193441L;
 
-    private static final Logger logger = Logger.getLogger(DwcaTaxonExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaTaxonExport.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	protected static final String fileName = "coreTax.txt";

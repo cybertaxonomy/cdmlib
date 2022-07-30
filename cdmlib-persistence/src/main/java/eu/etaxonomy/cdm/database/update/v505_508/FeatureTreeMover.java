@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
 public class FeatureTreeMover extends SchemaUpdaterStepBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(FeatureTreeMover.class);
+    private static final Logger logger = LogManager.getLogger(FeatureTreeMover.class);
 
     private static final String stepName = "Move FeatureTree to TermCollection";
 

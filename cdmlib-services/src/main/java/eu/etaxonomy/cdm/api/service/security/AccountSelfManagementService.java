@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.text.StringSubstitutor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
@@ -24,7 +24,6 @@ import com.google.common.util.concurrent.RateLimiter;
 
 import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
 import eu.etaxonomy.cdm.api.config.SendEmailConfigurer;
-import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 
@@ -34,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
  */
 public abstract class AccountSelfManagementService implements IRateLimitedService {
 
-    protected static Logger logger = Logger.getLogger(PasswordResetRequest.class);
+    private static Logger logger = LogManager.getLogger(AccountSelfManagementService.class);
 
     public static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
 
@@ -92,7 +91,7 @@ public abstract class AccountSelfManagementService implements IRateLimitedServic
         StringSubstitutor substitutor = new StringSubstitutor(additionalValuesMap);
 
         // TODO use MimeMessages for better email layout?
-        // TODO user Thymeleaf instead for HTML support?
+        // TODO use Thymeleaf instead for HTML support?
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setFrom(from);

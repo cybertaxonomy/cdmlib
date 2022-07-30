@@ -17,7 +17,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(AgentServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger(AgentServiceImplTest.class);
 
     private static final UUID UUID_EHRENBERG = UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446");
 

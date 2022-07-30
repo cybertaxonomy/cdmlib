@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.jaxb;
 
 import eu.etaxonomy.cdm.common.URI;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportState, URI> implements IImportConfigurator {
 
-	private static final Logger logger = Logger.getLogger(JaxbImportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(JaxbImportConfigurator.class);
 		
 	private int maxRows = 0;
 	

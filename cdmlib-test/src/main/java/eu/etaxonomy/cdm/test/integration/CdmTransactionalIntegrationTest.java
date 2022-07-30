@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.test.integration;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -23,18 +23,16 @@ import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-
 /**
  * Abstract base class for integration testing a spring / hibernate application using
  * the unitils testing framework and dbunit.
  *
  * This base class extends the {@link CdmItegrationTest} by transactions management features.
- *
  */
 @Transactional(TransactionMode.DISABLED) // NOTE: we are handling transaction by ourself in this class, thus we prevent unitils from creating transactions
 public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest {
 
-    protected static final Logger logger = Logger.getLogger(CdmTransactionalIntegrationTest.class);
+    protected static final Logger logger = LogManager.getLogger();
 
     /**
      * The transaction manager to use
@@ -67,7 +65,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
     /**
      * TransactionStatus for this test. Typical subclasses won't need to use it.
      */
-    private TransactionStatus	transactionStatus;
+    private TransactionStatus transactionStatus;
 
     /**
      * Get the <em>default rollback</em> flag for this test.
@@ -328,7 +326,6 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
         }
     }
 
-
     /**
      * Start a new transaction. Only call this method if
      * {@link #endTransaction()} has been called. {@link #setComplete()} can be
@@ -370,7 +367,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      */
     protected void commitAndStartNewTransaction(final String[] tableNames) {
         commit();
-        if(tableNames != null && logger.isEnabledFor(Level.DEBUG)){
+        if(tableNames != null && logger.isDebugEnabled()){
             printDataSet(System.out, tableNames);
 //          careful, the following will overwrite existing files:
 //          writeDbUnitDataSetFile(tableNames);
@@ -385,5 +382,4 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
         setComplete();
         endTransaction();
     }
-
 }

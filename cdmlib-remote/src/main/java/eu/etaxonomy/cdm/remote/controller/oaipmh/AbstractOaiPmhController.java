@@ -103,7 +103,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
      * @return
      */
     protected List<String> getPropertyPaths() {
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
      * @param modelAndView
      */
     protected void addSets(ModelAndView modelAndView) {
-        modelAndView.addObject("sets",new HashSet<SetSpec>());
+        modelAndView.addObject("sets", new HashSet<SetSpec>());
     }
 
     @Autowired
@@ -553,6 +553,4 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     public ModelAndView handleIdDoesNotExist(Exception ex, HttpServletRequest request) {
         return doException(ex,request,ErrorCode.ID_DOES_NOT_EXIST);
     }
-
-
 }

@@ -1,12 +1,11 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.print;
 
 import java.io.File;
@@ -17,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -29,15 +29,13 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 /**
  * This class holds the complete configuration for the print publishing process.
  * All aspects of the process are defined here.
- * 
+ *
  * @author n.hoffmann
  * @since Aug 3, 2010
- * @version 1.0
  */
 public class PublishConfigurator implements Serializable {
 
-	private static final Logger logger = Logger
-			.getLogger(PublishConfigurator.class);
+	private static final Logger logger = LogManager.getLogger(PublishConfigurator.class);
 
 	private static final long serialVersionUID = 4896190792717383839L;
 
@@ -50,7 +48,7 @@ public class PublishConfigurator implements Serializable {
 	private boolean doSynonymy = true;
 
 	private boolean doDescriptions = true;
-	
+
 	private boolean doPolytomousKey = true;
 
 	private UUID featureTreeUuid;
@@ -75,7 +73,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * Creates a new instance connected to the given application controller.
-	 * 
+	 *
 	 * @param applicationConfiguration
 	 * @return
 	 */
@@ -91,7 +89,7 @@ public class PublishConfigurator implements Serializable {
 	/**
 	 * Creates a new instance, ready to be connected to a CDM Community Stores
 	 * access point.
-	 * 
+	 *
 	 * @return
 	 */
 	public static PublishConfigurator NewRemoteInstance() {
@@ -104,7 +102,7 @@ public class PublishConfigurator implements Serializable {
 	/**
 	 * Returns the CDM Community Stores access point connected to this
 	 * configuration.
-	 * 
+	 *
 	 * @return the access points url or null if this configurator is configured
 	 *         to be local.
 	 */
@@ -134,7 +132,7 @@ public class PublishConfigurator implements Serializable {
 	/**
 	 * Returns a list of taxon node elements that should be processed by the
 	 * print publisher.
-	 * 
+	 *
 	 * @return a list of elements
 	 */
 	public List<Element> getSelectedTaxonNodeElements() {
@@ -144,7 +142,7 @@ public class PublishConfigurator implements Serializable {
 	/**
 	 * Set the list of taxon node elements that should be processed by the print
 	 * publisher.
-	 * 
+	 *
 	 * @see {@link #getSelectedTaxonNodeElements()}
 	 * @param selectedTaxonNodeElements
 	 */
@@ -156,7 +154,7 @@ public class PublishConfigurator implements Serializable {
 	/**
 	 * Add a taxon node element to list of taxon nodes that will be processed by
 	 * the print publisher.
-	 * 
+	 *
 	 * @see {@link #getSelectedTaxonNodeElements()}
 	 * @param selectedTaxonNodeElement
 	 */
@@ -166,7 +164,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * Whether to export descriptions.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isDoDescriptions() {
@@ -183,7 +181,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * Whether to export images
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isDoImages() {
@@ -200,7 +198,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * The folder, the produced output will be written to.
-	 * 
+	 *
 	 * @return the exportFile
 	 */
 	public File getExportFolder() {
@@ -227,7 +225,7 @@ public class PublishConfigurator implements Serializable {
 	/**
 	 * Returns a list of output modules. The print publisher will export into
 	 * the formats defined by these output modules
-	 * 
+	 *
 	 * @see {@link IPublishOutputModule} and implementations thereof
 	 * @return the outputModules
 	 */
@@ -253,7 +251,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * Adds an output modules to this configurators list of output modules.
-	 * 
+	 *
 	 * @see {@link IPublishOutputModule} and implementations thereof
 	 * @param module
 	 */
@@ -263,7 +261,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * Whether this configurator is connected to a remote CDM Community Store
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isRemote() {
@@ -279,7 +277,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * Whether this configurator is connected to a local application controller.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isLocal() {
@@ -297,7 +295,7 @@ public class PublishConfigurator implements Serializable {
 	 * Returns a {@link RemoteXMLEntityFactory} if <code>this</code> is a remote
 	 * instance or a {@link LocalXMLEntityFactory} if <code>this</code> is a
 	 * local instance
-	 * 
+	 *
 	 * @return an {@link IXMLEntityFactory}
 	 */
 	public IXMLEntityFactory getFactory() {
@@ -308,7 +306,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * FIXME this is a dummy implementation
-	 * 
+	 *
 	 * @return
 	 */
 	public int calculateNumberOfNodes() {
@@ -321,7 +319,7 @@ public class PublishConfigurator implements Serializable {
 	 * Whether taxonomically included taxa for the
 	 * {@linkplain #getSelectedTaxonNodeElements() selected taxon nodes} should
 	 * be exported recursively.
-	 * 
+	 *
 	 * @return <code>true</code> if this is desired
 	 */
 	public boolean isDoPublishEntireBranches() {
@@ -338,7 +336,7 @@ public class PublishConfigurator implements Serializable {
 
 	/**
 	 * Whether the synonymy should be exported.
-	 * 
+	 *
 	 * @return <code>true</code> if this is desired
 	 */
 	public boolean isDoSynonymy() {
@@ -356,7 +354,7 @@ public class PublishConfigurator implements Serializable {
 	/**
 	 * The {@linkplain CdmApplicationController application controller}
 	 * associated with this instance
-	 * 
+	 *
 	 * @return the {@link CdmApplicationController} or null if <code>this</code>
 	 *         is a {@linkplain #isRemote() remote} instance
 	 */
@@ -376,7 +374,7 @@ public class PublishConfigurator implements Serializable {
 	/**
 	 * The feature tree configures which features and in which order and nesting
 	 * will be exported by the application
-	 * 
+	 *
 	 * @return the featureTrees uuid
 	 */
 	public UUID getFeatureTreeUuid() {

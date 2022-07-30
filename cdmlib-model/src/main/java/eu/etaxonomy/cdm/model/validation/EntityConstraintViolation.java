@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 public class EntityConstraintViolation extends CdmBase {
     private static final long serialVersionUID = 6685798691716413950L;
 
-    private static final Logger logger = Logger.getLogger(EntityConstraintViolation.class);
+    private static final Logger logger = LogManager.getLogger(EntityConstraintViolation.class);
 
     public static EntityConstraintViolation newInstance() {
         return new EntityConstraintViolation();

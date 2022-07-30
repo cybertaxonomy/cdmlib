@@ -16,7 +16,8 @@ import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.quantity.Length;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -48,21 +49,21 @@ import tec.uom.se.quantity.Quantities;
 
 /**
  * See :
- * 
+ *
  * https://gis.stackexchange.com/questions/311272/create-dynamic-circle-polygon-from-specific-lat-long-using-geotools
  * https://gis.stackexchange.com/questions/283183/using-geometricshapefactory-to-create-circle-with-radius-in-miles
- * 
+ *
  * https://stackoverflow.com/questions/36481651/how-do-i-create-a-circle-with-latitude-longitude-and-radius-with-geotools#36528805
- * 
- * 
+ *
+ *
  * Another great library for creating shapes is https://github.com/locationtech/spatial4j
- * 
+ *
  * @author Andreas Kohlbecker
  * @since Apr 21, 2020
  */
 public class GeometryBuilder {
 
-	private final static Logger logger = Logger.getLogger(GeometryBuilder.class);
+	private final static Logger logger = LogManager.getLogger(GeometryBuilder.class);
 
 	public enum CircleMethod {
 		circle, simpleCircleSmall, simpleCircle, reprojectedCircle;
@@ -71,10 +72,10 @@ public class GeometryBuilder {
 	/**
 	 * Fails with javax.measure.IncommensurableException: m is not compatible with
 	 * deg
-	 * 
+	 *
 	 * see
 	 * https://gis.stackexchange.com/questions/283183/using-geometricshapefactory-to-create-circle-with-radius-in-miles
-	 * 
+	 *
 	 * @param radius
 	 * @param latitude
 	 * @param longitude
@@ -104,7 +105,7 @@ public class GeometryBuilder {
 	/**
 	 * Only suitable for small radius (> 1000 m) as the circles are heavily
 	 * distorted otherwise.
-	 * 
+	 *
 	 * @param radius
 	 * @param latitude
 	 * @param longitude
@@ -128,7 +129,7 @@ public class GeometryBuilder {
 	/**
 	 * Creates perfect circles which are looking good but might be projected
 	 * incorrectly for the resulting map
-	 * 
+	 *
 	 * @param distance
 	 * @param latitude
 	 * @param longitude
@@ -159,14 +160,14 @@ public class GeometryBuilder {
 
 	/**
 	 * This Method should produces the best circles.
-	 * 
+	 *
 	 * The code is based on an example published by Ian Turton on stackoverflow:
-	 * 
+	 *
 	 * https://stackoverflow.com/questions/36481651/how-do-i-create-a-circle-with-latitude-longitude-and-radius-with-geotools#36528805
-	 * 
+	 *
 	 * see https://gist.github.com/ianturton/973563fe5004985ba35a6e2247f7d823 and
 	 * https://gitlab.com/snippets/17558
-	 * 
+	 *
 	 * @param feature
 	 * @param distance
 	 * @return

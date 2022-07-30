@@ -18,7 +18,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.ResourceUtils;
@@ -51,7 +51,7 @@ public class SDDCdmExporter
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
     private static final long serialVersionUID = 6294052197732385842L;
-    private static final Logger logger = Logger.getLogger(SDDCdmExporter.class);
+    private static final Logger logger = LogManager.getLogger(SDDCdmExporter.class);
 	private SDDDocumentBuilder sddDocumentBuilder = null;
 
 	/**

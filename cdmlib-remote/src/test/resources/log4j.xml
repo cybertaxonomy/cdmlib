@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+#
+# If you are having problems with logging you may debug Log4J initialization,
+# start the application with a system property log4j.configDebug set to "true".
+# E.g.:
+#
+#     java -Dlog4j.configDebug=true
+#
+-->
+<Configuration>
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d %p [%c] - %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
+      <AppenderRef ref="STDOUT"/>
+      <!-- <AppenderRef ref="FILE"/> -->
+    </Root>    
+
+    <!--  NOTE by AM: probably most of these filters are not needed as they are only relevant
+                      for running in CDM Server, but logging is defined there -->
+    <Logger name="eu.etaxonomy.cdm" level="info"/>
+    <!-- ### avoid vast amount of "getCitation not yet implemented" & "getProblems not yet implemented" messages -->
+    <Logger name="eu.etaxonomy.cdm.model.name.TaxonName" level="error"/>
+    <Logger name="eu.etaxonomy.cdm.persistence.dao.initializer" level="error"/>
+    <Logger name="eu.etaxonomy.cdm.database.UpdatableRoutingDataSource" level="info"/>
+    <Logger name="eu.etaxonomy.cdm.cache" level="warn"/>
+    <Logger name="eu.etaxonomy.cdm.remote.controller" level="info"/>
+    <Logger name="eu.etaxonomy.cdm.remote.controller.interceptor" level="warn"/>
+
+    <!-- Logger name="eu.etaxonomy.cdm.remote.json.processor.AbstractCdmBeanProcessor" level="debug"/ -->
+    <!-- ### json serialization -->
+    <!-- Logger name="eu.etaxonomy.cdm.remote.json.processor.bean" level="debug"/ -->
+
+    <!-- ### prevent CdmExceptionResolver from logging errors ###-->
+    <Logger name="eu.etaxonomy.cdm.remote.exception.CdmExceptionResolver" level="error"/>
+
+    <!-- ### springframework ### -->
+    <Logger name="org.springframework" level="warn"/>
+    <!-- Logger name="org.springframework.web.servlet.mvc.support" level="debug"/ -->
+    <!-- Logger name="org.springframework.web.servlet.DispatcherServlet" level="trace"/ -->
+    <!-- Logger name="org.springframework.web.servlet.view" level="trace"/ -->
+    <Logger name="org.springframework.web.servlet.view" level="warn"/>
+    <Logger name="org.springframework.web.servlet.mvc.annotation" level="warn"/>
+
+    <!-- ### json-lib ###-->
+    <Logger name="net.sf.json.JSONObject" level="error"/>
+
+    <!-- ### hibernate ###-->
+    <Logger name="org.hibernate" level="warn"/>
+    <Logger name="org.hibernate.search" level="error"/>
+    <Logger name="org.hibernate.orm.deprecation" level="error"/>
+
+    <!-- ### log just the SQL (DEBUG to see) ### -->
+    <Logger name="org.hibernate.SQL" level="warn"/>
+    <Logger name="org.hibernate.engine.query" level="error"/>
+    <!-- ### log JDBC bind parameters (TRACE to see) ### -->
+    <Logger name="org.hibernate.type" level="warn"/>
+    <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="error"/>
+    <!-- ### This overcomes the proxy narrow log of hibernate -->
+    <Logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>
+
+    <!-- ### log transaction binding ### -->
+    <!-- Logger name="org.hibernate.transaction" level="debug"/ -->
+    <!-- Logger name="org.springframework.transaction.support.TransactionSynchronizationManager" level="trace"/ -->
+    
+    <Logger name="com.mchange.v2.c3p0" level="warn"/>
+    
+  </Loggers>
+</Configuration>

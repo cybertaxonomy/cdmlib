@@ -34,7 +34,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -44,6 +45,7 @@ import org.springframework.util.Assert;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -55,15 +57,15 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * @author m.doering
  * @since 08-Nov-2007 13:06:22
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OriginalSource", propOrder = {
     "type",
 	"idInSource",
     "idNamespace",
-    "originalNameString",
     "citation",
     "citationMicroReference",
+    "accessed",
+    "originalInfo",
     "cdmSource",
     "links"
 })
@@ -78,7 +80,7 @@ public abstract class OriginalSourceBase
 
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);
+	private static final Logger logger = LogManager.getLogger(OriginalSourceBase.class);
 
 	/**
 	 * The {@link OriginalSourceType type} of this source. According to PROV the type has to be thought as
@@ -113,8 +115,13 @@ public abstract class OriginalSourceBase
     @XmlElement(name = "CitationMicroReference")
     private String citationMicroReference;
 
-    @XmlElement(name = "OriginalNameString")
-    private String originalNameString;
+    //#10057
+    @XmlElement(name = "Accessed", type= String.class)
+    private TimePeriod accessed = TimePeriod.NewInstance();
+
+    //#10097
+    @XmlElement(name = "OriginalInfo")
+    private String originalInfo;
 
     @XmlElement(name = "CdmSource")
     @XmlIDREF
@@ -132,13 +139,10 @@ public abstract class OriginalSourceBase
 
 //***************** CONSTRUCTOR ***********************/
 
-	//for hibernate use only
-	protected OriginalSourceBase() {
-	}
+    //for hibernate use only, protected required by subclasses
+    @Deprecated
+	protected OriginalSourceBase(){}
 
-	/**
-	 * Constructor
-	 */
 	protected OriginalSourceBase(OriginalSourceType type){
 		if (type == null){
 			throw new IllegalArgumentException("OriginalSourceType must not be null");
@@ -194,11 +198,18 @@ public abstract class OriginalSourceBase
         this.citationMicroReference = citationMicroReference;
     }
 
-    public String getOriginalNameString(){
-        return this.originalNameString;
+    public TimePeriod getAccessed() {
+        return accessed;
     }
-    public void setOriginalNameString(String originalNameString){
-        this.originalNameString = originalNameString;
+    public void setAccessed(TimePeriod accessed) {
+        this.accessed = accessed;
+    }
+
+    public String getOriginalInfo(){
+        return this.originalInfo;
+    }
+    public void setOriginalInfo(String originalInfo){
+        this.originalInfo = originalInfo;
     }
 
 	@Override
@@ -269,8 +280,12 @@ public abstract class OriginalSourceBase
 		    result.setCdmSource(this.cdmSource.getTarget());
 		}
 
+        if (this.accessed != null) {
+            result.accessed = this.accessed.clone();
+        }
+
 		//no changes to: type, idInSource, idNamespace,
-		//   citation, citationMicroReference, originalNameString
+		//   citation, citationMicroReference, originalInfo
 		return result;
 	}
 
@@ -295,15 +310,17 @@ public abstract class OriginalSourceBase
 	        && (excludeType || this.type == null)
 	        && this.getCitation() == null
 	        && isBlank(this.getCitationMicroReference())
-	        && isBlank(this.getOriginalNameString())
+	        && isBlank(this.getOriginalInfo())
 	        && isBlank(this.getIdInSource())
 	        && isBlank(this.getIdNamespace())
+	        && (this.accessed == null || this.accessed.isEmpty())
 	        && this.links.isEmpty()
 	        && this.cdmSource == null
            ;
 	}
 
 //************************ toString ***************************************/
+
 	@Override
 	public String toString(){
 		if (isNotBlank(idInSource) || isNotBlank(idNamespace) ){
@@ -334,17 +351,17 @@ public abstract class OriginalSourceBase
 
         if(thisCitationId != otherCitationId
                 || !StringUtils.equals(this.getCitationMicroReference(), other.getCitationMicroReference())
-                || !StringUtils.equals(this.getOriginalNameString(), other.getOriginalNameString())
+                || !StringUtils.equals(this.getOriginalInfo(), other.getOriginalInfo())
                         ){
             return false;
         }
 
-        OriginalSourceBase theOther = other;
-        if(!StringUtils.equals(this.getIdInSource(), theOther.getIdInSource())
-                || !CdmUtils.nullSafeEqual(this.getIdNamespace(), theOther.getIdNamespace())
-                || !CdmUtils.nullSafeEqual(this.getType(), theOther.getType())
-                || !CdmUtils.nullSafeEqual(this.getCdmSource(), theOther.getCdmSource())
-                || !CdmUtils.nullSafeEqual(this.getLinks(), theOther.getLinks())) {
+        if(!StringUtils.equals(this.getIdInSource(), other.getIdInSource())
+                || !CdmUtils.nullSafeEqual(this.getIdNamespace(), other.getIdNamespace())
+                || !CdmUtils.nullSafeEqual(this.getType(), other.getType())
+                || !TimePeriod.equalsNullAndEmptySafe(accessed, other.getAccessed())
+                || !CdmUtils.nullSafeEqual(this.getCdmSource(), other.getCdmSource())
+                || !CdmUtils.nullSafeEqual(this.getLinks(), other.getLinks())) {
             return false;
         }
 

@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @version 1.0
  */
 public class IEndnotePlaceholderClass implements ITcsXmlPlaceholderClass {
-	private static final Logger logger = Logger.getLogger(DefaultTcsXmlPlaceholders.class);
+	private static final Logger logger = LogManager.getLogger(DefaultTcsXmlPlaceholders.class);
 	
 	/* (non-Javadoc)
 	 * @see tcsxml.ITcsXmlPlaceholderClass#makeMetaDataDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element)

@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -54,7 +54,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
      *
      */
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(GbifImport.class);
+    private static final Logger logger = LogManager.getLogger(GbifImport.class);
 
     @Override
     protected boolean doCheck(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state) {

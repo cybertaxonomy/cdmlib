@@ -238,8 +238,8 @@
         <entry key="java.util.LinkedHashMap">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationSet">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.TypeDesignationSetValueProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.common.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
@@ -535,8 +535,8 @@
         <entry key="java.util.LinkedHashMap">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationSet">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.TypeDesignationSetValueProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.common.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>

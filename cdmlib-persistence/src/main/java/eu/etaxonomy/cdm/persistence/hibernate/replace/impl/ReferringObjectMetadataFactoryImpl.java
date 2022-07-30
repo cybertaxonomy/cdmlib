@@ -14,7 +14,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.OneToMany;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 
 import org.hibernate.MappingException;
 import org.hibernate.SessionFactory;
@@ -91,27 +96,36 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 				}
 			}
 
-            Map<String,ClassMetadata> allClassMetadata = sessionFactory.getAllClassMetadata();
-            Set<ReferringObjectMetadata> referringObjectMetadata = new HashSet<>();
+			Set<ReferringObjectMetadata> referringObjectMetadata = new HashSet<>();
 
-            for(String entityName : allClassMetadata.keySet()) {
+			EntityManagerFactory entityManagerFactory = sessionFactory;
+			Metamodel metamodel = entityManagerFactory.getMetamodel();
+            for(EntityType<?> entityType : metamodel.getEntities()) {
+                String entityName = entityType.getName();
             	if(!entityName.endsWith("_AUD")) {
             		try {
 //            			System.out.println(entityName);
-						Class<?> entityClass = Class.forName(entityName);
-						ClassMetadata classMetadata = allClassMetadata.get(entityName);
+						Class<?> entityClass = entityType.getJavaType();
+//						ClassMetadata classMetadata = allClassMetadata.get(entityName);
 
-						for(String propertyName : classMetadata.getPropertyNames()) {
-							if(bidirectionalRelationships.containsKey(entityClass) && bidirectionalRelationships.get(entityClass).contains(propertyName)) {
+                        for(Attribute<?,?> attribute : entityType.getAttributes()) {
+                            String propertyName = attribute.getName();
+                            if(bidirectionalRelationships.containsKey(entityClass) && bidirectionalRelationships.get(entityClass).contains(propertyName)) {
 //                              System.out.println("Excluding " + entityClass.getName() + " " + propertyName);
 							} else {
-								Type propertyType = classMetadata.getPropertyType(propertyName);
-								if (propertyType.isAssociationType()){
+							    PersistentAttributeType type = attribute.getPersistentAttributeType();
+
+//							    Type propertyType = classMetadata.getPropertyType(propertyName);
+
+							    Type propertyType = getPropertyType();
+//							    if (propertyType.isAssociationType()){
+	                            if (attribute.isAssociation()){
 //									System.out.println(entityName+"."+propertyName);
 									AssociationType associationType = (AssociationType)propertyType;
 
 									if(!propertyType.isAnyType()) {
 										try {
+
 											String associatedEntityName = associationType.getAssociatedEntityName((SessionFactoryImpl) sessionFactory.getCurrentSession().getSessionFactory());
 											Class<?> associatedClass = Class.forName(associatedEntityName);
 											if (associatedClass.isAssignableFrom(toClass)){
@@ -138,7 +152,7 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 									}
 								}
 							}
-						}
+                        }
 
 					} catch (ClassNotFoundException e) {
 
@@ -151,4 +165,14 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 
         return referringObjectMap.get(toClass);
 	}
+
+    private boolean isAssociationType(PersistentAttributeType type) {
+        // TODO Auto-generated method stub
+        return type == PersistentAttributeType.MANY_TO_MANY;
+    }
+
+    private Type getPropertyType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

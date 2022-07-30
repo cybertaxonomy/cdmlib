@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 public abstract class DwcaRecordBase {
 
-	private static final Logger logger = Logger.getLogger(DwcaRecordBase.class);
+	private static final Logger logger = LogManager.getLogger(DwcaRecordBase.class);
 
 	//TODO Collection_SEPARATOR
 	protected static final CharSequence COLLECTION_SEPARATOR = "@";

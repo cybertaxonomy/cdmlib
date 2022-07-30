@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service.molecular;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Transactional(readOnly = true)
 public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao> implements IPrimerService{
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(PreferenceServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(PreferenceServiceImpl.class);
 
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {

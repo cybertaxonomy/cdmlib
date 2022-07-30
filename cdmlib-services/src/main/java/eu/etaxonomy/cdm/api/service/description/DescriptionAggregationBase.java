@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public abstract class DescriptionAggregationBase<T extends DescriptionAggregationBase<T, CONFIG>, CONFIG extends DescriptionAggregationConfigurationBase<T>> {
 
-    public static final Logger logger = Logger.getLogger(DescriptionAggregationBase.class);
+    public static final Logger logger = LogManager.getLogger(DescriptionAggregationBase.class);
 
     private static final long BATCH_MIN_FREE_HEAP = 150  * 1024 * 1024;  //800 MB
     /**

@@ -15,8 +15,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.AbstractHibernateTaxonGraphProcessor;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
@@ -81,8 +83,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         extends AbstractHibernateTaxonGraphProcessor
         implements BeforeTransactionCompletionProcess {
 
-    @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
+    private static final Logger logger = LogManager.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
     private static final String[] TAXONNAME_NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
     private static final String[] TAXONNAME_NOMENCLATURALSOURCE = new String[]{"nomenclaturalSource"};
@@ -92,16 +93,9 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
     private static boolean failOnMissingNomRef = false;
 
-    /**
-     * @return the failOnMissingNomRef
-     */
     public static boolean isFailOnMissingNomRef() {
         return failOnMissingNomRef;
     }
-
-    /**
-     * @param failOnMissingNomRef the failOnMissingNomRef to set
-     */
     public static void setFailOnMissingNomRef(boolean failOnMissingNomRef) {
         TaxonGraphBeforeTransactionCompleteProcess.failOnMissingNomRef = failOnMissingNomRef;
     }
@@ -126,13 +120,14 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
     private EventType eventType;
 
-    enum EventType {
+    private enum EventType {
         INSERT, UPDATE, DELETE,
     }
 
     private IRunAs runAs = null;
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event, IRunAs runAs){
+    public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event, IRunAs runAs, IPreferenceDao prefDao){
+        super(prefDao);
         eventType = EventType.UPDATE;
         if(event.getEntity() instanceof TaxonName) {
             taxonName = (TaxonName) event.getEntity();
@@ -149,7 +144,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         this.runAs = runAs;
     }
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event, IRunAs runAs) {
+    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event, IRunAs runAs, IPreferenceDao prefDao) {
+        super(prefDao);
         eventType = EventType.INSERT;
         if(event.getEntity() instanceof TaxonName) {
             taxonName = (TaxonName) event.getEntity();
@@ -166,7 +162,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         this.runAs = runAs;
     }
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PreDeleteEvent event, IRunAs runAs) {
+    public TaxonGraphBeforeTransactionCompleteProcess(PreDeleteEvent event, IRunAs runAs, IPreferenceDao prefDao) {
+        super(prefDao);
         eventType = EventType.DELETE;
         if(event.getEntity() instanceof TaxonName) {
             taxonName = (TaxonName) event.getEntity();
@@ -309,9 +306,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess
       finally {
           if (getSession() != null ) {
               // temporarySession.close(); // no need to close the session since the session is configured for auto close, see createTempSession()
-              if(origLoggerLevel != null){
-                  Logger.getLogger("org.hibernate.SQL").setLevel(origLoggerLevel);
-              }
           }
       }
     }
@@ -360,7 +354,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
      */
     protected void createTempSession(SessionImplementor session) {
         if(getSession() == null){
-            parentSession = (Session)session;
+            parentSession = session;
             temporarySession = ((Session) session)
                       .sessionWithOptions().transactionContext()
                       // in contrast to AuditProcess.doBeforeTransactionCompletion we need the session to close automatically,
@@ -554,10 +548,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         }
     }
 
-
-    /**
-     * @return
-     */
     @Override
     public Session getSession() {
         return temporarySession;
@@ -568,21 +558,12 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         Object oldState;
         Object newState;
         int index;
-        /**
-         * @param oldState
-         * @param newState
-         * @param index
-         */
+
         public PropertyStateChange(Object oldState, Object newState, int index) {
             super();
             this.oldState = oldState;
             this.newState = newState;
             this.index = index;
         }
-
-
-
     }
-
-
 }

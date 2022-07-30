@@ -1,10 +1,14 @@
 /**
- *
- */
+* Copyright (C) 2015 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.common.monitor;
 
 import java.io.Serializable;
-
 
 /**
  * Empty default implementation
@@ -66,79 +70,48 @@ public class NullProgressMonitor implements IProgressMonitor {
 		//  do nothing
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void waitForFeedback() {
         //  do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFeedback(Serializable feedback) {
         //  do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Serializable getFeedback() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean getIsWaitingForFeedback() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void waitForFeedback(long feedbackWaitTimeout) {
-    //  do nothing
-
+        //  do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasFeedbackWaitTimedOut() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getOwner() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setOwner(String owner) {
         //  do nothing
-
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void interrupt() {
         //  do nothing
-
     }
-
 }

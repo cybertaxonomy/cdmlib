@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.ext.openurl;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -26,7 +27,7 @@ import eu.etaxonomy.cdm.common.UriUtils;
  */
 public class MobotOpenUrlServiceWrapperTest {
 
-    public static final Logger logger = Logger.getLogger(MobotOpenUrlServiceWrapperTest.class);
+    public static final Logger logger = LogManager.getLogger(MobotOpenUrlServiceWrapperTest.class);
 	public static final String baseUrl = "http://www.biodiversitylibrary.org/openurl";
 
 	private MobotOpenUrlServiceWrapper openUrlServiceWrapper;

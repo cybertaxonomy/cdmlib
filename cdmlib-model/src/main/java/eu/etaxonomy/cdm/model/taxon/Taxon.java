@@ -38,7 +38,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -110,7 +111,7 @@ public class Taxon
             implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget{
 
     private static final long serialVersionUID = -584946869762749006L;
-    private static final Logger logger = Logger.getLogger(Taxon.class);
+    private static final Logger logger = LogManager.getLogger(Taxon.class);
 
     private static final TaxonComparator defaultTaxonComparator = new TaxonComparator();
 
@@ -256,9 +257,10 @@ public class Taxon
     }
 // ************* CONSTRUCTORS *************/
 
+    //for hibernate use only, *packet* private required by bytebuddy
     //TODO should be private, but still produces Spring init errors
     @Deprecated
-    public Taxon(){}
+    Taxon(){}
 
     private Taxon(TaxonName taxonName, Reference sec){
         super(taxonName, sec, null);
@@ -1645,6 +1647,7 @@ public class Taxon
 
     /**
      * {@inheritDoc}.
+     *
      * <BR>Also returns <code>false</code> if it is a misapplied name or has a similar concept relationship that
      * is similar to synonym relationship (shows up in the synonymy of applications)
      */

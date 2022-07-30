@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.common;
 
 import java.io.IOException;
@@ -11,13 +19,14 @@ import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class UriUtilsTest {
 
-    private static final Logger logger = Logger.getLogger(UriUtilsTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 //********************* TESTS **********************************************/
 
@@ -58,12 +67,10 @@ public class UriUtilsTest {
 			try {
 				@SuppressWarnings("unused")
                 URI uri = new URI("http:/www.abc.de:8080/xyz");
-				System.out.println("  sdf");
 //				Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
 			} catch (URISyntaxException e) {
 				Assert.fail();
 			}
-
         } else {
             logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
         }

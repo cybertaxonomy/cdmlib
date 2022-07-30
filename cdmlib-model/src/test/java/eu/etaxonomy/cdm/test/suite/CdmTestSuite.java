@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.test.suite;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 		}
 	)
 public class CdmTestSuite {
-	static Logger logger = Logger.getLogger(CdmTestSuite.class);
+	static Logger logger = LogManager.getLogger(CdmTestSuite.class);
 
 	// the class remains completely empty,
 	// being used only as a holder for the above annotations

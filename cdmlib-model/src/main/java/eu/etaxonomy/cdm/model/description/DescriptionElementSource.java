@@ -17,7 +17,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -33,12 +34,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * can be stored that points to the name used in the source. This is needed because description always belong
  * to accepted taxa while the referenced citations may use synonym names.
  * </BR>
- * The use of "originalNameString" within a DescriptionElementSource has to be discussed.
- * In general this string is to be used for different representations of the sourced object. In this classes
- * context it could also stand for the string representation of the taxon name used in the source. This
- * may make sense if the taxon name is not available in the CDM and the user for some reason does not want
- * to create a new ful {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}.
- *
+ * For discussion on originalInfo see #10097.
+*
  * @author a.mueller
  * @since 18.09.2009
  */
@@ -51,7 +48,7 @@ public class DescriptionElementSource extends NamedSourceBase{
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DescriptionElementSource.class);
+	private static final Logger logger = LogManager.getLogger(DescriptionElementSource.class);
 
 // ************************* FIELDS ********************************/
 
@@ -99,16 +96,16 @@ public class DescriptionElementSource extends NamedSourceBase{
 		return result;
 	}
 
-	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
+	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalInfo){
 		DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
-		result.setOriginalNameString(originalNameString);
+		result.setOriginalInfo(originalInfo);
 		return result;
 	}
 
     public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace,
-            Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString, ICdmTarget target){
-        DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+            Reference citation, String microReference, TaxonName nameUsedInSource, String originalInfo, ICdmTarget target){
+        DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference, nameUsedInSource, originalInfo);
         result.setCdmSource(target);
         return result;
     }
@@ -126,10 +123,10 @@ public class DescriptionElementSource extends NamedSourceBase{
 		return result;
 	}
 
-	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
+	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonName nameUsedInSource, String originalInfo){
 		DescriptionElementSource result = NewPrimarySourceInstance(citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
-		result.setOriginalNameString(originalNameString);
+		result.setOriginalInfo(originalInfo);
 		return result;
 	}
 

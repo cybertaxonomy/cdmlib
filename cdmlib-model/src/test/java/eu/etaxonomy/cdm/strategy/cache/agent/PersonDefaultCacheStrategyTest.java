@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache.agent;
 import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 public class PersonDefaultCacheStrategyTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PersonDefaultCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(PersonDefaultCacheStrategyTest.class);
 
 	private static Person person1;
 	private static Person person2;

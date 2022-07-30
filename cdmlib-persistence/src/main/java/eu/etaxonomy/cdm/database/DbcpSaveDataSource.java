@@ -15,21 +15,20 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author n.hoffmann
  * @since Sep 22, 2009
  */
 public class DbcpSaveDataSource extends BasicDataSource {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbcpSaveDataSource.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	/* FIXME This is a workaround to solve a problem with dbcp connection pooling.
 	 * Remove this when dbcp connection pool gets configured correctly
-	 *
-	 * (non-Javadoc)
-	 * @see org.apache.commons.dbcp.BasicDataSource#createDataSource()
 	 */
 	@Override
 	protected synchronized DataSource createDataSource() throws SQLException {

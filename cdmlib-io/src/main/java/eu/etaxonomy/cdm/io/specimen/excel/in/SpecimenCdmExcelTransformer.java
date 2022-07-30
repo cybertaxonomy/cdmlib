@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  */
 public final class SpecimenCdmExcelTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelTransformer.class);
+	private static final Logger logger = LogManager.getLogger(SpecimenCdmExcelTransformer.class);
 	
 	public static final UUID uuidRefSysEstimated = UUID.fromString("3b625520-e5cf-4d9c-9599-0cb048e0e8d2");
 	public static final UUID uuidRefSysLabel = UUID.fromString("c72335ed-c9aa-4d1c-b6fc-9f307d207862");

@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ClassChanger;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
@@ -73,8 +74,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  */
 public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
-	private static final Logger logger = Logger
-			.getLogger(SchemaUpdater_31_33.class);
+	private static final Logger logger = LogManager.getLogger(SchemaUpdater_31_33.class);
 	private static final String startSchemaVersion = "3.0.1.0.201104190000";
 	private static final String endSchemaVersion = "3.3.0.0.201309240000";
 
@@ -107,7 +107,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 			throw new RuntimeException(
 					"Required check for SpecimenOrObservationBase_Media");
 		} else {
-			logger.warn("CHECKS for inconsistent data not running !!!!");
+			logger.info("CHECKS for inconsistent data not running !!!!");
 		}
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();

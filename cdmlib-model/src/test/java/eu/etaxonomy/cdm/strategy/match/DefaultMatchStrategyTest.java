@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.strategy.match;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class DefaultMatchStrategyTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DefaultMatchStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger(DefaultMatchStrategyTest.class);
 
 	private DefaultMatchStrategy matchStrategy;
 	private IBook book1;
@@ -321,7 +322,7 @@ public class DefaultMatchStrategyTest extends TermTestBase {
 //		//name relations
 //		botName2.addBasionym(botName3, book1, "p.22", null);
 //		Specimen specimen1 = Specimen.NewInstance();
-//		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalNameString", false, true);
+//		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalInfo", false, true);
 //
 //		//descriptions
 //		TaxonNameDescription description1 = TaxonNameDescription.NewInstance();

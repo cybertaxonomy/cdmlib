@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -25,7 +26,7 @@ public class DbBooleanMapper
         implements IDbExportMapper {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbBooleanMapper.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	public static DbBooleanMapper NewInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbBooleanMapper(cdmAttributeString, dbAttributeString, null, false);

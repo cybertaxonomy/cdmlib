@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +32,7 @@ import io.swagger.annotations.Api;
 public class ClassificationListController extends AbstractIdentifiableListController<Classification,IClassificationService> {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger
-            .getLogger(ClassificationListController.class);
+    private static final Logger logger = LogManager.getLogger(ClassificationListController.class);
 
 
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{

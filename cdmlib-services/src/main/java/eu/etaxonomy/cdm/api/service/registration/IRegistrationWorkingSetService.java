@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -50,7 +50,7 @@ public interface IRegistrationWorkingSetService {
      * @return
      */
     @Deprecated
-    public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws RegistrationValidationException;
+    public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws TypeDesignationSetException;
 
     /**
      * Loads the working set specified by the <code>referenceUuid</code> from the database. The list of {@link RegistrationDTO}s can be empty in case
@@ -61,7 +61,7 @@ public interface IRegistrationWorkingSetService {
      *  use the inReference which is the journal article.
      * @return
      */
-    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws RegistrationValidationException, PermissionDeniedException;
+    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException;
 
     public Set<RegistrationDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid);
 
@@ -77,5 +77,5 @@ public interface IRegistrationWorkingSetService {
             String taxonNameFilterPattern, MatchMode matchMode, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints);
 
-    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws RegistrationValidationException, PermissionDeniedException;
+    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws TypeDesignationSetException, PermissionDeniedException;
 }

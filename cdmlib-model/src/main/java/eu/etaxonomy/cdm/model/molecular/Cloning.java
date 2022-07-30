@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
@@ -35,7 +36,6 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  *
  * @author a.mueller
  * @since 2013-07-11
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Cloning", propOrder = {
@@ -46,10 +46,11 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 @XmlRootElement(name = "Cloning")
 @Entity
 @Audited
-public class Cloning extends MaterialOrMethodEvent implements Cloneable{
+public class Cloning extends MaterialOrMethodEvent {
+
 	private static final long serialVersionUID = 6179007910988646989L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Cloning.class);
+	private static final Logger logger = LogManager.getLogger(Cloning.class);
 
 	/** @see #getStrain() */
     @XmlElement(name = "strain")
@@ -85,10 +86,11 @@ public class Cloning extends MaterialOrMethodEvent implements Cloneable{
 // ********************* CONSTRUCTOR ********************/
 
 
-    //made protected to fix a java.lang.InstantiationException which occurred while loading
+    //for hibernate use only, *packet* private required by bytebuddy
     //see https://stackoverflow.com/questions/7273125/hibernate-envers-and-javassist-enhancement-failed-exception
-    protected Cloning(){};
-    protected Cloning(DefinedTerm definedMaterialOrMethod, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
+    Cloning(){}
+
+    private Cloning(DefinedTerm definedMaterialOrMethod, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
     	super(definedMaterialOrMethod, methodText);
     	this.strain = strain;
     	this.forwardPrimer = forwardPrimer;

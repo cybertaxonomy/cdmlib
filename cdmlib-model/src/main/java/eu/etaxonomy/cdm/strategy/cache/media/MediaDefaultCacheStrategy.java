@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -30,7 +30,7 @@ public class MediaDefaultCacheStrategy
 
     private static final long serialVersionUID = 7246846028810250751L;
 
-    protected static final  Logger logger = Logger.getLogger(MediaDefaultCacheStrategy.class);
+    protected static final  Logger logger = LogManager.getLogger(MediaDefaultCacheStrategy.class);
 
 	final static UUID uuid = UUID.fromString("0517ae48-597d-4d6b-9f18-8752d689720d");
 

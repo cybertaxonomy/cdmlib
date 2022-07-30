@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.strategy.match;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 public class MatchException extends Exception {
 	private static final long serialVersionUID = -5128952015522078808L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(MatchException.class);
+	private static final Logger logger = LogManager.getLogger(MatchException.class);
 
 	/**
 	 * 

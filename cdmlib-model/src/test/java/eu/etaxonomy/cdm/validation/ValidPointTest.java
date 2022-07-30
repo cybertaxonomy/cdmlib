@@ -14,7 +14,7 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 public class ValidPointTest extends ValidationTestBase{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ValidPointTest.class);
+    private static final Logger logger = LogManager.getLogger(ValidPointTest.class);
 
 	private GatheringEvent gatheringEvent;
 	private Point point = new Point();

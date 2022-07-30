@@ -20,7 +20,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.groups.Default;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 @SuppressWarnings("unused")
 public class ValidationTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = Logger.getLogger(ValidationTest.class);
+	private static final Logger logger = LogManager.getLogger(ValidationTest.class);
 
 	@SpringBeanByType
 	private Validator validator;

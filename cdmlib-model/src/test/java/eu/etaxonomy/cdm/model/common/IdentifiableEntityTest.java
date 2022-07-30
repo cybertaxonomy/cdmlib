@@ -110,11 +110,12 @@ public class IdentifiableEntityTest extends EntityTestBase {
 		String text2 = "Credit2";
 		String text3 = "Credit0"; //for sorting order
 		Person person = Person.NewTitledInstance("Me");
-		abies.addCredit(Credit.NewInstance(person, text1));
+		TimePeriod timePeriod = TimePeriod.NewInstance(1925);
+		abies.addCredit(Credit.NewInstance(person, timePeriod, text1));
 		assertEquals("Number of credits should be 1",1,abies.getCredits().size());
-		abies.addCredit(Credit.NewInstance(person, text2));
+		abies.addCredit(Credit.NewInstance(person, timePeriod, text2));
 		assertEquals("Number of credits should be 2",2,abies.getCredits().size());
-		abies.addCredit(Credit.NewInstance(person, text3));
+		abies.addCredit(Credit.NewInstance(person, timePeriod, text3));
 		assertEquals("Number of credits should be 3",3,abies.getCredits().size());
 		assertEquals("Credit0 should be last in list", text3, abies.getCredits(2).getText());
 	}
@@ -125,8 +126,8 @@ public class IdentifiableEntityTest extends EntityTestBase {
 		String text1 = "Credit1";
 		String text2 = "Credit2";
 		Person person = Person.NewTitledInstance("Me");
-		Credit credit1 = Credit.NewInstance(person, text1);
-		Credit credit2 = Credit.NewInstance(person, text2);
+		Credit credit1 = Credit.NewInstance(person, null, text1);
+		Credit credit2 = Credit.NewInstance(person, null, text2);
 		abies.addCredit(credit1);
 		abies.addCredit(credit2);
 		assertEquals("Number of credits should be 2",2,abies.getCredits().size());

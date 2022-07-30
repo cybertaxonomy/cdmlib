@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -43,7 +43,7 @@ import org.hibernate.envers.Audited;
 public class LanguageString  extends LanguageStringBase implements Cloneable, IIntextReferencable {
 	private static final long serialVersionUID = -1502298496073201104L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LanguageString.class);
+	private static final Logger logger = LogManager.getLogger(LanguageString.class);
 
 	//TODO do we need to add it to JAXB? #4706
 	@XmlElementWrapper(name = "IntextReferences", nillable = true)

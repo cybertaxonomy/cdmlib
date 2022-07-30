@@ -13,7 +13,7 @@ import java.util.Date;
 
 import javax.wsdl.WSDLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 @Transactional
 public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
 	@SuppressWarnings("unused")
-    private static Logger logger = Logger.getLogger(LsidAuthorityServiceImpl.class);
+    private static Logger logger = LogManager.getLogger(LsidAuthorityServiceImpl.class);
 	private String lsidDomain;
 	private Integer lsidPort;
 	private LSIDRegistry lsidRegistry;

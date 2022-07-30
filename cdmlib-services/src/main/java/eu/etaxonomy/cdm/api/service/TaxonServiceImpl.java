@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -149,7 +149,7 @@ public class TaxonServiceImpl
             extends IdentifiableServiceBase<TaxonBase,ITaxonDao>
             implements ITaxonService{
 
-    private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(TaxonServiceImpl.class);
 
     public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
 
@@ -280,29 +280,29 @@ public class TaxonServiceImpl
 		return result;
     }
 
-    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
+    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym oldSynonym, Taxon oldAcceptedTaxon, boolean setNameInSource, SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
         UpdateResult result = new UpdateResult();
-        acceptedTaxon.removeSynonym(synonym);
-        TaxonName synonymName = synonym.getName();
-        TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName());
-        String oldTaxonTitleCache = acceptedTaxon.getTitleCache();
+        oldAcceptedTaxon.removeSynonym(oldSynonym);
+        TaxonName synonymName = oldSynonym.getName();
+        TaxonName taxonName = HibernateProxyHelper.deproxy(oldAcceptedTaxon.getName());
+        String oldTaxonTitleCache = oldAcceptedTaxon.getTitleCache();
 
         boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(taxonName.getHomotypicalGroup());
-        synonymName.removeTaxonBase(synonym);
+        synonymName.removeTaxonBase(oldSynonym);
 
         List<Synonym> synonyms = new ArrayList<>();
-        for (Synonym syn: acceptedTaxon.getSynonyms()){
+        for (Synonym syn: oldAcceptedTaxon.getSynonyms()){
             syn = HibernateProxyHelper.deproxy(syn, Synonym.class);
             synonyms.add(syn);
         }
         for (Synonym syn: synonyms){
-            acceptedTaxon.removeSynonym(syn);
+            oldAcceptedTaxon.removeSynonym(syn);
         }
-        Taxon newTaxon = acceptedTaxon.clone(true, true, false, true);
+        Taxon newTaxon = oldAcceptedTaxon.clone(true, true, false, true);
         newTaxon.setSec(newSecAcc);
 
         //move descriptions
-        Set<TaxonDescription> descriptionsToCopy = new HashSet<>(acceptedTaxon.getDescriptions());
+        Set<TaxonDescription> descriptionsToCopy = new HashSet<>(oldAcceptedTaxon.getDescriptions());
         for (TaxonDescription description: descriptionsToCopy){
             newTaxon.addDescription(description);
         }
@@ -311,7 +311,7 @@ public class TaxonServiceImpl
 
         newTaxon.setName(synonymName);
 
-        newTaxon.setPublish(synonym.isPublish());
+        newTaxon.setPublish(oldSynonym.isPublish());
         for (Synonym syn: synonyms){
             if (!syn.getName().equals(newTaxon.getName())){
                 newTaxon.addSynonym(syn, syn.getType());
@@ -324,14 +324,14 @@ public class TaxonServiceImpl
             newTaxon.removeTaxonRelation(taxonRelationship);
         }
 
-        for(TaxonRelationship taxonRelationship : acceptedTaxon.getTaxonRelations()){
+        for(TaxonRelationship taxonRelationship : oldAcceptedTaxon.getTaxonRelations()){
             Taxon fromTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
             Taxon toTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
-            if (fromTaxon == acceptedTaxon){
+            if (fromTaxon == oldAcceptedTaxon){
                 newTaxon.addTaxonRelation(taxonRelationship.getToTaxon(), taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
 
-            }else if(toTaxon == acceptedTaxon){
+            }else if(toTaxon == oldAcceptedTaxon){
                fromTaxon.addTaxonRelation(newTaxon, taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
                saveOrUpdate(fromTaxon);
@@ -348,11 +348,11 @@ public class TaxonServiceImpl
         }
 
         //taxon nodes
-        List<TaxonNode> nodes = new ArrayList<>(acceptedTaxon.getTaxonNodes());
+        List<TaxonNode> nodes = new ArrayList<>(oldAcceptedTaxon.getTaxonNodes());
         for (TaxonNode node: nodes){
             node = HibernateProxyHelper.deproxy(node);
             TaxonNode parent = node.getParent();
-            acceptedTaxon.removeTaxonNode(node);
+            oldAcceptedTaxon.removeTaxonNode(node);
             node.setTaxon(newTaxon);
             if (parent != null){
                 parent.addChildNode(node, null, null);
@@ -360,9 +360,9 @@ public class TaxonServiceImpl
         }
 
         //synonym
-        Synonym newSynonym = synonym.clone();
+        Synonym newSynonym = oldSynonym.clone();
         newSynonym.setName(taxonName);
-        newSynonym.setPublish(acceptedTaxon.isPublish());
+        newSynonym.setPublish(oldAcceptedTaxon.isPublish());
         newSynonym.setSec(newSecSyn);
         if (sameHomotypicGroup){
             newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
@@ -377,10 +377,10 @@ public class TaxonServiceImpl
         confSyn.setDeleteNameIfPossible(false);
         result.setCdmEntity(newTaxon);
 
-        DeleteResult deleteResult = deleteTaxon(acceptedTaxon.getUuid(), conf, null);
-        if (synonym.isPersited()){
-            synonym.setSecSource(null);
-            deleteResult.includeResult(deleteSynonym(synonym.getUuid(), confSyn));
+        DeleteResult deleteResult = deleteTaxon(oldAcceptedTaxon.getUuid(), conf, null);
+        if (oldSynonym.isPersited()){
+            oldSynonym.setSecSource(null);
+            deleteResult.includeResult(deleteSynonym(oldSynonym.getUuid(), confSyn));
         }
         result.includeResult(deleteResult);
 
@@ -1820,7 +1820,7 @@ public class TaxonServiceImpl
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         Builder joinFromQueryBuilder = new Builder();
-        if(!StringUtils.isEmpty(queryString)){
+        if(StringUtils.isNotEmpty(queryString)){
             joinFromQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
         }
         joinFromQueryBuilder.add(taxonBaseQueryFactory.newEntityIdsQuery("type.id", edge.getRelationshipTypes()), Occur.MUST);
@@ -1896,8 +1896,8 @@ public class TaxonServiceImpl
         }
         SortField[] sortFields = new SortField[orderHints.size()];
         int i = 0;
-        for(OrderHint oh : orderHints){
-            sortFields[i++] = oh.toSortField();
+        for(OrderHint orderHint : orderHints){
+            sortFields[i++] = orderHint.toSortField();
         }
 //        SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("id", SortField.STRING, false)};
 //        SortField[] sortFields = new SortField[]{new SortField(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortField.STRING, false)};
@@ -2064,6 +2064,9 @@ public class TaxonServiceImpl
             if(addDistributionFilter){
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
 
+                //TODO replace by createByDistributionJoinQuery
+                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+
                 /*
                  * Here I was facing a weird and nasty bug which took me bugging be really for hours until I found this solution.
                  * Maybe this is a bug in java itself.
@@ -2086,22 +2089,25 @@ public class TaxonServiceImpl
                  * The bug is persistent after a reboot of the development computer.
                  */
 //                String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
-//                String toField = "relation." + misappliedNameForUuid +".to.id";
-                String toField = "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id";
+                String toField = "relation." + TaxonRelationshipType.uuidMisappliedNameFor +".to.id";
+//                String toField = "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id";
 //                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + misappliedNameForUuid +".to.id") ? " > identical" : " > different");
 //                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id") ? " > identical" : " > different");
 
-                //TODO replace by createByDistributionJoinQuery
-                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+
                 Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
                         fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
-
-//                debug code for bug described above
-                //does not compile anymore since changing from lucene 3.6.2 to lucene 4.10+
-//                DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
-//                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
-
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
+
+                String toFieldProParte = "relation." + TaxonRelationshipType.uuidProParteMisappliedNameFor +".to.id";
+                Query taxonAreaJoinQueryProParte = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
+                        fromField, true, byDistributionQuery, toFieldProParte, null, ScoreMode.None);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQueryProParte, Occur.SHOULD);
+
+                String toFieldPartial = "relation." + TaxonRelationshipType.uuidPartialMisappliedNameFor +".to.id";
+                Query taxonAreaJoinQueryPartial = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
+                        fromField, true, byDistributionQuery, toFieldPartial, null, ScoreMode.None);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQueryPartial, Occur.SHOULD);
             }
         }
 
@@ -2118,11 +2124,20 @@ public class TaxonServiceImpl
 
             if(addDistributionFilter){
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
-                String toField = "relation.8a896603-0fa3-44c6-9cd7-df2d8792e577.to.id";
+
+                //proparte synonyms
+                String toField = "relation."+TaxonRelationshipType.uuidProParteSynonymFor+".to.id";
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
                 Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
                         fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
+
+                //partial synonyms
+                toField = "relation."+TaxonRelationshipType.uuidPartialSynonymFor+".to.id";
+//                BooleanQuery byDistributionQuery2 = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+                Query taxonAreaJoinQuery2 = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
+                        fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
+                multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery2, Occur.SHOULD);
             }
         }//end pro parte synonyms
 
@@ -3370,7 +3385,7 @@ public class TaxonServiceImpl
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
         @SuppressWarnings("rawtypes")
         List<TaxonBase> taxonList = dao.getTaxaByName(true, config.isIncludeSynonyms(), false, false, false,
-                config.getTaxonNameTitle(), null, null, MatchMode.EXACT, null, config.isIncludeSynonyms(), null, 0, 0, config.getPropertyPath());
+                config.getTaxonNameTitle(), null, null, MatchMode.EXACT, null, config.isIncludeSynonyms(), null, null, null, config.getPropertyPath());
         return taxonList;
     }
 

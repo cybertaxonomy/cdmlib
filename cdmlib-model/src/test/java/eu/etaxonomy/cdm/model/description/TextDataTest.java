@@ -18,7 +18,7 @@ import static org.junit.Assert.assertSame;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class TextDataTest extends EntityTestBase {
     @SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(TextDataTest.class);
+	private static Logger logger = LogManager.getLogger(TextDataTest.class);
 
 	private TextData textDataLeer;
 	private TextData textData1;

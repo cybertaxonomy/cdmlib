@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.taxonx2013;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -36,7 +36,7 @@ public class TaxonXAddSources {
     private TaxonXImport importer;
     private TaxonXImportState configState;
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonXAddSources.class);
+	private static final Logger logger = LogManager.getLogger(TaxonXAddSources.class);
 
     /**
      * @param importer

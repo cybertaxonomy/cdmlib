@@ -21,7 +21,8 @@ import java.util.Set;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.common.URI;
@@ -60,7 +61,6 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
-import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -77,7 +77,7 @@ public class DerivedUnitFacade {
 	private static final String METER = "m";
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacade.class);
+	private static final Logger logger = LogManager.getLogger(DerivedUnitFacade.class);
 
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";
 
@@ -2097,8 +2097,8 @@ public class DerivedUnitFacade {
 	 */
 	public String getSpecimenLabel() {
 	    if(checkDerivedUnit()){
-	        if(derivedUnit.getCacheStrategy() instanceof DerivedUnitFacadeCacheStrategy){
-	            return ((DerivedUnitFacadeCacheStrategy)derivedUnit.getCacheStrategy()).getSpecimenLabel(this);
+	        if(derivedUnit.cacheStrategy() instanceof DerivedUnitFacadeCacheStrategy){
+	            return ((DerivedUnitFacadeCacheStrategy)derivedUnit.cacheStrategy()).getSpecimenLabel(this);
 	        }
 
 	    }
@@ -2339,15 +2339,10 @@ public class DerivedUnitFacade {
 	/**
 	 * Creates an {@link IOriginalSource orignal source} or type ,
 	 * adds it to the specimen and returns it.
-	 *
-	 * @param reference
-	 * @param microReference
-	 * @param originalNameString
-	 * @return
 	 */
-	public IdentifiableSource addSource(OriginalSourceType type, Reference reference, String microReference, String originalNameString) {
+	public IdentifiableSource addSource(OriginalSourceType type, Reference reference, String microReference, String originalInfo) {
 		IdentifiableSource source = IdentifiableSource.NewInstance(type, null, null, reference, microReference);
-		source.setOriginalNameString(originalNameString);
+		source.setOriginalInfo(originalInfo);
 		addSource(source);
 		return source;
 	}
@@ -2362,17 +2357,13 @@ public class DerivedUnitFacade {
 	}
 
 	//*** identifiers ***/
-
-
     public void addIdentifier(Identifier identifier) {
         this.baseUnit().addIdentifier(identifier);
     }
-
 	@Transient
 	public List<Identifier> getIdentifiers() {
 	    return baseUnit().getIdentifiers();
 	}
-
 	public void removeIdentifier(Identifier identifier) {
 	    this.baseUnit().removeIdentifier(identifier);
 	}
@@ -2382,18 +2373,11 @@ public class DerivedUnitFacade {
 		return baseUnit().getRights();
 	}
 
-	/**
-	 * @return the collection
-	 */
+	//collection
 	@Transient
 	public Collection getCollection() {
 		return ! checkDerivedUnit()? null :  derivedUnit.getCollection();
 	}
-
-	/**
-	 * @param collection
-	 *            the collection to set
-	 */
 	public void setCollection(Collection collection) {
 		testDerivedUnit();
 		derivedUnit.setCollection(collection);

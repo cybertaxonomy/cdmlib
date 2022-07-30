@@ -51,11 +51,14 @@ public class TaxonRelationshipFormatter {
     private static final String AUCT = "auct.";
     private static final String SENSU_SEPARATOR = " sensu ";
     private static final String SEC_SEPARATOR = " sec. ";
+    private static final String PRO_PARTE_SEPARATOR = ", ";
     private static final String DETAIL_SEPARATOR = ": ";
     private static final String INVERT_SYMBOL = "<-"; //TODO
     private static final String UNDEFINED_SYMBOL = "??";  //TODO
 
     private static TaxonRelationshipFormatter instance;
+
+// ************************* FACTORY ************************/
 
     public static TaxonRelationshipFormatter NewInstance(){
         return new TaxonRelationshipFormatter();
@@ -68,15 +71,17 @@ public class TaxonRelationshipFormatter {
         return instance;
     }
 
-    private TaxonRelationshipFormatter(){
+// ******************* CONSTRUCTOR ************************/
 
+    private TaxonRelationshipFormatter(){}
+
+// ********************** METHODS ***************************/
+
+    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean inverse, List<Language> languages) {
+        return getTaggedText(taxonRelationship, inverse, languages, false);
     }
 
-    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse, List<Language> languages) {
-        return getTaggedText(taxonRelationship, reverse, languages, false);
-    }
-
-    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse,
+    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean inverse,
             List<Language> languages, boolean withoutName) {
 
         if (taxonRelationship == null){
@@ -84,10 +89,10 @@ public class TaxonRelationshipFormatter {
         }
 
         TaxonRelationshipType type = taxonRelationship.getType();
-        boolean isMisapplied = type == null ? false : type.isMisappliedName() && reverse;
+        boolean isMisapplied = (type == null ? false : type.isMisappliedName() && inverse);
         boolean isSynonym = type == null? false : type.isAnySynonym();
 
-        Taxon relatedTaxon = reverse? taxonRelationship.getFromTaxon()
+        Taxon relatedTaxon = inverse? taxonRelationship.getFromTaxon()
                 : taxonRelationship.getToTaxon();
 
         if (relatedTaxon == null){
@@ -102,7 +107,7 @@ public class TaxonRelationshipFormatter {
         TaggedTextBuilder builder = new TaggedTextBuilder();
 
         //rel symbol
-        String symbol = doubtfulRelationStr + getSymbol(type, reverse, languages);
+        String symbol = doubtfulRelationStr + getSymbol(type, inverse, languages);
         builder.add(TagEnum.symbol, symbol);
 
         //name
@@ -159,6 +164,20 @@ public class TaxonRelationshipFormatter {
             }
         }
 
+        //p.p.
+        if (isMisapplied) {
+            if (isProParteMAN(type, inverse)) {
+                builder.addSeparator(PRO_PARTE_SEPARATOR);
+                symbol = "p.p.";
+                builder.add(TagEnum.inlineSymbol, symbol);  //using type symbol here does not work as symbol is always rendered to left, not inline by dataportal
+            } else if (isPartialMAN(type, inverse)) {
+                builder.addSeparator(PRO_PARTE_SEPARATOR);
+                symbol = "part.";
+                builder.add(TagEnum.inlineSymbol, symbol);  //using type symbol here does not work as symbol is always rendered to left, not inline by dataportal
+            }
+        }
+
+        //rel sec
         List<TaggedText> relSecTags = getReferenceTags(taxonRelationship.getCitation(),
                 taxonRelationship.getCitationMicroReference(),true);
         if (!relSecTags.isEmpty()){
@@ -210,50 +229,54 @@ public class TaxonRelationshipFormatter {
     }
 
     private List<TaggedText> getNameCacheTags(TaxonName name) {
-        List<TaggedText> result = name.getCacheStrategy().getTaggedName(name);
+        List<TaggedText> result = name.cacheStrategy().getTaggedName(name);
         return result;
     }
 
     private List<TaggedText> getNameTitleCacheTags(TaxonName name) {
 
         //TODO full title?
-        List<TaggedText> result = name.getCacheStrategy().getTaggedFullTitle(name);
+        List<TaggedText> result = name.cacheStrategy().getTaggedFullTitle(name);
         return result;
     }
 
     /**
      * @param type the taxon relationship type
-     * @param reverse is the relationship used reverse
+     * @param inverse is the relationship used inverse
      * @param languages list of preferred languages
      * @return the symbol for the taxon relationship
      */
-    private String getSymbol(TaxonRelationshipType type, boolean reverse, List<Language> languages) {
+    private String getSymbol(TaxonRelationshipType type, boolean inverse, List<Language> languages) {
         if (type == null){
             return UNDEFINED_SYMBOL;
         }
 
         //symbol
-        String symbol = reverse? type.getInverseSymbol():type.getSymbol();
+        String symbol = inverse? type.getInverseSymbol():type.getSymbol();
         if (isNotBlank(symbol)){
+            //handle p.p. MAN specific #10082
+            if (isProParteMAN(type, inverse) || isPartialMAN(type, inverse)) {
+                return TaxonRelationshipType.MISAPPLIED_NAME_FOR().getInverseSymbol();
+            }
             return symbol;
         }
 
         boolean isSymmetric = type.isSymmetric();
         //symmetric inverted symbol
-        String invertedSymbol = reverse? type.getSymbol() : type.getInverseSymbol();
+        String invertedSymbol = inverse? type.getSymbol() : type.getInverseSymbol();
         if (isSymmetric && isNotBlank(invertedSymbol)){
             return invertedSymbol;
         }
 
         //abbrev label
-        Representation representation = reverse? type.getPreferredRepresentation(languages): type.getPreferredInverseRepresentation(languages);
+        Representation representation = inverse? type.getPreferredRepresentation(languages): type.getPreferredInverseRepresentation(languages);
         String abbrevLabel = representation.getAbbreviatedLabel();
         if (isNotBlank(abbrevLabel)){
             return abbrevLabel;
         }
 
         //symmetric inverted abbrev label
-        Representation invertedRepresentation = reverse? type.getPreferredInverseRepresentation(languages):type.getPreferredRepresentation(languages);
+        Representation invertedRepresentation = inverse? type.getPreferredInverseRepresentation(languages):type.getPreferredRepresentation(languages);
         String invertedAbbrevLabel = invertedRepresentation.getAbbreviatedLabel();
         if (isSymmetric && isNotBlank(invertedAbbrevLabel)){
             return invertedAbbrevLabel;
@@ -270,6 +293,14 @@ public class TaxonRelationshipFormatter {
         }
 
         return UNDEFINED_SYMBOL;
+    }
+
+    private boolean isPartialMAN(TaxonRelationshipType type, boolean inverse) {
+        return inverse && type.getUuid().equals(TaxonRelationshipType.uuidPartialMisappliedNameFor);
+    }
+
+    private boolean isProParteMAN(TaxonRelationshipType type, boolean inverse) {
+        return inverse && type.getUuid().equals(TaxonRelationshipType.uuidProParteMisappliedNameFor);
     }
 
     private boolean isNotBlank(String str) {

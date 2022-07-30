@@ -13,13 +13,14 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public class MediaUtils {
 
-    private static final Logger logger = Logger.getLogger(MediaUtils.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
     public static MediaRepresentation findBestMatchingRepresentation(Media media,
@@ -305,15 +306,9 @@ public class MediaUtils {
             logger.debug("resulting representations: " + text);
         }
 
-
         return prefRepr;
-
     }
 
-    /**
-     * @param imageDimension
-     * @return
-     */
     static long expanse(Dimension imageDimension) {
         if(imageDimension != null){
             return (long)imageDimension.height * (long)imageDimension.width;

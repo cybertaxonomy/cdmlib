@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
@@ -25,11 +25,10 @@ import org.hibernate.search.bridge.LuceneOptions;
  *
  * @author andreas
  * @since Sep 24, 2012
- *
  */
 public class IdFieldOptions implements LuceneOptions {
-	private static final Logger logger = Logger.getLogger(IdFieldOptions.class);
-	
+
+	private static final Logger logger = LogManager.getLogger(IdFieldOptions.class);
 
     @Override
     public Store getStore() {
@@ -55,15 +54,25 @@ public class IdFieldOptions implements LuceneOptions {
 	public void addFieldToDocument(String arg0, String arg1, Document arg2) {
 		logger.warn("not yet implemented");
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void addNumericFieldToDocument(String arg0, Object arg1, Document arg2) {
 		logger.warn("not yet implemented");
 		// TODO Auto-generated method stub
-		
 	}
+
+	@Override
+    public void addSortedDocValuesFieldToDocument(String fieldName, String indexedString, Document document) {
+        logger.warn("not yet implemented");
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void addNumericDocValuesFieldToDocument(String fieldName, Number numericValue, Document document) {
+        logger.warn("not yet implemented");
+        // TODO Auto-generated method stub
+    }
 
 	@Override
 	public String indexNullAs() {
@@ -78,5 +87,4 @@ public class IdFieldOptions implements LuceneOptions {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }

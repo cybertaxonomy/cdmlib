@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.remote.config;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
@@ -61,7 +61,7 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
      */
     private static final boolean XML_VIEW_CACHING = true;
 
-    public static final Logger logger = Logger.getLogger(CdmSpringMVCConfig.class);
+    public static final Logger logger = LogManager.getLogger(CdmSpringMVCConfig.class);
 
 
     @Autowired

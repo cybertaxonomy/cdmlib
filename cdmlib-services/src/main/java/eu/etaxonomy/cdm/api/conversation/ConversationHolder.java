@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  */
 public class ConversationHolder {
 
-    private static final Logger logger = Logger.getLogger(ConversationHolder.class);
+    private static final Logger logger = LogManager.getLogger(ConversationHolder.class);
 
     @Autowired
     private SessionFactory sessionFactory;

@@ -11,26 +11,16 @@ package eu.etaxonomy.cdm.io.common;
 /**
  * @author a.mueller
  * @since 14.03.2017
- *
  */
 public class EmptyImportState<CONFIG extends ImportConfiguratorBase, IO extends CdmImportBase>
         extends ImportStateBase<CONFIG, IO> {
 
-    /**
-     * @param config
-     */
     protected EmptyImportState(CONFIG config) {
         super(config);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CONFIG getConfig() {
         return super.getConfig();
     }
-
-
-
 }

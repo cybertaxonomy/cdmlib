@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -80,7 +80,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         extends CdmImportBase<CONFIG, STATE> {
 
     private static final long serialVersionUID = 4423065367998125678L;
-    private static final Logger logger = Logger.getLogger(SpecimenImportBase.class);
+    private static final Logger logger = LogManager.getLogger(SpecimenImportBase.class);
 
 	protected static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 

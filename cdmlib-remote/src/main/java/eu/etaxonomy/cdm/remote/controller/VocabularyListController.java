@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import io.swagger.annotations.Api;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @RequestMapping(value = {"/termVocabulary"})
 public class VocabularyListController extends AbstractIdentifiableListController<TermVocabulary, IVocabularyService> {
 
-    public static final Logger logger = Logger.getLogger(VocabularyListController.class);
+    public static final Logger logger = LogManager.getLogger(VocabularyListController.class);
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.AbstractListController#setService(eu.etaxonomy.cdm.api.service.IService)

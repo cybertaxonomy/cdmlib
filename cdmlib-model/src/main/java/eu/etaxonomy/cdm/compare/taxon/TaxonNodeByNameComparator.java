@@ -10,16 +10,15 @@ package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 
 /**
  * Comparator that compares two TaxonNode instances by the titleCache of their
@@ -32,9 +31,9 @@ public class TaxonNodeByNameComparator
         extends AbstractStringComparator<TaxonNode>
         implements ITaxonNodeComparator<TaxonNode> {
 
-    private static final String HYBRID_SIGN = UTF8.HYBRID.toString();
+    private static final Logger logger = LogManager.getLogger();
 
-    private static final Logger logger = Logger.getLogger(TaxonNodeByNameComparator.class);
+    private static final String HYBRID_SIGN = UTF8.HYBRID.toString();
 
     private boolean ignoreHybridSign = true;
     private boolean sortInfraGenericFirst = true;
@@ -99,27 +98,15 @@ public class TaxonNodeByNameComparator
         }
     }
 
-    protected int compareNodes(TaxonNode node1, TaxonNode node2) {
-
-        TaxonNodeStatus status1 = node1.getStatus();
-        TaxonNodeStatus status2 = node2.getStatus();
-
-        if (CdmUtils.nullSafeEqual(status1, status2)){
-            return 0;
-        }else if (status1 == null){
-            return 1;
-        }else if (status2 == null){
-            return -1;
-        }else {
-            return status1.compareTo(status2);
-        }
+    private int compareNodes(TaxonNode node1, TaxonNode node2) {
+        return TaxonNodeStatusComparator.INSTANCE().compare(node1.getStatus(), node2.getStatus());
     }
 
     private String createSortableTitleCache(TaxonNode taxonNode) {
 
         String titleCache = null;
         if(taxonNode.getTaxon() != null && taxonNode.getTaxon().getName() != null ){
-            TaxonName name = HibernateProxyHelper.deproxy(taxonNode.getTaxon().getName(), TaxonName.class);
+            TaxonName name = HibernateProxyHelper.deproxy(taxonNode.getTaxon().getName());
 
             if (name.isNonViral()){
                 if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}

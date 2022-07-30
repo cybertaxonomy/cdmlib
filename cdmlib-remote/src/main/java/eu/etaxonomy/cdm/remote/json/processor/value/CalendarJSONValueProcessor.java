@@ -15,7 +15,7 @@ import java.util.Calendar;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class CalendarJSONValueProcessor implements JsonValueProcessor {
-	private static Logger logger = Logger.getLogger(DateTimeJSONValueProcessor.class);
+	private static Logger logger = LogManager.getLogger(DateTimeJSONValueProcessor.class);
 
 	private static SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
 	

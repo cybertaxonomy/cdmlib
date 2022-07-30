@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.hibernate.search;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.SortedDocValuesField;
@@ -47,30 +47,24 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
 
     private static final char PAD_CHAR = '0';
 
-    public static final Logger logger = Logger.getLogger(NomenclaturalSortOrderBrigde.class);
+    public static final Logger logger = LogManager.getLogger(NomenclaturalSortOrderBrigde.class);
 
     final static int MAX_FIELD_LENGTH = 50; // used to pab the strings, should be 255 set to 50 for debugging FIXME
     public final static String NAME_SORT_FIELD_NAME = "nomenclaturalOrder__sort";
 
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-        INonViralName nvn = null;
-
+        TaxonName taxonName = null;
+        value = CdmBase.deproxy(value);
         if(value instanceof TaxonBase) {
-            try {
-                nvn = CdmBase.deproxy((TaxonBase) value).getName();
-                if (nvn == null){
-                	return;
-                }
-            } catch (ClassCastException e) {
-                logger.info(e);
-                /* IGNORE */
+            taxonName = ((TaxonBase<?>)value).getName();
+            if (taxonName == null){
+            	return;
             }
-
         }else if(value instanceof TaxonName){
-            nvn = (INonViralName)value;
+            taxonName = (TaxonName)value;
         }
-        if(nvn == null) {
+        if(taxonName == null) {
             logger.error("Unsupported type: " + value.getClass().getName());
             return;
         }
@@ -78,26 +72,26 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
         // compile sort field
         StringBuilder txt = new StringBuilder();
 
-        if(nvn.isProtectedNameCache()){
-            txt.append(nvn.getNameCache());
+        if(taxonName.isProtectedNameCache()){
+            txt.append(taxonName.getNameCache());
         } else {
-            if(StringUtils.isNotBlank(nvn.getGenusOrUninomial())){
-                txt.append(StringUtils.rightPad(nvn.getGenusOrUninomial(), MAX_FIELD_LENGTH, PAD_CHAR));
+            if(StringUtils.isNotBlank(taxonName.getGenusOrUninomial())){
+                txt.append(StringUtils.rightPad(taxonName.getGenusOrUninomial(), MAX_FIELD_LENGTH, PAD_CHAR));
             }
-            if(StringUtils.isNotBlank(nvn.getSpecificEpithet())){
+            if(StringUtils.isNotBlank(taxonName.getSpecificEpithet())){
                 String matchQuotes = "\".*\"";
-                if(nvn.getSpecificEpithet().matches(matchQuotes)){
+                if(taxonName.getSpecificEpithet().matches(matchQuotes)){
                     txt.append("1");
                 } else {
                     txt.append("0");
                 }
-                txt.append(StringUtils.rightPad(nvn.getSpecificEpithet(), MAX_FIELD_LENGTH, PAD_CHAR));
+                txt.append(StringUtils.rightPad(taxonName.getSpecificEpithet(), MAX_FIELD_LENGTH, PAD_CHAR));
             } else {
                 txt.append(StringUtils.rightPad("", MAX_FIELD_LENGTH, PAD_CHAR));
             }
             String rankStr = "99"; // default for no rank
-            if(nvn.getRank() != null){
-                rankStr = Integer.toString(nvn.getRank().getOrderIndex());
+            if(taxonName.getRank() != null){
+                rankStr = Integer.toString(taxonName.getRank().getOrderIndex());
             }
             txt.append(StringUtils.rightPad(rankStr, 2, PAD_CHAR));
         }
@@ -105,5 +99,4 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
         Field nameSortField = new SortedDocValuesField(NAME_SORT_FIELD_NAME, new BytesRef(txt.toString()));
         LuceneDocumentUtility.setOrReplaceDocValueField(nameSortField, document);
     }
-
 }

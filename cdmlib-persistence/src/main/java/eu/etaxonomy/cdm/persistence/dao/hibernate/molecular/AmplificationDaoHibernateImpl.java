@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Amplification;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 @Repository
-public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplification> implements IAmplificationDao{
+public class AmplificationDaoHibernateImpl extends AnnotatableDaoBaseImpl<Amplification> implements IAmplificationDao{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(AmplificationDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger(AmplificationDaoHibernateImpl.class);
 
     /**
      * @param type
@@ -47,17 +47,16 @@ public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplificat
     public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache(Integer limit, String pattern) {
         List<UuidAndTitleCache<Amplification>> list = new ArrayList<UuidAndTitleCache<Amplification>>();
         Session session = getSession();
-        Query query;
+        Query<Object[]> query;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, labelCache from Amplification where labelCache like :pattern");
+            query = session.createQuery("select uuid, id, labelCache from Amplification where labelCache like :pattern", Object[].class);
             query.setParameter("pattern", pattern);
         }else{
-            query = session.createQuery("select uuid, id, labelCache from Amplification");
+            query = session.createQuery("select uuid, id, labelCache from Amplification", Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);
          }
-        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
         for(Object[] object : result){

@@ -12,8 +12,10 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.compare.common.OrderIndexComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeStatusComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -21,40 +23,30 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author k.luther
  * @since 18.03.2010
  */
-public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Comparator<TaxonNodeDto> {
-	private static final long serialVersionUID = 2596641007876609704L;
+public class TaxonNodeDtoByRankAndNameComparator
+        implements Serializable, Comparator<TaxonNodeDto> {
+
+    private static final long serialVersionUID = 2596641007876609704L;
 
 	@Override
     public int compare(TaxonNodeDto node1, TaxonNodeDto node2) {
-
-	    boolean node1Excluded = node1.isExcluded();
-	    boolean node2Excluded = node2.isExcluded();
-	    boolean node1Unplaced = node1.isUnplaced();
-	    boolean node2Unplaced = node2.isUnplaced();
-
-		if (node1.getUuid().equals(node2.getUuid())){
-			return 0;
-		}
-		//They should both be put to the end (first unplaced then excluded)
-		if (node2Excluded && !node1Excluded){
-		    return -1;
-		}
-		if (node2Unplaced && !(node1Unplaced || node1Excluded)){
-		    return -1;
-		}
-
-		if (node1Excluded && !node2Excluded){
+        if (node1 == null && node2 == null) {
+            return 0;
+        }
+        else if (node1 == null) {
             return 1;
         }
-        if (node1Unplaced && !(node2Unplaced || node2Excluded)){
-            return 1;
-        }
-
-        if (node1Unplaced && node2Excluded){
+        else if (node2 == null) {
             return -1;
         }
-        if (node2Unplaced && node1Excluded){
-            return 1;
+        if (node1.equals(node2)){
+            return 0;
+        }
+
+        //compare status
+        int nodeResult = compareStatus(node1.getStatus(), node2.getStatus());
+        if (nodeResult != 0){
+            return nodeResult;
         }
 
 		Integer rankTax1 = node1.getRankOrderIndex();
@@ -94,6 +86,10 @@ public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Compar
 			return rankOrder;
 		}
 	}
+
+    private int compareStatus(TaxonNodeStatus status1, TaxonNodeStatus status2) {
+        return TaxonNodeStatusComparator.INSTANCE().compare(status1, status2);
+    }
 
     public String getTaxonTitle(TaxonBase<?> taxon, TaxonNode node) {
         return (taxon == null) ? node.getUuid().toString(): taxon.getTitleCache();

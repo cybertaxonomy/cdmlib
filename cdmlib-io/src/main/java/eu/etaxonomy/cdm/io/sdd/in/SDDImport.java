@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.joda.time.DateTime;
@@ -98,7 +98,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
     private static final long serialVersionUID = 5492939941309574059L;
 
-    private static final Logger logger = Logger.getLogger(SDDImport.class);
+    private static final Logger logger = LogManager.getLogger(SDDImport.class);
 
 	private static int modCount = 1000;
 

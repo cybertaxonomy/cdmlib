@@ -13,7 +13,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -28,7 +28,7 @@ public abstract class TcsXmlExportBase<T extends CdmBase>
         extends CdmExportBase<TcsXmlExportConfigurator, TcsXmlExportState, IExportTransformer, File>  {
 
     private static final long serialVersionUID = -7100332849797374995L;
-    private static final Logger logger = Logger.getLogger(TcsXmlExportBase.class);
+    private static final Logger logger = LogManager.getLogger(TcsXmlExportBase.class);
 
 	public TcsXmlExportBase() {
 		super();

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.stream;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  */
 public class FilteredStream implements IItemStream {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(FilteredStream.class);
+	private static Logger logger = LogManager.getLogger(FilteredStream.class);
 
 	private final IItemStream reader;
 	private final ItemFilter<StreamItem> filter;

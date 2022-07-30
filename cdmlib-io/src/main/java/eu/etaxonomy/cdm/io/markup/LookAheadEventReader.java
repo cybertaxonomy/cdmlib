@@ -16,14 +16,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
  * @since 28.06.2011
  */
 public class LookAheadEventReader implements XMLEventReader {
-	private static final Logger logger = Logger.getLogger(LookAheadEventReader.class);
+	private static final Logger logger = LogManager.getLogger(LookAheadEventReader.class);
 
 	private XMLEventReader reader;
 

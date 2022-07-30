@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  */
 public class NameTypeDesignationStatusTest extends EntityTestBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NameTypeDesignationStatusTest.class);
+	private static final Logger logger = LogManager.getLogger(NameTypeDesignationStatusTest.class);
 
 	private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");
 //	private static final UUID uuidFirstRevisor = UUID.fromString("a14ec046-c48f-4a73-939f-bd57880c7565");

@@ -14,7 +14,8 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.kohlbecker
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  */
 public class JvmMonitor {
 
-    public static final Logger logger = Logger.getLogger(JvmMonitor.class);
+    public static final Logger logger = LogManager.getLogger();
 
     private long gcTimeLast = 0;
 

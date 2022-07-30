@@ -18,9 +18,9 @@ import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
  * Interface representing all {@link Reference references} which have
  * a {@link Reference#getType() type} allowing an authorship and
  * a single publication date.
+ *
  * @author a.mueller
  * @since 20.11.2018
- *
  */
 public interface IWithAuthorAndDate {
 

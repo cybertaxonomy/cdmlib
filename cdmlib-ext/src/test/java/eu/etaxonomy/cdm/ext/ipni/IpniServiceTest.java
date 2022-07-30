@@ -1,12 +1,18 @@
 /**
- *
- */
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.ext.ipni;
 
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,12 +35,12 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- *
  */
-@Ignore //preliminary
+@Ignore //preliminary, fix tests before unignore
 public class IpniServiceTest extends TermTestBase {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(IpniServiceTest.class);
+	private static final Logger logger = LogManager.getLogger(IpniServiceTest.class);
 
 	private IpniService service1;
 	private static boolean internetIsAvailable = true;
@@ -44,10 +50,6 @@ public class IpniServiceTest extends TermTestBase {
 		internetIsAvailable = true;
 	}
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		service1 = new IpniService();
@@ -143,7 +145,6 @@ public class IpniServiceTest extends TermTestBase {
 //				System.out.println(name.getFullTitleCache());
 //			}
 		}
-
 	}
 
 	@Test

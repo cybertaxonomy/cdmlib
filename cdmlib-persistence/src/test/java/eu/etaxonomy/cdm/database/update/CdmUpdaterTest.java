@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.database.update;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 public class CdmUpdaterTest {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmUpdaterTest.class);
+	private static final Logger logger = LogManager.getLogger(CdmUpdaterTest.class);
 
 // ******************** TESTS ****************************************************/
 

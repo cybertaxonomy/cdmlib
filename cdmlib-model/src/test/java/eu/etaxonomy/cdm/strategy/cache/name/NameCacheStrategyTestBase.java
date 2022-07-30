@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  */
 public class NameCacheStrategyTestBase extends TermTestBase {
 
-    private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
+    private static final Logger logger = LogManager.getLogger(ZoologicalNameCacheStrategyTest.class);
 
 	protected Method getMethod(Class<?> clazz, String methodName, Class<?>... paramClazzes){
 		Method method;

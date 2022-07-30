@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
@@ -18,18 +17,20 @@ import java.util.EnumSet;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.spi.shared.AbstractUserType;
 
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 /**
- * User type for EnumSet
+ * User type for EnumSet (#7957, open issue #10109).
+ *
  * @author a.mueller
  * @since 25-02-2019
  */
@@ -43,7 +44,7 @@ public class EnumSetUserType<E extends Enum<E>>
 
     private static final long serialVersionUID = 1060802925284271666L;
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(EnumSetUserType.class);
+	private static final Logger logger = LogManager.getLogger(EnumSetUserType.class);
 
     private static final String SEP = "#";
 
@@ -79,7 +80,7 @@ public class EnumSetUserType<E extends Enum<E>>
 	}
 
 	@Override
-	public EnumSet<E> nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+	public EnumSet<E> nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
         String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 
@@ -103,7 +104,7 @@ public class EnumSetUserType<E extends Enum<E>>
 	}
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
             StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);

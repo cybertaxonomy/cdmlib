@@ -5,7 +5,7 @@
  */
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.api.application.CdmIoApplicationController;
 public class CdmDefaultIOBase<T extends IIoConfigurator> {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmDefaultIOBase.class);
+	private static final Logger logger = LogManager.getLogger(CdmDefaultIOBase.class);
 
 	public static final String DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE = CdmIoApplicationController.DEFAULT_APPLICATION_CONTEXT_RESOURCE;
 

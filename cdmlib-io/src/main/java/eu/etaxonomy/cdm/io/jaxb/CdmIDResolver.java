@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 
 import javax.xml.bind.ValidationEventHandler;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
 
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 public class CdmIDResolver extends IDResolver {
 
-    private static final Logger logger = Logger.getLogger(CdmIDResolver.class);
+    private static final Logger logger = LogManager.getLogger(CdmIDResolver.class);
 
     private IUserService userService;
 

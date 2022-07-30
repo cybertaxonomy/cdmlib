@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -80,7 +80,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class NormalExplicitImport extends TaxonExcelImportBase {
     private static final long serialVersionUID = 3642423349766191160L;
 
-    private static final Logger logger = Logger.getLogger(NormalExplicitImport.class);
+    private static final Logger logger = LogManager.getLogger(NormalExplicitImport.class);
 
 	public static Set<String> validMarkers = new HashSet<>(Arrays.asList(new String[]{"", "valid", "accepted", "a", "v", "t", "!"}));
 	public static Set<String> synonymMarkers = new HashSet<>(Arrays.asList(new String[]{"**","invalid", "synonym", "s", "i"}));

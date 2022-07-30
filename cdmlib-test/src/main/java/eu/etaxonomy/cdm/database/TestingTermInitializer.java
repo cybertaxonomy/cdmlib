@@ -15,7 +15,8 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 
 public class TestingTermInitializer extends DefaultTermInitializer {
 
-    private static final Logger logger = Logger.getLogger(TestingTermInitializer.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected PlatformTransactionManager transactionManager;
     protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();

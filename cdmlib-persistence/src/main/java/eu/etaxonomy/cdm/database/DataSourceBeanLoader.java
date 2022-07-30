@@ -3,14 +3,14 @@ package eu.etaxonomy.cdm.database;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
 
 // @Component
 public class DataSourceBeanLoader {
 
-    private static final Logger logger = Logger.getLogger(DataSourceBeanLoader.class);
+    private static final Logger logger = LogManager.getLogger(DataSourceBeanLoader.class);
 
     private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
     // see #8506 private static final String DATASOURCE_BEANDEF_PATH = ConfigFileUtil.getCdmHomeDir().getPath();

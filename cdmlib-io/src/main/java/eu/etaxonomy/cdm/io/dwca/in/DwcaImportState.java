@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  */
 public class DwcaImportState extends DwcaDataImportStateBase<DwcaImportConfigurator>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaImportState.class);
+	private static final Logger logger = LogManager.getLogger(DwcaImportState.class);
 
 	public DwcaImportState(DwcaImportConfigurator config) {
 		super(config);

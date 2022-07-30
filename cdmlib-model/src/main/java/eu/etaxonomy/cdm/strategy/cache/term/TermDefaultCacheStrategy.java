@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.term;
 
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -26,7 +26,7 @@ public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEn
 	private static final long serialVersionUID = 7687293307791110547L;
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermDefaultCacheStrategy.class);
+	private static final Logger logger = LogManager.getLogger(TermDefaultCacheStrategy.class);
 
 	final static UUID uuid = UUID.fromString("9cdf52c1-bac4-4b6c-a7f9-1a87401bd8f9");
 

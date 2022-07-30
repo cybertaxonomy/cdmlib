@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -133,7 +133,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since 25.04.2016
  */
 public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
-	private static final Logger logger = Logger.getLogger(ReferencedObjTypeUpdater.class);
+	private static final Logger logger = LogManager.getLogger(ReferencedObjTypeUpdater.class);
 
 	private static final String stepName = "Update referenced obj_type";
 

@@ -9,13 +9,13 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 public class ReferenceFactory {
-	private static final Logger logger = Logger.getLogger(ReferenceFactory.class);
+	private static final Logger logger = LogManager.getLogger(ReferenceFactory.class);
 
 	public static Reference newArticle(){
 		return new Reference(ReferenceType.Article);

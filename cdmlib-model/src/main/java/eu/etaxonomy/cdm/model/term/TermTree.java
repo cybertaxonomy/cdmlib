@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.ArrayList;
@@ -26,7 +25,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -69,7 +69,7 @@ public class TermTree <T extends DefinedTermBase>
             implements ITermTree<T, TermNode> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
-	private static final Logger logger = Logger.getLogger(TermTree.class);
+	private static final Logger logger = LogManager.getLogger(TermTree.class);
 
 
     // TODO representations needed? TermTree was a TermBase until v3.3 but was removed from
@@ -85,7 +85,6 @@ public class TermTree <T extends DefinedTermBase>
 	@OneToOne(fetch = FetchType.LAZY, targetEntity=TermNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private TermNode<T> root;
-
 
 //******************** FACTORY METHODS ******************************************/
 
@@ -123,7 +122,6 @@ public class TermTree <T extends DefinedTermBase>
         return new TermTree<>(TermType.Feature);
     }
 
-
 	/**
 	 * @deprecated since 5.9, use {@link #NewFeatureInstance(UUID)} instead
 	 */
@@ -145,7 +143,6 @@ public class TermTree <T extends DefinedTermBase>
         result.setUuid(uuid);
         return result;
     }
-
 
     /**
      * @deprecated sinde 5.9 use {@link #NewFeatureInstance(List)} instead
@@ -176,12 +173,11 @@ public class TermTree <T extends DefinedTermBase>
 		return result;
 	}
 
-
 // ******************** CONSTRUCTOR *************************************/
 
-    //for JAXB only, TODO needed?
+	//for hibernate (+JAXB?) use only, *packet* private required by bytebuddy
     @Deprecated
-    protected TermTree(){}
+    TermTree(){}
 
 	/**
 	 * Class constructor: creates a new feature tree instance with an empty
@@ -222,7 +218,6 @@ public class TermTree <T extends DefinedTermBase>
 	@Transient
 	public List<TermNode<T>> getRootChildren(){
 		List<TermNode<T>> result = new ArrayList<>();
-		root.removeNullValueFromChildren();
 		result.addAll(root.getChildNodes());
 		return result;
 	}
@@ -259,12 +254,6 @@ public class TermTree <T extends DefinedTermBase>
         return terms;
     }
 
-    public void removeNullValueFromChildren(){
-       root.removeNullValueFromChildren();
-
-
-    }
-
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -281,7 +270,6 @@ public class TermTree <T extends DefinedTermBase>
     @Override
 	public TermTree<T> clone() {
 		try {
-		    @SuppressWarnings("unchecked")
 		    TermTree<T> result = (TermTree<T>)super.clone();
 		    result.root = this.getRoot().cloneDescendants();
 	        return result;

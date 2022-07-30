@@ -6,14 +6,12 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.print;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,12 +24,14 @@ import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.xpath.XPath;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
@@ -44,11 +44,10 @@ import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
  * @author n.hoffmann
  * @author l.morris
  * @since Apr 6, 2010
- * @version 1.0
  */
 public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
-	private static final Logger logger = Logger
-			.getLogger(RemoteXMLEntityFactory.class);
+
+	private static final Logger logger = LogManager.getLogger(RemoteXMLEntityFactory.class);
 
 	private URL serviceUrl;
 

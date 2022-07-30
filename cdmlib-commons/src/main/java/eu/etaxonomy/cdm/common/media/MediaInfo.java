@@ -8,15 +8,17 @@
  */
 package eu.etaxonomy.cdm.common.media;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author n.hoffmann
  * @since 13.11.2008
  */
 public abstract class MediaInfo {
+
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(MediaInfo.class);
+	private static Logger logger = LogManager.getLogger();
 
 	private String formatName;
 	private String mimeType;

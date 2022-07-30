@@ -15,7 +15,7 @@ import java.net.URL;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.web.context.ServletContextAware;
 
 import com.github.dozermapper.core.CustomConverter;
@@ -29,7 +29,7 @@ public class IdentifierConverter implements CustomConverter, ServletContextAware
 
 	private ServletContext servletContext;
 
-	public static final Logger logger = Logger.getLogger(IdentifierConverter.class);
+	public static final Logger logger = LogManager.getLogger(IdentifierConverter.class);
 
 	@Override
 	public Object convert(Object destination, Object source, Class<?> destClass, Class<?> sourceClass) {

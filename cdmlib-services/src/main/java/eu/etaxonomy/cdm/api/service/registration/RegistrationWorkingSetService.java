@@ -18,7 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.application.CdmRepository;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
-import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.util.UserHelper;
@@ -141,7 +142,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      */
     private static final int PAGE_SIZE = 50;
 
-    private static final Logger logger = Logger.getLogger(RegistrationWorkingSetService.class);
+    private static final Logger logger = LogManager.getLogger(RegistrationWorkingSetService.class);
 
     @Autowired
     @Qualifier("cdmRepository")
@@ -262,10 +263,10 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
     /**
      * {@inheritDoc}
-     * @throws RegistrationValidationException
+     * @throws TypeDesignationSetException
      */
     @Override
-    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws RegistrationValidationException, PermissionDeniedException {
+    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException {
 
         Reference reference = repo.getReferenceService().load(referenceUuid); // needed to use load to avoid the problem described in #7331
         if(resolveSections){
@@ -356,10 +357,10 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
     /**
      * {@inheritDoc}
-     * @throws RegistrationValidationException
+     * @throws TypeDesignationSetException
      */
     @Override
-    public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws RegistrationValidationException, PermissionDeniedException {
+    public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException {
 
         Reference reference = repo.getReferenceService().find(referenceID);
         if(resolveSections){
@@ -379,7 +380,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws RegistrationValidationException, PermissionDeniedException {
+    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws TypeDesignationSetException, PermissionDeniedException {
 
         if(orderHints == null){
             orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
@@ -466,10 +467,4 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             }
         }
     }
-
-
-
-
-
-
 }

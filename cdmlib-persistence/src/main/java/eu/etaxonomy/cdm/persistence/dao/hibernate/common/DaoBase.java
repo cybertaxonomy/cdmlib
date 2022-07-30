@@ -20,16 +20,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.Query;
 import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class DaoBase {
 
-    final static Logger logger = Logger.getLogger(DaoBase.class);
+    final static Logger logger = LogManager.getLogger(DaoBase.class);
 
     public final static boolean NO_UNPUBLISHED = false;  //constant for unpublished
     public final static boolean INCLUDE_UNPUBLISHED = true;  //constant for unpublished
@@ -134,18 +134,7 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addPageSizeAndNumber(Query query, Integer pageSize, Integer pageNumber) {
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-    }
-
-    protected void addPageSizeAndNumber(FullTextQuery query, Integer pageSize, Integer pageNumber) {
+    protected void addPageSizeAndNumber(Query<?> query, Integer pageSize, Integer pageNumber) {
         if(pageSize != null) {
             query.setMaxResults(pageSize);
             if(pageNumber != null) {
@@ -189,7 +178,7 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addLimitAndStart(Query query, Integer limit, Integer start) {
+    protected void addLimitAndStart(Query<?> query, Integer limit, Integer start) {
         if(limit != null) {
             if(start != null) {
                 query.setFirstResult(start);

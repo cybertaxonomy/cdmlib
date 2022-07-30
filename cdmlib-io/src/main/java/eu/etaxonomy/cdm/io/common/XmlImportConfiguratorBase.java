@@ -16,7 +16,8 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
  * @since 28.06.2011
  */
 //<ImportConfiguratorBase, XmlImportBase>
-public abstract class XmlImportConfiguratorBase<STATE extends XmlImportState> extends ImportConfiguratorBase<STATE, URI> {
+public abstract class XmlImportConfiguratorBase<STATE extends XmlImportState>
+        extends ImportConfiguratorBase<STATE, URI> {
 
 	public XmlImportConfiguratorBase(IInputTransformer transformer) {
 		super(transformer);

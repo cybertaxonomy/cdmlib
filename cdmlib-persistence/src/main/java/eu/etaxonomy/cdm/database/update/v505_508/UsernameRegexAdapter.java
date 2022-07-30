@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -32,7 +32,7 @@ public class UsernameRegexAdapter  extends SchemaUpdaterStepBase {
 
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(UsernameRegexAdapter.class);
+    private static final Logger logger = LogManager.getLogger(UsernameRegexAdapter.class);
 
     private static final String stepName = "Adapt username to username regex";
 

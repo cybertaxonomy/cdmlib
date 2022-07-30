@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,19 +20,14 @@ import org.springframework.stereotype.Component;
  *
  * @author a.mueller
  * @since 25.06.2017
- *
  */
 @Component
 public class DwcaResultWriter extends DwcaExportBase {
 
     private static final long serialVersionUID = -1657568483721887287L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaDescriptionExport.class);
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doInvoke(DwcaTaxExportState state) {
         addReport(state);
@@ -56,9 +52,6 @@ public class DwcaResultWriter extends DwcaExportBase {
         }
     }
 
-    /**
-     * @param state
-     */
     protected void closeZip(DwcaTaxExportState state) {
         if (state.isZip()){
             try {
@@ -69,21 +62,13 @@ public class DwcaResultWriter extends DwcaExportBase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean doCheck(DwcaTaxExportState state) {
         return false;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isIgnore(DwcaTaxExportState state) {
         return false;
     }
-
 }

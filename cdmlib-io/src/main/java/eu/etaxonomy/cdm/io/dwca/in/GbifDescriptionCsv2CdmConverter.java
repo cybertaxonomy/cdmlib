@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
@@ -42,7 +42,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(GbifDescriptionCsv2CdmConverter.class);
+	private static final Logger logger = LogManager.getLogger(GbifDescriptionCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
 

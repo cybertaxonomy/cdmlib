@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.function;
 
 import java.io.IOException;
@@ -17,13 +16,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
-import org.hibernate.Query;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
@@ -61,10 +60,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
+import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 public class TestScriptService {
 
-    private static final Logger logger = Logger.getLogger(TestScriptService.class);
+    private static final Logger logger = LogManager.getLogger(TestScriptService.class);
 
 	private void testNewConfigControler(){
 
@@ -313,29 +313,6 @@ public class TestScriptService {
 
 	}
 
-	private void testLocalHsql(){
-		CdmApplicationController appCtr = null;
-		try {
-			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
-			appCtr = CdmApplicationController.NewInstance(ds);
-			List<?> l = appCtr.getNameService().list(null,5, 1,null,null);
-			System.out.println(l);
-			//Agent agent = new Agent();
-			//appCtr.getAgentService().saveAgent(agent);
-			appCtr.close();
-		} catch (RuntimeException e) {
-			logger.error("Runtime Exception");
-			e.printStackTrace();
-			if (appCtr != null){
-			    appCtr.close();
-			}
-
-		} catch (DataSourceNotFoundException e) {
-			logger.error("Runtime Exception");
-			e.printStackTrace();
-		}
-	}
-
 	private void testLocalH2(){
 
 		DbSchemaValidation validation = DbSchemaValidation.CREATE;
@@ -381,12 +358,12 @@ public class TestScriptService {
 //				"";//" where e.area = :namedArea " ;
 			String hqlQuery = "Select t from Distribution e join e.inDescription d join d.taxon t join t.name n "+
 				" WHERE e.area in (:namedArea) AND n.nameCache = :nameCache ";
-			Query query = session.createQuery(hqlQuery);
+			Query<Taxon> query = session.createQuery(hqlQuery, Taxon.class);
 
 			//query.setEntity("namedArea", area1);
 			query.setParameter("nameCache", nameCache);
 			query.setParameterList("namedArea", areaList);
-			List resultList = query.list();
+			List<Taxon> resultList = query.list();
 			//List list = appCtr.getCommonService().getHqlResult(hqlQuery);
 
 			for (Object o:resultList){
@@ -407,7 +384,7 @@ public class TestScriptService {
 	}
 
 	private boolean testWritableResourceDirectory() throws IOException{
-		CdmApplicationUtils.getWritableResourceDir();
+		CdmPersistenceUtils.getWritableResourceDir();
 		return true;
 	}
 
@@ -430,7 +407,8 @@ public class TestScriptService {
 			UUID uuid1 = botName1.getUuid();
 			UUID uuid2 = botName2.getUuid();
 			try {
-				Logger loggerTrace = Logger.getLogger("org.hibernate.type");
+				@SuppressWarnings("unused")
+                Logger loggerTrace = LogManager.getLogger("org.hibernate.type");
 				//loggerTrace.setLevel(Level.TRACE);
 				System.out.println(logger.getName());
 
@@ -488,7 +466,6 @@ public class TestScriptService {
 
 		//CdmUtils.findLibrary(au.com.bytecode.opencsv.CSVReader.class);
 		//testPostgreServer();
-		//testLocalHsql();
 		//testLocalH2();
 		//testWritableResourceDirectory();
 //		testH2();

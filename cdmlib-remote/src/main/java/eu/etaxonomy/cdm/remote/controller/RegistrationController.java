@@ -17,7 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +46,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = {"/registration"})
 public class RegistrationController extends BaseController<Registration, IRegistrationService> {
 
-    public static final Logger logger = Logger.getLogger(RegistrationController.class);
+    public static final Logger logger = LogManager.getLogger(RegistrationController.class);
 
     public RegistrationController(){
         setInitializationStrategy(Arrays.asList(new String[]{

@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class TaxonComparatorTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TaxonComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger(TaxonComparatorTest.class);
 
 /******************** TESTS *****************************************************/
 

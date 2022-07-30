@@ -14,12 +14,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.spi.shared.AbstractUserType;
 
 import eu.etaxonomy.cdm.common.DOI;
 
@@ -28,12 +28,12 @@ import eu.etaxonomy.cdm.common.DOI;
  * @author a.mueller
  * @since 05.09.2013
  */
-public class DOIUserType  extends AbstractUserType implements UserType {
+public class DOIUserType extends AbstractUserType implements UserType {
 
     private static final long serialVersionUID = 2227841000128722278L;
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DOIUserType.class);
+	private static final Logger logger = LogManager.getLogger(DOIUserType.class);
 
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 
@@ -64,7 +64,7 @@ public class DOIUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public DOI nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+	public DOI nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException, SQLException {
         String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 
@@ -81,7 +81,7 @@ public class DOIUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
             StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
@@ -92,7 +92,7 @@ public class DOIUserType  extends AbstractUserType implements UserType {
 	}
 
 	@Override
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		return DOI.class;
 	}
 

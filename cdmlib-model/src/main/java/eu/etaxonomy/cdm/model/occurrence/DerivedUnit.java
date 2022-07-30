@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -86,7 +87,7 @@ public class DerivedUnit
         extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>> {
 
     private static final long serialVersionUID = -3525746216270843517L;
-	private static final Logger logger = Logger.getLogger(DerivedUnit.class);
+	private static final Logger logger = LogManager.getLogger(DerivedUnit.class);
 
 	@XmlElement(name = "Collection")
 	@XmlIDREF
@@ -202,10 +203,9 @@ public class DerivedUnit
 
 //************************** CONSTRUCTOR *********************************/
 
-	//Constructor: For hibernate use only
-	@SuppressWarnings("deprecation")
+    //for hibernate use only, protected required by subclass
+	@Deprecated
     protected DerivedUnit() {
-	    super();
         initDefaultCacheStrategy();
 	}
 
@@ -217,7 +217,6 @@ public class DerivedUnit
 		super(recordBasis);
         initDefaultCacheStrategy();
 	}
-
 
 	/**
 	 * Create new unit derived from an existing field unit

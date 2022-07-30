@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -27,7 +28,7 @@ public class DbImportDistributionCreationMapper<STATE extends DbImportStateBase<
         extends DbImportDescriptionElementCreationMapperBase<Distribution, DbImportStateBase<?,?>> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportDistributionCreationMapper.class);
+	private static final Logger logger = LogManager.getLogger();
 
 //******************************** FACTORY METHOD ***************************************************/
 

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.spi.RegionFactory;
 import org.hibernate.envers.boot.internal.EnversIntegrator;
 import org.springframework.beans.MutablePropertyValues;
@@ -38,9 +38,9 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
  * @author a.mueller
  * @since 18.12.2008
  */
-abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
+public abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
-    private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
+    private static final Logger logger = LogManager.getLogger(CdmDataSourceBase.class);
 
 
     //	private static final int TIMEOUT = 10;
@@ -382,19 +382,12 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
     }
 
     //********************* Base methods for CdmDataSource and CdmPersistentDatasource
-    /**
-     * @param hbm2dll
-     * @param showSql
-     * @param formatSql
-     * @param registerAuditing
-     * @param registerSearchListener
-     * @param cacheProviderClass
-     * @return
-     */
+
     protected AbstractBeanDefinition makeHibernatePropertiesBean(DatabaseTypeEnum dbType,
             DbSchemaValidation hbm2dll, boolean showSql,
             boolean formatSql, boolean registerAuditing, boolean registerSearchListener,
-            Class<? extends RegionFactory> cacheProviderClass) {
+            Class<? extends RegionFactory> cacheProviderClass,
+            String byteCodeProvider) {
 
         AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
         MutablePropertyValues hibernateProps = new MutablePropertyValues();
@@ -408,6 +401,7 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         props.setProperty(HibernateConfiguration.FORMAT_SQL, String.valueOf(formatSql));
         props.setProperty(HibernateConfiguration.REGISTER_SEARCH, String.valueOf(registerSearchListener));
         props.setProperty(EnversIntegrator.AUTO_REGISTER, String.valueOf(registerAuditing));
+        props.setProperty(HibernateConfiguration.BYTECODE_PROVIDER, byteCodeProvider);
 
         hibernateProps.add("properties",props);
         bd.setPropertyValues(hibernateProps);

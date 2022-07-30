@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.io.stream;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -33,7 +33,7 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
     private static final long serialVersionUID = 4200675007263433594L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(StreamImportConfiguratorBase.class);
+	private static final Logger logger = LogManager.getLogger(StreamImportConfiguratorBase.class);
 
 	//partitions
 	private boolean usePartitions = true;

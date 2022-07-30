@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping.out;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase.IdType;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -28,7 +29,7 @@ public class IdMapper
         extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>
         implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 
-    private static final Logger logger = Logger.getLogger(IdMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public static IdMapper NewInstance(String dbIdAttributeString){
 		return new IdMapper(dbIdAttributeString);

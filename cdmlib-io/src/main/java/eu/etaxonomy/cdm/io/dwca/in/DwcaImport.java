@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -27,7 +27,7 @@ public class DwcaImport
             extends DwcaDataImportBase<DwcaImportConfigurator, DwcaImportState>{
 
     private static final long serialVersionUID = -4340782092317841321L;
-    private static final Logger logger = Logger.getLogger(DwcaImport.class);
+    private static final Logger logger = LogManager.getLogger(DwcaImport.class);
 
 	@Override
 	protected void doInvoke(DwcaImportState state) {

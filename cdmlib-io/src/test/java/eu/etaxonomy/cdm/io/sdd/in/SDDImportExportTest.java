@@ -18,7 +18,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 
-import org.apache.log4j.Level;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -45,7 +44,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author l.morris
  * @since 14 Nov 2012
- *
  */
 public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
 
@@ -114,7 +112,6 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
 
         //logger.setLevel(Level.DEBUG);
         commitAndStartNewTransaction(new String[]{"DEFINEDTERMBASE"});
-        logger.setLevel(Level.DEBUG);
 
         logger.debug("Name count: " + (nameService.count(null)));
         logger.debug("Classification count: " + (classificationService.count(Classification.class)));
@@ -125,10 +122,6 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
     }
 
-    /**
-     * @param loadedDataSource
-     * @return
-     */
     private ICdmDataSource customDataSource() {
 
          CdmPersistentDataSource loadedDataSource = null;

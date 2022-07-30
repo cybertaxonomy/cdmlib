@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
@@ -43,7 +43,7 @@ public class TemporalData extends DescriptionElementBase {
 
     private static final long serialVersionUID = -1064249780729501786L;
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(TemporalData.class);
+    private static final Logger logger = LogManager.getLogger(TemporalData.class);
 
     @XmlElement(name = "Period")
     private ExtendedTimePeriod period = ExtendedTimePeriod.NewExtendedInstance();

@@ -20,11 +20,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
@@ -33,6 +35,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.query.Query;
 import org.hibernate.sql.JoinType;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.CollectionType;
@@ -91,7 +94,7 @@ public class CdmGenericDaoImpl
          extends CdmEntityDaoBase<CdmBase>
          implements ICdmGenericDao{
 
-    private static final Logger logger = Logger.getLogger(CdmGenericDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private Set<Class<? extends CdmBase>> allCdmClasses = null;
 	private final Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<>();
@@ -115,15 +118,15 @@ public class CdmGenericDaoImpl
     private List<ReferencingObjectDto> getCdmBasesByFieldAndClassDto(Class<? extends CdmBase> clazz, String propertyName,
             CdmBase referencedCdmBase, Integer limit){
 
-        Query query = getSession().createQuery("SELECT new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(this.uuid, this.id) "
+        Query<ReferencingObjectDto> query = getSession().createQuery("SELECT new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(this.uuid, this.id) "
                     + "FROM "+ clazz.getSimpleName() + " this "
-                    + "WHERE this." + propertyName +" = :referencedObject")
-                .setEntity("referencedObject", referencedCdmBase);
+                    + "WHERE this." + propertyName +" = :referencedObject",
+                    ReferencingObjectDto.class)
+                .setParameter("referencedObject", referencedCdmBase);
 
         if (limit != null){
             query.setMaxResults(limit);
         }
-        @SuppressWarnings("unchecked")
         List<ReferencingObjectDto> result = query.list();
         result.forEach(dto->dto.setType((Class<CdmBase>)clazz));
         return result;
@@ -146,12 +149,13 @@ public class CdmGenericDaoImpl
 
 	@Override
     public long getCountByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase){
-        Query query = getSession().createQuery("SELECT count(this) "
-                + "FROM "+ clazz.getSimpleName() + " this "
-                + "WHERE this." + propertyName +" = :referencedObject")
-                .setEntity("referencedObject", referencedCdmBase);
+        Query<Long> query = getSession().createQuery("SELECT count(this) "
+                + " FROM "+ clazz.getSimpleName() + " this "
+                + " WHERE this." + propertyName +" = :referencedObject",
+                Long.class)
+                .setParameter("referencedObject", referencedCdmBase);
 
-        long result =(Long)query.uniqueResult();
+        long result =query.uniqueResult();
         return result;
     }
 
@@ -161,11 +165,11 @@ public class CdmGenericDaoImpl
 
         String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName,
                 "new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(other.uuid, other.id)");
-        Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
+        Query<ReferencingObjectDto> query = getSession().createQuery(queryStr, ReferencingObjectDto.class)
+                .setParameter("referencedObject", item);
         if (limit != null){
             query.setMaxResults(limit);
         }
-        @SuppressWarnings("unchecked")
         List<ReferencingObjectDto> result = query.list();
         result.forEach(dto->dto.setType((Class)clazz));
         return result;
@@ -176,11 +180,11 @@ public class CdmGenericDaoImpl
 	        Class<?> clazz, String propertyName, CdmBase item, Integer limit){
 
 		String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "other");
-		Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
+		Query<CdmBase> query = getSession().createQuery(queryStr, CdmBase.class)
+		        .setParameter("referencedObject", item);
 		if (limit != null){
 		    query.setMaxResults(limit);
 		}
-		@SuppressWarnings("unchecked")
 		List<CdmBase> result = query.list();
 		return result;
 	}
@@ -199,36 +203,29 @@ public class CdmGenericDaoImpl
 
         String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "count(this)");
 
-        Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
-        long result =(Long)query.uniqueResult();
+        Query<Long> query = getSession().createQuery(queryStr, Long.class)
+                .setParameter("referencedObject", item);
+        long result =query.uniqueResult();
         return result;
     }
 
-	@Override
-	public Set<Class<? extends CdmBase>> getAllPersistedClasses(boolean includeAbstractClasses){
-		Set<Class<? extends CdmBase>> result = new HashSet<>();
+    @Override
+    public Set<Class<? extends CdmBase>> getAllPersistedClasses(boolean includeAbstractClasses){
+        Set<Class<? extends CdmBase>> result = new HashSet<>();
 
-		SessionFactory sessionFactory = getSession().getSessionFactory();
-		Map<String,?> allClassMetadata = sessionFactory.getAllClassMetadata();
-		Collection<String> keys = allClassMetadata.keySet();
-		for (String strKey : keys){
-			if (! strKey.endsWith("_AUD") && !strKey.endsWith("_AUD1")){
-				try {
-                    Class<?> clazz = Class.forName(strKey);
-					boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
-					if (! isAbstractClass || includeAbstractClasses){
-						result.add((Class)clazz);
-					}
-				} catch (ClassNotFoundException e) {
-				    String message = "Persisted CDM class not found: " + strKey;
-				    logger.warn(message);
-				    //TODO better throw exception, but currently some keys are really not found yet
-//					throw new RuntimeException("Persisted CDM class not found: " + strKey,e);
-				}
-			}
-		}
-		return result;
-	}
+        EntityManagerFactory sessionFactory = getSession().getSessionFactory();
+        Set<javax.persistence.metamodel.EntityType<?>> entities = sessionFactory.getMetamodel().getEntities();
+        for (javax.persistence.metamodel.EntityType<?> entity : entities){
+            if (! entity.getName().endsWith("_AUD") && !entity.getName().endsWith("_AUD1")){
+                Class<?> clazz = entity.getBindableJavaType();
+                boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
+                if (! isAbstractClass || includeAbstractClasses){
+                    result.add((Class)clazz);
+                }
+            }
+        }
+        return result;
+    }
 
     @Override
     public Set<ReferencingObjectDto> getReferencingObjectsDto(CdmBase referencedCdmBase){
@@ -387,13 +384,9 @@ public class CdmGenericDaoImpl
         return result;
     }
 
-	/**
-	 * @param referencedClass
-	 * @return
-	 * @throws NoSuchFieldException
-	 * @throws ClassNotFoundException
-	 */
-	protected Set<ReferenceHolder> makeHolderSet(Class<?> referencedClass) throws ClassNotFoundException, NoSuchFieldException {
+    //Dev Note: the soon to be removed class referringObjectMetadataFactoryImpl used properties in
+    //   entityType.getAttributes(), e.g. isAssociation(). This might be considered for xxx, too
+	private Set<ReferenceHolder> makeHolderSet(Class<?> referencedClass) throws ClassNotFoundException, NoSuchFieldException {
 		Set<ReferenceHolder> result = new HashSet<>();
 
 		//init
@@ -401,9 +394,11 @@ public class CdmGenericDaoImpl
 			allCdmClasses = getAllPersistedClasses(false); //findAllCdmClasses();
 		}
 		SessionFactory sessionFactory = getSession().getSessionFactory();
+//        EntityManagerFactory sessionFactory = getSession().getSessionFactory();
 
 		for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 			ClassMetadata classMetadata = sessionFactory.getClassMetadata(cdmClass);
+//	        javax.persistence.metamodel.EntityType<? extends CdmBase> classMetadata = sessionFactory.getMetamodel().entity(cdmClass);
 			Type[] propertyTypes = classMetadata.getPropertyTypes();
 			int propertyNr = 0;
 			for (Type propertyType: propertyTypes){
@@ -544,18 +539,17 @@ public class CdmGenericDaoImpl
 
 	@Override
 	public List<CdmBase> getHqlResult(String hqlQuery, Object[] params){
-		Query query = getSession().createQuery(hqlQuery);
+		Query<CdmBase> query = getSession().createQuery(hqlQuery, CdmBase.class);
 		for(int i = 0; i<params.length; i++){
 		    query.setParameter(String.valueOf(i), params[i]);  //for some reason using int, not String, throws exceptions, this seems to be a hibernate bug
 		}
-		@SuppressWarnings("unchecked")
         List<CdmBase> result = query.list();
 		return result;
 	}
 
 	@Override
-	public Query getHqlQuery(String hqlQuery){
-		Query query = getSession().createQuery(hqlQuery);
+	public Query<?> getHqlQuery(String hqlQuery){
+		Query<?> query = getSession().createQuery(hqlQuery);
 		return query;
 	}
 
@@ -574,7 +568,6 @@ public class CdmGenericDaoImpl
 		DeduplicationHelper helper = new DeduplicationHelper(session, this);
 		return helper.isMergeable(cdmBase1, cdmBase2, mergeStrategy);
 	}
-
 
 	@Override
 	public <T extends CdmBase> T find(Class<T> clazz, int id){
@@ -1078,8 +1071,7 @@ public class CdmGenericDaoImpl
     @Override
     public List<UUID> listUuid(Class<? extends CdmBase> clazz) {
         String queryString = "SELECT uuid FROM " + clazz.getSimpleName();
-        Query query = getSession().createQuery(queryString);
-        @SuppressWarnings("unchecked")
+        Query<UUID> query = getSession().createQuery(queryString, UUID.class);
         List<UUID> list = query.list();
         return list;
     }

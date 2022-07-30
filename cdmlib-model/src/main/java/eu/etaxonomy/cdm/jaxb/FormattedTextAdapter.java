@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.jaxb;
 
 import java.io.StringReader;
@@ -23,9 +22,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -49,12 +48,12 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 		                                         "xmlns:xsi"};
 
 	@SuppressWarnings("unused")
-	private static final Log logger = LogFactory.getLog(FormattedTextAdapter.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public FormattedText marshal(String string) throws Exception {
 		if(string != null) {
-			string = StringEscapeUtils.escapeXml(string);
+			string = StringEscapeUtils .escapeXml11(string);
 			String documentString = "<?xml version=\"1.0\"?><text>"  + string + "</text>";
 			//log.debug("Parsing " + documentString);
 			FormattedText text = new FormattedText();

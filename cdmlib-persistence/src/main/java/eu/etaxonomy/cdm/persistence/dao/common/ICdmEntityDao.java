@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.Collection;
@@ -26,10 +25,12 @@ import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import javassist.tools.rmi.ObjectNotFoundException;
 
 /**
- * An data access interface that all data access classes implement
+ * Base class for all DAOs intended for persisting instances of a certain CdmBase subclass.
+ *
+ * @param <T> The CdmBase subclass type.
+ *
  * @author m.doering
  * @since 02-Nov-2007 19:36:10
  */
@@ -39,7 +40,15 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public <S extends T> S save(S newInstance) throws DataAccessException;
 
-    public T merge(T transientObject) throws DataAccessException;
+    public T merge(T transientEntity) throws DataAccessException;
+
+    /**
+     * Same as {@link #merge(CdmBase)} but with the possibility to fully remove
+     * further objects from the database during the same session.
+     * This may become necessary if these objects were deleted from the detached object graph
+     * and are not handled via Cascade.REMOVE or orphanRemoval.
+     */
+    public T merge(T transientEntity, Collection<CdmBase> removedObjects) throws DataAccessException;
 
     /**
      * This method allows for the possibility of returning the input transient
@@ -52,12 +61,12 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * This method returns the root merged transient entity as well as all newly merged
      * persistent entities within the return object.
      *
-     * @param transientObject
+     * @param transientEntity
      * @param returnTransientEntity
      * @return transient or persistent object depending on the value of returnTransientEntity
      * @throws DataAccessException
      */
-    public MergeResult<T> merge(T transientObject, boolean returnTransientEntity) throws DataAccessException;
+    public MergeResult<T> merge(T transientEntity, boolean returnTransientEntity) throws DataAccessException;
 
     /**
      * Obtains the specified LockMode on the supplied object
@@ -126,7 +135,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     /**
      * @param persistentObject
-     * @return
      * @throws DataAccessException
      */
     public UUID delete(T persistentObject) throws DataAccessException;
@@ -313,8 +321,9 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * object usually is a proxy object except for the case when it was already initialized
      * before in the same session.<BR>
      * This methods wraps {@link Session#load(Class, java.io.Serializable)}.<BR>
-     * It does not check, if the object really exists but throws an {@link ObjectNotFoundException}
-     * exception when no record with the given id exists in the database.
+     * It does not check, if the object really exists but throws an exception
+     * when no record with the given id exists in the database.
+     *
      * @return
      *         the (uninitialized proxy) object
      */

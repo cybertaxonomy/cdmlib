@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.common.URI;
 @Audited
 public class MovieFile extends MediaRepresentationPart {
 	private static final long serialVersionUID = 8650308822737671731L;
-	private static final Logger logger = Logger.getLogger(MovieFile.class);
+	private static final Logger logger = LogManager.getLogger(MovieFile.class);
 
 	//Length of movie in seconds
 	@XmlElement(name = "Duration")

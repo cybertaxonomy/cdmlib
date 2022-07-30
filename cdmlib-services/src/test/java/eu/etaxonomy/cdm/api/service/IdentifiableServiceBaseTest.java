@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.database.annotations.Transactional;
@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(IdentifiableServiceBaseTest.class);
+	private static final Logger logger = LogManager.getLogger(IdentifiableServiceBaseTest.class);
 
 	@SpringBeanByType
 	private INameService nameService;

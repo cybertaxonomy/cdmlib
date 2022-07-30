@@ -9,28 +9,31 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.compare.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeStatusComparator;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 
 /**
  * @author k.luther/a.kohlbecker
  * @since 09.03.2018
- *
  */
-public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<TaxonNodeDto> implements Serializable, Comparator<TaxonNodeDto>, ITaxonNodeComparator<TaxonNodeDto>{
+public class TaxonNodeDtoByNameComparator
+        extends AbstractStringComparator<TaxonNodeDto>
+        implements Serializable, ITaxonNodeComparator<TaxonNodeDto>{
 
     private static final long serialVersionUID = -5939529760454590279L;
 
     private static final String HYBRID_SIGN = UTF8.HYBRID.toString();
 
-    private static final Logger logger = Logger.getLogger(TaxonNodeByNameComparator.class);
+    private static final Logger logger = LogManager.getLogger(TaxonNodeByNameComparator.class);
 
     private boolean ignoreHybridSign = true;
     private boolean sortInfraGenericFirst = true;
@@ -49,31 +52,11 @@ public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<Taxon
         if (node1.equals(node2)){
             return 0;
         }
-        boolean node1Excluded = node1.isExcluded();
-        boolean node2Excluded = node2.isExcluded();
-        boolean node1Unplaced = node1.isUnplaced();
-        boolean node2Unplaced = node2.isUnplaced();
 
-      //They should both be put to the end (first unplaced then excluded)
-        if (node2Excluded && !node1Excluded){
-            return -1;
-        }
-        if (node2Unplaced && !(node1Unplaced || node1Excluded)){
-            return -1;
-        }
-
-        if (node1Excluded && !node2Excluded){
-            return 1;
-        }
-        if (node1Unplaced && !(node2Unplaced || node2Excluded)){
-            return 1;
-        }
-
-        if (node1Unplaced && node2Excluded){
-            return -1;
-        }
-        if (node2Unplaced && node1Excluded){
-            return 1;
+        //compare status
+        int nodeResult = compareStatus(node1.getStatus(), node2.getStatus());
+        if (nodeResult != 0){
+            return nodeResult;
         }
 
         String titleCache1 = createSortableTitleCache(node1);
@@ -115,9 +98,11 @@ public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<Taxon
         }
     }
 
+    private int compareStatus(TaxonNodeStatus status1, TaxonNodeStatus status2) {
+        return TaxonNodeStatusComparator.INSTANCE().compare(status1, status2);
+    }
 
     private String createSortableTitleCache(TaxonNodeDto taxonNode) {
-
 
         String nameTitleCache= taxonNode.getTitleCache();
 
@@ -129,7 +114,6 @@ public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<Taxon
 //            System.out.println(titleCache);
         return nameTitleCache;
     }
-
 
     @Override
     public boolean isIgnoreHybridSign() {
@@ -148,7 +132,4 @@ public class TaxonNodeDtoByNameComparator extends AbstractStringComparator<Taxon
     public void setSortInfraGenericFirst(boolean infraGenericFirst) {
         this.sortInfraGenericFirst = infraGenericFirst;
     }
-
 }
-
-

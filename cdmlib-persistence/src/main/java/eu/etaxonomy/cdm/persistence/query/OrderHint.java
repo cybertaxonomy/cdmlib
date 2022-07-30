@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -56,7 +56,7 @@ public class OrderHint implements Serializable {
         }
     }
 
-    public static final Logger logger = Logger.getLogger(OrderHint.class);
+    public static final Logger logger = LogManager.getLogger(OrderHint.class);
 
     private final String propertyName;
 

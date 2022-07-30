@@ -1215,9 +1215,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         }
     }
 
-
-
-
     @Test
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     //NOTE: There is a problem with loading AuditEvents if this test runs
