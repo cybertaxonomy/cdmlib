@@ -88,6 +88,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     TAXONRELATIONSHIP("TaxonRelationship"),
     TEAMORPERSONBASE("TeamOrPerson"),
     TERMVOCABULARY("TermVocabulary"),
+    TEXTUALTYPEDESIGNATION("TextualTypeDesignation"),
     USER("User"),
     ;
 
@@ -97,7 +98,6 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
         //we have no UUIDs defined yet, but needed for tests
         this(UUID.randomUUID(), key, key, null);
     }
-
 
     private PermissionClass(UUID uuid, String defaultString, String key){
         this(uuid, defaultString, key, null);
@@ -170,10 +170,6 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
         return permissionClass;
     }
 
-    /**
-     * @param o
-     * @return
-     */
     private static PermissionClass doValueOf(Class<?> clazz) {
         try{
             String normalizedName = clazz.getSimpleName().toUpperCase();
@@ -182,9 +178,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
             if (CdmBase.class.isAssignableFrom(clazz)){
                 return doValueOf(clazz.getSuperclass());
             }
-
         }
         return null;
     }
-
 }
