@@ -45,7 +45,7 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
      * The placement of the taxon is doubtful or preliminary.
      */
     @XmlEnumValue("Doubtful")
-    DOUBTFUL(UUID.fromString("022ebae2-a020-4a8d-8ee1-886d98d3a4db"), "Doubtful", "Taxon incl. in parent taxon with doubts", "DOU", "?", null),
+    DOUBTFUL(UUID.fromString("022ebae2-a020-4a8d-8ee1-886d98d3a4db"), "Doubtful", "Taxon included in parent taxon with doubts", "DOU", "?", null),
 
     //2
     /**
@@ -60,7 +60,7 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
      * See sub status for more specific reasons.
      */
     @XmlEnumValue("Excluded")
-    EXCLUDED(UUID.fromString("23d259b6-2d7e-4df6-8745-0e24fbe63187"), "Excluded", "Name/taxon excluded (unspecific)", "EXC", Character.toString((char)248), null),
+    EXCLUDED(UUID.fromString("23d259b6-2d7e-4df6-8745-0e24fbe63187"), "Excluded", "Name or taxon excluded (unspecific)", "EXC", Character.toString((char)248), null),
 
     //4  #10096
     /**
@@ -68,7 +68,7 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
      * E.g. a taxon that does not occur in the region of the flora treatment.
      */
     @XmlEnumValue("Excluded_geo")
-    EXCLUDED_GEO(UUID.fromString("a76c0fa8-e04d-421c-ac10-07a3c6770d45"), "Excluded geo.", "Taxon excl. (geographically out of scope)", "EXCG", Character.toString((char)248)+"g", EXCLUDED),
+    EXCLUDED_GEO(UUID.fromString("a76c0fa8-e04d-421c-ac10-07a3c6770d45"), "Excluded geo.", "Taxon excluded (geographically out of scope)", "EXCG", Character.toString((char)248)+"g", EXCLUDED),
 
     //5 #10096
     /**
@@ -76,7 +76,7 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
      * E.g. name being a taxon name or synonym belonging to a taxon that is not part of the treatment.
      */
     @XmlEnumValue("Excluded_tax")
-    EXCLUDED_TAX(UUID.fromString("689a5821-e59d-4ec2-ae33-2331bdb39f34"),"Excluded tax.", "Taxon/name excl. (taxonomically out of sc.)", "EXCT", Character.toString((char)248)+"t", EXCLUDED),
+    EXCLUDED_TAX(UUID.fromString("689a5821-e59d-4ec2-ae33-2331bdb39f34"),"Excluded tax.", "Taxon or name excluded (taxonomically out of scope)", "EXCT", Character.toString((char)248)+"t", EXCLUDED),
 
     //6 #10096
     /**
@@ -84,7 +84,7 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
      * E.g. an effectively published name ascribing the name to an author who merely and correctly cited an earlier name.
      */
     @XmlEnumValue("Excluded_nom")
-    EXCLUDED_NOM(UUID.fromString("b4484183-6f19-4901-af96-0ab6183cebfb"), "Excluded nom.","Name excl. (for nomenclatural reasons)", "EXCN", Character.toString((char)248)+"n", EXCLUDED),
+    EXCLUDED_NOM(UUID.fromString("b4484183-6f19-4901-af96-0ab6183cebfb"), "Excluded nom.","Name excluded (for nomenclatural reasons)", "EXCN", Character.toString((char)248)+"n", EXCLUDED),
 
     //7 #10096
     /**
