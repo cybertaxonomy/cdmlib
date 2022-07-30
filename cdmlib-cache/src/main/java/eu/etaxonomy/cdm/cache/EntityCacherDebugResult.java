@@ -25,6 +25,7 @@ import org.hibernate.proxy.LazyInitializer;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -523,7 +524,8 @@ public class EntityCacherDebugResult {
                     try {
                         objectLabel = object.toString();
                     } catch(LazyInitializationException e){}
-                    label = fieldName + ": " + getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "] : " + objectLabel;
+
+                    label = CdmUtils.concat(": ", fieldName, objectLabel) + ": " + getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "]";
                 } else {
                     label = fieldName + ": [" + className + "] : " + object.toString();
                 }
