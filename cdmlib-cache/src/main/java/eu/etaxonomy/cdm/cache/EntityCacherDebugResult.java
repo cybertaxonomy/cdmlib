@@ -505,7 +505,7 @@ public class EntityCacherDebugResult {
                     } else {
                         className = "InitialisedHibernateProxy";
                     }
-                    label = "[" + className + "] " + fieldName;
+                    label = fieldName + ": [" + className + "]";
                 } else if(object instanceof PersistentCollection) {
                     PersistentCollection pc = ((PersistentCollection)object);
                     if(!pc.wasInitialized()) {
@@ -513,26 +513,23 @@ public class EntityCacherDebugResult {
                     } else {
                         className = "InitialisedPersistentCollection";
                     }
-                    label = "[" + className + "] " + fieldName;
+                    label = fieldName + ": [" + className + "]";
                 } else if(object instanceof Collection) {
-                    label = "[" + className + "] " + fieldName + " : " + String.valueOf(((Collection)object).size());
+                    label = fieldName + ": [" + className + "] : " + String.valueOf(((Collection)object).size());
                 } else if(object instanceof Map) {
-                    label = "[" + className + "] " + fieldName + " : " + String.valueOf(((Map)object).size());
+                    label = fieldName + ": [" + className + "] : " + String.valueOf(((Map)object).size());
                 } else if(object instanceof CdmBase) {
                     String objectLabel = "-- not fully initialized for toString() --";
                     try {
-
                         objectLabel = object.toString();
-                    } catch(LazyInitializationException e){
-
-                    }
-                    label = getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "] " + fieldName + " : " + objectLabel;
+                    } catch(LazyInitializationException e){}
+                    label = fieldName + ": " + getCachesContainingEntity((CdmBase)object) +  "[" + className + "#" + ((CdmBase)object).getId() + "] : " + objectLabel;
                 } else {
-                    label = "[" + className + "] " + fieldName + " : " + object.toString();
+                    label = fieldName + ": [" + className + "] : " + object.toString();
                 }
                 label += " {"+ System.identityHashCode(object) + "}";
             } else {
-                label = "[NULL] " + fieldName;
+                label = fieldName + ": [NULL]";
             }
             return label;
         }
