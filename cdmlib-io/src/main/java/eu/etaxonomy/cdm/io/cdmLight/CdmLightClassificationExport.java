@@ -1948,7 +1948,7 @@ public class CdmLightClassificationExport
 //                        nonRelNames += label + relatedName.getTitleCache() + " ";
 //                    }
                 }
-                relNames.trim();
+                nonRelNames.trim();
                 if (nonNames.size() > 0){
                     nonRelNames = StringUtils.strip(nonRelNames, null);
                     nonRelNames += "] ";
