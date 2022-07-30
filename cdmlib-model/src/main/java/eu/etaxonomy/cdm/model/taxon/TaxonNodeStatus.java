@@ -111,15 +111,17 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger(TaxonNodeStatus.class);
 
+    private String shortLabel;
     private String symbol;
 
     private TaxonNodeStatus(UUID uuid, String label, String key, String symbol){
         this(uuid, label, label, key, symbol, null);
     }
 
-    private TaxonNodeStatus(UUID uuid, String label, String longLabel, String key, String symbol, TaxonNodeStatus parent){
-        delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, longLabel, key, parent);
+    private TaxonNodeStatus(UUID uuid, String shortLabel, String label, String key, String symbol, TaxonNodeStatus parent){
+        delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, label, key, parent);
         this.symbol = symbol;
+        this.shortLabel = shortLabel;
     }
 
 
@@ -159,9 +161,13 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
     public static TaxonNodeStatus getByKey(String key){return delegateVoc.getByKey(key);}
     public static TaxonNodeStatus getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
-//**************** symbol **********************/
+//**************** additional getter **********************/
 
     public String getSymbol(){
         return symbol;
+    }
+
+    public String getShortLabel(){
+        return shortLabel;
     }
 }
