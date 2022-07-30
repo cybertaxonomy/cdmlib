@@ -14,11 +14,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.TypedQuery;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -495,8 +494,8 @@ public class DescriptiveDataSetService
         Session session = getSession();
         String queryString = "SELECT d.uuid FROM DescriptiveDataSet a JOIN a.descriptions as d JOIN d.taxon t WHERE t.uuid = :taxonuuid AND a.uuid = :dataSetUuid ";  // and :descriptionType IN d.types
 
-        TypedQuery<UUID> query;
-        query = session.createQuery(queryString);
+        Query<UUID> query;
+        query = session.createQuery(queryString, UUID.class);
         query.setParameter("taxonuuid", taxonUuid);
         query.setParameter("dataSetUuid", dataSet.getUuid());
 //        query.setParameter("descriptionType", descriptionType.getKey());
