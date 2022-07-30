@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -127,6 +128,14 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         person.setGivenName("ben");
         agentDao.save(person);
         commit();
+    }
+
+    @Test
+    @DataSet
+    public void testGetTeamUuidAndNomenclaturalTitle() {
+        List<UuidAndTitleCache<Team>> list = agentDao.getTeamUuidAndNomenclaturalTitle();
+        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(UUID.fromString("924fa059-1b83-45f8-bc3a-e754d2757364"), list.get(0).getUuid());
     }
 
     @Test
