@@ -1166,7 +1166,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return criteria;
     }
 
-
     @Override
     public <S extends T> List<S> findByParamWithRestrictions(Class<S> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
@@ -1221,11 +1220,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     private class PropertySelectorImpl implements PropertySelector {
 
-        private final Set<String> includeProperties;
-        /**
-         *
-         */
         private static final long serialVersionUID = -3175311800911570546L;
+
+        private final Set<String> includeProperties;
 
         public PropertySelectorImpl(Set<String> includeProperties) {
             this.includeProperties = includeProperties;
@@ -1239,7 +1236,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 return false;
             }
         }
-
     }
 
     private class CriterionWithOperator {
@@ -1247,14 +1243,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         Restriction.Operator operator;
         Criterion criterion;
 
-
         public CriterionWithOperator(Operator operator, Criterion criterion) {
             super();
             this.operator = operator;
             this.criterion = criterion;
         }
-
-
     }
 
     /**
@@ -1274,11 +1267,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return criteria;
     }
 
-    /**
-     * @param clazz
-     * @param auditEvent
-     * @return
-     */
     protected AuditQuery makeAuditQuery(Class<? extends CdmBase> clazz, AuditEvent auditEvent) {
         AuditQuery query = null;
 

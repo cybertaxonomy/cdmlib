@@ -15,7 +15,8 @@ import java.util.Set;
 import javax.naming.Reference;
 
 import org.apache.commons.lang.UnhandledException;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.MappingException;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -231,16 +232,6 @@ public class DeduplicationHelper {
 		return superClass.isAssignableFrom(class1) && superClass.isAssignableFrom(class2);
 	}
 
-	/**
-	 * @param <T>
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param clazz
-	 * @param sessionFactory
-	 * @throws MergeException
-	 * @throws ClassNotFoundException
-	 * @throws NoSuchFieldException
-	 */
 	private <T extends CdmBase> void mergeExternal(T cdmBase1, T cdmBase2, Class<T> clazz,
 			Session session) throws MergeException {
 //		handleAnnotations
@@ -303,13 +294,6 @@ public class DeduplicationHelper {
 		}
 	}
 
-
-	/**
-	 * @param <T>
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param session
-	 */
 	private <T> void handleAnnotationsEtc(T cdmBase1, T cdmBase2, Session session) {
 		//when handling annotations and other elements linked via @Any an JDBC errors occurs
 		//due to the unique column constraint in the association table on the column referencing
