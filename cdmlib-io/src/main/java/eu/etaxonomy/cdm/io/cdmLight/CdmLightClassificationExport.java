@@ -1485,13 +1485,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.TYPIFIED_NAME_FK)] = getId(state, name);
         }
         state.getProcessor().put(table, specimenType, csvLine);
-
-
-
-
-
     }
-
 
     private String createNameWithItalics(List<TaggedText> taggedName) {
 
@@ -1532,14 +1526,11 @@ public class CdmLightClassificationExport
         csvLine = new String[table.getSize()];
 
         for (NameRelationship rel : rels) {
-            NameRelationshipType type = rel.getType();
             TaxonName name2 = rel.getFromName();
-            name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
+            name2 = HibernateProxyHelper.deproxy(name2);
             if (!state.getNameStore().containsKey(name2.getId())) {
                 handleName(state, name2, null);
             }
-
-
         }
     }
 
@@ -1917,13 +1908,8 @@ public class CdmLightClassificationExport
                 Set<NameRelationship> related = name.getNameRelations();
                 List<NameRelationship> relatedList = new ArrayList<>(related);
 
-                Collections.sort(relatedList, new Comparator<NameRelationship>() {
-                    @Override
-                    public int compare(NameRelationship nr1, NameRelationship nr2) {
-                        return nr1.getType().compareTo(nr2.getType());
-                    }
-
-                });
+                Collections.sort(relatedList, (nr1, nr2)-> {
+                        return nr1.getType().compareTo(nr2.getType());});
 
                 List<NameRelationship> nonNames = new ArrayList<>();
                 List<NameRelationship> otherRelationships = new ArrayList<>();
@@ -1961,8 +1947,6 @@ public class CdmLightClassificationExport
 //                        relatedName = relName.getFromName();
 //                        nonRelNames += label + relatedName.getTitleCache() + " ";
 //                    }
-
-
                 }
                 relNames.trim();
                 if (nonNames.size() > 0){
@@ -1970,6 +1954,7 @@ public class CdmLightClassificationExport
                     nonRelNames += "] ";
                 }
 
+                //other relationships
                 if (otherRelationships.size() > 0){
                     relNames += " [";
                 }
@@ -1989,13 +1974,13 @@ public class CdmLightClassificationExport
 //                        label = rel.getType().getInverseLabel() + " ";
 //                        relatedName = rel.getFromName();
 //                    }
-
                 }
                 relNames.trim();
                 if (otherRelationships.size() > 0){
                     relNames = StringUtils.stripEnd(relNames, null);
                     relNames += "] ";
                 }
+
 
                 String synonymSign = "";
                 if (index > 0){
@@ -2077,7 +2062,6 @@ public class CdmLightClassificationExport
                             }else {
                                 synonymSign = "\u003D ";
                             }
-
                         }
                     }
                     if (!isAccepted){
