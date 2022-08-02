@@ -15,9 +15,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -39,8 +40,7 @@ public class UpdateResult implements Serializable{
 
     private Status status = Status.OK;
 
-    @SuppressWarnings("unchecked")
-    private final Collection<Exception> exceptions = new CircularFifoBuffer(10);
+    private final Collection<Exception> exceptions = new ArrayBlockingQueue<>(10);
 
     private Set<CdmBase> updatedObjects = new HashSet<>();
 
