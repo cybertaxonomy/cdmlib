@@ -1941,8 +1941,12 @@ public class CdmLightClassificationExport
                     String label = "non ";
                     TaxonName relatedName = null;
                     if (relName.getFromName().equals(name)){
-                        relatedName = relName.getToName();
-                        nonRelNames += label + relatedName.getTitleCache() + " ";
+                        relatedName = relName.getToName();                        
+                        if (state.getConfig().isAddHTML()){
+                        	nonRelNames += label + createNameWithItalics(relatedName.getTaggedName())+ " ";
+                        }else{
+                        	nonRelNames += label + relatedName.getTitleCache();
+                        }
                     }
 //                    else{
 //                        label = relName.getType().getInverseLabel() + " ";
