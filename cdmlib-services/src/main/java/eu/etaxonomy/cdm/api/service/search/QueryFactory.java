@@ -330,7 +330,7 @@ public class QueryFactory {
             longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
                     180.0, true, true), BooleanClause.Occur.SHOULD );
 //            longQueryBuilder.add( DoublePoint.newRangeQuery( longitudeFieldName, -180.0,
-//                    boundingBox.getUpperRight().getLongitude()), BooleanClause.Occur.SHOULD );
+//                    boundingBox.getUpperRightLongitude()), BooleanClause.Occur.SHOULD );
             longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
                     boundingBox.getUpperRightLongitude(), true, true ), BooleanClause.Occur.SHOULD );
         }
