@@ -25,7 +25,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery.Builder;
@@ -33,7 +34,6 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.util.BytesRef;
 import org.hibernate.TransientObjectException;
-import org.hibernate.search.spatial.impl.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.api.service.dto.DNASampleDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
+import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationDTOFactory;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
@@ -625,7 +626,7 @@ public class OccurrenceServiceImpl
 
     @Override
     public Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(
-            Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle boundingBox, List<Language> languages,
+            Class<? extends SpecimenOrObservationBase> clazz, String queryString, RectangleDTO boundingBox, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws IOException, LuceneParseException {
 
@@ -655,7 +656,7 @@ public class OccurrenceServiceImpl
         return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
     }
 
-    private LuceneSearch prepareByFullTextSearch(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle bbox,
+    private LuceneSearch prepareByFullTextSearch(Class<? extends SpecimenOrObservationBase> clazz, String queryString, RectangleDTO bbox,
             List<Language> languages, boolean highlightFragments) {
 
         Builder finalQueryBuilder = new Builder();

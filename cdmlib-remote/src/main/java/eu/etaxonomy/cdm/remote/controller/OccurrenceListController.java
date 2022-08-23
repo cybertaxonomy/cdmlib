@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
@@ -150,7 +151,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
     public Pager<SearchResult<SpecimenOrObservationBase>> doFindByFullText(
             @RequestParam(value = "clazz", required = false) Class<? extends SpecimenOrObservationBase<?>> clazz,
             @RequestParam(value = "query", required = false) String queryString,
-            @RequestParam(value = "bbox", required = false) Rectangle boundingBox,
+            @RequestParam(value = "bbox", required = false) RectangleDTO boundingBox,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
             @RequestParam(value = "pageIndex", required = false) Integer pageIndex,

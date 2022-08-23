@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2018 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.editor;
 
 import java.beans.PropertyEditorSupport;
@@ -11,15 +19,9 @@ import org.springframework.util.Assert;
  *
  * @author a.kohlbecker
  * @since Apr 26, 2013
- *
  */
 public class RectanglePropertyEditor extends PropertyEditorSupport {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.beans.PropertyEditorSupport#setAsText(java.lang.String)
-     */
     @Override
     public void setAsText(String text) {
         String[] values = text.split(",");

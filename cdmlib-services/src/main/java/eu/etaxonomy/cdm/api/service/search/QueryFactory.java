@@ -17,7 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -38,8 +39,8 @@ import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
 import org.apache.lucene.search.join.ScoreMode;
 import org.hibernate.search.engine.ProjectionConstants;
-import org.hibernate.search.spatial.impl.Rectangle;
 
+import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
@@ -300,38 +301,38 @@ public class QueryFactory {
      * @see Query
      * @see org.hibernate.search.spatial.Coordinates
      */
-    public static Query buildSpatialQueryByRange(Rectangle boundingBox, String fieldName) {
+    public static Query buildSpatialQueryByRange(RectangleDTO boundingBox, String fieldName) {
 
         String latitudeFieldName = fieldName + "_HSSI_Latitude";
         String longitudeFieldName = fieldName + "_HSSI_Longitude";
 
         //for Lucene 6+
-//        Query latQuery= DoublePoint.newRangeQuery(latitudeFieldName, boundingBox.getLowerLeft().getLatitude(),
-//                boundingBox.getUpperRight().getLatitude());
+//        Query latQuery= DoublePoint.newRangeQuery(latitudeFieldName, boundingBox.getLowerLeftLatitude(),
+//                boundingBox.getUpperRightLatitude());
         Query latQuery= NumericRangeQuery.newDoubleRange(
-                latitudeFieldName, boundingBox.getLowerLeft().getLatitude(),
-                boundingBox.getUpperRight().getLatitude(), true, true
+                latitudeFieldName, boundingBox.getLowerLeftLatitude(),
+                boundingBox.getUpperRightLatitude(), true, true
         );
 
         Builder longQueryBuilder = new Builder();
-        if ( boundingBox.getLowerLeft().getLongitude() <= boundingBox.getUpperRight().getLongitude() ) {
+        if ( boundingBox.getLowerLeftLongitude() <= boundingBox.getUpperRightLongitude() ) {
             //for Lucene 6+
-//            longQueryBuilder.add(DoublePoint.newRangeQuery( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
-//                    boundingBox.getUpperRight().getLongitude()), Occur.MUST);
-              longQueryBuilder.add(NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
-                      boundingBox.getUpperRight().getLongitude(), true, true), Occur.MUST);
+//            longQueryBuilder.add(DoublePoint.newRangeQuery( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
+//                    boundingBox.getUpperRightLongitude()), Occur.MUST);
+              longQueryBuilder.add(NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
+                      boundingBox.getUpperRightLongitude(), true, true), Occur.MUST);
 
         }
         else {
             //for Lucene 6+
-//            longQueryBuilder.add( DoublePoint.newRangeQuery( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+//            longQueryBuilder.add( DoublePoint.newRangeQuery( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
 //                    180.0), BooleanClause.Occur.SHOULD );
-            longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+            longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
                     180.0, true, true), BooleanClause.Occur.SHOULD );
 //            longQueryBuilder.add( DoublePoint.newRangeQuery( longitudeFieldName, -180.0,
 //                    boundingBox.getUpperRight().getLongitude()), BooleanClause.Occur.SHOULD );
             longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
-                    boundingBox.getUpperRight().getLongitude(), true, true ), BooleanClause.Occur.SHOULD );
+                    boundingBox.getUpperRightLongitude(), true, true ), BooleanClause.Occur.SHOULD );
         }
 
         Builder boxQueryBuilder = new Builder();
