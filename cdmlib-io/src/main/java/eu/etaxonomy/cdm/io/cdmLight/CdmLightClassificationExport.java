@@ -1514,11 +1514,11 @@ public class CdmLightClassificationExport
             if (!state.getNameStore().containsKey(name2.getId())) {
                 handleName(state, name2, null);
             }
-
+            csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.NAME_REL_TYPE)] = type.getLabel();
             csvLine[table.getIndex(CdmLightExportTable.NAME1_FK)] = getId(state, name);
             csvLine[table.getIndex(CdmLightExportTable.NAME2_FK)] = getId(state, name2);
-            state.getProcessor().put(table, name, csvLine);
+            state.getProcessor().put(table, rel.getUuid().toString(), csvLine);
         }
 
         rels = name.getRelationsToThisName();
@@ -1929,6 +1929,21 @@ public class CdmLightClassificationExport
                             otherRelationships.add(rel);
                         }
                     }
+                    if (state.getConfig().isShowInverseNameRelationsInHomotypicGroup()) {
+			if (rel.getToName().equals(name)){
+                            // alle Homonyme und inverse blocking names
+//                               if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM())
+//                                       || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())
+//                                       || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()))
+//                                       || (rel.getType().equals(NameRelationshipType.UNSPECIFIC_NON()))
+//                                       || (rel.getType().equals(NameRelationshipType.AVOIDS_HOMONYM_OF()))
+//                                       ){
+//                                   nonNames.add(rel);
+//                               }else if (!rel.getType().isBasionymRelation()){
+                                   otherRelationships.add(rel);
+//                               }
+                           }
+                    }
                 }
 
                 String nonRelNames = "";
@@ -1976,10 +1991,15 @@ public class CdmLightClassificationExport
                             relNames += label + relatedName.getTitleCache();
                         }
                     }
-//                    else {
-//                        label = rel.getType().getInverseLabel() + " ";
-//                        relatedName = rel.getFromName();
-//                    }
+                    else {
+                        label = rel.getType().getInverseLabel() + " ";
+                        relatedName = rel.getFromName();
+                        if (state.getConfig().isAddHTML()){
+                            relNames += label + createNameWithItalics(relatedName.getTaggedName())+ " ";
+                        }else{
+                            relNames += label + relatedName.getTitleCache();
+                        }
+                    }
                 }
                 relNames.trim();
                 if (otherRelationships.size() > 0){
