@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
@@ -154,7 +155,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_a);
         processor.updateReferenceInEdges(singleTaxon, refX, oldNomReference);
 
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
         commitAndStartNewTransaction();
 
         // printDataSet(System.err,"TaxonRelationship");

@@ -201,9 +201,9 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void emailResetTokenRateLimiterTest() throws Throwable {
 
-//        Logger.getLogger(PasswordResetRequest.class).setLevel(Level.TRACE);
-//        Logger.getLogger(PasswordResetService.class).setLevel(Level.TRACE);
-//        Logger.getLogger(AccountSelfManagementService.class).setLevel(Level.TRACE);
+//      LogUtils.setLevel(PasswordResetRequest.class, Level.TRACE);
+//      LogUtils.setLevel(PasswordResetService.class, Level.TRACE);
+//      LogUtils.setLevel(AccountSelfManagementService.class, Level.TRACE);
 
         resetTokenSendSignal = new CountDownLatch(1);
         resetTokenSendSignal2 = new CountDownLatch(1);

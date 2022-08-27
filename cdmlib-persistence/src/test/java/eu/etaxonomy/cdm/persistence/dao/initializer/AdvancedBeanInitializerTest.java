@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -262,7 +263,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransac
 
         assureSessionClear();
 
-        //Logger.getLogger(AdvancedBeanInitializer.class).setLevel(Level.TRACE);
+        //LogUtils.setLevel(AdvancedBeanInitializer.class, Level.TRACE);
         List<String> propertyPath = Arrays.asList("$");    //property path is actually not needed, test also succeeds with property path = null
         Taxon taxon = (Taxon)taxonDao.load(taxonUuid, propertyPath);
         assertTrue(Hibernate.isInitialized(taxon.getName()));
@@ -283,7 +284,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransac
 
         assureSessionClear();
 
-        //Logger.getLogger(AdvancedBeanInitializer.class).setLevel(Level.TRACE);
+        //LogUtils.setLevel(AdvancedBeanInitializer.class, Level.TRACE);
 
         deacivatedAutoIntitializers = clearAutoinitializers();
         // load bean with autoinitializers deactivated

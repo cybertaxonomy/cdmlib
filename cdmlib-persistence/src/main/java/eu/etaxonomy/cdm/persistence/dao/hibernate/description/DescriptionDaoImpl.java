@@ -17,7 +17,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.ProjectionList;
@@ -696,7 +697,7 @@ public class DescriptionDaoImpl
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
-//      Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
         Query<T> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, "de");
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
@@ -705,7 +706,7 @@ public class DescriptionDaoImpl
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         if (logger.isDebugEnabled()){logger.debug(" dao: initialize - DONE");}
 
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.WARN);
         return results;
     }
 
@@ -865,7 +866,7 @@ public class DescriptionDaoImpl
     @Override
     public List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber) {
 
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
         StringBuilder queryString = new StringBuilder(
                 "SELECT DISTINCT a.id, a.partOf.id"

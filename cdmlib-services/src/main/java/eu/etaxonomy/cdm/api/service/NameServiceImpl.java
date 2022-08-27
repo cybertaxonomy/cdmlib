@@ -21,7 +21,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.sandbox.queries.FuzzyLikeThisQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -1194,8 +1195,8 @@ public class NameServiceImpl
         TaxonName name = nameToBeFilled;
         if(doDeduplicate) {
             try {
-//                Level sqlLogLevel = Logger.getLogger("org.hibernate.SQL").getLevel();
-//                Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//              Level sqlLogLevel = LogManager.getLogger("org.hibernate.SQL").getLevel();
+//              LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
                 //references
                 if (name.getNomenclaturalReference()!= null && !name.getNomenclaturalReference().isPersited()){
@@ -1250,8 +1251,7 @@ public class NameServiceImpl
                         name.setOriginalSpelling(duplicate);
                     }
                 }
-
-//              Logger.getLogger("org.hibernate.SQL").setLevel(sqlLogLevel);
+//              LogUtils.setLevel("org.hibernate.SQL", sqlLogLevel);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }

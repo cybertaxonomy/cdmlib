@@ -25,7 +25,8 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -975,8 +976,8 @@ public class TaxonServiceImpl
         //TODO let inherit
         boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
-    //    logger.setLevel(Level.TRACE);
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//      LogUtils.setLevel(logger, Level.TRACE);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
         if (logger.isTraceEnabled()){logger.trace("listMedia() - START");}
 

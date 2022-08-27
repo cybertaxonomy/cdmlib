@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.util.Arrays;
@@ -16,7 +15,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,10 +41,9 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("portal_occurrence")
 @RequestMapping(value = {"/portal/occurrence/{uuid}"})
-public class OccurrencePortalController extends OccurrenceController
-{
+public class OccurrencePortalController extends OccurrenceController {
 
-    private static Logger logger = Logger.getLogger(OccurrencePortalController.class);
+    private static Logger logger = LogManager.getLogger();
 
     private static final List<String> DEFAULT_INIT_STRATEGY =  Arrays.asList(new String []{
             "$",
