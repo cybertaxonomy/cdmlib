@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public class IdentifiableDaoBase<T extends IdentifiableEntity>
+public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         extends AnnotatableDaoBaseImpl<T>
         implements IIdentifiableDao<T>{
 
