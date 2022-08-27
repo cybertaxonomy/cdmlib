@@ -243,7 +243,6 @@ public class RegistrationDaoHibernateImpl
         }
 
         return query;
-
     }
 
     private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,

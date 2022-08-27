@@ -309,11 +309,9 @@ public class TaxonNode
      *
      * @see setParentTreeNode(ITreeNode)
      * @param parent
-     *
      */
     protected void setParent(TaxonNode parent) {
         this.parent = parent;
-//        this.treeIndex = parent.treeIndex() +
     }
 
     public TaxonNodeStatus getStatus() {
