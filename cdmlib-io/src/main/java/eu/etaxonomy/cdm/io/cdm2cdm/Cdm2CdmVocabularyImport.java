@@ -80,7 +80,7 @@ public class Cdm2CdmVocabularyImport
         TermVocabulary<DefinedTermBase> otherVoc = source.getVocabularyService().find(vocUuid);
         TermVocabulary<DefinedTermBase> thisVoc = null;
         try {
-            thisVoc = detache(otherVoc, state);
+            thisVoc = detach(otherVoc, state);
             if (thisVoc != otherVoc){ //voc already existed
                 for (DefinedTermBase<?> term: otherVoc.getTerms()){
                     doSingleTerm(state, term, thisVoc);
@@ -108,7 +108,7 @@ public class Cdm2CdmVocabularyImport
         if (logger.isInfoEnabled()){logger.info(otherTerm.getTitleCache());}
         try {
             if (!thisVoc.getTerms().contains(otherTerm)){
-                thisTerm = detache(otherTerm, state);
+                thisTerm = detach(otherTerm, state);
 //                if(thisTerm == otherTerm){ //term does not yet exist
                 thisVoc.addTerm(thisTerm);
                 state.addToSave(thisTerm);
@@ -126,7 +126,7 @@ public class Cdm2CdmVocabularyImport
         TermTree<DefinedTermBase> otherGraph = source.getTermTreeService().find(graphUuid);
         TermTree<DefinedTermBase> thisGraph = null;
         try {
-            thisGraph = detache(otherGraph, state);
+            thisGraph = detach(otherGraph, state);
             if (thisGraph != otherGraph){ //voc already existed
                 for (TermNode<DefinedTermBase> node: otherGraph.getRootChildren()){
                     doSingleNode(state, node, thisGraph.getRoot());

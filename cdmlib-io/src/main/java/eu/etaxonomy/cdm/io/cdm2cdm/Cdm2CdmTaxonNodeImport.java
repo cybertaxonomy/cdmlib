@@ -69,7 +69,7 @@ public class Cdm2CdmTaxonNodeImport
         TaxonNode result = null;
         logger.info(node.treeIndex());
         try {
-            result = detache(node, state);
+            result = detach(node, state);
         } catch (Exception e) {
             logger.warn("Exception during detache node " + node.treeIndex());
             e.printStackTrace();
