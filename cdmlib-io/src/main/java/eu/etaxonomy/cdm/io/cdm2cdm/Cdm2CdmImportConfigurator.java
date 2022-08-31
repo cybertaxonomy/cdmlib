@@ -40,9 +40,9 @@ public  class Cdm2CdmImportConfigurator
     private ITaxonNodeOutStreamPartitioner partitioner;
     private boolean concurrent = false;  //
 
-    private boolean doTaxa = true;
-    private boolean doDescriptions = true;
-    private boolean doVocabularies = true;
+    private boolean doTaxa = false;
+    private boolean doDescriptions = false;
+    private boolean doVocabularies = false;
 
     private boolean addSources = true;
     private boolean removeImportSources = false;
