@@ -77,7 +77,7 @@ public class TypeDesignationSetContainer {
      * Groups the EntityReferences for each of the TypeDesignations by the according TypeDesignationStatus.
      * The TypeDesignationStatusBase keys are already ordered by the term order defined in the vocabulary.
      */
-    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderedByTypesByBaseEntity;
+    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderedByTypesByBaseEntity = new LinkedHashMap<>();
 
     private List<String> problems = new ArrayList<>();
 
