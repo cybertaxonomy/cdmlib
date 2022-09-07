@@ -24,11 +24,6 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  * @author a.mueller
  * @date 09.06.2022
  */
-/**
- * @author a.mueller
- * @date 22.07.2022
- *
- */
 public class LogUtils {
 
     private static final Logger logger = LogManager.getLogger();

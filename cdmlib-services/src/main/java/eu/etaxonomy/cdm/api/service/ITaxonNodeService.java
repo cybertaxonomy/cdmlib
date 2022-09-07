@@ -231,7 +231,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator configurator);
 
     /**
-     * Returns a list of taxon node {@link UUID uuids} according to the given filter.
+     * Returns the total count of taxon nodes according to the given filter.
      */
     public long count(TaxonNodeFilter filter);
 

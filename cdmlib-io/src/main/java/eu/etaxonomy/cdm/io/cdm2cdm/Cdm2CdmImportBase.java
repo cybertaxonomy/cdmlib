@@ -1063,7 +1063,6 @@ public abstract class Cdm2CdmImportBase
            state.putToSessionCache(cdmBase);
        }
        addExistingObject(cdmBase, state);
-
     }
 
     private void addExistingObject(CdmBase cdmBase, Cdm2CdmImportState state) {
