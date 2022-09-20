@@ -38,7 +38,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
-public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabulary,ITermVocabularyDao>  implements IVocabularyService {
+public class VocabularyServiceImpl
+        extends IdentifiableServiceBase<TermVocabulary,ITermVocabularyDao>
+        implements IVocabularyService {
 
     @Autowired
     private ITermService termService;

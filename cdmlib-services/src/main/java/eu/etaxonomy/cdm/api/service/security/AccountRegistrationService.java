@@ -15,7 +15,8 @@ import java.util.Optional;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -29,7 +30,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 import eu.etaxonomy.cdm.api.security.AbstractRequestToken;
 import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
 import eu.etaxonomy.cdm.api.security.IAbstractRequestTokenStore;
-import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
 import eu.etaxonomy.cdm.model.permission.User;
 
 /**
@@ -40,12 +40,13 @@ import eu.etaxonomy.cdm.model.permission.User;
 @Transactional(readOnly = true)
 public class AccountRegistrationService extends AccountSelfManagementService implements IAccountRegistrationService {
 
+    private static Logger logger = LogManager.getLogger();
 
     protected static final String EMAIL_EXISTS = "An account for this email address already exits.";
 
     protected static final String USER_NAME_EXISTS_MSG = "This user name is already being used by someone else.";
 
-    private static Logger logger = LogManager.getLogger(PasswordResetRequest.class);
+
 
     @Autowired
     @Qualifier("accountCreationRequestTokenStore")

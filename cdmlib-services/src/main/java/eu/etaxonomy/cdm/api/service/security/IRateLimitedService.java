@@ -22,7 +22,7 @@ public interface IRateLimitedService {
      * free execution slot. {@link #RATE_LIMTER_TIMEOUT_SECONDS}
      * is the default
      */
-    void setRateLimiterTimeout(Duration timeout);
+    public void setRateLimiterTimeout(Duration timeout);
 
 
     /**
@@ -30,7 +30,7 @@ public interface IRateLimitedService {
      *
      * @return the currently used timeout
      */
-    Duration getRateLimiterTimeout();
+    public Duration getRateLimiterTimeout();
 
     /**
      * Requests to the service methods should be rate limited.

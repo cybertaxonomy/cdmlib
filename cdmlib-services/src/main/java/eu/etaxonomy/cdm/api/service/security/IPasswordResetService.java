@@ -49,7 +49,7 @@ public interface IPasswordResetService extends IRateLimitedService {
      * @throws EmailAddressNotFoundException
      *             in case the provided email address is unknown
      */
-    ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate)
+    public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate)
             throws MailException, EmailAddressNotFoundException;
 
     /**
@@ -67,6 +67,6 @@ public interface IPasswordResetService extends IRateLimitedService {
      * @throws MailException
      *             in case sending the email has failed
      */
-    ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException;
+    public ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException;
 
 }

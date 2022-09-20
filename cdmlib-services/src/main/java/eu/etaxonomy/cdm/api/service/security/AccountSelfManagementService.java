@@ -13,7 +13,8 @@ import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.text.StringSubstitutor;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
@@ -33,7 +34,8 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
  */
 public abstract class AccountSelfManagementService implements IRateLimitedService {
 
-    private static Logger logger = LogManager.getLogger(AccountSelfManagementService.class);
+    @SuppressWarnings("unused")
+    private static Logger logger = LogManager.getLogger();
 
     public static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
 
@@ -49,7 +51,7 @@ public abstract class AccountSelfManagementService implements IRateLimitedServic
     protected JavaMailSender emailSender;
 
     @Autowired
-    protected Environment env;
+    private Environment env;
 
     private Duration rateLimiterTimeout = null;
 
