@@ -714,6 +714,7 @@ public abstract class Cdm2CdmImportBase
     protected User handlePersistedUser(User user, Cdm2CdmImportState state) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         User result = (User)handlePersistedCdmBase(user, state);
         if (result.getUsername().equals("admin")){
+            //TODO why only admin, is this not a problem for all duplicated usernames? Was this a preliminary decision?
             result = getUserService().listByUsername("admin", MatchMode.EXACT, null, null, null, null, null).iterator().next();
             state.putPermanent(user.getUuid(), result);
             cache(result, state); //necessary?
@@ -776,14 +777,14 @@ public abstract class Cdm2CdmImportBase
     protected <T extends CdmBase> T handlePersistedCdmBase(CdmBase cdmBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = (T)getTarget(cdmBase, state);
         //complete
-        cdmBase.setCreatedBy(detach(cdmBase.getCreatedBy(), state));
+        cdmBase.setCreatedBy(makeCreatedUpdatedBy(cdmBase.getCreatedBy(), state, false));
         return result;
     }
 
     protected <T extends VersionableEntity> T handlePersisted(VersionableEntity entity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = (T)handlePersistedCdmBase((CdmBase)entity, state);
         //complete
-        entity.setUpdatedBy(detach(entity.getUpdatedBy(), state));
+        entity.setUpdatedBy(makeCreatedUpdatedBy(entity.getUpdatedBy(), state, true));
         return result;
     }
 
@@ -1019,6 +1020,23 @@ public abstract class Cdm2CdmImportBase
         }
         return result;
     }
+
+// ****************************** USER HANDLING
+
+    private User makeCreatedUpdatedBy(User createdByOriginal, Cdm2CdmImportState state, boolean isUpdatedBy) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        UserImportMode mode = isUpdatedBy? state.getConfig().getUpdatedByMode() : state.getConfig().getCreatedByMode();
+
+        switch (mode) {
+        case NONE:
+            return null;
+        case ORIGINAL:
+            return detach(createdByOriginal, state);
+        default:
+            logger.warn("Mode not yet supported: " + mode);
+            return null;
+        }
+    }
+
 
 // ****************************** INVISIBLE **************************************/
 

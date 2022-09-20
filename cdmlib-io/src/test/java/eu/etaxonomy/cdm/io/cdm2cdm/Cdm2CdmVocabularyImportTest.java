@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
@@ -129,7 +130,10 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         configurator = Cdm2CdmImportConfigurator.NewInstace(otherRepository, null);
         configurator.setDoTaxa(false);
         configurator.setDoDescriptions(false);
-        configurator.setVocabularyFilter(new HashSet<>(Arrays.asList(uuidStructVoc)));
+//        VocabularyFilter vocFilter = VocabularyFilter.NewTermTypeInstance(TermType.Structure);
+        VocabularyFilter vocFilter = VocabularyFilter.NewInstance();
+        vocFilter.orVocabulary(uuidStructVoc);
+        configurator.setVocabularyFilter(vocFilter);
 
         configurator.addObserver(new LoggingIoObserver());
         assertNotNull("Configurator could not be created", configurator);

@@ -22,11 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dao.description.IVocabularyFilterDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
@@ -40,6 +42,9 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 
     @Autowired
     private ITermService termService;
+
+    @Autowired
+    private IVocabularyFilterDao vocabularyFilterDao;
 
 	@Override
     @Autowired
@@ -200,5 +205,20 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuids) {
         return dao.findVocabularyDtoByUuids(vocUuids);
+    }
+
+    @Override
+    public List<UUID> uuidList(VocabularyFilter filter){
+        return vocabularyFilterDao.listUuids(filter);
+    }
+
+    @Override
+    public List<Integer> idList(VocabularyFilter filter){
+        return vocabularyFilterDao.idList(filter);
+    }
+
+    @Override
+    public long count(VocabularyFilter filter) {
+        return vocabularyFilterDao.count(filter);
     }
 }
