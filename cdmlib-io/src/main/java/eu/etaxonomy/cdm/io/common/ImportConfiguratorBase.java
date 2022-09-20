@@ -276,7 +276,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	 * The classification name for the first classification.
 	 * Needs only to be defined if the import does not handle the naming
 	 * itself (e.g. by using the taxon sec. reference title cache)
-	 * @param classificationName the classificationName to set
 	 */
 	public void setClassificationName(String classificationName) {
 		this.classificationName = classificationName;
