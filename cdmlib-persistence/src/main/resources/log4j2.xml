@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
   <Appenders>
-    <File name="FILE" fileName="cdmlib-commons.log" append="true" header="%d{dd MMM yyyy}">
+    <File name="FILE" fileName="cdmlib-commons.log" append="true">
       <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
     </File>
     <Console name="STDOUT" target="SYSTEM_OUT">
