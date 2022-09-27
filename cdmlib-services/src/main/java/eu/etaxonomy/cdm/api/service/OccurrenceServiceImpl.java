@@ -554,16 +554,17 @@ public class OccurrenceServiceImpl
                         	if (determination.getTaxonName().equals(taxon.getName()) || determination.getTaxon().equals(taxon)){
                         		isAssociated = true;
                         		break;
-                        	}else {
+                        	}else {                        		
                         		isAssociated = false;
                         	}
                         }
+                        
                         if (!isAssociated) {
                         	continue;
                         }
                         derivativeDTO = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivedUnit, null);
                         alreadyCollectedUnits.put(derivativeDTO.getUuid(), derivativeDTO);
-                        derivativeDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivativeDTO, derivedUnit, alreadyCollectedUnits));
+                        //derivativeDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivativeDTO, derivedUnit, alreadyCollectedUnits));
                     }
                     derivativeDTO = (DerivedUnitDTO) alreadyCollectedUnits.get(unit.getUuid());
                     rootUnitDTOs.addAll(findRootUnitDTOs(derivativeDTO, alreadyCollectedUnits));

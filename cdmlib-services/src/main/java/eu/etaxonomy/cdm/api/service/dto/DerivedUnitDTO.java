@@ -385,8 +385,8 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 	@Override
     protected void updateTreeDependantData(Set<DerivedUnitDTO> derivatives) {
 		for (DerivedUnitDTO derivative: derivatives) {
-			this.setHasDna(this.isHasDna() || derivative.isHasDna());
-			this.setHasDetailImage(this.isHasDetailImage() || derivative.isHasDetailImage());
+			this.setHasDna(this.isHasDna() || derivative.isHasDna() || !derivative.getDerivationTreeSummary().getMolecularDataList().isEmpty());
+			this.setHasDetailImage(this.isHasDetailImage() || derivative.isHasDetailImage() || !derivative.getDerivationTreeSummary().getDetailImages().isEmpty());
 			this.setHasSpecimenScan(isHasSpecimenScan()|| derivative.isHasSpecimenScan());
 			this.setHasCharacterData(isHasCharacterData()||derivative.isHasCharacterData());
 		}
