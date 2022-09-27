@@ -224,6 +224,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 	            this.status.add(dto);
 	        }
         }
+        this.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(derivedUnit, this.getSpecimenShortTitle()));
         
         
         if(derivedUnit.getStoredUnder() != null) {
@@ -382,7 +383,14 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 	}
 
 	@Override
-    protected void updateTreeDependantData() {
+    protected void updateTreeDependantData(Set<DerivedUnitDTO> derivatives) {
+		for (DerivedUnitDTO derivative: derivatives) {
+			this.setHasDna(this.isHasDna() || derivative.isHasDna());
+			this.setHasDetailImage(this.isHasDetailImage() || derivative.isHasDetailImage());
+			this.setHasSpecimenScan(isHasSpecimenScan()|| derivative.isHasSpecimenScan());
+			this.setHasCharacterData(isHasCharacterData()||derivative.isHasCharacterData());
+		}
+		
         // TODO DerivationTreeSummaryDTO should be updated here once it is refactored so that it can operate on dtos
     }
 }

@@ -151,6 +151,94 @@ public class DerivationTreeSummaryDTO implements Serializable {
         }
         return derivateDataDTO;
     }
+    
+//    private void updateDerivateTree(Set<DerivedUnitDTO> derivatives) {
+//    	 for (DerivedUnitDTO childDerivate : derivatives) {
+//    		 DerivationTreeSummaryDTO childTree = childDerivate.getDerivationTreeSummary();
+//    		 for (Link link:childTree.detailImages) {
+//    			 this.addDetailImage(null, null);
+//    		 }
+//    	 }
+//    		 
+//             // assemble molecular data
+//             //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
+//             if (childDerivate instanceof DNASampleDTO) {
+//            	 DNASampleDTO dna = (DNASampleDTO)childDerivate;
+//                 if (childDerivate.getRecordBase() == SpecimenOrObservationType.TissueSample) {
+//                     // TODO implement TissueSample assembly for web service
+//                 }
+//                 if (childDerivate.getRecordBase() == SpecimenOrObservationType.DnaSample) {
+//                     
+//                     for (SequenceDTO sequence : dna.getSequences()) {
+//                         URI boldUri = null;
+//                         try {
+//                             boldUri = sequence.getBoldUri();
+//                         } catch (URISyntaxException e1) {
+//                             // TODO consider better reporting of this incident
+//                             logger.error("Could not create BOLD URI", e1);
+//                         }
+//                         final String dnaMarker = sequence.getDnaMarker();
+//                         Link providerLink = null;
+//                         if(boldUri!=null && dnaMarker!=null){
+//                             providerLink = new DerivationTreeSummaryDTO.Link(boldUri, dnaMarker);
+//                         }
+//                         MolecularData molecularData = this.addProviderLink(providerLink);
+//
+//                         //contig file
+//                         ContigFile contigFile = null;
+//                         if (sequence.getContigFile() != null) {
+//                             MediaRepresentationPart contigMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile());
+//                             if (contigMediaRepresentationPart != null) {
+//                                 contigFile = molecularData.addContigFile(new Link(contigMediaRepresentationPart.getUri(), "contig"));
+//                             }
+//                         }
+//                         else{
+//                             contigFile = molecularData.addContigFile(null);
+//                         }
+//                         // primer files
+//                         if (sequence.getSingleReadAlignments() != null) {
+//                             int readCount = 1;
+//                             for (SingleReadAlignment singleRead : sequence.getSingleReadAlignments()) {
+//                                 MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getSingleRead().getPherogram());
+//                                 if (pherogramMediaRepresentationPart != null && contigFile != null) {
+//                                     contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "read"+readCount++);
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//             // assemble media data
+//             else if (childDerivate.hasDetailImage) {
+//                 
+//                
+//                     // specimen scan
+//                     if (childDerivate.getKindOfUnit().getUuid().equals(DefinedTerm.uuidSpecimenScan)) {
+//                         this.addSpecimenScanUuid(childDerivate.get);
+//                         String imageLinkText = "scan of " + specimenIdentifier;
+//                         if(CdmUtils.isNotBlank(mediaSpecimen.getMostSignificantIdentifier())) {
+//                             imageLinkText = mediaSpecimen.getMostSignificantIdentifier();
+//                         }
+//                         if(CdmUtils.isNotBlank(mediaSpecimen.getMediaSpecimen().getTitleCache())) {
+//                             imageLinkText += " (" + mediaSpecimen.getMediaSpecimen().getTitleCache() + ")";
+//                         }
+//                         this.addSpecimenScan(mediaUri, imageLinkText.trim());
+//                     }
+//                     // detail image
+//                     else if (mediaSpecimen.getKindOfUnit().getUuid().equals(DefinedTerm.uuidDetailImage)) {
+//                         derivateDataDTO.addDetailImageUuid(mediaSpecimen.getMediaSpecimen().getUuid());
+//                         String motif = "detail image";
+//                         if (mediaSpecimen.getMediaSpecimen()!=null){
+//                             if(CdmUtils.isNotBlank(mediaSpecimen.getMediaSpecimen().getTitleCache())) {
+//                                 motif = mediaSpecimen.getMediaSpecimen().getTitleCache();
+//                             }
+//                         }
+//                         derivateDataDTO.addDetailImage(mediaUri, motif);
+//                     }
+//                 }
+//             }
+//         }
+//    }
 
     @Deprecated
     private static URI getMediaUri(MediaSpecimen mediaSpecimen) {

@@ -549,12 +549,19 @@ public class OccurrenceServiceImpl
                     DerivedUnitDTO derivativeDTO;
                     if (!alreadyCollectedUnits.containsKey(unit.getUuid())){
                         DerivedUnit derivedUnit = (DerivedUnit)unit;
-                        derivativeDTO = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivedUnit, null);
-                        if (unit instanceof DnaSample) {
-                            derivativeDTO = DNASampleDTO.fromEntity((DnaSample)unit);
-                        } else {
-                            derivativeDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null);
+                        boolean isAssociated = true;
+                        for (DeterminationEvent determination:derivedUnit.getDeterminations()) {
+                        	if (determination.getTaxonName().equals(taxon.getName()) || determination.getTaxon().equals(taxon)){
+                        		isAssociated = true;
+                        		break;
+                        	}else {
+                        		isAssociated = false;
+                        	}
                         }
+                        if (!isAssociated) {
+                        	continue;
+                        }
+                        derivativeDTO = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivedUnit, null);
                         alreadyCollectedUnits.put(derivativeDTO.getUuid(), derivativeDTO);
                         derivativeDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivativeDTO, derivedUnit, alreadyCollectedUnits));
                     }

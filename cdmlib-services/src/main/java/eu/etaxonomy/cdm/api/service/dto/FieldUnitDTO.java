@@ -14,6 +14,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.joda.time.Partial;
@@ -155,10 +156,16 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
     }
 
     @Override
-    public void updateTreeDependantData() {
+    public void updateTreeDependantData(Set<DerivedUnitDTO> derivatives) {
         TreeLabels treeLabels = assembleLablesFromTree(true, true);
         setSummaryLabel(treeLabels.summaryLabel);
         setCollectionStatistics(treeLabels.collectionsStatistics);
+        for (DerivedUnitDTO derivative: derivatives) {
+			this.setHasDna(this.isHasDna() || derivative.isHasDna());
+			this.setHasDetailImage(this.isHasDetailImage() || derivative.isHasDetailImage());
+			this.setHasSpecimenScan(isHasSpecimenScan()|| derivative.isHasSpecimenScan());
+			this.setHasCharacterData(isHasCharacterData()||derivative.isHasCharacterData());
+		}
     }
 
     /**

@@ -269,7 +269,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     public void setDerivatives(Set<DerivedUnitDTO> derivatives) {
         this.derivatives = derivatives;
-        updateTreeDependantData();
+        updateTreeDependantData(derivatives);
     }
 
     public void addDerivative(DerivedUnitDTO derivate){
@@ -277,14 +277,16 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
             this.derivatives = new HashSet<>();
         }
         this.derivatives.add(derivate);
-        updateTreeDependantData();
+        Set<DerivedUnitDTO> derivatives = new HashSet<>();
+        derivatives.add(derivate);
+        updateTreeDependantData(derivatives);
     }
     public void addAllDerivatives(Set<DerivedUnitDTO> derivatives){
         if (this.derivatives == null){
             this.derivatives = new HashSet<>();
         }
         this.derivatives.addAll(derivatives);
-        updateTreeDependantData();
+        updateTreeDependantData(derivatives);
     }
     
     
@@ -293,7 +295,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
      * To be overwritten by implementing classes to
      * update data which depends on the derivation tree
      */
-    protected abstract void updateTreeDependantData();
+    protected abstract void updateTreeDependantData(Set<DerivedUnitDTO> derivatives) ;
 
     /**
      * Recursively collects all derivatives from this.
@@ -387,8 +389,10 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
             }
 
             if (doDescend && (includeTypes == null || includeTypes.contains(derivedUnit.getRecordBasis()))) {
-                DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, nextLevelMaxDepth, includeTypes);
-                derivateDTOs.add(derivedUnitDTO);
+                SpecimenOrObservationBaseDTO derivedUnitDTO = SpecimenOrObservationDTOFactory.fromEntity(derivedUnit, nextLevelMaxDepth);
+                if (derivedUnitDTO instanceof DerivedUnitDTO) {
+                	derivateDTOs.add((DerivedUnitDTO)derivedUnitDTO);
+                }
                 setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
                 // NOTE! the flags setHasDetailImage, setHasDna, setHasSpecimenScan are also set in
                 // setDerivateDataDTO(), see below
