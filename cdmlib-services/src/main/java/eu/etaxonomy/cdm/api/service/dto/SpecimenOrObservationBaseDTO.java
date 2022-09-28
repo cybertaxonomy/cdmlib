@@ -188,6 +188,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
           characterData = new TreeSet<>(new PairComparator());
       }
       characterData.add(new AbstractMap.SimpleEntry<>(character, state));
+      this.setHasCharacterData(!this.characterData.isEmpty());
     }
 
     private class PairComparator implements Comparator<AbstractMap.SimpleEntry<String,String>>, Serializable {
@@ -399,6 +400,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 setHasDetailImage(isHasDetailImage() || derivedUnitDTO.isHasDetailImage());
                 setHasDna(isHasDna() || derivedUnitDTO.isHasDna());
                 setHasSpecimenScan(isHasSpecimenScan() || derivedUnitDTO.isHasSpecimenScan());
+                setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
             }
         }
         return derivateDTOs;
