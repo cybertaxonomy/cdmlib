@@ -213,42 +213,60 @@ public class OccurrenceServiceImpl
                 );
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, mediaDTOs);
     }
-
+    @Override
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivateMedia, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
+    	 List<Media> media = new ArrayList<>();
+         //media specimens
+         if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
+             MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(rootOccurence, MediaSpecimen.class);
+             media.add(mediaSpecimen.getMediaSpecimen());
+         }
+         // pherograms & gelPhotos
+         if (rootOccurence.isInstanceOf(DnaSample.class)) {
+             DnaSample dnaSample = CdmBase.deproxy(rootOccurence, DnaSample.class);
+             Set<Sequence> sequences = dnaSample.getSequences();
+             //we do show only those gelPhotos which lead to a consensus sequence
+             for (Sequence sequence : sequences) {
+                 Set<Media> dnaRelatedMedia = new HashSet<>();
+                 for (SingleRead singleRead : sequence.getSingleReads()){
+                     AmplificationResult amplification = singleRead.getAmplificationResult();
+                     dnaRelatedMedia.add(amplification.getGelPhoto());
+                     dnaRelatedMedia.add(singleRead.getPherogram());
+                     dnaRelatedMedia.remove(null);
+                 }
+                 media.addAll(dnaRelatedMedia);
+             }
+         }
+         if(rootOccurence.isInstanceOf(DerivedUnit.class)){
+             DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(rootOccurence, DerivedUnit.class);
+             if (collectDerivateMedia) {
+	             for (DerivationEvent derivationEvent : derivedUnit.getDerivationEvents()) {
+	                 for (DerivedUnit childDerivative : derivationEvent.getDerivatives()) {
+	                	 //collectOriginalMedia should only called for the first derived unit
+	                     media.addAll(getMediaInHierarchy(childDerivative, false, true, pageSize, pageNumber, propertyPaths).getRecords());
+	                 }
+	             }
+             }
+             if (collectOriginalMedia) {
+            	 for (SpecimenOrObservationBase original : derivedUnit.getOriginals()) {            		 	
+	                	 //collect media to the top of the tree 
+	                     media.addAll(getMediaInHierarchy(original, true, false, pageSize, pageNumber, propertyPaths).getRecords());
+	             }
+	         }
+         }
+         
+         
+         return new DefaultPagerImpl<>(pageNumber, Long.valueOf(media.size()), pageSize, media);
+    }
+    
+    
     @Override
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-
-        List<Media> media = new ArrayList<>();
-        //media specimens
-        if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
-            MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(rootOccurence, MediaSpecimen.class);
-            media.add(mediaSpecimen.getMediaSpecimen());
-        }
-        // pherograms & gelPhotos
-        if (rootOccurence.isInstanceOf(DnaSample.class)) {
-            DnaSample dnaSample = CdmBase.deproxy(rootOccurence, DnaSample.class);
-            Set<Sequence> sequences = dnaSample.getSequences();
-            //we do show only those gelPhotos which lead to a consensus sequence
-            for (Sequence sequence : sequences) {
-                Set<Media> dnaRelatedMedia = new HashSet<>();
-                for (SingleRead singleRead : sequence.getSingleReads()){
-                    AmplificationResult amplification = singleRead.getAmplificationResult();
-                    dnaRelatedMedia.add(amplification.getGelPhoto());
-                    dnaRelatedMedia.add(singleRead.getPherogram());
-                    dnaRelatedMedia.remove(null);
-                }
-                media.addAll(dnaRelatedMedia);
-            }
-        }
-        if(rootOccurence.isInstanceOf(DerivedUnit.class)){
-            DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(rootOccurence, DerivedUnit.class);
-            for (DerivationEvent derivationEvent : derivedUnit.getDerivationEvents()) {
-                for (DerivedUnit childDerivative : derivationEvent.getDerivatives()) {
-                    media.addAll(getMediaInHierarchy(childDerivative, pageSize, pageNumber, propertyPaths).getRecords());
-                }
-            }
-        }
-        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(media.size()), pageSize, media);
+    	return getMediaInHierarchy(rootOccurence, false, true, pageSize,
+                pageNumber, propertyPaths);
+       
     }
 
     @Override

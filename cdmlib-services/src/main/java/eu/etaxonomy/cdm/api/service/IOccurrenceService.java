@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
+
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
@@ -790,5 +791,8 @@ public interface IOccurrenceService
     FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid);
 
     Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber);
+
+	Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivativeMedia,
+			Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 }
