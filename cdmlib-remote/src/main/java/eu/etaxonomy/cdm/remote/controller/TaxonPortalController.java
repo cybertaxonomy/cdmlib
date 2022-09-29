@@ -569,6 +569,38 @@ public class TaxonPortalController extends TaxonController{
 
         return mediafilteredForPreferredRepresentations;
     }
+    
+    @RequestMapping(
+            value = {"media"},
+            method = RequestMethod.GET)
+        public List<Media> doGetMedia(
+                @PathVariable("uuid") UUID uuid,
+                @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
+                @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
+                @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+                @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+                @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
+                @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+                @RequestParam(value = "includeOriginals", required = true) Boolean  includeOriginals,
+                @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
+                @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
+                @RequestParam(value = "height", required = false) Integer height,
+                @RequestParam(value = "size", required = false) Integer size,
+                HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+            logger.info("doGetMedia() " + requestPathAndQuery(request));
+
+            List<String> initStrategy = null;
+
+            EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
+                    relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                    response, initStrategy, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
+
+            List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
+                    taxonMediaContext.media);
+
+            return mediafilteredForPreferredRepresentations;
+        }
 
     /**
      * @Deprecated To be replaced by other loadMediaForTaxonAndRelated method
@@ -586,6 +618,18 @@ public class TaxonPortalController extends TaxonController{
     public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID taxonUuid,
             UuidList relationshipUuids, UuidList relationshipInversUuids,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
+            HttpServletResponse response,
+            List<String> taxonInitStrategy, List<String> mediaInitStrategy) throws IOException {
+
+        return loadMediaForTaxonAndRelated(taxonUuid,
+                relationshipUuids, relationshipInversUuids,
+                includeTaxonDescriptions, includeOccurrences, false, includeTaxonNameDescriptions,
+                response, taxonInitStrategy, mediaInitStrategy);
+    }
+    
+    public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID taxonUuid,
+            UuidList relationshipUuids, UuidList relationshipInversUuids,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals, Boolean includeTaxonNameDescriptions,
             HttpServletResponse response,
             List<String> taxonInitStrategy, List<String> mediaInitStrategy) throws IOException {
 
@@ -675,11 +719,18 @@ public class TaxonPortalController extends TaxonController{
     private List<Media> listMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
+        return listMediaForTaxon(taxon, includeRelationships, includeTaxonDescriptions, includeOccurrences, false, includeTaxonNameDescriptions, propertyPath);
+    }
+    
+    private List<Media> listMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals, Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
+
         List<Media> media = service.listMedia(taxon, includeRelationships,
-                false, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, propertyPath);
+                false, includeTaxonDescriptions, includeOccurrences, includeOriginals, includeTaxonNameDescriptions, propertyPath);
 
         return media;
     }
+
 
     public class EntityMediaContext<T extends IdentifiableEntity> {
 
