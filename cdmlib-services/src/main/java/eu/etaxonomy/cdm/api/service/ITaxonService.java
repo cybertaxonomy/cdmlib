@@ -769,6 +769,33 @@ public interface ITaxonService
     public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeTaxonNameDescriptions, List<String> propertyPath);
+    
+    /**
+     * Lists all Media found in an any TaxonDescription, NameDescription,
+     * SpecimenOrObservationBase, DnaSample Chromatograms, etc. associated with this taxon.
+     *
+     * @param taxon
+     * @param includeRelationships
+     *            the given list of TaxonRelationshipEdges will be taken into
+     *            account when retrieving media associated with the given taxon.
+     *            Can be NULL.
+     * @param limitToGalleries
+     *            whether to take only descriptions into account which are
+     *            marked as gallery, can be NULL
+     * @param includeTaxonDescriptions
+     *            whether to take TaxonDescriptions into account, can be NULL
+     * @param includeOccurrences
+     *          whether to take SpecimenDescriptions into account, can be NULL
+     * @param includeOriginals
+     *          whether to take SpecimenDescriptions of the originals of associated derived units into account, can be NULL
+     * @param includeTaxonNameDescriptions
+     *       whether to take TaxonNameDescriptions into account, can be NULL
+     * @param propertyPath
+     * @return
+     */
+    public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
+            Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals,
+            Boolean includeTaxonNameDescriptions, List<String> propertyPath);
 
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
 
