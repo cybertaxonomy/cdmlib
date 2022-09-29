@@ -539,36 +539,36 @@ public class TaxonPortalController extends TaxonController{
      *         {@link #TAXONDESCRIPTION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(
-        value = {"media"},
-        method = RequestMethod.GET)
-    public List<Media> doGetMedia(
-            @PathVariable("uuid") UUID uuid,
-            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
-            @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
-            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
-            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
-            @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
-            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
-            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
-            @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
-            @RequestParam(value = "height", required = false) Integer height,
-            @RequestParam(value = "size", required = false) Integer size,
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        logger.info("doGetMedia() " + requestPathAndQuery(request));
-
-        List<String> initStrategy = null;
-
-        EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
-                relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                response, initStrategy, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
-
-        List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
-                taxonMediaContext.media);
-
-        return mediafilteredForPreferredRepresentations;
-    }
+//    @RequestMapping(
+//        value = {"media"},
+//        method = RequestMethod.GET)
+//    public List<Media> doGetMedia(
+//            @PathVariable("uuid") UUID uuid,
+//            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
+//            @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
+//            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+//            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+//            @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
+//            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+//            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
+//            @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
+//            @RequestParam(value = "height", required = false) Integer height,
+//            @RequestParam(value = "size", required = false) Integer size,
+//            HttpServletRequest request, HttpServletResponse response) throws IOException {
+//
+//        logger.info("doGetMedia() " + requestPathAndQuery(request));
+//
+//        List<String> initStrategy = null;
+//
+//        EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
+//                relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+//                response, initStrategy, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
+//
+//        List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
+//                taxonMediaContext.media);
+//
+//        return mediafilteredForPreferredRepresentations;
+//    }
     
     @RequestMapping(
             value = {"media"},
@@ -581,7 +581,7 @@ public class TaxonPortalController extends TaxonController{
                 @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
                 @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
                 @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
-                @RequestParam(value = "includeOriginals", required = true) Boolean  includeOriginals,
+                @RequestParam(value = "includeOriginals", required = false) Boolean  includeOriginals,
                 @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
                 @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
                 @RequestParam(value = "height", required = false) Integer height,
