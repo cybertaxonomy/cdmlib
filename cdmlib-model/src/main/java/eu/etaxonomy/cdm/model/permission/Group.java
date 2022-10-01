@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 //@Indexed(index = "eu.etaxonomy.cdm.model.common.Group")
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
+
     private static final long serialVersionUID = 7216686200093054648L;
     private static final Logger logger = LogManager.getLogger(Group.class);
 
@@ -74,6 +75,9 @@ public class Group extends CdmBase {
     public static final String GROUP_ALLOW_ALL_TAXA_NAME = "Allow_for_all_taxa";
     public static final String GROUP_PUBLISH_NAME = "Publish";
     public final static String GROUP_USER_MANAGER_NAME = "User_Manager";
+
+    //Phycobank groups  //for now handled here, might be handled elsewhere later
+    public final static String GROUP_SUBMITTER = "Submitter";
 
 //**************** FIELDS ******************************/
 

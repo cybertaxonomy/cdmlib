@@ -30,6 +30,8 @@ import org.springframework.util.concurrent.ListenableFuture;
 import eu.etaxonomy.cdm.api.security.AbstractRequestToken;
 import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
 import eu.etaxonomy.cdm.api.security.IAbstractRequestTokenStore;
+import eu.etaxonomy.cdm.api.service.IGroupService;
+import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
 
 /**
@@ -46,7 +48,8 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
 
     protected static final String USER_NAME_EXISTS_MSG = "This user name is already being used by someone else.";
 
-
+    @Autowired
+    private IGroupService groupService;
 
     @Autowired
     @Qualifier("accountCreationRequestTokenStore")
@@ -99,7 +102,13 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
                     }
                     User newUser = User.NewInstance(userName, password);
                     userService.encodeUserPassword(newUser, password);
+                    //for Phycobank only (preliminary, should be handled in Phycobank explicitly)
+                    Group submitterGroup = groupService.findGroup(Group.GROUP_SUBMITTER);
+                    if (submitterGroup != null) {
+                        submitterGroup.addMember(newUser);
+                    }
                     userDao.saveOrUpdate(newUser);
+
                     accountRegistrationTokenStore.remove(token);
                     sendEmail(creationRequest.get().getUserEmail(), userName,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_SUBJECT_TEMPLATE,

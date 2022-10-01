@@ -63,6 +63,19 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return users;
     }
 
+    @Override
+    public boolean groupExists(String groupName) {
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
+        Group group = dao.findGroupByName(groupName);
+        return group != null;
+    }
+
+    @Override
+    public Group findGroup(String groupName) {
+        Assert.hasText(groupName, "Parameter 'groupname' must not be empty.");
+        Group group = dao.findGroupByName(groupName);
+        return group;
+    }
 
     @Override
     @Transactional(readOnly=false)
