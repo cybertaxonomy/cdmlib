@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface IGroupService extends IService<Group>, GroupManager{
 
-
     /**
      * Return a List of groups matching the given query string, optionally filtered by class, optionally with a particular MatchMode
      *

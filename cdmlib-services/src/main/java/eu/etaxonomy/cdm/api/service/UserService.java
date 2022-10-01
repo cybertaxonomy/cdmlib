@@ -219,7 +219,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Override
     public boolean userExists(String username) {
-        Assert.hasText(username);
+        Assert.hasText(username, "Parameter 'username' must not be empty.");
 
         User user = dao.findUserByUsername(username);
         return user != null;
