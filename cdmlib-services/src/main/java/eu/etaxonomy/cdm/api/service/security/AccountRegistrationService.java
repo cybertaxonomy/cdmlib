@@ -44,9 +44,10 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
 
     private static Logger logger = LogManager.getLogger();
 
-    protected static final String EMAIL_EXISTS = "An account for this email address already exits.";
+    private static final String EMAIL_EXISTS = "An account for this email address already exits.";
 
-    protected static final String USER_NAME_EXISTS_MSG = "This user name is already being used by someone else.";
+    //not private as it is currently used in test
+    static final String USER_NAME_EXISTS_MSG = "This user name is already being used by someone else.";
 
     @Autowired
     protected IGroupDao groupDao;
@@ -74,13 +75,13 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_SUBJECT_TEMPLATE,
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_BODY_TEMPLATE, additionalValues);
                 logger.info("An account creation request has been send to " + emailAddress);
-                return new AsyncResult<Boolean>(true);
+                return new AsyncResult<>(true);
             } catch (MailException e) {
                 throw e;
             }
         } else {
             logger.trace("blocked by rate limiter");
-            return new AsyncResult<Boolean>(false);
+            return new AsyncResult<>(false);
         }
     }
 
@@ -107,6 +108,8 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
                     if (submitterGroup != null) {
                         submitterGroup.addMember(newUser);
                     }
+
+                    //save
                     userDao.saveOrUpdate(newUser);
 
                     accountRegistrationTokenStore.remove(token);
@@ -138,6 +141,7 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
      */
     protected void emailAddressValidAndUnused(String emailAddress)
             throws AddressException, EmailAddressAlreadyInUseException {
+
         InternetAddress emailAddr = new InternetAddress(emailAddress);
         emailAddr.validate();
         if (emailAddressExists(emailAddr.toString())) {
@@ -154,5 +158,4 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
     public boolean userNameExists(String userName) {
         return userDao.userNameExists(userName);
     }
-
 }

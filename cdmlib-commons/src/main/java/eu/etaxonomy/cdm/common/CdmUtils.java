@@ -360,6 +360,11 @@ public class CdmUtils {
         return isBlank(string);
     }
 
+    /**
+     * Checks if all of the given strings are blank.
+     * @param strings Strings to test
+     * @return <code>true</code> if all strings are blank, false otherwise
+     */
     static public boolean areBlank(String ... strings){
         for (String string : strings){
             if (! isBlank(string)){

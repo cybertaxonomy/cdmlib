@@ -41,7 +41,6 @@ import org.springframework.util.Assert;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
-import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -55,16 +54,13 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 // NOTE: no type level @PreAuthorize annotation for this class!
 public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
 
-    protected IGroupDao groupDao;
-
-    protected IGrantedAuthorityDao grantedAuthorityDao;
+    private IGrantedAuthorityDao grantedAuthorityDao;
 
     private SaltSource saltSource; // = new ReflectionSaltSource();
 
     private PasswordEncoder passwordEncoder; // = new Md5PasswordEncoder();
 
     private AuthenticationManager authenticationManager;
-
 
     private UserCache userCache = new NullUserCache();
 
@@ -76,7 +72,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Autowired(required = false)
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -98,15 +93,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Autowired
-    public void setGroupDao(IGroupDao groupDao) {
-        this.groupDao = groupDao;
-    }
-
-    @Autowired
     public void setGrantedAuthorityDao(IGrantedAuthorityDao grantedAuthorityDao) {
         this.grantedAuthorityDao = grantedAuthorityDao;
     }
-
 
     /**
      * Changes the own password of in the database of the user which is
@@ -121,8 +110,8 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Transactional(readOnly=false)
     @PreAuthorize("isAuthenticated()")
     public void changePassword(String oldPassword, String newPassword) {
-        Assert.hasText(oldPassword);
-        Assert.hasText(newPassword);
+        Assert.hasText(oldPassword, "Old password must not be empty.");
+        Assert.hasText(newPassword, "New password must not be empty.");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
 
@@ -149,7 +138,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     /**
-     * make new password salt, encode and set it for the passed user
+     * Make new password salt, encode and set it for the passed user
      *
      * @param user
      *  The user to set the new password for.
@@ -167,8 +156,8 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Transactional(readOnly=false)
     @PreAuthorize("#username == authentication.name or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void changePasswordForUser(String username, String newPassword) {
-        Assert.hasText(username);
-        Assert.hasText(newPassword);
+        Assert.hasText(username, "Username must not be empty.");
+        Assert.hasText(newPassword, "Password must not be empty.");
 
         try {
             User user = dao.findUserByUsername(username);
@@ -197,7 +186,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void deleteUser(String username) {
-        Assert.hasLength(username);
+        Assert.hasLength(username, "Username must not be empty.");
 
         User user = dao.findUserByUsername(username);
         if(user != null) {
@@ -236,7 +225,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException, DataAccessException {
-        Assert.hasText(username);
+        Assert.hasText(username, "Username must not be empty.");
         try {
             User user = dao.findUserByUsername(username);
             if(user == null) {
@@ -248,11 +237,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
-
     @Override
     @Transactional(readOnly=false)
    // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public User save(User user) {
+    public <S extends User> S save(S user)  {
         if(user.getId() == 0 || dao.load(user.getUuid()) == null){
             createUser(user);
         }else{
