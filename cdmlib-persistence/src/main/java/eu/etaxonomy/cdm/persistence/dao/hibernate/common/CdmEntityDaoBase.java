@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
@@ -84,7 +83,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     @Autowired
     private ICdmGenericDao genericDao;
 
-    protected int flushAfterNo = 1000; // large numbers may cause synchronisation errors
+    private int flushAfterNo = 1000; // large numbers may cause synchronization errors
                                         // when committing the session
     protected Class<T> type;
 
