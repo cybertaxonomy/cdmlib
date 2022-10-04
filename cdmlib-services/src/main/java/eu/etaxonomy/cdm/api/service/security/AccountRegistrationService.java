@@ -30,6 +30,8 @@ import org.springframework.util.concurrent.ListenableFuture;
 import eu.etaxonomy.cdm.api.security.AbstractRequestToken;
 import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
 import eu.etaxonomy.cdm.api.security.IAbstractRequestTokenStore;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
@@ -96,13 +98,29 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
             Optional<AccountCreationRequest> creationRequest = accountRegistrationTokenStore.findRequest(token);
             if (creationRequest.isPresent()) {
                 try {
-                    // check again if the email address is still unused
-                    emailAddressValidAndUnused(creationRequest.get().getUserEmail());
+                    User newUser = User.NewInstance(userName, password);
+                    //email
+                    String emailAddress = creationRequest.get().getUserEmail();
+                    if (CdmUtils.isNotBlank(emailAddress)) {
+                        // check again if the email address is still unused
+                        emailAddressValidAndUnused(emailAddress);
+                        newUser.setEmailAddress(emailAddress);
+                    }
+                    //username + pwd
                     if(userNameExists(userName)) {
                         throw new AccountSelfManagementException(USER_NAME_EXISTS_MSG);
                     }
-                    User newUser = User.NewInstance(userName, password);
                     userService.encodeUserPassword(newUser, password);
+
+                    //person
+                    //String givenName, String familyName, String prefix
+                    if (! CdmUtils.areBlank(emailAddress, familyName, prefix)) {
+                        Person person = Person.NewInstance(null, familyName, null, givenName);
+                        person.setPrefix(CdmUtils.Nb(prefix));
+                        newUser.setPerson(person);
+                    }
+
+                    //group, #10116
                     //for Phycobank only (preliminary, should be handled in Phycobank explicitly)
                     Group submitterGroup = groupDao.findGroupByName(Group.GROUP_SUBMITTER);
                     if (submitterGroup != null) {
