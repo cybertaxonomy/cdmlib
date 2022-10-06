@@ -1180,12 +1180,14 @@ public class NameServiceImpl
     }
 
     @Override
+    @Transactional(readOnly = false) //as long as the deduplication may lead to a flush which may cause a titleCache update, this happens in  CdmGenericDaoImpl.findMatching()
     public UpdateResult parseName(String stringToBeParsed, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate) {
         TaxonName name = TaxonNameFactory.NewNameInstance(code, preferredRank);
         return parseName(name, stringToBeParsed, preferredRank, true, doDeduplicate);
     }
 
     @Override
+    @Transactional(readOnly = false) //as long as the deduplication may lead to a flush which may cause a titleCache update, this happens in  CdmGenericDaoImpl.findMatching()
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
             boolean doEmpty, boolean doDeduplicate){
 
