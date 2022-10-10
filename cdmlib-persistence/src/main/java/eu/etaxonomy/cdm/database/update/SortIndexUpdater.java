@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -111,7 +112,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	    String resultsetQuery = createIndexMapQuery();
 
 		ResultSet rs = datasource.executeQuery(resultsetQuery);
-		List<Integer[]> result = new ArrayList<Integer[]>();
+		List<Integer[]> result = new ArrayList<>();
 		while (rs.next()){
 		    int id = rs.getInt("id");
             Object oParentId = rs.getObject(parentColumn);
@@ -186,7 +187,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	/**
 	 * Adds the id to the index (each id is attached to an (sort)index)
 	 */
-	public void putIndex(Integer id, Integer index, Map<Integer, Set<Integer>> indexMap) {
+	private void putIndex(Integer id, Integer index, Map<Integer, Set<Integer>> indexMap) {
 		Set<Integer> set = indexMap.get(index);
 		if (set == null){
 			set = new HashSet<>();
@@ -202,7 +203,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
         return countSelect;
 	}
 
-	public String getUpdateChildrenCount(int count, int id){
+	public String getUpdateChildrenCountQuery(int count, int id){
         String countUpdate =
                   " UPDATE @tableName "
                 + " SET countChildren = " + count
@@ -211,7 +212,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
         return countUpdate;
     }
 
-	public void updateChildrenCount(String select, ICdmDataSource datasource) throws SQLException{
+	private void updateChildrenCount(String select, ICdmDataSource datasource) throws SQLException{
 
 	    ResultSet rs = datasource.executeQuery(select);
 
@@ -223,15 +224,11 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
             countChildren = rs.getInt("countChildren");
             parentId = rs.getInt("parentID");
             if (count != countChildren){
-                String updateQuery = getUpdateChildrenCount(count, parentId);
+                String updateQuery = getUpdateChildrenCountQuery(count, parentId);
                 datasource.executeUpdate(updateQuery);
             }
         }
 	}
-
-    public String getParentColumn() {
-        return parentColumn;
-    }
 
     public String getTableName() {
         return tableName;

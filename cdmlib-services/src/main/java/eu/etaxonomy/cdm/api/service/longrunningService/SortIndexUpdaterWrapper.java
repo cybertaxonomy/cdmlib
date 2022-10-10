@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
 public class SortIndexUpdaterWrapper implements Serializable {
 
     private static final long serialVersionUID = 1152526455024556637L;
-    private static final Logger logger = LogManager.getLogger(SortIndexUpdaterWrapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String TAXON_NODE = "TaxonNode";
     private static final String TERM_NODE = "TermRelation";
@@ -153,7 +154,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
                    int id = ((Number) row[2]).intValue();
 
                    if (realCount != countChildren){
-                       query = updater.getUpdateChildrenCount(realCount, id);
+                       query = updater.getUpdateChildrenCountQuery(realCount, id);
                        int resultInt = executeSqlResult(query);
                        logger.debug("update all childrenCount "+ resultInt);
                    }
