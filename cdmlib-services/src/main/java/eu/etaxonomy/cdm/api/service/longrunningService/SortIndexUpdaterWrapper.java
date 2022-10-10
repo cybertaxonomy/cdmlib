@@ -168,7 +168,6 @@ public class SortIndexUpdaterWrapper implements Serializable {
             return updateResult;
         } catch (Exception e) {
             monitor.warning("Stopped sortIndex updater");
-            e.printStackTrace();
             updateResult.setAbort();
             updateResult.addException(e);
         }
