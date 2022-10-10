@@ -843,8 +843,8 @@ public class BerlinModelTransformer {
 
 			case 40: return TaxonRelationshipType.NOT_CONGRUENT_TO();
 
-			//how to implement this, what is a purely doubtful relationship ??
-//			case 42: isDoubtful.setValue(true); return TaxonRelationshipType.();
+			//how to implement this, what is a purely doubtful relationship ?? #see #2934
+			case 42: isDoubtful.setValue(true); return TaxonRelationshipType.ALL_RELATIONSHIPS();
 
 			case 43: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_TO();
 			case 44: isInverse.setValue(true);isDoubtful.setValue(true); return TaxonRelationshipType.INCLUDES();

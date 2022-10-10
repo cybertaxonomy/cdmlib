@@ -55,13 +55,14 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     });
 
     public static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
-            "derivedFrom.derivatives",
-            "derivedFrom.originals",
+            "derivedFrom.derivatives.*",
+            "derivedFrom.originals.*",
             "specimenTypeDesignations.*",
             "specimenTypeDesignations.designationSource.citation.*",
             "specimenTypeDesignations.homotypicalGroup.*",
             "specimenTypeDesignations.typifiedNames",
-            "collection.$"
+            "collection.$",
+            "derivationEvents.derivatives.*"
     });
 
     private static final List<String> EXTENSIONS_INIT_STRATEGY =  Arrays.asList(new String []{

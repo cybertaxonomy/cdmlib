@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -100,7 +101,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
             // only for debugging:
             //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
-            //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+//          LogUtils.setLevel("org.hibernate.SQL", Level.DEBUG);
             logger.info("Hibernate JDBC Batch size: " +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
 
             TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();

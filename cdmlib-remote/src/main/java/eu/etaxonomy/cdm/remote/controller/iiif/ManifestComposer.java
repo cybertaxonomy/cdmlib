@@ -20,7 +20,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpException;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.digitalcollections.iiif.model.ImageContent;
 import de.digitalcollections.iiif.model.MetadataEntry;
@@ -139,8 +140,8 @@ public class ManifestComposer {
 
     <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) throws IOException {
 
-//        Logger.getLogger(MediaUtils.class).setLevel(Level.DEBUG);
-//        logger.setLevel(Level.DEBUG);
+//        LogUtils.setLevel(MediaUtils.class, Level.DEBUG);
+//        LogUtils.setLevel(logger, Level.DEBUG);
         List<Canvas> canvases = null;
         try {
         canvases = entityMediaContext.getMedia().parallelStream().map(m -> {

@@ -24,12 +24,9 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  * @author a.mueller
  * @date 09.06.2022
  */
-/**
- * @author a.mueller
- * @date 22.07.2022
- *
- */
 public class LogUtils {
+
+    private static final Logger logger = LogManager.getLogger();
 
     static final String TRACE = "trace_";
     static final String DEBUG = "debug_";
@@ -41,26 +38,34 @@ public class LogUtils {
      *
      * NOTE: This call is expensive as it recreates the full logging configuration each time
      *       it is called.
+     * NOTE: This call works only in a context where Log4j2 is used as effective logging framework
      */
     //copied from https://stackoverflow.com/questions/23434252/programmatically-change-log-level-in-log4j2/44678752#44678752
     public static void setLevel(String loggerName, Level level) {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
+        org.apache.logging.log4j.spi.LoggerContext context = LogManager.getContext(false);
+        if (context instanceof org.apache.logging.log4j.core.LoggerContext) {
+            final org.apache.logging.log4j.core.LoggerContext coreCtx = (LoggerContext) context;
+            final Configuration config = coreCtx.getConfiguration();
 
-        LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
-        LoggerConfig specificConfig = loggerConfig;
+            LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
+            LoggerConfig specificConfig = loggerConfig;
 
-        // We need a specific configuration for this logger,
-        // otherwise we would change the level of all other loggers
-        // having the original configuration as parent as well
+            // We need a specific configuration for this logger,
+            // otherwise we would change the level of all other loggers
+            // having the original configuration as parent as well
 
-        if (!loggerConfig.getName().equals(loggerName)) {
-            specificConfig = new LoggerConfig(loggerName, level, true);
-            specificConfig.setParent(loggerConfig);
-            config.addLogger(loggerName, specificConfig);
+            if (!loggerConfig.getName().equals(loggerName)) {
+                specificConfig = new LoggerConfig(loggerName, level, true);
+                specificConfig.setParent(loggerConfig);
+                config.addLogger(loggerName, specificConfig);
+            }
+            specificConfig.setLevel(level);
+            coreCtx.updateLoggers();
+        }else {
+            //CDMServer uses org.apache.logging.slf4j.SLF4JLoggerContext (with log4j-to-slf4j) which does not support changing LogLevel
+            //#10141
+            logger.warn("setLevel() not possible in non-log4j context");
         }
-        specificConfig.setLevel(level);
-        ctx.updateLoggers();
     }
 
     /**

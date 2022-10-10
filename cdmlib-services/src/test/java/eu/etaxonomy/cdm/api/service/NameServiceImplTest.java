@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -886,7 +887,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         //       -> SpecimenTypeDesignation -> Specimen2
         // Name2 -> SpecimenTypeDesignation -> Specimen2
 
-        // Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
+
 
         List<Restriction<?>> restrictions;
         Pager<TaxonName> result;
@@ -910,7 +912,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(0l, result.getCount().longValue());
 
-        // Logger.getLogger("eu.etaxonomy.cdm.persistence.dao.hibernate.common").setLevel(Level.DEBUG);
+        // LogUtils.setLevel("eu.etaxonomy.cdm.persistence.dao.hibernate.common", Level.DEBUG);
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.EXACT, "Specimen2"));
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
@@ -971,7 +973,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         List<Restriction<?>> restrictions;
         Pager<TaxonName> result;
 
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
+
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.AND, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name3", MatchMode.EXACT, restrictions, null, null, null, null);

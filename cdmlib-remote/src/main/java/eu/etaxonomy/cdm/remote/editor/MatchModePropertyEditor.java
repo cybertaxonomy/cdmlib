@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.editor;
 
 import java.beans.PropertyEditorSupport;
@@ -19,5 +18,4 @@ public class MatchModePropertyEditor extends PropertyEditorSupport {
     public void setAsText(String name) {
 		setValue(MatchMode.valueOf(name == null ? null : name.toUpperCase()));
 	}
-
 }

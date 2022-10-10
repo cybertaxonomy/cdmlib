@@ -15,7 +15,8 @@ import java.util.Optional;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -29,8 +30,11 @@ import org.springframework.util.concurrent.ListenableFuture;
 import eu.etaxonomy.cdm.api.security.AbstractRequestToken;
 import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
 import eu.etaxonomy.cdm.api.security.IAbstractRequestTokenStore;
-import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
 
 /**
  * @author a.kohlbecker
@@ -40,12 +44,15 @@ import eu.etaxonomy.cdm.model.permission.User;
 @Transactional(readOnly = true)
 public class AccountRegistrationService extends AccountSelfManagementService implements IAccountRegistrationService {
 
+    private static Logger logger = LogManager.getLogger();
 
-    protected static final String EMAIL_EXISTS = "An account for this email address already exits.";
+    private static final String EMAIL_EXISTS = "An account for this email address already exits.";
 
-    protected static final String USER_NAME_EXISTS_MSG = "This user name is already being used by someone else.";
+    //not private as it is currently used in test
+    static final String USER_NAME_EXISTS_MSG = "This user name is already being used by someone else.";
 
-    private static Logger logger = LogManager.getLogger(PasswordResetRequest.class);
+    @Autowired
+    protected IGroupDao groupDao;
 
     @Autowired
     @Qualifier("accountCreationRequestTokenStore")
@@ -70,13 +77,13 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_SUBJECT_TEMPLATE,
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_BODY_TEMPLATE, additionalValues);
                 logger.info("An account creation request has been send to " + emailAddress);
-                return new AsyncResult<Boolean>(true);
+                return new AsyncResult<>(true);
             } catch (MailException e) {
                 throw e;
             }
         } else {
             logger.trace("blocked by rate limiter");
-            return new AsyncResult<Boolean>(false);
+            return new AsyncResult<>(false);
         }
     }
 
@@ -91,14 +98,38 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
             Optional<AccountCreationRequest> creationRequest = accountRegistrationTokenStore.findRequest(token);
             if (creationRequest.isPresent()) {
                 try {
-                    // check again if the email address is still unused
-                    emailAddressValidAndUnused(creationRequest.get().getUserEmail());
+                    User newUser = User.NewInstance(userName, password);
+                    //email
+                    String emailAddress = creationRequest.get().getUserEmail();
+                    if (CdmUtils.isNotBlank(emailAddress)) {
+                        // check again if the email address is still unused
+                        emailAddressValidAndUnused(emailAddress);
+                        newUser.setEmailAddress(emailAddress);
+                    }
+                    //username + pwd
                     if(userNameExists(userName)) {
                         throw new AccountSelfManagementException(USER_NAME_EXISTS_MSG);
                     }
-                    User newUser = User.NewInstance(userName, password);
                     userService.encodeUserPassword(newUser, password);
+
+                    //person
+                    //String givenName, String familyName, String prefix
+                    if (! CdmUtils.areBlank(emailAddress, familyName, prefix)) {
+                        Person person = Person.NewInstance(null, familyName, null, givenName);
+                        person.setPrefix(CdmUtils.Nb(prefix));
+                        newUser.setPerson(person);
+                    }
+
+                    //group, #10116
+                    //for Phycobank only (preliminary, should be handled in Phycobank explicitly)
+                    Group submitterGroup = groupDao.findGroupByName(Group.GROUP_SUBMITTER);
+                    if (submitterGroup != null) {
+                        submitterGroup.addMember(newUser);
+                    }
+
+                    //save
                     userDao.saveOrUpdate(newUser);
+
                     accountRegistrationTokenStore.remove(token);
                     sendEmail(creationRequest.get().getUserEmail(), userName,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
@@ -128,6 +159,7 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
      */
     protected void emailAddressValidAndUnused(String emailAddress)
             throws AddressException, EmailAddressAlreadyInUseException {
+
         InternetAddress emailAddr = new InternetAddress(emailAddress);
         emailAddr.validate();
         if (emailAddressExists(emailAddr.toString())) {
@@ -144,5 +176,4 @@ public class AccountRegistrationService extends AccountSelfManagementService imp
     public boolean userNameExists(String userName) {
         return userDao.userNameExists(userName);
     }
-
 }

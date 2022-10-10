@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -196,5 +197,20 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @return
      */
     public List<TermVocabularyDto> findFeatureVocabularyDtoByTermTypes(Set<CdmClass> availableFor);
+
+    /**
+     * Returns a list of vocabulary {@link UUID uuids} according to the given filter.
+     */
+    public List<UUID> uuidList(VocabularyFilter filter);
+
+    /**
+     * Returns a list of vocabulary IDs according to the given filter.
+     */
+    public List<Integer> idList(VocabularyFilter filter);
+
+    /**
+     * Returns the total count of vocabularies according to the given filter.
+     */
+    public long count(VocabularyFilter filter);
 
 }

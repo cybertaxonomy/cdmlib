@@ -33,7 +33,9 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
  * @author a.mueller
  */
 @Repository
-public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode> implements ITaxonNodeFilterDao {
+public class TaxonNodeFilterDaoHibernateImpl
+        extends CdmEntityDaoBase<TaxonNode>
+        implements ITaxonNodeFilterDao {
 
     private static final String DESCRIPTION_ELEMENTS = "descriptionElements";
 
@@ -104,7 +106,6 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         String fullQuery = select + from + " WHERE " + fullFilter + groupBy + orderBy;
 
         return fullQuery;
-
     }
 
     private String getOrderBy(TaxonNodeFilter filter, String selectPart) {
@@ -242,7 +243,6 @@ public class TaxonNodeFilterDaoHibernateImpl extends CdmEntityDaoBase<TaxonNode>
         }
         return result;
     }
-
 
     private String getTaxonNodeFilter(TaxonNodeFilter filter) {
         String result = "";

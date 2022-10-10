@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2022 EDIT
 * European Distributed Institute of Taxonomy
@@ -22,13 +21,14 @@ import org.junit.Test;
 /**
  * @author a.mueller
  * @date 22.07.2022
- *
  */
 public class LogUtilsTest {
 
     private static final Logger logger = LogManager.getLogger();
 
     private static final String LOGGER = "MyTestLogger";
+
+    private static final Level log4j2XmlDefaultLevel = Level.WARN;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -41,7 +41,7 @@ public class LogUtilsTest {
     @Before
     public void setUp() throws Exception {
         Logger logger = LogManager.getLogger(LOGGER);
-        Assert.assertEquals(Level.ERROR, logger.getLevel());
+        Assert.assertEquals("Level should be the same as in log4j2.xml" , log4j2XmlDefaultLevel, logger.getLevel());
     }
 
     @After
@@ -52,7 +52,7 @@ public class LogUtilsTest {
     public void testSetLevel() {
         Logger logger = LogManager.getLogger(LOGGER);
         Level levelBefore = LogManager.getLogger(LOGGER).getLevel();
-        Assert.assertEquals("Logger does not have the expected default level", Level.ERROR, levelBefore);
+        Assert.assertEquals("Logger does not have the expected default level", log4j2XmlDefaultLevel, levelBefore);
 
         LogUtils.setLevel(logger, Level.DEBUG);
         Assert.assertEquals(Level.DEBUG, logger.getLevel());
@@ -61,7 +61,6 @@ public class LogUtilsTest {
         LogUtils.setLevel(LOGGER, Level.TRACE);
         Assert.assertEquals(Level.TRACE, logger.getLevel());
         Assert.assertSame(logger, LogManager.getLogger(LOGGER));
-
     }
 
     @Test

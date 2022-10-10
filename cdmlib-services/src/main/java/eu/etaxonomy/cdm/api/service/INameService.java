@@ -590,9 +590,9 @@ public interface INameService
      * @param config
      * @return
      */
-    DeleteResult delete(TaxonName name, NameDeletionConfigurator config);
+    public DeleteResult delete(TaxonName name, NameDeletionConfigurator config);
 
-    List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
+    public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
 
     /**
      * Provides a collection of the TypeDesignationStatusBase terms which are in use.
@@ -601,39 +601,13 @@ public interface INameService
      * @param preferredLanguage
      * @return
      */
-    Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages);
+    public Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages);
 
-    /**
-     * @param uuid
-     * @param propertyPaths
-     * @return
-     */
-    NomenclaturalStatus loadNomenclaturalStatus(UUID uuid, List<String> propertyPaths);
+    public NomenclaturalStatus loadNomenclaturalStatus(UUID uuid, List<String> propertyPaths);
 
-    /**
-     * @param clazz
-     * @param restrictions
-     * @param pageSize
-     * @param pageIndex
-     * @param orderHints
-     * @param propertyPaths
-     * @param includeUnpublished
-     * @return
-     */
     public <S extends TaxonName> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
-    /**
-     * @param clazz
-     * @param queryString
-     * @param matchmode
-     * @param criteria
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
     public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
             List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
@@ -662,6 +636,6 @@ public interface INameService
      * @param taxonUuid
      * @return
      */
-    DeleteResult isDeletable(UUID nameUuid, DeleteConfiguratorBase config, UUID taxonUuid);
+    public DeleteResult isDeletable(UUID nameUuid, DeleteConfiguratorBase config, UUID taxonUuid);
 
 }

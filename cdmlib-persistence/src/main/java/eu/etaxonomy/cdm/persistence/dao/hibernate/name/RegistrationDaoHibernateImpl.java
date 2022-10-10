@@ -17,7 +17,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -140,9 +141,9 @@ public class RegistrationDaoHibernateImpl
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
         Query<Long> query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
                 taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, true, null);
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.DEBUG);
         List<Long> list = query.list();
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.WARN);
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
@@ -180,10 +181,10 @@ public class RegistrationDaoHibernateImpl
             }
         }
 
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.DEBUG);
         @SuppressWarnings("unchecked")
         List<Registration> results = query.list();
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.WARN);
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
@@ -192,10 +193,10 @@ public class RegistrationDaoHibernateImpl
     @Override
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs) {
         Query query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, true, null);
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.DEBUG);
         @SuppressWarnings("unchecked")
         List<Long> list = query.list();
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.WARN);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.WARN);
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
@@ -243,7 +244,6 @@ public class RegistrationDaoHibernateImpl
         }
 
         return query;
-
     }
 
     private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,

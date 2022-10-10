@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
   <Appenders>
-    <File name="FILE" fileName="cdmlib-commons.log" append="true" header="%d{dd MMM yyyy}">
+    <File name="FILE" fileName="cdmlib-commons.log" append="true">
       <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
     </File>
     <Console name="STDOUT" target="SYSTEM_OUT">
@@ -40,7 +40,11 @@
          leakages when using DriverManagerConnectionProvider -->
     <!-- Logger name="org.hibernate.connection.DriverManagerConnectionProvider" level="debug"/ -->
     
+    <!-- suppress HHH90000003 (but be aware there might be other deprecations) -->
     <Logger name="org.hibernate.orm.deprecation" level="error"/>
+    <!-- suppress HHH000179: Narrowing proxy to class ... issues -->
+    <Logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>
+    
   </Loggers>
 </Configuration>
 

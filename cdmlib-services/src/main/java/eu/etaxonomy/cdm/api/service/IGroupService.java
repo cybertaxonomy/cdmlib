@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
@@ -27,7 +26,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since Mar 9, 2011
  */
 public interface IGroupService extends IService<Group>, GroupManager{
-
 
     /**
      * Return a List of groups matching the given query string, optionally filtered by class, optionally with a particular MatchMode
@@ -50,5 +48,15 @@ public interface IGroupService extends IService<Group>, GroupManager{
 
     public UUID saveGroup(Group group);
 
+    /**
+     * Checks whether or not a group with the given name exists.
+     * @param username
+     */
+    public boolean groupExists(String groupName);
 
+    /**
+     * Returns the group with the given group name or <code>null</code> if such a user
+     * does not exist.
+     */
+    public Group findGroup(String groupName);
 }

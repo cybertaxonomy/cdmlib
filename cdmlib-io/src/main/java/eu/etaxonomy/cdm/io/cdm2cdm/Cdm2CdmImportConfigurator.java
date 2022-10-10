@@ -15,6 +15,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.io.common.ITaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -35,17 +36,20 @@ public  class Cdm2CdmImportConfigurator
 
     private TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance();
 
-    private Set<UUID> vocabularyFilter = new HashSet<>();
+    private VocabularyFilter vocabularyFilter = VocabularyFilter.NewInstance();
     private Set<UUID> graphFilter = new HashSet<>();
     private ITaxonNodeOutStreamPartitioner partitioner;
     private boolean concurrent = false;  //
 
-    private boolean doTaxa = true;
-    private boolean doDescriptions = true;
-    private boolean doVocabularies = true;
+    private boolean doTaxa = false;
+    private boolean doDescriptions = false;
+    private boolean doVocabularies = false;
 
     private boolean addSources = true;
     private boolean removeImportSources = false;
+
+    private UserImportMode createdByMode = UserImportMode.NONE;
+    private UserImportMode updatedByMode = UserImportMode.NONE;
 
 //***************************** NewInstance ************************/
 
@@ -144,10 +148,10 @@ public  class Cdm2CdmImportConfigurator
         this.doVocabularies = doVocabularies;
     }
 
-    public Set<UUID> getVocabularyFilter() {
+    public VocabularyFilter getVocabularyFilter() {
         return vocabularyFilter;
     }
-    public void setVocabularyFilter(Set<UUID> vocabularyFilter) {
+    public void setVocabularyFilter(VocabularyFilter vocabularyFilter) {
         this.vocabularyFilter = vocabularyFilter;
     }
 
@@ -156,5 +160,19 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setGraphFilter(Set<UUID> graphFilter) {
         this.graphFilter = graphFilter;
+    }
+
+    public UserImportMode getCreatedByMode() {
+        return createdByMode;
+    }
+    public void setCreatedByMode(UserImportMode createdByMode) {
+        this.createdByMode = createdByMode;
+    }
+
+    public UserImportMode getUpdatedByMode() {
+        return updatedByMode;
+    }
+    public void setUpdatedByMode(UserImportMode updatedByMode) {
+        this.updatedByMode = updatedByMode;
     }
 }

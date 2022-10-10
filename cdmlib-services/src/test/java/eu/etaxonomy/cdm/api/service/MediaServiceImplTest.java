@@ -52,7 +52,7 @@ public class MediaServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testReadResourceMetadataFiltered() throws IOException, HttpException {
-         //Logger.getLogger(IdentifiableServiceBase.class).setLevel(Level.DEBUG);
+         //LogUtils.setLevel(IdentifiableServiceBase.class, Level.DEBUG);
         Map<String, String> mediaData = mediaService.readResourceMetadataFiltered(repr1);
         assertNotNull(mediaData);
         assertTrue("IPCT data in the positive list of the includes", mediaData.containsKey("Copyright"));

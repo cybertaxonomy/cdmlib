@@ -25,7 +25,8 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -966,17 +967,25 @@ public class TaxonServiceImpl
     public List<Media> listTaxonDescriptionMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, boolean limitToGalleries, List<String> propertyPath){
         return listMedia(taxon, includeRelationships, limitToGalleries, true, false, false, propertyPath);
     }
-
+    
     @Override
     public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
+            Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
+    	return  listMedia(taxon, includeRelationships, limitToGalleries, includeTaxonDescriptions, includeOccurrences, false,
+                includeTaxonNameDescriptions, propertyPath);
+    }
+
+    @Override
+    public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
+            Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginalOccurences,
             Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
         //TODO let inherit
         boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
-    //    logger.setLevel(Level.TRACE);
-//        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//      LogUtils.setLevel(logger, Level.TRACE);
+//      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
         if (logger.isTraceEnabled()){logger.trace("listMedia() - START");}
 
@@ -1057,7 +1066,9 @@ public class TaxonServiceImpl
                     }
                 }
                 //media in hierarchy
-                taxonMedia.addAll(occurrenceService.getMediaInHierarchy(occurrence, null, null, propertyPath).getRecords());
+                
+                taxonMedia.addAll(occurrenceService.getMediaInHierarchy(occurrence, includeOriginalOccurences, includeOccurrences, null, null, propertyPath).getRecords());
+                
             }
         }
 

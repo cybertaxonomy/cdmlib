@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
-import org.hibernate.search.spatial.impl.Rectangle;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -28,6 +27,8 @@ import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
+import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
+
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
@@ -340,7 +341,7 @@ public interface IOccurrenceService
      * @throws ParseException
      */
     Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(Class<? extends SpecimenOrObservationBase> clazz,
-            String queryString, Rectangle boundingBox, List<Language> languages, boolean highlightFragments,
+            String queryString, RectangleDTO boundingBox, List<Language> languages, boolean highlightFragments,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
             throws IOException, LuceneParseException;
     /**
@@ -790,5 +791,8 @@ public interface IOccurrenceService
     FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid);
 
     Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber);
+
+	Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivativeMedia,
+			Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 }

@@ -374,7 +374,6 @@ public abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSou
     // must not have the @Override annotation for compatibility with
     // java 1.6
     //---------------------------------------------------------------------
-
     @Override
     public java.util.logging.Logger getParentLogger() {
         //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct

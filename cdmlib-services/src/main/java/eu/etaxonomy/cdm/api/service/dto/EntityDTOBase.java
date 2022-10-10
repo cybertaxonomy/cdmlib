@@ -36,8 +36,8 @@ public abstract class EntityDTOBase<T extends CdmBase> implements Serializable{
 
         public CdmEntity(UUID entityUuid, Object object, String label, String abbrevTitleCache) {
             super(entityUuid, null, label, abbrevTitleCache);
-
         }
+
         public T getEntity() {return entity;}
     }
 

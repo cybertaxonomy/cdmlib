@@ -124,13 +124,12 @@ public class MediaUtilsTest {
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage1.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage2.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage3.getUuid()));
-
     }
 
     @Test
     public void testfindBestMatchingRepresentation() {
 
-        // Logger.getLogger(MediaUtils.class).setLevel(Level.DEBUG);
+        // LogUtils.setLevel(MediaUtils.class, Level.DEBUG);
 
         String[] mimetypes = {".*"};
 

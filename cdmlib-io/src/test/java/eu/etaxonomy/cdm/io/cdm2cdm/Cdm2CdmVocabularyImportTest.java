@@ -15,7 +15,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
@@ -128,7 +130,10 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         configurator = Cdm2CdmImportConfigurator.NewInstace(otherRepository, null);
         configurator.setDoTaxa(false);
         configurator.setDoDescriptions(false);
-        configurator.setVocabularyFilter(new HashSet<>(Arrays.asList(uuidStructVoc)));
+//        VocabularyFilter vocFilter = VocabularyFilter.NewTermTypeInstance(TermType.Structure);
+        VocabularyFilter vocFilter = VocabularyFilter.NewInstance();
+        vocFilter.orVocabulary(uuidStructVoc);
+        configurator.setVocabularyFilter(vocFilter);
 
         configurator.addObserver(new LoggingIoObserver());
         assertNotNull("Configurator could not be created", configurator);
@@ -142,9 +147,13 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
 
     @Test
     public void testInvokeVocabulary() {
+
+        //test emptiness
         @SuppressWarnings("unchecked")
         TermVocabulary<DefinedTerm> voc = vocService.find(uuidStructVoc);
         Assert.assertNull("Vocabulary must not exist before invoke", voc);
+
+        //test initial import
         ImportResult result = defaultImport.invoke(this.configurator);
         Assert.assertTrue(result.isSuccess());
         commitAndStartNewTransaction();
@@ -155,7 +164,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         Assert.assertNotSame(otherVoc, voc);
         Assert.assertEquals(1, voc.getTerms().size());
 
-        //add term in other
+        //add term in other repo ...
         UUID uuidSecond = UUID.fromString("56546e58-e4ea-47f9-ae49-de772a416003");
         DefinedTerm secondTerm = getStructure("2.", uuidSecond);
         TransactionStatus tx = otherRepository.startTransaction();
@@ -164,7 +173,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         otherRepository.getTermService().saveOrUpdate(secondTerm);
         otherRepository.commitTransaction(tx);
 
-        //test if added term gets imported
+        //... to test if added term gets imported
         commitAndStartNewTransaction();
         voc = vocService.find(uuidStructVoc);
         Assert.assertEquals(1, voc.getTerms().size());
@@ -179,7 +188,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
             Assert.assertNotSame(secondTerm, t);
         });
 
-        //test invoke for graph
+        //test invoke for graph (not vocabulary)
         configurator.setGraphFilter(new HashSet<>(Arrays.asList(uuidStructGraph)));
         TermTree<DefinedTerm> graph = treeService.find(uuidStructGraph);
         Assert.assertNull("Graph must not exist before invoke", graph);
@@ -199,7 +208,6 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         TermNode<DefinedTerm> thisSingleChild = graph.getRootChildren().iterator().next();
         Assert.assertEquals(otherSingleChild, thisSingleChild);
         Assert.assertNotSame(otherSingleChild, thisSingleChild);
-
 
         otherRepository.commitTransaction(txOther);
     }

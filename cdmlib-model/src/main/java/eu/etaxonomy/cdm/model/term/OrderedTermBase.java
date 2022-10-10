@@ -134,9 +134,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
             if (this.vocabulary == null || thatTermLocal.vocabulary == null){
                 throw new IllegalStateException("An ordered term (" + this.toString() + " or " + thatTermLocal.toString() + ") of class " + this.getClass() + " or " + thatTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
             }
-            if (! this.getVocabulary().getUuid().equals(thatTermLocal.vocabulary.getUuid())){
-               throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared: " + this.getTitleCache() + " and " + thatTermLocal.getTitleCache());
-            }
         }
 
     	int vocCompare = compareVocabularies(thatTermLocal);

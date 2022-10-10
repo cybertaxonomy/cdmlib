@@ -73,5 +73,4 @@ public class TermBaseListPropertyEditor<T extends DefinedTermBase<?>> extends Te
             setValue(termList);
         }
     }
-
 }

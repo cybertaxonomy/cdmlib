@@ -51,6 +51,7 @@ public class DNASampleDTO extends DerivedUnitDTO{
         this.setSequences(seqDtos);
         this.amplificationResults = dnaSample.getAmplificationResults();
         this.dnaQuality = HibernateProxyHelper.deproxy(dnaSample.getDnaQuality(), DnaQuality.class);
+        this.setHasDna(true);
     }
 
 

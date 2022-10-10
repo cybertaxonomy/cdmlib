@@ -363,8 +363,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                       // in contrast to AuditProcess.doBeforeTransactionCompletion, the ConnectionReleaseMode.AFTER_TRANSACTION causes problems for us:
                       //.connectionReleaseMode( ConnectionReleaseMode.AFTER_TRANSACTION )
                       .openSession();
-//            origLoggerLevel = Logger.getLogger("org.hibernate.SQL").getLevel();
-//            Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+//            origLoggerLevel = LogManager.getLogger("org.hibernate.SQL").getLevel();
+//          LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
         }
     }
 

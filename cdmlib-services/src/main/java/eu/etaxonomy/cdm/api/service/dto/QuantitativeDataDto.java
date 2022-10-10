@@ -27,8 +27,6 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
  */
 public class QuantitativeDataDto extends DescriptionElementDto {
 
-
-
     private static final long serialVersionUID = 9043099217303520574L;
 
     private TermDto measurementUnitDto;
@@ -39,7 +37,6 @@ public class QuantitativeDataDto extends DescriptionElementDto {
     public QuantitativeDataDto(UUID elementUuid, FeatureDto feature){
         super(elementUuid, feature);
     }
-
 
     public static QuantitativeDataDto fromQuantitativeData (QuantitativeData data) {
         QuantitativeDataDto dto = new QuantitativeDataDto(data.getUuid(), FeatureDto.fromFeature(data.getFeature()));
@@ -54,7 +51,6 @@ public class QuantitativeDataDto extends DescriptionElementDto {
 
     public QuantitativeDataDto(FeatureDto feature){
         super(feature);
-
     }
 
     public TermDto getMeasurementUnit() {
@@ -125,10 +121,6 @@ public class QuantitativeDataDto extends DescriptionElementDto {
         return result;
     }
 
-    /**
-     * @param result
-     * @return
-     */
     public static List<QuantitativeDataDto> quantitativeDataDtoListFrom(List<Object[]> result) {
         List<QuantitativeDataDto> dtoResult = new ArrayList<>();
         QuantitativeDataDto dto = null;
@@ -147,10 +139,6 @@ public class QuantitativeDataDto extends DescriptionElementDto {
             }
         }
 
-
         return dtoResult;
-
     }
-
-
 }

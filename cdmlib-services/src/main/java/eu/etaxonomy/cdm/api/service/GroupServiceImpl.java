@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -44,9 +43,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
 public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IGroupService {
 
-    protected IUserDao userDao;
+    private IUserDao userDao;
 
-    protected IGrantedAuthorityDao grantedAuthorityDao;
+    private IGrantedAuthorityDao grantedAuthorityDao;
 
     @Override
     public List<String> findAllGroups() {
@@ -55,7 +54,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
     @Override
     public List<String> findUsersInGroup(String groupName) {
-        Assert.hasText(groupName);
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
         Group group = dao.findGroupByName(groupName);
 
         List<String> users = dao.listMembers(group, null, null);
@@ -63,11 +62,24 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return users;
     }
 
+    @Override
+    public boolean groupExists(String groupName) {
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
+        Group group = dao.findGroupByName(groupName);
+        return group != null;
+    }
+
+    @Override
+    public Group findGroup(String groupName) {
+        Assert.hasText(groupName, "Parameter 'groupname' must not be empty.");
+        Group group = dao.findGroupByName(groupName);
+        return group;
+    }
 
     @Override
     @Transactional(readOnly=false)
     public void deleteGroup(String groupUUID) {
-        Assert.notNull(groupUUID);
+        Assert.notNull(groupUUID, "Parameter 'groupUUID' must not be empty.");
 
         Group group = dao.findByUuid(UUID.fromString(groupUUID));
         Iterator<User> it = group.getMembers().iterator();
@@ -82,8 +94,8 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Override
     @Transactional(readOnly=false)
     public void renameGroup(String oldName, String newName) {
-        Assert.hasText(oldName);
-        Assert.hasText(newName);
+        Assert.hasText(oldName, "Parameter 'oldName' must not be empty.");
+        Assert.hasText(newName, "Parameter 'newName' must not be empty.");
 
         Group group = dao.findGroupByName(oldName);
 
@@ -94,8 +106,8 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Override
     @Transactional(readOnly=false)
     public void addUserToGroup(String username, String groupName) {
-        Assert.hasText(username);
-        Assert.hasText(groupName);
+        Assert.hasText(username, "Parameter 'username' must not be empty.");
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
 
         Group group = dao.findGroupByName(groupName);
         User user = userDao.findUserByUsername(username);
@@ -110,8 +122,8 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Override
     @Transactional(readOnly=false)
     public void removeUserFromGroup(String username, String groupName) {
-        Assert.hasText(username);
-        Assert.hasText(groupName);
+        Assert.hasText(username, "Parameter 'username' must not be empty.");
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
 
         Group group = dao.findGroupByName(groupName);
         User user = userDao.findUserByUsername(username);
@@ -125,7 +137,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
     @Override
     public List<GrantedAuthority> findGroupAuthorities(String groupName) {
-        Assert.hasText(groupName);
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
         Group group = dao.findGroupByName(groupName);
 
         if (group != null){
@@ -138,8 +150,8 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Override
     @Transactional(readOnly=false)
     public void addGroupAuthority(String groupName, GrantedAuthority authority) {
-        Assert.hasText(groupName);
-        Assert.notNull(authority);
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
+        Assert.notNull(authority, "Parameter 'authority' must not be empty.");
 
         Group group = dao.findGroupByName(groupName);
 
@@ -154,8 +166,8 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Transactional(readOnly=false)
     public void removeGroupAuthority(String groupName,
             GrantedAuthority authority) {
-        Assert.hasText(groupName);
-        Assert.notNull(authority);
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
+        Assert.notNull(authority, "Parameter 'authority' must not be empty.");
 
         Group group = dao.findGroupByName(groupName);
 
@@ -198,8 +210,8 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Override
     @Transactional(readOnly=false)
     public void createGroup(String groupName, List<GrantedAuthority> authorities) {
-        Assert.hasText(groupName);
-        Assert.notNull(authorities);
+        Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
+        Assert.notNull(authorities, "Parameter 'authorities' must not be empty.");
 
         Group newGroup = Group.NewInstance(groupName);
         for (GrantedAuthority grantedAuthority: authorities){

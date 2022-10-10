@@ -95,8 +95,6 @@
 	}
 )
 
-
-
 @org.hibernate.annotations.TypeDefs( {
 	//TODO needed ??
 	@org.hibernate.annotations.TypeDef(name="persistentDuration", typeClass=org.jadira.usertype.dateandtime.joda.PersistentDurationAsString.class),

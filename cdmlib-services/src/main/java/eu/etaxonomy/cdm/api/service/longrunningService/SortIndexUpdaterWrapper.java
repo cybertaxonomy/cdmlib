@@ -23,6 +23,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -54,6 +55,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
     @Autowired
     private ITaxonService repository;
 
+    @Transactional(readOnly = false)
     public UpdateResult doInvoke(SortIndexUpdaterConfigurator config) {
 
         SortIndexUpdater updater;
@@ -169,7 +171,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
             updateResult.setAbort();
             updateResult.addException(e);
         }
-        return null;
+        return updateResult;
     }
 
     private List<?> getSqlResult(String query) {

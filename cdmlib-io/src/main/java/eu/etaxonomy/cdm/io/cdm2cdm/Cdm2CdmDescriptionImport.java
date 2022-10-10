@@ -73,7 +73,7 @@ public class Cdm2CdmDescriptionImport
         logger.info(node.treeIndex());
         try {
             for (TaxonDescription desc : node.getTaxon().getDescriptions()){
-                result.add(detache(desc, state));
+                result.add(detach(desc, state));
             }
         } catch (Exception e) {
             logger.warn("Exception during detache node " + node.treeIndex());
