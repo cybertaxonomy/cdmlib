@@ -31,7 +31,7 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      *
      * <ul>
      * <li>Hides internal processing time differences by sending the email
-     * asynchronously</li>
+     * asynchronously</li>.
      * <li>Access to the method is rate limited, see {@link #RATE_LIMIT}</li>
      * </ul>
      *
@@ -55,7 +55,7 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      * @throws AccountSelfManagementException
      *             in case the user name is already being used.
      */
-    ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress,
+    public ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress,
             String passwordRequestFormUrlTemplate)
             throws MailException, AddressException, AccountSelfManagementException;
 

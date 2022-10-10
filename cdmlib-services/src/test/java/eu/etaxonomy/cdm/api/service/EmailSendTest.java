@@ -18,7 +18,8 @@ import java.util.Objects;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
@@ -83,7 +84,7 @@ public class EmailSendTest extends CdmIntegrationTest {
             emailSender.send(message);
         }
 
-        if(useWiser) {
+        if(useWiser && wiser != null) { //wiser is always not null here but just to avoid warning
             for (WiserMessage message : wiser.getMessages())
             {
                 String envelopeSender = message.getEnvelopeSender();

@@ -13,7 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,10 +35,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @AppConfigurationProperties
 public class SendEmailConfigurer {
 
-    private static final Logger logger = LogManager.getLogger(SendEmailConfigurer.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
-    Environment env;
+    private Environment env;
 
     // conforms to spring boot config
     private static final String HOST = "mail.host";
