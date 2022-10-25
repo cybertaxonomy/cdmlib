@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +40,7 @@ public class UpdateResult implements Serializable{
 
     private Status status = Status.OK;
 
-    private final Collection<Exception> exceptions = new ArrayBlockingQueue<>(10);
+    private final Collection<Exception> exceptions = new CircularFifoQueue<>(10);
 
     private Set<CdmBase> updatedObjects = new HashSet<>();
 
