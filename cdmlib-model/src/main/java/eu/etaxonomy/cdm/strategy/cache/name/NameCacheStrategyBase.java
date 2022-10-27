@@ -72,7 +72,6 @@ public abstract class NameCacheStrategyBase
     public List<TaggedText> getNomStatusTags(TaxonName taxonName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
 
-
         Collection<NomenclaturalStatus> ncStati = taxonName.getStatus();
         if (ncStati.size() > 1) {
             //order to have defined behavior
@@ -81,6 +80,12 @@ public abstract class NameCacheStrategyBase
         }
         Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
         List<TaggedText> nomStatusTags = new ArrayList<>();
+
+        String statusSeparator = ", ";
+        if (includeSeparatorBefore && !ncStati.isEmpty()){
+            nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
+        }
+        boolean isFirst = true;
         while (iterator.hasNext()) {
             NomenclaturalStatus ncStatus = iterator.next();
             // since the NewInstance method of nomencatural status allows null as parameter
@@ -104,11 +109,11 @@ public abstract class NameCacheStrategyBase
             }else if(isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();
             }
-            String statusSeparator = ", ";
-            if (includeSeparatorBefore){
+            if (!isFirst) {
                 nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
             }
             nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr, new TypedEntityReference<>(ncStatus.getClass(), ncStatus.getUuid())));
+            isFirst = false;
         }
         if (includeSeparatorAfter){
             nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
