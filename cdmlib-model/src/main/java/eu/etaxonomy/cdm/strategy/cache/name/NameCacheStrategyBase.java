@@ -42,9 +42,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 public abstract class NameCacheStrategyBase
         extends StrategyBase
         implements INameCacheStrategy {
-    private static final long serialVersionUID = -2322348388258675517L;
 
-    private static final Logger logger = LogManager.getLogger(NameCacheStrategyBase.class);
+    private static final long serialVersionUID = -2322348388258675517L;
+    private static final Logger logger = LogManager.getLogger();
 
     final static UUID uuid = UUID.fromString("817ae5b5-3ac2-414b-a134-a9ae86cba040");
 
