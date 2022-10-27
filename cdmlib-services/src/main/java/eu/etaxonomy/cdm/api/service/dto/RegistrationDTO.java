@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 public class RegistrationDTO {
 
-    private static final Logger logger = LogManager.getLogger(RegistrationDTO.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private String summary = "";
 

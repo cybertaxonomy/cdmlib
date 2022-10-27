@@ -47,16 +47,12 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author a.kohlbecker
  * @since May 2, 2017
- *
  */
 @Service
 @Transactional(readOnly = true)
 public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration, IRegistrationDao>
     implements IRegistrationService {
 
-    /**
-     * {@inheritDoc}
-     */
     @Autowired
     @Override
     protected void setDao(IRegistrationDao dao) {
@@ -75,12 +71,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     @Autowired
     private ITaxonGraphService taxonGraphService;
 
-
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Transactional(readOnly = true)
     public Pager<Registration> page(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
@@ -100,8 +90,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
-
-
 
     @Override
     @Transactional(readOnly = true)
@@ -170,13 +158,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return new DefaultPagerImpl<>(pageIndex, numberOfResults, pageSize, results);
     }
 
-    /**
-     * @param identifier
-     * @param validateUniqueness
-     * @param response
-     * @return
-     * @throws IOException
-     */
     @Override
     @Transactional(readOnly = true)
     public Pager<Registration> pageByIdentifier(String identifier, Integer pageIndex,  Integer pageSize, List<String> propertyPaths) throws IOException {
@@ -207,9 +188,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return map;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Registration save(Registration newInstance) {
         return assureIsPersisted(newInstance);
@@ -348,9 +326,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         }
     }
 
-    /**
-     * @param name
-     */
     @Override
     public boolean checkRegistrationExistsFor(TaxonName name) {
 
@@ -366,9 +341,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return false;
     }
 
-
-
     // =============================================================================================
-
 
 }

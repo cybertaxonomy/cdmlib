@@ -17,7 +17,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -59,14 +60,16 @@ import io.swagger.annotations.ApiOperation;
 public class RegistrationDTOController
             extends AbstractController<Registration, IRegistrationService>{
 
+    public static final Logger logger = LogManager.getLogger();
+
     private static final List<OrderHint> ORDER_BY_DATE_AND_ID = Arrays.asList(
             new OrderHint("registrationDate", SortOrder.DESCENDING),
             new OrderHint("specificIdentifier", SortOrder.DESCENDING)
             );
 
-    private static final List<OrderHint> ORDER_BY_SUMMARY = Arrays.asList(new OrderHint("summary", SortOrder.ASCENDING));
+    private static final List<OrderHint> ORDER_BY_SUMMARY = Arrays.asList(
+            new OrderHint("summary", SortOrder.ASCENDING));
 
-    public static final Logger logger = LogManager.getLogger(RegistrationDTOController.class);
 
     public RegistrationDTOController(){
         setInitializationStrategy(Arrays.asList(new String[]{
@@ -84,9 +87,6 @@ public class RegistrationDTOController
 
     @Autowired
     private IRegistrationWorkingSetService registrationWorkingSetService;
-
-    @Autowired
-    RegistrationController registrationController;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -138,7 +138,8 @@ public class RegistrationDTOController
 
     }
 
-    protected Pager<RegistrationDTO> pageRegistrationDTOs(String identifier, boolean validateUniqueness, Integer pageIndex, Integer pageSize, HttpServletResponse response) throws IOException {
+    protected Pager<RegistrationDTO> pageRegistrationDTOs(String identifier, boolean validateUniqueness,
+            Integer pageIndex, Integer pageSize, HttpServletResponse response) throws IOException {
 
         Pager<RegistrationDTO> regPager = registrationWorkingSetService.pageDTOs(identifier, pageIndex, pageSize);
 
@@ -146,7 +147,8 @@ public class RegistrationDTOController
             return regPager;
         } else if(regPager.getCount() > 1){
             if(validateUniqueness) {
-                HttpStatusMessage.create("The identifier " + identifier + " refrences multiple registrations", HttpServletResponse.SC_PRECONDITION_FAILED).send(response);
+                HttpStatusMessage.create("The identifier " + identifier + " references multiple registrations", HttpServletResponse.SC_PRECONDITION_FAILED)
+                    .send(response);
                 return null; // never reached, due to previous send()
             } else {
                 return regPager;

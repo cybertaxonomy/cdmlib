@@ -124,7 +124,7 @@ public interface UserHelper {
 
     public void logout();
 
-    void setSecurityContextAccess(SecurityContextAccess securityContextAccess);
+    public void setSecurityContextAccess(SecurityContextAccess securityContextAccess);
 
     public Authentication getAuthentication();
 
