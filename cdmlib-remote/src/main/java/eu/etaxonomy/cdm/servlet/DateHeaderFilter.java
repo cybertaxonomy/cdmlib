@@ -34,7 +34,7 @@ import org.springframework.web.util.NestedServletException;
  */
 public class DateHeaderFilter implements Filter {
 
-    private static final Logger logger = LogManager.getLogger(DateHeaderFilter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

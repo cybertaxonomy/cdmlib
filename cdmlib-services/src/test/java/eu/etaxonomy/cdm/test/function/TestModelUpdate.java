@@ -42,13 +42,13 @@ import eu.etaxonomy.cdm.model.description.TemporalData;
 public class TestModelUpdate {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TestModelUpdate.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private void testSelectedDb(){
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm529" : "cdm532");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm533" : "cdm534");
 //		database = "cdm_test1";
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
