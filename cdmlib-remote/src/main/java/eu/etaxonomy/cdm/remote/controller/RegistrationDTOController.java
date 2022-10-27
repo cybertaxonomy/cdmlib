@@ -111,7 +111,10 @@ public class RegistrationDTOController
         logger.info("doGetByIdentifier() " + requestPathAndQuery(request));
         Pager<RegistrationDTO> registrationDTOsPager = pageRegistrationDTOs(identifier, true, 0, 2, response);
         if(registrationDTOsPager == null) {
-            HttpStatusMessage.create("No registration found for " + identifier + " ", HttpServletResponse.SC_NOT_FOUND).send(response);
+            return null;  //error message send in previous method already
+        }else if(registrationDTOsPager.getCount() == 0) {
+            HttpStatusMessage.create("No registration found for " + identifier + " ", HttpServletResponse.SC_NOT_FOUND)
+                .send(response);
             return null;
         } else {
             return registrationDTOsPager.getRecords().get(0);
@@ -149,12 +152,12 @@ public class RegistrationDTOController
             if(validateUniqueness) {
                 HttpStatusMessage.create("The identifier " + identifier + " references multiple registrations", HttpServletResponse.SC_PRECONDITION_FAILED)
                     .send(response);
-                return null; // never reached, due to previous send()
+                return null; // never reached, due to previous send() //Note by AM: this seems not to be true if in the following call again an HTTPMessage is called
             } else {
                 return regPager;
             }
         } else {
-            return null;
+            return regPager;
         }
     }
 
