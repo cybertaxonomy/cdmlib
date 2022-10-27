@@ -109,9 +109,9 @@ public abstract class NameCacheStrategyBase
                 nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
             }
             nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr, new TypedEntityReference<>(ncStatus.getClass(), ncStatus.getUuid())));
-            if (includeSeparatorAfter){
-                nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
-            }
+        }
+        if (includeSeparatorAfter){
+            nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
         }
         return nomStatusTags;
     }
