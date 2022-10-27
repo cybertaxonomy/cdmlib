@@ -58,11 +58,11 @@ public class DateHeaderFilter implements Filter {
             httpServletResponse.setHeader("Date", dateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
         } catch ( NullPointerException e) {
             // see above and #9185
-            logger.info("Can not add data header: " + e.getMessage());
+            logger.debug("Can not add data header: " + e.getMessage());
         } catch (NestedServletException e) {
             // see above and #9185
             if(e.getCause() != null && e.getCause() instanceof NullPointerException) {
-                logger.info("Can not add data header: " + e.getCause());
+                logger.debug("Can not add data header: " + e.getCause());
             } else {
                 // higher level in this case as these are unexpected
                 logger.warn("Can not add data header.", e);
