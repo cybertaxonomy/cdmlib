@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
 import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -654,6 +655,11 @@ public class CdmApplicationController implements ICdmRepository {
     @Override
     public IRegistrationService getRegistrationService() {
         return configuration.getRegistrationService();
+    }
+
+    @Override
+    public IRegistrationWorkingSetService getRegistrationWorkingSetService() {
+        return configuration.getRegistrationWorkingSetService();
     }
 
     @Override

@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
 import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
@@ -191,6 +192,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     private IRightsService rightsService;
     @Autowired
     private IRegistrationService registrationService;
+    @Autowired
+    private IRegistrationWorkingSetService registrationWorkingSetService;
     @Autowired
     private ILongRunningTasksService longRunningTasksService;
 	@Autowired
@@ -457,6 +460,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     @Override
     public IRegistrationService getRegistrationService() {
         return registrationService;
+    }
+
+    @Override
+    public IRegistrationWorkingSetService getRegistrationWorkingSetService() {
+        return registrationWorkingSetService;
     }
 
     @Override
