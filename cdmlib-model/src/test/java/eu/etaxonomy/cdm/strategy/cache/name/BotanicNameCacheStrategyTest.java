@@ -16,7 +16,8 @@ import static org.junit.Assert.assertNull;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
