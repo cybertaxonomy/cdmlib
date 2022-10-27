@@ -10,14 +10,15 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.compare.name.NomenclaturalStatusComparator;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -70,7 +71,13 @@ public abstract class NameCacheStrategyBase
     public List<TaggedText> getNomStatusTags(TaxonName taxonName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
 
-        Set<NomenclaturalStatus> ncStati = taxonName.getStatus();
+
+        Collection<NomenclaturalStatus> ncStati = taxonName.getStatus();
+        if (ncStati.size() > 1) {
+            //order to have defined behavior
+            ncStati = new ArrayList<>(ncStati);
+            ((List<NomenclaturalStatus>)ncStati).sort(NomenclaturalStatusComparator.SINGLETON());
+        }
         Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
         List<TaggedText> nomStatusTags = new ArrayList<>();
         while (iterator.hasNext()) {
