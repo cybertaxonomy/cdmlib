@@ -59,7 +59,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
  *
  * @author a.kohlbecker
  * @since Mar 10, 2017
- *
  */
 @Service("registrationWorkingSetService")
 @Transactional(readOnly=true)
