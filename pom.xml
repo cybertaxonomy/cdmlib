@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.33.0</version>
+  <version>5.34.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>https://cybertaxonomy.org/cdmlib/</url>
@@ -43,7 +43,7 @@
     <jackson.version>2.13.3</jackson.version>           <!-- checked 2022-05 -->
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
     <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
-	<log4j.version>2.18.0</log4j.version>
+	<log4j.version>2.19.0</log4j.version>
 	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
 	<cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.7</aspectj.version>            <!-- checked 2022-05 -->
@@ -1757,7 +1757,7 @@
         <!-- only needed for PasswordResetService, may be replaced by Thymeleaf, but also needed in TaxEditor cdmlib modul -->
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.9</version>
+        <version>1.10.0</version>
       </dependency>
       <dependency>
         <groupId>org.passay</groupId>

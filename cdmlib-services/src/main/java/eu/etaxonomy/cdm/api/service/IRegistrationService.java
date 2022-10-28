@@ -15,11 +15,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.dao.DataAccessException;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -102,7 +105,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
      * @param propertyPaths
      * @return
      */
-    Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+    public Pager<Registration> page(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 

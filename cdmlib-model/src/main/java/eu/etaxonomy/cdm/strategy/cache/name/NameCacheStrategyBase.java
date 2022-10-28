@@ -10,14 +10,16 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.compare.name.NomenclaturalStatusComparator;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -40,9 +42,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 public abstract class NameCacheStrategyBase
         extends StrategyBase
         implements INameCacheStrategy {
-    private static final long serialVersionUID = -2322348388258675517L;
 
-    private static final Logger logger = LogManager.getLogger(NameCacheStrategyBase.class);
+    private static final long serialVersionUID = -2322348388258675517L;
+    private static final Logger logger = LogManager.getLogger();
 
     final static UUID uuid = UUID.fromString("817ae5b5-3ac2-414b-a134-a9ae86cba040");
 
@@ -70,9 +72,20 @@ public abstract class NameCacheStrategyBase
     public List<TaggedText> getNomStatusTags(TaxonName taxonName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
 
-        Set<NomenclaturalStatus> ncStati = taxonName.getStatus();
+        Collection<NomenclaturalStatus> ncStati = taxonName.getStatus();
+        if (ncStati.size() > 1) {
+            //order to have defined behavior
+            ncStati = new ArrayList<>(ncStati);
+            ((List<NomenclaturalStatus>)ncStati).sort(NomenclaturalStatusComparator.SINGLETON());
+        }
         Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
         List<TaggedText> nomStatusTags = new ArrayList<>();
+
+        String statusSeparator = ", ";
+        if (includeSeparatorBefore && !ncStati.isEmpty()){
+            nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
+        }
+        boolean isFirst = true;
         while (iterator.hasNext()) {
             NomenclaturalStatus ncStatus = iterator.next();
             // since the NewInstance method of nomencatural status allows null as parameter
@@ -96,14 +109,14 @@ public abstract class NameCacheStrategyBase
             }else if(isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();
             }
-            String statusSeparator = ", ";
-            if (includeSeparatorBefore){
+            if (!isFirst) {
                 nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
             }
             nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr, new TypedEntityReference<>(ncStatus.getClass(), ncStatus.getUuid())));
-            if (includeSeparatorAfter){
-                nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
-            }
+            isFirst = false;
+        }
+        if (includeSeparatorAfter && !isFirst){
+            nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
         }
         return nomStatusTags;
     }

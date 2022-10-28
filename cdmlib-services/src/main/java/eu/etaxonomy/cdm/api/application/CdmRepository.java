@@ -6,12 +6,12 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.application;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
 import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
@@ -87,7 +88,7 @@ import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 @Component
 public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 
-    private static final Logger logger = LogManager.getLogger(CdmRepository.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected ApplicationContext applicationContext;
 
@@ -191,6 +192,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     private IRightsService rightsService;
     @Autowired
     private IRegistrationService registrationService;
+    @Autowired
+    private IRegistrationWorkingSetService registrationWorkingSetService;
     @Autowired
     private ILongRunningTasksService longRunningTasksService;
 	@Autowired
@@ -457,6 +460,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
     @Override
     public IRegistrationService getRegistrationService() {
         return registrationService;
+    }
+
+    @Override
+    public IRegistrationWorkingSetService getRegistrationWorkingSetService() {
+        return registrationWorkingSetService;
     }
 
     @Override

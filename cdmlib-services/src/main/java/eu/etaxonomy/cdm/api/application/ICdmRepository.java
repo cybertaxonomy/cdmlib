@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
 import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
 import eu.etaxonomy.cdm.database.ICdmImportSource;
@@ -160,6 +161,8 @@ public interface ICdmRepository extends ICdmImportSource {
 	public IEntityConstraintViolationService getEntityConstraintViolationService();
 
     public IRegistrationService getRegistrationService();
+
+    public IRegistrationWorkingSetService getRegistrationWorkingSetService();
 
 	/**
 	 * @return the configured PermissionEvaluator, usually the

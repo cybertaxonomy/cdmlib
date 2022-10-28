@@ -14,7 +14,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -28,7 +29,6 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
-
 
 /**
  * This class is a default implementation for the INonViralNameCacheStrategy<T extends NonViralName>
@@ -71,7 +71,6 @@ public class TaxonNameDefaultCacheStrategy
         return new TaxonNameDefaultCacheStrategy();
     }
 
-
 // ************ CONSTRUCTOR *******************/
 
     protected TaxonNameDefaultCacheStrategy(){
@@ -90,7 +89,6 @@ public class TaxonNameDefaultCacheStrategy
     public void setNameAuthorSeperator(String nameAuthorSeperator) {
         this.nameAuthorSeperator = nameAuthorSeperator;
     }
-
 
     /**
      * String the basionym author part starts with e.g. '('.
@@ -116,10 +114,8 @@ public class TaxonNameDefaultCacheStrategy
         this.basionymEnd = basionymEnd;
     }
 
-
     /**
      * String to separate ex author from author.
-     * @return
      */
     public String getExAuthorSeperator() {
         return exAuthorSeperator;
@@ -128,16 +124,12 @@ public class TaxonNameDefaultCacheStrategy
         this.exAuthorSeperator = exAuthorSeperator;
     }
 
-
     /**
      * String that separates the basionym/original_combination author part from the combination author part
-     * @return
      */
     public CharSequence getBasionymAuthorCombinationAuthorSeperator() {
         return basionymAuthorCombinationAuthorSeperator;
     }
-
-
     public void setBasionymAuthorCombinationAuthorSeperator( CharSequence basionymAuthorCombinationAuthorSeperator) {
         this.basionymAuthorCombinationAuthorSeperator = basionymAuthorCombinationAuthorSeperator;
     }

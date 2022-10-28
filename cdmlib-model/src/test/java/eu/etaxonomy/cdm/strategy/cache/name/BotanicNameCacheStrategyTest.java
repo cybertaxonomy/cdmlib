@@ -16,7 +16,8 @@ import static org.junit.Assert.assertNull;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -224,6 +225,14 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
 	}
+
+    @Test
+    public final void testNomStatus() {
+        assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 2 Apr 1968, nom. illeg.", strategy.getFullTitleCache(speciesName));
+        NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.SUPERFLUOUS());
+        speciesName.addStatus(nomStatus);
+        assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 2 Apr 1968, nom. illeg., nom. superfl.", strategy.getFullTitleCache(speciesName));
+    }
 
 	@Override
     protected Method getMethod(Class clazz, String methodName, Class... paramClazzes){

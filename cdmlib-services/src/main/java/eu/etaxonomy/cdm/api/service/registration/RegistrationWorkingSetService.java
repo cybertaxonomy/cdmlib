@@ -57,14 +57,14 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 /**
  * Provides RegistrationDTOs and RegistrationWorkingsets for Registrations in the database.
  *
- *
  * @author a.kohlbecker
  * @since Mar 10, 2017
- *
  */
 @Service("registrationWorkingSetService")
 @Transactional(readOnly=true)
 public class RegistrationWorkingSetService implements IRegistrationWorkingSetService {
+
+    private static final Logger logger = LogManager.getLogger();
 
     public static final EntityInitStrategy TYPEDESIGNATION_INIT_STRATEGY = new EntityInitStrategy(
             "typeStatus",
@@ -108,9 +108,9 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
            "specimenTypeDesignations.typifiedNames.typeDesignations", // important!!
            "mediaSpecimen.sources.citation",
            "collection.institute"// see CollectionCaptionGenerator
-   })).extend("mediaSpecimen.sources.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+    })).extend("mediaSpecimen.sources.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
-   public List<String> FIELDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
+    public List<String> FIELDUNIT_INIT_STRATEGY = Arrays.asList(new String[]{
           "$",
           "annotations.*", // * is needed as log as we are using a table in FilterableAnnotationsField
           "gatheringEvent.$",
@@ -119,10 +119,9 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
           "gatheringEvent.actor",
           "gatheringEvent.exactLocation.$",
           "derivationEvents.derivatives", // important, otherwise the DerivedUnits are not included into the graph of initialized entities!!!
+    });
 
-  });
-
-  public static final List<String> BLOCKING_REGISTRATION_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final List<String> BLOCKING_REGISTRATION_INIT_STRATEGY = Arrays.asList(new String []{
 
           "blockedBy.blockedBy",
           // typeDesignation
@@ -135,14 +134,10 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
           // institution
           "blockedBy.institution",
           }
-  );
+    );
 
-    /**
-     *
-     */
     private static final int PAGE_SIZE = 50;
 
-    private static final Logger logger = LogManager.getLogger(RegistrationWorkingSetService.class);
 
     @Autowired
     @Qualifier("cdmRepository")
@@ -152,16 +147,13 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     private UserHelper userHelper;
 
     @Autowired
-    protected IBeanInitializer defaultBeanInitializer;
+    private IBeanInitializer defaultBeanInitializer;
 
     public RegistrationWorkingSetService() {
-
     }
-
 
     /**
      * @param id the Registration entity id
-     * @return
      */
     @Override
     public RegistrationDTO loadDtoById(Integer id) {
@@ -171,8 +163,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     /**
-     * @param id the Registration entity id
-     * @return
+     * @param id the Registration entity uuid
      */
     @Override
     public RegistrationDTO loadDtoByUuid(UUID uuid) {
@@ -288,10 +279,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return registrationWorkingSet;
     }
 
-
-    /**
-     * @param reference
-     */
     private void checkPermissions(Reference reference) throws PermissionDeniedException {
 
         boolean permissionDenied = isPermissionDenied(reference);
@@ -300,12 +287,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         }
     }
 
-
-    /**
-     * @param reference
-     * @return
-     */
-    public boolean isPermissionDenied(Reference reference) {
+    private boolean isPermissionDenied(Reference reference) {
         boolean permissionDenied = false;
         if(!checkReferencePublished(reference)){
             permissionDenied = !userHelper.userHasPermission(reference, CRUD.UPDATE);
@@ -313,13 +295,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return permissionDenied;
     }
 
-
-
-    /**
-     * @param reference
-     * @return
-     */
-    public boolean checkReferencePublished(Reference reference) {
+    private boolean checkReferencePublished(Reference reference) {
 
         if(reference.getDatePublished() == null){
             return false;
@@ -339,13 +315,10 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         DateTime pubDateTime = pubPartial.toDateTime(null);
         return nowLocal.isAfter(pubDateTime);
-
     }
-
 
     /**
      * @param reference
-     * @return
      */
     protected Reference resolveSection(Reference reference) {
         repo.getReferenceService().load(reference.getUuid(), Arrays.asList(new String[]{"inReference"})); // needed to avoid the problem described in #7331
@@ -388,13 +361,9 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
         Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, taxonNameUuids, pageSize, pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
-        return new DefaultPagerImpl<RegistrationDTO>(pager.getCurrentIndex(), pager.getCount(), pager.getPageSize(), makeDTOs(pager.getRecords()));
+        return new DefaultPagerImpl<>(pager.getCurrentIndex(), pager.getCount(), pager.getPageSize(), makeDTOs(pager.getRecords()));
     }
 
-
-    /**
-     * @param pager
-     */
     @SuppressWarnings("unused")
     private void debugIssue7331(Pager<Registration> pager) {
         for(Registration reg : pager.getRecords()){

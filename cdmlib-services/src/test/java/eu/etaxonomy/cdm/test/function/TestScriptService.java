@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 public class TestScriptService {
 
-    private static final Logger logger = LogManager.getLogger(TestScriptService.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private void testNewConfigControler(){
 
@@ -472,12 +472,8 @@ public class TestScriptService {
 		System.out.println("\nEnd Datasource");
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void  main(String[] args) {
 	    TestScriptService cc = new TestScriptService();
     	cc.test();
 	}
-
 }

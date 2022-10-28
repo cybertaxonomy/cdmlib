@@ -12,7 +12,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -28,47 +29,34 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author cmathew
  * @since 26 Jun 2015
- *
  */
 @Service
 public class TestServiceImpl implements ITestService {
 
-    private static final Logger logger = LogManager.getLogger(TestServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
-    ITaxonNodeService taxonNodeService;
+    private ITaxonNodeService taxonNodeService;
 
     @Autowired
-    IProgressMonitorService progressMonitorService;
+    private IProgressMonitorService progressMonitorService;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITestService#wait(int)
-     */
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void waitFor(long timeToWaitInMs) throws InterruptedException {
         Thread.sleep(timeToWaitInMs);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITestService#returnResult(eu.etaxonomy.cdm.api.service.UpdateResult)
-     */
     @Override
     public UpdateResult returnResult(UpdateResult result) {
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITestService#throwException(java.lang.Exception)
-     */
     @Override
     public UpdateResult throwException(Exception ex) {
         throw new RuntimeException(ex);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITestService#addChild(eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier)
-     */
     @Override
     @Transactional(readOnly = false)
     public UpdateResult addChild(CdmEntityIdentifier taxonNodeCei) {
@@ -80,7 +68,6 @@ public class TestServiceImpl implements ITestService {
         result.setStatus(Status.OK);
         return result;
     }
-
 
     @Override
     public UUID monitLongRunningMethod(final RuntimeException ex, final List<String> feedbacks, final long feedbackWaitTimeout) {
@@ -140,5 +127,4 @@ public class TestServiceImpl implements ITestService {
         monitor.done();
         return "Success";
     }
-
 }
