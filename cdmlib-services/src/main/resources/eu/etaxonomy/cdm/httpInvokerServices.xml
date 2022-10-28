@@ -521,6 +521,30 @@
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
+  
+  <bean id="httpRegistrationService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="registrationServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.molecular.IRegistrationService
+      </value>
+    </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
+  </bean>
+  
+  <bean id="httpRegistrationWorkingSetService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="registrationWorkingSetService" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.molecular.IRegistrationWorkingSetService
+      </value>
+    </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
+  </bean>
 
   <bean id="httpEventBaseService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">

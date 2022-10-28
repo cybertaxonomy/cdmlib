@@ -60,6 +60,8 @@
         <prop key="/remoting/preference.service">httpPreferenceService</prop>         
         <prop key="/remoting/reference.service">httpReferenceService</prop>   
         <prop key="/remoting/rights.service">httpRightsService</prop>
+        <prop key="/remoting/registration.service">httpRegistrationService</prop>
+        <prop key="/remoting/registrationworkingset.service">httpRegistrationWorkingSetService</prop>
         <prop key="/remoting/sequence.service">httpSequenceService</prop> 
         <prop key="/remoting/taxonnode.service">httpTaxonNodeService</prop>
         <prop key="/remoting/taxon.service">httpTaxonService</prop>
