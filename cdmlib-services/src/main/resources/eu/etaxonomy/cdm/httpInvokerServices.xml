@@ -528,7 +528,7 @@
       <ref bean="registrationServiceImpl" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.molecular.IRegistrationService
+      <value>eu.etaxonomy.cdm.api.service.IRegistrationService
       </value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
@@ -540,7 +540,7 @@
       <ref bean="registrationWorkingSetService" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.molecular.IRegistrationWorkingSetService
+      <value>eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService
       </value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
