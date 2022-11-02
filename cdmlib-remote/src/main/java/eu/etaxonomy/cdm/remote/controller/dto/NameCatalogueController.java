@@ -88,7 +88,9 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("name_catalogue")
 @RequestMapping(value = { "/name_catalogue" })
-public class NameCatalogueController extends AbstractController<TaxonName, INameService> implements ResourceLoaderAware {
+public class NameCatalogueController
+        extends AbstractController<TaxonName, INameService>
+        implements ResourceLoaderAware {
 
     private static final Logger logger = LogManager.getLogger(NameCatalogueController.class);
 
