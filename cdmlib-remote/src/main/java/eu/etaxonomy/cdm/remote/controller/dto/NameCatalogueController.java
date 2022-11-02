@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -84,12 +85,10 @@ import io.swagger.annotations.Api;
  * @author c.mathew
  * @since 15-Apr-2012
  */
-
 @Controller
 @Api("name_catalogue")
 @RequestMapping(value = { "/name_catalogue" })
 public class NameCatalogueController extends AbstractController<TaxonName, INameService> implements ResourceLoaderAware {
-
 
     private static final Logger logger = LogManager.getLogger(NameCatalogueController.class);
 
