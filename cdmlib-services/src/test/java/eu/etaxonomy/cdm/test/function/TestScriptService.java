@@ -125,8 +125,8 @@ public class TestScriptService {
 //       dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
-		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
+
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
 		doTemporary(appCtr);
 

@@ -91,8 +91,6 @@ public class Cdm2CdmDescriptionImport
         }
     }
 
-
-
     @Override
     protected boolean doDescriptions(Cdm2CdmImportState state) {
         return true;
@@ -107,5 +105,4 @@ public class Cdm2CdmDescriptionImport
     protected boolean isIgnore(Cdm2CdmImportState state) {
         return !state.getConfig().isDoDescriptions();
     }
-
 }
