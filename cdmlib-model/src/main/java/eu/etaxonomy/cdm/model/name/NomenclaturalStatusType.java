@@ -92,6 +92,7 @@ public class NomenclaturalStatusType
 	private static final UUID uuidOrthographyConserved = UUID.fromString("34a7d383-988b-4117-b8c0-52b947f8c711");
 	private static final UUID uuidRejectedProp = UUID.fromString("248e44c2-5436-4526-a352-f7467ecebd56");
 	private static final UUID uuidConserved = UUID.fromString("6330f719-e2bc-485f-892b-9f882058a966");
+	private static final UUID uuidNameAndOrthographyConserved = UUID.fromString("0f838183-ffa0-4014-928e-0e3a27eb3918");
 	private static final UUID uuidSanctioned = UUID.fromString("1afe55c4-76aa-46c0-afce-4dc07f512733");
 	private static final UUID uuidInvalid = UUID.fromString("b09d4f51-8a77-442a-bbce-e7832aaf46b7");
 	private static final UUID uuidNudum = UUID.fromString("e0d733a8-7777-4b27-99a3-05ab50e9f312");
@@ -589,6 +590,16 @@ public class NomenclaturalStatusType
      */
     public static final NomenclaturalStatusType ORTHOGRAPHY_REJECTED(){
         return getTermByUuid(uuidOrthographyRejected);
+    }
+
+    /**
+     * Combined status for name and orthography conserved.
+     *
+     * @see #CONSERVED()
+     * @see #ORTHOGRAPHY_CONSERVED()
+     */
+    public static final NomenclaturalStatusType NAME_AND_ORTHOGRAPHY_CONSERVED(){
+        return getTermByUuid(uuidNameAndOrthographyConserved);
     }
 
 	/**
