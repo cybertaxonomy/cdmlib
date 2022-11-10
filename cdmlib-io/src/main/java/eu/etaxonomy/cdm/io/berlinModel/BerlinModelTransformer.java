@@ -632,6 +632,44 @@ public class BerlinModelTransformer {
 		}
 	}
 
+   public static NomenclaturalStatus nomStatusFkToNomStatusMedchecklist(int nomStatusFk, String nomStatusLabel)  throws UnknownCdmTypeException{
+        if (nomStatusFk == 1){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID());
+        }else if (nomStatusFk == 2){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
+        }else if (nomStatusFk == 3){
+             return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NUDUM());
+        }else if (nomStatusFk == 4){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.REJECTED());
+        }else if (nomStatusFk == 5){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.REJECTED_PROP());
+        }else if (nomStatusFk == 8){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED());
+        }else if (nomStatusFk == 9){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED_PROP());
+        }else if (nomStatusFk == 12){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.AMBIGUOUS());
+        }else if (nomStatusFk == 13){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONFUSUM());
+        }else if (nomStatusFk == 14){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.COMBINATION_INVALID());
+        }else if (nomStatusFk == 15){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.COMBINATION_ILLEGITIMATE());
+        }else if (nomStatusFk == 16){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NOVUM());
+        }else if (nomStatusFk == 23){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NAME_AND_ORTHOGRAPHY_CONSERVED());
+        }else if (nomStatusFk == 30){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.DOUBTFUL());
+        }else if (nomStatusFk == 31){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE());
+        }else if (nomStatusFk == 32){
+            return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONFUSUM());
+        }else {
+            throw new UnknownCdmTypeException("Unknown NomenclaturalStatus (id=" + Integer.valueOf(nomStatusFk).toString() + ")");
+        }
+    }
+
 	public static UUID getEMAreaUuid(String areaId){
 		if (areaId == null){
 			logger.warn("No AreaId given");
