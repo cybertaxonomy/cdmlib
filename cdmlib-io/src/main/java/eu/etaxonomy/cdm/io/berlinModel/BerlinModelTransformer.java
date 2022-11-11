@@ -316,6 +316,10 @@ public class BerlinModelTransformer {
 	public static UUID uuidKo = UUID.fromString("f3f05e88-99af-48fa-92ef-1a169bcc7acf");
 	public static UUID uuidSe = UUID.fromString("75facd9a-125d-41b5-8f90-776234e782e9");
 
+	//MCL
+	public static UUID uuidVocMclAreas = UUID.fromString("30dfb403-2c89-4567-8726-0b9528f8716e");
+
+
 	//Caucasus area
 	public static UUID uuidVocCaucasusAreas = UUID.fromString("3ef82b77-23cb-4b60-a4b3-edc7e4775ddb");
 	public static UUID uuidCauc1 = UUID.fromString("4fa53820-a416-4bcb-b816-3b0867a6dfec");
@@ -380,6 +384,7 @@ public class BerlinModelTransformer {
 
 	//E+M PresenceAbsenceStatus
 	public static UUID uuidStatusUndefined = PresenceAbsenceTerm.uuidUndefined;
+	public static UUID uuidStatusXenophyte = UUID.fromString("7b590e58-024a-42e3-891a-f3b945600b48"); //MCL
 
 	//Annotation Type
 	public static final UUID uuidAnnoTypeDistributionStatus = UUID.fromString("b7c4db51-7089-440b-92e2-4006611238f0");
@@ -415,6 +420,8 @@ public class BerlinModelTransformer {
 	public static final UUID uuidEuroMedAreaLevelSecond = UUID.fromString("97ac0bf5-b31c-487a-8ed5-a576f46c902c");
 	public static final UUID uuidCaucasusAreaLevelFirst = UUID.fromString("1899cb19-c59e-425a-892f-6a4f9b115e4a");
     public static final UUID uuidCaucasusAreaLevelSecond = UUID.fromString("ccfd15bc-6e05-41c7-b839-f7241f518fe1");
+    public static final UUID uuidMclAreaLevelTop = UUID.fromString("37669c11-d218-43d5-b797-bc939f357a8e");
+    public static final UUID uuidMclAreaLevelFirst = UUID.fromString("31877bbe-3355-44f0-acc9-24152c183cc8");
 
 	//languages
 	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");
@@ -953,7 +960,9 @@ public class BerlinModelTransformer {
 			case 5: return Feature.PHENOLOGY();
 			case 12: return Feature.COMMON_NAME();
 			case 13: return Feature.OCCURRENCE();
-			case 99: return Feature.CITATION();
+			case 20: return Feature.DISTRIBUTION();
+			case 21: return Feature.DISTRIBUTION();
+            case 99: return Feature.CITATION();
 			default: {
 				throw new UnknownCdmTypeException("Unknown FactCategory (id=" + Integer.valueOf(factCategoryId).toString() + ")");
 			}
