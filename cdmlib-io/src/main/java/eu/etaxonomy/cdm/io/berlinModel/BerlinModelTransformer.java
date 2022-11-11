@@ -989,18 +989,13 @@ public class BerlinModelTransformer {
         }else if (key.equalsIgnoreCase("1900-Notas editoriales*")){ return uuidFeatureEditorialNotes;
         }else if (key.equalsIgnoreCase("2000-Habitat en El Salvador*")){ return uuidFeatureHabitatSalvador;
 
-
 		}else{
 			return null;
 		}
 	}
 
-
 	static Rank collSpeciesRank;
-	/**
-	 * @param i
-	 * @return
-	 */
+
 	private static Rank rankId2NewRank(Integer rankId, boolean switchRank) {
 		Rank result = null;
 		if (rankId == null){

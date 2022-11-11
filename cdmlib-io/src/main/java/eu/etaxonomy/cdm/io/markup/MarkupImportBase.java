@@ -1110,13 +1110,6 @@ public abstract class MarkupImportBase  {
 
 // *************************************** Concrete methods **********************************************/
 
-
-	/**
-	 * @param state
-	 * @param classValue
-	 * @param byAbbrev
-	 * @return
-	 */
 	protected Rank makeRank(MarkupImportState state, String value, boolean byAbbrev) {
 		Rank rank = null;
 		if (StringUtils.isBlank(value)) {
