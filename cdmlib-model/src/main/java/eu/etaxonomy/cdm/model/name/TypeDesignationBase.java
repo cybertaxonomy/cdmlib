@@ -84,9 +84,8 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         implements ITypeDesignation {
 
     private static final long serialVersionUID = 4838214337140859787L;
-
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TypeDesignationBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "IsNotDesignated")
     private boolean notDesignated;

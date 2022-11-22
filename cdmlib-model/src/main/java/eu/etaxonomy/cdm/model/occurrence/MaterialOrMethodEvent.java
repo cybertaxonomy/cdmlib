@@ -107,8 +107,6 @@ public class MaterialOrMethodEvent extends EventBase {
 	public String getDescription() {
 		return super.getDescription();
 	}
-
-
 	/**
 	 * @see #getDescription()
 	 * @see #setMaterialMethodText(String)
@@ -117,8 +115,6 @@ public class MaterialOrMethodEvent extends EventBase {
 	public void setDescription(String materialMethodText) {
 		super.setDescription(materialMethodText);
 	}
-
-
 
 	/**
 	 * A freetext describing the material or method or if
@@ -131,8 +127,6 @@ public class MaterialOrMethodEvent extends EventBase {
     public String getMaterialMethodText() {
 		return this.getDescription();
 	}
-
-
 	/**
 	 * @see #getMaterialMethodText()
 	 */
@@ -164,6 +158,7 @@ public class MaterialOrMethodEvent extends EventBase {
 	}
 
 // ********************* CLONE ********************/
+
 	/**
 	 * Clones <i>this</i> {@link Cloning}. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> cloning by

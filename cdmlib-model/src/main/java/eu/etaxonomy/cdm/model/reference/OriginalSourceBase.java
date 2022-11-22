@@ -80,7 +80,7 @@ public abstract class OriginalSourceBase
 
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(OriginalSourceBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * The {@link OriginalSourceType type} of this source. According to PROV the type has to be thought as

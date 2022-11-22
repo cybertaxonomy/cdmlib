@@ -25,7 +25,6 @@ public interface IDefinedTerm<T extends IDefinedTerm>
     //Discuss: move to ISimpleTerm
     public T getPartOf();
 
-
     /**
      * Returns all defined terms this term includes.
      * Therefore the returned terms are part of <code>this</code> term

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.metadata;
 /**
  * @author k.luther
  * @since 06.05.2019
- *
  */
 public interface IKeyLabel {
 

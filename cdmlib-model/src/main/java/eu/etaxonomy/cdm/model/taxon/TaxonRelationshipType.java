@@ -56,10 +56,12 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
+public class TaxonRelationshipType
+        extends RelationshipTermBase<TaxonRelationshipType> {
+
 	private static final long serialVersionUID = 6575652105931691670L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonRelationshipType.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	protected static Map<UUID, TaxonRelationshipType> termMap = null;
 

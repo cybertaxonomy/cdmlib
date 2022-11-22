@@ -90,7 +90,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
     "createdBy"
 })
 @MappedSuperclass
-public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptive, Cloneable{
+public abstract class CdmBase
+        implements Serializable, ICdmBase, ISelfDescriptive, Cloneable{
 
     private static final long serialVersionUID = -3053225700018294809L;
     @SuppressWarnings("unused")

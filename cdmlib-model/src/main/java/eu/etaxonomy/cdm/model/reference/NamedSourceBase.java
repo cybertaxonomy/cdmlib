@@ -25,7 +25,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
@@ -43,7 +42,7 @@ public abstract class NamedSourceBase extends OriginalSourceBase {
 
     private static final long serialVersionUID = 4262357256080305268L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(DescriptionElementSource.class);
+    private static final Logger logger = LogManager.getLogger();
 
 // ************************* FIELDS ********************************/
 
