@@ -6,23 +6,24 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.parser;
 
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
 
-
 /**
- * This class is a base class that separates regex parts of the parser from methods
+ * This class is a base class that separates regex parts of the parser from methods.
+ *
  * @author a.mueller
  */
 public abstract class NonViralNameParserImplRegExBase  {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(NonViralNameParserImplRegExBase.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	// good regex intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 

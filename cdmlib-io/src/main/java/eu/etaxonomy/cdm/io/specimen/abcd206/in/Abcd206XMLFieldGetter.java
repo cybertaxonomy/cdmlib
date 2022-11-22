@@ -1,21 +1,23 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 public class Abcd206XMLFieldGetter {
 
-    private static final Logger logger = LogManager.getLogger(Abcd206Import.class);
+    private static final Logger logger = LogManager.getLogger();
+
     private final Abcd206DataHolder dataHolder;
     private final String prefix;
     private String path = "";

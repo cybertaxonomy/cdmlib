@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
@@ -44,7 +45,7 @@ public class FieldUnitDefaultCacheStrategy
 
     private static final long serialVersionUID = -2313124329424995472L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(FieldUnitDefaultCacheStrategy.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String METER = "m";
 

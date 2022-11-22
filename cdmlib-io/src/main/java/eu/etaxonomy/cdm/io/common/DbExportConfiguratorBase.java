@@ -6,16 +6,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-
 
 /**
  * @author a.mueller
@@ -27,8 +26,7 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase, TR
 
     private static final long serialVersionUID = 3776529518379378810L;
     @SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(DbExportConfiguratorBase.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
 	public enum IdType{
 		CDM_ID,
@@ -43,25 +41,13 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase, TR
 		super(transformer);
 	}
 
-
-	/**
-	 * @return the idType
-	 */
 	public IdType getIdType() {
 		return idType;
 	}
-
-	/**
-	 * @param idType the idType to set
-	 */
 	public void setIdType(IdType idType) {
 		this.idType = idType;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
-	 */
 	@Override
     public String getDestinationNameString() {
 		if (getDestination() != null){
@@ -70,7 +56,6 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase, TR
 			return null;
 		}
 	}
-
 
 	@Override
     public ICdmDataSource getSource() {
@@ -81,9 +66,6 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase, TR
 		super.setSource(cdmSource);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
 	@Override
     public String getSourceNameString() {
 		if (this.getSource() == null){
@@ -93,10 +75,6 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase, TR
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
-	 */
 	@Override
     public IDatabase getSourceReference() {
 

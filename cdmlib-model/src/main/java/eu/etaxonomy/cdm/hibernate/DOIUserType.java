@@ -14,7 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -31,9 +32,8 @@ import eu.etaxonomy.cdm.common.DOI;
 public class DOIUserType extends AbstractUserType implements UserType {
 
     private static final long serialVersionUID = 2227841000128722278L;
-
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DOIUserType.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 

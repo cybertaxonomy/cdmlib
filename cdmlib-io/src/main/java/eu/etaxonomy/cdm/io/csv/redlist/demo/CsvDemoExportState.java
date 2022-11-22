@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
 
@@ -25,10 +26,11 @@ import eu.etaxonomy.cdm.io.common.XmlExportState;
  * @since 18.04.2011
  */
 public class CsvDemoExportState extends XmlExportState<CsvDemoExportConfigurator>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CsvDemoExportState.class);
 
-	private final List<CsvDemoMetaDataRecord> metaRecords = new ArrayList<CsvDemoMetaDataRecord>();
+	@SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
+
+	private final List<CsvDemoMetaDataRecord> metaRecords = new ArrayList<>();
 	private boolean isZip = false;
 	private ZipOutputStream zos;
 

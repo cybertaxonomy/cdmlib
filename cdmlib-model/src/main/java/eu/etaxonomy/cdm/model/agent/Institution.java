@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -67,7 +68,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Institution>> {
 
 	private static final long serialVersionUID = -951321271656955808L;
-	public static final Logger logger = LogManager.getLogger(Institution.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Code")
     @Field

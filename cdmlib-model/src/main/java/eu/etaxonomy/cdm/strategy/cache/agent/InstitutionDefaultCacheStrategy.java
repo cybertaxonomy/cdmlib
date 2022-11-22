@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.strategy.cache.agent;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -32,7 +32,7 @@ public class InstitutionDefaultCacheStrategy
 
     private static final long serialVersionUID = 4586884860596045736L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(Collection.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public static UUID uuid = UUID.fromString("20a61a6f-aac9-422e-a95f-20dfacd35b65");
 

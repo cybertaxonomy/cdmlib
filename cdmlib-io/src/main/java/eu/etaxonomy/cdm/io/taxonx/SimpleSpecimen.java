@@ -6,10 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.taxonx;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -25,10 +25,11 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 /**
  * @author a.mueller
  * @since 23.10.2008
- * @version 1.0
  */
 public class SimpleSpecimen {
-	private static final Logger logger = LogManager.getLogger(SimpleSpecimen.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	private GatheringEvent gatheringEvent;
 	private FieldUnit fieldUnit;

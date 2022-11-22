@@ -14,7 +14,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class PolytomousKeyTest extends EntityTestBase {
 
-	private static Logger logger = LogManager.getLogger(PolytomousKeyTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private PolytomousKey key1;
 	private Taxon taxon1;

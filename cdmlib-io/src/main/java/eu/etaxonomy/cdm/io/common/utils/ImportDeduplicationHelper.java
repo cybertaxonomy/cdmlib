@@ -18,7 +18,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IService;
@@ -59,14 +60,9 @@ import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
  * @author a.mueller
  * @since 11.02.2017
  */
-/**
- * @author a.mueller
- * @date 27.01.2022
- *
- */
 public class ImportDeduplicationHelper {
 
-    private static final Logger logger = LogManager.getLogger(ImportDeduplicationHelper.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private ICdmRepository repository;
 

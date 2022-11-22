@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -78,7 +79,8 @@ public class QuantitativeData
         extends DescriptionElementBase {
 
 	private static final long serialVersionUID = -2755806455420051488L;
-	private static final Logger logger = LogManager.getLogger(QuantitativeData.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "MeasurementUnit")
 	@XmlIDREF

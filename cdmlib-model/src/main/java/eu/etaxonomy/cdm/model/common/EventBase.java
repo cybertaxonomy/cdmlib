@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -39,9 +40,10 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 @MappedSuperclass
 @Audited
 public abstract class EventBase extends AnnotatableEntity implements IEvent {
+
 	private static final long serialVersionUID = -1859035632758446593L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(EventBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "TimePeriod")
 	private TimePeriod timeperiod = TimePeriod.NewInstance();

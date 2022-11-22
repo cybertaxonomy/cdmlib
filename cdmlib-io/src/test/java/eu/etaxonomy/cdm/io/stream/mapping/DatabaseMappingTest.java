@@ -12,15 +12,14 @@ package eu.etaxonomy.cdm.io.stream.mapping;
 import java.sql.SQLException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.stream.mapping.DatabaseMapping;
 import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping.CdmKey;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -31,23 +30,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
  *
  */
 public class DatabaseMappingTest {
-	private static final Logger logger = LogManager.getLogger(DatabaseMappingTest.class);
 
+    private static final Logger logger = LogManager.getLogger();
 
 	private DatabaseMapping mapping;
 
 	private final String mappingId = "MappingKey123";
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		mapping = new DatabaseMapping(mappingId);
@@ -94,7 +83,5 @@ public class DatabaseMappingTest {
 		Assert.assertFalse("Mapping with wrong namespace should not exist", exists);
 		exists = mapping.exists(sourceNS + "xyz", sourceId, TaxonName.class);
 		Assert.assertFalse("Mapping with wrong ID should not exist", exists);
-
 	}
-
 }

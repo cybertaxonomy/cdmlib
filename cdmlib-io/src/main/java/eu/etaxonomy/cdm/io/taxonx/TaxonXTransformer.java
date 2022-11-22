@@ -1,15 +1,15 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.taxonx;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -23,12 +23,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @since 29.07.2008
- * @version 1.0
  */
 public final class TaxonXTransformer {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonXTransformer.class);
- 
+    private static final Logger logger = LogManager.getLogger();
+
 	//Facts
 	public static int FACT_DESCRIPTION = 1;
 	public static int FACT_GROWTH_FORM = 2;
@@ -41,7 +41,7 @@ public final class TaxonXTransformer {
 	public static int FACT_OBSERVATION = 9;
 	public static int FACT_DISTIRBUTION_EM = 10;
 	public static int FACT_DISTIRBUTION_WORLD = 11;
-	
+
 	//TypeDesignation
 	public static SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
 		switch (typeStatusId){
@@ -64,10 +64,10 @@ public final class TaxonXTransformer {
 			}
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	/** Creates an cdm-Rank by the tcs rank
 	 */
 	public static Rank rankString2Rank (String strRank) throws UnknownCdmTypeException{
@@ -75,16 +75,16 @@ public final class TaxonXTransformer {
 		String tcsGenus = tcsRoot + "Genus";
 		String tcsSpecies = tcsRoot + "Species";
 //		String tcsGenus = tcsRoot + "Genus";
-		
+
 		if (strRank == null){return null;
 		}else if (tcsGenus.equals(strRank)){return Rank.GENUS();
 		}else if (tcsSpecies.equals(strRank)){return Rank.SPECIES();
-		}	
+		}
 		else {
 			throw new UnknownCdmTypeException("Unknown Rank " + strRank);
 		}
 	}
-	
+
 	/** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
 	 */
 	public static Feature descriptionType2feature (String descriptionType) throws UnknownCdmTypeException{
@@ -113,20 +113,20 @@ public final class TaxonXTransformer {
 			throw new UnknownCdmTypeException("Unknown Description Type: " + descriptionType);
 		}
 	}
-	
+
 	public static boolean isReverseRelationshipCategory (String tcsRelationshipCategory){
 		String str = tcsRelationshipCategory.replace("http://rs.tdwg.org/ontology/voc/TaxonConcept#", "");
-		if ("HasSynonym".equalsIgnoreCase(str) 
-				|| "IsParentTaxonOf".equalsIgnoreCase(str) 
-				|| "IsIncludedIn".equalsIgnoreCase(str) 
-				|| "DoesNotInclude".equalsIgnoreCase(str) 
+		if ("HasSynonym".equalsIgnoreCase(str)
+				|| "IsParentTaxonOf".equalsIgnoreCase(str)
+				|| "IsIncludedIn".equalsIgnoreCase(str)
+				|| "DoesNotInclude".equalsIgnoreCase(str)
 									){
-			
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
 	 */
 	public static RelationshipTermBase tcsRelationshipCategory2Relationship (String tcsRelationshipCategory) throws UnknownCdmTypeException{
@@ -157,101 +157,101 @@ public final class TaxonXTransformer {
 		String overlaps  = tcsRoot + "Overlaps";
 
 		if (tcsRelationshipCategory == null){ return null;
-		
+
 		//Synonym relationships
-		}else if (isSynonymFor.equals(tcsRelationshipCategory)){return SynonymType.SYNONYM_OF(); 
-		}else if (hasSynonym.equals(tcsRelationshipCategory)){/*isReverse = true; */ return SynonymType.SYNONYM_OF(); 
-		
+		}else if (isSynonymFor.equals(tcsRelationshipCategory)){return SynonymType.SYNONYM_OF();
+		}else if (hasSynonym.equals(tcsRelationshipCategory)){/*isReverse = true; */ return SynonymType.SYNONYM_OF();
+
 		//Taxon relationships
-		}else if (isChildTaxonOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
-		}else if (isParentTaxonOf.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
-		
+		}else if (isChildTaxonOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
+		}else if (isParentTaxonOf.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();
+
 		//concept relationships
-		}else if (doesNotOverlap.equals(tcsRelationshipCategory)){return TaxonRelationshipType.DOES_NOT_OVERLAP(); 
-		}else if (excludes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.EXCLUDES(); 
-		}else if (includes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.INCLUDES(); 
-		}else if (isCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.CONGRUENT_TO(); 
-		}else if (isNotCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_CONGRUENT_TO(); 
-		}else if (isNotIncludedIn.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_INCLUDED_IN(); 
-		}else if (overlaps.equals(tcsRelationshipCategory)){return TaxonRelationshipType.OVERLAPS(); 
+		}else if (doesNotOverlap.equals(tcsRelationshipCategory)){return TaxonRelationshipType.DOES_NOT_OVERLAP();
+		}else if (excludes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.EXCLUDES();
+		}else if (includes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.INCLUDES();
+		}else if (isCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.CONGRUENT_TO();
+		}else if (isNotCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_CONGRUENT_TO();
+		}else if (isNotIncludedIn.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_INCLUDED_IN();
+		}else if (overlaps.equals(tcsRelationshipCategory)){return TaxonRelationshipType.OVERLAPS();
 		//reverse concept relationships
 		}else if (isIncludedIn.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.INCLUDES();
-		}else if (doesNotInclude.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.NOT_INCLUDED_IN(); 
-		
-	//TODO	
-//		}else if (hasVernacular.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isAmbiregnalOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isAnamorphOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isFemaleParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isFirstParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isHybridChildOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isHybridParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isMaleParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isSecondParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isTeleomorphOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isVernacularFor.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-		
+		}else if (doesNotInclude.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.NOT_INCLUDED_IN();
+
+	//TODO
+//		}else if (hasVernacular.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isAmbiregnalOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isAnamorphOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isFemaleParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isFirstParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isHybridChildOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isHybridParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isMaleParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isSecondParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isTeleomorphOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+//		}else if (isVernacularFor.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X;
+
 		}else {
 			throw new UnknownCdmTypeException("Unknown RelationshipCategory " + tcsRelationshipCategory);
 		}
 	}
-	
-	
+
+
 	/** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
 	 */
 	public static NomenclaturalStatusType nomStatusString2NomStatus (String nomStatus) throws UnknownCdmTypeException{
-	
+
 		if (nomStatus == null){ return null;
 		}else if ("Valid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.VALID();
-		
+
 		}else if ("Alternative".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ALTERNATIVE();
 		}else if ("nom. altern.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ALTERNATIVE();
-		
+
 		}else if ("Ambiguous".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.AMBIGUOUS();
-		
+
 		}else if ("Doubtful".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.DOUBTFUL();
-		
+
 		}else if ("Confusum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONFUSUM();
-		
+
 		}else if ("Illegitimate".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ILLEGITIMATE();
 		}else if ("nom. illeg.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ILLEGITIMATE();
-		
+
 		}else if ("Superfluous".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SUPERFLUOUS();
 		}else if ("nom. superfl.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SUPERFLUOUS();
-		
+
 		}else if ("Rejected".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED();
 		}else if ("nom. rej.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED();
-		
+
 		}else if ("Utique Rejected".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.UTIQUE_REJECTED();
-		
+
 		}else if ("Conserved Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED_PROP();
-		
+
 		}else if ("Orthography Conserved Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
-		
+
 		}else if ("Legitimate".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.LEGITIMATE();
-		
+
 		}else if ("Novum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NOVUM();
 		}else if ("nom. nov.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NOVUM();
-		
+
 		}else if ("Utique Rejected Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
-		
+
 		}else if ("Orthography Conserved".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
-		
+
 		}else if ("Rejected Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED_PROP();
-		
+
 		}else if ("Conserved".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED();
 		}else if ("nom. cons.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED();
-		
+
 		}else if ("Sanctioned".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SANCTIONED();
-		
+
 		}else if ("Invalid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.INVALID();
 		}else if ("nom. inval.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.INVALID();
-		
+
 		}else if ("Nudum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NUDUM();
 		}else if ("nom. nud.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NUDUM();
-		
+
 		}else if ("Combination Invalid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.COMBINATION_INVALID();
-		
+
 		}else if ("Provisional".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();
 		}else if ("nom. provis.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();
 		}
@@ -259,5 +259,5 @@ public final class TaxonXTransformer {
 			throw new UnknownCdmTypeException("Unknown Nomenclatural status type " + nomStatus);
 		}
 	}
-	
+
 }

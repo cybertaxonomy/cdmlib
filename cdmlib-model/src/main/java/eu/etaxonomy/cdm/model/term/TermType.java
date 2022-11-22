@@ -15,7 +15,8 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -484,7 +485,6 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("StructureModifier")
     StructureModifier(UUID.fromString("41617e59-17c9-47f5-8fe6-319e117447ce"), "Structure Modifier", "STMO", Modifier),
 
-
     //40
     /**
      * The type for {@link Character characters}. Is subtype of {@link #Feature}
@@ -516,7 +516,7 @@ public enum TermType implements IEnumTerm<TermType>{
 // **************** END ENUM **********************/
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermType.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private TermType(UUID uuid, String defaultString, String key){
         this(uuid, defaultString, key, null);
@@ -580,11 +580,11 @@ public enum TermType implements IEnumTerm<TermType>{
             	emptyTerm = eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, labelString, null);
             	break;
             case Language:
-            	emptyTerm = eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);    
+            	emptyTerm = eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);
             	break;
 		default:
 			break;
-                      
+
         }
         if (emptyTerm != null && lang != null) {
         	emptyTerm.getRepresentations().iterator().next().setLanguage(lang);

@@ -16,7 +16,8 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
@@ -39,7 +40,6 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @author a.mueller
  * @since 19.05.2008
  */
-
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
 public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
@@ -103,7 +103,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 //	Algae(UUID.fromString("abc09250-ea76-449b-b292-90acd61f8659"), "Algae", "BotanicalName"),
     ;
 
-	private static final Logger logger = LogManager.getLogger(NomenclaturalCode.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Deprecated
 	private String dtype;

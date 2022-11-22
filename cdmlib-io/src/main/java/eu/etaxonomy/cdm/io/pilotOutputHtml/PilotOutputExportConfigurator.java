@@ -6,12 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.pilotOutputHtml;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -27,7 +27,7 @@ public class PilotOutputExportConfigurator
     private static final long serialVersionUID = 8545847974141343807L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(PilotOutputExportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private int maxRows = 0;
 

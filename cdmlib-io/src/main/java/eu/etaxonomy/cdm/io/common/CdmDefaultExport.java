@@ -3,23 +3,25 @@
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
-
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
- * This is an exporter that invokes the application aware defaultExport when invoked itself
+ * This is an exporter that invokes the application aware defaultExport when invoked itself.
+ *
  * @author a.babadshanjan
  * @since 17.11.2008
  */
 public class CdmDefaultExport<T extends IExportConfigurator>
             extends CdmDefaultIOBase<IExportConfigurator>
             implements ICdmExporter<T> {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CdmDefaultExport.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public ExportResult invoke(T config){
@@ -27,12 +29,6 @@ public class CdmDefaultExport<T extends IExportConfigurator>
 		return invoke(config, source);
 	}
 
-
-	/**
-	 * @param config
-	 * @param source
-	 * @return
-	 */
 	public ExportResult invoke(IExportConfigurator config, ICdmDataSource source) {
 	    ExportResult result = ExportResult.NewInstance(config.getResultType());
 		boolean createNew = false;
@@ -47,5 +43,4 @@ public class CdmDefaultExport<T extends IExportConfigurator>
 			return defaultExport.invoke(config);
 		}
 	}
-
 }

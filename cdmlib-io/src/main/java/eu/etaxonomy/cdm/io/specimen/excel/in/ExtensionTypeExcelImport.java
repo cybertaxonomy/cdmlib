@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.util.Map;
@@ -14,7 +13,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -32,8 +32,7 @@ public class ExtensionTypeExcelImport
             implements ICdmIO<SpecimenCdmExcelImportState> {
 
     private static final long serialVersionUID = -6812740621254308971L;
-
-    private static final Logger logger = LogManager.getLogger(ExtensionTypeExcelImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String WORKSHEET_NAME = "ExtensionTypes";
 

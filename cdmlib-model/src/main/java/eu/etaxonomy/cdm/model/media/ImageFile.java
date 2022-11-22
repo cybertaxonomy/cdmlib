@@ -17,7 +17,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -38,8 +39,9 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 @Entity
 @Audited
 public class ImageFile extends MediaRepresentationPart {
+
 	private static final long serialVersionUID = 5451418445009559953L;
-	private static final Logger logger = LogManager.getLogger(ImageFile.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//image height in pixel
 	@XmlElement(name = "Height")

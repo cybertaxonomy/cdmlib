@@ -6,13 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -28,7 +28,7 @@ public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase,
         implements IPartitionedState {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DbImportStateBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public static final String CURRENT_OBJECT_NAMESPACE = "CurrentObjectNamespace";
 	public static final String CURRENT_OBJECT_ID = "CurrentObjectId";
@@ -65,7 +65,6 @@ public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase,
     public void setRelatedObjects(Map<Object, Map<String, ? extends CdmBase>> relatedObjects) {
 		relatedObjectsHelper.setRelatedObjects(relatedObjects);
 	}
-
 
 	/**
 	 * Stores the source reference for the time of a transaction. Needs to be

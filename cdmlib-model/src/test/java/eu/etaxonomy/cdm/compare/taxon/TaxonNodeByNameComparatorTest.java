@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.compare.taxon;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,10 +31,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class TaxonNodeByNameComparatorTest {
 
-    private static final Logger logger = LogManager.getLogger(TaxonNodeByNameComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Test
-//    @Ignore
     public void testCompare() {
         Classification classification = Classification.NewInstance("Greuther, 1993");
 

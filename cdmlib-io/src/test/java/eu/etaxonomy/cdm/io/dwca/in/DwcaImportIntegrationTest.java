@@ -14,7 +14,8 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaImportIntegrationTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByName
 	private CdmApplicationAwareDefaultImport<?> defaultImport;

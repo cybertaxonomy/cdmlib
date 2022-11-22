@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -40,10 +41,13 @@ import org.hibernate.envers.Audited;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.common.LanguageString")
 @Audited
-public class LanguageString  extends LanguageStringBase implements Cloneable, IIntextReferencable {
+public class LanguageString
+        extends LanguageStringBase
+        implements IIntextReferencable {
+
 	private static final long serialVersionUID = -1502298496073201104L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(LanguageString.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//TODO do we need to add it to JAXB? #4706
 	@XmlElementWrapper(name = "IntextReferences", nillable = true)

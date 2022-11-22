@@ -1,15 +1,15 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.ReadableDuration;
@@ -18,13 +18,13 @@ import org.joda.time.ReadableDuration;
 /**
  * @author a.mueller
  * @since 21.02.2010
- * @version 1.0
  */
 public class PartitionerProfiler {
-	private static final Logger logger = LogManager.getLogger(PartitionerProfiler.class);
-	
+
+    private static final Logger logger = LogManager.getLogger();
+
 	ResultSetPartitioner partitioner;
-	
+
 	DateTime startTx = new DateTime();
 	DateTime startRs = new DateTime();
 	DateTime startRelObjects = new DateTime();
@@ -42,7 +42,7 @@ public class PartitionerProfiler {
 	private Duration durTxCommitAll = new Duration(0, 0);
 	private Duration durSaveAll = new Duration(0, 0);
 
-	
+
 	private ReadableDuration durTxStartSingle;
 	private ReadableDuration durPartitionRs1Single;
 	private ReadableDuration durRelObjectsSingle;
@@ -55,7 +55,7 @@ public class PartitionerProfiler {
 		startTx = new DateTime();
 
 	}
-	
+
 	public void startRs(){
 		startRs = new DateTime();
 		durTxStartSingle = new Duration(startTx, startRs);
@@ -80,7 +80,7 @@ public class PartitionerProfiler {
 		durPartitionRs2Single = new Duration(startRS2, startDoPartition);
 		durPartitionRs2All = durPartitionRs2All.withDurationAdded(durPartitionRs2Single, 1);
 	}
-	
+
 	public void startDoSave(){
 		startDoSave = new DateTime();
 		//durSaveSingle = new Duration(startRS2, startSave);
@@ -94,7 +94,7 @@ public class PartitionerProfiler {
 		durSaveSingle = new Duration(startDoSave, startDoCommit);
 		durSaveAll = durSaveAll.withDurationAdded(durSaveSingle, 1);
 	}
-	
+
 	public void end(){
 		end = new DateTime();
 		durTxCommitSingle = new Duration(startDoCommit, end);
@@ -104,15 +104,14 @@ public class PartitionerProfiler {
 	public void print(){
 		if (logger.isDebugEnabled()){
 			System.out.println("Durations: " +
-					"Start Transaction: " + durTxStartSingle.getMillis() + "/" + durTxStartAll.getMillis() +   
+					"Start Transaction: " + durTxStartSingle.getMillis() + "/" + durTxStartAll.getMillis() +
 					"; partitionRS1: " + durPartitionRs1Single.getMillis() + "/" + durPartitionRs1All.getMillis() +
 					"; getRelatedObjects: " + durRelObjectsSingle.getMillis() + "/" + durRelObjectsAll.getMillis() +
 					"; partitionRS2 " + durPartitionRs2Single.getMillis() + "/" + durPartitionRs2All.getMillis() +
 					"; doPartition " + durPartitionSingle.getMillis() + "/" + durPartitionAll.getMillis() +
 					"; doSave " + durSaveSingle.getMillis() + "/" + durSaveAll.getMillis() +
-					"; commit " + durTxCommitSingle.getMillis() + "/" + durTxCommitAll.getMillis() 
+					"; commit " + durTxCommitSingle.getMillis() + "/" + durTxCommitAll.getMillis()
 			);
 		}
 	}
-	
 }

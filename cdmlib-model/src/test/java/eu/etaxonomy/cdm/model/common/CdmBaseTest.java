@@ -24,7 +24,8 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -33,17 +34,15 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-
 /**
  * @author a.mueller
- *
  */
 public class CdmBaseTest extends EntityTestBase{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CdmBaseTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
-	static CdmBase cdmBase;
+	private static CdmBase cdmBase;
 
 	static public class TestCdmBaseClass extends CdmBase{
 		private static final long serialVersionUID = -489812714256694973L;

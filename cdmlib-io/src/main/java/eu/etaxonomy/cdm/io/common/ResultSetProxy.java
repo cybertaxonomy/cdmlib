@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.io.InputStream;
@@ -32,7 +31,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Some ResultSets do not allow asking twice for the same column value. This proxy solves this
@@ -43,8 +43,9 @@ import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logge
  * @since 24.08.2010
  */
 public class ResultSetProxy implements ResultSet {
+
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ResultSetProxy.class);
+    private static final Logger logger = LogManager.getLogger();
 
 // ************************** FACTORY METHODS *********************************/
 

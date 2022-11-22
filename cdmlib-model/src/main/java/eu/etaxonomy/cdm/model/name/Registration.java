@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -52,7 +53,6 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  * @author a.mueller
  * @since 13.03.2017
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Registration", propOrder = {
     "identifier",
@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 public class Registration extends AnnotatableEntity {
 
     private static final long serialVersionUID = -5633923579539766801L;
-    private static final Logger logger = LogManager.getLogger(Registration.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Identifier")
     @NullOrNotEmpty

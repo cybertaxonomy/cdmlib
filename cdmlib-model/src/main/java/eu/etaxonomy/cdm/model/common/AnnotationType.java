@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.term.AvailableForIdentifiableBase;
@@ -43,7 +44,7 @@ public class AnnotationType extends AvailableForIdentifiableBase<AnnotationType>
 
 	private static final long serialVersionUID = 49629121282854575L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(AnnotationType.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static Map<UUID, AnnotationType> termMap = null;
 

@@ -13,12 +13,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
-import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -42,7 +41,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class TaxonComparatorTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 /******************** TESTS *****************************************************/
 

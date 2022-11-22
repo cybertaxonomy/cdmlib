@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.ArrayList;
@@ -15,7 +14,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -34,8 +34,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
         implements ITaxonNodeOutStreamPartitioner {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonNodeOutStreamPartitioner.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> defaultPropertyPaths = Arrays.asList(new String[]{"taxon","taxon.name"});
 

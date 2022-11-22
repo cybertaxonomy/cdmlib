@@ -12,7 +12,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Types;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.usertype.UserType;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
@@ -21,7 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PartialUserTypeTest {
-    private static final Logger logger = LogManager.getLogger(PartialUserTypeTest.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private UserType userType;
 

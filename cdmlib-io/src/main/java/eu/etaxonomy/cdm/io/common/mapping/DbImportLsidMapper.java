@@ -6,10 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.ibm.lsid.MalformedLSIDException;
 
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 public class DbImportLsidMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DbImportLsidMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public static DbImportLsidMapper NewInstance (String dbAttributeString, String cdmAttributeString) {
 		boolean obligatory = false;

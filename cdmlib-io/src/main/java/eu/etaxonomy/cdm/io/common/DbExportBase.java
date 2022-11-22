@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.common;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase.IdType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -21,13 +22,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @author e.-m.lee
  * @since 17.02.2010
- *
  */
 public abstract class DbExportBase<CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM, Source>, STATE extends DbExportStateBase<CONFIG, TRANSFORM>, TRANSFORM extends IExportTransformer>
             extends CdmExportBase<CONFIG, STATE, TRANSFORM, Source> {
 
     private static final long serialVersionUID = -1652695446752713850L;
-    private static Logger logger = LogManager.getLogger(DbExportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){
 		String strQuery = "SELECT  Count(t.id) as n " +

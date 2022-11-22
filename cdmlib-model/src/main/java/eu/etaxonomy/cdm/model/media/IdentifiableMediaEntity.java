@@ -23,7 +23,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -45,7 +46,7 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 
     private static final long serialVersionUID = 4038647011021908313L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(IdentifiableMediaEntity.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElementWrapper(name = "Media", nillable = true)
     @XmlElement(name = "Medium")

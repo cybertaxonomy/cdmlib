@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -70,7 +71,7 @@ public class DescriptiveDataSet
         extends IdentifiableEntity<DescriptiveDataSetDefaultCacheStrategy> {
 
     private static final long serialVersionUID = 3256448866757415686L;
-	private static final Logger logger = LogManager.getLogger(DescriptiveDataSet.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")

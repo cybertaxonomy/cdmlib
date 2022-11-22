@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.taxonx;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -31,16 +32,16 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
-
 /**
  * @author a.mueller
  * @since 29.07.2008
  */
 @Component
-public class TaxonXModsImport extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>{
+public class TaxonXModsImport
+        extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>{
 
     private static final long serialVersionUID = -4778280393567013855L;
-    private static final Logger logger = LogManager.getLogger(TaxonXModsImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;

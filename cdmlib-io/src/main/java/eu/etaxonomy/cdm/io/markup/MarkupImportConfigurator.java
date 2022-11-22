@@ -6,17 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.markup;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.XmlImportConfiguratorBase;
@@ -26,9 +26,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
 public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupImportState> implements IImportConfigurator {
-    private static final long serialVersionUID = 779807547137921079L;
 
-    private static final Logger logger = LogManager.getLogger(MarkupImportConfigurator.class);
+    private static final long serialVersionUID = 779807547137921079L;
+    private static final Logger logger = LogManager.getLogger();
 
 	public static MarkupImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new MarkupImportConfigurator(uri, destination);

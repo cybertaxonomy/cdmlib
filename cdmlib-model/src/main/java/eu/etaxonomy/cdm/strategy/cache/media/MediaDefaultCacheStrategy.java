@@ -13,7 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -29,11 +30,10 @@ public class MediaDefaultCacheStrategy
         implements IMediaCacheStrategy {
 
     private static final long serialVersionUID = 7246846028810250751L;
-
-    protected static final  Logger logger = LogManager.getLogger(MediaDefaultCacheStrategy.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	final static UUID uuid = UUID.fromString("0517ae48-597d-4d6b-9f18-8752d689720d");
-
 
 	public static MediaDefaultCacheStrategy NewInstance() {
 		return new MediaDefaultCacheStrategy();

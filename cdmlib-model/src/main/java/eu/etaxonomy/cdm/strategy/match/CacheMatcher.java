@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -24,8 +25,9 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
  * @since 07.08.2009
  */
 public class CacheMatcher extends FieldMatcherBase {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CacheMatcher.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private ReplaceMode cacheReplaceMode;
 	private List<String> replacedProperties;

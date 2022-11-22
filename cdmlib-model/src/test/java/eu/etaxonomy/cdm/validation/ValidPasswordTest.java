@@ -15,7 +15,8 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.validation.constraint.ValidPasswordValidator;
 public class ValidPasswordTest  extends ValidationTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ValidPasswordTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private User user;
 

@@ -1,30 +1,28 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.jaxb;
 
 import java.util.UUID;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
  * @since 23.07.2008
- * @version 1.0
  */
-
-
 public class UUIDAdapter extends XmlAdapter<String, UUID> {
-	private static final Logger logger = LogManager.getLogger(UUIDAdapter.class);
-	
+
+    private static final Logger logger = LogManager.getLogger();
+
 	public static String UUID_URN_PREFIX = "urn-uuid-";
 
 	@Override
@@ -45,6 +43,6 @@ public class UUIDAdapter extends XmlAdapter<String, UUID> {
 			return UUID.fromString(uuidPart);
 		} else {
 			throw new Exception("uuid attribute should start with " + UUIDAdapter.UUID_URN_PREFIX);
-		}	
+		}
 	}
 }

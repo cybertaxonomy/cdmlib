@@ -14,7 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -31,9 +32,8 @@ import eu.etaxonomy.cdm.model.agent.ORCID;
 public class OrcidUserType  extends AbstractUserType implements UserType {
 
     private static final long serialVersionUID = -1274015438727972344L;
-
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(OrcidUserType.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 

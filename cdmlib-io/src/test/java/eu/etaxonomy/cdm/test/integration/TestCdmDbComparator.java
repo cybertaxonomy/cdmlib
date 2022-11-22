@@ -3,7 +3,6 @@
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
-
 package eu.etaxonomy.cdm.test.integration;
 
 import java.sql.ResultSet;
@@ -13,7 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -39,7 +39,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class TestCdmDbComparator {
 
-	private static final String sourceDbOne = "cdm_test_jaxb";
+    private static final Logger logger = LogManager.getLogger();
+
+    private static final String sourceDbOne = "cdm_test_jaxb";
 	private static final String sourceDbTwo = "cdm_test_jaxb2";
 
 	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB(sourceDbOne);
@@ -57,8 +59,6 @@ public class TestCdmDbComparator {
 
     private final int MAX_ROWS = 60000;
     private final int MAX_TABLES = 150;
-
-    private static final Logger logger = LogManager.getLogger(TestCdmDbComparator.class);
 
 	private static final String[] table_list = {
 //			"Address",

@@ -24,7 +24,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -32,7 +33,8 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 
 /**
- * Base class for XML imports
+ * Base class for XML imports.
+ *
  * @author a.mueller
  * @since 28.06.2011
  */
@@ -42,7 +44,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 
     private static final long serialVersionUID = 1505202381104645545L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(XmlImportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected void fireSchemaConflictEventExpectedStartTag(String elName, XMLEventReader reader) throws XMLStreamException {
 		String type = "ElementStart";
@@ -50,11 +52,6 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		fireSchemaConflictEvent(type, elName, next);
 	}
 
-	/**
-	 * @param r
-	 * @return
-	 * @throws XMLStreamException
-	 */
 	protected boolean validateStartOfDocument(XMLEventReader reader) throws XMLStreamException {
 		XMLEvent next = reader.nextEvent();
 		if (next.isStartDocument()){
@@ -68,10 +65,6 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 
 	/**
 	 * TODO namespace
-	 * @param elName
-	 * @param reader
-	 * @return
-	 * @throws XMLStreamException
 	 */
 	protected boolean isStartingElement(XMLEventReader reader, String elName) throws XMLStreamException {
 		XMLEvent next;

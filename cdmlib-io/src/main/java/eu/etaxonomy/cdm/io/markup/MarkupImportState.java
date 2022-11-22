@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.util.ArrayList;
@@ -17,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.XmlImportState;
@@ -40,8 +40,9 @@ import eu.etaxonomy.cdm.model.term.TermNode;
  * @since 11.05.2009
  */
 public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, MarkupDocumentImport>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupImportState.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	private UnmatchedLeads unmatchedLeads;
 	private boolean onlyNumberedTaxaExist; //attribute in <key>

@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2022 EDIT
 * European Distributed Institute of Taxonomy
@@ -12,7 +11,8 @@ package eu.etaxonomy.cdm.compare.taxon;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,13 +26,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
- *
  * @author a.mueller
  * @date 23.05.2022 (moved and adapted test from prior incorrect location {@link TaxonNodeByNameComparatorTest}.)
  */
 public class TaxonNodeNaturalComparatorTest {
 
-    private static final Logger logger = LogManager.getLogger(TaxonNodeByNameComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SuppressWarnings("deprecation")
     @Test

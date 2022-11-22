@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -50,7 +51,7 @@ import eu.etaxonomy.cdm.model.term.TermBase;
 public class KeyStatement extends VersionableEntity implements IMultiLanguageTextHolder{
 
     private static final long serialVersionUID = 3771323100914695139L;
-	private static final Logger logger = LogManager.getLogger(KeyStatement.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
 	@XmlElement(name = "MultiLanguageText")

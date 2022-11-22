@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -44,9 +45,10 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class State extends OrderedTermBase<State> {
+
 	private static final long serialVersionUID = -4816292463790262516L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(State.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public static final UUID uuidPresent = UUID.fromString("4f90d908-2061-4627-b251-0683c55b9c2e");
 	public static final UUID uuidAbsent = UUID.fromString("f193112f-68b2-4c74-bb82-05791892d2c4");

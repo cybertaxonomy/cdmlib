@@ -13,7 +13,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,12 +25,11 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 /**
  * @author a.oppermann
  * @since 18.10.2012
- *
  */
 public class CsvDemoRecord extends CsvDemoRecordBase{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CsvDemoRecord.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private String scientificNameId;
     private String scientificName;

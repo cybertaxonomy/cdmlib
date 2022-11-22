@@ -6,12 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -27,7 +27,7 @@ public abstract class  XmlExportConfiguratorBase<STATE extends XmlExportState<?>
     private static final long serialVersionUID = 6078292713506530756L;
 
     @SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(XmlExportConfiguratorBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public enum IdType{
 		CDM_ID,
@@ -37,16 +37,10 @@ public abstract class  XmlExportConfiguratorBase<STATE extends XmlExportState<?>
 	private IdType idType = IdType.CDM_ID;
 
 
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	protected XmlExportConfiguratorBase(File destination, ICdmDataSource cdmSource, IExportTransformer transformer) {
 	   super(transformer);
 	   setSource(cdmSource);
 	   setDestination(destination);
-
 	}
 
 	public IdType getIdType() {
@@ -64,5 +58,4 @@ public abstract class  XmlExportConfiguratorBase<STATE extends XmlExportState<?>
 			return "";
 		}
 	}
-
 }

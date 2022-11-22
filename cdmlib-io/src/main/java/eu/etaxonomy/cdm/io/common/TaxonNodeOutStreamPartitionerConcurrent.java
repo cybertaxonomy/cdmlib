@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.List;
@@ -16,7 +15,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStreamPartitioner  {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonNodeOutStreamPartitionerConcurrent.class);
+    private static final Logger logger = LogManager.getLogger();
 
   //*********************** VARIABLES *************************************************/
 

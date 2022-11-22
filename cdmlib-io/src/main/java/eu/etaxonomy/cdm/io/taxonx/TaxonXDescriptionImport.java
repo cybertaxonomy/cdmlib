@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.taxonx;
 
 import java.util.HashMap;
@@ -14,7 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Content;
 import org.jdom.Element;
@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
 /**
  * @author a.mueller
  * @since 29.07.2008
@@ -48,7 +47,7 @@ public class TaxonXDescriptionImport
         extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState> {
 
     private static final long serialVersionUID = 1957356490206741364L;
-    private static final Logger logger = LogManager.getLogger(TaxonXDescriptionImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public TaxonXDescriptionImport(){
 		super();

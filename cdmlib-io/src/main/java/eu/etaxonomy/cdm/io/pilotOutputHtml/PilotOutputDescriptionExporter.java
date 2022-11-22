@@ -14,7 +14,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -45,8 +46,8 @@ public class PilotOutputDescriptionExporter
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
     private static final long serialVersionUID = -7530748162895106222L;
-    private static final Logger logger = LogManager.getLogger(PilotOutputDescriptionExporter.class);
-	private PilotOutputDocumentBuilder pilotOutputDocumentBuilder = null;
+    private static final Logger logger = LogManager.getLogger();
+    private PilotOutputDocumentBuilder pilotOutputDocumentBuilder = null;
 
 	private String ioName = null;
 

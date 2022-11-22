@@ -14,7 +14,8 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
@@ -89,12 +90,10 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
     @XmlEnumValue("IAS")
     INDIVIDUALS_ASSOCIATION(UUID.fromString("b8a1346d-9521-4ea2-ada8-c6774cf9175a"), "Specimens", "IAS", null),
 
-
     ;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(DescriptionType.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     private DescriptionType(UUID uuid, String defaultString, String key, DescriptionType parent){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);

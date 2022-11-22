@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.specimen;
 
 import java.awt.Dimension;
@@ -23,7 +22,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @since 20.10.2008
  */
 public class UnitsGatheringArea {
-    private static final Logger logger = LogManager.getLogger(UnitsGatheringArea.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final boolean DEBUG = false;
 
@@ -56,13 +57,11 @@ public class UnitsGatheringArea {
 
     private boolean useTDWGarea = false;
 
-    TermVocabulary<NamedArea> continentVocabulary = null;
-    TermVocabulary<Country> countryVocabulary = null;
-    TermVocabulary<NamedArea> specimenImportAreaVocabulary = null;
-
+    private TermVocabulary<NamedArea> continentVocabulary = null;
+    private TermVocabulary<Country> countryVocabulary = null;
+    private TermVocabulary<NamedArea> specimenImportAreaVocabulary = null;
 
     private DefinedTermBase<?> wbc;
-
 
     public UnitsGatheringArea(){
         //
@@ -176,13 +175,6 @@ public class UnitsGatheringArea {
         }
     }
 
-    /**
-     * @param config
-     * @param termService
-     * @param vocabularyService
-     * @param namedAreaStr
-     * @param namedAreaClass
-     */
     private void createNamedArea(ImportConfiguratorBase<?, ?> config, ITermService termService,
             IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
         if (!StringUtils.isBlank(namedAreaStr)){

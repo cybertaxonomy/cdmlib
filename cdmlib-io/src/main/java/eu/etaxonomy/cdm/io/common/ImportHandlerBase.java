@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -12,7 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -26,35 +27,37 @@ import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 
 /**
  * Base class for XMLSax imports
+ *
  * @author a.mueller
  * @since 28.06.2011
  *
  */
 public class ImportHandlerBase extends DefaultHandler2 {
-	private static final Logger logger = LogManager.getLogger(ImportHandlerBase.class);
-	
+
+    private static final Logger logger = LogManager.getLogger();
+
 	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
-	
-	protected XmlImportBase<?,?> importBase; 
+
+	protected XmlImportBase<?,?> importBase;
 	protected ImportHandlerBase previousHandler;
 	private Locator locator;
 	private boolean stateDocumentStarted = false;
 	protected Stack<String> unhandledElements = new Stack<String>();
 	protected Stack<String> handledElements = new Stack<String>();
-	
+
 	protected ImportHandlerBase(XmlImportBase<?,?> importBase){
 		this.importBase = importBase;
 	}
-	
+
 	protected ImportHandlerBase(ImportHandlerBase previousHandler){
 		this.previousHandler = previousHandler;
 		this.importBase = previousHandler.getImportBase();
 		this.locator = previousHandler.locator;
 	}
-	
 
-//******************** Observers *********************************************************	
-	
+
+//******************** Observers *********************************************************
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#addObserver(eu.etaxonomy.cdm.io.common.IIoObserver)
 	 */
@@ -82,7 +85,7 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	public void deleteObservers(){
 		observers.removeAll(observers);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.IIoEvent)
 	 */
@@ -93,9 +96,9 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	}
 
 
-//******************** End Observers *********************************************************	
-	
-	
+//******************** End Observers *********************************************************
+
+
 	/* (non-Javadoc)
 	 * @see org.xml.sax.helpers.DefaultHandler#notationDecl(java.lang.String, java.lang.String, java.lang.String)
 	 */
@@ -243,7 +246,7 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	public void fatalError(SAXParseException e) throws SAXException {
 		super.fatalError(e);
 	}
-	
+
 
 
 	/* (non-Javadoc)
@@ -262,7 +265,7 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	public void endCDATA() throws SAXException {
 		logger.warn("Unexpected parse event: endCDATA");
 	}
-	
+
 
 	public void setImportBase(XmlImportBase<?,?> importBase) {
 		this.importBase = importBase;
@@ -271,21 +274,21 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	public XmlImportBase<?,?> getImportBase() {
 		return importBase;
 	}
-	
-	
+
+
 	public boolean isFinished(){
 		return (handledElements.size() + unhandledElements.size()) == 0;
 	}
-	
 
-	
+
+
 
 	protected void handleUnexpectedAttributes(Attributes attributes) {
 		if (this.unhandledElements.size() == 0 ){
 			fireUnexpectedAttributes(attributes, 1);
 		}
 	}
-	
+
 	protected void fireUnexpectedAttributes(Attributes attributes, int stackDepth) {
 		String attributesString = "";
 		for (int i = 0; i < attributes.getLength(); i++){
@@ -293,7 +296,7 @@ public class ImportHandlerBase extends DefaultHandler2 {
 		}
 		String message = "Unexpected attributes: %s";
 		IoProblemEvent event = makeProblemEvent(String.format(message, attributesString), 1 , stackDepth +1 );
-		fire(event);	
+		fire(event);
 	}
 
 
@@ -301,21 +304,21 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	protected void fireUnexpectedStartElement(String uri, String localName, String qName, int stackDepth) {
 		String message = "Unexpected start element: %s";
 		IIoEvent event = makeProblemEvent(String.format(message, qName), 2, stackDepth +1);
-		fire(event);		
+		fire(event);
 	}
-	
+
 
 	protected void fireUnexpectedEndElement(String uri, String localName, String qName, int stackDepth) {
 		String message = "Unexpected end element: %s";
 		IIoEvent event = makeProblemEvent(String.format(message, qName), 16, stackDepth+1);
-		fire(event);		
+		fire(event);
 	}
-	
+
 
 	protected void fireNotYetImplementedElement(String uri, String localName, String qName, int stackDepth) {
 		String message = "Element not yet implement: %s";
 		IIoEvent event = makeProblemEvent(String.format(message, qName), 1, stackDepth+1 );
-		fire(event);		
+		fire(event);
 	}
 
 	/**
@@ -338,20 +341,20 @@ public class ImportHandlerBase extends DefaultHandler2 {
 		} catch (ClassNotFoundException e) {
 			declaringClass = this.getClass();
 		}
-		
-		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, 
+
+		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message,
 				location, lineNumber, severity, methodName);
 		return event;
 	}
-	
-	
+
+
 	protected void handleUnexpectedStartElement(String uri, String localName, String qName) {
 		if (! unhandledElements.empty()){
 			unhandledElements.push(qName);
 		}else{
 			fireUnexpectedStartElement(uri, localName, qName, 1);
 		}
-		
+
 	}
 
 	protected void handleUnexpectedEndElement(String uri, String localName, String qName) {
@@ -360,7 +363,7 @@ public class ImportHandlerBase extends DefaultHandler2 {
 		}else{
 			fireUnexpectedEndElement(uri, localName, qName, 1);
 		}
-		
+
 	}
 
 	protected void handleNotYetImplementedElement(String uri, String localName, String qName) {
@@ -369,5 +372,5 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	}
 
 
-	
+
 }

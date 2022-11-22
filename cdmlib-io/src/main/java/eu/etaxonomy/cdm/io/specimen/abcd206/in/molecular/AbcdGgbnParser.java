@@ -8,16 +8,17 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
@@ -49,6 +50,9 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  */
 public class AbcdGgbnParser {
 
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
+
     //DNA Quality term
     private static final String HIGH = "high";
     private static final String MEDIUM = "medium";
@@ -60,8 +64,6 @@ public class AbcdGgbnParser {
     private static final String FORWARD = "forward";
 
     private static final String REVERSE = "reverse";
-
-    private static final Logger logger = LogManager.getLogger(AbcdGgbnParser.class);
 
     private final String prefix = "ggbn:";
 

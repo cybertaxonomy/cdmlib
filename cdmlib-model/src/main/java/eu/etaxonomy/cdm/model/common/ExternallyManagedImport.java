@@ -15,7 +15,8 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
@@ -39,8 +40,7 @@ public enum ExternallyManagedImport implements IEnumTerm<ExternallyManagedImport
 	;
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ExternallyManagedImport.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
 	private ExternallyManagedImport(UUID uuid, String defaultString, String key, ExternallyManagedImport parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);

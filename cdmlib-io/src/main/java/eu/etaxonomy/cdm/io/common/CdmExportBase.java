@@ -6,13 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -31,8 +31,7 @@ public abstract class CdmExportBase<CONFIG extends ExportConfiguratorBase<STATE,
             implements ICdmExport<CONFIG, STATE>{
 
     private static final long serialVersionUID = 3685030095117254235L;
-
-    private static Logger logger = LogManager.getLogger(CdmExportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected ByteArrayOutputStream exportStream;
 

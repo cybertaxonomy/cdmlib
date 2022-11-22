@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -60,8 +61,9 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Rank extends OrderedTermBase<Rank> {
+
     private static final long serialVersionUID = -8648081681348758485L;
-    private static final Logger logger = LogManager.getLogger(Rank.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID uuidEmpire = UUID.fromString("ac470211-1586-4b24-95ca-1038050b618d");
     private static final UUID uuidDomain = UUID.fromString("ffca6ec8-8b88-417b-a6a0-f7c992aac19b");

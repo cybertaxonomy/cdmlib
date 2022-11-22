@@ -6,14 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
-
-/*
- * Created on 14.05.2005
- * @author Andreas Müller
- * Updated 20.08.2006
- */
 
 
 import java.io.PrintWriter;
@@ -24,21 +17,23 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.http.MethodNotSupportedException;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 
-
 /**
- *
  *  Creates Cursors from extern relational DB.
  *  Used only for developpers convienence hence undocumented.
  *  You may create input cursors in any other way you want
  *  @author Andreas Müller
+ *  Created 14.05.2005
+ *  updated 20.08.2006
  */
 public class Source {
-	static Logger logger = LogManager.getLogger(Source.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 /* ************ Constants **************************************/
     //Mode
