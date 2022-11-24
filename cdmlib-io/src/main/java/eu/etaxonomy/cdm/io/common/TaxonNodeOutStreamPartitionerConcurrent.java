@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.concurrent.ConcurrentQueue;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -39,7 +39,7 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
 
   //*********************** VARIABLES *************************************************/
 
-    private ICdmRepository repository;
+    private ICdmApplication repository;
 
     private ICdmImportSource source;
 
@@ -49,7 +49,7 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
 
     private TaxonNodeOutStreamPartitioner<?> innerPartitioner;
 
-    private Future<ICdmRepository> repoFuture;
+    private Future<ICdmApplication> repoFuture;
 
     private Integer partitionSize;
     private IProgressMonitor parentMonitor;
@@ -106,7 +106,7 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
 	    }
 	    getExecutorService().submit(()->{
             try {
-                ICdmRepository repo = repoFuture.get();
+                ICdmApplication repo = repoFuture.get();
                 innerPartitioner = TaxonNodeOutStreamPartitioner.NewInstance(
                         repo, null, filter, partitionSize, parentMonitor, parentTicks, propertyPaths);
 
@@ -144,10 +144,10 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
         }
 	}
 
-    private Callable<ICdmRepository> repoCall = ()->{
+    private Callable<ICdmApplication> repoCall = ()->{
         if (repository == null){
-            if (source instanceof ICdmRepository){
-                repository = (ICdmRepository)source;
+            if (source instanceof ICdmApplication){
+                repository = (ICdmApplication)source;
             }else if (source instanceof ICdmDataSource){
                 System.out.println("start source repo");
                 boolean omitTermLoading = true;

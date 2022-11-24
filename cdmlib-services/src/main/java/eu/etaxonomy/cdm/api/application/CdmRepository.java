@@ -86,7 +86,7 @@ import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
  * @since 21.05.2008
  */
 @Component
-public class CdmRepository implements ICdmRepository, ApplicationContextAware {
+public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 
     private static final Logger logger = LogManager.getLogger();
 

@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
@@ -39,7 +39,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 
-	protected ICdmRepository cdmApp = null;
+	protected ICdmApplication cdmApp = null;
 
 	//authentification token
 	protected UsernamePasswordAuthenticationToken authenticationToken;
@@ -69,11 +69,11 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	}
 
 	@Override
-    public ICdmRepository getCdmAppController(){
+    public ICdmApplication getCdmAppController(){
 		return this.cdmApp;
 	}
 	@Override
-    public void setCdmAppController(ICdmRepository cdmApp) {
+    public void setCdmAppController(ICdmApplication cdmApp) {
 		this.cdmApp = cdmApp;
 	}
 

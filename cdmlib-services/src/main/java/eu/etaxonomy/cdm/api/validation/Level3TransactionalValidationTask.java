@@ -14,7 +14,7 @@ import javax.validation.ConstraintViolation;
 
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
@@ -29,13 +29,13 @@ import eu.etaxonomy.cdm.persistence.validation.Level3ValidationTask;
  */
 class Level3TransactionalValidationTask extends Level3ValidationTask {
 
-    private ICdmRepository repository;
+    private ICdmApplication repository;
 
     public Level3TransactionalValidationTask(CdmBase entity, IEntityValidationCrud dao) {
         super(entity, dao);
     }
 
-    public Level3TransactionalValidationTask(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationCrud dao, ICdmRepository repository) {
+    public Level3TransactionalValidationTask(ICdmBase entity, CRUDEventType crudEventType, IEntityValidationCrud dao, ICdmApplication repository) {
         super(entity, crudEventType, dao);
         this.repository = repository;
     }

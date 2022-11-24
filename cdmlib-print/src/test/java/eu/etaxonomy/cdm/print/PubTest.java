@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -52,7 +52,7 @@ public class PubTest {
 		//Connecting to a CDMDataSource
 		///Resource resource =  new ClassPathResource(CdmDefaultIOBase.DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE);
 		Resource resource =  new ClassPathResource(DEFAULT_PRINT_APPLICATION_CONTEXT_RESOURCE);
-		ICdmRepository app = CdmIoApplicationController.NewInstance(resource, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
+		ICdmApplication app = CdmIoApplicationController.NewInstance(resource, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
 		//ICdmRepository app = CdmApplicationController.NewInstance(resource, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
 		//configurator = PublishConfigurator.NewLocalInstance(CdmStore.getCurrentApplicationConfiguration());//from taxeditor GeneratePdfHandler
 		configurator = PublishConfigurator.NewLocalInstance(app);

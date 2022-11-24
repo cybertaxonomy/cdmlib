@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
@@ -39,11 +39,11 @@ public class PublishConfigurator implements Serializable {
 
 	private static final long serialVersionUID = 4896190792717383839L;
 
-	private ICdmRepository applicationConfiguration;
+	private ICdmApplication applicationConfiguration;
 
 	private URL webserviceUrl;
 
-	private List<Element> selectedTaxonNodeElements = new ArrayList<Element>();
+	private List<Element> selectedTaxonNodeElements = new ArrayList<>();
 
 	private boolean doSynonymy = true;
 
@@ -78,7 +78,7 @@ public class PublishConfigurator implements Serializable {
 	 * @return
 	 */
 	public static PublishConfigurator NewLocalInstance(
-			ICdmRepository applicationConfiguration) {
+	        ICdmApplication applicationConfiguration) {
 		PublishConfigurator configurator = new PublishConfigurator();
 		configurator.setLocal();
 		configurator.setApplicationConfiguration(applicationConfiguration);
@@ -358,7 +358,7 @@ public class PublishConfigurator implements Serializable {
 	 * @return the {@link CdmApplicationController} or null if <code>this</code>
 	 *         is a {@linkplain #isRemote() remote} instance
 	 */
-	public ICdmRepository getApplicationConfiguration() {
+	public ICdmApplication getApplicationConfiguration() {
 		return applicationConfiguration;
 	}
 
@@ -367,7 +367,7 @@ public class PublishConfigurator implements Serializable {
 	 * @param applicationConfiguration
 	 */
 	private void setApplicationConfiguration(
-			ICdmRepository applicationConfiguration) {
+	        ICdmApplication applicationConfiguration) {
 		this.applicationConfiguration = applicationConfiguration;
 	}
 

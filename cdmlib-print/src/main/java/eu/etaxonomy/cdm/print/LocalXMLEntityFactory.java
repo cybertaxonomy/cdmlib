@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
@@ -57,7 +57,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     private final JsonView xmlView;
 
     @Autowired
-    private final ICdmRepository repository;
+    private final ICdmApplication repository;
 
     @Autowired
     private JsonConfig jsonConfig;
@@ -90,7 +90,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     private final IProgressMonitor monitor;
 
     protected LocalXMLEntityFactory(
-            ICdmRepository applicationConfiguration,
+            ICdmApplication applicationConfiguration,
             IProgressMonitor monitor) {
         this.repository = applicationConfiguration;
         this.monitor = monitor;

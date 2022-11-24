@@ -36,7 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -95,7 +95,7 @@ public class DescriptionListController
 
     @Autowired
     @Qualifier("cdmRepository")
-    private ICdmRepository repository;
+    private ICdmApplication repository;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;

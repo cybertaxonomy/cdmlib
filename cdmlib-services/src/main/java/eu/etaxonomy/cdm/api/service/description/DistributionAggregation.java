@@ -19,7 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.search.Search;
 import org.springframework.transaction.TransactionStatus;
@@ -76,7 +77,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 public class DistributionAggregation
             extends DescriptionAggregationBase<DistributionAggregation,DistributionAggregationConfiguration>{
 
-    public static final Logger logger = LogManager.getLogger(DistributionAggregation.class);
+    public static final Logger logger = LogManager.getLogger();
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "description.elements.area",

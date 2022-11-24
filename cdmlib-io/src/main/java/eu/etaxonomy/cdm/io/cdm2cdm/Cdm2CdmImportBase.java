@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -140,12 +141,12 @@ public abstract class Cdm2CdmImportBase
     //quick and dirty
     private Cdm2CdmImportState stateX;
 
-    protected ICdmRepository sourceRepo(Cdm2CdmImportState state){
-        ICdmRepository repo = state.getSourceRepository();
+    protected ICdmApplication sourceRepo(Cdm2CdmImportState state){
+        ICdmApplication repo = state.getSourceRepository();
         if (repo == null){
             ICdmImportSource source = state.getConfig().getSource();
             if (source instanceof ICdmRepository){
-                repo = (ICdmRepository)source;
+                repo = (ICdmApplication)source;
             }else if (source instanceof ICdmDataSource){
                 System.out.println("start source repo");
                 boolean omitTermLoading = true;
