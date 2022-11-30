@@ -52,7 +52,7 @@ import net.sf.ehcache.statistics.FlatStatistics;
  */
 public class CdmTransientEntityCacher implements ICdmCacher {
 
-    private static final Logger logger = LogManager.getLogger(CdmTransientEntityCacher.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //the key for this cacher within the CacheManager
     private final String cacheId;
@@ -137,9 +137,25 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     /**
      * Returns the cache corresponding to the cache id
+     * from the cache manager.
+     *
+     * Expected never to be null as the cache was
+     * added to the cache manager before. However,
+     * in some rare cases no cache is returned, maybe due
+     * to timeout issues or so. This still need further
+     * investigation (#7699).
+     * For now we throw an exception with some debugging information.
      */
     private Cache getCache() {
-        return  getCacheManager().getCache(cacheId);
+        Cache result = getCacheManager().getCache(cacheId);
+        if (result == null) {
+            throw new RuntimeException("No cache available for cacheId = "+cacheId+". See #9174." +
+                "\nAvailable caches are: " +  getCacheManager().getCacheNames() +
+                "\nCacheManager status is: " + getCacheManager().getStatus() +
+                "\nCache status is:" + cache.getStatus());
+        }else {
+            return result;
+        }
     }
 
     /**
