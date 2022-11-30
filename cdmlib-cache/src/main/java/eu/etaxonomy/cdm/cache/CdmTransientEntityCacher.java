@@ -152,7 +152,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
             throw new RuntimeException("No cache available for cacheId = "+cacheId+". See #9174." +
                 "\nAvailable caches are: " +  getCacheManager().getCacheNames() +
                 "\nCacheManager status is: " + getCacheManager().getStatus() +
-                "\nCache status is:" + cache.getStatus());
+                "\n" + (cache == null ? "internal cache is null" : "Cache status is:" + cache.getStatus())
+                );
         }else {
             return result;
         }
