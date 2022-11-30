@@ -45,7 +45,7 @@ public class OccurrenceStatus
         extends SingleSourcedEntityBase {
 
     private static final long serialVersionUID = 623891726208046243L;
-    private static Logger logger = LogManager.getLogger(OccurrenceStatus.class);
+    private static Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "OccurrenceStatusType")
     @XmlIDREF
