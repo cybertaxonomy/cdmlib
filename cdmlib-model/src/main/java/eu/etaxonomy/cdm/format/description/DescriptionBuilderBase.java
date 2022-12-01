@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.format.description;
 
 import java.util.List;
@@ -13,7 +21,7 @@ import eu.etaxonomy.cdm.model.term.Representation;
  *
  * @author m.venin
  */
-public abstract class DescriptionBuilder<T extends DescriptionElementBase> {
+public abstract class DescriptionBuilderBase<T extends DescriptionElementBase> {
 
 	protected String separator = ",";// the basic separator, used for example to separate states when building a description
 	// of a CategoricalData
@@ -52,17 +60,11 @@ public abstract class DescriptionBuilder<T extends DescriptionElementBase> {
 
 	/**
 	 * Returns the TextData element with the description of the according DescriptionElement
-	 *
-	 * @param descriptionElement
-	 * @param languages
-	 * @return
 	 */
 	public abstract TextData build(T descriptionElement, List<Language> languages);
 
 	/**
-	 * Returns either the text, label or abbreviation of a Representation
-	 * @param representation
-	 * @return
+	 * Returns either the text, label or abbreviation of a Representation.
 	 */
 	protected String getRightText(Representation representation){
 		String result;
@@ -81,16 +83,10 @@ public abstract class DescriptionBuilder<T extends DescriptionElementBase> {
 		return representation.getLabel();
 	}
 
-
 	/**
 	 * Returns a TextData with the name of the feature.
-	 *
-	 * @param feature
-	 * @param languages
-	 * @return
 	 */
 	public TextData buildTextDataFeature(Feature feature, List<Language> languages){
 		return TextData.NewInstance(getRightText(feature.getPreferredRepresentation(languages)),languages.get(0),null);
 	}
-
 }

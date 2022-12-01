@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
-public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDescriptionBuilder{
+public class DefaultCategoricalDescriptionBuilder extends CategoricalDescriptionBuilderBase{
 
 	@Override
     protected TextData doBuild(List<StateData> states, List<Language> languages){

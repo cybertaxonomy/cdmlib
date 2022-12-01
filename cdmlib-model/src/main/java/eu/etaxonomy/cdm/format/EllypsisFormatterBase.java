@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.kohlbecker
  * @since Dec 14, 2018
  */
-public abstract class AbstractEllypsisFormatter<T extends CdmBase> implements EllypsisFormatter<T> {
+public abstract class EllypsisFormatterBase<T extends CdmBase> implements EllypsisFormatter<T> {
 
     protected static final String DELIM = " ";
     protected String MORE = " \u2026";
@@ -76,7 +76,6 @@ public abstract class AbstractEllypsisFormatter<T extends CdmBase> implements El
         return label.contains(MORE);
     }
 
-
     protected String titleCacheOnlyEllypsis(String titleCache, int maxCharsVisible, int minNumOfWords) {
         // tokens = titleCache.split("\\s");
         String head = titleCache.substring(0, Math.round(titleCache.length() / 2));
@@ -86,7 +85,6 @@ public abstract class AbstractEllypsisFormatter<T extends CdmBase> implements El
         tail = stringEllypsis(StringUtils.reverse(tail), maxCharsVisible, minNumOfWords).replace(MORE, "");
         return head + StringUtils.reverse(tail);
     }
-
 
     public void applyAndSplit(LinkedList<EllipsisData> edList, String textpart, String textpartEllypsis) {
         // apply on last element in list

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.format.description.DefaultCategoricalDescriptionBuilder;
 import eu.etaxonomy.cdm.format.description.DefaultQuantitativeDescriptionBuilder;
-import eu.etaxonomy.cdm.format.description.DescriptionBuilder;
+import eu.etaxonomy.cdm.format.description.DescriptionBuilderBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -44,8 +44,8 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	private String secondSeparator = ".";
 	private List<Integer> levels = new ArrayList<>();
 
-	private DescriptionBuilder<QuantitativeData> quantitativeDescriptionBuilder = new DefaultQuantitativeDescriptionBuilder();
-	private DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder = new DefaultCategoricalDescriptionBuilder();
+	private DescriptionBuilderBase<QuantitativeData> quantitativeDescriptionBuilder = new DefaultQuantitativeDescriptionBuilder();
+	private DescriptionBuilderBase<CategoricalData> categoricalDescriptionBuilder = new DefaultCategoricalDescriptionBuilder();
 
 	private TextData previousTextData;
 
@@ -84,14 +84,14 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 	/**
 	 * @param quantitativeDescriptionBuilder
 	 */
-	public void setQuantitativeDescriptionBuilder(DescriptionBuilder<QuantitativeData> quantitativeDescriptionBuilder){
+	public void setQuantitativeDescriptionBuilder(DescriptionBuilderBase<QuantitativeData> quantitativeDescriptionBuilder){
 		this.quantitativeDescriptionBuilder = quantitativeDescriptionBuilder;
 	}
 
 	/**
 	 * @param categoricalDescriptionBuilder
 	 */
-	public void setCategoricalDescriptionBuilder(DescriptionBuilder<CategoricalData> categoricalDescriptionBuilder){
+	public void setCategoricalDescriptionBuilder(DescriptionBuilderBase<CategoricalData> categoricalDescriptionBuilder){
 		this.categoricalDescriptionBuilder = categoricalDescriptionBuilder;
 	}
 
@@ -289,7 +289,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 
 	/** recursive function that goes through a tree containing the order in which the description has to be generated,
-	 *  if an element of this tree matches one of the TaxonDescription, a DescriptionBuilder is called which returns a TextData with the corresponding description.
+	 *  if an element of this tree matches one of the TaxonDescription, a DescriptionBuilderBase is called which returns a TextData with the corresponding description.
 	 *
 	 * @param children the children of the feature node considered
 	 * @param parent the feature node considered

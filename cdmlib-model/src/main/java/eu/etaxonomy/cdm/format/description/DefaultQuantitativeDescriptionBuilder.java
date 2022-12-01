@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 /**
  * @author m.venin
  */
-public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeDescriptionBuilder {
+public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescriptionBuilderBase {
 
 	private String space = " ";
 
