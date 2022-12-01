@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.kohlbecker
  * @since Dec 14, 2018
  */
-public abstract class EllypsisFormatterBase<T extends CdmBase> implements EllypsisFormatter<T> {
+public abstract class EllypsisFormatterBase<T extends CdmBase> implements IEllypsisFormatter<T> {
 
     protected static final String DELIM = " ";
     protected String MORE = " \u2026";
