@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  */
 public class CdmUpdater {
 
-    private static final Logger logger = LogManager.getLogger(CdmUpdater.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final ISchemaUpdater getCurrentSchemaUpdater() {
         return SchemaUpdater_5320_5330.NewInstance();

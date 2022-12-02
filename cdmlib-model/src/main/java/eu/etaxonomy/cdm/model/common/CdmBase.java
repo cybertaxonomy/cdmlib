@@ -567,20 +567,10 @@ public abstract class CdmBase
 
 //********************** CLONE *****************************************/
 
-//    protected void clone(CdmBase clone){
-//        clone.setCreatedBy(createdBy);
-//        clone.setId(id);
-//        clone.propertyChangeSupport=new PropertyChangeSupport(clone);
-//        //Constructor Attributes
-//        //clone.setCreated(created);
-//        //clone.setUuid(getUuid());
-//
-//    }
-
     @Override
     public CdmBase clone() throws CloneNotSupportedException{
         CdmBase result = (CdmBase)super.clone();
-        result.propertyChangeSupport=new PropertyChangeSupport(result);
+        result.propertyChangeSupport = new PropertyChangeSupport(result);
 
         //TODO ?
         result.setId(0);
@@ -591,5 +581,4 @@ public abstract class CdmBase
         //no changes to: -
         return result;
     }
-
 }

@@ -48,7 +48,7 @@ public class DescriptionElementSource extends NamedSourceBase{
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DescriptionElementSource.class);
+	private static final Logger logger = LogManager.getLogger();
 
 // ************************* FIELDS ********************************/
 
