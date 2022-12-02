@@ -19,9 +19,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -40,7 +43,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 18.09.2009
  */
 @XmlType(name = "DescriptionElementSource", propOrder = {
-	    "sourcedElement"
+	    "sourcedElement",
+	    "specimen"
 	})
 @Entity
 @Audited
@@ -57,6 +61,14 @@ public class DescriptionElementSource extends NamedSourceBase{
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     private DescriptionElementBase sourcedElement;
+
+    //#10194
+    @XmlElement(name = "specimen")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    private SpecimenOrObservationBase specimen;
 
 //************************* FACTORY ******************************/
 
@@ -157,6 +169,13 @@ public class DescriptionElementSource extends NamedSourceBase{
                 sourcedElement.addSource(this);
             }
         }
+    }
+
+    public SpecimenOrObservationBase getSpecimen() {
+        return specimen;
+    }
+    public void setSpecimen(SpecimenOrObservationBase specimen) {
+        this.specimen = specimen;
     }
 
 //*********************************** CLONE *********************************************************/
