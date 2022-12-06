@@ -125,5 +125,4 @@ public class State extends OrderedTermBase<State> {
 			termMap.put(term.getUuid(), term);
 		}
 	}
-
 }
