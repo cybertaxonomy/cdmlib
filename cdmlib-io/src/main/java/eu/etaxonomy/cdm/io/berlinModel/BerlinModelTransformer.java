@@ -46,6 +46,10 @@ public class BerlinModelTransformer {
 
 	private static final Logger logger = LogManager.getLogger();
 
+	//Moose
+	public static final UUID uuidNomeRefSourceExtensionType = UUID.fromString("fb18953d-3d74-4bde-a3f6-a2eb8b97490d");
+	public static final UUID uuidacNaYNBExtensionType = UUID.fromString("57ba8f99-812b-4e50-9d40-14e4821c6fef");
+
 	//source Refs
 	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");
 
