@@ -112,7 +112,7 @@
 		                              metaType="string",
 		                              idType="integer",
 		                              metaValues={
-		 //Identifiable Entities
+		//Identifiable Entities
 		@MetaValue(value = "Institution", targetEntity = Institution.class),
 		@MetaValue(value = "Person", targetEntity = Person.class),
 		@MetaValue(value = "Team", targetEntity = Team.class),

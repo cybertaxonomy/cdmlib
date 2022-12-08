@@ -21,7 +21,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -542,9 +543,10 @@ public class DescriptionServiceImpl
                                 desc.removeElement(data);
                             }else{
                                 for (StateDataDto dataDto: stateDtos){
-                                        State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
-                                        StateData newStateData = StateData.NewInstance(newState);
-                                        data.addStateData(newStateData);
+                                    //FIXME 10196
+                                    State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
+                                    StateData newStateData = StateData.NewInstance(newState);
+                                    data.addStateData(newStateData);
                                 }
                             }
 

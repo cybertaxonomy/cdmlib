@@ -75,7 +75,6 @@ public class FeatureState extends VersionableEntity {
         return new FeatureState(feature, state);
     }
 
-
     //for hibernate use only
     @Deprecated
     protected FeatureState() {}
@@ -102,8 +101,8 @@ public class FeatureState extends VersionableEntity {
         this.state = state;
     }
 
-
 // ******************************* TO STRING *******************************************/
+
     @Override
     public String toString() {
         return "FeatureState [feature=" + feature + ", state=" + state + "]";

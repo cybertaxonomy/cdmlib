@@ -132,135 +132,77 @@ public class FeatureDto extends TermDto {
         return result;
     }
 
-    /**
-     * @return the isAvailableForTaxon
-     */
     public boolean isAvailableForTaxon() {
         return isAvailableForTaxon;
     }
 
-    /**
-     * @param isAvailableForTaxon the isAvailableForTaxon to set
-     */
     public void setAvailableForTaxon(boolean isAvailableForTaxon) {
         this.isAvailableForTaxon = isAvailableForTaxon;
     }
 
-    /**
-     * @return the isAvailableForTaxonName
-     */
     public boolean isAvailableForTaxonName() {
         return isAvailableForTaxonName;
     }
 
-    /**
-     * @param isAvailableForTaxonName the isAvailableForTaxonName to set
-     */
     public void setAvailableForTaxonName(boolean isAvailableForTaxonName) {
         this.isAvailableForTaxonName = isAvailableForTaxonName;
     }
 
-    /**
-     * @return the isAvailableForOccurrence
-     */
     public boolean isAvailableForOccurrence() {
         return isAvailableForOccurrence;
     }
 
-    /**
-     * @param isAvailableForOccurrence the isAvailableForOccurrence to set
-     */
     public void setAvailableForOccurrence(boolean isAvailableForOccurrence) {
         this.isAvailableForOccurrence = isAvailableForOccurrence;
     }
 
-    /**
-     * @return the isSupportsCategoricalData
-     */
     public boolean isSupportsCategoricalData() {
         return isSupportsCategoricalData;
     }
 
-    /**
-     * @param isSupportsCategoricalData the isSupportsCategoricalData to set
-     */
     public void setSupportsCategoricalData(boolean isSupportsCategoricalData) {
         this.isSupportsCategoricalData = isSupportsCategoricalData;
     }
 
-    /**
-     * @return the isSupportsQuantitativeData
-     */
     public boolean isSupportsQuantitativeData() {
         return isSupportsQuantitativeData;
     }
 
-    /**
-     * @param isSupportsQuantitativeData the isSupportsQuantitativeData to set
-     */
     public void setSupportsQuantitativeData(boolean isSupportsQuantitativeData) {
         this.isSupportsQuantitativeData = isSupportsQuantitativeData;
     }
 
-    /**
-     * @return the recommendedMeasurementUnits
-     */
     public Set<TermDto> getRecommendedMeasurementUnits() {
         return recommendedMeasurementUnits;
     }
 
-    /**
-     * @param recommendedMeasurementUnits the recommendedMeasurementUnits to set
-     */
     public void setRecommendedMeasurementUnits(Set<TermDto> recommendedMeasurementUnits) {
         this.recommendedMeasurementUnits = recommendedMeasurementUnits;
     }
 
-    /**
-     * @return the recommendedStatisticalMeasures
-     */
     public Set<TermDto> getRecommendedStatisticalMeasures() {
         return recommendedStatisticalMeasures;
     }
-
-    /**
-     * @param recommendedStatisticalMeasures the recommendedStatisticalMeasures to set
-     */
     public void setRecommendedStatisticalMeasures(Set<TermDto> recommendedStatisticalMeasures) {
         this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
     }
 
-    /**
-     * @return the supportedCategoricalEnumerations
-     */
     public Set<TermVocabularyDto> getSupportedCategoricalEnumerations() {
         return supportedCategoricalEnumerations;
     }
-
-    /**
-     * @param supportedCategoricalEnumerations the supportedCategoricalEnumerations to set
-     */
     public void setSupportedCategoricalEnumerations(Set<TermVocabularyDto> supportedCategoricalEnumerations) {
         this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
     }
 
-    /**
-     * @return the recommendedModifierEnumeration
-     */
     public Set<TermVocabularyDto> getRecommendedModifierEnumeration() {
         return recommendedModifierEnumeration;
     }
-
-    /**
-     * @param recommendedModifierEnumeration the recommendedModifierEnumeration to set
-     */
     public void setRecommendedModifierEnumeration(Set<TermVocabularyDto> recommendedModifierEnumeration) {
         this.recommendedModifierEnumeration = recommendedModifierEnumeration;
     }
 
     public static String getTermDtoSelect(){
         String[] result = createSqlParts("DefinedTermBase");
-
         return result[0]+result[1]+result[2];
     }
 
@@ -375,14 +317,10 @@ public class FeatureDto extends TermDto {
                     recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
                 }else if (o instanceof Set){
                     Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = (Set<TermVocabulary<DefinedTerm>>) o;
-                    if (recommendedModifierEnumeration != null){
-                        for (TermVocabulary<DefinedTerm> voc: recommendedModifierEnumeration){
-                            recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary(voc));
-                        }
+                    for (TermVocabulary<DefinedTerm> voc: recommendedModifierEnumeration){
+                        recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary(voc));
                     }
                 }
-
-
 
                 o = elements[14];
                 Set<TermDto> recommendedStatisticalMeasuresDtos = new HashSet<>();

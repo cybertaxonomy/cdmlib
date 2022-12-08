@@ -314,7 +314,6 @@ public class TermNodeServiceImpl
                     Feature feature = HibernateProxyHelper.deproxy(term, Feature.class);
                     change.getKey().setFeature(feature);
                 }
-
             }
             if (!change.getKey().getState().getUuid().equals(change.getValue().getState().getUuid())){
                 DefinedTermBase<?> term = termService.load(change.getValue().getState().getUuid());
@@ -322,7 +321,6 @@ public class TermNodeServiceImpl
                     State state = HibernateProxyHelper.deproxy(term, State.class);
                     change.getKey().setState(state);
                 }
-
             }
             if (inApplicable){
                 node.getInapplicableIf().add(change.getKey());

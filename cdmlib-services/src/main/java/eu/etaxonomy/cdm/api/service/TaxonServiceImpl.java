@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
@@ -139,7 +138,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
-
 /**
  * @author a.kohlbecker
  * @since 10.09.2010
@@ -150,7 +148,7 @@ public class TaxonServiceImpl
             extends IdentifiableServiceBase<TaxonBase,ITaxonDao>
             implements ITaxonService{
 
-    private static final Logger logger = LogManager.getLogger(TaxonServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
 
@@ -967,7 +965,7 @@ public class TaxonServiceImpl
     public List<Media> listTaxonDescriptionMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, boolean limitToGalleries, List<String> propertyPath){
         return listMedia(taxon, includeRelationships, limitToGalleries, true, false, false, propertyPath);
     }
-    
+
     @Override
     public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
@@ -1066,9 +1064,9 @@ public class TaxonServiceImpl
                     }
                 }
                 //media in hierarchy
-                
+
                 taxonMedia.addAll(occurrenceService.getMediaInHierarchy(occurrence, includeOriginalOccurences, includeOccurrences, null, null, propertyPath).getRecords());
-                
+
             }
         }
 
@@ -2358,16 +2356,6 @@ public class TaxonServiceImpl
         return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
     }
 
-    /**
-     * @param clazz
-     * @param queryString
-     * @param classification
-     * @param features
-     * @param languages
-     * @param highlightFragments
-     * @param directorySelectClass
-     * @return
-     */
     protected LuceneSearch prepareByDescriptionElementFullTextSearch(Class<? extends CdmBase> clazz,
             String queryString, Classification classification, TaxonNode subtree, List<Feature> features,
             List<Language> languages, boolean highlightFragments) {
@@ -2390,14 +2378,6 @@ public class TaxonServiceImpl
         return luceneSearch;
     }
 
-    /**
-     * @param queryString
-     * @param classification
-     * @param features
-     * @param languages
-     * @param descriptionElementQueryFactory
-     * @return
-     */
     private BooleanQuery createByDescriptionElementFullTextQuery(String queryString,
             Classification classification, TaxonNode subtree, List<Feature> features,
             List<Language> languages, QueryFactory descriptionElementQueryFactory) {

@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.XmlImportState;
 public class SDDImportState extends XmlImportState<SDDImportConfigurator, SDDImport>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SDDImportState.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	public SDDImportState(SDDImportConfigurator config) {
 		super(config);

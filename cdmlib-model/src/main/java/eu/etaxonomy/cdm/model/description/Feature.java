@@ -114,7 +114,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 
 	private static final long serialVersionUID = 6754598791831848704L;
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(Feature.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static Map<UUID, Feature> termMap = null;
 

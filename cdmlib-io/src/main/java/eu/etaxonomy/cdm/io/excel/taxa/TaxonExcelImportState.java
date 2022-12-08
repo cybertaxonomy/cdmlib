@@ -13,12 +13,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -33,12 +33,12 @@ public class TaxonExcelImportState
             extends ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonExcelImportState.class);
+	private static final Logger logger = LogManager.getLogger();
 
     /** Already processed authors */
 	private Set<String> authors = new HashSet<>();
 
-	private Map<String, TaxonBase> taxonMap= new HashMap<String, TaxonBase>();
+	private Map<String, TaxonBase> taxonMap= new HashMap<>();
 	/**
      * @return the taxonMap
      */
@@ -53,7 +53,6 @@ public class TaxonExcelImportState
         this.taxonMap = taxonMap;
     }
 
-    private Map<String, TeamOrPersonBase> authorMap= new HashMap<String, TeamOrPersonBase>();
 	private Map<String, TaxonName> nameMap;
 	private Map<String, Reference> referenceMap= new HashMap<String, Reference>();
 	private Taxon parent;

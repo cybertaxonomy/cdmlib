@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -55,6 +56,7 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
+import eu.etaxonomy.cdm.model.description.IAsState;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -672,7 +674,7 @@ public class SDDDocumentBuilder {
 					DESCRIPTIVE_CONCEPTS);
 			int f = cdmSource.getTerms().size();
 			for (int i = 0; i < f; i++) {
-				DefinedTermBase dtb = cdmSource.getTerms().get(i);
+				DefinedTermBase<?> dtb = cdmSource.getTerms().get(i);
 				if (dtb instanceof Feature) {
 					ElementImpl elFeat = new ElementImpl(document,
 							DESCRIPTIVE_CONCEPT);
@@ -937,7 +939,7 @@ public class SDDDocumentBuilder {
 		List<StateData> states = categoricalData.getStateData();
 		for (Iterator<StateData> sd = states.iterator(); sd.hasNext();) {
 			StateData stateData = sd.next();
-			State s = stateData.getState();
+			IAsState s = stateData.getState();
 			buildState(categorical, s);
 		}
 		element.appendChild(categorical);
@@ -946,7 +948,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds State associated with a Categorical
 	 */
-	public void buildState(ElementImpl element, State s) throws ParseException {
+	public void buildState(ElementImpl element, IAsState s) throws ParseException {
 
 		// <SummaryData>
 		// <Categorical ref="c4">
@@ -955,7 +957,7 @@ public class SDDDocumentBuilder {
 		// </Categorical>
 
 		ElementImpl state = new ElementImpl(document, STATE);
-		buildReference(s, states, REF, state, "s", statesCount);
+		buildReference((DefinedTermBase<?>)s, states, REF, state, "s", statesCount);
 		element.appendChild(state);
 	}
 
@@ -1307,9 +1309,9 @@ public class SDDDocumentBuilder {
 				Set<FeatureState> innaplicableIf = parent.getInapplicableIf();
 				ElementImpl elInnaplicableIf = new ElementImpl(document, "InapplicableIf");
 				for (FeatureState featureState : innaplicableIf) {
-				    State state = featureState.getState();
+				    IAsState state = featureState.getState();
 					ElementImpl elState = new ElementImpl(document, STATE);
-					buildReference(state, states, REF, elState, "State",
+					buildReference(CdmBase.deproxy(state, DefinedTermBase.class), states, REF, elState, "State",
 							statesCount);
 					elInnaplicableIf.appendChild(elState);
 				}
@@ -1322,8 +1324,8 @@ public class SDDDocumentBuilder {
 						"OnlyApplicableIf");
 				for (FeatureState featureState : onlyApplicableIf) {
 					ElementImpl elState = new ElementImpl(document, STATE);
-					State state = featureState.getState();
-                    buildReference(state, states, REF, elState, "State",
+					IAsState state = featureState.getState();
+                    buildReference(CdmBase.deproxy(state, DefinedTermBase.class), states, REF, elState, "State",
 							statesCount);
 					elOnlyApplicableIf.appendChild(elState);
 				}
@@ -1418,7 +1420,7 @@ public class SDDDocumentBuilder {
 			element.setAttribute(refOrId, (String) references.get(ve));
 		} else {
 			if (ve instanceof IdentifiableEntity) {
-				IdentifiableEntity ie = (IdentifiableEntity) ve;
+				IdentifiableEntity<?> ie = (IdentifiableEntity) ve;
 				if (ie.getSources().size() > 0) {
 					IdentifiableSource os = (IdentifiableSource) ie
 							.getSources().toArray()[0];

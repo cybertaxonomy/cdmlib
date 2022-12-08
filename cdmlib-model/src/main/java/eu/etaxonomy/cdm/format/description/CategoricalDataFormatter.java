@@ -54,6 +54,4 @@ public class CategoricalDataFormatter
         //TODO modifier
         return result;
     }
-
-
 }

@@ -82,7 +82,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger(StructuredDescriptionAggregationTest.class);
+    private static Logger logger = LogManager.getLogger();
 
     private static final UUID T_LAPSANA_UUID = UUID.fromString("f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8");
     private static final UUID TN_LAPSANA_UUID = UUID.fromString("f4d29e9f-6484-4184-af2e-9704e96a17e3");

@@ -75,7 +75,7 @@ public class CategoricalDataTest {
         stateData2.addModifier(DefinedTerm.NewModifierInstance(null, "Any modifer", null));
         data.addStateData(stateData2);
 
-        List<State> states = data.getStatesOnly();
+        List<IAsState> states = data.getStatesOnly();
         Assert.assertEquals("There should be 2 states", 2, states.size());
 
     }
@@ -110,7 +110,7 @@ public class CategoricalDataTest {
 
     @Test
     public void testClone(){
-        CategoricalData clone = (CategoricalData)categorialData.clone();
+        CategoricalData clone = categorialData.clone();
         assertNotSame(clone, categorialData);
         assertEquals(1, clone.getStateData().size());
         assertEquals(clone.getStateData().size(), categorialData.getStateData().size() );

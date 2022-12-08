@@ -52,7 +52,7 @@ public class TermNodeDto implements Serializable{
         if (node.getParent() != null){
             dto.setParentUuid(node.getParent().getUuid());
         }
-        
+
         List<TermNodeDto> children = new ArrayList<>();
         for (Object o: node.getChildNodes()){
             if (o instanceof TermNode){
@@ -167,7 +167,6 @@ public class TermNodeDto implements Serializable{
         for (FeatureState state: onlyApplicableIf){
             this.onlyApplicableIf.add(new FeatureStateDto(state.getUuid(), FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(state.getState())));
         }
-
     }
 
     public Set<FeatureStateDto> getInapplicableIf() {

@@ -129,7 +129,6 @@ public class CategoricalData extends DescriptionElementBase {
         for (State state : states){
             addStateData(state);
         }
-
     }
 
 // ****************** GETTER / SETTER *********************************************/
@@ -138,7 +137,6 @@ public class CategoricalData extends DescriptionElementBase {
      * Returns the (ordered) list of {@link State states} describing the {@link Feature feature}
      * corresponding to <i>this</i> categorical data.
      */
-
     public List<StateData> getStateData(){
         return this.stateData;
     }
@@ -167,12 +165,11 @@ public class CategoricalData extends DescriptionElementBase {
      * @see #addStateData(StateData)
      * @param state
      */
-    public StateData addStateData(State state){
+    public StateData addStateData(IAsState state){
         StateData stateData = StateData.NewInstance(state);
         addStateData(stateData);
         return stateData;
     }
-
 
     /**
      * Removes one element from the set of {@link #getStateData() states}

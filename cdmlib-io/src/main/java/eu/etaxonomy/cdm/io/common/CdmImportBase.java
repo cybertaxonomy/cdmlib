@@ -593,13 +593,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * Returns a {@link State} for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the state exists in the database, if not creating it anew (with vocabulary etc.).
 	 * If label, text and labelAbbrev are all <code>null</code> no state is created.
-	 * @param importState
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @param voc
-	 * @return
 	 */
 	protected State getStateTerm(STATE importState, UUID uuid, String label, String text, String labelAbbrev, OrderedTermVocabulary<State> voc) {
 		if (uuid == null){
