@@ -98,15 +98,12 @@ public abstract class TermBase
     TermBase(){}
 
     protected TermBase(TermType type){
-        super();
         if (type == null){
         	throw new IllegalArgumentException("TermType must not be null");
         }else{
         	this.termType = type;
         }
     }
-
-
 
     protected TermBase(TermType type, String term, String label, String labelAbbrev, Language lang) {
         this(type);
@@ -159,8 +156,6 @@ public abstract class TermBase
 
     /**
      * @see #getPreferredRepresentation(Language)
-     * @param language
-     * @return
      */
     public Representation getPreferredRepresentation(Language language) {
         Representation repr = getRepresentation(language);

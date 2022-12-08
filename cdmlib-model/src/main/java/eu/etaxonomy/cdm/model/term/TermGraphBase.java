@@ -35,7 +35,7 @@ public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends Te
     private static final long serialVersionUID = -704169783744494023L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermGraphBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
  // ******************** CONSTRUCTOR *************************************/
 

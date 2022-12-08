@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
-
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -103,7 +101,7 @@ public class StateData
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})   remove cascade #5755
+    //no  cascade #5755
     @IndexedEmbedded(depth=1)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
     private Set<DefinedTerm> modifiers = new HashSet<>();
@@ -245,26 +243,6 @@ public class StateData
      */
     public Map<Language,LanguageString> getModifyingText(){
         return this.modifyingText;
-    }
-
-    /**
-     * Creates a {@link LanguageString language string} based on the given text string
-     * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
-     * used to qualify the validity of <i>this</i> state data.
-     *
-     *
-     * @param text		the string describing the validity
-     * 					in a particular language
-     * @param language	the language in which the text string is formulated
-     *
-     * @see    	   		#getModifyingText()
-     * @see    	   		#putModifyingText(LanguageString)
-     * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
-     * 					Use the {@link #putModifyingText(Language, String) putModifyingText} method instead
-     */
-    @Deprecated
-    public LanguageString addModifyingText(String text, Language language){
-        return this.putModifyingText(language, text);
     }
 
     /**
