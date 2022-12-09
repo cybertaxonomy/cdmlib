@@ -318,6 +318,7 @@ public class TermNodeServiceImpl
             if (!change.getKey().getState().getUuid().equals(change.getValue().getState().getUuid())){
                 DefinedTermBase<?> term = termService.load(change.getValue().getState().getUuid());
                 if (term instanceof State){
+                    //FIXME 10196
                     State state = HibernateProxyHelper.deproxy(term, State.class);
                     change.getKey().setState(state);
                 }
@@ -337,6 +338,7 @@ public class TermNodeServiceImpl
                 feature = HibernateProxyHelper.deproxy(term, Character.class);
             }
             DefinedTermBase<?> termState = termService.load(stateDto.getState().getUuid());
+            //FIXME 10196
             if (termState instanceof State){
                 state = HibernateProxyHelper.deproxy(termState, State.class);
             }

@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
@@ -58,12 +59,12 @@ public class FeatureState extends VersionableEntity {
     @NotNull
     private Feature feature;
 
-    @XmlElement(name = "State")
+    @XmlElement(name = "State", type=DefinedTermBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity=State.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
     @NotNull
-    private State state;
+    private IAsState state;
 
 //*************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
@@ -75,11 +76,15 @@ public class FeatureState extends VersionableEntity {
         return new FeatureState(feature, state);
     }
 
+    public static FeatureState NewInstance(Feature feature, IAsState state){
+        return new FeatureState(feature, state);
+    }
+
     //for hibernate use only
     @Deprecated
     protected FeatureState() {}
 
-    protected FeatureState(Feature feature, State state) {
+    protected FeatureState(Feature feature, IAsState state) {
         this.feature = feature;
         this.state = state;
     }
@@ -94,10 +99,10 @@ public class FeatureState extends VersionableEntity {
         this.feature = feature;
     }
 
-    public State getState() {
+    public IAsState getState() {
         return state;
     }
-    public void setState(State state) {
+    public void setState(IAsState state) {
         this.state = state;
     }
 

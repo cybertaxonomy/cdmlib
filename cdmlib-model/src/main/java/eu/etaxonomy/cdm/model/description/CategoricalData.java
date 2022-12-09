@@ -108,8 +108,8 @@ public class CategoricalData extends DescriptionElementBase {
     /**
      * Creates a new empty categorical data instance.
      */
-    public static CategoricalData NewInstance(State state, Feature feature){
-        return new CategoricalData( Arrays.asList( new State[]{state}) , feature);
+    public static CategoricalData NewInstance(IAsState state, Feature feature){
+        return new CategoricalData( Arrays.asList( new IAsState[]{state}) , feature);
     }
 
 //*******************  CONSTRUCTOR *********************************************/
@@ -124,9 +124,9 @@ public class CategoricalData extends DescriptionElementBase {
     /**
      * Class constructor: creates a new empty categorical data instance.
      */
-    protected CategoricalData(List<State> states, Feature feature) {
+    protected CategoricalData(List<IAsState> states, Feature feature) {
         super(feature);
-        for (State state : states){
+        for (IAsState state : states){
             addStateData(state);
         }
     }
@@ -214,7 +214,7 @@ public class CategoricalData extends DescriptionElementBase {
      * @param state the given {@link State}
      * @return <code>true</code> if the state exists
      */
-    public boolean hasState(State state) {
+    public boolean hasState(IAsState state) {
         return getStatesOnly().contains(state);
     }
 
@@ -222,10 +222,10 @@ public class CategoricalData extends DescriptionElementBase {
      * Convenience method returning only the list of states. Leaving out modifiers and modifying text.
      */
     @Transient
-    public List<State> getStatesOnly(){
-        List<State> result = new ArrayList<>();
+    public List<IAsState> getStatesOnly(){
+        List<IAsState> result = new ArrayList<>();
         for (StateData stateData : getStateData()){
-            State state = stateData.getState();
+            IAsState state = stateData.getState();
             if (state != null){
                 result.add(state);
             }

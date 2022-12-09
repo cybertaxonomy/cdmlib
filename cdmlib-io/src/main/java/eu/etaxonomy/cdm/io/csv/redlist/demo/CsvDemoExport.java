@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.IAsState;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -468,7 +468,7 @@ public class CsvDemoExport extends CsvDemoBase {
 			for (DescriptionElementBase el : description.getElements()){
 				if(el.isInstanceOf(CategoricalData.class)){
 					CategoricalData categoricalData = CdmBase.deproxy(el, CategoricalData.class);
-					for(State state:categoricalData.getStatesOnly()){
+					for(IAsState state:categoricalData.getStatesOnly()){
 						Feature stateFeature = categoricalData.getFeature();
 						// find matching feature and put data into according cell
 						for(int i = 0; i < features.size(); i++) {

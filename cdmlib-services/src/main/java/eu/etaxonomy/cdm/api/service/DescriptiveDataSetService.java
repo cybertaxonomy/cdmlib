@@ -306,6 +306,7 @@ public class DescriptiveDataSetService
                         eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
                         CategoricalData data = CategoricalData.NewInstance(feature);
                         for (StateDataDto stateDto:((CategoricalDataDto) elementDto).getStates()){
+                            //FIXME 10196
                             State state = DefinedTermBase.getTermByClassAndUUID(State.class, stateDto.getState().getUuid());
                             data.addStateData(state);
                             specimenDescription.addElement(data);
@@ -342,6 +343,7 @@ public class DescriptiveDataSetService
                             element = CategoricalData.NewInstance(feature);
                         }
                         for (StateDataDto stateDto:((CategoricalDataDto) elementDto).getStates()){
+                            //FIXME 10196
                             State state = DefinedTermBase.getTermByClassAndUUID(State.class, stateDto.getState().getUuid());
                             allStates.add(state);
                         }

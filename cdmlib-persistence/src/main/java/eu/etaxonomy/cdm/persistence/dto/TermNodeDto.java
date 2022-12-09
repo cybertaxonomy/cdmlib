@@ -17,7 +17,9 @@ import java.util.UUID;
 
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.FeatureState;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -165,7 +167,7 @@ public class TermNodeDto implements Serializable{
             this.onlyApplicableIf = new HashSet<>();
         }
         for (FeatureState state: onlyApplicableIf){
-            this.onlyApplicableIf.add(new FeatureStateDto(state.getUuid(), FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(state.getState())));
+            this.onlyApplicableIf.add(new FeatureStateDto(state.getUuid(), FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(CdmBase.deproxy(state.getState(), DefinedTermBase.class))));
         }
     }
 
@@ -182,7 +184,7 @@ public class TermNodeDto implements Serializable{
             this.inapplicableIf = new HashSet<>();
         }
         for (FeatureState state: inApplicableIf){
-            this.inapplicableIf.add( new FeatureStateDto(state.getUuid(),FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(state.getState())));
+            this.inapplicableIf.add( new FeatureStateDto(state.getUuid(),FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(CdmBase.deproxy(state.getState(), DefinedTermBase.class))));
         }
 
     }

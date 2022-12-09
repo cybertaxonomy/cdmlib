@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Character;
@@ -323,7 +324,7 @@ public class OwlExportUtil {
                     .addProperty(OwlUtil.propIsA, OwlUtil.FEATURE_STATE)
                     .addProperty(OwlUtil.propUuid, featureState.getUuid().toString())
                     .addProperty(OwlUtil.propFeatureStateHasFeature, createTermResource(featureState.getFeature(), false, repo, state))
-                    .addProperty(OwlUtil.propFeatureStateHasState, createTermResource(featureState.getState(), false, repo, state))
+                    .addProperty(OwlUtil.propFeatureStateHasState, createTermResource(CdmBase.deproxy(featureState.getState(), DefinedTermBase.class), false, repo, state))
                     ;
             nodeResource.addProperty(OwlUtil.propNodeIsInapplicableIf, featureStateResource);
         }
@@ -334,7 +335,7 @@ public class OwlExportUtil {
                     .addProperty(OwlUtil.propIsA, OwlUtil.FEATURE_STATE)
                     .addProperty(OwlUtil.propUuid, featureState.getUuid().toString())
                     .addProperty(OwlUtil.propFeatureStateHasFeature, createTermResource(featureState.getFeature(), false, repo, state))
-                    .addProperty(OwlUtil.propFeatureStateHasState, createTermResource(featureState.getState(), false, repo, state))
+                    .addProperty(OwlUtil.propFeatureStateHasState, createTermResource(CdmBase.deproxy(featureState.getState(), DefinedTermBase.class), false, repo, state))
                     ;
             nodeResource.addProperty(OwlUtil.propNodeIsOnlyApplicableIf, featureStateResource);
         }

@@ -87,12 +87,14 @@ public class StateData
     @IndexedEmbedded(depth=1)
     private CategoricalData categoricalData;
 
-    @XmlElement(name = "State")
+    @XmlElement(name = "State", type=DefinedTermBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth=1)
-    private State state;
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
+    @IndexedEmbedded(depth=1, targetElement=DefinedTermBase.class)
+    //we could also use DefinedTermBase here, we use only IAsState for
+    //better understanding the code #10196
+    private IAsState state;
 
     //#8625 for statistically counting aggregated state data
     @Column(name="number")  //rename to avoid conflicts with SQL syntax
@@ -130,7 +132,7 @@ public class StateData
      * <b>NOTE:</b> {@link State}  is a sub class of {@link DefinedTermBase}.
      * If the state passed as parameter has been created newly it <b>has to be persisted before</b> it is possible to save the StateData.
      */
-    public static StateData NewInstance(State state){
+    public static StateData NewInstance(IAsState state){
         StateData stateData = new StateData();
         stateData.setState(state);
         return stateData;
@@ -150,13 +152,13 @@ public class StateData
     /**
      * Returns the {@link State state term} used in <i>this</i> state data.
      */
-    public State getState(){
+    public IAsState getState(){
         return this.state;
     }
     /**
      * @see	#getState()
      */
-    public void setState(State state){
+    public void setState(IAsState state){
         this.state = state;
     }
 

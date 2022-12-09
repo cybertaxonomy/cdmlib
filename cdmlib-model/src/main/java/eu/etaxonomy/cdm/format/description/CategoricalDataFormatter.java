@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * Formatter for {@link CategoricalData}.
@@ -50,7 +51,7 @@ public class CategoricalDataFormatter
 
     private String getStateDataText(StateData stateData, List<Language> preferredLanguages) {
         String result = "";
-        result += getLabel(stateData.getState(), preferredLanguages);
+        result += getLabel((DefinedTermBase<?>)stateData.getState(), preferredLanguages);
         //TODO modifier
         return result;
     }

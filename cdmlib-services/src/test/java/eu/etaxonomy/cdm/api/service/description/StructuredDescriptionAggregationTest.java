@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IAsState;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -852,7 +853,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void addCategoricalData(DescriptionBase<?> desc, UUID featureUuid, UUID stateUUID) {
         Feature feature = (Feature)termService.find(featureUuid);
-        State state = (State)termService.find(stateUUID);
+        IAsState state = termService.find(stateUUID);
         CategoricalData cd = CategoricalData.NewInstance(state, feature);
         desc.addElement(cd);
     }

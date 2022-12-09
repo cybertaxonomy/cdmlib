@@ -501,6 +501,7 @@ public class DescriptionServiceImpl
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
                             for (StateDataDto dataDto: stateDtos){
                                 //create new statedata
+                                //FIXME 10196
                                 State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
                                 StateData newStateData = StateData.NewInstance(newState);
                                 elementBase.addStateData(newStateData);

@@ -228,6 +228,7 @@ public class OwlImportUtil {
     }
 
     static State createState(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+        //FIXME 10196 need to adapt class here?
         State stateTerm = findTerm(State.class, termResource, repo, model, state);
         if(stateTerm==null){
             stateTerm = State.NewInstance();
