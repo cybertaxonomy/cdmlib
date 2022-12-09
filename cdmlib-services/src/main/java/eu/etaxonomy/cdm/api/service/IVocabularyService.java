@@ -76,6 +76,8 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	 */
 	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths);
 
+	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(Set<TermType> termTypes, List<String> propertyPaths);
+
 	/**
 	 * Loads all top level terms, i.e. terms that have no parent terms, for the given vocabulary
 	 * @param vocabularyUuid the uuid of the vocabulary
