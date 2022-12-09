@@ -219,14 +219,15 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 		if (term == null){
 			return;
 		}
-		Iterator<T> iterator = getLowerTerms(term).iterator();
-		while (iterator.hasNext()){
-			T otb = iterator.next();
-			toBeChangedByObject = otb;
-			otb.decreaseIndex(this);
-			toBeChangedByObject = null;
-		}
+		int orderIndex = term.orderIndex;
 		super.removeTerm(term);
+		for (T other:terms) {
+            if (term.orderIndex > orderIndex) {
+              toBeChangedByObject = other;
+              other.decreaseIndex(this);
+              toBeChangedByObject = null;
+            }
+        }
 	}
 
 	@Transient
