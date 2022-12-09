@@ -376,10 +376,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putReferenceSystem(refSystem);
 		}
 		return refSystem;
-
 	}
-
-
 
 	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc, Rank lowerRank, RankClass rankClass){
 		if (uuid == null){

@@ -15,20 +15,16 @@ import eu.etaxonomy.cdm.validation.Level2;
  * THE UNIT TESTS MAKING USE OF THIS CLASS!
  *
  * @author ayco_holleman
- *
  */
 @SuppressWarnings("serial")
 public class Address extends CdmBase {
 
 	@CheckCase(value = CaseMode.UPPER, groups = { Level2.class })
-	String street;
-
+	private String street;
 
 	public String getStreet(){
 		return street;
 	}
-
-
 	public void setStreet(String street){
 		this.street = street;
 	}
@@ -44,10 +40,8 @@ public class Address extends CdmBase {
 		return street.equals(((Address) obj).street);
 	}
 
-
 	@Override
     public int hashCode(){
 		return street.hashCode();
 	}
-
 }

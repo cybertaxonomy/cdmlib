@@ -24,8 +24,9 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class OrderedTermVocabularyTest extends EntityTestBase {
-	@SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger(OrderedTermVocabularyTest.class);
+
+    @SuppressWarnings("unused")
+    private static Logger logger = LogManager.getLogger();
 
 	private OrderedTermBase<?> otb1;
 	private OrderedTermBase<?> otb2;
@@ -46,7 +47,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		oVoc1.addTerm(otb3);
 	}
 
-
 	private class DerivedOrderedTermBase extends OrderedTermBase<DerivedOrderedTermBase>{
         private static final long serialVersionUID = -6661559531712274867L;
         private DerivedOrderedTermBase(){
@@ -60,7 +60,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		@Override
 		public void resetTerms() {}
 	}
-
 
 //*************************** TESTS *************************************/
 
@@ -78,8 +77,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		assertNotNull(oVoc1.newTermSet());
 		assertTrue(SortedSet.class.isAssignableFrom(oVoc1.newTermSet().getClass()));
 	}
-
-
 
 	@Test
 	public final void testGetTerms() {

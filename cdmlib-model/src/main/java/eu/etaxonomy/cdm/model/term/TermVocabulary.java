@@ -135,7 +135,7 @@ public class TermVocabulary<T extends DefinedTermBase>
 		setTermSourceUri(termSourceUri);
 	}
 
-	protected Set<T> newTermSet(){
+	Set<T> newTermSet(){
 	    return new HashSet<>();
 	}
 
@@ -149,7 +149,6 @@ public class TermVocabulary<T extends DefinedTermBase>
 		}
 		return null;
 	}
-
 
 	public Set<T> getTerms() {
 		return terms;
