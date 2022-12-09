@@ -755,15 +755,14 @@ public class SDDDocumentBuilder {
 								charactersCount);
 						buildRepresentation(elCategoricalCharacter, character);
 
-						Set<TermVocabulary<State>> enumerations = character
+						Set<TermVocabulary<? extends DefinedTermBase>> enumerations = character
 								.getSupportedCategoricalEnumerations();
 						if (enumerations != null) {
 							if (enumerations.size() > 0) {
 								ElementImpl elStates = new ElementImpl(
 										document, STATES);
-								TermVocabulary tv = (TermVocabulary) enumerations
-										.toArray()[0];
-								Set<State> stateList = tv.getTerms();
+								TermVocabulary<? extends DefinedTermBase> tv = enumerations.iterator().next();
+								Set<? extends DefinedTermBase> stateList = tv.getTerms();
 								for (int j = 0; j < stateList.size(); j++) {
 									ElementImpl elStateDefinition = new ElementImpl(
 											document, STATE_DEFINITION);

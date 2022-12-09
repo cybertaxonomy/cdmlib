@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -193,8 +192,8 @@ public class OwlExportUtil {
             Resource statisticalMeasureResource = createTermResource(statisticalMeasure, true, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasRecommendedStatisticalMeasure, statisticalMeasureResource);
         }
-        Set<TermVocabulary<State>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
-        for (TermVocabulary<State> stateVocabulary : supportedCategoricalEnumerations) {
+        Set<TermVocabulary<? extends DefinedTermBase>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
+        for (TermVocabulary<?> stateVocabulary : supportedCategoricalEnumerations) {
             Resource supportedCategoricalEnumerationResource = createVocabularyResource(stateVocabulary, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasSupportedCategoricalEnumeration, supportedCategoricalEnumerationResource);
         }

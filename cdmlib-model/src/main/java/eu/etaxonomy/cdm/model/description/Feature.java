@@ -135,9 +135,10 @@ public class Feature extends AvailableForTermBase<Feature> {
 	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<>();
 
 	/* for M:M see #4843 */
-	@ManyToMany(fetch = FetchType.LAZY)
+	@SuppressWarnings("rawtypes")
+    @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
-	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<>();
+	private final Set<TermVocabulary<? extends DefinedTermBase>> supportedCategoricalEnumerations = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
@@ -596,11 +597,12 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * with <i>this</i> feature.
 	 *
 	 */
-	@XmlElementWrapper(name = "SupportedCategoricalEnumerations")
+	@SuppressWarnings("rawtypes")
+    @XmlElementWrapper(name = "SupportedCategoricalEnumerations")
 	@XmlElement(name = "SupportedCategoricalEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermVocabulary<State>> getSupportedCategoricalEnumerations() {
+	public Set<TermVocabulary<? extends DefinedTermBase>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
@@ -613,7 +615,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see    	   								#getSupportedCategoricalEnumerations()
 	 */
 	public void addSupportedCategoricalEnumeration(
-			TermVocabulary<State> supportedCategoricalEnumeration) {
+			TermVocabulary<? extends DefinedTermBase> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
 	/**
@@ -625,7 +627,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see     								#addSupportedCategoricalEnumeration(TermVocabulary)
 	 */
 	public void removeSupportedCategoricalEnumeration(
-			TermVocabulary<State> supportedCategoricalEnumeration) {
+			TermVocabulary<? extends DefinedTermBase> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 

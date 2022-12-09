@@ -22,10 +22,10 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -76,7 +76,7 @@ public class FeatureDto extends TermDto {
         TermVocabulary<?> vocabulary = HibernateProxyHelper.deproxy(term.getVocabulary());
         UUID vocUuid =  vocabulary != null? vocabulary.getUuid(): null;
         Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
-        for (TermVocabulary<State> stateVoc:term.getSupportedCategoricalEnumerations()){
+        for (TermVocabulary<? extends DefinedTermBase> stateVoc:term.getSupportedCategoricalEnumerations()){
             supportedCategoricalEnumerations.add(TermVocabularyDto.fromVocabulary(stateVoc));
         }
 
@@ -119,7 +119,7 @@ public class FeatureDto extends TermDto {
         if (term.getSupportedCategoricalEnumerations() != null && !term.getSupportedCategoricalEnumerations().isEmpty()){
             result.supportedCategoricalEnumerations = new HashSet<>();
         }
-        for (TermVocabulary<State> voc: term.getSupportedCategoricalEnumerations()){
+        for (TermVocabulary<? extends DefinedTermBase> voc: term.getSupportedCategoricalEnumerations()){
             result.supportedCategoricalEnumerations.add(new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat()));
         }
 
@@ -339,8 +339,9 @@ public class FeatureDto extends TermDto {
                 if (o instanceof TermVocabulary){
                     supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
                 }else if (o instanceof Set){
-                    Set<TermVocabulary> supportedCategoricalEnumerations = (Set<TermVocabulary>)o;
-                    for (TermVocabulary<State> voc: supportedCategoricalEnumerations){
+                    Set<TermVocabulary<? extends DefinedTermBase>> supportedCategoricalEnumerations =
+                            (Set<TermVocabulary<? extends DefinedTermBase>>)o;
+                    for (TermVocabulary<? extends DefinedTermBase> voc: supportedCategoricalEnumerations){
                         supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary(voc));
                     }
                 }
