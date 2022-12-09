@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.IAsState;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
@@ -45,6 +44,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * Aggregates the character data for a given {@link DescriptiveDataSet}.<br>
@@ -372,7 +372,7 @@ public class StructuredDescriptionAggregation
         List<StateData> dataToRemove = new ArrayList<>(elementToStay.getStateData());
         List<StateData> newData = new ArrayList<>(newElement.getStateData());
         for (StateData newStateData : newData){
-            IAsState state = newStateData.getState();
+            DefinedTermBase<?> state = newStateData.getState();
             StateData oldStateData = firstByState(state, dataToRemove);
             if (oldStateData != null){
                 //for now only state and count is used for aggregation, below code needs to be adapted if this changes
@@ -394,7 +394,7 @@ public class StructuredDescriptionAggregation
         return updated;
     }
 
-    private StateData firstByState(IAsState state, List<StateData> oldData) {
+    private StateData firstByState(DefinedTermBase<?> state, List<StateData> oldData) {
         if (state == null){
             return null;
         }
@@ -572,7 +572,7 @@ public class StructuredDescriptionAggregation
         }
         else{
             // split all StateData into those where the state already exists and those where it doesn't
-            List<IAsState> statesOnly = aggregatedCategoricalData.getStatesOnly();
+            List<DefinedTermBase<?>> statesOnly = aggregatedCategoricalData.getStatesOnly();
             List<StateData> sdWithExistingStateInAggregation = cd.getStateData().stream().filter(sd->statesOnly.contains(sd.getState())).collect(Collectors.toList());
             List<StateData> sdWithNoExistingStateInAggregation = cd.getStateData().stream().filter(sd->!statesOnly.contains(sd.getState())).collect(Collectors.toList());
 

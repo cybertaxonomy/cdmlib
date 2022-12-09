@@ -92,9 +92,9 @@ public class StateData
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
     @IndexedEmbedded(depth=1, targetElement=DefinedTermBase.class)
-    //we could also use DefinedTermBase here, we use only IAsState for
+    //we could also use DefinedTermBase here, we use only DefinedTermBase<?> for
     //better understanding the code #10196
-    private IAsState state;
+    private DefinedTermBase<?> state;
 
     //#8625 for statistically counting aggregated state data
     @Column(name="number")  //rename to avoid conflicts with SQL syntax
@@ -132,7 +132,7 @@ public class StateData
      * <b>NOTE:</b> {@link State}  is a sub class of {@link DefinedTermBase}.
      * If the state passed as parameter has been created newly it <b>has to be persisted before</b> it is possible to save the StateData.
      */
-    public static StateData NewInstance(IAsState state){
+    public static StateData NewInstance(DefinedTermBase<?> state){
         StateData stateData = new StateData();
         stateData.setState(state);
         return stateData;
@@ -152,13 +152,13 @@ public class StateData
     /**
      * Returns the {@link State state term} used in <i>this</i> state data.
      */
-    public IAsState getState(){
+    public DefinedTermBase<?> getState(){
         return this.state;
     }
     /**
      * @see	#getState()
      */
-    public void setState(IAsState state){
+    public void setState(DefinedTermBase<?> state){
         this.state = state;
     }
 

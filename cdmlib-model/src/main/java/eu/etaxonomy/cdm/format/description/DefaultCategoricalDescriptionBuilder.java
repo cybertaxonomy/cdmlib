@@ -6,10 +6,10 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.description.IAsState;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 public class DefaultCategoricalDescriptionBuilder extends CategoricalDescriptionBuilderBase{
 
@@ -20,7 +20,7 @@ public class DefaultCategoricalDescriptionBuilder extends CategoricalDescription
 		Language language = null;
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
-			IAsState state = stateData.getState();
+			DefinedTermBase<?> state = stateData.getState();
 			if(state != null && language==null) {
 			    language = state.getPreferredRepresentation(languages).getLanguage();
 			}

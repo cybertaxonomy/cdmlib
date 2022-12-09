@@ -34,6 +34,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -108,8 +109,8 @@ public class CategoricalData extends DescriptionElementBase {
     /**
      * Creates a new empty categorical data instance.
      */
-    public static CategoricalData NewInstance(IAsState state, Feature feature){
-        return new CategoricalData( Arrays.asList( new IAsState[]{state}) , feature);
+    public static CategoricalData NewInstance(DefinedTermBase<?> state, Feature feature){
+        return new CategoricalData( Arrays.asList( new DefinedTermBase<?>[]{state}) , feature);
     }
 
 //*******************  CONSTRUCTOR *********************************************/
@@ -124,9 +125,9 @@ public class CategoricalData extends DescriptionElementBase {
     /**
      * Class constructor: creates a new empty categorical data instance.
      */
-    protected CategoricalData(List<IAsState> states, Feature feature) {
+    protected CategoricalData(List<DefinedTermBase<?>> states, Feature feature) {
         super(feature);
-        for (IAsState state : states){
+        for (DefinedTermBase<?> state : states){
             addStateData(state);
         }
     }
@@ -165,7 +166,7 @@ public class CategoricalData extends DescriptionElementBase {
      * @see #addStateData(StateData)
      * @param state
      */
-    public StateData addStateData(IAsState state){
+    public StateData addStateData(DefinedTermBase<?> state){
         StateData stateData = StateData.NewInstance(state);
         addStateData(stateData);
         return stateData;
@@ -214,7 +215,7 @@ public class CategoricalData extends DescriptionElementBase {
      * @param state the given {@link State}
      * @return <code>true</code> if the state exists
      */
-    public boolean hasState(IAsState state) {
+    public boolean hasState(DefinedTermBase<?> state) {
         return getStatesOnly().contains(state);
     }
 
@@ -222,10 +223,10 @@ public class CategoricalData extends DescriptionElementBase {
      * Convenience method returning only the list of states. Leaving out modifiers and modifying text.
      */
     @Transient
-    public List<IAsState> getStatesOnly(){
-        List<IAsState> result = new ArrayList<>();
+    public List<eu.etaxonomy.cdm.model.term.DefinedTermBase<?>> getStatesOnly(){
+        List<DefinedTermBase<?>> result = new ArrayList<>();
         for (StateData stateData : getStateData()){
-            IAsState state = stateData.getState();
+            DefinedTermBase<?> state = stateData.getState();
             if (state != null){
                 result.add(state);
             }

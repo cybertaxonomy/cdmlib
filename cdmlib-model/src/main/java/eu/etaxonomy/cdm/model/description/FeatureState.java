@@ -64,7 +64,7 @@ public class FeatureState extends VersionableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
     @NotNull
-    private IAsState state;
+    private DefinedTermBase<?> state;
 
 //*************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
@@ -76,7 +76,7 @@ public class FeatureState extends VersionableEntity {
         return new FeatureState(feature, state);
     }
 
-    public static FeatureState NewInstance(Feature feature, IAsState state){
+    public static FeatureState NewInstance(Feature feature, DefinedTermBase<?> state){
         return new FeatureState(feature, state);
     }
 
@@ -84,7 +84,7 @@ public class FeatureState extends VersionableEntity {
     @Deprecated
     protected FeatureState() {}
 
-    protected FeatureState(Feature feature, IAsState state) {
+    protected FeatureState(Feature feature, DefinedTermBase<?> state) {
         this.feature = feature;
         this.state = state;
     }
@@ -99,10 +99,10 @@ public class FeatureState extends VersionableEntity {
         this.feature = feature;
     }
 
-    public IAsState getState() {
+    public DefinedTermBase<?> getState() {
         return state;
     }
-    public void setState(IAsState state) {
+    public void setState(DefinedTermBase<?> state) {
         this.state = state;
     }
 

@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -75,7 +76,7 @@ public class CategoricalDataTest {
         stateData2.addModifier(DefinedTerm.NewModifierInstance(null, "Any modifer", null));
         data.addStateData(stateData2);
 
-        List<IAsState> states = data.getStatesOnly();
+        List<DefinedTermBase<?>> states = data.getStatesOnly();
         Assert.assertEquals("There should be 2 states", 2, states.size());
 
     }

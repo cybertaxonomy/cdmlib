@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
-import eu.etaxonomy.cdm.model.description.IAsState;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -938,7 +937,7 @@ public class SDDDocumentBuilder {
 		List<StateData> states = categoricalData.getStateData();
 		for (Iterator<StateData> sd = states.iterator(); sd.hasNext();) {
 			StateData stateData = sd.next();
-			IAsState s = stateData.getState();
+			DefinedTermBase<?> s = stateData.getState();
 			buildState(categorical, s);
 		}
 		element.appendChild(categorical);
@@ -947,7 +946,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds State associated with a Categorical
 	 */
-	public void buildState(ElementImpl element, IAsState s) throws ParseException {
+	public void buildState(ElementImpl element, DefinedTermBase<?> s) throws ParseException {
 
 		// <SummaryData>
 		// <Categorical ref="c4">
@@ -956,7 +955,7 @@ public class SDDDocumentBuilder {
 		// </Categorical>
 
 		ElementImpl state = new ElementImpl(document, STATE);
-		buildReference((DefinedTermBase<?>)s, states, REF, state, "s", statesCount);
+		buildReference(s, states, REF, state, "s", statesCount);
 		element.appendChild(state);
 	}
 
@@ -1308,7 +1307,7 @@ public class SDDDocumentBuilder {
 				Set<FeatureState> innaplicableIf = parent.getInapplicableIf();
 				ElementImpl elInnaplicableIf = new ElementImpl(document, "InapplicableIf");
 				for (FeatureState featureState : innaplicableIf) {
-				    IAsState state = featureState.getState();
+				    DefinedTermBase<?> state = featureState.getState();
 					ElementImpl elState = new ElementImpl(document, STATE);
 					buildReference(CdmBase.deproxy(state, DefinedTermBase.class), states, REF, elState, "State",
 							statesCount);
@@ -1323,7 +1322,7 @@ public class SDDDocumentBuilder {
 						"OnlyApplicableIf");
 				for (FeatureState featureState : onlyApplicableIf) {
 					ElementImpl elState = new ElementImpl(document, STATE);
-					IAsState state = featureState.getState();
+					DefinedTermBase<?> state = featureState.getState();
                     buildReference(CdmBase.deproxy(state, DefinedTermBase.class), states, REF, elState, "State",
 							statesCount);
 					elOnlyApplicableIf.appendChild(elState);

@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
-import eu.etaxonomy.cdm.model.description.IAsState;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -38,6 +37,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
@@ -124,7 +124,7 @@ public class PolytomousKeyGenerator {
         taxaCovered = replaceSingleRoot(taxaCovered);
 
         //filter if a feature is available only for certain states in this branche
-        Map<Feature, Set<IAsState>> featureStatesFilter = new HashMap<>();
+        Map<Feature, Set<DefinedTermBase<?>>> featureStatesFilter = new HashMap<>();
         //TODO what if size(taxaCovered) <= 1, is this covered by algo? Write test to check
         buildBranches(root, config.getFeatures(), taxaCovered, featureStatesFilter);
         return polytomousKey;
@@ -239,7 +239,7 @@ public class PolytomousKeyGenerator {
      * @param featureStatesFilter
 	 */
 	private void buildBranches(PolytomousKeyNode parent, List<Feature> featuresLeft, Set<KeyTaxon> taxaCovered,
-	        Map<Feature, Set<IAsState>> featureStatesFilter){
+	        Map<Feature, Set<DefinedTermBase<?>>> featureStatesFilter){
 
 	    //handle all branches taxa =>
         Set<KeyTaxon> allBranchesTaxa = getAllBranchesTaxa(featuresLeft, taxaCovered, featureStatesFilter);
@@ -299,17 +299,17 @@ public class PolytomousKeyGenerator {
 	}
 
     private Set<KeyTaxon> getAllBranchesTaxa(List<Feature> featuresLeft, Set<KeyTaxon> taxaCovered,
-            Map<Feature, Set<IAsState>> featureStatesFilter) {
+            Map<Feature, Set<eu.etaxonomy.cdm.model.term.DefinedTermBase<?>>> featureStatesFilter) {
 
         Set<KeyTaxon> candidates = new HashSet<>(taxaCovered);
         List<Feature> dependendFeatures = new ArrayList<>();
         for (Feature feature : featuresLeft){
             if(feature.isSupportsCategoricalData()){
-                Set<IAsState> allStates = getAllStates(feature, taxaCovered, featureStatesFilter.get(feature));
+                Set<DefinedTermBase<?>> allStates = getAllStates(feature, taxaCovered, featureStatesFilter.get(feature));
                 Iterator<KeyTaxon> it = candidates.iterator();
                 while (it.hasNext()){
                     Set<KeyTaxon> taxonSet = new HashSet<>(Arrays.asList(it.next()));
-                    Set<IAsState> taxonStates = getAllStates(feature, taxonSet, featureStatesFilter.get(feature));
+                    Set<DefinedTermBase<?>> taxonStates = getAllStates(feature, taxonSet, featureStatesFilter.get(feature));
                     if(allStates.size() > taxonStates.size()){
                         it.remove();
                     }
@@ -392,20 +392,20 @@ public class PolytomousKeyGenerator {
     private void handleCategorialFeature(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<KeyTaxon> taxaCovered,
             Feature winnerFeature,
-            Map<Feature, Set<IAsState>> featureStatesFilter) {
+            Map<Feature, Set<DefinedTermBase<?>>> featureStatesFilter) {
 
         Map<Set<KeyTaxon>,Boolean> reuseWinner = new HashMap<>();
 
-        Set<IAsState> allStates = getAllStates(winnerFeature, taxaCovered, featureStatesFilter.get(winnerFeature));
+        Set<DefinedTermBase<?>> allStates = getAllStates(winnerFeature, taxaCovered, featureStatesFilter.get(winnerFeature));
 		// a map is created, the key being the set of taxa that present the state(s) stored in the corresponding value
         // this key represents a single branch in the decision tree
-		Map<Set<KeyTaxon>, List<IAsState>> taxonStatesMap
+		Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> taxonStatesMap
 		        = determineCategoricalStates(allStates, winnerFeature, taxaCovered, featureStatesFilter.get(winnerFeature));
 
 		if (taxonStatesMap.size()<=1){
 		    if (notEmpty(featureDependencies.get(winnerFeature))){
 		        //TODO is empty list correctly handled here? Seems to happen if incorrect data (e.g. only Max values) for quantdata exist
-		        List<IAsState> stateList = taxonStatesMap.isEmpty()? new ArrayList<>(): taxonStatesMap.values().iterator().next();
+		        List<DefinedTermBase<?>> stateList = taxonStatesMap.isEmpty()? new ArrayList<>(): taxonStatesMap.values().iterator().next();
 		        Set<Feature> featuresAdded = new HashSet<>();
 		        addDependentFeatures(featuresLeft, winnerFeature, featuresAdded, stateList);
 		        featuresLeft.remove(winnerFeature);
@@ -431,17 +431,17 @@ public class PolytomousKeyGenerator {
 		return;
     }
 
-    private Map<Set<KeyTaxon>, List<IAsState>> handleMerge(Set<KeyTaxon> taxaCovered,
+    private Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> handleMerge(Set<KeyTaxon> taxaCovered,
             Feature winnerFeature, Map<Set<KeyTaxon>, Boolean> reuseWinner,
-            Map<Set<KeyTaxon>, List<IAsState>> taxonStatesMap, Set<IAsState> allStates, Set<IAsState> filter) {
+            Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> taxonStatesMap, Set<DefinedTermBase<?>> allStates, Set<DefinedTermBase<?>> filter) {
 
         // creates a map between the different states of the winnerFeature and the sets of states "incompatible" with them
-        Map<IAsState,Set<IAsState>> exclusions = new HashMap<>();
+        Map<DefinedTermBase<?>,Set<DefinedTermBase<?>>> exclusions = new HashMap<>();
         computeExclusions(winnerFeature, taxaCovered, exclusions, filter);
 
         while (!exclusions.isEmpty()){
         	// looks for the largest clique, i.e. the state with less exclusions
-        	List<IAsState> clique = returnBestClique(exclusions);
+        	List<DefinedTermBase<?>> clique = returnBestClique(exclusions);
         	if(clique.containsAll(allStates)){
         	    continue;
         	}
@@ -458,19 +458,19 @@ public class PolytomousKeyGenerator {
     private void handleCategoricalBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
             int taxaCoveredSize,
             Feature winnerFeature, Map<Set<KeyTaxon>, Boolean> reuseWinner,
-            Map<Set<KeyTaxon>, List<IAsState>> taxonStatesMap,
+            Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> taxonStatesMap,
             Set<KeyTaxon> newTaxaCovered,
-            Map<Feature,Set<IAsState>> featureStatesFilter) {
+            Map<Feature,Set<DefinedTermBase<?>>> featureStatesFilter) {
 
         //to restore old state
-        Set<IAsState> oldFilterSet = featureStatesFilter.get(winnerFeature);
+        Set<DefinedTermBase<?>> oldFilterSet = featureStatesFilter.get(winnerFeature);
         Set<Feature> featuresAdded = new HashSet<>();
 
         boolean areTheTaxaDiscriminated = false;
         PolytomousKeyNode childNode = PolytomousKeyNode.NewInstance();
         parent.addChild(childNode);
 
-        List<IAsState> listOfStates = taxonStatesMap.get(newTaxaCovered);
+        List<DefinedTermBase<?>> listOfStates = taxonStatesMap.get(newTaxaCovered);
         if ((newTaxaCovered.size() > 0)){ //old: if the taxa are discriminated compared to those of the parent node, a child is created
         	areTheTaxaDiscriminated = (newTaxaCovered.size() != taxaCoveredSize);
 
@@ -524,12 +524,12 @@ public class PolytomousKeyGenerator {
         return result;
     }
 
-    private void setStatesFilter(Map<Feature, Set<IAsState>> filter, Feature feature,
-            List<IAsState> listOfStates) {
+    private void setStatesFilter(Map<Feature, Set<DefinedTermBase<?>>> filter, Feature feature,
+            List<DefinedTermBase<?>> listOfStates) {
         if (filter.get(feature)==null){
             filter.put(feature, new HashSet<>(listOfStates));
         }else{
-            Set<IAsState> set = filter.get(feature);
+            Set<DefinedTermBase<?>> set = filter.get(feature);
             set.retainAll(listOfStates);
         }
     }
@@ -541,12 +541,12 @@ public class PolytomousKeyGenerator {
     }
 
     private void addDependentFeatures(List<Feature> featuresLeft, Feature baseFeature,
-            Set<Feature> featuresAdded, List<IAsState> listOfStates) {
+            Set<Feature> featuresAdded, List<DefinedTermBase<?>> listOfStates) {
 
         if(notEmpty(featureDependencies.get(baseFeature))){
             Set<Feature> newFeatureCandidates = new HashSet<>(featureDependencies.get(baseFeature));
             newFeatureCandidates.remove(null);
-            for (IAsState state : listOfStates) {
+            for (DefinedTermBase<?> state : listOfStates) {
                 //in-applicable
                 List<Feature> inapplicableFeatures = getApplicableFeatures(baseFeature, state, iAifDependencies);
                 newFeatureCandidates.removeAll(inapplicableFeatures);
@@ -567,7 +567,7 @@ public class PolytomousKeyGenerator {
         }
     }
 
-    private List<Feature> getApplicableFeatures(Feature feature, IAsState state,
+    private List<Feature> getApplicableFeatures(Feature feature, DefinedTermBase<?> state,
             Map<FeatureState, Set<Feature>> applicabilityDependencies) {
         List<Feature> result = new ArrayList<>();
         for (FeatureState featureState : applicabilityDependencies.keySet()){
@@ -582,9 +582,9 @@ public class PolytomousKeyGenerator {
         return (set != null) && !set.isEmpty();
     }
 
-    private String createStatement(List<IAsState> listOfStates, int numberOfStates) {
+    private String createStatement(List<DefinedTermBase<?>> listOfStates, int numberOfStates) {
         StringBuilder statementLabel = new StringBuilder();
-        for (IAsState state : listOfStates) {
+        for (DefinedTermBase<?> state : listOfStates) {
             statementLabel.append(state.getLabel());
             if (listOfStates.lastIndexOf(state)!=numberOfStates){
                 statementLabel.append(separator); // append a separator after each state except for the last one
@@ -593,29 +593,29 @@ public class PolytomousKeyGenerator {
         return statementLabel.toString();
     }
 
-    private Map<Set<KeyTaxon>, List<IAsState>> renewTaxonStatesMap(Map<Set<KeyTaxon>, List<IAsState>> taxonStatesMap) {
-        Map<Set<KeyTaxon>, List<IAsState>> result = new HashMap<>();
-        for (Map.Entry<Set<KeyTaxon>, List<IAsState>> entry : taxonStatesMap.entrySet()){
+    private Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> renewTaxonStatesMap(Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> taxonStatesMap) {
+        Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> result = new HashMap<>();
+        for (Map.Entry<Set<KeyTaxon>, List<DefinedTermBase<?>>> entry : taxonStatesMap.entrySet()){
             result.put(entry.getKey(), entry.getValue());
         }
         return result;
     }
 
-    private List<Set<KeyTaxon>> sortKeys(Map<Set<KeyTaxon>, List<IAsState>> taxonStatesMap) {
+    private List<Set<KeyTaxon>> sortKeys(Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> taxonStatesMap) {
         //for now this is a dummy sorting
-        List<Map.Entry<Set<KeyTaxon>, List<IAsState>>> sortedEntries = new ArrayList<>();
+        List<Map.Entry<Set<KeyTaxon>, List<DefinedTermBase<?>>>> sortedEntries = new ArrayList<>();
         sortedEntries.addAll(taxonStatesMap.entrySet());
 
         sortedEntries.sort(entryComparator);
         List<Set<KeyTaxon>> result = new ArrayList<>();
-        for (Map.Entry<Set<KeyTaxon>, List<IAsState>> entry : sortedEntries){
+        for (Map.Entry<Set<KeyTaxon>, List<DefinedTermBase<?>>> entry : sortedEntries){
             result.add(entry.getKey());
         }
         return result;
     }
 
     //TODO use a general term comparator here
-    private static final Comparator<IAsState> stateComparator = (a,b)-> {
+    private static final Comparator<DefinedTermBase<?>> stateComparator = (a,b)-> {
 
         //TODO use real Term Comparator
         if (!a.getTitleCache().equals(b.getTitleCache())){
@@ -627,7 +627,7 @@ public class PolytomousKeyGenerator {
         return 0;
     };
 
-    private static final Comparator<? super Entry<Set<KeyTaxon>, List<IAsState>>> entryComparator =  (a,b)-> {
+    private static final Comparator<? super Entry<Set<KeyTaxon>, List<DefinedTermBase<?>>>> entryComparator =  (a,b)-> {
         if (a.getKey().size()!=b.getKey().size()){
             //order by number of taxa covered
             return b.getKey().size() - a.getKey().size();
@@ -637,8 +637,8 @@ public class PolytomousKeyGenerator {
         }else{
             //order states alphabetically or by uuid
             for (int i = 0; i < a.getValue().size(); i++){
-                IAsState stateA = a.getValue().get(i);
-                IAsState stateB = b.getValue().get(i);
+                DefinedTermBase<?> stateA = a.getValue().get(i);
+                DefinedTermBase<?> stateB = b.getValue().get(i);
                 int result = stateComparator.compare(stateA, stateB);
                 if (result != 0){
                     return result;
@@ -657,15 +657,15 @@ public class PolytomousKeyGenerator {
         }
     };
 
-    private Set<IAsState> getAllStates(Feature feature, Set<KeyTaxon> taxaCovered, Set<IAsState> filter) {
+    private Set<DefinedTermBase<?>> getAllStates(Feature feature, Set<KeyTaxon> taxaCovered, Set<DefinedTermBase<?>> filter) {
         //TODO handle modifier
-        Set<IAsState> states = new HashSet<>();
+        Set<DefinedTermBase<?>> states = new HashSet<>();
         for (KeyTaxon taxon : taxaCovered){
             Set<CategoricalData> cdSet = taxon.getCategoricalData(feature);
             for (CategoricalData cd : cdSet){
                 List<StateData> stateDatas = cd.getStateData();
                 for (StateData sd : stateDatas){
-                    IAsState state = sd.getState();
+                    DefinedTermBase<?> state = sd.getState();
                     if (filter != null && !filter.contains(state)) {
                         continue;
                     }
@@ -678,7 +678,7 @@ public class PolytomousKeyGenerator {
 
     private void handleQuantitativeData(PolytomousKeyNode parent, List<Feature> featuresLeft,
             Set<KeyTaxon> taxaCovered, Map<Feature, BigDecimal> quantitativeFeaturesThresholds,
-            Feature winnerFeature, Map<Feature, Set<IAsState>> featureStatesFilter) {
+            Feature winnerFeature, Map<Feature, Set<DefinedTermBase<?>>> featureStatesFilter) {
 
         // first, get the threshold
         BigDecimal threshold = quantitativeFeaturesThresholds.get(winnerFeature);
@@ -703,7 +703,7 @@ public class PolytomousKeyGenerator {
      */
     private void handleQuantitativeBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
             int parentTaxaCoveredSize, Feature winnerFeature, BigDecimal threshold, StringBuilder unit,
-            List<Set<KeyTaxon>> quantitativeStates, Map<Feature, Set<IAsState>> featureStatesFilter,
+            List<Set<KeyTaxon>> quantitativeStates, Map<Feature, Set<DefinedTermBase<?>>> featureStatesFilter,
             int brunchNum) {
 
         String sign;
@@ -735,7 +735,7 @@ public class PolytomousKeyGenerator {
     }
 
     private Feature computeScores(List<Feature> featuresLeft, Set<KeyTaxon> taxaCovered,
-            Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<IAsState>> featureStatesFilter) {
+            Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<DefinedTermBase<?>>> featureStatesFilter) {
 
         Map<Feature,Float> scoreMap = featureScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds, featureStatesFilter);
         dependenciesScores(scoreMap, featuresLeft, taxaCovered, quantitativeFeaturesThresholds, featureStatesFilter);
@@ -756,7 +756,7 @@ public class PolytomousKeyGenerator {
 	 * "onlyApplicableIf" or "InapplicableIf", the feature it depends can be chosen in order to build a better key.
 	 */
 	private void dependenciesScores(Map<Feature,Float> scoreMap, List<Feature> featuresLeft,
-	        Set<KeyTaxon> coveredTaxa, Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<IAsState>> featureStatesFilter){
+	        Set<KeyTaxon> coveredTaxa, Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<DefinedTermBase<?>>> featureStatesFilter){
 
 	    //TODO maybe we need to do this recursive?
 
@@ -807,20 +807,20 @@ public class PolytomousKeyGenerator {
 	 * @return <code>true</code>, if all taxa covered by the new branch include all states of the clique.
 	 * <code>false</code> otherwise.
 	 */
-	private void mergeBranches(List<IAsState> clique, Map<Set<KeyTaxon>, List<IAsState>> taxonStatesMap,
-	        Map<Set<KeyTaxon>, Boolean> reuseWinner, Set<IAsState> filter){
+	private void mergeBranches(List<DefinedTermBase<?>> clique, Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> taxonStatesMap,
+	        Map<Set<KeyTaxon>, Boolean> reuseWinner, Set<DefinedTermBase<?>> filter){
 
 	    boolean isExact = true;
 	    if (clique.size()<=1){
 	        return;
 	    }
-	    Map.Entry<Set<KeyTaxon>,List<IAsState>> firstBranch = null;
+	    Map.Entry<Set<KeyTaxon>,List<DefinedTermBase<?>>> firstBranch = null;
 	    List<Set<KeyTaxon>> tdToDelete = new ArrayList<>();
 	    //TODO is the stateFilter needed here somehow?
-	    for (Map.Entry<Set<KeyTaxon>, List<IAsState>> branch : taxonStatesMap.entrySet()){
+	    for (Map.Entry<Set<KeyTaxon>, List<DefinedTermBase<?>>> branch : taxonStatesMap.entrySet()){
 		    boolean stateFound = false;
 			// looks for one state of the clique in this branch
-			for(IAsState state : clique){
+			for(DefinedTermBase<?> state : clique){
 			    if (branch.getValue().contains(state)) {
                     stateFound = true;
                     break;
@@ -862,14 +862,14 @@ public class PolytomousKeyGenerator {
 	 * @param exclusions map a state (key) to the set of states (value) which can not be merged with it without decreasing its score.
 	 * @return
 	 */
-	private List<IAsState> returnBestClique (Map<IAsState,Set<IAsState>> exclusions){
+	private List<DefinedTermBase<?>> returnBestClique (Map<DefinedTermBase<?>,Set<DefinedTermBase<?>>> exclusions){
 		int bestNumberOfExclusions=-1;
 		int numberOfExclusions;
-		List<IAsState> clique = new ArrayList<>();
+		List<DefinedTermBase<?>> clique = new ArrayList<>();
 
 		// looks for the largest clique, i.e. the state with less exclusions
-		IAsState bestState=null;
-		for (Map.Entry<IAsState,Set<IAsState>> pair :  exclusions.entrySet()){
+		DefinedTermBase<?> bestState=null;
+		for (Map.Entry<DefinedTermBase<?>,Set<DefinedTermBase<?>>> pair :  exclusions.entrySet()){
 			numberOfExclusions = pair.getValue().size();
 			if ((bestNumberOfExclusions == -1) || numberOfExclusions < bestNumberOfExclusions) {
 				bestNumberOfExclusions = numberOfExclusions;
@@ -882,9 +882,9 @@ public class PolytomousKeyGenerator {
 
 		boolean isNotExcluded;
 		// then starts building the clique by adding the states which do not exclude each other
-		for (Map.Entry<IAsState,Set<IAsState>> pair : exclusions.entrySet()){
+		for (Map.Entry<DefinedTermBase<?>,Set<DefinedTermBase<?>>> pair : exclusions.entrySet()){
 			isNotExcluded = true;
-			for (IAsState state : clique) {
+			for (DefinedTermBase<?> state : clique) {
 				if (pair.getValue().contains(state)) {
                     isNotExcluded = false;
                 }
@@ -893,7 +893,7 @@ public class PolytomousKeyGenerator {
 				clique.add(pair.getKey());
 			}
 		}
-		for (IAsState state : clique) {
+		for (DefinedTermBase<?> state : clique) {
 			exclusions.remove(state);
 		}
 		return clique;
@@ -910,20 +910,20 @@ public class PolytomousKeyGenerator {
 	 * @param featureStatesFilter
 	 * @return
 	 */
-	private Map<Set<KeyTaxon>,List<IAsState>> determineCategoricalStates(
-	        Set<IAsState> states, Feature feature, Set<KeyTaxon> taxaCovered, Set<IAsState> filter){
+	private Map<Set<KeyTaxon>,List<DefinedTermBase<?>>> determineCategoricalStates(
+	        Set<DefinedTermBase<?>> states, Feature feature, Set<KeyTaxon> taxaCovered, Set<DefinedTermBase<?>> filter){
 
-	    Map<Set<KeyTaxon>, List<IAsState>> childrenStatesMap = new HashMap<>();
+	    Map<Set<KeyTaxon>, List<DefinedTermBase<?>>> childrenStatesMap = new HashMap<>();
 	    //TODO needed
-	    List<IAsState> statesDone = new ArrayList<>(); // the list of states already used
+	    List<DefinedTermBase<?>> statesDone = new ArrayList<>(); // the list of states already used
 
-		for (IAsState state : states){ // for each state
+		for (DefinedTermBase<?> state : states){ // for each state
 			if (filter != null && !filter.contains(state)){
 			    continue;
 			}
 		    statesDone.add(state);
 			Set<KeyTaxon> newTaxaCovered = taxaByFeatureState(feature, state, taxaCovered); //gets which taxa present this state
-			List<IAsState> statesOfTaxa = childrenStatesMap.get(newTaxaCovered);
+			List<DefinedTermBase<?>> statesOfTaxa = childrenStatesMap.get(newTaxaCovered);
 			if (statesOfTaxa == null) { // if no states are associated to these taxa, create a new list
 				statesOfTaxa = new ArrayList<>();
 				childrenStatesMap.put(newTaxaCovered, statesOfTaxa);
@@ -937,7 +937,7 @@ public class PolytomousKeyGenerator {
 	/**
 	 * Returns the list of taxa from previously covered taxa, which have the state featureState for the given feature
 	 */
-	private Set<KeyTaxon> taxaByFeatureState(Feature feature, IAsState featureState, Set<KeyTaxon> taxaCovered){
+	private Set<KeyTaxon> taxaByFeatureState(Feature feature, DefinedTermBase<?> featureState, Set<KeyTaxon> taxaCovered){
 		Set<KeyTaxon> newCoveredTaxa = new HashSet<>();
 		for (KeyTaxon td : taxaCovered){
 			for (CategoricalData cd : td.getCategoricalData(feature)){
@@ -987,7 +987,7 @@ public class PolytomousKeyGenerator {
 			int numberOfDifferentStates=-1;
 			for (Feature feature : bestFeatures){
 				if (feature.isSupportsCategoricalData()){
-					Set<IAsState> differentStates = new HashSet<>();
+					Set<DefinedTermBase<?>> differentStates = new HashSet<>();
 					for (KeyTaxon taxon : taxaCovered){
 						Set<CategoricalData> cds = taxon.getCategoricalData(feature);
 						Set<StateData> allStateData = getStateData(cds);
@@ -1025,7 +1025,7 @@ public class PolytomousKeyGenerator {
 	 * This function fills the map of features (keys) with their respecting scores (values)
 	 */
 	private Map<Feature,Float> featureScores(List<Feature> featuresLeft, Set<KeyTaxon> coveredTaxa,
-	        Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<IAsState>> featureStatesFilter){
+	        Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<DefinedTermBase<?>>> featureStatesFilter){
 
 		Map<Feature,Float> scoreMap = new HashMap<>();
 		for (Feature feature : featuresLeft){
@@ -1180,7 +1180,7 @@ public class PolytomousKeyGenerator {
 	 * by comparing each taxon with each other. If the feature
 	 * discriminates a single pair of taxa the score is increased.
 	 */
-	private float categoricalFeatureScore(Feature feature, Set<KeyTaxon> coveredTaxa, Set<IAsState> filter){
+	private float categoricalFeatureScore(Feature feature, Set<KeyTaxon> coveredTaxa, Set<DefinedTermBase<?>> filter){
 		int i,j;
 		float score =0;
 		float power=0;
@@ -1237,7 +1237,7 @@ public class PolytomousKeyGenerator {
 	/**
 	 * This function fills the exclusions map.
 	 */
-	private float computeExclusions(Feature feature, Set<KeyTaxon> coveredTaxa, Map<IAsState,Set<IAsState>> exclusions, Set<IAsState> filter){
+	private float computeExclusions(Feature feature, Set<KeyTaxon> coveredTaxa, Map<DefinedTermBase<?>,Set<DefinedTermBase<?>>> exclusions, Set<DefinedTermBase<?>> filter){
 		//unclear what the score is fore here
 		float score =0;
 		float power=0;
@@ -1254,12 +1254,12 @@ public class PolytomousKeyGenerator {
 				if (power >= 1.0){ // if there is no state in common between deb1 and deb2
 
 					for (StateData statedata1 : getStateData(cd1)){
-					    IAsState state1 = statedata1.getState();
+					    DefinedTermBase<?> state1 = statedata1.getState();
 						if (!exclusions.containsKey(state1)){
 							exclusions.put(state1, new HashSet<>());
 						}
 						for (StateData statedata2 : getStateData(cd2)){
-						    IAsState state2 = statedata2.getState();
+						    DefinedTermBase<?> state2 = statedata2.getState();
 							if (!exclusions.containsKey(state2)){
 								exclusions.put(state2, new HashSet<>());
 							}
@@ -1284,7 +1284,7 @@ public class PolytomousKeyGenerator {
     /**
 	 * Returns the score of a categorical feature.
 	 */
-	private float defaultCategoricalPower(Set<CategoricalData> cd1, Set<CategoricalData> cd2, Set<IAsState> filter){
+	private float defaultCategoricalPower(Set<CategoricalData> cd1, Set<CategoricalData> cd2, Set<DefinedTermBase<?>> filter){
 	    if (cd1 == null || cd2 == null ||cd1.isEmpty() || cd2.isEmpty()){
 	        return 0;
 	    }
@@ -1300,7 +1300,7 @@ public class PolytomousKeyGenerator {
 	        if (!featureDependencies.containsKey(cd.getFeature())){
 	            featureDependencies.put(cd.getFeature(), new HashSet<>());
 	        }
-	        for (IAsState state : getStates(cd, filter)){
+	        for (DefinedTermBase<?> state : getStates(cd, filter)){
 	            if (iAifDependencies.get(state)!=null) {
 	                featureDependencies.get(cd.getFeature()).addAll(iAifDependencies.get(state));
 	            }
@@ -1311,13 +1311,13 @@ public class PolytomousKeyGenerator {
 	    }
 
 	    //get all states of both categorical data
-        Set<IAsState> states = getStates(cd1, cd2, filter);
+        Set<DefinedTermBase<?>> states = getStates(cd1, cd2, filter);
         if (states.size() == 0){
             return 0;
         }
 
 	    int nDiscriminative = 0;
-	    for (IAsState state : states){
+	    for (DefinedTermBase<?> state : states){
 	        boolean hasState1 = hasState(state, cd1);
 	        boolean hasState2 = hasState(state, cd2);
 	        //if only 1 has the state than the state is discriminative
@@ -1329,7 +1329,7 @@ public class PolytomousKeyGenerator {
 	    return result;
 	}
 
-    private boolean hasState(IAsState state, Set<CategoricalData> cds) {
+    private boolean hasState(DefinedTermBase<?> state, Set<CategoricalData> cds) {
         boolean result = false;
         for (CategoricalData cd : cds){
             for (StateData stateData:cd.getStateData()){
@@ -1339,27 +1339,27 @@ public class PolytomousKeyGenerator {
         return result;
     }
 
-    private Set<IAsState> getStates(Set<CategoricalData> cdset1, Set<CategoricalData> cdset2, Set<IAsState> filter) {
-        Set<IAsState> result = new HashSet<>();
+    private Set<DefinedTermBase<?>> getStates(Set<CategoricalData> cdset1, Set<CategoricalData> cdset2, Set<DefinedTermBase<?>> filter) {
+        Set<DefinedTermBase<?>> result = new HashSet<>();
         result.addAll(getStates(cdset1, filter));
         result.addAll(getStates(cdset2, filter));
         return result;
     }
 
-    private Set<IAsState> getStates(Set<CategoricalData> cdset, Set<IAsState> filter) {
-        Set<IAsState> result = new HashSet<>();
+    private Set<DefinedTermBase<?>> getStates(Set<CategoricalData> cdset, Set<DefinedTermBase<?>> filter) {
+        Set<DefinedTermBase<?>> result = new HashSet<>();
         for (CategoricalData cd : cdset){
             result.addAll(getStates(cd, filter));
         }
         return result;
     }
 
-    private Set<IAsState> getStates(CategoricalData cd, Set<IAsState> filter) {
+    private Set<DefinedTermBase<?>> getStates(CategoricalData cd, Set<DefinedTermBase<?>> filter) {
         //TODO handle modifier
-        Set<IAsState> result = new HashSet<>();
+        Set<DefinedTermBase<?>> result = new HashSet<>();
         List<StateData> states = cd.getStateData();
         for (StateData stateData:states){
-            IAsState state = stateData.getState();
+            DefinedTermBase<?> state = stateData.getState();
             if (filter != null && !filter.contains(state)){
                 continue;
             }
@@ -1394,7 +1394,7 @@ public class PolytomousKeyGenerator {
 	        while (stateData1Iterator.hasNext()) {
 	            Iterator<StateData> stateData2Iterator = states2.iterator() ;
 	            StateData stateData1 = stateData1Iterator.next();
-	            IAsState state1 = stateData1.getState();
+	            DefinedTermBase<?> state1 = stateData1.getState();
 	            if (checkFeature){
 	                if (iAifDependencies.get(state1)!=null) {
 	                    featureDependencies.get(deb1.getFeature()).addAll(iAifDependencies.get(state1));
@@ -1405,7 +1405,7 @@ public class PolytomousKeyGenerator {
 	            }
 	            while (stateData2Iterator.hasNext()) {
 	                StateData stateData2 = stateData2Iterator.next();
-	                IAsState state2 = stateData2.getState();
+	                DefinedTermBase<?> state2 = stateData2.getState();
 	                bool = bool || state1.equals(state2); // checks if the states are the same
 	            }
 	        }
