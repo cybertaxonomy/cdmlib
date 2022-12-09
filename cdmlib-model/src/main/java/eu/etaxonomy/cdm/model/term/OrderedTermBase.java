@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.term;
 import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -219,29 +218,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
             return true;
         }else{
             return false;
-        }
-    }
-
-
-    @SuppressWarnings("unchecked")
-    @Transient
-    public T getNextHigherTerm(){  //#3327
-        if (getVocabulary() == null){
-            return null;
-        }else{
-            OrderedTermBase<T> result = CdmBase.deproxy(getVocabulary(), OrderedTermVocabulary.class).getNextHigherTerm(this);
-            return (T)result;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Transient
-    public T getNextLowerTerm(){ //#3327
-        if (getVocabulary() == null){
-            return null;
-        }else{
-            OrderedTermBase<T> result = CdmBase.deproxy(getVocabulary(), OrderedTermVocabulary.class).getNextLowerTerm(this);
-            return (T)result;
         }
     }
 

@@ -18,7 +18,6 @@ import java.util.SortedSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -135,26 +134,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	}
 
 	@Test
-	@Ignore
-	public final void testGetEqualTerms() {
-		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
-//		otbFree.orderIndex = otb2.orderIndex;
-//		oVoc1.addTerm(otbFree);
-		assertEquals(3, oVoc1.size());
-		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
-		assertEquals(1, oVoc1.getEqualTerms(otb2).size());
-		assertEquals(1, oVoc1.getEqualTerms(otb3).size());
-		oVoc1.addTermEqualLevel(otbFree, otb2);
-		assertEquals(4, oVoc1.size());
-		assertEquals(2, oVoc1.getEqualTerms(otb2).size());
-
-		//as long as orderedTermVocabulary.terms is a set
-		//this won't work because terms.add() will not result
-		//in adding the term
-
-	}
-
-	@Test
 	public final void testGetHigherTerms() {
 		assertEquals(2, oVoc1.getHigherTerms(otb3).size());
 		assertEquals(1, oVoc1.getHigherTerms(otb2).size());
@@ -196,17 +175,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
 		assertEquals(otbFree.getLabel(), oVoc1.getNextLowerTerm(otb2).getLabel());
 		assertEquals(otbFree.getLabel(), oVoc1.getNextHigherTerm(otb3).getLabel());
-	}
-
-	@Test
-	public final void testAddTermEqualLevel() {
-		System.out.println(otb2.orderIndex);
-		oVoc1.addTermEqualLevel(otbFree, otb2);
-
-		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
-		assertEquals(2, oVoc1.getLowerAndEqualTerms(otbFree).size());
-		assertEquals(otb1.getLabel(), oVoc1.getNextHigherTerm(otbFree).getLabel());
-		assertEquals(otb3.getLabel(), oVoc1.getNextLowerTerm(otbFree).getLabel());
 	}
 
 	@Test

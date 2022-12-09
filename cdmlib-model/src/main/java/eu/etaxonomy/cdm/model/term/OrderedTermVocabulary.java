@@ -98,7 +98,8 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 		return result;
 	}
 
-	public SortedSet<T> getHigherAndEqualTerms(T otb) {
+	//FIXME #6794 remove completely
+	private SortedSet<T> getHigherAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<>();
 		SortedSet<T> sortedSet = getSortedSetOfTerms();
 		result.addAll( sortedSet.tailSet(otb));
@@ -117,23 +118,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 		return result;
 	}
 
-	public SortedSet<T> getLowerAndEqualTerms(T otb) {
-		SortedSet<T> result = new TreeSet<>();
-		result = getLowerTerms(otb);
-		/*SortedSet<T> sortedSet = getSortedSetOfTerms();
-
-		result.addAll( sortedSet.headSet(otb));*/
-		//getLowerTerms Returns a view of the portion of this set whose elements are STRICTLY less than toElement
-		for (DefinedTermBase<?> setObjectUnproxied : terms){
-		    @SuppressWarnings("unchecked")
-            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
-            if (setObject.compareTo(otb) == 0){
-				result.add(setObject);
-			}
-		}
-		return result;
-	}
-
 	public SortedSet<T> getLowerTerms(T otb) {
 		/*SortedSet<T> result = getLowerAndEqualTerms(otb);
 		for (T setObject : terms){
@@ -145,18 +129,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
         SortedSet<T> sortedSet = getSortedSetOfTerms();
         //headSet Returns a view of the portion of this set whose elements are STRICTLY less than toElement
         result.addAll( sortedSet.headSet(otb));
-		return result;
-	}
-
-	public SortedSet<T> getEqualTerms(T otb) {
-		SortedSet<T> result = new TreeSet<>();
-		for (DefinedTermBase<?> setObjectUnproxied : terms){  //use Unproxied to avoid ClassCastException in certain contexts
-		    @SuppressWarnings("unchecked")
-            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
-			if (setObject.compareTo(otb) == 0){
-				result.add(setObject);
-			}
-		}
 		return result;
 	}
 
@@ -242,25 +214,17 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 		super.addTerm(termToBeAdded);
 	}
 
-	public void addTermEqualLevel(T termToBeAdded, T equalLevelTerm) {
-		int orderInd = equalLevelTerm.orderIndex;
-		termToBeAdded.orderIndex = orderInd;
-		super.addTerm(termToBeAdded);
-	}
-
 	@Override
 	public void removeTerm(T term) {
 		if (term == null){
 			return;
 		}
-		if (this.getEqualTerms(term).size() == 0){
-			Iterator<T> iterator = getLowerTerms(term).iterator();
-			while (iterator.hasNext()){
-				T otb = iterator.next();
-				toBeChangedByObject = otb;
-				otb.decreaseIndex(this);
-				toBeChangedByObject = null;
-			}
+		Iterator<T> iterator = getLowerTerms(term).iterator();
+		while (iterator.hasNext()){
+			T otb = iterator.next();
+			toBeChangedByObject = otb;
+			otb.decreaseIndex(this);
+			toBeChangedByObject = null;
 		}
 		super.removeTerm(term);
 	}
