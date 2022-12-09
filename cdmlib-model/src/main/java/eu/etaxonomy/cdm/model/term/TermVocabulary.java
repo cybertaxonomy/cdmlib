@@ -66,7 +66,7 @@ public class TermVocabulary<T extends DefinedTermBase>
         extends TermCollection<T,TermNode> {
 
     private static final long serialVersionUID = 1925052321596648672L;
-	private static final Logger logger = LogManager.getLogger(TermVocabulary.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database
 	//is created for the first time.

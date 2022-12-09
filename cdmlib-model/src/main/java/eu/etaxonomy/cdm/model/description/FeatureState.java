@@ -89,8 +89,7 @@ public class FeatureState extends VersionableEntity {
         this.state = state;
     }
 
-
-/* *********************************** GETTER /SETTER ***************************************/
+//************************************ GETTER /SETTER ***************************************/
 
     public Feature getFeature() {
         return feature;

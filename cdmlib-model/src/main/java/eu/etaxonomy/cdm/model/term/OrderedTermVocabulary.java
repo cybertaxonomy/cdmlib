@@ -43,7 +43,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 
 	private static final long serialVersionUID = 7871741306306371242L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(OrderedTermVocabulary.class);
+	private static final Logger logger = LogManager.getLogger();
 
 // ************************* FACTORY METHODS ***********************************************/
 
@@ -271,7 +271,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	public boolean indexChangeAllowed(OrderedTermBase orderedTermBase){
 		return orderedTermBase == toBeChangedByObject ;
 	}
-
 
 	@Transient
 	private SortedSet<T> getSortedSetOfTerms(){

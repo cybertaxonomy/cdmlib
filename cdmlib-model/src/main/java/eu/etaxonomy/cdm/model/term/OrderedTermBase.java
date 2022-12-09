@@ -56,7 +56,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
 
     private static final long serialVersionUID = 8000797926720467399L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(OrderedTermBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //Order index, value < 1 means that this Term is not in order yet
     @XmlElement(name = "OrderIndex")
@@ -188,7 +188,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
 
     /**
      * If this term is higher than the parameter term, true is returned, else false.
-     * If the parameter term is null, an Exception is thrown.
+     * If the parameter term is null, an exception is thrown.
      * @param orderedTerm
      * @return boolean result of the comparison
      */
@@ -200,7 +200,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
      * @deprecated To be used only by OrderedTermVocabulary
      **/
     @Deprecated
-    protected boolean decreaseIndex(OrderedTermVocabulary vocabulary){
+    boolean decreaseIndex(OrderedTermVocabulary vocabulary){
         if (vocabulary.indexChangeAllowed(this) == true){
             orderIndex--;
             return true;
@@ -210,10 +210,10 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
     }
 
     /**
-     * @deprecated To be used only by OrderedTermVocabulary
+     * @deprecated to be used only by OrderedTermVocabulary
      **/
     @Deprecated
-    protected boolean incrementIndex(OrderedTermVocabulary vocabulary){
+    boolean incrementIndex(OrderedTermVocabulary vocabulary){
         if (vocabulary.indexChangeAllowed(this) == true){
             orderIndex++;
             return true;
