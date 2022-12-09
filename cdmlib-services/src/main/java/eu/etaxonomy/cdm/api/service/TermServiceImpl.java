@@ -20,7 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -341,7 +342,6 @@ public class TermServiceImpl
 				}
 			}
 
-
 			//included in
 			Set<DefinedTermBase> includedTerms = term.getIncludes();
 			if (includedTerms.size()> 0){
@@ -541,10 +541,8 @@ public class TermServiceImpl
                 result.addUpdatedObject(term);
                 result.addUpdatedObject(vocabulary);
                 result.addUpdatedObject(parentVocabulary);
-
             }
             vocabularyService.saveOrUpdate(parentVocabulary);
-
         }
         else {
             DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));

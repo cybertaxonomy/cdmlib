@@ -128,7 +128,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	    SortedSet<T> result = new TreeSet<>();
         SortedSet<T> sortedSet = getSortedSetOfTerms();
         //headSet Returns a view of the portion of this set whose elements are STRICTLY less than toElement
-        result.addAll( sortedSet.headSet(otb));
+        result.addAll(sortedSet.headSet(otb));
 		return result;
 	}
 
@@ -233,7 +233,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	@Transient
 	private T toBeChangedByObject;
 
-	public boolean indexChangeAllowed(OrderedTermBase orderedTermBase){
+	boolean indexChangeAllowed(OrderedTermBase orderedTermBase){
 		return orderedTermBase == toBeChangedByObject ;
 	}
 

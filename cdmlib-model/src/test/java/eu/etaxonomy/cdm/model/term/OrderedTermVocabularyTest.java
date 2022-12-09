@@ -37,11 +37,11 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		otb1 = new DerivedOrderedTermBase(TermType.Unknown,"otb1", "high", null);
-		otb2 = new DerivedOrderedTermBase(TermType.Unknown, "term", "middel", null);
-		otb3 = new DerivedOrderedTermBase(TermType.Unknown, "otb3", "low", null);
+		otb1 = new DerivedOrderedTermBase(TermType.Unknown,"otb1", "high", null, 1);
+		otb2 = new DerivedOrderedTermBase(TermType.Unknown, "term", "middel", null, 2);
+		otb3 = new DerivedOrderedTermBase(TermType.Unknown, "otb3", "low", null, 3);
 		otbFree = new DerivedOrderedTermBase();
-		oVoc1 = new OrderedTermVocabulary<>();
+		oVoc1 = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		oVoc1.addTerm(otb1);
 		oVoc1.addTerm(otb2);
 		oVoc1.addTerm(otb3);
@@ -52,8 +52,9 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
         private DerivedOrderedTermBase(){
 			super(TermType.Unknown);
 		}
-		private DerivedOrderedTermBase(TermType type, String term, String label, String labelAbbrev){
+		private DerivedOrderedTermBase(TermType type, String term, String label, String labelAbbrev, int id){
 			super(type, term, label, labelAbbrev);
+			this.setId(id);
 		}
 		@Override
 		protected void setDefaultTerms(TermVocabulary<DerivedOrderedTermBase> termVocabulary) {}
