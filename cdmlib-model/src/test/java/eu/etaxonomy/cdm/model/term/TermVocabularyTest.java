@@ -18,7 +18,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -67,7 +68,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	}
 
 	private class DerivedDefinedTermBase extends OrderedTermBase<DerivedDefinedTermBase>{
-        private static final long serialVersionUID = 280869784120656292L;
+	    private static final long serialVersionUID = 280869784120656292L;
         private DerivedDefinedTermBase(){
 			super(TermType.Unknown);
 		}

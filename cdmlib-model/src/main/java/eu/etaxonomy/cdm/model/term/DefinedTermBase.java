@@ -113,7 +113,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
             implements IDefinedTerm<T>, Comparable<T> {
 
     private static final long serialVersionUID = 2931811562248571531L;
-    private static final Logger logger = LogManager.getLogger(DefinedTermBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 //	@XmlElement(name = "KindOf")
 //    @XmlIDREF

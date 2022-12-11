@@ -86,7 +86,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class NamedArea extends OrderedTermBase<NamedArea> {
 
     private static final long serialVersionUID = 6248434369557403036L;
-    private static final Logger logger = LogManager.getLogger(NamedArea.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//Continent UUIDs
     private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
