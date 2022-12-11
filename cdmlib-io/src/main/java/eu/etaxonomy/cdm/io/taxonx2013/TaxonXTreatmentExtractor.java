@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -2397,7 +2398,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (atomisedNameStr.length()>fullName.length()) {
                         newName=atomisedNameStr;
                     } else {
-                        if (fullName.length()>atomisedNameStr.length() && (rank.isLower(Rank.SPECIES()) && fullName.length()>2 && !fullName.substring(0, 1).equals("."))) {
+                        if (fullName.length()>atomisedNameStr.length() && (rank.isLowerThan(RankClass.Species) && fullName.length()>2 && !fullName.substring(0, 1).equals("."))) {
                             newName=askWhichScientificName(fullName,atomisedNameStr,classification.getTitleCache(),name);
                         } else {
                             newName=fullName;
@@ -2538,7 +2539,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (atomisedNameStr.length()>fullName.length()) {
                         newName = atomisedNameStr;
                     } else {
-                        if (fullName.length()>atomisedNameStr.length() && (rank.isLower(Rank.SPECIES()) && fullName.length()>2 && !fullName.substring(0, 1).equals("."))) {
+                        if (fullName.length()>atomisedNameStr.length() && (rank.isLowerThan(RankClass.Species) && fullName.length()>2 && !fullName.substring(0, 1).equals("."))) {
                             newName = askWhichScientificName(fullName, atomisedNameStr, classification.getTitleCache(), name);
                         } else {
                             newName = fullName;
@@ -2749,7 +2750,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 } else if(rankListToPrint.contains(nodeName.toLowerCase())) {
                     atomisedName.add(node.getTextContent().trim());
                 } else{
-                    if (rank.isHigher(Rank.GENUS()) && (nodeName.indexOf("dwcranks:")>-1 || nodeName.indexOf("dwc:Family")>-1)) {
+                    if (rank.isSupraGeneric() && (nodeName.indexOf("dwcranks:")>-1 || nodeName.indexOf("dwc:Family")>-1)) {
                         atomisedName.add(node.getTextContent().trim());
                     }else if (nodeName.equals("#text")){
                     	String text = node.getTextContent();
@@ -2798,7 +2799,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         String fullName=name;
         if (atomisedMap.get("dwc:scientificnameauthorship") == null && fullName!=null){
             //            System.out.println("rank : "+rank.toString());
-            if(rank.isHigher(Rank.SPECIES())){
+            if(rank.isSupraSpecific()){
                 try{
                     String author=null;
                     if(atomisedMap.get("dwcranks:subgenus") != null) {
@@ -3896,7 +3897,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     TaxonName tnb =  tmpb.getName();
                     Rank crank=null;
                     if (tnb != null){
-                         if(globalrank.equals(rank) || (globalrank.isLower(Rank.SPECIES()) && rank.equals(Rank.SPECIES()))){
+                         if(globalrank.equals(rank) || (globalrank.isLowerThan(RankClass.Species) && rank.equals(Rank.SPECIES()))){
                             if (tnb.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(fullname) ){
                                 crank =tnb.getRank();
                                 if (crank !=null && rank !=null){
@@ -3975,11 +3976,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     tnb.setTitleCache(fullname, true);
                     //                    tnb.setGenusOrUninomial(fullname);
                 }
-                if(rank.isHigher(Rank.GENUS())) {
+                if(rank.isSupraGeneric()) {
                     tnb.setGenusOrUninomial(partialname);
                 }
 
-                if(rank.isHigher(Rank.SPECIES())) {
+                if(rank.isSupraSpecific()) {
                     tnb.setTitleCache(partialname, true);
                 }
 

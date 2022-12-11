@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -508,7 +509,7 @@ public class CsvNameExport extends CsvNameExportBase {
     private HashMap<String, String> createNewRecord(TaxonNode childNode, CsvNameExportState state){
         HashMap<String, String> nameRecord = new HashMap<>();
         nameRecord.put("classification", childNode.getClassification().getTitleCache());
-        if (!childNode.getTaxon().getName().getRank().isLower(Rank.GENUS())){
+        if (!childNode.getTaxon().getName().getRank().isLowerThan(RankClass.Genus)){
             return null;
         }
         TaxonNode familyNode = getHigherNode(childNode, Rank.FAMILY());

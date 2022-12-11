@@ -98,6 +98,18 @@ public enum RankClass implements IEnumTerm<RankClass>{
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
 
+    /**
+     * Shortcut for compareTo. Returns true if the otherRankClass is lower,
+     * e.g. this rank class is Infrageneric and other rank class is Species
+     */
+    public boolean isHigher(RankClass otherRankClass){
+        return (this.compareTo(otherRankClass) < 0 );
+    }
+    public boolean isLower(RankClass otherRankClass){
+        return (this.compareTo(otherRankClass) > 0 );
+    }
+
+
 // *************************** DELEGATE **************************************/
 
 	private static EnumeratedTermVoc<RankClass> delegateVoc;

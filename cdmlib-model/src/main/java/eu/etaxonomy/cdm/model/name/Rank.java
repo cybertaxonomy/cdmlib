@@ -476,6 +476,20 @@ public class Rank extends OrderedTermBase<Rank> {
 
 // ******************************** METHODS ***************************************/
 
+    public boolean isHigherThan(RankClass rankClass) {
+        return this.rankClass.isHigher(rankClass);
+    }
+    public boolean isHigherOrEqualTo(RankClass rankClass) {
+        return this.rankClass.isHigher(rankClass) || this.rankClass == rankClass;
+    }
+
+    public boolean isLowerThan(RankClass rankClass) {
+        return this.rankClass.isLower(rankClass);
+    }
+    public boolean isLowerOrEqualTo(RankClass rankClass) {
+        return this.rankClass.isLower(rankClass) || this.rankClass == rankClass;
+    }
+
     /**
      * Returns the boolean value indicating whether <i>this</i> rank is higher than
      * the genus rank (true) or not (false). Returns false if <i>this</i> rank is null.
@@ -487,7 +501,15 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     @Transient
     public boolean isSupraGeneric(){
-        return this.rankClass.equals(RankClass.Suprageneric); // (this.isHigher(Rank.GENUS()));
+        return this.rankClass.isHigher(RankClass.Genus);
+    }
+
+    /**
+     * <code>true</code> if this rank is higher than the rank {@link Rank#SPECIES()}
+     */
+    @Transient
+    public boolean isSupraSpecific(){
+        return this.rankClass.isHigher(RankClass.Species);
     }
 
     /**

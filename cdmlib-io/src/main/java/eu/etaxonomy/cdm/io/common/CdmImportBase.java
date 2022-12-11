@@ -1025,11 +1025,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param childTaxon
 	 */
 	protected void fillMissingEpithets(INonViralName parentName, INonViralName childName) {
-		if (isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
+		if (isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLowerThan(RankClass.Genus) ){
 			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
 		}
 
-		if (isBlank(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
+		if (isBlank(childName.getSpecificEpithet()) && childName.getRank().isLowerThan(RankClass.Species) ){
 			childName.setSpecificEpithet(parentName.getSpecificEpithet());
 		}
 		if (childName.isAutonym() && childName.getCombinationAuthorship() == null && childName.getBasionymAuthorship() == null ){

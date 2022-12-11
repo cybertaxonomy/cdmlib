@@ -3121,7 +3121,7 @@ public class TaxonName
         if (rank == null) {
             return false;
         }
-        return getRank().isHigher(Rank.SPECIES());
+        return getRank().isSupraSpecific();
     }
 
     /**

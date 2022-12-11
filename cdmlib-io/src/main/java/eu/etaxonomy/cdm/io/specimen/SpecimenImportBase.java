@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -786,7 +787,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        Taxon subspecies = null;
 	        Taxon parent = null;
 	        if(rank!=null){
-	            if (rank.isLower(Rank.GENUS() )){
+	            if (rank.isLowerThan(RankClass.Genus)){
 	                String genusOrUninomial = nvname.getGenusOrUninomial();
 	                TaxonName taxonName = getOrCreateTaxonName(genusOrUninomial, Rank.GENUS(), preferredFlag, state, -1);
 	                genus = getOrCreateTaxonForName(taxonName, state);
@@ -808,7 +809,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                        parent = linkParentChildNode(genus, subgenus, classification, state);
 	                    }            }
 	            }
-	            if (rank.isLower(Rank.SPECIES())){
+	            if (rank.isLowerThan(RankClass.Species)){
 	                if (subgenus!=null){
 	                    String prefix = nvname.getGenusOrUninomial();
 	                    String name = nvname.getInfraGenericEpithet();

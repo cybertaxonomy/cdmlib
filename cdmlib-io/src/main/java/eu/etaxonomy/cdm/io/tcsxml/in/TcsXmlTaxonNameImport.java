@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -441,7 +442,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			String uninomial = (elUninomial == null)? "" : elUninomial.getTextNormalize();
 			if (StringUtils.isNotBlank(uninomial)){
 				nonViralName.setGenusOrUninomial(uninomial);
-				if (nonViralName.getRank() != null && nonViralName.getRank().isLower(Rank.GENUS())){  // TODO check
+				if (nonViralName.getRank() != null && nonViralName.getRank().isLowerThan(RankClass.Genus)){  // TODO check
 					logger.warn("Name " + simple + " lower then 'genus' but has a canonical name part 'Uninomial'.");
 				}
 			}
@@ -456,7 +457,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				String genus = elGenus.getTextNormalize();
 				if (StringUtils.isNotBlank(genus)){
 					nonViralName.setGenusOrUninomial(genus);
-					if (nonViralName.getRank() != null &&  ! nonViralName.getRank().isLower(Rank.GENUS() )){  // TODO check
+					if (nonViralName.getRank() != null &&  ! nonViralName.getRank().isLowerThan(RankClass.Genus )){  // TODO check
 						logger.warn("Name " + simple + " is not lower then 'genus' but has canonical name part 'Genus'.");
 					}
 				}
@@ -480,7 +481,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			String specificEpithet = (elSpecificEpithet == null)? "" : elSpecificEpithet.getTextNormalize();
 			if (! specificEpithet.trim().equals("")){
 				nonViralName.setSpecificEpithet(specificEpithet);
-				if (nonViralName.getRank() != null && name.getRank().isHigher(Rank.SPECIES()) ){
+				if (nonViralName.getRank() != null && name.isSupraSpecific()){
 					logger.warn("Name " + simple + " is not species or below but has canonical name part 'SpecificEpithet'.");
 				}
 			}

@@ -340,7 +340,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				keyImport.makeKeyNodes(state, parentEvent, taxonTitle);
 				state.setCurrentTaxon(null);
 				state.setCurrentTaxonNum(null);
-				if (taxon.getName().getRank().isHigher(Rank.GENUS())){
+				if (taxon.getName().isSupraGeneric()){
 					state.setLatestGenusEpithet(null);
 				}else{
 					state.setLatestGenusEpithet(taxon.getName().getGenusOrUninomial());
