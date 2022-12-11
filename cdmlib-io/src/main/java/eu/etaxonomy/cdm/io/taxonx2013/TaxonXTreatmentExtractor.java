@@ -77,13 +77,12 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 /**
  * @author pkelbert
  * @since 2 avr. 2013
- *
  */
 public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     private static final String PUBLICATION_YEAR = "publicationYear";
 
-	private static final Logger logger = LogManager.getLogger(TaxonXTreatmentExtractor.class);
+	private static final Logger logger = LogManager.getLogger();
 
     private static final String notMarkedUp = "Not marked-up";
     private static final UUID proIbioTreeUUID = UUID.fromString("2c49f506-c7f7-44de-a8b9-2e695de3769c");

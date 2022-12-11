@@ -126,6 +126,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
      * @throws NullPointerException
      *             if the specified object is null
      */
+    //overriden by PresenceAbsenceTerm, HybridRelationshipType and Rank
     protected int performCompareTo(T thatTerm , boolean skipVocabularyCheck ) {
 
     	T thatTermLocal = CdmBase.deproxy(thatTerm);
@@ -166,6 +167,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
         }
     }
 
+    //protected as overriden by PresenceAbsenceTerm
     protected int compareVocabularies(T thatTerm) {
         //if vocabularies are not equal order by voc.uuid to get a defined behavior
         //ordering terms from 2 different vocabularies is generally not recommended

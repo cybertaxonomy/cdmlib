@@ -73,7 +73,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
         extends PartitionableConverterBase<CONFIG, STATE>
         implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>, ItemFilter<StreamItem> {
 
-    private static final Logger logger = LogManager.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //if this converter is used as filter we may not want to delete item parts during evaluation
     boolean isFilterOnly = false;
