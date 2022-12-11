@@ -46,7 +46,7 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
     }
 
     public Optional<String> uninomialQueryString(String query){
-         if(rank.isLower(Rank.GENUS())){
+         if(rank.isLowerThan(RankClass.Genus)){
              return optionalForNonNull(genusOrUninomial);
         } else {
             return Optional.of(appendWildcard(query));
