@@ -136,5 +136,4 @@ public enum RankClass implements IEnumTerm<RankClass>{
 	public static RankClass getByKey(String key){return delegateVoc.getByKey(key);}
     public static RankClass getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
-
 }

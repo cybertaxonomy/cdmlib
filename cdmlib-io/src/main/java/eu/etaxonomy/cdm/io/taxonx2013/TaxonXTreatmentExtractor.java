@@ -26,7 +26,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -2792,13 +2793,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         return fullName;
     }
 
-    /**
-     * @param rank
-     * @param fullName
-     * @param atomisedMap
-     * @param myname
-     * @return
-     */
     private String extractAuthorFromNames(Rank rank, String name, HashMap<String, String> atomisedMap, MyName myname) {
         logger.info("extractAuthorFromNames");
         String fullName=name;
