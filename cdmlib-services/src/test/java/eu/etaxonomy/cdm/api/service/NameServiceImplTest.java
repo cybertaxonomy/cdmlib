@@ -102,6 +102,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByName
     private AuthenticationManager authenticationManager;
 
+    /**
+     * @param token
+     */
     private void setAuthentication(AbstractAuthenticationToken token) {
        Authentication authentication = authenticationManager.authenticate(token);
 

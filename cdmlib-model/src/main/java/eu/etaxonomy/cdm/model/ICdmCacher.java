@@ -48,7 +48,6 @@ public interface ICdmCacher {
     public <T extends CdmBase> T load(T cdmEntity);
 
     /**
-     *
      * @param cdmEntity
      * @return returns true if the <code>cdmEntity</code> is cachable by the
      *         implementation

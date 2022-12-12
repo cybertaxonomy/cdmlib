@@ -52,7 +52,7 @@ public class CdmTermCacher extends CdmCacherBase {
         T cachedCdmEntity = getFromCache(cdmEntity);
         if(cachedCdmEntity == null && isCachable(cdmEntity)) {
             putToCache(cdmEntity);
-           cachedCdmEntity = cdmEntity;
+            cachedCdmEntity = cdmEntity;
         }
         return cachedCdmEntity;
     }
