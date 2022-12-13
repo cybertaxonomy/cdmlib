@@ -173,6 +173,19 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
     public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config);
 
     /**
+     * @param termUuids
+     * @param config
+     * @return
+     */
+    public DeleteResult delete(List<UUID> termUuids, TermDeletionConfigurator config);
+
+    /**
+     * @param termUuids
+     * @param config
+     * @return
+     */
+    public DeleteResult deleteTerms(List<DefinedTermBase> terms, TermDeletionConfigurator config);
+    /**
      * @param label
      * @return
      */

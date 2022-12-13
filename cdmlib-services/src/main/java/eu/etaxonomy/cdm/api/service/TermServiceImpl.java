@@ -394,7 +394,15 @@ public class TermServiceImpl
 	@Override
 	@Transactional(readOnly = false)
 	public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config){
+
+
 	    return delete(dao.load(termUuid), config);
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public DeleteResult delete(List<UUID> termUuids, TermDeletionConfigurator config){
+	    return deleteTerms(load(termUuids, null), config);
 	}
 
 	@Override
@@ -670,5 +678,15 @@ public class TermServiceImpl
         AFTER,
         ON
     }
+
+
+	@Override
+	public DeleteResult deleteTerms(List<DefinedTermBase> terms, TermDeletionConfigurator config) {
+		DeleteResult result = new DeleteResult();
+		for (DefinedTermBase term: terms) {
+			result.includeResult(delete(term, config));
+		}
+		return result;
+	}
 
 }
