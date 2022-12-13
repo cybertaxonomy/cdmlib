@@ -13,7 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -31,22 +32,21 @@ public class SingleTermRemover
         extends SchemaUpdaterStepBase{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SingleTermRemover.class);
+	private static final Logger logger = LogManager.getLogger();
 
 // **************************** FACTORY METHODS ********************************/
 
 	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
-	        String uuidTerm, List<String> checkUsedQueries, int adapt){
+	        String uuidTerm, List<String> checkUsedQueries){
 		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, false);
 	}
 
 	/**
 	 * @param firstCheckUsedQuery The first query to check if this term is used. Must return a single int value > 0
 	 * if this term is used at the given place.
-	 * @return
 	 */
 	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
-	        String uuidTerm, String firstCheckUsedQuery, int adapt){
+	        String uuidTerm, String firstCheckUsedQuery){
 		List<String> checkUsedQueries = new ArrayList<>();
 		checkUsedQueries.add(firstCheckUsedQuery);
 		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, false);
@@ -55,10 +55,9 @@ public class SingleTermRemover
 	/**
      * @param firstCheckUsedQuery The first query to check if this term is used. Must return a single int value > 0
      * if this term is used at the given place.
-     * @return
      */
     public static final SingleTermRemover NewAudInstance(List<ISchemaUpdaterStep> stepList, String stepName,
-            String uuidTerm, String firstCheckUsedQuery, int adapt){
+            String uuidTerm, String firstCheckUsedQuery){
         List<String> checkUsedQueries = new ArrayList<>();
         checkUsedQueries.add(firstCheckUsedQuery);
         return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, true);

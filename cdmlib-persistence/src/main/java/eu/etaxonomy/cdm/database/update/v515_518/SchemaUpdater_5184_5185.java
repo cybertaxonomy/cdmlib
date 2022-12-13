@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -60,7 +61,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
 		        + " FROM @@NameRelationship@@ nr "
                 + "   INNER JOIN @@DefinedTermBase@@ nrType ON nrType.id = nr.type_id "
                 + " WHERE nrType.uuid = '264d2be4-e378-4168-9760-a9512ffbddc4'";
-		SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, checkUsedQueries, -99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, checkUsedQueries);
 
         stepName = "remove original spelling name relationship type (AUD)";
         uuidTerm = "264d2be4-e378-4168-9760-a9512ffbddc4";
@@ -68,7 +69,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + " FROM @@NameRelationship_AUD@@ nr "
                 + "   INNER JOIN @@DefinedTermBase_AUD@@ nrType ON nrType.id = nr.type_id "
                 + " WHERE nrType.uuid = '264d2be4-e378-4168-9760-a9512ffbddc4'";
-        SingleTermRemover.NewAudInstance(stepList, stepName, uuidTerm, checkUsedQueries, -99);
+        SingleTermRemover.NewAudInstance(stepList, stepName, uuidTerm, checkUsedQueries);
 
 		//#9311
         changeSomeTermLabels(stepList);

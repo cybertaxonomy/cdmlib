@@ -1617,28 +1617,28 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		uuid = "881b9c80-626d-47a6-b308-a63ee5f4178f";
 		String checkUsed = " SELECT count(*) as n FROM @@StateData@@ sd "
 				+ " WHERE sd.state_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove institution type dummy
 		stepName = "Remove institution type dummy term";
 		uuid = "bea94a6c-472b-421c-abc1-52f797c51dbf";
 		checkUsed = " SELECT count(*) as n FROM @@AgentBase_DefinedTermBase@@ MN "
 				+ " WHERE MN.types_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove measurement unit dummy
 		stepName = "Remove measurement unit dummy term";
 		uuid = "e19dd590-5be8-4c93-978f-b78554116289";
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionElementBase@@ deb "
 				+ " WHERE deb.unit_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove scope dummy
 		stepName = "Remove scope dummy term";
 		uuid = "2ace7f1f-4ce6-47e1-8a65-e3f6b724876c";
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionBase_Scope@@ MN "
 				+ " WHERE MN.scopes_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove stage dummy
 		stepName = "Remove stage dummy term";
@@ -1647,7 +1647,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " WHERE MN.scopes_id = %d ";
 		String checkUsed2 = " SELECT count(*) as n FROM @@SpecimenOrObservationBase@@ osb "
 				+ " WHERE osb.lifestage_id =  %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99)
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed)
 				.addCheckUsedQuery(checkUsed2, 99);
 
 		// Remove text format dummy
@@ -1655,7 +1655,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		uuid = "5d095782-d99c-46bc-a158-edb2e47c9b63";
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionElementBase@@ deb "
 				+ " WHERE deb.format_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove modifier dummy
 		stepName = "Remove modifier dummy if possible";
@@ -1666,7 +1666,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " WHERE MN.modifiers_id = %d ";
 		String checkUsed3 = " SELECT count(*) as n FROM @@StatisticalMeasurementValue_DefinedTermBase@@ MN "
 				+ " WHERE MN.modifiers_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99)
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed)
 				.addCheckUsedQuery(checkUsed2, 99).addCheckUsedQuery(checkUsed3, 99);
 
 		// Remove text preservation method dummy
@@ -1674,7 +1674,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		uuid = "3edc2633-365b-4a9b-bc3a-f3f85f59dbdf";
 		checkUsed = " SELECT count(*) as n FROM @@SpecimenOrObservationBase@@ osb "
 				+ " WHERE osb.preservation_id =  %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Split Country Vocabulary #3700
 		stepName = "Create Waterbody vocabulary";

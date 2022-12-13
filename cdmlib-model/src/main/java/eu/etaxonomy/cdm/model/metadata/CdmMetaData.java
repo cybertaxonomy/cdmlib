@@ -107,11 +107,9 @@ public class CdmMetaData extends CdmBase{
 	 * Simple constructor to be used by Spring
 	 */
 	protected CdmMetaData(){
-		super();
 	}
 
 	public CdmMetaData(CdmMetaDataPropertyName propertyName, String value) {
-		super();
 		this.propertyName = propertyName;
 		this.value = value;
 	}

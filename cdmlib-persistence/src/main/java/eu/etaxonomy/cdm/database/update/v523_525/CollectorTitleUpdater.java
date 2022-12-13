@@ -37,13 +37,13 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
         return new CollectorTitleUpdater(stepList);
     }
 
-    protected CollectorTitleUpdater(List<ISchemaUpdaterStep> stepList) {
+    private CollectorTitleUpdater(List<ISchemaUpdaterStep> stepList) {
         super(stepList, step);
     }
+
     @Override
     public List<ISchemaUpdaterStep> getInnerSteps() {
         List<ISchemaUpdaterStep> result = new ArrayList<>();
-
         return result;
     }
 
