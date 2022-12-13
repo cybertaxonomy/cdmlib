@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.agent;
 
 import java.util.ArrayList;
@@ -15,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -39,12 +39,11 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-
 @Repository
 public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAgentDao{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(AgentDaoImpl.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	public AgentDaoImpl() {
 		super(AgentBase.class);
@@ -140,7 +139,6 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         return result;
 	}
 
-
 	@Override
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle() {
 		List<UuidAndTitleCache<Team>> list = new ArrayList<>();
@@ -211,7 +209,6 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 
         return getTeamOrPersonUuidAndTitleCache(query);
     }
-
 
 	@Override
     public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern){

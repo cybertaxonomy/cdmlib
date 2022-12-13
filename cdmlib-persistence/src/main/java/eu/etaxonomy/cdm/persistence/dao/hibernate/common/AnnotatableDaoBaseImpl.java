@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -30,7 +31,7 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
         implements IAnnotatableDao<T> {
 
     @SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(AnnotatableDaoBaseImpl.class);
+	private static Logger logger = LogManager.getLogger();
 
 	public AnnotatableDaoBaseImpl(Class<T> type) {
 		super(type);

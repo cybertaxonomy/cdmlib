@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -19,12 +20,11 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * @author a.mueller
  * @since 24.07.2019
- *
  */
 public class AllowNullUpdater
         extends AuditedSchemaUpdaterStepBase{
 
-    private static final Logger logger = LogManager.getLogger(AllowNullUpdater.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private String columnName;
     private Datatype datatype;
@@ -82,7 +82,6 @@ public class AllowNullUpdater
             updateQuery1 = updateQuery1.replace("@definition", getDefinition(datasource));
             datasource.executeUpdate(updateQuery1);
 
-
             return;
         } catch (Exception e) {
             String message = e.getMessage();
@@ -91,12 +90,9 @@ public class AllowNullUpdater
             result.addException(e, message, getStepName() + ", ColumnNameChanger.invokeOnTable");
             return;
         }
-
     }
 
     private CharSequence getDefinition(ICdmDataSource datasource) {
         return datatype.format(datasource,size);
     }
-
-
 }

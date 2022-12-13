@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,7 +172,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			String id = elTaxonName.getAttributeValue("id");
 			TaxonName name = taxonNameMap.get(removeVersionOfRef(id));
 
-			TaxonBase taxonBase = (TaxonBase)name.getTaxonBases().iterator().next();
+			TaxonBase taxonBase = name.getTaxonBases().iterator().next();
 
 			String ref = elBasionym.getAttributeValue("ref");
 			TaxonName basionymName = taxonNameMap.get(removeVersionOfRef(ref));
@@ -182,7 +183,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				if (basionymName.getTaxonBases().isEmpty()){
 					 basionym = Synonym.NewInstance(basionymName, null);
 				}else{
-					basionym = (TaxonBase)basionymName.getTaxonBases().iterator().next();
+					basionym = basionymName.getTaxonBases().iterator().next();
 				}
 				//Synonym basionymSyn;
 				if (basionym instanceof Taxon){
@@ -527,7 +528,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 									result = Taxon.NewInstance(name, null);
 								}else{
-									result = (TaxonBase)name.getTaxa().iterator().next();
+									result = name.getTaxa().iterator().next();
 								}
 								name.addSource(OriginalSourceType.Import, ref, "TaxonConcept", null, null);
 								result.addSource(OriginalSourceType.Import, ref, "TaxonConcept", null, null);

@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.service.molecular;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,13 +31,15 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author pplitzner
  * @since 11.03.2014
- *
  */
 @Service
 @Transactional(readOnly = true)
-public class AmplificationServiceImpl extends AnnotatableServiceBase<Amplification, IAmplificationDao> implements IAmplificationService{
+public class AmplificationServiceImpl
+        extends AnnotatableServiceBase<Amplification, IAmplificationDao>
+        implements IAmplificationService{
+
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(AmplificationServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @Override
     @Autowired
@@ -58,7 +61,6 @@ public class AmplificationServiceImpl extends AnnotatableServiceBase<Amplificati
                results = dao.findByTitle(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
-         return new DefaultPagerImpl<Amplification>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<Amplification>(pageNumber, numberOfResults, pageSize, results);
     }
-
 }

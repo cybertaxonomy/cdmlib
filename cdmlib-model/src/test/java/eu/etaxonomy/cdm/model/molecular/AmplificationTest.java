@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class AmplificationTest {
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger();
+    	private static final Logger logger = LogManager.getLogger();
 
 	private UUID uuid = UUID.fromString("11e6b2d5-3eb5-4434-9c56-5bb4c1102147");
 
@@ -48,5 +48,4 @@ public class AmplificationTest {
 		amplification.updateCache();
 		Assert.assertEquals("My institute_Person_marker_2008", amplification.getLabelCache());
 	}
-
 }

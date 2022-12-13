@@ -127,7 +127,8 @@ public final class TaxonXTransformer {
 		return false;
 	}
 
-	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
+	/**
+	 * Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
 	 */
 	public static IRelationshipType tcsRelationshipCategory2Relationship (String tcsRelationshipCategory) throws UnknownCdmTypeException{
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonConcept#";
@@ -197,7 +198,8 @@ public final class TaxonXTransformer {
 	}
 
 
-	/** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
+	/**
+	 * Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
 	 */
 	public static NomenclaturalStatusType nomStatusString2NomStatus (String nomStatus) throws UnknownCdmTypeException{
 

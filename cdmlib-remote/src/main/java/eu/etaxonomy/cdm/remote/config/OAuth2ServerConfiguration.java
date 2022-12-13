@@ -95,7 +95,6 @@ public class OAuth2ServerConfiguration {
             .and().httpBasic();
             // @formatter:on
         }
-
     }
 
     /**
@@ -108,7 +107,7 @@ public class OAuth2ServerConfiguration {
 
         private static final String CLIENT_ID = "any-client";
 
-        public static final Logger logger = LogManager.getLogger(AuthorizationServerConfiguration.class);
+        public static final Logger logger = LogManager.getLogger();
 
         @Autowired
         private UserApprovalHandler userApprovalHandler;

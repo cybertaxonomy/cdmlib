@@ -40,6 +40,4 @@ public class ConstantConverter extends DozerConverter<CdmBase,Object> {
     public CdmBase convertFrom(Object source, CdmBase destination) {
         throw new RuntimeException("ConstantConverter should be used one-way only");
     }
-
-
 }

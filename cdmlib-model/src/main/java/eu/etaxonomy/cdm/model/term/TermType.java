@@ -501,7 +501,6 @@ public enum TermType implements IEnumTerm<TermType>{
 
     ;
 
-
 // **************** END ENUM **********************/
 
     @SuppressWarnings("unused")

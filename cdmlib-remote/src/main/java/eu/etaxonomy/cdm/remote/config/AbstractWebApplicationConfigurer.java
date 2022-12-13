@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
  */
 public abstract class AbstractWebApplicationConfigurer  implements InitializingBean {
 
-    public static final Logger logger = LogManager.getLogger(AbstractWebApplicationConfigurer.class);
+    public static final Logger logger = LogManager.getLogger();
 
     @Autowired
     protected ConfigurableEnvironment env;

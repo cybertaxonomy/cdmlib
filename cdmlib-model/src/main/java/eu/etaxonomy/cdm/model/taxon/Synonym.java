@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
 import javax.persistence.Entity;
@@ -72,7 +71,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     private static final long serialVersionUID = 6977221584815363620L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(Synonym.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "acceptedTaxon")
     @XmlIDREF

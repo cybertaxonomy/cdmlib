@@ -55,7 +55,7 @@ public class Relationship extends BaseThing {
 	}
 
 	public void setRelationshipCategoryRelation(TaxonRelationshipTerm relationshipCategory) {
-		this.relationshipCategory = new RelationshipCategory(relationshipCategory,true);
+		this.relationshipCategory = new RelationshipCategory(relationshipCategory, true);
 	}
 
 	public TaxonConcept getToTaxon() {

@@ -1782,9 +1782,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
                         acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
                     }
-
                 }
-
 
                 if (!currentMyName.getIdentifier().isEmpty() && (currentMyName.getIdentifier().length()>2)){
                     setLSID(currentMyName.getIdentifier(), acceptedTaxon);
@@ -1864,13 +1862,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
     }
 
-
-
-    /**
-     * @param identifier
-     * @param acceptedTaxon
-     */
-    @SuppressWarnings("rawtypes")
     private void setLSID(String identifier, TaxonBase<?> taxon) {
         //logger.info("setLSID");
         //        boolean lsidok=false;
@@ -1884,7 +1875,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             } catch (MalformedLSIDException e) {
                 logger.warn("Malformed LSID");
             }
-
         }
 
         //logger.info("search reference for LSID");

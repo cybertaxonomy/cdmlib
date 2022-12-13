@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -63,7 +64,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
  */
 public abstract class AbstractHibernateTaxonGraphProcessor {
 
-    private static final Logger logger = LogManager.getLogger(AbstractHibernateTaxonGraphProcessor.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private EnumSet<ReferenceType> referenceSectionTypes = EnumSet.of(ReferenceType.Section, ReferenceType.BookSection);
 

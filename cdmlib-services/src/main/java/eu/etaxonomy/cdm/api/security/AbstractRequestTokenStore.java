@@ -19,7 +19,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.kohlbecker
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logge
 public abstract class AbstractRequestTokenStore<T extends AbstractRequestToken, X extends Object>  implements IAbstractRequestTokenStore<T, X> {
 
     public static final int TOKEN_LENGTH = 50;
-    protected static Logger logger = LogManager.getLogger(AbstractRequestTokenStore.class);
+    protected static Logger logger = LogManager.getLogger();
     protected Map<String, T> tokenList = new HashMap<>();
     private Integer tokenLifetimeMinutes = null;
 

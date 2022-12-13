@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -110,14 +111,12 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         }
     }
 
-
-
 	private void handleSynonyms(DwcaTaxExportState state, Taxon taxon, DwcaTaxExportFile file,
 	        Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		for (Synonym synonym :taxon.getSynonyms() ){
-           if (isUnpublished(state.getConfig(), synonym)){
-               return;
-           }
+            if (isUnpublished(state.getConfig(), synonym)){
+                return;
+            }
 
 		    DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
 			SynonymType type = synonym.getType();
@@ -182,21 +181,6 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         }
     }
 
-
-
-	/**
-	 * @param state
-	 * @param record
-	 * @param taxonBase
-	 * @param name
-	 * @param acceptedTaxon
-	 * @param parent
-	 * @param basionym
-	 * @param isPartial
-	 * @param isProParte
-	 * @param config
-	 * @param type
-	 */
 	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxonRecord record, TaxonBase<?> taxonBase, TaxonName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
 			IRelationshipType relType) {
@@ -386,13 +370,6 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         return null;
     }
 
-    /**
-	 * @param record
-	 * @param name
-	 * @param type
-	 * @param isPartial
-	 * @param isProParte
-	 */
 	private void handleTaxonomicStatus(DwcaTaxonRecord record,
 			INonViralName name, IRelationshipType type) {
 		if (type == null){

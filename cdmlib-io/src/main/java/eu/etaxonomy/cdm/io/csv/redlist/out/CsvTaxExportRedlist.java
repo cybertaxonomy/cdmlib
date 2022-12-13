@@ -209,12 +209,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	}
 
 	/**
-	 * handles misapplied {@link Taxon}
-	 * @param taxon
-	 * @param writer
-	 * @param classification
-	 * @param metaRecord
-	 * @param config
+	 * Handles misapplied {@link Taxon}
 	 */
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvTaxRecordRedlist record, CsvTaxExportConfiguratorRedlist config) {
 		Set<TaxonRelationship> misappliedNameRels = taxon.getMisappliedNameRelations();
@@ -237,14 +232,6 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * Taxon Status, Synonyms, {@link Feature features} data
 	 * @param record the concrete information record
 	 * @param taxonBase {@link Taxon}
-	 * @param name
-	 * @param acceptedTaxon
-	 * @param parent
-	 * @param basionym
-	 * @param isPartial
-	 * @param isProParte
-	 * @param config
-	 * @param type
 	 */
 	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase<?> taxonBase,
 			INonViralName name, Taxon acceptedTaxon, Classification classification,
@@ -268,13 +255,12 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		handleDiscriptionData(record, (Taxon) taxonBase);
 		if(features!= null) {
 
-			List<List<String>> featureCells = new ArrayList<List<String>>(features.size());
+			List<List<String>> featureCells = new ArrayList<>(features.size());
 			for(int i = 0; i < features.size(); i++) {
-				featureCells.add(new ArrayList<String>());
+				featureCells.add(new ArrayList<>());
 			}
 			handleRelatedRedlistStatus(record, (Taxon)taxonBase, false, featureCells, features);
 			handleRelatedRedlistStatus(record, (Taxon)taxonBase, true, featureCells, features);
-
 		}
 		return;
 	}

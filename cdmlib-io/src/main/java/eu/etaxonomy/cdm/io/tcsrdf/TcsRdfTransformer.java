@@ -9,7 +9,8 @@
 
 package eu.etaxonomy.cdm.io.tcsrdf;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;

@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -39,7 +40,7 @@ import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 public class AltitudeMeterCorrector  extends SchemaUpdaterStepBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(AltitudeMeterCorrector.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final UUID uuidFeature = Feature.uuidAltitude;
     private final UUID uuidUnit = MeasurementUnit.uuidMeter;

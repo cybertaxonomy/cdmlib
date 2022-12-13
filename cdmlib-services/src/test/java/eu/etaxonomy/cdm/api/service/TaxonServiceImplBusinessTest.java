@@ -92,9 +92,6 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		referenceDetail = "test";
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#swapSynonymAndAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)}.
-	 */
 	@Test
 	public final void testSwapSynonymAndAcceptedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymType);

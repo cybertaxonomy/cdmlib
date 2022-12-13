@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.query.Query;
@@ -28,24 +29,20 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author pplitzner
  * @since 11.03.2014
- *
  */
 @Repository
 public class AmplificationDaoHibernateImpl extends AnnotatableDaoBaseImpl<Amplification> implements IAmplificationDao{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(AmplificationDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    /**
-     * @param type
-     */
     public AmplificationDaoHibernateImpl() {
         super(Amplification.class);
     }
 
     @Override
     public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache(Integer limit, String pattern) {
-        List<UuidAndTitleCache<Amplification>> list = new ArrayList<UuidAndTitleCache<Amplification>>();
+        List<UuidAndTitleCache<Amplification>> list = new ArrayList<>();
         Session session = getSession();
         Query<Object[]> query;
         if (pattern != null){

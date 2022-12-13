@@ -25,7 +25,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -51,7 +52,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
  */
 public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanInitializer<CDM> {
 
-    public static final Logger logger = LogManager.getLogger(AdvancedBeanInitializer.class);
+    public static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ICdmGenericDao genericDao;
