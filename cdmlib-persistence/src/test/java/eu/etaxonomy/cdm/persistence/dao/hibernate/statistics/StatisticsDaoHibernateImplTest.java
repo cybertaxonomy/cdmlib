@@ -382,7 +382,7 @@ public class StatisticsDaoHibernateImplTest
 					Synonym synonym = Synonym.NewInstance(name, sec);
 					taxonDao.save(synonym);
 					taxon.addSynonym(synonym,
-							SynonymType.SYNONYM_OF());
+							SynonymType.SYNONYM_OF);
 
 					synonymCounter++;
 				}

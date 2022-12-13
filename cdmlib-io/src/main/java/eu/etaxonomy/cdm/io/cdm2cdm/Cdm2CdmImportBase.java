@@ -378,7 +378,6 @@ public abstract class Cdm2CdmImportBase
         Synonym result = handlePersisted((TaxonBase)synonym, state);
         //complete
         setInvisible(result, "acceptedTaxon", detach(result.getAcceptedTaxon(), state));
-        result.setType(detach(result.getType(), state));
         return result;
     }
 

@@ -20,8 +20,8 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -129,7 +129,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
         String relTypeAttrValue = null;
 		if (relationshipTypeAttribute != null){
 		    relTypeAttrValue = rs.getString(relationshipTypeAttribute);
-		    RelationshipTermBase<?>[] relTypes = this.getState().getTransformer().getSynonymRelationTypesByKey(relTypeAttrValue, state);
+		    IRelationshipType[] relTypes = this.getState().getTransformer().getSynonymRelationTypesByKey(relTypeAttrValue, state);
 		    if (relTypes[0]!= null){
 		        synType = (SynonymType)relTypes[0];
 		    }
@@ -155,7 +155,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 		Taxon taxon = checkTaxonType(toObject, "Accepted taxon", toId);
 
 		if(forceTaxonLevelRelation && synType == null){
-		    synType = SynonymType.SYNONYM_OF();
+		    synType = SynonymType.SYNONYM_OF;
 		}
 
 		AnnotatableEntity[] result = new AnnotatableEntity[4];

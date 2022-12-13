@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.tcsxml;
 import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -285,12 +285,12 @@ public final class TcsXmlTransformer {
 
 	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
 	 */
-	public static RelationshipTermBase<?> tcsRelationshipType2Relationship (String tcsRelationshipType, ResultWrapper<Boolean> inverse) throws UnknownCdmTypeException{
+	public static IRelationshipType tcsRelationshipType2Relationship (String tcsRelationshipType, ResultWrapper<Boolean> inverse) throws UnknownCdmTypeException{
 		if (tcsRelationshipType == null){ return null;
 
 		//Synonym relationships
 //		}else if (tcsRelationshipType.equals("is synonym for")){return SynonymType.SYNONYM_OF();
-		}else if (tcsRelationshipType.equals("has synonym")){inverse.setValue(true); return SynonymType.SYNONYM_OF();
+		}else if (tcsRelationshipType.equals("has synonym")){inverse.setValue(true); return SynonymType.SYNONYM_OF;
 
 		//Taxon relationships
 		}else if (tcsRelationshipType.equals("is child taxon of")){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();

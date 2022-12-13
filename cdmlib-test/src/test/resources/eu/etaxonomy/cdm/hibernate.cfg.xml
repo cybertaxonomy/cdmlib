@@ -192,7 +192,6 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.SecundumSource"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Synonym"/>
-      <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymType"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Taxon"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonomicOperation"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNode"/>

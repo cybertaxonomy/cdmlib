@@ -434,11 +434,11 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     			    }
     				if (synonymNameStr != null){
     				    Synonym syn = createSynonym(state,taxonBase,synonymNameStr);
-    				    acceptedTaxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
+    				    acceptedTaxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
     				}
     				if (basionymNameStr != null){
     				    Synonym syn = createSynonym(state,taxonBase,basionymNameStr);
-                        acceptedTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF());
+                        acceptedTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF);
                         syn.getName().addRelationshipToName(acceptedTaxon.getName(), NameRelationshipType.BASIONYM(), null, null);
     				}
     				nameUsedInSource = taxonBase.getName();
@@ -483,7 +483,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     								String message = "Accepted/valid taxon could not be found. Please check referential integrity.";
     								fireWarningEvent(message, state, 8);
     							}else{
-    							   acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+    							   acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
 							       getTaxonService().saveOrUpdate(acceptedTaxon);
 
     							}

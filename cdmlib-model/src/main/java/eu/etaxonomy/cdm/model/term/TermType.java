@@ -44,9 +44,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
@@ -171,15 +169,6 @@ public enum TermType implements IEnumTerm<TermType>{
 
     //13
     /**
-     * Term type for the type of a synonym relationship between 2 {@link TaxonBase taxa}
-     * @see Synonym#getType()
-     * @see TaxonBase
-     */
-    @XmlEnumValue("SynonymType")
-    SynonymType(UUID.fromString("1eb4fee0-7716-4531-a9ed-a95327f1f4bb"), "Synonym Type", "SRT"),
-
-    //14
-    /**
      * Term type for the type of a taxonomic concept relationship between
      * 2 {@link Taxon accepted taxa}  with different secundum referece.
      * @see TaxonRelationship
@@ -188,7 +177,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("TaxonRelationshipType")
     TaxonRelationshipType(UUID.fromString("2d4b281c-142e-42c5-8eb5-1747592b54d8"), "Taxon Relationship Type", "TRT"),
 
-    //15
+    //14
     /**
      * Term type for the type of a typification of a taxonomic name
      * with a rank higher then species.
@@ -198,7 +187,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("NameTypeDesignationStatus")
     NameTypeDesignationStatus(UUID.fromString("d3860be6-8a08-4fff-984a-6ee8b42937c9"), "Name Type Designation Status", "NTD"),
 
-    //16
+    //15
     /**
      * Term type for the type of a typification of a taxonomic name
      * with a rank equal or lower then species.
@@ -208,7 +197,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("SpecimenTypeDesignationStatus")
     SpecimenTypeDesignationStatus(UUID.fromString("4014d7d4-f2dd-4328-8015-357a1a77c1ed"), "Specimen Type Designation Status", "STD"),
 
-    //17
+    //16
     /**
      * Term type for an institution type.
      * @see Institution
@@ -216,7 +205,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("InstitutionType")
     InstitutionType(UUID.fromString("09d78265-18b5-4352-b154-d2f39e84d3f3"), "Institution Type", "IT", null),
 
-    //18
+    //17
     /**
      * Term type for a named area type.
      * @see NamedArea
@@ -225,7 +214,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("NamedAreaType")
     NamedAreaType(UUID.fromString("6a9aba35-6272-4373-8386-000cf95b729e"), "Named Area Type", "NAT", null),
 
-    //19
+    //18
     /**
      * Term type for a named area level.
      * @see NamedArea
@@ -234,7 +223,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("NamedAreaLevel")
     NamedAreaLevel(UUID.fromString("62c16c74-dc79-4970-9031-bb1504be46f5"), "Named Area Level", "NAL", null),
 
-    //20
+    //19
     /**
      * Term type for rights.
      * @see Rights
@@ -242,7 +231,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("RightsType")
     RightsType(UUID.fromString("80e06b04-8d0d-4bd5-bcd6-d35f73c24d55"), "Rights Type", "RT", null),
 
-    //21
+    //20
     /**
      * Term type for a measurement unit.
      * @see MeasurementUnit
@@ -250,7 +239,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("MeasurementUnit")
     MeasurementUnit(UUID.fromString("f9e6c44f-f0d6-428b-9bc0-bb00a6514883"), "Measurement Unit", "MU", null),
 
-    //22
+    //21
     /**
      * Term type for a statistical measure.
      * @see eu.etaxonomy.cdm.model.description.StatisticalMeasure
@@ -259,7 +248,7 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("StatisticalMeasure")
     StatisticalMeasure(UUID.fromString("a22d19cd-a342-4af2-b156-d688a7aa8a6b"), "Statistical Measure", "SM", null),
 
-    //23
+    //22
     @XmlEnumValue("MaterialOrMethod")
     MaterialOrMethod(UUID.fromString("285a1406-a606-46b9-b0a4-717748296e50"), "Material or Method", "MOM"),
 

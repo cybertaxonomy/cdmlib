@@ -169,7 +169,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
                         Synonym basioSynonym = CdmBase.deproxy(basionymTaxon, Synonym.class);
                         if (basioSynonym.getAcceptedTaxon() != null){
                             if (basioSynonym.getAcceptedTaxon().equals(taxon)){
-                                basioSynonym.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
+                                basioSynonym.setType(SynonymType.HOMOTYPIC_SYNONYM_OF);
                             }else{
                                 String message = "Taxon's basionym already has an accepted taxon (%s), but the accepted taxon is not this taxon (%s).";
                                 message = String.format(message, basioSynonym.getAcceptedTaxon().getTitleCache(), taxon.getTitleCache());
@@ -262,12 +262,12 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
                 }else if (existingAccepted.isInstanceOf(Synonym.class)){
                     Synonym existingSynonym = CdmBase.deproxy(existingAccepted, Synonym.class);
                     taxon = existingSynonym.getAcceptedTaxon();
-                    taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
+                    taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
                 }else{
                     taxon = CdmBase.deproxy(existingAccepted, Taxon.class);
                 }
                 if (taxon != null){
-                    taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
+                    taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
                 }
             }else{ //accepted taxon exists
                 Taxon taxon = syn.getAcceptedTaxon();
@@ -288,7 +288,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
                     if (basionymTaxon.isInstanceOf(Taxon.class)){
                         Taxon basioTaxon = CdmBase.deproxy(basionymTaxon, Taxon.class);
                         if (syn.getAcceptedTaxon().equals(basioTaxon)){
-                            syn.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
+                            syn.setType(SynonymType.HOMOTYPIC_SYNONYM_OF);
                         }else{
                             String message = "Synonyms(%s) basionym is accepted (%s), but synonym has another accepted taxon (%s).";
                             message = String.format(message, syn.getName().getTitleCache(), basionymTaxon.getName().getTitleCache(),

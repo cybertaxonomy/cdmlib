@@ -1571,7 +1571,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                 sourceHandler.addSource(refMods, synonym);
-                acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+                acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
             }
         }
         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -1747,7 +1747,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
                     }
                 }
 
@@ -1780,7 +1780,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
                     }
 
                 }
@@ -1856,7 +1856,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
                     }
                 }
             }

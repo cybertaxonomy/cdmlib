@@ -427,7 +427,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					(taxonContextCounter.synonyms)++;
 					(taxonContextCounter.allTaxa)++;
 					taxon.addSynonym(synonym,
-							SynonymType.SYNONYM_OF());
+							SynonymType.SYNONYM_OF);
 
 					synonymCounter++;
 				}

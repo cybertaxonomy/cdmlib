@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -122,7 +122,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 		    DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
 			SynonymType type = synonym.getType();
 			if (type == null){ // should not happen
-				type = SynonymType.SYNONYM_OF();
+				type = SynonymType.SYNONYM_OF;
 			}
 			TaxonName name = synonym.getName();
 			//????
@@ -199,7 +199,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 */
 	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxonRecord record, TaxonBase<?> taxonBase, TaxonName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
-			RelationshipTermBase<?> relType) {
+			IRelationshipType relType) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 
@@ -394,14 +394,14 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 * @param isProParte
 	 */
 	private void handleTaxonomicStatus(DwcaTaxonRecord record,
-			INonViralName name, RelationshipTermBase<?> type) {
+			INonViralName name, IRelationshipType type) {
 		if (type == null){
 			record.setTaxonomicStatus(name.getNameType().acceptedTaxonStatusLabel());
 		}else{
 			String status = name.getNameType().synonymStatusLabel();
-			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
+			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF)){
 				status = "heterotypicSynonym";
-			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
+			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF)){
 				status = "homotypicSynonym";
 			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR())){
 			    status = "proParteSynonym";

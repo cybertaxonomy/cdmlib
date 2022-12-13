@@ -60,7 +60,7 @@ public class BasionymRelationCreator extends StrategyBase {
         for (Synonym synonym: synonyms){
             TaxonName basionym = compareHomotypic(taxon.getName(), synonym.getName());
             if (basionym != null){
-                synonym.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
+                synonym.setType(SynonymType.HOMOTYPIC_SYNONYM_OF);
                 adaptHomotypicGroup(basionym, taxon.getName(), synonym.getName());
             }
         }
@@ -75,8 +75,8 @@ public class BasionymRelationCreator extends StrategyBase {
                 if (basionym != null){
                     adaptHomotypicGroup(basionym, syn1.getName(), syn2.getName());
                     if (taxon.getName().getBasionyms().contains(basionym)){
-                        syn1.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
-                        syn2.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
+                        syn1.setType(SynonymType.HOMOTYPIC_SYNONYM_OF);
+                        syn2.setType(SynonymType.HOMOTYPIC_SYNONYM_OF);
                     }
                 }
             }

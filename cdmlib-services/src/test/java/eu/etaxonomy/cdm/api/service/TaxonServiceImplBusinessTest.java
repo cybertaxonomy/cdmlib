@@ -86,8 +86,8 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		s2 = Synonym.NewInstance(s2n, reference);
 
 		// referencing
-		homoTypicSynonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
-		heteroTypicSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
+		homoTypicSynonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
+		heteroTypicSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF;
 		reference = ReferenceFactory.newGeneric();
 		referenceDetail = "test";
 	}

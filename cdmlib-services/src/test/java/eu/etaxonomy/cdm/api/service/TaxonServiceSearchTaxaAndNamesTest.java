@@ -689,7 +689,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         n_abies_balsamea.setNameCache("Abies balsamea", true);
         Taxon t_abies_balsamea = Taxon.NewInstance(n_abies_balsamea, sec);
         t_abies_balsamea.setUuid(UUID.fromString(ABIES_BALSAMEA_UUID));
-        t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymType.SYNONYM_OF());
+        t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymType.SYNONYM_OF);
         taxonService.save(t_abies_balsamea);
 
         IBotanicalName n_abies_grandis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());

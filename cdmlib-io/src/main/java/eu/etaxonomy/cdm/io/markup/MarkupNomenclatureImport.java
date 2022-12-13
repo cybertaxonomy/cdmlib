@@ -615,9 +615,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			if (homotypicalGroup != null) {
 				name.setHomotypicalGroup(homotypicalGroup);
 			}
-			SynonymType synonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
+			SynonymType synonymType = SynonymType.HETEROTYPIC_SYNONYM_OF;
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
-				synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
+				synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
 			}
 			taxon.addSynonymName(TaxonName.castAndDeproxy(name), synonymType);
 		} else {

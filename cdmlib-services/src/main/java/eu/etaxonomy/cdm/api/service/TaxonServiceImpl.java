@@ -364,9 +364,9 @@ public class TaxonServiceImpl
         newSynonym.setPublish(oldAcceptedTaxon.isPublish());
         newSynonym.setSec(newSecSyn);
         if (sameHomotypicGroup){
-            newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
+            newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
         }else{
-            newTaxon.addSynonym(newSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
+            newTaxon.addSynonym(newSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF);
         }
 
         //deletes
@@ -424,7 +424,7 @@ public class TaxonServiceImpl
         newAcceptedTaxon.setPublish(synonym.isPublish());
         dao.save(newAcceptedTaxon);
         result.setCdmEntity(newAcceptedTaxon);
-        SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF();
+        SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF;
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
 
         for (Synonym heteroSynonym : heteroSynonyms){
@@ -586,7 +586,7 @@ public class TaxonServiceImpl
 
             HomotypicalGroup acceptedGroup = acceptedTaxon.getHomotypicGroup();
             boolean isHomotypicToTaxon = acceptedGroup.equals(newHomotypicalGroup);
-            SynonymType newRelationType = isHomotypicToTaxon? SynonymType.HOMOTYPIC_SYNONYM_OF() : SynonymType.HETEROTYPIC_SYNONYM_OF();
+            SynonymType newRelationType = isHomotypicToTaxon? SynonymType.HOMOTYPIC_SYNONYM_OF : SynonymType.HETEROTYPIC_SYNONYM_OF;
             synonym.setType(newRelationType);
 
             if (hasNewTargetTaxon){
@@ -597,7 +597,7 @@ public class TaxonServiceImpl
             @SuppressWarnings("null")
             HomotypicalGroup acceptedGroup = targetTaxon.getHomotypicGroup();
             boolean isHomotypicToTaxon = acceptedGroup.equals(newHomotypicalGroup);
-            SynonymType relType = isHomotypicToTaxon? SynonymType.HOMOTYPIC_SYNONYM_OF() : SynonymType.HETEROTYPIC_SYNONYM_OF();
+            SynonymType relType = isHomotypicToTaxon? SynonymType.HOMOTYPIC_SYNONYM_OF : SynonymType.HETEROTYPIC_SYNONYM_OF;
             targetTaxon.addSynonym(synonym, relType);
         }
     }
@@ -1548,9 +1548,9 @@ public class TaxonServiceImpl
         TaxonName fromTaxonName = oldTaxon.getName();
         //set default relationship type
         if (newSynonymType == null){
-            newSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
+            newSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF;
         }
-        boolean newRelTypeIsHomotypic = newSynonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF());
+        boolean newRelTypeIsHomotypic = newSynonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF);
 
         HomotypicalGroup homotypicGroup = synonymName.getHomotypicalGroup();
         int hgSize = homotypicGroup.getTypifiedNames().size();
@@ -2496,8 +2496,8 @@ public class TaxonServiceImpl
                         List<OrderHint> orderHintsSynonyms = new ArrayList<>();
                         orderHintsSynonyms.add(new OrderHint("titleCache", SortOrder.ASCENDING));
 
-                        List<Synonym> synonyMsOfParent = dao.getSynonyms(parentTaxon, SynonymType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHintsSynonyms,propertyPaths);
-                        List<Synonym> synonymsOfTaxon= dao.getSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF(),
+                        List<Synonym> synonyMsOfParent = dao.getSynonyms(parentTaxon, SynonymType.HETEROTYPIC_SYNONYM_OF, null, null,orderHintsSynonyms,propertyPaths);
+                        List<Synonym> synonymsOfTaxon= dao.getSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF,
                                 null, null,orderHintsSynonyms,propertyPaths);
 
                         List<TaxonRelationship> taxonRelListParent = new ArrayList<>();
@@ -2511,7 +2511,7 @@ public class TaxonServiceImpl
                                     includeUnpublished, null, null, orderHintsMisapplied, propertyPaths, Direction.relatedTo);
                         }
 
-                        if (type.equals(SynonymType.INFERRED_EPITHET_OF())){
+                        if (type.equals(SynonymType.INFERRED_EPITHET_OF)){
                             for (Synonym synonymRelationOfParent:synonyMsOfParent){
 
                                 inferredEpithet = createInferredEpithets(taxon,
@@ -2563,7 +2563,7 @@ public class TaxonServiceImpl
                                 }
                             }
 
-                        }else if (type.equals(SynonymType.INFERRED_GENUS_OF())){
+                        }else if (type.equals(SynonymType.INFERRED_GENUS_OF)){
 
                             for (Synonym synonymRelationOfTaxon:synonymsOfTaxon){
 
@@ -2609,7 +2609,7 @@ public class TaxonServiceImpl
                                 }
                             }
 
-                        }else if (type.equals(SynonymType.POTENTIAL_COMBINATION_OF())){
+                        }else if (type.equals(SynonymType.POTENTIAL_COMBINATION_OF)){
 
                             Reference sourceReference = null; // TODO: Determination of sourceReference is redundant
                             //for all synonyms of the parent...
@@ -2651,7 +2651,7 @@ public class TaxonServiceImpl
                                             synParentInfragenericName,
                                             synParentSpecificEpithet, synonymRelationOfTaxon, zooHashMap);
 
-                                    taxon.addSynonym(potentialCombination, SynonymType.POTENTIAL_COMBINATION_OF());
+                                    taxon.addSynonym(potentialCombination, SynonymType.POTENTIAL_COMBINATION_OF);
                                     inferredSynonyms.add(potentialCombination);
                                     zooHashMap.put(potentialCombination.getName().getUuid(), potentialCombination.getName());
                                      taxonNames.add(potentialCombination.getName().getNameCache());
@@ -2696,7 +2696,7 @@ public class TaxonServiceImpl
                                                 synParentInfragenericName,
                                                 synParentSpecificEpithet, misappliedName, zooHashMap);
 
-                                        taxon.addSynonym(potentialCombination, SynonymType.POTENTIAL_COMBINATION_OF());
+                                        taxon.addSynonym(potentialCombination, SynonymType.POTENTIAL_COMBINATION_OF);
                                         inferredSynonyms.add(potentialCombination);
                                         zooHashMap.put(potentialCombination.getName().getUuid(), potentialCombination.getName());
                                          taxonNames.add(potentialCombination.getName().getNameCache());
@@ -2877,7 +2877,7 @@ public class TaxonServiceImpl
             originalSource = null;
         }
 
-        taxon.addSynonym(inferredGenus, SynonymType.INFERRED_GENUS_OF());
+        taxon.addSynonym(inferredGenus, SynonymType.INFERRED_GENUS_OF);
 
         return inferredGenus;
     }
@@ -2969,7 +2969,7 @@ public class TaxonServiceImpl
 
         inferredSynName.addSource(originalSource);
 
-        taxon.addSynonym(inferredEpithet, SynonymType.INFERRED_EPITHET_OF());
+        taxon.addSynonym(inferredEpithet, SynonymType.INFERRED_EPITHET_OF);
 
         return inferredEpithet;
     }
@@ -3041,9 +3041,9 @@ public class TaxonServiceImpl
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames){
         List <Synonym> inferredSynonyms = new ArrayList<>();
 
-        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymType.INFERRED_EPITHET_OF(), doWithMisappliedNames));
-        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymType.INFERRED_GENUS_OF(), doWithMisappliedNames));
-        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymType.POTENTIAL_COMBINATION_OF(), doWithMisappliedNames));
+        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymType.INFERRED_EPITHET_OF, doWithMisappliedNames));
+        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymType.INFERRED_GENUS_OF, doWithMisappliedNames));
+        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymType.POTENTIAL_COMBINATION_OF, doWithMisappliedNames));
 
         return inferredSynonyms;
     }
@@ -3109,7 +3109,7 @@ public class TaxonServiceImpl
         // Create a new synonym for the taxon
         Synonym synonym;
         if (synonymType != null
-                && synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
+                && synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF)){
             synonym = Synonym.NewInstance(synonymName, fromTaxon.getSec());
             toTaxon.addHomotypicSynonym(synonym);
         } else{

@@ -328,7 +328,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         classification.addChildTaxon(tb, null, null);
         classificationService.saveOrUpdate(classification);
 
-        tb2.addSynonymName(null, SynonymType.HOMOTYPIC_SYNONYM_OF());
+        tb2.addSynonymName(null, SynonymType.HOMOTYPIC_SYNONYM_OF);
 
         commitAndStartNewTransaction(null);
 

@@ -67,7 +67,8 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Entity
 @Audited
 public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
-          extends DefinedTermBase<T> {
+          extends DefinedTermBase<T>
+          implements IRelationshipType {
 
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")

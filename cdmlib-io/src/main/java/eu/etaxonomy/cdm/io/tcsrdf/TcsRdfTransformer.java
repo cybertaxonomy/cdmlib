@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 
 import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -216,9 +216,9 @@ public final class TcsRdfTransformer {
 		}
 	}
 
-	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
+	/** Creates an cdm-RelationshipType by the tcsRelationshipCategory
 	 */
-	public static RelationshipTermBase<?> tcsRelationshipCategory2Relationship (String tcsRelationshipCategory) throws UnknownCdmTypeException{
+	public static IRelationshipType tcsRelationshipCategory2Relationship (String tcsRelationshipCategory) throws UnknownCdmTypeException{
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonConcept#";
 		String doesNotInclude  = tcsRoot + "DoesNotInclude";
 		String doesNotOverlap  = tcsRoot + "DoesNotOverlap";
@@ -248,8 +248,8 @@ public final class TcsRdfTransformer {
 		if (tcsRelationshipCategory == null){ return null;
 
 		//Synonym relationships
-		}else if (isSynonymFor.equals(tcsRelationshipCategory)){return SynonymType.SYNONYM_OF();
-		}else if (hasSynonym.equals(tcsRelationshipCategory)){/*isReverse = true; */ return SynonymType.SYNONYM_OF();
+		}else if (isSynonymFor.equals(tcsRelationshipCategory)){return SynonymType.SYNONYM_OF;
+		}else if (hasSynonym.equals(tcsRelationshipCategory)){/*isReverse = true; */ return SynonymType.SYNONYM_OF;
 
 		//Taxon relationships
 		}else if (isChildTaxonOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN();

@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.ConceptDefinition;
 import eu.etaxonomy.cdm.model.taxon.ConceptStatus;
+import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicOperationType;
@@ -125,6 +126,9 @@ public class EnumUserType<E extends Enum<E>>
         //RankClass
         }else if (clazz.equals(RankClass.class)){
         	return RankClass.getByKey(val);
+        //SynonymType
+        }else if (clazz.equals(SynonymType.class)){
+            return SynonymType.getByKey(val);
         //SpecimenOrObservationType
         }else if (clazz.equals(SpecimenOrObservationType.class)){
         	return SpecimenOrObservationType.getByKey(val);

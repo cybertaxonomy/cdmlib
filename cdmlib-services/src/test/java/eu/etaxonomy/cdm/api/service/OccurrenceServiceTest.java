@@ -1636,7 +1636,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       //SYNONYM
       Synonym synonym = Synonym.NewInstance(synonymName, null);
       synonym.setUuid(synoymUuid);
-      taxon.addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
+      taxon.addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
 
       //IndividualsAssociation
       TaxonDescription taxonDescription = TaxonDescription.NewInstance();

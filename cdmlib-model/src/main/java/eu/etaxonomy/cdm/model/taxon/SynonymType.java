@@ -1,199 +1,129 @@
 /**
-* Copyright (C) 2007 EDIT
+* Copyright (C) 2022 EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
-
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
- * The class representing categories of {@link Synonym synonyms}
- * (like "heterotypic synonym of").
- * <P>
- * A standard (ordered) list of synonym type instances will be
- * automatically created as the project starts. But this class allows to extend
- * this standard list by creating new instances of additional synonym
- * types if needed.
- * <P>
- * This class corresponds in part to: <ul>
- * <li> TaxonRelationshipTerm according to the TDWG ontology
- * <li> RelationshipType according to the TCS
- * </ul>
- *
- * @author m.doering
- * @since 08-Nov-2007 13:06:55
+ * @author a.mueller
+ * @date 11.12.2022
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SynonymType")
-@Entity
-//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
-@Audited
-public class SynonymType extends RelationshipTermBase<SynonymType> {
+public enum SynonymType implements IEnumTerm<SynonymType>, IRelationshipType {
 
-    private static final long serialVersionUID = -3775216614202923889L;
-	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger();
+    /**
+     * Indicates that the reference asserting the synonym relationship
+     * does not know whether both {@link name.TaxonName taxon names}
+     * involved are typified by the same type or not.
+     */
+    SYNONYM_OF("1afa5429-095a-48da-8877-836fa4fe709e", "SYN", "synonym of", "has synonym"),
 
-	protected static Map<UUID, SynonymType> termMap = null;
+    /**
+     * Synonym relationship type "is homotypic synonym of"
+     * (Zoology: "is objective synonym of" or "is nomenclatural synonym of").
+     * Indicates that the reference asserting the synonym relationship holds that
+     * the {@link name.TaxonName taxon name} used as a {@link Synonym synonym}
+     * and the taxon name used as the ("accepted/correct") {@link Taxon taxon}
+     * are typified by the same type.
+     * In this case they should belong to the same {@link name.HomotypicalGroup homotypical group}.
+     */
+    HOMOTYPIC_SYNONYM_OF("294313a9-5617-4ed5-ae2d-c57599907cb2", "HOM", "homotypic synonym of", "has homotypic synonym"),
 
-	public static final UUID uuidSynonymOf = UUID.fromString("1afa5429-095a-48da-8877-836fa4fe709e");
-	public static final UUID uuidHomotypicSynonymOf = UUID.fromString("294313a9-5617-4ed5-ae2d-c57599907cb2");
-	public static final UUID uuidHeterotypicSynonymOf = UUID.fromString("4c1e2c59-ca55-41ac-9a82-676894976084");
-	public static final UUID uuidInferredSynonymOf = UUID.fromString("cb5bad12-9dbc-4b38-9977-162e45089c11");
-	public static final UUID uuidInferredGenusOf = UUID.fromString("f55a574b-c1de-45cc-9ade-1aa2e098c3b5");
-	public static final UUID uuidInferredEpithetOf = UUID.fromString("089c1926-eb36-47e7-a2d1-fd5f3918713d");
-	public static final UUID uuidPotentialCombinationOf = UUID.fromString("7c45871f-6dc5-40e7-9f26-228318d0f63a");
+    /**
+     * Synonym relationship type "is heterotypic synonym of"
+     * (Zoology: "is subjective synonym of" or "is taxonomic synonym of").
+     * Indicates that the reference asserting the synonym relationship holds that
+     * the {@link name.TaxonName taxon name} used as a {@link Synonym synonym} and the taxon name used as the
+     * ("accepted/correct") {@link Taxon taxon} are not typified by the same type.
+     * In this case they should not belong to the same {@link name.HomotypicalGroup homotypical group}.
+     */
+    HETEROTYPIC_SYNONYM_OF("4c1e2c59-ca55-41ac-9a82-676894976084", "HET", "heterotypic synonym of", "has heterotypic synonym"),
 
+    /**
+     * Synonym relationship type "is inferred synonym of".
+     * This synonym relationship type is used in zoology whenever a synonym relationship
+     * on species or infraspecific level is derived from a genus synonymy.
+     */
+    INFERRED_SYNONYM_OF("cb5bad12-9dbc-4b38-9977-162e45089c11", "INS", "inferred synonym of", "has inferred synonym"),
 
-//********************************** CONSTRUCTOR *********************************/
+    /**
+     * Synonym relationship type "is inferred genus of".
+     * This synonym relationship type is used in zoology whenever a synonym relationship
+     * on species or infraspecific
+     * level is derived from an epithet synonymy.
+     */
+    INFERRED_GENUS_OF("f55a574b-c1de-45cc-9ade-1aa2e098c3b5", "ING", "inferred genus of", "has inferred genus"),
 
-  	//for hibernate use only
-  	@Deprecated
-  	protected SynonymType() {
-		super(TermType.SynonymType);
-	}
+    /**
+     * TODO this javadoc seems to be incorrect due to copy&paste
+     * Synonym relationship type "is inferred synonym of".
+     * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
+     * level is derived from a genus synonymy.
+     */
+    INFERRED_EPITHET_OF("089c1926-eb36-47e7-a2d1-fd5f3918713d", "INE", "inferred epithet of", "has inferred epithet"),
 
-	/**
-	 * Class constructor: creates an additional synonym type
-	 * instance with a description (in the {@link Language#DEFAULT() default language}), a label and
-	 * a label abbreviation. Synonym types can be neither
-	 * symmetric nor transitive.
-	 *
-	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new synonym type to be created
-	 * @param	label  		 the string identifying the new synonym
-	 * 						 type to be created
-	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
-	 * 						 new synonym type to be created
-	 * @see 				 #SynonymType()
-	 */
-	private SynonymType(String term, String label, String labelAbbrev) {
-		super(TermType.SynonymType, term, label, labelAbbrev, false, false);
-	}
+    POTENTIAL_COMBINATION_OF("7c45871f-6dc5-40e7-9f26-228318d0f63a", "POT", "potential combination of", "has potential combination"),
+    ;
 
+    private final String inverseLabel;
 
-//************************** METHODS ********************************
+    private SynonymType(String uuid, String key, String label, String inverseLabel){
+        this.inverseLabel = inverseLabel;
+        delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, UUID.fromString(uuid), label, key, null);
+    }
 
-	@Override
-	public void resetTerms(){
-		termMap = null;
-	}
+    public String getInverseRepresentation(@SuppressWarnings("unused") Language language) {
+        //for now we do not support i18n here
+        //may be implemented when needed
+        return inverseLabel;
+    }
 
+ // *************************** DELEGATE **************************************/
 
-	protected static SynonymType getTermByUuid(UUID uuid){
-        if (termMap == null || termMap.isEmpty()){
-            return getTermByClassAndUUID(SynonymType.class, uuid);
-        } else {
-            return termMap.get(uuid);
-        }
-	}
+    private static EnumeratedTermVoc<SynonymType> delegateVoc;
+    private IEnumTerm<SynonymType> delegateVocTerm;
 
-	/**
-	 * Returns the synonym type "is synonym of". This indicates
-	 * that the reference asserting the synonym relationship does not know
-	 * whether both {@link name.TaxonName taxon names} involved are typified by the same type or
-	 * not.
-	 *
-	 * @see		#HOMOTYPIC_SYNONYM_OF()
-	 * @see		#HETEROTYPIC_SYNONYM_OF()
-	 */
-	public static final SynonymType SYNONYM_OF(){
-		return getTermByUuid(uuidSynonymOf);
-	}
+    static {
+        delegateVoc = EnumeratedTermVoc.getVoc(SynonymType.class);
+    }
 
-	/**
-	 * Returns the synonym relationship type "is homotypic synonym of"
-	 * ("is nomenclatural synonym of" in zoology). This indicates that the
-	 * the reference asserting the synonym relationship holds that
-	 * the {@link name.TaxonName taxon name} used as a {@link Synonym synonym} and the taxon name used as the
-	 * ("accepted/correct") {@link Taxon taxon} are typified by the same type.
-	 * In this case they should belong to the same {@link name.HomotypicalGroup homotypical group}.
-	 *
-	 * @see		#HETEROTYPIC_SYNONYM_OF()
-	 * @see		#SYNONYM_OF()
-	 */
-	public static final SynonymType HOMOTYPIC_SYNONYM_OF(){
-		return getTermByUuid(uuidHomotypicSynonymOf);
-	}
+    @Override
+    public String getKey(){return delegateVocTerm.getKey();}
 
-	/**
-	 * Returns the synonym relationship type "is heterotypic synonym of"
-	 * ("is taxonomic synonym of" in zoology). This indicates that the
-	 * the reference asserting the synonym relationship holds that
-	 * the {@link name.TaxonName taxon name} used as a {@link Synonym synonym} and the taxon name used as the
-	 * ("accepted/correct") {@link Taxon taxon} are not typified by the same type.
-	 * In this case they should not belong to the same {@link name.HomotypicalGroup homotypical group}.
-	 *
-	 * @see		#HOMOTYPIC_SYNONYM_OF()
-	 * @see		#SYNONYM_OF()
-	 */
-	public static final SynonymType HETEROTYPIC_SYNONYM_OF(){
-		return getTermByUuid(uuidHeterotypicSynonymOf);
-	}
+    @Override
+    public String getLabel(){return delegateVocTerm.getLabel();}
 
-	/**
-	 * Returns the synonym relationship type "is inferred synonym of".
-	 * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
-	 * level is derived from a genus synonymy.
-	 */
-	public static final SynonymType INFERRED_SYNONYM_OF(){
-		return getTermByUuid(uuidInferredSynonymOf);
-	}
+    @Override
+    public String getLabel(Language language){return delegateVocTerm.getLabel(language);}
 
-	/**
-	 * Returns the synonym relationship type "is inferred genus of".
-	 * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
-	 * level is derived from a epithet synonymy.
-	 */
-	public static final SynonymType INFERRED_GENUS_OF(){
-		return getTermByUuid(uuidInferredGenusOf);
-	}
+    @Override
+    public UUID getUuid() {return delegateVocTerm.getUuid();}
 
-	/**
-	 * Returns the synonym relationship type "is inferred synonym of".
-	 * This synonym relationship type is used in zoology whenever a synonymy relationship on species or infraspecific
-	 * level is derived from a genus synonymy.
-	 */
-	public static final SynonymType INFERRED_EPITHET_OF(){
-		return getTermByUuid(uuidInferredEpithetOf);
-	}
+    @Override
+    public SynonymType getKindOf() {return delegateVocTerm.getKindOf();}
 
-	public static SynonymType POTENTIAL_COMBINATION_OF() {
-		return getTermByUuid(uuidPotentialCombinationOf);
-	}
+    @Override
+    public Set<SynonymType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+    @Override
+    public boolean isKindOf(SynonymType ancestor) {return delegateVocTerm.isKindOf(ancestor); }
+
+    @Override
+    public Set<SynonymType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
 
-	@Override
-	protected void setDefaultTerms(TermVocabulary<SynonymType> termVocabulary) {
-		termMap = new HashMap<>();
-		for (SynonymType term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), term);
-		}
-	}
-
-
+    public static SynonymType getByKey(String key){return delegateVoc.getByKey(key);}
+    public static SynonymType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 }

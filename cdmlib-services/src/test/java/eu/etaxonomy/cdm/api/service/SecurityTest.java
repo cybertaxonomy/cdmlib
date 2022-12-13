@@ -313,7 +313,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymType.HETEROTYPIC_SYNONYM_OF(), book , "33", SecReferenceHandlingEnum.KeepOrWarn, true);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymType.HETEROTYPIC_SYNONYM_OF, book , "33", SecReferenceHandlingEnum.KeepOrWarn, true);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -344,7 +344,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachersis, n_acherontia_styx, SynonymType.HOMOTYPIC_SYNONYM_OF(), book , "33", null, true);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachersis, n_acherontia_styx, SynonymType.HOMOTYPIC_SYNONYM_OF, book , "33", null, true);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -936,7 +936,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
 
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymType.SYNONYM_OF(), null, null, null, true);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymType.SYNONYM_OF, null, null, null, true);
 //            synonymUuid = synonym.getUuid();
 //            taxonService.saveOrUpdate(synonym);
             commitAndStartNewTransaction(null);

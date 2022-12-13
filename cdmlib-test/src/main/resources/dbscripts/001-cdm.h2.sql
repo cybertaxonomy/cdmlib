@@ -5104,11 +5104,11 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CURRENTCONCEPTPERIOD_START varchar(255),
         TAXONSTATUSUNKNOWN boolean,
         TAXONTYPES varchar(255),
+		TYPE VARCHAR(10),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
         ACCEPTEDTAXON_ID integer,
-        TYPE_ID integer,
         primary key (ID)
     );
 
@@ -5145,9 +5145,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         DOUBTFUL boolean,
         PUBLISH boolean,
         USENAMECACHE boolean,
-        CREATEDBY_ID integer,
-        UPDATEDBY_ID integer,
-        NAME_ID integer,
         CONCEPTDEFINITIONS varchar(255),
         CONCEPTID varchar(255),
         CONCEPTSTATUS varchar(255),
@@ -5156,8 +5153,11 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CURRENTCONCEPTPERIOD_START varchar(255),
         TAXONSTATUSUNKNOWN boolean,
         TAXONTYPES varchar(255),
+		TYPE VARCHAR(10),
         ACCEPTEDTAXON_ID integer,
-        TYPE_ID integer,
+        CREATEDBY_ID integer,
+        UPDATEDBY_ID integer,
+        NAME_ID integer,
         primary key (ID, REV)
     );
 
@@ -11376,11 +11376,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        add constraint FKfb64jyfxe0di03m6okc3l5bso 
        foreign key (ACCEPTEDTAXON_ID) 
        references PUBLIC.TAXONBASE;
-
-    alter table PUBLIC.TAXONBASE 
-       add constraint FKl5rtpkyfxbxmoc1chm6trmykn 
-       foreign key (TYPE_ID) 
-       references PUBLIC.DEFINEDTERMBASE;
 
     alter table PUBLIC.TAXONBASE_ANNOTATION 
        add constraint FKhod10mprpi6uhsfowir3vthjh 

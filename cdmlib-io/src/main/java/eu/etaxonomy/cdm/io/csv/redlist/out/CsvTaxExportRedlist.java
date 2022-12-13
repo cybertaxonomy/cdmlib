@@ -26,7 +26,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -249,7 +248,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 */
 	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase<?> taxonBase,
 			INonViralName name, Taxon acceptedTaxon, Classification classification,
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
+			TaxonRelationshipType relType, boolean isProParte, boolean isPartial,
 			CsvTaxExportConfiguratorRedlist config) {
 
 		List<Feature> features = config.getFeatures();
@@ -283,18 +282,14 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	private void handleTaxonomicStatus(
 			CsvTaxRecordRedlist record,
 			INonViralName name,
-			RelationshipTermBase<?> type,
+			TaxonRelationshipType type,
 			boolean isProParte,
 			boolean isPartial) {
 		if (type == null){
 			record.setTaxonomicStatus(name.getNameType().acceptedTaxonStatusLabel());
 		}else{
 			String status = name.getNameType().synonymStatusLabel();
-			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
-				status = "heterotypicSynonym";
-			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
-				status = "homotypicSynonym";
-			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
+			if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";
 			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
                 status = "proParteMisapplied";
@@ -318,7 +313,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		for (Synonym synonym :synonyms ){
 			SynonymType type = synonym.getType();
 			if (type == null){ // should not happen
-				type = SynonymType.SYNONYM_OF();
+				type = SynonymType.SYNONYM_OF;
 			}
 			INonViralName name = synonym.getName();
 			synonymLabels.add(name.getTitleCache());

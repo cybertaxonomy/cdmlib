@@ -1932,8 +1932,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// SynonymType
 		stepName = "Update termType for SynonymRelationship Type";
-		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
-				+ TermType.SynonymType.getKey() + "' "
+		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = 'SRT'"
 				+ " WHERE DTYPE = '"
 				+ SynonymType.class.getSimpleName() + "' ";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)

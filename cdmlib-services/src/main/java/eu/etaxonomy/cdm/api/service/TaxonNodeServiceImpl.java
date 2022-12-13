@@ -324,9 +324,9 @@ public class TaxonNodeServiceImpl
         HomotypicalGroup group = CdmBase.deproxy(newSynonymName.getHomotypicalGroup());
         if (synonymType == null){
             if (newSynonymName.isHomotypic(newAcceptedTaxon.getName())){
-                synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
+                synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
             }else{
-                synonymType = SynonymType.HETEROTYPIC_SYNONYM_OF();
+                synonymType = SynonymType.HETEROTYPIC_SYNONYM_OF;
             }
         }
 
@@ -356,7 +356,7 @@ public class TaxonNodeServiceImpl
         List<Synonym> synonymsInHomotypicalGroup = null;
 
         //the synonyms of the homotypical group of the old taxon
-        if (synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
+        if (synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF)){
         	synonymsInHomotypicalGroup = oldTaxon.getSynonymsInGroup(group);
         }
 
@@ -365,16 +365,16 @@ public class TaxonNodeServiceImpl
             SynonymType srt;
             if(synonym.getHomotypicGroup()!= null
                     && synonym.getHomotypicGroup().equals(newAcceptedTaxonName.getHomotypicalGroup())) {
-                srt = SynonymType.HOMOTYPIC_SYNONYM_OF();
-            } else if(synonym.getType() != null && synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF())) {
-            	if (synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
-            		srt = SynonymType.HOMOTYPIC_SYNONYM_OF();
+                srt = SynonymType.HOMOTYPIC_SYNONYM_OF;
+            } else if(synonym.getType() != null && synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF)) {
+            	if (synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF)){
+            		srt = SynonymType.HOMOTYPIC_SYNONYM_OF;
             	} else{
-            		srt = SynonymType.HETEROTYPIC_SYNONYM_OF();
+            		srt = SynonymType.HETEROTYPIC_SYNONYM_OF;
             	}
             } else {
                 if (synonymsInHomotypicalGroup != null && synonymsInHomotypicalGroup.contains(synonym)){
-                    srt = SynonymType.HOMOTYPIC_SYNONYM_OF();
+                    srt = SynonymType.HOMOTYPIC_SYNONYM_OF;
                 }else{
                     srt = synonym.getType();
                 }

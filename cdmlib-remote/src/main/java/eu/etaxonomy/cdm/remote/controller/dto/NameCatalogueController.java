@@ -859,7 +859,6 @@ public class NameCatalogueController
                             lsidString
                      );
 
-
                     Set<Synonym> syns = taxon.getSynonyms();
                     // add synonyms (if exists) to taxon information object
                     for (Synonym syn : syns) {
@@ -873,8 +872,7 @@ public class NameCatalogueController
                         String rank = (synnvn.getRank() == null)? "" : synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
                         String relLabel = syn.getType()
-                                .getInverseRepresentation(Language.DEFAULT())
-                                .getLabel();
+                                .getInverseRepresentation(Language.DEFAULT());
 
                         secTitle = "" ;
                         modified = "";
@@ -1022,8 +1020,7 @@ public class NameCatalogueController
                         String name = accnvn.getTitleCache();
                         String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
-                        String relLabel = synonym.getType().getRepresentation(Language.DEFAULT())
-                                .getLabel();
+                        String relLabel = synonym.getType().getLabel(Language.DEFAULT());
                         dt = accTaxon.getUpdated();
                         modified = fmt.print(dt);
 

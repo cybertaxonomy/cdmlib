@@ -13,9 +13,9 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
@@ -116,6 +116,6 @@ public interface IInputTransformer {
      * allows 4 results, [0] for synonym type, [1] for taxon relationship type
      * [2] for name relationship type and [3] for hybrid relationship type.
      */
-    public RelationshipTermBase<?>[] getSynonymRelationTypesByKey(String key, DbImportStateBase<?,?> state);
+    public IRelationshipType[] getSynonymRelationTypesByKey(String key, DbImportStateBase<?,?> state);
 
 }
