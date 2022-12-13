@@ -48,7 +48,9 @@ public class SingleTermRemover
 	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
 	        String uuidTerm, String firstCheckUsedQuery){
 		List<String> checkUsedQueries = new ArrayList<>();
-		checkUsedQueries.add(firstCheckUsedQuery);
+        if (firstCheckUsedQuery != null) {
+            checkUsedQueries.add(firstCheckUsedQuery);
+        }
 		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, false);
 	}
 
@@ -59,7 +61,9 @@ public class SingleTermRemover
     public static final SingleTermRemover NewAudInstance(List<ISchemaUpdaterStep> stepList, String stepName,
             String uuidTerm, String firstCheckUsedQuery){
         List<String> checkUsedQueries = new ArrayList<>();
-        checkUsedQueries.add(firstCheckUsedQuery);
+        if (firstCheckUsedQuery != null) {
+            checkUsedQueries.add(firstCheckUsedQuery);
+        }
         return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, true);
     }
 
