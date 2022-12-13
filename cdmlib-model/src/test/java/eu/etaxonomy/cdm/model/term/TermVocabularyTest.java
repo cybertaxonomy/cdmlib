@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +19,6 @@ import java.util.TreeSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,9 +28,10 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.compare.term.TermIdInVocabularyComparator;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-
 public class TermVocabularyTest extends EntityTestBase {
-	private static Logger logger = LogManager.getLogger(TermVocabularyTest.class);
+
+	@SuppressWarnings("unused")
+    private static Logger logger = LogManager.getLogger();
 
 	private DefinedTermBase<?> dtb1;
 	private DefinedTermBase<?> dtb2;
@@ -100,9 +99,8 @@ public class TermVocabularyTest extends EntityTestBase {
         for (DefinedTermBase<?> term:terms){
             result.add(term);
         }
-       assertEquals(result.first(), dtb3);
-       assertEquals(result.last(), dtb1);
-
+        assertEquals(result.first(), dtb3);
+        assertEquals(result.last(), dtb1);
 	}
 
 	@Test
@@ -110,11 +108,6 @@ public class TermVocabularyTest extends EntityTestBase {
 		assertEquals(3, voc1.getTerms().size());
 		//assertNotSame(voc1.terms, voc1.getTerms());
 		assertTrue( voc1.terms.getClass().isAssignableFrom(voc1.getTerms().getClass()));
-	}
-
-	@Test
-	public final void testSetTerms() {
-		logger.warn("Not yet implemented"); // TODO
 	}
 
 	@Test
@@ -177,5 +170,4 @@ public class TermVocabularyTest extends EntityTestBase {
 	public final void testGetTermClass() {
 //		assertEquals(dtb1.getClass(), voc1.getTermClass());
 	}
-
 }

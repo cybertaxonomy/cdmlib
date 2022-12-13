@@ -217,6 +217,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
     private ExternallyManaged externallyManaged;
 
+
 //***************************** CONSTRUCTOR *******************************************/
 
     //for hibernate use only, *packet* private required by bytebuddy
@@ -301,55 +302,54 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
 
 	@Override
-      public Set<T> getIncludes(){
-          return this.includes;
-      }
+    public Set<T> getIncludes(){
+        return this.includes;
+    }
 
-      /**
-       * @see #getIncludes()
-      */
-      protected void setIncludes(Set<T> includes) {
-          this.includes = includes;
-      }
+    /**
+     * @see #getIncludes()
+     */
+    protected void setIncludes(Set<T> includes) {
+        this.includes = includes;
+    }
 
-      /**
-       * @see #getIncludes()
-       */
-      public void addIncludes(T includes) {
-          checkTermType(includes);
-          includes.setPartOf(this);
-          this.includes.add(includes);
-      }
+    /**
+     * @see #getIncludes()
+     */
+    public void addIncludes(T includes) {
+        checkTermType(includes);
+        includes.setPartOf(this);
+        this.includes.add(includes);
+    }
 
-      /**
-       * @see #getIncludes()
-       */
-      public void removeIncludes(T includes) {
-          if(this.includes.contains(includes)) {
-              includes.setPartOf(null);
-              this.includes.remove(includes);
-          }
-      }
+    /**
+     * @see #getIncludes()
+     */
+    public void removeIncludes(T includes) {
+        if(this.includes.contains(includes)) {
+            includes.setPartOf(null);
+            this.includes.remove(includes);
+        }
+    }
 
-      @Override
-      public Set<Media> getMedia(){
-          return this.media;
-      }
+    @Override
+    public Set<Media> getMedia(){
+        return this.media;
+    }
 
-      public void addMedia(Media media) {
-          this.media.add(media);
-      }
-      public void removeMedia(Media media) {
-          this.media.remove(media);
-      }
+    public void addMedia(Media media) {
+        this.media.add(media);
+    }
+    public void removeMedia(Media media) {
+        this.media.remove(media);
+    }
 
-      public TermVocabulary<T> getVocabulary() {
-          return this.vocabulary;
-      }
-
-      //for bedirectional use only, use vocabulary.addTerm instead
-      protected void setVocabulary(TermVocabulary<T> newVocabulary) {
-          this.vocabulary = newVocabulary;
+    public TermVocabulary<T> getVocabulary() {
+        return this.vocabulary;
+    }
+    //for bedirectional use only, use vocabulary.addTerm instead
+    protected void setVocabulary(TermVocabulary<T> newVocabulary) {
+        this.vocabulary = newVocabulary;
     }
 
     public String getSymbol() {

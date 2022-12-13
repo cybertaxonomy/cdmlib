@@ -45,17 +45,8 @@ public class TermDto extends AbstractTermDto{
     private String idInVocabulary = null;
     private Collection<TermDto> includes;
     private Collection<TermDto> generalizationOf;
-//    this should be handled in vocabularyDto
-//    private Set<Representation> vocRepresentations = null;
-//    private String vocRepresentation_L10n = null;
-//    private String vocRepresentation_L10n_abbreviatedLabel = null;
     private Collection<UUID> media = null;
     private NamedAreaLevel level = null;
-
-//    private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
-//            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, String titleCache) {
-//        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, titleCache);
-//    }
 
     public TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,  String titleCache) {

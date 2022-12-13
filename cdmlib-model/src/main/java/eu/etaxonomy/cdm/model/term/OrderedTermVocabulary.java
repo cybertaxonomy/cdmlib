@@ -60,10 +60,6 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
      * @param type the {@link TermType term type}, must be the same as for all included terms
      * @param class the parameter is only used for correct generics handling
      * @param description the description of this vocabulary
-     * @param label
-     * @param labelAbbrev
-     * @param termSourceUri
-     * @return
      * @throws NullPointerException if type is <code>null</code>
      */
     public static <T extends DefinedTermBase<T>> OrderedTermVocabulary<T> NewOrderedInstance(TermType type, Class<T> clazz, String description, String label, String labelAbbrev, URI termSourceUri){
@@ -260,5 +256,4 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
     protected void setTermRelations(Set<TermNode> termRelations) {
         super.termRelations(termRelations);
     }
-
 }

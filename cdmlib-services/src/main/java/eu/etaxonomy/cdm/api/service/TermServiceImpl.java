@@ -342,11 +342,11 @@ public class TermServiceImpl
 			}
 
 			//included in
-			Set<DefinedTermBase> includedTerms = term.getIncludes();
+			Set<DefinedTermBase<?>> includedTerms = term.getIncludes();
 			if (includedTerms.size()> 0){
 			    if (config.isDeleteIncludedRelations()){
 			        DefinedTermBase parent = term.getPartOf();
-			        for (DefinedTermBase includedTerm: includedTerms){
+			        for (DefinedTermBase<?> includedTerm: includedTerms){
 			            term.removeIncludes(includedTerm);
 			            if (parent != null){
 			                parent.addIncludes(includedTerm);
@@ -483,9 +483,9 @@ public class TermServiceImpl
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;
         for (NamedArea area: areas){
             if (type.equals(TermSearchField.NoAbbrev)){
-                uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), area.labelWithLevel(area, lang));
+                uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), NamedArea.labelWithLevel(area, lang));
             }else{
-                String display = area.labelWithLevel(area, lang);
+                String display = NamedArea.labelWithLevel(area, lang);
                 if (type.equals(TermSearchField.IDInVocabulary)){
                     display += " - " + area.getIdInVocabulary();
                 }else if (type.equals(TermSearchField.Symbol1)){
@@ -527,7 +527,7 @@ public class TermServiceImpl
         TermVocabulary vocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(termDto.getVocabularyUuid()));
         DefinedTermBase parent = HibernateProxyHelper.deproxy(dao.load(parentUuid));
         UpdateResult result = new UpdateResult();
-        if(parent==null){
+        if(parent == null){
             //new parent is a vocabulary
             TermVocabulary parentVocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(parentUuid));
             DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));

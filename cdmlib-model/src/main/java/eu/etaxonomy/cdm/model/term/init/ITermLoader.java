@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term.init;
 
 import java.util.List;
@@ -23,10 +22,6 @@ public interface ITermLoader {
 	/**
 	 * Loads the terms for the DefinedTermBase subclass defined by vocType.
 	 * The terms will be loadded into the terms map and
-	 * @param <T>
-	 * @param vocType
-	 * @param terms
-	 * @return
 	 */
 	public <T extends DefinedTermBase<T>> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms);
 

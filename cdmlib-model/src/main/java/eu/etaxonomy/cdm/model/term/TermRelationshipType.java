@@ -53,7 +53,7 @@ public class TermRelationshipType extends RelationshipTermBase<TermRelationshipT
 
     private static final long serialVersionUID = 6575652105931691670L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TermRelationshipType.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	protected static Map<UUID, TermRelationshipType> termMap = null;
 
