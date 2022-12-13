@@ -16,8 +16,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTest {
 
 	@SuppressWarnings("unused")
-	private static Log log = LogFactory.getLog(FreeTextSearchIntegrationTest.class);
+	private static final Logger loger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private ITaxonDao taxonDao;
@@ -70,7 +70,7 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
 	@Test
 	public void testSearchTextData() {
 		List<OrderHint> orderHints = new ArrayList<>();
-		orderHints.add(new OrderHint("inDescription.titleCache",SortOrder.ASCENDING));
+		orderHints.add(new OrderHint("inDescription.titleCache", SortOrder.ASCENDING));
 
 		List<String> propertyPaths = new ArrayList<>();
 		propertyPaths.add("inDescription");
@@ -143,11 +143,11 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
     @Test
     public void testSearchWildcard()  {
     	List<OrderHint> orderHints = new ArrayList<>();
-    	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
+    	orderHints.add(new OrderHint("name.titleCache", SortOrder.ASCENDING));
     	List<String> propertyPaths = new ArrayList<>();
     	propertyPaths.add("name");
 
-		List<TaxonBase> results = taxonDao.search(null,"Aroph*",  null, null,orderHints,propertyPaths);
+		List<TaxonBase> results = taxonDao.search(null, "Aroph*",  null, null, orderHints, propertyPaths);
 		assertEquals("searchTaxa should return 6 taxa",7,results.size());
     }
 
@@ -171,7 +171,7 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
     @Ignore //we currently don't use suggest anymore
     public void testSuggestMultipleTermsInCompositeQuery() {
     	String suggestion = taxonDao.suggestQuery("Aram italocum");
-    	assertNotNull("suggestQuery should return a String",suggestion);
+    	assertNotNull("suggestQuery should return a String", suggestion);
     	assertEquals("The spelling suggestion for \"Aram italocum\" should be \"arum italicum\"","arum italicum",suggestion);
     }
 
