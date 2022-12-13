@@ -138,9 +138,6 @@ public abstract class Cdm2CdmImportBase
     private static final long serialVersionUID = 1344722304369624443L;
     private static final Logger logger = LogManager.getLogger();
 
-    //quick and dirty
-    private Cdm2CdmImportState stateX;
-
     protected ICdmApplication sourceRepo(Cdm2CdmImportState state){
         ICdmApplication repo = state.getSourceRepository();
         if (repo == null){

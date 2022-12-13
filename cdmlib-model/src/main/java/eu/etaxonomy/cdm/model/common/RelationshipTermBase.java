@@ -71,7 +71,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
           extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(RelationshipTermBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Symmetrical")
 	@Field(analyze = Analyze.NO)

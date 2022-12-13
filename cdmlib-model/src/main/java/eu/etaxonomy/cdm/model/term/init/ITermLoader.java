@@ -51,12 +51,8 @@ public interface ITermLoader {
 	 * @param vocType VocabularyEnum
 	 * @param voc vocabulary
 	 * @param missingTerms Set of UUIDs for terms to be loaded.
-	 * @return
 	 */
 	public <T extends DefinedTermBase<T>, S extends OrderedTermBase<S>> Set<T> loadSingleTerms(VocabularyEnum vocType, TermVocabulary<T> voc,
 				Set<UUID> missingTerms);
-
-
-
 
 }

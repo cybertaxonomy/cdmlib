@@ -44,7 +44,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 
 	private static final long serialVersionUID = -7977901140330659208L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(NamedAreaLevel.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	protected static Map<UUID, NamedAreaLevel> termMap = null;
 

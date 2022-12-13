@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -44,8 +43,6 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 
     /**
      * Returns a term according to it's uri
-     * @param uri
-     * @return
      */
     public DefinedTermBase getByUri(URI uri);
 

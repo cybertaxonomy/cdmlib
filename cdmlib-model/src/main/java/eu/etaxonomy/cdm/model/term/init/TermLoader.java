@@ -139,6 +139,7 @@ public class TermLoader implements ITermLoader {
 	            String[] csvLine, Map<UUID,DefinedTermBase> terms, Class<T> termClass,
 			TermVocabulary<T> voc, boolean abbrevAsId, S lastTerm,
 			T classDefiningTermInstance) {
+
 		T term = classDefiningTermInstance.readCsvLine(termClass, arrayedLine(csvLine), voc.getTermType(), terms, abbrevAsId);
 		terms.put(term.getUuid(), term);
 		if (voc.isInstanceOf(OrderedTermVocabulary.class) && term.isInstanceOf(OrderedTermBase.class)){
@@ -157,7 +158,6 @@ public class TermLoader implements ITermLoader {
 		    return null;
 		}
 	}
-
 
 	@Override
 	public <T extends DefinedTermBase<T>,S extends OrderedTermBase<S>> Set<T> loadSingleTerms(VocabularyEnum vocType,
