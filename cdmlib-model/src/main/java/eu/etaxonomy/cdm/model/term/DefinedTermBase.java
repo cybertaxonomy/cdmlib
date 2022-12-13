@@ -379,7 +379,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
      * <b>a.oderIndex &lt; b.oderIndex : a &gt; b</b>
      * @return the order index of a term or <code>null</code> if the term is not ordered in it's vocabulary
      */
-    public int getOrderIndex() {
+    public Integer getOrderIndex() {
         return orderIndex;
     }
 
