@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -38,9 +38,9 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  * @since 15.03.2010
  */
 public class InputTransformerBase implements IInputTransformer, Serializable {
+
     private static final long serialVersionUID = 1824180329524647957L;
-    @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(InputTransformerBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
@@ -247,5 +247,4 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
         logger.warn(warning);
         return null;
     }
-
 }

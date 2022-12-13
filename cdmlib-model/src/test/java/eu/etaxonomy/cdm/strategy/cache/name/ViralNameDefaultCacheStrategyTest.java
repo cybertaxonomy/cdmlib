@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class ViralNameDefaultCacheStrategyTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ViralNameDefaultCacheStrategyTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private TaxonNameDefaultCacheStrategy strategy;
     private TaxonName viralName;
@@ -38,7 +39,7 @@ public class ViralNameDefaultCacheStrategyTest extends TermTestBase {
         viralName = TaxonNameFactory.NewViralInstance(Rank.SPECIES()); //TODO do viral names have ranks? See comment on #IViralName
     }
 
-/********* TEST *******************************************/
+//********* TEST *******************************************/
 
     @Test
     public final void testNewInstance() {

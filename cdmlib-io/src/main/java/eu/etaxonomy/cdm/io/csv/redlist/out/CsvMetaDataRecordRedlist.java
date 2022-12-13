@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.csv.redlist.out;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 
@@ -22,7 +23,7 @@ import eu.etaxonomy.cdm.common.URI;
 public class CsvMetaDataRecordRedlist {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CsvMetaDataRecordRedlist.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private String fileLocation;
 	private String rowType;

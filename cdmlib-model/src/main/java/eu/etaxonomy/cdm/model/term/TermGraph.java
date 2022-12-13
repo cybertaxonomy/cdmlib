@@ -39,7 +39,7 @@ public class TermGraph <T extends DefinedTermBase>
             extends TermGraphBase<T, TermRelation<T>> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
-	private static final Logger logger = LogManager.getLogger(TermGraph.class);
+	private static final Logger logger = LogManager.getLogger();
 
 //******************** FACTORY METHODS ******************************************/
 

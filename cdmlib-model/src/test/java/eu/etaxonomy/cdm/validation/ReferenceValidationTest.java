@@ -17,7 +17,8 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.groups.Default;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +36,10 @@ import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
  */
 @SuppressWarnings("unused")
 public class ReferenceValidationTest extends ValidationTestBase {
-	private static final Logger logger = LogManager.getLogger(ReferenceValidationTest.class);
 
-	private IBook book;
+    private static final Logger logger = LogManager.getLogger();
+
+    private IBook book;
 
 	@Before
 	public void setUp() {
@@ -46,7 +48,7 @@ public class ReferenceValidationTest extends ValidationTestBase {
 		book.setIsbn("1-919795-99-5");
 	}
 
-/****************** TESTS *****************************/
+//****************** TESTS *****************************/
 
 	/**
 	 * Test validation at the second level with a valid reference

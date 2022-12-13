@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,6 +59,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 public class SpecimenTest {
 
+    private static final Logger logger = LogManager.getLogger();
+
     /**
      * @author a.kohlbecker
      * @since Jan 18, 2021
@@ -68,8 +71,6 @@ public class SpecimenTest {
             return o1.getTitleCache().compareTo(o2.getTitleCache());
         }
     }
-
-    private static final Logger logger = LogManager.getLogger(SpecimenTest.class);
 
 	private DerivedUnit specimen;
 
@@ -209,7 +210,6 @@ public class SpecimenTest {
 		desig1.setTypeSpecimen(specimen);
 		Assert.assertEquals("Desig1 should have specimen1 as specimen again", specimen, desig1.getTypeSpecimen());
 		Assert.assertEquals("Specimen1 should have 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
-
 	}
 
 	@Test
@@ -459,7 +459,5 @@ public class SpecimenTest {
         assertEquals(fieldUnit1, rootSOBsSorted.get(0));
         assertEquals(fieldUnit2, rootSOBsSorted.get(1));
         assertEquals(specimen3, rootSOBsSorted.get(2));
-
-
     }
 }

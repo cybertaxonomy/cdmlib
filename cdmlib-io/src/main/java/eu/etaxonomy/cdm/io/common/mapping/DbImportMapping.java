@@ -13,7 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IImportConfigurator>
             extends CdmIoMapping {
 
-    private static final Logger logger = LogManager.getLogger(DbImportMapping.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private boolean isInitialized = false;
 	private Class<? extends CdmBase> destinationClass;

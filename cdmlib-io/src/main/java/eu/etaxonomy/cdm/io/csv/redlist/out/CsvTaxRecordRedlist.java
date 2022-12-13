@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -23,12 +24,11 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 /**
  * @author a.oppermann
  * @since 18.10.2012
- *
  */
 public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CsvTaxRecordRedlist.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private String scientificNameId;
 	private String scientificName;
@@ -43,20 +43,13 @@ public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 	private List<Feature> features;
 	private List<List<String>> featuresCells;
 
-	/**
-	 * 
-	 * @param metaDataRecord
-	 * @param config
-	 */
 	public CsvTaxRecordRedlist(CsvMetaDataRecordRedlist metaDataRecord, CsvTaxExportConfiguratorRedlist config){
 		super(metaDataRecord, config);
 		datasetId = new CsvId(config);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
-	 */
-	protected void registerKnownFields(){
+	@Override
+    protected void registerKnownFields(){
 		try {
 			addKnownField(TermUri.DWC_SCIENTIFIC_NAME);
 			addKnownField(TermUri.DWC_TAXONOMIC_STATUS);
@@ -67,7 +60,8 @@ public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 		}
 	}
 
-	public void write(PrintWriter writer) {
+	@Override
+    public void write(PrintWriter writer) {
 		if(isHeadLinePrinted()){
 			printHeadline(writer, setHeadlines(), TermUri.DWC_DATASET_NAME);
 			isHeadLinePrinted=false;
@@ -130,7 +124,7 @@ public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 
 	//FIXME: hard coded header lines
 	private ArrayList<String> setHeadlines(){
-		headlines = new ArrayList<String>(); 
+		headlines = new ArrayList<String>();
 		Collections.addAll(headlines, "Classification","Wissenschaftlicher Name","Taxon ID","Taxon Status","Synonym","Distribution");
 
 		if(features != null || !features.isEmpty()){
@@ -155,12 +149,10 @@ public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 
 	public void setPrintFeatures(List<Feature> features) {
 		this.features = features;
-		
+
 	}
 
 	public void setFeatures(List<List<String>> featureCells) {
 		this.featuresCells = featureCells;
-		
 	}
-
 }

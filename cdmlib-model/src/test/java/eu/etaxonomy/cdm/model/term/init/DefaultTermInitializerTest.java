@@ -13,7 +13,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
  */
 public class DefaultTermInitializerTest {
 
-    static Logger logger = LogManager.getLogger(DefaultTermInitializerTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private DefaultTermInitializer defaultVocabularyStore;
 	private UUID uuidEnglish;
@@ -38,7 +39,7 @@ public class DefaultTermInitializerTest {
 		uuidGerman = UUID.fromString("d1131746-e58b-4e80-a865-f5182c9c3073");
 	}
 
-/*********************** TEST *************************************************/
+//*********************** TEST *************************************************/
 
 	@Test
 	public void testInitialize() {

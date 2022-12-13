@@ -13,7 +13,8 @@ import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -50,7 +51,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 public class TestSpecimen {
 
-	private static final Logger logger = LogManager.getLogger(TestSpecimen.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public void testSpecimen(){
 		logger.info("Create test taxon ...");

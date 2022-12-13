@@ -8,33 +8,23 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author a.mueller
  * @since 03.01.2011
- *
  */
 public class ZoologicalNameTest {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ZoologicalNameTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private IZoologicalName zooName1;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(), "Aus", null, "bus", "infracus", null, null, null, null);
@@ -42,18 +32,14 @@ public class ZoologicalNameTest {
 
 //****************** TESTS ******************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.ZoologicalName#clone()}.
-	 */
 	@Test
 	public void testClone() {
 		zooName1.setBreed("breed");
 		zooName1.setPublicationYear(1956);
 		zooName1.setOriginalPublicationYear(1867);
-		IZoologicalName clone = (IZoologicalName)zooName1.clone();
+		IZoologicalName clone = zooName1.clone();
 		Assert.assertEquals("Breed should be equal", "breed", clone.getBreed());
 		Assert.assertEquals("Publication year should be equal", Integer.valueOf(1956), clone.getPublicationYear());
 		Assert.assertEquals("Original publication year should be equal", Integer.valueOf(1867), clone.getOriginalPublicationYear());
 	}
-
 }

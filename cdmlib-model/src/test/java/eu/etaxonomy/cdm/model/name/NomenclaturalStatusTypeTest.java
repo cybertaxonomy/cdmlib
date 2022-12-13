@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertEquals;
@@ -14,7 +13,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -24,8 +24,9 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @since 25.03.2009
  */
 public class NomenclaturalStatusTypeTest extends EntityTestBase {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(NomenclaturalStatusTypeTest.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final UUID uuidDoubtful = UUID.fromString("0ffeb39e-872e-4c0f-85ba-a4150d9f9e7d");
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
@@ -41,7 +42,6 @@ public class NomenclaturalStatusTypeTest extends EntityTestBase {
 	public void testDoubtful() {
 		assertEquals(uuidDoubtful,  NomenclaturalStatusType.DOUBTFUL().getUuid());
 	}
-
 
 	@Test
 	public void testCombNov() {

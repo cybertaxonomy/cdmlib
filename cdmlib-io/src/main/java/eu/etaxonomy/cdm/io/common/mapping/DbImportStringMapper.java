@@ -6,11 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -19,10 +19,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @since 24.02.2010
  */
-public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
+public class DbImportStringMapper
+        extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DbImportStringMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public static DbImportStringMapper NewInstance (String dbAttributeString, String cdmAttributeString) {
 		boolean obligatory = false;
@@ -53,5 +54,4 @@ public class DbImportStringMapper extends DbSingleAttributeImportMapperBase<DbIm
 	public Class getTypeClass() {
 		return String.class;
 	}
-
 }

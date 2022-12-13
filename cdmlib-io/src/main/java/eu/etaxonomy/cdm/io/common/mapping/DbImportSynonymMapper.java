@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
         extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 
-    private static final Logger logger = LogManager.getLogger(DbImportSynonymMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 //******************************* ATTRIBUTES ***************************************/
 
@@ -218,7 +218,6 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 
 	/**
 	 * Checks if cdmBase is of type Synonym
-	 * @param taxonRelType
 	 */
 	private TaxonBase<?> checkSynonymType(CdmBase cdmBase, String id, TaxonRelationshipType taxonRelType) {
 		if (! cdmBase.isInstanceOf(Synonym.class)){

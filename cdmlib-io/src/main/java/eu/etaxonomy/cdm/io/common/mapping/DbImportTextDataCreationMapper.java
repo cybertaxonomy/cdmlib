@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.description.TextFormat;
 
 /**
  * This Mapper creates a text data element and adds it to a taxon.
+ *
  * @author a.mueller
  * @since 11.03.2010
  */
@@ -30,17 +31,12 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
         extends DbImportDescriptionElementCreationMapperBase<TextData, DbImportStateBase<?,?>> {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DbImportTextDataCreationMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 //******************************** FACTORY METHOD ***************************************************/
 
 	/**
 	 * Creates a TextData and adds it to the description of a taxon.
-	 * @param dbIdAttribute
-	 * @param objectToCreateNamespace
-	 * @param dbTaxonFkAttribute
-	 * @param taxonNamespace
-	 * @return
 	 */
 	public static DbImportTextDataCreationMapper<?> NewInstance(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace){
 		Feature feature = null;
@@ -53,12 +49,6 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 	/**
 	 * Creates a TextData, adds the the in the language and the format defined and then adds it to the description of a taxon.
 	 * If language is <code>null</code> the default language is taken instead.
-	 * @param dbIdAttribute
-	 * @param objectToCreateNamespace
-	 * @param dbTaxonFkAttribute
-	 * @param taxonNamespace
-	 * @param status
-	 * @return
 	 */
 	public static DbImportTextDataCreationMapper<?> NewInstance(String dbIdAttribute, String objectToCreateNamespace, String dbTaxonFkAttribute, String taxonNamespace, String dbTextAttribute, Language language, Feature feature, TextFormat format){
 		return new DbImportTextDataCreationMapper<>(dbIdAttribute, objectToCreateNamespace, dbTaxonFkAttribute, taxonNamespace, dbTextAttribute, language, feature, format);
@@ -72,12 +62,7 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 	protected String dbTextAttribute;
 
 //********************************* CONSTRUCTOR ****************************************/
-	/**
-	 * @param dbIdAttribute
-	 * @param objectToCreateNamespace
-	 * @param dbTaxonFkAttribute
-	 * @param taxonNamespace
-	 */
+
 	protected DbImportTextDataCreationMapper(String dbIdAttribute, String objectToCreateNamespace,
 	        String dbTaxonFkAttribute, String taxonNamespace, String dbTextAttribute, Language language,
 	        Feature feature, TextFormat format) {

@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImportConfiguratorBase<STATE>,?>>
         extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 
-    private static final Logger logger = LogManager.getLogger(DbImportTaxIncludedInMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 //******************************** FACTORY METHOD ***************************************************/
 
@@ -63,7 +63,8 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
     }
 
 //******************************* ATTRIBUTES ***************************************/
-	private String fromAttribute;
+
+    private String fromAttribute;
 	private String toAttribute;
 
 	private String fromNamespace;
@@ -175,22 +176,9 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 		return fromTaxon;
 	}
 
-
-
-
-
 	/**
 	 * TODO copied from BM import. May be more generic
-	 * @param state
-	 * @param classificationMap
-	 * @param treeRefFk
-	 * @param child
-	 * @param parent
-	 * @param citation
-	 * @param microCitation
-	 * @return
-	 */
-
+     */
 	public static final String TAXONOMIC_TREE_NAMESPACE = "Classification";
 
 	private boolean makeTaxonomicallyIncluded(STATE state, Integer classificationRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
@@ -222,13 +210,8 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 		return (childNode != null);
 	}
 
-
 	/**
 	 *	//TODO copied from DbImportObjectMapper. Maybe these can be merged again in future
-	 * @param rs
-	 * @param dbAttribute
-	 * @return
-	 * @throws SQLException
 	 */
 	@Override
     protected CdmBase getRelatedObject(ResultSet rs, String dbAttribute, String namespace) throws SQLException {
@@ -242,13 +225,8 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 		return result;
 	}
 
-
 	/**
 	 * Checks if cdmBase is of type Taxon
-	 * @param taxonBase
-	 * @param typeString
-	 * @param id
-	 * @return
 	 */
 	private Taxon checkTaxonType(TaxonBase<?> taxonBase, String typeString, String id) throws IllegalArgumentException{
 		if (! taxonBase.isInstanceOf(Taxon.class)){

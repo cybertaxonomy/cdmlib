@@ -14,7 +14,8 @@ import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.Method;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ZoologicalNameCacheStrategyTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private TaxonNameDefaultCacheStrategy strategy;
 	private TaxonName familyName;

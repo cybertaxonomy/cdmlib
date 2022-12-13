@@ -13,7 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -25,11 +26,11 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @author a.mueller
  * @since 24.02.2010
  */
-public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase>{
+public class DbImportTruncatedStringMapper
+        extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DbImportTruncatedStringMapper.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     private String longTextAttribute;
     private int truncatedLength = 255;
@@ -91,7 +92,6 @@ public class DbImportTruncatedStringMapper extends DbSingleAttributeImportMapper
 			return invokeTruncatedValue(cdmBase, strValue);
 		}else{
 			return doNotTruncate(cdmBase, strValue);
-
 		}
 	}
 

@@ -14,7 +14,8 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonNameDefaultCacheStrategyTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private TaxonNameDefaultCacheStrategy strategy;
 

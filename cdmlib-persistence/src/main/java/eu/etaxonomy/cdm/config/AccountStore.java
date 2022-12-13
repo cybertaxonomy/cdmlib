@@ -6,8 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
-
 package eu.etaxonomy.cdm.config;
 
 import java.io.File;
@@ -17,14 +15,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
-
 public class AccountStore {
 
-    private static Logger logger = LogManager.getLogger(AccountStore.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public final static File accountsFile = new File(ConfigFileUtil.perUserCdmFolderFallback() + File.separator + ".dbaccounts.properties");
 
@@ -137,6 +135,5 @@ public class AccountStore {
         logger.info(a.getPassword(dbms, strServer, userName));
         a.removePassword(dbms, strServer, userName);
         logger.info(a.getPassword(dbms, strServer, userName));
-
     }
 }

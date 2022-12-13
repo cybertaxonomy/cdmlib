@@ -11,12 +11,10 @@ package eu.etaxonomy.cdm.model.reference;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
@@ -29,8 +27,9 @@ import org.springframework.beans.BeanUtils;
  * @since 23.03.2009
  */
 public class PublicationBaseTest {
+
 	@SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(PublicationBaseTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private IBook reference;
 	private IArticle reference2;
@@ -39,23 +38,6 @@ public class PublicationBaseTest {
 	private String place1;
 	private String place2;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		publisher1 = "publisher1";
@@ -64,21 +46,8 @@ public class PublicationBaseTest {
 		place2 = "place2";
 		reference = ReferenceFactory.newBook();
 		reference2 = ReferenceFactory.newArticle();
-
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	public void testAddPublisherStringString() {
 		assertEquals("No publisher is set", null, reference.getPublisher());
@@ -97,9 +66,7 @@ public class PublicationBaseTest {
 		reference2.setInJournal(journal);
 		//TODO: to validate it, the object has to be saved to the db
 		IBookSection booksection = ((Reference)reference2).castReferenceToBookSection();
-
 	}
-
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.reference.Reference#clone()}.

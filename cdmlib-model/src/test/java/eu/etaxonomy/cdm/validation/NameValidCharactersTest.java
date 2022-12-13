@@ -17,7 +17,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.internal.constraintvalidators.bv.PatternValidator;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -37,9 +38,10 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
  */
 @SuppressWarnings("unused")
 public class NameValidCharactersTest extends ValidationTestBase  {
-	private static final Logger logger = LogManager.getLogger(NameValidCharactersTest.class);
 
-	private IBotanicalName name;
+    private static final Logger logger = LogManager.getLogger();
+
+    private IBotanicalName name;
 
 	@Before
 	public void setUp() {

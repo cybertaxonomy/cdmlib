@@ -16,7 +16,8 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.groups.Default;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.validation.constraint.CorrectRanksForCodeValidator;
 public class CorrectRanksForCodeTest extends ValidationTestBase {
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CorrectRanksForCodeTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private IBotanicalName name;
 

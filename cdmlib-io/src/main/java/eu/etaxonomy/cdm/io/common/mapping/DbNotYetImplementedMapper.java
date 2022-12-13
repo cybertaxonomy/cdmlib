@@ -12,7 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -25,7 +26,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 25.02.2010
  */
 public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, CdmBase> {
-	private static final Logger logger = LogManager.getLogger(DbNotYetImplementedMapper.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	public static DbNotYetImplementedMapper NewInstance(String dbAttributeToIgnore){
 		return new DbNotYetImplementedMapper(dbAttributeToIgnore, null, null, null);
