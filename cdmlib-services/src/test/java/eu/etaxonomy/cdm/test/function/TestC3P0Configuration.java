@@ -9,7 +9,8 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,10 +31,11 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
  */
 @Ignore /* IGNORE in Suite */
 public class TestC3P0Configuration{
-	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TestC3P0Configuration.class);
 
-	CdmApplicationController appController;
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
+
+	private CdmApplicationController appController;
 
 	@Before
 	public void setup(){
@@ -44,11 +46,8 @@ public class TestC3P0Configuration{
 	@Test
 	public void testLongSession() throws InterruptedException{
 		appController.NewConversation();
-
 		appController.getTaxonService().list(null, null, null, null,null);
-
 		Thread.sleep(70 * 1000);
-
 		appController.getTaxonService().list(null, null, null, null,null);
 	}
 }

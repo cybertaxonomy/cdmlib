@@ -15,7 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class TermLoaderIntegrationTest extends CdmIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TermLoaderIntegrationTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private UUID taxonomicallyIncludedInUuid;
 
