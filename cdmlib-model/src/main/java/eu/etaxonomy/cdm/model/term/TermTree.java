@@ -69,8 +69,7 @@ public class TermTree <T extends DefinedTermBase>
             implements ITermTree<T, TermNode> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
-	private static final Logger logger = LogManager.getLogger(TermTree.class);
-
+	private static final Logger logger = LogManager.getLogger();
 
     // TODO representations needed? TermTree was a TermBase until v3.3 but was removed from
     //it as TermBase got the termType which does not apply to TermTree.

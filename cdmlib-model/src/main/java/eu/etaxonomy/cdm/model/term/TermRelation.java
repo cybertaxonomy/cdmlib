@@ -44,8 +44,7 @@ public abstract class TermRelation<T extends DefinedTermBase>
     private static final long serialVersionUID = -7835146268318871033L;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermRelation.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "ToTerm")
     @XmlIDREF

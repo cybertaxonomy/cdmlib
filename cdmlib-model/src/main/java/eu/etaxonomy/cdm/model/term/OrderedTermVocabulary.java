@@ -84,7 +84,7 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 
 	@Transient
 	@Override
-	protected Set<T> newTermSet() {
+	Set<T> newTermSet() {
 		return new TreeSet<T>();
 	}
 
@@ -106,7 +106,7 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		SortedSet<T> result = getHigherAndEqualTerms(otb);
 		for (DefinedTermBase<?> setObjectUnproxied : terms){
 		    @SuppressWarnings("unchecked")
-            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, DefinedTermBase.class);
+            T setObject = (T)CdmBase.deproxy(setObjectUnproxied);
             if (setObject.compareTo(otb) == 0){
 				result.remove(setObject);
 			}
