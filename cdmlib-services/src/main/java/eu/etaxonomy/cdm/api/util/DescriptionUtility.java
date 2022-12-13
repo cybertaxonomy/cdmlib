@@ -60,7 +60,7 @@ public class DescriptionUtility {
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see
-     * {@link OrderedTermBase#compareTo(OrderedTermBase)}. This rule is
+     * {@link DefinedTermBase#compareTo(DefinedTermBase)}. This rule is
      * optional, see parameter <code>statusOrderPreference</code></li>
      * <li><b>Sub area preference rule</b>: If there is an area with a <i>direct
      * sub area</i> and both areas have the same status only the

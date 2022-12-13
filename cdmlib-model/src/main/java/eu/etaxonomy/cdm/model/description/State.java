@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class State extends OrderedTermBase<State> {
+public class State extends DefinedTermBase<State> {
 
 	private static final long serialVersionUID = -4816292463790262516L;
 	@SuppressWarnings("unused")

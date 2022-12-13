@@ -25,13 +25,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
  * @since 22.07.2010
- *
  */
 @Controller
 @Api("term")
@@ -51,23 +49,18 @@ public class TermController
 
     /**
      * TODO write controller method documentation
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET,	value = "compareTo/{uuidThat}")
-    public ModelAndView doCompare(
+    public <T extends DefinedTermBase<T>> ModelAndView doCompare(
             @PathVariable("uuid") UUID uuid,
             @PathVariable("uuidThat") UUID uuidThat,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
-        DefinedTermBase<?> thisTerm = service.load(uuid, TERM_COMPARE_INIT_STRATEGY);
-        DefinedTermBase<?> thatTerm = service.load(uuidThat, TERM_COMPARE_INIT_STRATEGY);
+        T thisTerm = (T)service.load(uuid, TERM_COMPARE_INIT_STRATEGY);
+        T thatTerm = (T)service.load(uuidThat, TERM_COMPARE_INIT_STRATEGY);
         if(thisTerm.getVocabulary().equals(thatTerm.getVocabulary())){
-            if(OrderedTermBase.class.isAssignableFrom(thisTerm.getClass())){
-                Integer result = ((OrderedTermBase)thisTerm).compareTo((OrderedTermBase)thatTerm);
+            if(thisTerm.isOrderRelevant()){
+                Integer result = thisTerm.compareTo(thatTerm);
                 mv.addObject(result);
                 return mv;
             }else{

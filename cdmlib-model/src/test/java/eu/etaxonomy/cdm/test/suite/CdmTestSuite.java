@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.TextDataTest;
 import eu.etaxonomy.cdm.model.name.BotanicalNameTest;
 import eu.etaxonomy.cdm.model.taxon.TaxonTest;
 import eu.etaxonomy.cdm.model.term.DefinedTermBaseTest;
-import eu.etaxonomy.cdm.model.term.OrderedTermBaseTest;
+import eu.etaxonomy.cdm.model.term.OrderedTermTest;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabularyTest;
 import eu.etaxonomy.cdm.model.term.TermVocabularyTest;
 import eu.etaxonomy.cdm.model.term.init.TermLoaderTest;
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 			//common
 			CdmBaseTest.class,
 			DefinedTermBaseTest.class,
-			OrderedTermBaseTest.class,
+			OrderedTermTest.class,
 			OrderedTermVocabularyTest.class,
 			TermLoaderTest.class,
 			TermVocabularyTest.class,
@@ -67,7 +67,7 @@ public class CdmTestSuite {
 				//common
 				CdmBaseTest.class,
 				DefinedTermBaseTest.class,
-				OrderedTermBaseTest.class,
+				OrderedTermTest.class,
 				OrderedTermVocabularyTest.class,
 				TermLoaderTest.class,
 				TermVocabularyTest.class,

@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -601,7 +601,7 @@ public class DistributionAggregation
     }
 
 
-    private String termToString(OrderedTermBase<?> term) {
+    private String termToString(DefinedTermBase<?> term) {
         if(logger.isTraceEnabled()) {
             return term.getLabel() + " [" + term.getIdInVocabulary() + "]";
         } else {

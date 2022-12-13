@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlRootElement(name = "OrderedTermVocabulary")
 @Entity
 @Audited
-public class OrderedTermVocabulary<T extends OrderedTermBase>
+public class OrderedTermVocabulary<T extends DefinedTermBase>
         extends TermVocabulary<T>
         implements ITermGraph<T, TermNode>    {
 
@@ -66,7 +66,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
      * @return
      * @throws NullPointerException if type is <code>null</code>
      */
-    public static <T extends OrderedTermBase<T>> OrderedTermVocabulary<T> NewOrderedInstance(TermType type, Class<T> clazz, String description, String label, String labelAbbrev, URI termSourceUri){
+    public static <T extends DefinedTermBase<T>> OrderedTermVocabulary<T> NewOrderedInstance(TermType type, Class<T> clazz, String description, String label, String labelAbbrev, URI termSourceUri){
         return new OrderedTermVocabulary<T>(type, description, label, labelAbbrev, termSourceUri, null);
     }
 
@@ -110,7 +110,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 		SortedSet<T> result = getHigherAndEqualTerms(otb);
 		for (DefinedTermBase<?> setObjectUnproxied : terms){
 		    @SuppressWarnings("unchecked")
-            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, OrderedTermBase.class);
+            T setObject = (T)CdmBase.deproxy(setObjectUnproxied, DefinedTermBase.class);
             if (setObject.compareTo(otb) == 0){
 				result.remove(setObject);
 			}
@@ -233,16 +233,15 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	@Transient
 	private T toBeChangedByObject;
 
-	boolean indexChangeAllowed(OrderedTermBase orderedTermBase){
-		return orderedTermBase == toBeChangedByObject ;
+	boolean indexChangeAllowed(DefinedTermBase term){
+		return term == toBeChangedByObject ;
 	}
 
 	@Transient
 	private SortedSet<T> getSortedSetOfTerms(){
 		SortedSet<T> sortedSet = new TreeSet<>();
-		for (DefinedTermBase<?> termUnproxied : terms){
-            @SuppressWarnings("unchecked")
-            T term = (T)CdmBase.deproxy(termUnproxied, OrderedTermBase.class);
+		for (T termUnproxied : terms){
+            T term = CdmBase.deproxy(termUnproxied);
             sortedSet.add(term);
         }
 		return sortedSet;

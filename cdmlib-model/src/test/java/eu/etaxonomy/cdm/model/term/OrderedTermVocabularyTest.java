@@ -28,38 +28,26 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
     @SuppressWarnings("unused")
     private static Logger logger = LogManager.getLogger();
 
-	private OrderedTermBase<?> otb1;
-	private OrderedTermBase<?> otb2;
-	private OrderedTermBase<?> otb3;
-	private OrderedTermBase<?> otbFree;
-	private OrderedTermVocabulary<OrderedTermBase<?>> oVoc1;
-	private OrderedTermVocabulary<OrderedTermBase<?>> oVoc2;
+	private OrderedTerm otb1;
+	private OrderedTerm otb2;
+	private OrderedTerm otb3;
+	private OrderedTerm otbFree;
+	private OrderedTermVocabulary<OrderedTerm> oVoc1;
+	private OrderedTermVocabulary<OrderedTerm> oVoc2;
 
 	@Before
 	public void setUp() throws Exception {
-		otb1 = new DerivedOrderedTermBase(TermType.Unknown,"otb1", "high", null, 1);
-		otb2 = new DerivedOrderedTermBase(TermType.Unknown, "term", "middel", null, 2);
-		otb3 = new DerivedOrderedTermBase(TermType.Unknown, "otb3", "low", null, 3);
-		otbFree = new DerivedOrderedTermBase();
+		otb1 = OrderedTerm.NewInstance(TermType.Unknown, "otb1", "high", null);
+		otb1.setId(1);
+		otb2 = OrderedTerm.NewInstance(TermType.Unknown, "term", "middel", null);
+		otb2.setId(2);
+		otb3 = OrderedTerm.NewInstance(TermType.Unknown, "otb3", "low", null);
+		otb3.setId(3);
+		otbFree = OrderedTerm.NewInstance(TermType.Unknown, null, null, null);
 		oVoc1 = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		oVoc1.addTerm(otb1);
 		oVoc1.addTerm(otb2);
 		oVoc1.addTerm(otb3);
-	}
-
-	private class DerivedOrderedTermBase extends OrderedTermBase<DerivedOrderedTermBase>{
-        private static final long serialVersionUID = -6661559531712274867L;
-        private DerivedOrderedTermBase(){
-			super(TermType.Unknown);
-		}
-		private DerivedOrderedTermBase(TermType type, String term, String label, String labelAbbrev, int id){
-			super(type, term, label, labelAbbrev);
-			this.setId(id);
-		}
-		@Override
-		protected void setDefaultTerms(TermVocabulary<DerivedOrderedTermBase> termVocabulary) {}
-		@Override
-		public void resetTerms() {}
 	}
 
 //*************************** TESTS *************************************/
@@ -183,7 +171,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testSize() {
 		assertEquals(3, oVoc1.size());
-		oVoc2 = new OrderedTermVocabulary<>();
+		oVoc2 = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		assertEquals(0, oVoc2.size());
 	}
 }

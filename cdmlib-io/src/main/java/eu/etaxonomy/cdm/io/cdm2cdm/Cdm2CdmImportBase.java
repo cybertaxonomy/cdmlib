@@ -116,7 +116,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.AvailableForTermBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermCollection;
@@ -579,7 +578,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected NamedArea handlePersistedNamedArea(NamedArea area, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        NamedArea result = handlePersisted((OrderedTermBase)area, state);
+        NamedArea result = handlePersisted((DefinedTermBase)area, state);
         //complete
         handleCollection(result, NamedArea.class, "countries", Country.class, state);
         result.setLevel(detach(result.getLevel(), state));
@@ -725,7 +724,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected NomenclaturalStatusType handlePersistedNomenclaturalStatusType(NomenclaturalStatusType term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        NomenclaturalStatusType result = handlePersisted((OrderedTermBase)term, state);
+        NomenclaturalStatusType result = handlePersisted((DefinedTermBase)term, state);
         //complete
         return result;
     }

@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -83,7 +82,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @ClassBridge(impl=DefinedTermBaseClassBridge.class, params={
     @Parameter(name="includeParentTerms", value="true")
 })
-public class NamedArea extends OrderedTermBase<NamedArea> {
+public class NamedArea extends DefinedTermBase<NamedArea> {
 
     private static final long serialVersionUID = 6248434369557403036L;
     private static final Logger logger = LogManager.getLogger();
@@ -830,7 +829,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
      * a new instance that differs only slightly from <i>this</i> NamedArea by
      * modifying only some of the attributes.
      *
-     * @see eu.etaxonomy.cdm.model.term.OrderedTermBase#clone()
+     * @see eu.etaxonomy.cdm.model.term.DefinedTermBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override

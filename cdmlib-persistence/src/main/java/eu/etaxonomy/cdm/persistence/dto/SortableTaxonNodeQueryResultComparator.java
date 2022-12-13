@@ -40,7 +40,7 @@ public class SortableTaxonNodeQueryResultComparator implements Serializable, Com
         }
 
         //first compare ranks, if ranks are equal (or both null) compare names or taxon title cache if names are null
-        // TODO can't we use OrderedTermBase.performCompareTo here?
+        // TODO can't we use DefinedTermBase.performCompareTo here?
         if (rankName1 == null && rankName2 != null){
             return 1;
         }else if(rankName2 == null && rankName1 != null){

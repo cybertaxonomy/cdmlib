@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -77,7 +76,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
+public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 
     private static final long serialVersionUID = 1036807546935584396L;
 	private static final Logger logger = LogManager.getLogger(PresenceAbsenceTerm.class);

@@ -52,36 +52,18 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		dtb1 = new DerivedDefinedTermBase(TermType.Unknown, "otb1", "high", "h");
+		dtb1 = DefinedTerm.NewInstance(TermType.Unknown, "otb1", "high", "h");
 		dtb1.setIdInVocabulary("x");
-		dtb2 = new DerivedDefinedTermBase(TermType.Unknown, "term", "middel", "m");
-		dtb3 = new DerivedDefinedTermBase(TermType.Unknown, "otb3", "low", "l");
-		dtbFree = new DerivedDefinedTermBase();
-		voc1 = new TermVocabulary<>();
+		dtb2 = DefinedTerm.NewInstance(TermType.Unknown, "term", "middel", "m");
+		dtb3 = DefinedTerm.NewInstance(TermType.Unknown, "otb3", "low", "l");
+		dtbFree = DefinedTerm.NewInstance(TermType.Unknown);
+		voc1 = TermVocabulary.NewInstance(TermType.Unknown);
 		voc1.addTerm(dtb1);
 		voc1.addTerm(dtb2);
 		voc1.addTerm(dtb3);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	private class DerivedDefinedTermBase extends OrderedTermBase<DerivedDefinedTermBase>{
-	    private static final long serialVersionUID = 280869784120656292L;
-        private DerivedDefinedTermBase(){
-			super(TermType.Unknown);
-		}
-		private DerivedDefinedTermBase(TermType type, String term, String label, String labelAbbrev){
-			super(type, term, label, labelAbbrev);
-		}
-		@Override
-		protected void setDefaultTerms(TermVocabulary<DerivedDefinedTermBase> termVocabulary) {}
-		@Override
-		public void resetTerms() {}
-	}
-
-/****************** TESTS ****************************************/
+//****************** TESTS ****************************************/
 
 	@Test
 	public final void testSetUp() {

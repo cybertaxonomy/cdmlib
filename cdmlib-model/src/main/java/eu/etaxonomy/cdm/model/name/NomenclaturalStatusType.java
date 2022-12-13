@@ -29,7 +29,6 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -67,7 +66,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class NomenclaturalStatusType
-        extends OrderedTermBase<NomenclaturalStatusType>
+        extends DefinedTermBase<NomenclaturalStatusType>
         implements INomenclaturalStanding {
 
 	private static final long serialVersionUID = 1337101678484153972L;

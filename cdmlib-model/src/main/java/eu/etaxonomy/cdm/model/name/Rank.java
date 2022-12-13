@@ -29,7 +29,6 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -60,7 +59,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class Rank extends OrderedTermBase<Rank> {
+public class Rank extends DefinedTermBase<Rank> {
 
     private static final long serialVersionUID = -8648081681348758485L;
     private static final Logger logger = LogManager.getLogger();
@@ -1090,7 +1089,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * It is necessary to skip the vocabulary check, otherwise we would have
      * problems in some CacheStrategies, due to uninitialized Vocabularies.
      *
-     * @see eu.etaxonomy.cdm.model.term.OrderedTermBase#compareTo(eu.etaxonomy.cdm.model.term.OrderedTermBase)
+     * @see eu.etaxonomy.cdm.model.term.DefinedTermBase#compareTo(eu.etaxonomy.cdm.model.term.DefinedTermBase)
      */
     @Override
     public int compareTo(Rank orderedTerm) {

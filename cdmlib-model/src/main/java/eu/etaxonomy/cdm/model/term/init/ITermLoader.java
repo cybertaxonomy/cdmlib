@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 
@@ -29,7 +28,7 @@ public interface ITermLoader {
 	 * @param terms
 	 * @return
 	 */
-	public <T extends DefinedTermBase<T>, S extends OrderedTermBase<S>> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms);
+	public <T extends DefinedTermBase<T>> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms);
 
 	/**
 	 * Unload all static terms. After calling this method all static methods returning terms in DefinedTermBase subclasses
@@ -52,7 +51,6 @@ public interface ITermLoader {
 	 * @param voc vocabulary
 	 * @param missingTerms Set of UUIDs for terms to be loaded.
 	 */
-	public <T extends DefinedTermBase<T>, S extends OrderedTermBase<S>> Set<T> loadSingleTerms(VocabularyEnum vocType, TermVocabulary<T> voc,
+	public <T extends DefinedTermBase<T>> Set<T> loadSingleTerms(VocabularyEnum vocType, TermVocabulary<T> voc,
 				Set<UUID> missingTerms);
-
 }

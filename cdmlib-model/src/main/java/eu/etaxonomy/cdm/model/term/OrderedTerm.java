@@ -31,7 +31,7 @@ import org.hibernate.envers.Audited;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
+public class OrderedTerm extends DefinedTermBase<OrderedTerm>  {
 
 	private static final long serialVersionUID = 5122485867783720769L;
 

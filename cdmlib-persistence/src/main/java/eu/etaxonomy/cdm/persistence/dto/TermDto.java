@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -101,9 +100,9 @@ public class TermDto extends AbstractTermDto{
                         (partOf!=null?partOf.getUuid():null),
                         (kindOf!=null?kindOf.getUuid():null),
                         (vocabulary!=null?vocabulary.getUuid():null),
-                        (term instanceof OrderedTermBase)?((OrderedTermBase<?>) term).getOrderIndex():null,
-                         term.getIdInVocabulary(),
-                         term.getTitleCache());
+                        term.getOrderIndex(),
+                        term.getIdInVocabulary(),
+                        term.getTitleCache());
         dto.setUri(term.getUri());
         if(initializeToTop){
             if(partOf!=null){

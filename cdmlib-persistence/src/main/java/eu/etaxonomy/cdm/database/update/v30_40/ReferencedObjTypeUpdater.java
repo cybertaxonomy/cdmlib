@@ -119,7 +119,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -411,7 +410,6 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
         specificClasses.put(TeamOrPersonBase.class, AgentBase.class);
         specificClasses.put(TermVocabulary.class, TermVocabulary.class);
         specificClasses.put(TypeDesignationStatusBase.class, DefinedTermBase.class);
-        specificClasses.put(OrderedTermBase.class, DefinedTermBase.class);
         specificClasses.put(OrderedTermVocabulary.class, TermVocabulary.class);
         specificClasses.put(Rights.class, Rights.class);
         specificClasses.put(RelationshipTermBase.class, DefinedTermBase.class);

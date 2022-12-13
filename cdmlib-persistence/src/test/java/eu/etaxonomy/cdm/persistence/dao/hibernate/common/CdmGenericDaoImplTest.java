@@ -141,7 +141,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -258,7 +257,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				LSIDAuthority.class,
 				Marker.class,
 				MarkerType.class,
-				OrderedTermBase.class,
 				OrderedTermVocabulary.class,
 				OriginalSourceBase.class,
 				RelationshipTermBase.class,

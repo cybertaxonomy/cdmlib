@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -547,32 +546,30 @@ public class TermServiceImpl
         else {
             DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
             //new parent is a term
-            if(parent.isInstanceOf(OrderedTermBase.class)
-                    && term.isInstanceOf(OrderedTermBase.class)
+            if(parent.isOrderRelevant()
+                    && term.isOrderRelevant()
                     && termMovePosition!=null
-                    && HibernateProxyHelper.deproxy(parent, OrderedTermBase.class).getVocabulary().isInstanceOf(OrderedTermVocabulary.class)) {
+                    && parent.getVocabulary().isInstanceOf(OrderedTermVocabulary.class)) {
                 //new parent is an ordered term
-                OrderedTermBase orderedTerm = HibernateProxyHelper.deproxy(term, OrderedTermBase.class);
-                OrderedTermBase targetOrderedDefinedTerm = HibernateProxyHelper.deproxy(parent, OrderedTermBase.class);
-                OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(targetOrderedDefinedTerm.getVocabulary(), OrderedTermVocabulary.class);
+                OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(parent.getVocabulary(), OrderedTermVocabulary.class);
                 if(termMovePosition.equals(TermMovePosition.BEFORE)) {
-                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
-                    otVoc.addTermAbove(orderedTerm, targetOrderedDefinedTerm);
-                    if (targetOrderedDefinedTerm.getPartOf() != null){
-                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    term.getVocabulary().removeTerm(term);
+                    otVoc.addTermAbove(term, parent);
+                    if (parent.getPartOf() != null){
+                        parent.getPartOf().addIncludes(term);
                     }
                 }
                 else if(termMovePosition.equals(TermMovePosition.AFTER)) {
-                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
-                    otVoc.addTermBelow(orderedTerm, targetOrderedDefinedTerm);
-                    if (targetOrderedDefinedTerm.getPartOf() != null){
-                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    term.getVocabulary().removeTerm(term);
+                    otVoc.addTermBelow(term, parent);
+                    if (parent.getPartOf() != null){
+                        parent.getPartOf().addIncludes(term);
                     }
                 }
                 else if(termMovePosition.equals(TermMovePosition.ON)) {
-                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
-                    targetOrderedDefinedTerm.addIncludes(orderedTerm);
-                    targetOrderedDefinedTerm.getVocabulary().addTerm(orderedTerm);
+                    term.getVocabulary().removeTerm(term);
+                    parent.addIncludes(term);
+                    parent.getVocabulary().addTerm(term);
                 }
             }
             else{

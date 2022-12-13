@@ -110,7 +110,7 @@ public class DescriptionUtilityTest extends TermTestBase {
          * Status order preference rule: In case of multiple distribution status
          * (PresenceAbsenceTermBase) for the same area the status with the
          * highest order is preferred, see
-         * OrderedTermBase.compareTo(OrderedTermBase)
+         * DefinedTermBase.compareTo(DefinedTermBase)
          */
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED()));
