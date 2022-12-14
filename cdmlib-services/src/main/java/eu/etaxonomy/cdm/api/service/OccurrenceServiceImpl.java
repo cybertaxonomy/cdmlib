@@ -569,7 +569,7 @@ public class OccurrenceServiceImpl
                         DerivedUnit derivedUnit = (DerivedUnit)unit;
                         boolean isAssociated = true;
                         for (DeterminationEvent determination:derivedUnit.getDeterminations()) {
-                        	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || determination.getTaxon()!= null && determination.getTaxon().equals(taxon)){
+                        	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon())){
                         		isAssociated = true;
                         		break;
                         	}else {
