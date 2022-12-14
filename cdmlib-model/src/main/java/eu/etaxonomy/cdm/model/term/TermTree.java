@@ -105,29 +105,10 @@ public class TermTree <T extends DefinedTermBase>
         return new TermTree<>(termType);
     }
 
-    /**
-	 * Creates a new feature tree instance with an empty {@link #getRoot() root node}.
-	 *
-	 * @see #NewInstance(UUID)
-	 * @see #NewInstance(List)
-	 * @deprecated since 5.9. Use {@link #NewFeatureInstance()} instead
-	 */
-	@Deprecated
-    public static TermTree<Feature> NewInstance(){
-		return NewFeatureInstance();
-	}
-
     public static TermTree<Feature> NewFeatureInstance(){
         return new TermTree<>(TermType.Feature);
     }
 
-	/**
-	 * @deprecated since 5.9, use {@link #NewFeatureInstance(UUID)} instead
-	 */
-	@Deprecated
-    public static TermTree<? extends Feature> NewInstance(UUID uuid){
-		return NewFeatureInstance(uuid);
-	}
 	/**
      * Creates a new feature tree instance with an empty {@link #getRoot() root node}
      * and assigns to the new feature tree the given
@@ -143,13 +124,6 @@ public class TermTree <T extends DefinedTermBase>
         return result;
     }
 
-    /**
-     * @deprecated sinde 5.9 use {@link #NewFeatureInstance(List)} instead
-     */
-    @Deprecated
-    public static TermTree<Feature> NewInstance(List<Feature> featureList){
-        return NewFeatureInstance(featureList);
-    }
 	/**
 	 * Creates a new feature tree instance with a {@link #getRoot() root node}
 	 * the children of which are the feature nodes build on the base of the
@@ -221,8 +195,6 @@ public class TermTree <T extends DefinedTermBase>
 		return result;
 	}
 
-
-
 //******************** METHODS ***********************************************/
 
 	/**
@@ -246,7 +218,6 @@ public class TermTree <T extends DefinedTermBase>
         }
         return result;
     }
-
 
     public Set<T> independentTerms() {
         Set<T> terms = root.getIndependentTermsRecursive();
@@ -278,5 +249,4 @@ public class TermTree <T extends DefinedTermBase>
 			throw new RuntimeException(message);
 		}
 	}
-
 }
