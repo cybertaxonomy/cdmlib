@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -148,8 +147,8 @@ public class DataSet implements IExportData {
     	@XmlElement(name = "Sex", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = DefinedTerm.class),
     	@XmlElement(name = "SpecimenTypeDesignationStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = SpecimenTypeDesignationStatus.class),
     	@XmlElement(name = "Stage", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = DefinedTerm.class),
-    	//FIXME 10196
-    	@XmlElement(name = "State", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = State.class),
+    	//FIXME 10196 correctly adapted?
+    	@XmlElement(name = "State", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = DefinedTermBase.class),
     	@XmlElement(name = "StatisticalMeasure", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = StatisticalMeasure.class),
     	@XmlElement(name = "SynonymType", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = SynonymType.class),
     	@XmlElement(name = "TaxonRelationshipType", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = TaxonRelationshipType.class),
