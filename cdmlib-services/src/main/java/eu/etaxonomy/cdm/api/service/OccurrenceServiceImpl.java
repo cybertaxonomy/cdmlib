@@ -249,24 +249,24 @@ public class OccurrenceServiceImpl
 	             }
              }
              if (collectOriginalMedia) {
-            	 for (SpecimenOrObservationBase original : derivedUnit.getOriginals()) {            		 	
-	                	 //collect media to the top of the tree 
+            	 for (SpecimenOrObservationBase original : derivedUnit.getOriginals()) {
+	                	 //collect media to the top of the tree
 	                     media.addAll(getMediaInHierarchy(original, true, false, pageSize, pageNumber, propertyPaths).getRecords());
 	             }
 	         }
          }
-         
-         
+
+
          return new DefaultPagerImpl<>(pageNumber, Long.valueOf(media.size()), pageSize, media);
     }
-    
-    
+
+
     @Override
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
     	return getMediaInHierarchy(rootOccurence, false, true, pageSize,
                 pageNumber, propertyPaths);
-       
+
     }
 
     @Override
@@ -572,11 +572,11 @@ public class OccurrenceServiceImpl
                         	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || determination.getTaxon()!= null && determination.getTaxon().equals(taxon)){
                         		isAssociated = true;
                         		break;
-                        	}else {                        		
+                        	}else {
                         		isAssociated = false;
                         	}
                         }
-                        
+
                         if (!isAssociated) {
                         	continue;
                         }
