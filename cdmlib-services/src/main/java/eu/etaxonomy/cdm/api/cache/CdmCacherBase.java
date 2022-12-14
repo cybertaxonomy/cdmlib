@@ -31,7 +31,7 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  */
 public abstract class CdmCacherBase implements ICdmUuidCacher {
 
-    public static final Logger logger = LogManager.getLogger(CdmCacherBase.class);
+    public static final Logger logger = LogManager.getLogger();
 
     @Autowired
     public CacheManager cacheManager;

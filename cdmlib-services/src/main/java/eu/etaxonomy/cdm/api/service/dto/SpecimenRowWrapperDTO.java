@@ -58,16 +58,16 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
     public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, UuidAndTitleCache<FieldUnit> fieldUnit, String identifier,
             NamedArea country) {
-    super(new DescriptionBaseDto(new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache())), taxonNode);
-    if (fieldUnit != null){
-        this.fieldUnit = fieldUnit;
-    }
-    this.identifier = identifier;
-    this.country = country;
-    this.specimenDto = SpecimenOrObservationDTOFactory.fromEntity(specimen);
-    this.type = specimen.getRecordBasis();
+        super(new DescriptionBaseDto(new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache())), taxonNode);
+        if (fieldUnit != null){
+            this.fieldUnit = fieldUnit;
+        }
+        this.identifier = identifier;
+        this.country = country;
+        this.specimenDto = SpecimenOrObservationDTOFactory.fromEntity(specimen);
+        this.type = specimen.getRecordBasis();
 
-}
+    }
     public SpecimenOrObservationBaseDTO getSpecimenDto() {
         return specimenDto;
     }

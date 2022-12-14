@@ -1341,12 +1341,6 @@ public class Language extends DefinedTermBase<Language> {
     	return null;
     }
 
-    /**
-     *
-     *
-     * @param uuid
-     * @return
-     */
     public static Language getLanguageFromUuid(UUID uuid) {
         if(termMap == null || termMap.isEmpty()) {
             return getTermByClassAndUUID(Language.class, uuid);
@@ -1369,7 +1363,6 @@ public class Language extends DefinedTermBase<Language> {
         }
     }
 
-
  // ******************************** toString *********************/
      @Override
      public String toString() {
@@ -1379,5 +1372,4 @@ public class Language extends DefinedTermBase<Language> {
              return super.toString();
          }
      }
-
 }

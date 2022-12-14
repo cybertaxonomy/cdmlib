@@ -238,7 +238,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                     categoricalData.setStateDataOnly(states);
                 }
             }
-
         }else{
             Feature feature = DefinedTermBase.getTermByClassAndUUID(Feature.class, featureUuid);
             if (feature == null){
@@ -320,8 +319,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                     quantitativeData = (QuantitativeDataDto)dto;
                 }
             }
-
-
         }
         if (quantitativeData == null){
             //TODO: check whether this is possible

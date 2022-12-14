@@ -695,7 +695,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     // Currently the CDM Caching mechanism is only used for caching terms
     private static ICdmUuidCacher cacher;
 
-
     /**
      * Gets the CDM cacher object
      *
@@ -716,10 +715,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
 	public static <T extends DefinedTermBase> T getTermByClassAndUUID(Class<T> clazz, UUID uuid) {
 	    if(cacher != null) {
-	        Object obj = HibernateProxyHelper.deproxy(getCacher().load(uuid));
+	        CdmBase cdmBase = HibernateProxyHelper.deproxy(getCacher().load(uuid));
 
-	        if(obj != null && obj.getClass().equals(clazz)) {
-	            return (T)obj;
+	        if(cdmBase != null && cdmBase.getClass().equals(clazz)) {
+	            return (T)cdmBase;
 	        }
 	    }
 	    return null;

@@ -267,7 +267,6 @@ public class CategoricalData extends DescriptionElementBase {
                 + "]";
     }
 
-
 //*********************************** CLONE *****************************************/
 
     /**

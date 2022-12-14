@@ -290,8 +290,6 @@ public class DescriptiveDataSetService
                 result.addUpdatedObject(taxon);
             }
 
-
-
             UUID specimenDescriptionUuid = wrapper.getDescription().getDescriptionUuid();
             DescriptionBaseDto descriptionDto = wrapper.getDescription();
             DescriptionBase<?> specimenDescription =  descriptionService.load(specimenDescriptionUuid);
@@ -328,7 +326,6 @@ public class DescriptiveDataSetService
                         }
                     }
                 }
-
             }else {
                 List<DescriptionElementDto> elementDtos = descriptionDto.getElements();
                 for (DescriptionElementDto elementDto: elementDtos){

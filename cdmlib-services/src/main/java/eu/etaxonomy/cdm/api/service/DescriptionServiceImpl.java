@@ -520,12 +520,13 @@ public class DescriptionServiceImpl
                             data.getStatisticalValues().clear();
                             for (StatisticalMeasurementValueDto dataDto: valueDtos){
                                 //create new statedata
-                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid()), dataDto.getValue());
+                                StatisticalMeasure sm = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid());
+                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(sm, dataDto.getValue());
                                 statisticalValues.add(newStatisticalMeasurement);
                                 data.addStatisticalValue(newStatisticalMeasurement);
                             }
 
-//                            data.getStatisticalValues().addAll(statisticalValues);
+//                          data.getStatisticalValues().addAll(statisticalValues);
                             data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
                                     MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
                             desc.addElement(data);
@@ -544,13 +545,12 @@ public class DescriptionServiceImpl
                                 desc.removeElement(data);
                             }else{
                                 for (StateDataDto dataDto: stateDtos){
-                                    //FIXME 10196
-                                    State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
+                                    //FIXME 10196 fixed
+                                    DefinedTermBase<?> newState = DefinedTermBase.getTermByUUID(dataDto.getState().getUuid(), DefinedTermBase.class);
                                     StateData newStateData = StateData.NewInstance(newState);
                                     data.addStateData(newStateData);
                                 }
                             }
-
                         }else if (elementBase.isInstanceOf(QuantitativeData.class)){
                             QuantitativeData data = HibernateProxyHelper.deproxy(elementBase, QuantitativeData.class);
 

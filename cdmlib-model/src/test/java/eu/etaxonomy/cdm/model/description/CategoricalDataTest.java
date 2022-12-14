@@ -97,7 +97,7 @@ public class CategoricalDataTest {
         useCategoryVocabulary.addTerm(useCategory2);
         State useCategory3 = State.NewInstance("My 3rd use category", "use category 3", null);
         useCategoryVocabulary.addTerm(useCategory3);
-        List<State> newStates = new ArrayList<State>();
+        List<State> newStates = new ArrayList<>();
         newStates.addAll(Arrays.asList(useCategory2, useCategory3));
 
         // setting new states and thus removing useCategory1
