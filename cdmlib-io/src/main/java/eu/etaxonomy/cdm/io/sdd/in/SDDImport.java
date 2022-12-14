@@ -24,7 +24,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.joda.time.DateTime;
@@ -96,9 +97,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @Component("sddImport")
 public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
-    private static final long serialVersionUID = 5492939941309574059L;
 
-    private static final Logger logger = LogManager.getLogger(SDDImport.class);
+    private static final long serialVersionUID = 5492939941309574059L;
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 1000;
 
@@ -349,9 +350,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	/**
 	 * Handles the "Label" children of representations. Adds the result to the langLabDet.
-	 * @param sddNamespace
-	 * @param elRepresentation
-	 * @param langLabDet
 	 */
 	private void handleRepresentationLabels(Namespace sddNamespace,
 				Element elRepresentation, Map<Language, List<String>> langLabDet) {
@@ -366,11 +364,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 	}
 
-	/**
-	 *
-	 * @param media
-	 * @param langLabDet
-	 */
 	private void makeRepresentationForMedia(Media media, Map<Language, List<String>> langLabDet) {
 		for (Language lang : langLabDet.keySet()){
 			List<String> labDet = langLabDet.get(lang);
@@ -385,9 +378,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	/**
 	 * Handles representations for terms. Adds one representation per language in langLabDet.
-	 *
-	 * @param ve
-	 * @param langLabDet
 	 */
 	private void makeRepresentationForTerms(TermBase tb, Map<Language, List<String>> langLabDet) {
 			for (Language lang : langLabDet.keySet()){
@@ -402,12 +392,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			}
 	}
 
-
 	/**
 	 * Handles the "MediaObject" children of representations.
-	 * @param sddNamespace
-	 * @param ve
-	 * @param elRepresentation
 	 */
 	private void makeRepresentationMediaObjects(Namespace sddNamespace,	VersionableEntity ve, Element elRepresentation) {
 		List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject", sddNamespace);
@@ -440,9 +426,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	/**
 	 * Handles the "Links" element
-	 * @param parent
-	 * @param sddNamespace
-	 * @param ve
 	 */
 	private void makeRepresentationForIdentifiableMediaEntity(Element parent,
 			Namespace sddNamespace, IdentifiableMediaEntity ime) {
@@ -478,13 +461,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param ve
-	 * @param elRepresentation
-	 * @param langLabDet
-	 * @return
-	 */
 	private void makeRepresentationForIdentifiableEntity(Namespace sddNamespace, IdentifiableEntity<?> ie,
 					Element elRepresentation, Map<Language, List<String>> langLabDet) {
 		List<String> labDet = null;
@@ -520,10 +496,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		return;
 	}
 
-	/**
-	 * @param elLabel
-	 * @return
-	 */
 	private Language getLanguage(Element elLanguage) {
 		String lang = elLanguage.getAttributeValue("lang",xmlNamespace);
 		Language language = null;
@@ -534,7 +506,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 		return language;
 	}
-
 
 	// imports the representation (label, detail, lang) of a particular SDD element
 	protected void importTechnicalMetadata(Element root, Namespace sddNamespace, SDDImportConfigurator sddConfig){
@@ -605,7 +576,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		importTaxonHierarchies(elDataset, sddNamespace, state);
 		importGeographicAreas(elDataset, sddNamespace, state);
 		importSpecimens(elDataset,sddNamespace, state);
-
 
 		if ((authors != null)||(editors != null)) {
 			Team team = Team.NewInstance();
@@ -690,14 +660,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		return;
 	}
 
-	/**
-	 *
-	 */
 	private void saveVocabularies() {
 		for (TermVocabulary<?> vocabulary : vocabularies ){
 			getVocabularyService().save(vocabulary);
 		}
-
 	}
 
 	private void saveAnnotationType() {
@@ -957,15 +923,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}*/
 
 		return;
-
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param cdmState
-	 * @param elCharacters
-	 * @return
-	 */
 	private void handleCategoricalData(Namespace sddNamespace, SDDImportState cdmState, Element elCharacters) {
 		List<Element> elCategoricalCharacters = elCharacters.getChildren("CategoricalCharacter", sddNamespace);
 		int j = 0;
@@ -1020,11 +979,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		return;
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param sddConfig
-	 * @param elCharacters
-	 */
 	private void handleQuantitativeData(Namespace sddNamespace,	SDDImportState cdmState, Element elCharacters) {
 		int j;
 		// <QuantitativeCharacter id="c2">
@@ -1153,13 +1107,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		return;
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param sddConfig
-	 * @param j
-	 * @param elCodedDescription
-	 * @return
-	 */
 	private void handleCodedDescription(Namespace sddNamespace, SDDImportState cdmState, Element elCodedDescription, int j) {
 		try {
 
@@ -1213,13 +1160,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		return;
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param sddConfig
-	 * @param elCodedDescription
-	 * @param taxon
-	 * @return
-	 */
 	private Taxon handleCDNoScope(Namespace sddNamespace,
 	        SDDImportState cdmState, Element elCodedDescription	) {
 		Taxon taxon = null;
@@ -1247,14 +1187,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		return taxon;
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param sddConfig
-	 * @param idCD
-	 * @param elScope
-	 * @param taxon
-	 * @return
-	 */
 	private Taxon handleCDScope(Namespace sddNamespace, SDDImportState cdmState,
 			String idCD, Element elScope) {
 		Taxon taxon = null;
@@ -1292,11 +1224,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		return taxon;
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param taxonDescription
-	 * @param elSummaryData
-	 */
 	private void handleSummaryTextData(Namespace sddNamespace,
 			TaxonDescription taxonDescription, Element elSummaryData) {
 		String ref;
@@ -1319,11 +1246,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param taxonDescription
-	 * @param elSummaryData
-	 */
 	private void handleSummaryQuantitativeData(Namespace sddNamespace,
 			TaxonDescription taxonDescription, Element elSummaryData) {
 		String ref;
@@ -1396,11 +1318,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param taxonDescription
-	 * @param elSummaryData
-	 */
 	private void handleSummaryCategoricalData(Namespace sddNamespace,
 			TaxonDescription taxonDescription, Element elSummaryData) {
 		String ref;
@@ -1782,11 +1699,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 	}
 
-	/**
-	 * @param sddNamespace
-	 * @param root
-	 * @param elNodes
-	 */
 	private void handleCharacterNodes(Namespace sddNamespace, TermNode<Feature> root, Element elNodes) {
 		List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 		if (listNodes != null) {

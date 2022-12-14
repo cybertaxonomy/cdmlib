@@ -12,7 +12,8 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 public class DwcaImageRecord extends DwcaRecordBase{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaImageRecord.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private URI identifier;
 	private String title;

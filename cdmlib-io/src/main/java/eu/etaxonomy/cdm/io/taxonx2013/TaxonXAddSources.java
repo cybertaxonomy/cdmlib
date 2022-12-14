@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.io.taxonx2013;
 
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -28,46 +29,30 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author pkelbert
  * @since 20 déc. 2013
- *
  */
 public class TaxonXAddSources {
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
     private Reference sourceUrlRef;
     private TaxonXImport importer;
     private TaxonXImportState configState;
-    @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonXAddSources.class);
 
-    /**
-     * @param importer
-     */
     public void setImporter(TaxonXImport importer) {
         this.importer=importer;
     }
 
-
-    /**
-     * @param configState the configState to set
-     */
     public void setConfigState(TaxonXImportState configState) {
         this.configState = configState;
     }
 
-
-    /**
-     * @return the sourceUrlRef
-     */
     public Reference getSourceUrlRef() {
         return sourceUrlRef;
     }
-
-    /**
-     * @param sourceUrlRef the sourceUrlRef to set
-     */
     public void setSourceUrlRef(Reference sourceUrlRef) {
         this.sourceUrlRef = sourceUrlRef;
     }
-
 
     protected IdentifiableSource getIdentifiableSource(Reference reference, Set<IdentifiableSource> sources, boolean original){
 //        logger.info("getIdentifiableSource");
@@ -111,13 +96,8 @@ public class TaxonXAddSources {
             }
         }
         return source;
-
     }
 
-    /**
-     * @param refMods
-     * @param synonym
-     */
     protected void addSource(Reference refMods, Synonym synonym) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -136,11 +116,6 @@ public class TaxonXAddSources {
         }
     }
 
-
-    /**
-     * @param refMods
-     * @param indAssociation
-     */
     protected IndividualsAssociation addSource(Reference refMods, IndividualsAssociation indAssociation) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -161,10 +136,6 @@ public class TaxonXAddSources {
         return indAssociation;
     }
 
-    /**
-     * @param refMods
-     * @param acceptedTaxon
-     */
     protected void addSource(Reference refMods, Taxon acceptedTaxon) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -183,10 +154,6 @@ public class TaxonXAddSources {
         }
     }
 
-    /**
-     * @param refMods
-     * @param nameToBeFilled
-     */
     protected void addSource(Reference refMods, TaxonName nameToBeFilled) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -207,10 +174,6 @@ public class TaxonXAddSources {
 
     }
 
-    /**
-     * @param refMods
-     * @param textData
-     */
     protected void addSource(Reference refMods, TextData textData) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -231,11 +194,6 @@ public class TaxonXAddSources {
 
     }
 
-    /**
-     * @param refMods
-     * @param taxonDescription
-     * @param currentRef
-     */
     protected void addAndSaveSource(Reference refMods, TaxonDescription taxonDescription, Reference currentRef) {
         //logger.info("addAndSaveSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -257,10 +215,6 @@ public class TaxonXAddSources {
         importer.getDescriptionService().saveOrUpdate(taxonDescription);
     }
 
-    /**
-     * @param refMods
-     * @param derivedUnitBase
-     */
     protected void addAndSaveSource(Reference refMods, DerivedUnit derivedUnitBase) {
         //logger.info("addAndSaveSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -282,11 +236,6 @@ public class TaxonXAddSources {
         derivedUnitBase= CdmBase.deproxy(derivedUnitBase, DerivedUnit.class);
     }
 
-
-    /**
-     * @param refMods
-     * @param taxonDescription
-     */
     public void addSource(Reference refMods, TaxonDescription taxonDescription) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -308,13 +257,6 @@ public class TaxonXAddSources {
 
     }
 
-
-    /**
-     * @param reference
-     * @param textData
-     * @param name
-     * @param ref
-     */
     public void addSource(Reference reference, TextData textData, TaxonName name, Reference refMods) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
@@ -328,9 +270,7 @@ public class TaxonXAddSources {
         if( id2!=null) {
             textData.addSource(id2);
         }
-
     }
-
 
     @SuppressWarnings({ "unused", "rawtypes" })
     private DescriptionElementSource getDescriptionElementSource(Reference reference, Set<DescriptionElementSource> sources,
@@ -363,7 +303,4 @@ public class TaxonXAddSources {
         }
         return source;
     }
-
-
-
 }

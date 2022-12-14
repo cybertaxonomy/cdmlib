@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -45,8 +46,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  */
 @Component
-public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
-	private static final Logger logger = LogManager.getLogger(TcsXmlTaxonImport.class);
+public class TcsXmlTaxonImport  extends TcsXmlImportBase {
+
+    private static final long serialVersionUID = 8256144749933419622L;
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 30000;
 
@@ -66,9 +69,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 
 	/**
 	 * Computes a list of all TaxonConcept ids (ref-attribute) that are related as synonyms
-	 * @param elTaxonConceptList
-	 * @param success
-	 * @return
 	 */
 	private Set<String> makeSynonymIds(List<Element> elTaxonConceptList, ResultWrapper<Boolean> success){
 		//TODO use XPath
@@ -227,7 +227,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 
 				taxonMap.put(removeVersionOfRef(strId), taxonBase);
 			}
-
 		}
 		state.setCommonNameMap(commonNameMap);
 
@@ -263,7 +262,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 
 		//TODO check other elements
 	}
-
 
 	private boolean isVernacular(ResultWrapper<Boolean> success, Element elName) {
 		try{

@@ -16,7 +16,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -36,20 +37,20 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
- * Mapps taxon concept relationships, taxon name relationships and taxon interactions
+ * Maps taxon concept relationships, taxon name relationships and taxon interactions
+ *
  * @author a.mueller
  * @since 20.04.2011
  */
 public class DwcaResourceRelationExport extends DwcaDataExportBase {
-    private static final long serialVersionUID = 33810773244068812L;
 
-    private static final Logger logger = LogManager.getLogger(DwcaResourceRelationExport.class);
+    private static final long serialVersionUID = 33810773244068812L;
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/ResourceRelationship";
 	protected static final String fileName = "resourceRelationship.txt";
 
 	private DwcaMetaDataRecord metaRecord;
-
 
 	/**
 	 * Constructor
@@ -64,7 +65,6 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
 
     @Override
     protected void doInvoke(DwcaTaxExportState state){}
-
 
     @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node) throws FileNotFoundException, UnsupportedEncodingException, IOException{
@@ -186,8 +186,6 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
 		}
 	}
 
-
-
 	private void handleInteraction(DwcaTaxExportState state, DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, TaxonInteraction interaction) {
 		Taxon object = interaction.getTaxon2();
 		if (object == null){
@@ -218,14 +216,12 @@ public class DwcaResourceRelationExport extends DwcaDataExportBase {
 		record.setScientificName(null);
 	}
 
-
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
 		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
-
 
 	@Override
 	public boolean isIgnore(DwcaTaxExportState state) {

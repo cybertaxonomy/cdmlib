@@ -14,7 +14,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -22,10 +23,10 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 public class UnmatchedLeads {
-	private static final Logger logger = LogManager.getLogger(UnmatchedLeads.class);
 
+    private static final Logger logger = LogManager.getLogger();
 
-	private final Map<UnmatchedLeadsKey, Set<PolytomousKeyNode>> map = new HashMap<UnmatchedLeadsKey, Set<PolytomousKeyNode>>();
+	private final Map<UnmatchedLeadsKey, Set<PolytomousKeyNode>> map = new HashMap<>();
 
 	public static class UnmatchedLeadsKey{
 		public static UnmatchedLeadsKey NewInstance(PolytomousKey key, String num){
@@ -65,7 +66,7 @@ public class UnmatchedLeads {
 
 		@Override
 		public boolean equals(Object object){
-			if (object == null ||   ! (object instanceof UnmatchedLeadsKey)){
+			if (object == null || ! (object instanceof UnmatchedLeadsKey)){
 				return false;
 			}
 			UnmatchedLeadsKey unmatchedLeadsKey = (UnmatchedLeadsKey)object;
@@ -112,7 +113,6 @@ public class UnmatchedLeads {
 		}
 	}
 
-
 //************************* FACTORY METHODS ********************************/
 
 	public static UnmatchedLeads NewInstance(){
@@ -121,11 +121,8 @@ public class UnmatchedLeads {
 
 //************************* METHODS ********************************/
 
-
 	/**
 	 * Adds a polytomous key node to the
-	 * @param key
-	 * @param node
 	 */
 	public void addKey(UnmatchedLeadsKey key, PolytomousKeyNode node){
 		Set<PolytomousKeyNode> nodes = map.get(key);
@@ -161,7 +158,6 @@ public class UnmatchedLeads {
 		return false;
 	}
 
-
 	public int size(){
 		return map.size();
 	}
@@ -169,7 +165,6 @@ public class UnmatchedLeads {
 	/**
 	 * SaveOrUpdates all polytomousKeyNodes in the unmatchedLeadsKey map.
 	 * Used to move nodes from one transaction to another.
-	 * @param service
 	 */
 	public void saveToSession(IPolytomousKeyNodeService service){
 		Set<PolytomousKeyNode> allNodes = new HashSet<PolytomousKeyNode>();
@@ -189,6 +184,4 @@ public class UnmatchedLeads {
 		}
 		return result + "]";
 	}
-
-
 }

@@ -6,22 +6,22 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -37,10 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState, URI> implements IImportConfigurator {
 
     private static final long serialVersionUID = -8987364078779275820L;
-
-
-    private static final Logger logger = LogManager.getLogger(TcsRdfImportConfigurator.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
@@ -94,7 +91,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 
 	String[] prefixArray = {"rdf", "tm", "p","tc","tcom", "tgeo","owl","dc","dcterms","tn"};
 */
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			TcsRdfReferenceImport.class
@@ -103,7 +101,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 			, TcsRdfTaxonImport.class
 			, TcsRdfTaxonRelationsImport.class
 		};
-	};
+	}
 
 	public static TcsRdfImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new TcsRdfImportConfigurator(uri, destination);
@@ -112,24 +110,14 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	//TODO for spring use only
 	private TcsRdfImportConfigurator(){
 		super(defaultTransformer);
-
 	}
 
-
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	private TcsRdfImportConfigurator(URI url, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 	}
 
-	/**
-	 * @return
-	 */
 	public Model getSourceRoot(){
 		URI source = getSource();
 		try {
@@ -149,7 +137,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		}
 		return null;
 	}
-public Element getSourceRoot(InputStream is){
+
+	public Element getSourceRoot(InputStream is){
 
 		try {
 			Element root = XmlHelp.getRoot(is);
@@ -163,7 +152,6 @@ public Element getSourceRoot(InputStream is){
 		}
 		return null;
 	}
-
 
 	private void makeNamespaces(Element root){
 
@@ -190,10 +178,6 @@ public Element getSourceRoot(InputStream is){
 
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -205,10 +189,6 @@ public Element getSourceRoot(InputStream is){
 		return sourceReference;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
 	@Override
     public String getSourceNameString() {
 		if (this.getSource() == null){
@@ -234,30 +214,21 @@ public Element getSourceRoot(InputStream is){
 		return nsPrefixMap.get("tc");
 	}
 
-
-
 	public String getTnNamespaceURIString() {
 		return nsPrefixMap.get("tn");
 	}
-
-
 
 	public String getCommonNamespaceURIString() {
 		return nsPrefixMap.get("tcom");
 	}
 
-
-
 	public String getGeoNamespaceURIString() {
 		return nsPrefixMap.get("tgeo");
 	}
 
-
-
 	public String getPublicationNamespaceURI() {
 		return nsPrefixMap.get("tpub");
 	}
-
 
 	/**
 	 * @return the palmNamespace
@@ -265,8 +236,6 @@ public Element getSourceRoot(InputStream is){
 	public String getPalmNamespaceURIString() {
 		return nsPrefixMap.get("tpalm");
 	}
-
-
 
 	/**
 	 * if false references in this rdf file are not published in the bibliography list
@@ -302,15 +271,10 @@ public Element getSourceRoot(InputStream is){
 		this.doRelNames = doRelNames;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
 	@Override
     public TcsRdfImportState getNewState() {
 		return new TcsRdfImportState(this);
 	}
-
-
 
 	public DO_REFERENCES getDoReferences() {
 		return doReferences;
@@ -339,9 +303,4 @@ public Element getSourceRoot(InputStream is){
 	public void setDoRelTaxa(boolean doRelTaxa) {
 		this.doRelTaxa = doRelTaxa;
 	}
-
-
-
-
-
 }

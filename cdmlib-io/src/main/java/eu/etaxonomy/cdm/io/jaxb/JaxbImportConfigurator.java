@@ -1,18 +1,17 @@
 /**
  * Copyright (C) 2008 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.jaxb;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.URI;
-
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -27,14 +26,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportState, URI> implements IImportConfigurator {
 
-	private static final Logger logger = LogManager.getLogger(JaxbImportConfigurator.class);
-		
+    private static final long serialVersionUID = 7626438590027580736L;
+    private static final Logger logger = LogManager.getLogger();
+
 	private int maxRows = 0;
-	
+
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
-	
 	private boolean doUser = true;
 	private boolean doAgentData = true;
 	private boolean doLanguageData = true;
@@ -66,17 +65,13 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	public int getMaxRows() {
 		return maxRows;
 	}
-
 	public void setMaxRows(int maxRows) {
 		this.maxRows = maxRows;
 	}
-	
-	
-	
+
 	public boolean isDoAgentData() {
 		return doAgentData;
 	}
-	
 	public void setDoAgentData(boolean doAgentData) {
 		this.doAgentData = doAgentData;
 	}
@@ -84,7 +79,6 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	public boolean isDoLanguageData() {
 		return doLanguageData;
 	}
-
 	public void setDoLanguageData(boolean doLanguageData) {
 		this.doLanguageData = doLanguageData;
 	}
@@ -156,22 +150,18 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 		this.doHomotypicalGroups = doHomotypicalGroups;
 	}
 
-//	@SuppressWarnings("unchecked")
-	protected void makeIoClassList() {
+	@SuppressWarnings("unchecked")
+	@Override
+    protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				JaxbImport.class,
 		};
-	};
+	}
 
 	public static JaxbImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new JaxbImportConfigurator(uri, destination);
 	}
 
-
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	private JaxbImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(uri);
@@ -190,7 +180,6 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 		return sourceReference;
 	}
 
-
 	@Override
 	public String getSourceNameString() {
 		if (this.getSource() == null){
@@ -199,9 +188,9 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 			return this.getSource().toString();
 		}
 	}
-	
-//******************** GETTER / SETTER ***************************************/	
-	
+
+//******************** GETTER / SETTER ***************************************/
+
 	public boolean isDoTypeDesignations() {
 		return doTypeDesignations;
 	}
@@ -213,15 +202,13 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	public boolean isDoClassificationData() {
 		return this.doClassificationData;
 	}
-	
-	
+
 	public boolean isDoOccurrence() {
 		return doOccurrence;
 	}
 	public void setDoOccurrence(boolean doOccurrence) {
 		this.doOccurrence = doOccurrence;
 	}
-	
 
 	public boolean isDoUser() {
 		return doUser;
@@ -230,7 +217,6 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	public void setDoUser(boolean doUser) {
 		this.doUser = doUser;
 	}
-	
 
 	public boolean isDoAuthors() {
 		return doAuthors;
@@ -245,7 +231,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	public void setDoReferences(DO_REFERENCES doReferences) {
 		this.doReferences = doReferences;
 	}
-	
+
 	public boolean isDoTaxonNames() {
 		return doTaxonNames;
 	}
@@ -259,7 +245,6 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	public void setDoTaxa(boolean doTaxa) {
 		this.doTaxa = doTaxa;
 	}
-
 
 	@Override
 	public boolean isOmitTermLoading() {
@@ -279,8 +264,4 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 			return super.getDbSchemaValidation();
 		}
 	}
-
-
 }
-
-   

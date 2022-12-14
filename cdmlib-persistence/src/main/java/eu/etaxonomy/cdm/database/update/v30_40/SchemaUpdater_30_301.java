@@ -6,13 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database.update.v30_40;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v24_30.SchemaUpdater_25_30;
 
-
 /**
  * This updater adds the parent_id column to PolytomousKeyNode_AUD
  * @author a.mueller
@@ -30,9 +29,9 @@ import eu.etaxonomy.cdm.database.update.v24_30.SchemaUpdater_25_30;
  */
 public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 
-
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_30_301.class);
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final String startSchemaVersion = "3.0.0.0.201011090000";
 	private static final String endSchemaVersion = "3.0.1.0.201104190000";
 
@@ -77,5 +76,4 @@ public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_25_30.NewInstance();
 	}
-
 }

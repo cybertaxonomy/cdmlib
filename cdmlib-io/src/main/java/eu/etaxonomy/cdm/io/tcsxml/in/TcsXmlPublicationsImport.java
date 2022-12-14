@@ -6,13 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -29,26 +29,25 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
- *
  */
 @Component
-public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
-	private static final Logger logger = LogManager.getLogger(TcsXmlPublicationsImport.class);
+public class TcsXmlPublicationsImport
+        extends TcsXmlImportBase
+        implements ICdmIO<TcsXmlImportState> {
+
+    private static final long serialVersionUID = 8385991781215744959L;
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 1000;
 
-
 	public TcsXmlPublicationsImport(){
 		super();
-
 	}
 
 	@Override
 	public boolean doCheck(TcsXmlImportState state){
 		boolean result = true;
 		result &= checkArticlesWithoutJournal(state.getConfig());
-		//result &= checkPartOfJournal(config);
-
 		return result;
 	}
 
@@ -58,15 +57,12 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 			//TODO
 			//				result = firstRow = false;
 //			}
-//
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-
-
 
 	@Override
 	public void doInvoke(TcsXmlImportState state){
@@ -123,8 +119,6 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 			ImportHelper.setOriginalSource(reference, config.getSourceReference(), strId, idNamespace);
 
 			referenceMap.put(strId, reference);
-
-
 		}
 //		//save and store in map
 //		logger.info("Save nomenclatural references (" + nomRefCount + ")");
@@ -139,12 +133,8 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(TcsXmlImportState state){
 		return (state.getConfig().getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
 	}
-
 }

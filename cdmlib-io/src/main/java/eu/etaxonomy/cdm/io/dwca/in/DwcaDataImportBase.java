@@ -8,24 +8,22 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.IItemStream;
 import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
 /**
- *
  * @author a.mueller
- *
  */
 public abstract class DwcaDataImportBase<CONFIG extends DwcaDataImportConfiguratorBase<STATE>, STATE extends DwcaDataImportStateBase<CONFIG>>
         extends StreamImportBase<CONFIG, STATE>{
 
     private static final long serialVersionUID = 8816075241549849925L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaDataImportBase.class);
-
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
 	protected void finalizeStream(IItemStream itemStream, STATE state) {
@@ -36,5 +34,4 @@ public abstract class DwcaDataImportBase<CONFIG extends DwcaDataImportConfigurat
 			}
 		}
 	}
-
 }

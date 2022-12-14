@@ -12,7 +12,8 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -25,11 +26,11 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaRecord{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaDistributionRecord.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private DwcaId locationId;
 	private String locationIdString;
@@ -47,12 +48,10 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	private String source;
 	private String occurrenceRemarks;
 
-
 	public DwcaDistributionRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 		locationId = new DwcaId(config);
 	}
-
 
 	@Override
     protected void registerKnownFields(){
@@ -125,7 +124,6 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
             String message = "Unhandled exception when writing distribution record: " + e.getMessage();
             state.getResult().addException(e, message);
         }
-
     }
 
     @Override
@@ -153,7 +151,6 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 		writer.println();
 	}
 
-
 	public String getSource() {
 		return source;
 	}
@@ -164,39 +161,29 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	public String getLocality() {
 		return locality;
 	}
-
-
 	@Override
     public void setLocality(String locality) {
 		this.locality = locality;
 	}
 
-
 	public String getCountryCode() {
 		return countryCode;
 	}
-
-
 	@Override
     public void setCountryCode(String countryCode) {
 		this.countryCode = countryCode;
 	}
 
-
 	public DefinedTerm getLifeStage() {
 		return lifeStage;
 	}
-
-
 	public void setLifeStage(DefinedTerm lifeStage) {
 		this.lifeStage = lifeStage;
 	}
 
-
 	public String getLocationId() {
 		return locationId.getId();
 	}
-
 	@Override
     public void setLocationId(NamedArea area) {
 		if (area.getVocabulary().getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
@@ -214,71 +201,49 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	public PresenceAbsenceTerm getOccurrenceStatus() {
 		return occurrenceStatus;
 	}
-
-
 	public void setOccurrenceStatus(PresenceAbsenceTerm occurrenceStatus) {
 		this.occurrenceStatus = occurrenceStatus;
 	}
 
-
 	public String getThreadStatus() {
 		return threadStatus;
 	}
-
-
 	public void setThreadStatus(String threadStatus) {
 		this.threadStatus = threadStatus;
 	}
 
-
 	public PresenceAbsenceTerm getEstablishmentMeans() {
 		return establishmentMeans;
 	}
-
-
 	public void setEstablishmentMeans(PresenceAbsenceTerm establishmentMeans) {
 		this.establishmentMeans = establishmentMeans;
 	}
 
-
 	public String getAppendixCITES() {
 		return appendixCITES;
 	}
-
-
 	public void setAppendixCITES(String appendixCITES) {
 		this.appendixCITES = appendixCITES;
 	}
 
-
 	public TimePeriod getEventDate() {
 		return eventDate;
 	}
-
-
 	public void setEventDate(TimePeriod eventDate) {
 		this.eventDate = eventDate;
 	}
 
-
 	public TimePeriod getSeasonalDate() {
 		return seasonalDate;
 	}
-
-
 	public void setSeasonalDate(TimePeriod seasonalDate) {
 		this.seasonalDate = seasonalDate;
 	}
 
-
 	public String getOccurrenceRemarks() {
 		return occurrenceRemarks;
 	}
-
-
 	public void setOccurrenceRemarks(String occurrenceRemarks) {
 		this.occurrenceRemarks = occurrenceRemarks;
 	}
-
-
 }

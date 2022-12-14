@@ -12,7 +12,8 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -23,11 +24,11 @@ import eu.etaxonomy.cdm.model.media.Rights;
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public class DwcaDescriptionRecord extends DwcaRecordBase {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaDescriptionRecord.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private String description;
 	private Feature type;
@@ -38,7 +39,6 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	private String audience;
 	private Set<Rights> license;
 	private AgentBase<?> rightsHolder;
-
 
 	public DwcaDescriptionRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
@@ -115,14 +115,12 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 		this.type = type;
 	}
 
-
 	public Language getLanguage() {
 		return language;
 	}
 	public void setLanguage(Language language) {
 		this.language = language;
 	}
-
 
 	public AgentBase<?> getCreator() {
 		return creator;

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.excel.common;
 
 import java.util.ArrayList;
@@ -17,7 +16,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.SourceType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -34,8 +34,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 13.07.2011
  */
 public abstract class ExcelRowBase {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ExcelRowBase.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private UUID cdmUuid = null;
 
@@ -67,7 +68,6 @@ public abstract class ExcelRowBase {
 		public String term;
 		public String postfix;
 	}
-
 
 	public class SourceDataHolder{
 		private TreeMap<Integer, Map<SourceType, String>> sources = new TreeMap<>();
@@ -146,7 +146,6 @@ public abstract class ExcelRowBase {
 	public List<SpecimenTypeDesignation> getTypeDesignations() {
 		return getOrdered(types);
 	}
-
 
 	private SpecimenTypeDesignation getOrMakeTypeDesignation(int key) {
 		SpecimenTypeDesignation designation = types.get(key);
@@ -243,6 +242,5 @@ public abstract class ExcelRowBase {
 			SourceDataHolder sourceMap = textMap.get(index);
 			return sourceMap;
 		}
-
 	}
 }

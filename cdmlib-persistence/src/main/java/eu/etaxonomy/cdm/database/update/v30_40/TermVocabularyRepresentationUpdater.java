@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -36,7 +37,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 public class TermVocabularyRepresentationUpdater
             extends SchemaUpdaterStepBase{
 
-    private static final Logger logger = LogManager.getLogger(TermVocabularyRepresentationUpdater.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String stepName = "Update term vocabulary representations";
 

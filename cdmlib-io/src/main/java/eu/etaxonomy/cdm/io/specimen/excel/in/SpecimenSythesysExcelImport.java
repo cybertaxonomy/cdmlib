@@ -21,7 +21,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -76,8 +77,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
     private static final long serialVersionUID = -1145031415387024364L;
-
-    private static final Logger logger = LogManager.getLogger(SpecimenSythesysExcelImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected String fullScientificNameString;
     protected String nomenclatureCode;
@@ -110,8 +110,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     private TransactionStatus tx;
     private Classification classification = null;
 
-    protected ArrayList<String> identificationList = new ArrayList<String>();
-    protected ArrayList<String> multimediaObjects = new ArrayList<String>();
+    protected ArrayList<String> identificationList = new ArrayList<>();
+    protected ArrayList<String> multimediaObjects = new ArrayList<>();
     private boolean keepAtomisedDate=true;
     private boolean useTDWGarea = true;
 
@@ -912,11 +912,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         return;
     }
 
-
-    /**
-     * @param unitsList
-     * @param state
-     */
     private void prepareCollectors(List<Map<String, String>> unitsList, SpecimenSynthesysExcelImportState state) {
         System.out.println("PREPARE COLLECTORS");
         List<String> collectors = new ArrayList<>();
@@ -979,7 +974,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 titleCacheTeam.put(existingP.getTitleCache(),(Team) existingP);
             }
         }
-
 
         Map<String,UUID> teamMap = new HashMap<>();
         for (UuidAndTitleCache<Team> uuidt:hiberTeam){
@@ -1048,7 +1042,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             }
         }
 
-
         Map<UUID, AgentBase> uuuidTeam =  getAgentService().save(teamsToAdd);
 
         for (UUID u:uuuidTeam.keySet()){
@@ -1069,7 +1062,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             return false;
         }
     }
-
 
     @Override
     protected boolean doCheck(SpecimenSynthesysExcelImportState state) {

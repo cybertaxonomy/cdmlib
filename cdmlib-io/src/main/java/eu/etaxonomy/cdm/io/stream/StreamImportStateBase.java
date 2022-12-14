@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.stream;
 
 import java.util.ArrayList;
@@ -17,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
@@ -37,7 +37,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
  */
 public abstract class StreamImportStateBase<CONFIG extends StreamImportConfiguratorBase, IO extends StreamImportBase>
             extends ImportStateBase<CONFIG, IO>{
-	private static final Logger logger = LogManager.getLogger(StreamImportStateBase.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private UUID uuid = UUID.randomUUID();
 
@@ -60,16 +61,11 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 
 	/**
 	 * True, if taxa have been fully created.
-	 * @return
 	 */
 	public boolean isTaxaCreated() {
 		return taxaCreated;
-
 	}
 
-	/**
-	 * @param taxaCreated the taxaCreated to set
-	 */
 	public void setTaxaCreated(boolean taxaCreated) {
 		this.taxaCreated = taxaCreated;
 	}
@@ -88,7 +84,6 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 		putMapping(mappedCdmBase.getNamespace(), mappedCdmBase.getSourceId(), CdmBase.deproxy(mappedCdmBase.getCdmBase(), IdentifiableEntity.class));
 	}
 
-
 	public void putMapping(String namespace, Integer sourceKey, IdentifiableEntity<?> destinationObject){
 	    putMapping(namespace, String.valueOf(sourceKey), destinationObject);
 	}
@@ -99,7 +94,6 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 		}
 	    mapping.putMapping(namespace, sourceKey, destinationObject);
 	}
-
 
 	public List<IdentifiableEntity> get(String namespace, String sourceKey){
 		return get(namespace, sourceKey, null);
@@ -230,7 +224,6 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 
 	/**
 	 * Returns the source reference object that is attached to the current transaction.
-	 * @return
 	 */
 	public Reference getTransactionalSourceReference() {
 		TermUri namespaceSourceReference = TermUri.CDM_SOURCE_REFERENCE;
@@ -245,9 +238,5 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 		}else{
 			return references.get(0);
 		}
-
 	}
-
-
-
 }

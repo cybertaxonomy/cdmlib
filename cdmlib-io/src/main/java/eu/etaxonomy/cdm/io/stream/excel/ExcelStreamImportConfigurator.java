@@ -1,29 +1,36 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.io.stream.excel;
 
 import java.io.InputStream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.URI;
-
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.stream.ExcelStreamImportState;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+
 /**
- *
  * @author a.oppermann
  * @since 08.05.2013
- *
  */
-public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBase<ExcelStreamImportState> implements IImportConfigurator {
+public class ExcelStreamImportConfigurator
+        extends DwcaDataImportConfiguratorBase<ExcelStreamImportState> {
 
     private static final long serialVersionUID = 5093164389086186710L;
-
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ExcelStreamImportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String DEFAULT_REF_TITLE = "Excel Stream Import";
 
@@ -31,21 +38,12 @@ public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBas
 
 	private InputStream stream = null;
 
-
-	/**
-	 * Factory method.
-	 * @param uri
-	 * @param destination
-	 * @return
-	 */
 	public static ExcelStreamImportConfigurator NewInstance(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation){
 		return new ExcelStreamImportConfigurator(uri, destination, nomenclaturalCode, dbSchemaValidation);
 	}
 
 	/**
 	 * Constructor.
-	 * @param uri
-	 * @param destination
 	 */
 	private ExcelStreamImportConfigurator(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
 		super(uri, destination, defaultTransformer);
@@ -55,8 +53,6 @@ public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBas
 
 	/**
      * Constructor.
-     * @param uri
-     * @param destination
      */
     private ExcelStreamImportConfigurator(InputStream stream, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
         super(null, destination, defaultTransformer);
@@ -70,7 +66,6 @@ public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBas
 		return new ExcelStreamImportState(this);
 	}
 
-
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void makeIoClassList() {
@@ -83,5 +78,4 @@ public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBas
 	protected String getDefaultSourceReferenceTitle() {
 		return DEFAULT_REF_TITLE;
 	}
-
 }

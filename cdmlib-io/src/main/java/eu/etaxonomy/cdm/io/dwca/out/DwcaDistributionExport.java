@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
@@ -15,7 +14,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -32,8 +32,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaDistributionExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = -3274468345456407430L;
-
-    private static final Logger logger = LogManager.getLogger(DwcaDistributionExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Distribution";
 	protected static final String fileName = "distribution.txt";
@@ -54,13 +53,6 @@ public class DwcaDistributionExport extends DwcaDataExportBase {
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){}
 
-    /**
-     * @param state
-     * @param node
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws UnsupportedEncodingException
-     */
     @Override
     protected void handleTaxonNode(DwcaTaxExportState state,  TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
@@ -96,9 +88,6 @@ public class DwcaDistributionExport extends DwcaDataExportBase {
         }
     }
 
-
-
-
 	private void handleDistribution(DwcaTaxExportState state, DwcaDistributionRecord record, Distribution distribution, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
@@ -119,7 +108,6 @@ public class DwcaDistributionExport extends DwcaDataExportBase {
 		record.setSource(getSources(distribution, config));
 		//FIXME
 		record.setOccurrenceRemarks(null);
-
 	}
 
 	@Override

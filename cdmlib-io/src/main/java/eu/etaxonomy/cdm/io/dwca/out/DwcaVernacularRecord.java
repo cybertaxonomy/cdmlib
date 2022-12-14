@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -21,11 +22,11 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 /**
  * @author a.mueller
  * @since 18.04.2011
- *
  */
 public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRecord{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaVernacularRecord.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private String vernacularName;
 	private String source;
@@ -71,7 +72,6 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 		}
 	}
 
-
 //	@Override
 //	public List<String> getHeaderList() {
 //		String[] result = new String[]{"coreid",
@@ -93,7 +93,6 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 //		};
 //		return Arrays.asList(result);
 //	}
-
 
     @Override
     protected void doWrite(DwcaTaxExportState state, PrintWriter writer) {
@@ -209,5 +208,4 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	public void setOrganismPart(String organismPart) {
 		this.organismPart = organismPart;
 	}
-
 }

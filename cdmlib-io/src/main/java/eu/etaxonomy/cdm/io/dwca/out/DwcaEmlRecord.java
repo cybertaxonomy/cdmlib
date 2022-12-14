@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class DwcaEmlRecord extends DwcaRecordBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaEmlRecord.class);
+	private static final Logger logger = LogManager.getLogger();
 
 //	BASIC
 	private String identifier;
@@ -301,5 +302,4 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 	public void setReferences(List<Reference> references) {
 		this.references = references;
 	}
-
 }

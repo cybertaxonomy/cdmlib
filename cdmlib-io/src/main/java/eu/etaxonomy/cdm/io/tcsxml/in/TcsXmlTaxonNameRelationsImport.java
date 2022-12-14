@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.ArrayList;
@@ -15,7 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -37,8 +37,7 @@ public class TcsXmlTaxonNameRelationsImport
         extends TcsXmlImportBase {
 
     private static final long serialVersionUID = 4000887401260650783L;
-
-    private static final Logger logger = LogManager.getLogger(TcsXmlTaxonNameRelationsImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 5000;
 
@@ -50,9 +49,6 @@ public class TcsXmlTaxonNameRelationsImport
 	public boolean doCheck(TcsXmlImportState state){
 		boolean result = true;
 		logger.warn("Checking for TaxonNameRelations not yet implemented");
-		//result &= checkArticlesWithoutJournal(tcsConfig);
-		//result &= checkPartOfJournal(tcsConfig);
-
 		return result;
 	}
 
@@ -273,10 +269,6 @@ public class TcsXmlTaxonNameRelationsImport
 						taxonName.addRelationshipFromName(relatedTaxonName, nameRelType, ruleConsidered, null);
 					}
 				}
-
-
-
-
 			}// end PublicationStatus
 
 			//BasedOn
@@ -299,10 +291,6 @@ public class TcsXmlTaxonNameRelationsImport
 				//String id = elTaxonName.getAttributeValue("id");
 				//makeNomenclaturalNoteType(tcsConfig, elBasedOn, relType, taxonNameMap, nameStore, id, inverse);
 			}// end BasedOn
-
-
-
-
 		}
 		//Other Relations
 		//TODO
@@ -315,7 +303,6 @@ public class TcsXmlTaxonNameRelationsImport
 		}
 		return;
 	}
-
 
 	private  boolean makeNomenclaturalNoteType(TcsXmlImportConfigurator tcsConfig, Element elRelation, NameRelationshipType relType, MapWrapper<TaxonName> taxonNameMap, Set<TaxonName> nameStore, String id, boolean inverse){
 		if (elRelation == null){

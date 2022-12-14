@@ -6,12 +6,12 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
@@ -28,9 +28,8 @@ public class JaxbExportConfigurator
         implements IExportConfigurator<JaxbExportState, IExportTransformer> {
 
     private static final long serialVersionUID = -3081392679701925440L;
-
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(JaxbExportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private int maxRows = 0;
 	private boolean formattedOutput = Boolean.TRUE;
@@ -199,24 +198,17 @@ public class JaxbExportConfigurator
 		ioClassList = new Class[] {
 				JaxbExport.class,
 		};
-	};
-
+	}
 
 	public static JaxbExportConfigurator NewInstance(ICdmDataSource source, File uri) {
 		return new JaxbExportConfigurator(source, uri);
 	}
 
-
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	private JaxbExportConfigurator(ICdmDataSource source, File uri) {
 		super(defaultTransformer);
 		setDestination(uri);
 		setSource(source);
 	}
-
 
 	@Override
     public File getDestination() {
@@ -252,8 +244,6 @@ public class JaxbExportConfigurator
 		this.doOccurrence = doOccurrence;
 	}
 
-
-
 	public boolean isDoAuthors() {
 		return doAuthors;
 	}
@@ -281,7 +271,4 @@ public class JaxbExportConfigurator
 	public void setDoTaxa(boolean doTaxa) {
 		this.doTaxa = doTaxa;
 	}
-
-
-
 }

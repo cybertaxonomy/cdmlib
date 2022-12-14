@@ -6,14 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsrdf;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-
 
 /**
  * @author a.mueller
@@ -22,21 +21,13 @@ import com.hp.hpl.jena.rdf.model.Statement;
 public class CdmUnclearMapper extends CdmSingleAttributeRDFMapperBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CdmUnclearMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
-	/**
-	 * @param dbValue
-	 * @param cdmValue
-	 */
 	public CdmUnclearMapper(String sourceElementString, String sourceNamespace) {
 		super(sourceElementString, null);
 		this.sourceNameSpace = sourceNamespace;
 	}
 
-	/**
-	 * @param dbValue
-	 * @param cdmValue
-	 */
 	public CdmUnclearMapper(String dbAttributString) {
 		super(dbAttributString, null);
 	}
@@ -60,8 +51,4 @@ public class CdmUnclearMapper extends CdmSingleAttributeRDFMapperBase {
     public String toString(){
 		return this.getSourceElement();
 	}
-
-
-
-
 }

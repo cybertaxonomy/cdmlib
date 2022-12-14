@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.stream.IReader;
@@ -33,21 +34,17 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 				implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(EolAgent2CdmConverter.class);
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final String CORE_ID = "coreId";
 
-	/**
-	 * @param state
-	 */
 	public EolAgent2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
-
 
 	@Override
     public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
@@ -108,12 +105,9 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 
 //		resultList.add(mcb);
 
-
 		//return
 		return new ListReader<>(resultList);
-
 	}
-
 
 	private boolean isPerson(StreamItem item) {
 		String givenName = item.get(TermUri.FOAF_FIRST_NAME);
@@ -124,9 +118,7 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 		}else{
 			return false;
 		}
-
 	}
-
 
 	@Override
 	public String getSourceId(StreamItem item) {
@@ -147,7 +139,6 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 		}
 	}
 
-
 	@Override
 	public final Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<>();
@@ -157,11 +148,8 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataIm
 
 //************************ STRING ************************************************/
 
-
-
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
-
 }

@@ -21,7 +21,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
@@ -30,28 +31,19 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 /**
  * @author a.mueller
  * @since 18.04.2011
- *
  */
 public abstract class DwcaExportBase
             extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer, File>
             implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
 
     private static final long serialVersionUID = -3214410418410044139L;
-
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(DwcaExportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected static final boolean IS_CORE = true;
 
     protected DwcaTaxExportFile file;
 
-
-    /**
-     * @param config
-     * @return
-     * @throws IOException
-     * @throws FileNotFoundException
-     */
     protected FileOutputStream createFileOutputStream(DwcaTaxExportConfigurator config, String thisFileName) throws IOException, FileNotFoundException {
         String filePath = config.getDestinationNameString();
         String fileName = filePath + File.separatorChar + thisFileName;
@@ -63,15 +55,6 @@ public abstract class DwcaExportBase
         return fos;
     }
 
-
-    /**
-     * @param state
-     * @param table
-     * @return
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws XMLStreamException
-     */
     protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportState state, DwcaTaxExportFile table)
             throws IOException, FileNotFoundException, XMLStreamException {
 
@@ -90,15 +73,6 @@ public abstract class DwcaExportBase
         return writer;
     }
 
-
-    /**
-     * @param state
-     * @param file
-     * @return
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws UnsupportedEncodingException
-     */
     protected PrintWriter createPrintWriter(DwcaTaxExportState state, DwcaTaxExportFile file)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
@@ -132,11 +106,8 @@ public abstract class DwcaExportBase
         }
     }
 
-
     /**
      * Closes the writer
-     * @param file
-     * @param state
      */
     protected void closeWriter(DwcaTaxExportState state) {
         PrintWriter writer = state.getWriter(file);
@@ -145,13 +116,9 @@ public abstract class DwcaExportBase
         }
     }
 
-
-
     /**
      * Closes the writer.
      * Note: XMLStreamWriter does not close the underlying stream.
-     * @param writer
-     * @param state
      */
     protected void closeWriter(XMLStreamWriter writer, DwcaTaxExportState state) {
         if (writer != null && state.isZip() == false){
@@ -162,5 +129,4 @@ public abstract class DwcaExportBase
             }
         }
     }
-
 }

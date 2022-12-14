@@ -6,14 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
-
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -27,9 +25,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @since 05.05.2011
  */
 public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
+
     private static final long serialVersionUID = -114046010543496409L;
-    private static final Logger logger = LogManager.getLogger(SpecimenCdmExcelImportConfigurator.class);
-	private static IInputTransformer defaultTransformer = new SpecimenCdmExcelTransformer();
+    private static final Logger logger = LogManager.getLogger();
+
+    private static IInputTransformer defaultTransformer = new SpecimenCdmExcelTransformer();
 
 	//old
 	private boolean doParsing = false;
@@ -60,9 +60,6 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	private boolean createTaxonIfNotExists = false;
 //	private boolean includeSynonymsForTaxonMatching = false;
 
-
-
-
 	@Override
     @SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
@@ -77,31 +74,14 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 		return new SpecimenCdmExcelImportConfigurator(uri, destination);
 	}
 
-
-	  /**
-     * @param uri
-     * @param object
-     * @param b
-     * @return
-     */
     public static SpecimenCdmExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination, boolean interact) {
         return new SpecimenCdmExcelImportConfigurator(uri, destination, interact);
     }
 
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	private SpecimenCdmExcelImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(uri, destination, defaultTransformer);
 	}
 
-	/**
-     * @param berlinModelSource
-     * @param sourceReference
-     * @param destination
-     */
     private SpecimenCdmExcelImportConfigurator(URI uri, ICdmDataSource destination, boolean interact) {
         super(uri, destination, defaultTransformer);
         setInteractWithUser(interact);
@@ -198,9 +178,6 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 		return firstDeterminationIsStoredUnder ;
 	}
 
-	/**
-	 * @param firstDeterminationIsStoredUnder the firstDeterminationIsStoredUnder to set
-	 */
 	public void setFirstDeterminationIsStoredUnder(boolean firstDeterminationIsStoredUnder) {
 		this.firstDeterminationIsStoredUnder = firstDeterminationIsStoredUnder;
 	}
@@ -209,9 +186,6 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 		return determinationsAreDeterminationEvent ;
 	}
 
-	/**
-	 * @param determinationsAreDeterminationEvent the determinationsAreDeterminationEvent to set
-	 */
 	public void setDeterminationsAreDeterminationEvent(	boolean determinationsAreDeterminationEvent) {
 		this.determinationsAreDeterminationEvent = determinationsAreDeterminationEvent;
 	}
@@ -256,10 +230,4 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	public TermMatchMode getAreaMatchMode() {
 		return areaMatchMode;
 	}
-
-
-
-
-
-
 }

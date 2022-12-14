@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.io.stream;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
@@ -45,7 +46,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
         extends CdmImportBase<CONFIG, STATE>{
 
     private static final long serialVersionUID = -125414263689509881L;
-    private static final Logger logger = LogManager.getLogger(StreamImportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
 	protected void makeSourceRef(STATE state) {
@@ -53,11 +54,6 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 		getReferenceService().saveOrUpdate(sourceRef);
 	}
 
-
-	/**
-	 * @param state
-	 * @param itemStream
-	 */
 	protected void handleSingleRecord(STATE state, IItemStream recordStream) {
 		recordStream.addObservers(state.getConfig().getObservers());
 
@@ -104,7 +100,6 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 					fireWarningEvent(message , String.valueOf(filteredStream.getItemLocation()) , 12);
 					this.rollbackTransaction(tx);
 				}
-
 			}
 			logger.debug("Partition stream is empty");
 		}else {
@@ -122,21 +117,10 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 		finalizeStream(recordStream, state);
 	}
 
-
-	/**
-	 * @param itemStream
-	 * @param state
-	 */
 	protected void finalizeStream(IItemStream itemStream, STATE state) {
 		fireWarningEvent("Stream finished", itemStream.getItemLocation(), 0);
 	}
 
-
-	/**
-	 * @param state
-	 * @param item
-	 * @return
-	 */
 	private void handleStreamItem(STATE state, StreamItem item) {
 		IConverter<StreamItem, IReader<CdmBase>, String> converter = getConverter(item.term, state);
 		if (converter == null){
@@ -148,12 +132,6 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 		return;
 	}
 
-
-	/**
-	 * @param state
-	 * @param item
-	 * @param resultReader
-	 */
 	private void handleResults(STATE state, IReader<MappedCdmBase<? extends CdmBase>> resultReader, String location) {
 		while (resultReader.hasNext()){
 
@@ -168,8 +146,6 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 			}
 		}
 	}
-
-
 
 //	private void handlePartitionedStreamItem(DwcaImportState state,  StreamPartitioner<CsvStreamItem> partitionStream) {
 //		IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(partitionStream.getTerm(), state);
@@ -241,7 +217,6 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 
 	protected abstract IPartitionableConverter<StreamItem,IReader<CdmBase>, String> getConverter(TermUri namespace, STATE state);
 
-
 	/**
 	 * Returns an appropriate service to persist data of a certain class.
 	 * If an appropriate service can't be found an {@link IllegalArgumentException} is thrown.
@@ -278,7 +253,6 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 		warning = String.format(warning, (clazz == null ? "-" : clazz.getName()));
 		throw new IllegalArgumentException(warning);
 	}
-
 
 	/**
 	 * Saves a new term. Immediate saving is required to avoid transient object exceptions.

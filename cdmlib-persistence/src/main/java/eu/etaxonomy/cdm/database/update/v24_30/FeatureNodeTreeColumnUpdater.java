@@ -12,7 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -29,7 +30,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 public class FeatureNodeTreeColumnUpdater
         extends SchemaUpdaterStepBase{
 
-	private static final Logger logger = LogManager.getLogger(FeatureNodeTreeColumnUpdater.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private String treeTableName;
 	private String nodeTableName;

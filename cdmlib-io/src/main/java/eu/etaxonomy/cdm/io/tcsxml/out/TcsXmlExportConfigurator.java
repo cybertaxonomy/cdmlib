@@ -6,12 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.out;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -25,11 +25,9 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
     private static final long serialVersionUID = 2943494702785912481L;
 
     @SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(TcsXmlExportConfigurator.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
 	private TcsXmlExportState state;
-
 
 	private boolean doAuthors;
 	private boolean doTaxonNames;
@@ -37,13 +35,12 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
-
-
 	public static TcsXmlExportConfigurator NewInstance(File destination, ICdmDataSource source){
 			return new TcsXmlExportConfigurator(destination, source);
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     protected void makeIoClassList(){
 		ioClassList = new Class[]{
 //				BerlinModelAuthorExport.class
@@ -51,18 +48,11 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
 //				, BerlinModelReferenceExport.class
 //				, BerlinModelTaxonNameExport.class
 		};
-
 	}
 
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	private TcsXmlExportConfigurator(File destination, ICdmDataSource cdmSource) {
 	   super(destination, cdmSource, defaultTransformer);
 	}
-
 
 	public boolean isDoAuthors(){
 		return doAuthors;
@@ -72,30 +62,16 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
 		this.doAuthors = doAuthors;
 	}
 
-	/**
-	 * @return the doTaxonNames
-	 */
 	public boolean isDoTaxonNames() {
 		return doTaxonNames;
 	}
-
-	/**
-	 * @param doTaxonNames the doTaxonNames to set
-	 */
 	public void setDoTaxonNames(boolean doTaxonNames) {
 		this.doTaxonNames = doTaxonNames;
 	}
 
-	/**
-	 * @return the state
-	 */
 	public TcsXmlExportState getState() {
 		return state;
 	}
-
-	/**
-	 * @param state the state to set
-	 */
 	public void setState(TcsXmlExportState state) {
 		this.state = state;
 	}
@@ -104,8 +80,4 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase<TcsXmlEx
     public TcsXmlExportState getNewState() {
 		return new TcsXmlExportState(this);
 	}
-
-
-
-
 }

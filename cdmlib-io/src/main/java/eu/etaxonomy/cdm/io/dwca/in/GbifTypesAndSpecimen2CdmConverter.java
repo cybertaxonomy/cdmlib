@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
@@ -39,19 +40,15 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(GbifTypesAndSpecimen2CdmConverter.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String CORE_ID = "coreId";
 
-	/**
-	 * @param state
-	 */
 	public GbifTypesAndSpecimen2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
@@ -120,7 +117,6 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		return new ListReader<>(resultList);
 	}
 
-
 	private Collection getCollection(DwcaDataImportStateBase state, StreamItem item,
 	        List<MappedCdmBase<? extends CdmBase>> resultList) {
 		String institutionCode = item.get(TermUri.DWC_INSTITUTION_CODE);
@@ -171,20 +167,11 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 
 	}
 
-	/**
-	 * @param collectionCode
-	 * @param institution
-	 */
 	private String makeCollectionInstitutionCode(String collectionCode, Institution institution) {
 		String collectionInstitutionCode = collectionCode + "@" + institution == null ? "NULL" : institution.getCode();
 		return collectionInstitutionCode;
 	}
 
-	/**
-	 * @param collectionCode
-	 * @param institution
-	 * @return
-	 */
 	private Collection makeNewCollection(String collectionCode,
 			Institution institution) {
 		//try to find in cdm
@@ -231,9 +218,6 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	/**
 	 * Returns the type designation. Should never return null
 	 * except for blank typeStatus.
-	 * @param typeStatus
-	 * @param item
-	 * @return
 	 */
 	private TypeDesignationStatusBase<?> getTypeStatus(String typeStatus, StreamItem item) {
 		//TODO move to transformer or handle somehow different (e.g. transformer for http://vocabularies.gbif.org/vocabularies/type_status )
@@ -258,7 +242,6 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		return id;
 	}
 
-
 //********************** PARTITIONABLE **************************************/
 
 	@Override
@@ -280,9 +263,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-
 	}
-
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
@@ -298,6 +279,4 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
 }

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.util.ArrayList;
@@ -14,7 +13,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -27,11 +27,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @since 08.04.2011
- * @version 1.0
  */
 public class SpecimenRow extends ExcelRowBase{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SpecimenRow.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private String basisOfRecord;
 
@@ -64,20 +64,15 @@ public class SpecimenRow extends ExcelRowBase{
 	private String collectionCode;
 	private String collection;
 
-
-	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<Integer, IdentifiableSource>();
-	private TreeMap<Integer, String> collectors = new TreeMap<Integer, String>();
-	private TreeMap<Integer, String> unitNotes = new TreeMap<Integer, String>();
-	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
-	private TreeMap<Integer, DeterminationLight> determinations = new TreeMap<Integer, DeterminationLight>();
-	private List<PostfixTerm> levels  = new ArrayList<PostfixTerm>();
-
-
+	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<>();
+	private TreeMap<Integer, String> collectors = new TreeMap<>();
+	private TreeMap<Integer, String> unitNotes = new TreeMap<>();
+	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<>();
+	private TreeMap<Integer, DeterminationLight> determinations = new TreeMap<>();
+	private List<PostfixTerm> levels  = new ArrayList<>();
 
 	public SpecimenRow() {
 	}
-
-
 
 	//	may be public if necessary
 	protected class DeterminationLight{
@@ -105,71 +100,51 @@ public class SpecimenRow extends ExcelRowBase{
 				|| StringUtils.isNotBlank(infraSpeciesEpi);
 			return result;
 		}
-
 	}
-
 
 // **************************** GETTER / SETTER *********************************/
 
 	public void setBasisOfRecord(String basisOfRecord) {
 		this.basisOfRecord = basisOfRecord;
 	}
-
-
 	public String getBasisOfRecord() {
 		return basisOfRecord;
 	}
 
-
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
-
 	public String getCountry() {
 		return country;
 	}
 
-
 	public void setIsoCountry(String isoCountry) {
 		this.isoCountry = isoCountry;
 	}
-
-
 	public String getIsoCountry() {
 		return isoCountry;
 	}
 
-
 	public void setLocality(String locality) {
 		this.locality = locality;
 	}
-
-
 	public String getLocality() {
 		return locality;
 	}
 
-
 	public void setFieldNotes(String fieldNotes) {
 		this.fieldNotes = fieldNotes;
 	}
-
-
 	public String getFieldNotes() {
 		return fieldNotes;
 	}
 
-
 	public void setAccessionNumber(String accessionNumber) {
 		this.accessionNumber = accessionNumber;
 	}
-
-
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}
-
 
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
@@ -190,15 +165,12 @@ public class SpecimenRow extends ExcelRowBase{
 //		this.author = author;
 //	}
 
-
 	/**
 	 * @return the absoluteElevation
 	 */
 	public String getAltitude() {
 		return altitude;
 	}
-
-
 	/**
 	 * @param absoluteElevation the absoluteElevation to set
 	 */
@@ -206,110 +178,51 @@ public class SpecimenRow extends ExcelRowBase{
 		this.altitude = altitude;
 	}
 
-
-	/**
-	 * @return the collectionCode
-	 */
 	public String getCollectionCode() {
 		return collectionCode;
 	}
-
-
-	/**
-	 * @param collectionCode the collectionCode to set
-	 */
 	public void setCollectionCode(String collectionCode) {
 		this.collectionCode = collectionCode;
 	}
 
-
-	/**
-	 * @return the collectingDate
-	 */
 	public String getCollectingDate() {
 		return collectingDate;
 	}
-
-
-	/**
-	 * @param collectingDate the collectingDate to set
-	 */
 	public void setCollectingDate(String collectingDate) {
 		this.collectingDate = collectingDate;
 	}
 
-
-	/**
-	 * @return the collectorsNumber
-	 */
 	public String getCollectorsNumber() {
 		return collectorsNumber;
 	}
-
-
-	/**
-	 * @param collectorsNumber the collectorsNumber to set
-	 */
 	public void setCollectorsNumber(String collectorsNumber) {
 		this.collectorsNumber = collectorsNumber;
 	}
 
-
-	/**
-	 * @return the barcode
-	 */
 	public String getBarcode() {
 		return barcode;
 	}
 
-
-	/**
-	 * @return the collectingDateEnd
-	 */
 	public String getCollectingDateEnd() {
 		return collectingDateEnd;
 	}
-
-
-	/**
-	 * @param collectingDateEnd the collectingDateEnd to set
-	 */
 	public void setCollectingDateEnd(String collectingDateEnd) {
 		this.collectingDateEnd = collectingDateEnd;
 	}
 
-
-	/**
-	 * @return the latitude
-	 */
 	public String getLatitude() {
 		return latitude;
 	}
-
-
-	/**
-	 * @param latitude the latitude to set
-	 */
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
 
-
-	/**
-	 * @return the longitude
-	 */
 	public String getLongitude() {
 		return longitude;
 	}
-
-
-	/**
-	 * @param longitude the longitude to set
-	 */
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
-
 
 	@Override
     public void putIdInSource(int key, String id){
@@ -368,11 +281,6 @@ public class SpecimenRow extends ExcelRowBase{
 	}
 
 
-
-	/**
-	 * @param key
-	 * @return
-	 */
 	private IdentifiableSource getOrMakeSource(int key, OriginalSourceType type) {
 		IdentifiableSource  source = sources.get(key);
 		if (source == null){
@@ -381,7 +289,6 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 		return source;
 	}
-
 
 	@Override
     public void putTypeCategory(int key, SpecimenTypeDesignationStatus status){
@@ -491,8 +398,6 @@ public class SpecimenRow extends ExcelRowBase{
 		return null;
 	}
 
-
-
 	private DeterminationLight getOrMakeDetermination(int key) {
 		DeterminationLight determination = this.determinations.get(key);
 		if (determination == null){
@@ -501,7 +406,6 @@ public class SpecimenRow extends ExcelRowBase{
 		}
 		return determination;
 	}
-
 
 	private<T extends Object> List<T> getOrdered(TreeMap<?, T> tree) {
 		List<T> result = new ArrayList<T>();
@@ -515,53 +419,30 @@ public class SpecimenRow extends ExcelRowBase{
 		this.sex = sex;
 	}
 
-
 	public String getSex() {
 		return sex;
 	}
 
-
-	/**
-	 * @return the referenceSystem
-	 */
 	public String getReferenceSystem() {
 		return referenceSystem;
 	}
-
-
-	/**
-	 * @param referenceSystem the referenceSystem to set
-	 */
 	public void setReferenceSystem(String referenceSystem) {
 		this.referenceSystem = referenceSystem;
 	}
 
-
-	/**
-	 * @return the errorRadius
-	 */
 	public String getErrorRadius() {
 		return errorRadius;
 	}
-
-
-	/**
-	 * @param errorRadius the errorRadius to set
-	 */
 	public void setErrorRadius(String errorRadius) {
 		this.errorRadius = errorRadius;
 	}
 
-
 	public void setCollection(String collection) {
 		this.collection = collection;
 	}
-
-
 	public String getCollection() {
 		return collection;
 	}
-
 
 	public void addLeveledArea(String levelPostfix, String value) {
 		PostfixTerm area = new PostfixTerm();
@@ -577,36 +458,21 @@ public class SpecimenRow extends ExcelRowBase{
 	public void setAltitudeMax(String altitudeMax) {
 		this.altitudeMax = altitudeMax;
 	}
-
-
 	public String getAltitudeMax() {
 		return altitudeMax;
 	}
 
-
-	/**
-	 * @param primaryCollector the primaryCollector to set
-	 */
 	public void setPrimaryCollector(String primaryCollector) {
 		this.primaryCollector = primaryCollector;
 	}
-
-
-	/**
-	 * @return the primaryCollector
-	 */
 	public String getPrimaryCollector() {
 		return primaryCollector;
 	}
 
-
 	public String getLanguage() {
 		return language;
 	}
-
-
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-
 }

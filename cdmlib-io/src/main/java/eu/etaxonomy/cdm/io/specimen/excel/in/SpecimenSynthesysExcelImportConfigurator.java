@@ -10,13 +10,14 @@
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -29,11 +30,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author p.kelbert
  * @since 29.10.2008
- * @version 1.0
  */
 public class SpecimenSynthesysExcelImportConfigurator extends ImportConfiguratorBase<SpecimenSynthesysExcelImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = LogManager.getLogger(SpecimenSynthesysExcelImportConfigurator.class);
-	private boolean doParsing = false;
+
+    private static final long serialVersionUID = -4349140745300198838L;
+    private static final Logger logger = LogManager.getLogger();
+
+    private boolean doParsing = false;
 	private boolean reuseMetadata = false;
 	private boolean reuseTaxon = false;
 	private String taxonReference = null;
@@ -42,14 +45,10 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
 
-    private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
+    private Map<String,UUID> namedAreaDecisions = new HashMap<>();
     private Reference dataReference;
     private boolean debugInstitutionOnly = false;
 
-
-	/**
-     * @return the debugInstitutionOnly
-     */
     public boolean isDebugInstitutionOnly() {
         return debugInstitutionOnly;
     }
@@ -64,7 +63,7 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 		ioClassList = new Class[]{
 			SpecimenSythesysExcelImport.class,
 		};
-	};
+	}
 
 	public static SpecimenSynthesysExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new SpecimenSynthesysExcelImportConfigurator(uri, destination);
@@ -74,24 +73,12 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
         return new SpecimenSynthesysExcelImportConfigurator(uri, destination,interact);
     }
 
-
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	private SpecimenSynthesysExcelImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(uri);
 		setDestination(destination);
 	}
 
-
-    /**
-     * @param berlinModelSource
-     * @param sourceReference
-     * @param destination
-     */
     private SpecimenSynthesysExcelImportConfigurator(URI uri, ICdmDataSource destination, boolean interact) {
         super(defaultTransformer);
         setSource(uri);
@@ -99,20 +86,11 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
         setInteractWithUser(interact);
     }
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
 	@Override
     public SpecimenSynthesysExcelImportState getNewState() {
 		return new SpecimenSynthesysExcelImportState(this);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -136,10 +114,6 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 		return sourceReference;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
 	@Override
     public String getSourceNameString() {
 		if (this.getSource() == null){
@@ -181,50 +155,35 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
         this.askForDate = askForDate;
     }
 
-    /**
-     * @param titleCacheTeam
-     */
     public void setTeams(Map<String, Team> titleCacheTeam) {
        this.titleCacheTeam = titleCacheTeam;
        System.out.println(titleCacheTeam);
 
     }
 
-    /**
-     * @param titleCachePerson
-     */
     public void setPersons(Map<String, Person> titleCachePerson) {
        this.titleCachePerson=titleCachePerson;
-       System.out.println(titleCachePerson);
-
+//       System.out.println(titleCachePerson);
     }
 
     public Map<String, Team> getTeams() {
         return titleCacheTeam;
     }
 
-
     public Map<String, Person> getPersons() {
         return titleCachePerson;
     }
 
-    /**
-     * @param string
-     */
     public void setDefaultAuthor(String string) {
-      defaultAuthor=string;
-
+        defaultAuthor=string;
     }
-
     public String getDefaultAuthor(){
-     return defaultAuthor;
+        return defaultAuthor;
     }
-
 
     public Map<String,UUID> getNamedAreaDecisions() {
         return namedAreaDecisions;
     }
-
     public void setNamedAreaDecisions(Map<String,UUID> namedAreaDecisions) {
         this.namedAreaDecisions = namedAreaDecisions;
     }
@@ -232,31 +191,18 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
     public void putNamedAreaDecision(String areaStr,UUID uuid){
         this.namedAreaDecisions.put(areaStr,uuid);
     }
-
     public UUID getNamedAreaDecision(String areaStr){
         return namedAreaDecisions.get(areaStr);
     }
 
-    /**
-     * @param ref
-     */
     public void setDataReference(Reference ref) {
         this.dataReference=ref;
-
     }
-
     public Reference getDataReference() {
         return dataReference;
     }
 
-    /**
-     * @param b
-     */
-    public void setDebugInstitutionOnly(boolean b) {
-       this.debugInstitutionOnly=b;
-
+    public void setDebugInstitutionOnly(boolean debugInstitutionOnly) {
+       this.debugInstitutionOnly=debugInstitutionOnly;
     }
-
-
-
 }

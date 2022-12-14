@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.sdd.out;
 
 import java.io.ByteArrayOutputStream;
@@ -18,7 +17,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.ResourceUtils;
@@ -51,12 +51,10 @@ public class SDDCdmExporter
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
     private static final long serialVersionUID = 6294052197732385842L;
-    private static final Logger logger = LogManager.getLogger(SDDCdmExporter.class);
-	private SDDDocumentBuilder sddDocumentBuilder = null;
+    private static final Logger logger = LogManager.getLogger();
 
-	/**
-	 *
-	 */
+    private SDDDocumentBuilder sddDocumentBuilder = null;
+
 	public SDDCdmExporter() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
@@ -82,7 +80,6 @@ public class SDDCdmExporter
 
 		TransactionStatus txStatus = startTransaction(true);
 		SDDDataSet dataSet = new SDDDataSet();
-		List<Taxon> taxa = null;
 		List<DefinedTermBase> terms = null;
 
 		// get data from DB

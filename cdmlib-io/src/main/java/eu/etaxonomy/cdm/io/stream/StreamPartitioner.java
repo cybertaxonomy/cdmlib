@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping;
 import eu.etaxonomy.cdm.io.stream.mapping.InMemoryMapping;
@@ -23,14 +24,13 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
-
 /**
  * @author a.mueller
- *
  */
 public class StreamPartitioner<ITEM extends IConverterInput>
             implements INamespaceReader<IReader<MappedCdmBase<? extends CdmBase>>>{
-	private static final Logger logger = LogManager.getLogger(StreamPartitioner.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private final int partitionSize;
 	private final LookAheadStream<ITEM> inStream;
@@ -46,7 +46,6 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 		 this.state = state;
 		 initNewOutStream();
 	}
-
 
 	private void initNewOutStream(){
 		outStream = new ConcatenatingReader<>();
@@ -101,13 +100,10 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 		}
 
 		return;
-
 	}
-
 
 	/**
 	 * Add new items to the local mapping
-	 * @param item
 	 */
 	private void addItemToRelatedObjects(MappedCdmBase<? extends CdmBase> item) {
 		CdmBase cdmBase = item.getCdmBase();
@@ -124,11 +120,8 @@ public class StreamPartitioner<ITEM extends IConverterInput>
 		}
 	}
 
-
 	@Override
 	public TermUri getTerm() {
 		return inStream.getTerm();
 	}
-
-
 }

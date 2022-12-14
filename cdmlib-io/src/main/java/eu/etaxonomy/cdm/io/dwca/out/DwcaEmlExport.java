@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
@@ -16,7 +15,8 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
 import org.joda.time.format.DateTimeFormat;
@@ -38,8 +38,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class DwcaEmlExport extends DwcaExportBase {
 
     private static final long serialVersionUID = -1762545757384406718L;
-
-    private static final Logger logger = LogManager.getLogger(DwcaEmlExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final String fileName = "eml.xml";
 
@@ -133,7 +132,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 		return;
 	}
 
-
 	private void writeAdditionalMetadata(XMLStreamWriter writer, DwcaTaxExportConfigurator config, DwcaEmlRecord emlRecord) throws XMLStreamException {
 		writer.writeStartElement("additionalMetadata");
 		writer.writeStartElement("metadata");
@@ -162,12 +160,10 @@ public class DwcaEmlExport extends DwcaExportBase {
 		writer.writeEndElement();	//gbif
 		writer.writeEndElement();	//metadata
 		writer.writeEndElement();	//additionalMetadata
-
 	}
 
 	private void writeDataSet(XMLStreamWriter writer,
 			DwcaTaxExportConfigurator config, DwcaEmlRecord emlRecord) throws XMLStreamException {
-
 
 		writer.writeStartElement("dataset");
 
@@ -199,7 +195,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 				writer.writeStartElement("associatedParty");
 					writePerson(writer, author);
 				writer.writeEndElement();
-
 			}
 
 			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("YYYY-MM-dd");
@@ -259,7 +254,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 				writePerson(writer, emlRecord.getContact());
 			writer.writeEndElement();
 
-
 			//TODO project
 			writer.writeStartElement("project");
 				//title
@@ -278,7 +272,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 					writeTextElement(writer, elementName, text);
 
 				writer.writeEndElement();
-
 
 				writer.writeStartElement("funding");
 				writer.writeEndElement();
@@ -299,11 +292,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 		writer.writeEndElement();
 	}
 
-	/**
-	 * @param writer
-	 * @param emlRecord
-	 * @throws XMLStreamException
-	 */
 	private void writeCoverage(XMLStreamWriter writer, DwcaEmlRecord emlRecord)
 			throws XMLStreamException {
 		String elementName;
@@ -314,11 +302,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 		writer.writeEndElement(); //coverage
 	}
 
-	/**
-	 * @param writer
-	 * @param emlRecord
-	 * @throws XMLStreamException
-	 */
 	private void handleGeoCoverage(XMLStreamWriter writer,
 			DwcaEmlRecord emlRecord) throws XMLStreamException {
 		String elementName;
@@ -363,11 +346,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 		writer.writeEndElement(); //geographicCoverage
 	}
 
-	/**
-	 * @param writer
-	 * @param emlRecord
-	 * @throws XMLStreamException
-	 */
 	private void handleTermporalCoverage(XMLStreamWriter writer,
 			DwcaEmlRecord emlRecord) throws XMLStreamException {
 
@@ -377,28 +355,24 @@ public class DwcaEmlExport extends DwcaExportBase {
 		}
 
 		writer.writeStartElement("termporalCoverage");
-			if (! timePeriod.isPeriod()){
-				//singleDateTime
-				writer.writeStartElement("singleDateTime");
+		if (! timePeriod.isPeriod()){
+			//singleDateTime
+			writer.writeStartElement("singleDateTime");
+				writeCalendarDate(writer, timePeriod.getStart());
+			writer.writeEndElement();
+		}else {
+			//rangeOfDates
+			writer.writeStartElement("rangeOfDates");
+				writer.writeStartElement("beginDate");
 					writeCalendarDate(writer, timePeriod.getStart());
 				writer.writeEndElement();
-			}else {
-				//rangeOfDates
-				writer.writeStartElement("rangeOfDates");
-					writer.writeStartElement("beginDate");
-						writeCalendarDate(writer, timePeriod.getStart());
-					writer.writeEndElement();
-					writer.writeStartElement("endDate");
-						writeCalendarDate(writer, timePeriod.getStart());
-					writer.writeEndElement();
+				writer.writeStartElement("endDate");
+					writeCalendarDate(writer, timePeriod.getStart());
 				writer.writeEndElement();
-			}
-
-
-
+			writer.writeEndElement();
+		}
 		writer.writeEndElement(); //termporalCoverage
 	}
-
 
 	private void writeCalendarDate(XMLStreamWriter writer, Partial partial) throws XMLStreamException {
 		//calendarDate
@@ -406,7 +380,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 		//FIXME must be something like 37723
 		String text = partial.toDateTime(new DateTime()).toString();
 		writeTextElement(writer, elementName, text);
-
 	}
 
 	private String nullSafe(Object object) {
@@ -483,8 +456,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 			elementName = "onlineUrl";
 			text = firstOfList(contact.getPhoneNumbers());
 			writeTextElement(writer, elementName, text);
-
-
 		}
 	}
 
@@ -496,12 +467,6 @@ public class DwcaEmlExport extends DwcaExportBase {
 		}
 	}
 
-	/**
-	 * @param writer
-	 * @param altIdentifier
-	 * @param text
-	 * @throws XMLStreamException
-	 */
 	private void writeTextElement(XMLStreamWriter writer, String elementName,
 			String text) throws XMLStreamException {
 		writer.writeStartElement(elementName);
@@ -516,10 +481,8 @@ public class DwcaEmlExport extends DwcaExportBase {
 		return result;
 	}
 
-
 	@Override
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoEml();
 	}
-
 }

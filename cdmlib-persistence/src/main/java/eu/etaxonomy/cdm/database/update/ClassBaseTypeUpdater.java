@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.database.update;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -23,9 +21,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @author a.mueller
  */
 public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
-
-    @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TableCreator.class);
 
 	private final boolean includeIdentifiableEntity;
 	private final boolean includeAnnotatableEntity;
@@ -50,7 +45,6 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
 		TableCreator.makeMnTables(mnTablesStepList, tableName, includeAnnotatable, includeIdentifiable);
 		makeColumns();
 	}
-
 
 	private void makeColumns() {
 		String innerStepName;
@@ -108,12 +102,10 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
 		return;
 	}
 
-
 	@Override
 	public List<ISchemaUpdaterStep> getInnerSteps() {
 		List<ISchemaUpdaterStep> result = new ArrayList<>( mnTablesStepList);
 		result.addAll(columnAdderStepList);
 		return result;
 	}
-
 }

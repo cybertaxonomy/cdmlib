@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Text;
@@ -35,9 +36,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 04.08.2008
  */
 public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfigurator, TcsRdfImportState> {
-    private static final long serialVersionUID = -8765093240068562907L;
 
-    private static final Logger logger = LogManager.getLogger(TcsRdfImportBase.class);
+    private static final long serialVersionUID = -8765093240068562907L;
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static String nsTcom = "http://rs.tdwg.org/ontology/voc/Common#";
 	protected static String nsTn = "http://rs.tdwg.org/ontology/voc/TaxonName#";

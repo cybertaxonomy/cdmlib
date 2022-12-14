@@ -6,12 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.sdd.out;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -24,9 +24,8 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportState> {
 
     private static final long serialVersionUID = 2416094455247924084L;
-
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SDDExportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private int maxRows = 0;
 
@@ -60,20 +59,16 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 		return new SDDExportConfigurator(source, url);
 	}
 
-
 	public int getMaxRows() {
 		return maxRows;
 	}
-
 	public void setMaxRows(int maxRows) {
 		this.maxRows = maxRows;
 	}
 
-
 	public boolean isDoAgentData() {
 		return doAgentData;
 	}
-
 	public void setDoAgentData(boolean doAgentData) {
 		this.doAgentData = doAgentData;
 	}
@@ -81,7 +76,6 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	public boolean isDoLanguageData() {
 		return doLanguageData;
 	}
-
 	public void setDoLanguageData(boolean doLanguageData) {
 		this.doLanguageData = doLanguageData;
 	}
@@ -89,7 +83,6 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	public boolean isDoFeatureData() {
 		return doFeatureData;
 	}
-
 	public void setDoFeatureData(boolean doFeatureData) {
 		this.doFeatureData = doFeatureData;
 	}
@@ -97,7 +90,6 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	public boolean isDoDescriptions() {
 		return doDescriptions;
 	}
-
 	public void setDoDescriptions(boolean doDescriptions) {
 		this.doDescriptions = doDescriptions;
 	}
@@ -105,7 +97,6 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	public boolean isDoMedia() {
 		return doMedia;
 	}
-
 	public void setDoMedia(boolean doMedia) {
 		this.doMedia = doMedia;
 	}
@@ -113,25 +104,20 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	public boolean isDoReferencedEntities() {
 		return doReferencedEntities;
 	}
-
 	public void setDoReferencedEntities(boolean doReferencedEntities) {
 		this.doReferencedEntities = doReferencedEntities;
 	}
 
-
 	public boolean isDoSynonyms() {
 		return doSynonyms;
 	}
-
 	public void setDoSynonyms(boolean doSynonyms) {
 		this.doSynonyms = doSynonyms;
 	}
 
-
 	public boolean isDoTerms() {
 		return doTerms;
 	}
-
 	public void setDoTerms(boolean doTerms) {
 		this.doTerms = doTerms;
 	}
@@ -139,7 +125,6 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	public boolean isDoTermVocabularies() {
 		return doTermVocabularies;
 	}
-
 	public void setDoTermVocabularies(boolean doTermVocabularies) {
 		this.doTermVocabularies = doTermVocabularies;
 	}
@@ -147,7 +132,6 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	public boolean isDoHomotypicalGroups() {
 		return doHomotypicalGroups;
 	}
-
 	public void setDoHomotypicalGroups(boolean doHomotypicalGroups) {
 		this.doHomotypicalGroups = doHomotypicalGroups;
 	}
@@ -158,7 +142,6 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	public void setDoOccurrence(boolean doOccurrence) {
 		this.doOccurrence = doOccurrence;
 	}
-
 
 	public boolean isDoAuthors() {
 		return doAuthors;
@@ -195,24 +178,14 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 		this.doRelTaxa = doRelTaxa;
 	}
 
-
-
-
 	@SuppressWarnings("unchecked")
 	@Override
     protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				SDDCdmExporter.class,
 		};
-	};
+	}
 
-
-
-
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	private SDDExportConfigurator(ICdmDataSource source, String url) {
 		super(new File(url), source, defaultTransformer);
 	}
@@ -223,10 +196,6 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 		return file;
 	}
 
-
-	/**
-	 * @param file
-	 */
 	@Override
     public void setDestination(File fileName) {
 		super.setDestination(fileName);
@@ -241,11 +210,8 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 		}
 	}
 
-
 	@Override
     public SDDExportState getNewState() {
 		return new SDDExportState(this);
 	}
-
-
 }

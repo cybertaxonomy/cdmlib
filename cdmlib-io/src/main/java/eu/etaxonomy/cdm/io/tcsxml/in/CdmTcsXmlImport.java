@@ -6,10 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
@@ -23,7 +23,8 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
  */
 @Component
 public class CdmTcsXmlImport extends CdmApplicationAwareDefaultImport<TcsXmlImportConfigurator> {
+
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CdmTcsXmlImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 }

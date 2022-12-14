@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -25,7 +26,7 @@ public class DwcaImportConfigurator
 
     private static final long serialVersionUID = 6932718596034946336L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 
@@ -41,7 +42,6 @@ public class DwcaImportConfigurator
 
 	private boolean keepMappingForFurtherImports = false;
 
-
 	@Override
     @SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
@@ -54,11 +54,6 @@ public class DwcaImportConfigurator
 		return new DwcaImportConfigurator(uri, destination);
 	}
 
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	private DwcaImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(uri, destination, defaultTransformer);
 		this.setSource(uri);
@@ -110,5 +105,4 @@ public class DwcaImportConfigurator
     public void setKeepMappingForFurtherImports(boolean keepMapping) {
         keepMappingForFurtherImports = keepMapping;
     }
-
 }

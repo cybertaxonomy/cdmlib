@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -24,11 +25,11 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public class DwcaTypesRecord extends DwcaRecordBase {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaTypesRecord.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private String bibliographicCitation;
 	private TypeDesignationStatusBase<?> typeStatus;
@@ -85,7 +86,6 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 //	@Override
 //	public List<String> getHeaderList() {
@@ -281,20 +281,11 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 		this.verbatimLatitude = verbatimLatitude;
 	}
 
-    /**
-     * @param string
-     */
     public void setCoordinatesPrecisionOrError(String coordinatesPrecision) {
         this.coordinatesPrecision=coordinatesPrecision;
-
     }
 
-    /**
-     * @param string
-     */
     public void setCoordinatesSystem(String referenceSystem) {
         this.referenceSystem=referenceSystem;
-
     }
-
 }

@@ -6,15 +6,14 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.excel.taxa;
 
-
-import eu.etaxonomy.cdm.common.URI;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -25,18 +24,16 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator, IMatchingImportConfigurator {
-	private static final Logger logger = LogManager.getLogger(NormalExplicitImportConfigurator.class);
+
+    private static final long serialVersionUID = -73424565517536034L;
+    private static final Logger logger = LogManager.getLogger();
 
 	private boolean isDoMatchTaxa = true;
 
 	private UUID parentUUID;
 
-
-
-
-
-	//	@SuppressWarnings("unchecked")
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				NormalExplicitImport.class
@@ -48,12 +45,6 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		return new NormalExplicitImportConfigurator(uri, destination, nomenclaturalCode, dbSchemaValidation);
 	}
 
-
-
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	private NormalExplicitImportConfigurator(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
 		super(uri, destination);
 		if (dbSchemaValidation == null){
@@ -65,10 +56,6 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		setNomenclaturalCode(nomenclaturalCode);
 	}
 
-	/**
-     * @param stream
-     * @param destination
-     */
     private NormalExplicitImportConfigurator(byte[] stream, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
         super(null, destination);
         if (dbSchemaValidation == null){
@@ -80,21 +67,11 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
         setNomenclaturalCode(nomenclaturalCode);
     }
 
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
 	@Override
     public TaxonExcelImportState getNewState() {
 		return new TaxonExcelImportState(this);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -106,7 +83,6 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		return sourceReference;
 	}
 
-
 	@Override
     public boolean isReuseExistingTaxaWhenPossible() {
 		return isDoMatchTaxa;
@@ -117,17 +93,11 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		this.isDoMatchTaxa = isDoMatchTaxa;
 	}
 
-
     public UUID getParentUUID(){
         return parentUUID;
     }
 
-
     public void setParentUUID(UUID parentUUID) {
         this.parentUUID = parentUUID;
     }
-
-
-
-
 }

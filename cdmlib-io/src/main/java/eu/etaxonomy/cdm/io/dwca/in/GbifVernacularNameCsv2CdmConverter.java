@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.stream.IReader;
@@ -33,23 +34,19 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class GbifVernacularNameCsv2CdmConverter
             extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 		    implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(GbifVernacularNameCsv2CdmConverter.class);
-	private static final String CORE_ID = "coreId";
+    private static final Logger logger = LogManager.getLogger();
 
-	/**
-	 * @param state
-	 */
+    private static final String CORE_ID = "coreId";
+
 	public GbifVernacularNameCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
-
 
 	@Override
     public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
@@ -79,10 +76,7 @@ public class GbifVernacularNameCsv2CdmConverter
 
 		//return
 		return new ListReader<>(resultList);
-
 	}
-
-
 
 	@Override
 	public String getSourceId(StreamItem item) {
@@ -103,7 +97,6 @@ public class GbifVernacularNameCsv2CdmConverter
 		}
 	}
 
-
 	@Override
 	public final Set<String> requiredSourceNamespaces() {
 		Set<String> result = new HashSet<>();
@@ -114,11 +107,8 @@ public class GbifVernacularNameCsv2CdmConverter
 
 //************************ STRING ************************************************/
 
-
-
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
-
 }

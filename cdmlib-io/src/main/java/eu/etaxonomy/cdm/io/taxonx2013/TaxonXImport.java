@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,11 +27,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.Document;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -54,7 +55,7 @@ public class TaxonXImport
         extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>{
 
     private static final long serialVersionUID = 8166758191513137605L;
-    private static final Logger logger = LogManager.getLogger(TaxonXImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static String prefix = "";
     public static String LOG_FOLDER = "C:\\Users\\pesiimport\\.cdmLibrary\\log\\taxonX\\";
@@ -200,7 +201,6 @@ public class TaxonXImport
                 defaultValue);
 
         return s;
-
     }
 
     @Override
@@ -215,8 +215,6 @@ public class TaxonXImport
         //        this.taxonXstate.getConfig().getClassificationUuid();
 
         ref = taxonXstate.getConfig().getSourceReference();
-
-
 
         Reference secundum = taxonXstate.getConfig().getSecundum();
         List<Reference> references = this.getReferenceService().list(Reference.class, null, null, null, null);
@@ -235,7 +233,6 @@ public class TaxonXImport
             taxonXstate.getConfig().setSecundum(secundum);
         }
 
-
         Reference urlRef = taxonXstate.getConfig().getOriginalSourceURL();
         for (Reference re:references){
             if (re.getCitation().equalsIgnoreCase(urlRef.getCitation())){
@@ -250,7 +247,6 @@ public class TaxonXImport
             taxonXstate.getConfig().setMaxRank(maxRank);
             taxonXstate.getConfig().setHasAskedForHigherRank(true);
         }
-
 
         String message = "go taxonx!";
         logger.info(message);
@@ -313,7 +309,6 @@ public class TaxonXImport
         //System.out.println("DEDUP END");
     }
 
-
     private void refreshTransaction(){
         commitTransaction(tx);
         tx = startTransaction();
@@ -326,9 +321,6 @@ public class TaxonXImport
         }
     }
 
-    /**
-     * @return
-     */
     private Rank askForHigherRank(NomenclaturalCode nomenclaturalCode) {
         JTextArea textArea = new JTextArea("Everything below that rank should be imported:");
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -336,10 +328,10 @@ public class TaxonXImport
         textArea.setWrapStyleWord(true);
         scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
 
-        List<Rank> rankList = new ArrayList<Rank>();
+        List<Rank> rankList = new ArrayList<>();
         rankList = getTermService().list(Rank.class, null, null, null, null);
 
-        List<String> rankListStr = new ArrayList<String>();
+        List<String> rankListStr = new ArrayList<>();
         for (Rank r:rankList) {
             rankListStr.add(r.toString());
         }

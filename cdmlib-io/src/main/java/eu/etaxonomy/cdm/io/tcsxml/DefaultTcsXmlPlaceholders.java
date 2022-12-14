@@ -6,10 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -22,14 +22,11 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @since 30.10.2008
- * @version 1.0
  */
 public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
-	private static final Logger logger = LogManager.getLogger(DefaultTcsXmlPlaceholders.class);
 
-	/* (non-Javadoc)
-	 * @see tcsxml.ITcsXmlPlaceholderClass#makeMetaDataDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element)
-	 */
+    private static final Logger logger = LogManager.getLogger();
+
 	@Override
     public boolean makeMetaDataDetailed(TcsXmlImportConfigurator tcsConfig, Element elMetaDataDetailed){
 		if (tcsConfig == null){
@@ -45,9 +42,6 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see tcsxml.ITcsXmlPlaceholderClass#makePublicationDetailed(tcsxml.TcsXmlImportConfigurator, org.jdom.Element, eu.etaxonomy.cdm.model.reference.Reference)
-	 */
 	@Override
     public boolean makePublicationDetailed(TcsXmlImportConfigurator config, Element elPublicationDetailed, Reference publication){
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
@@ -105,9 +99,4 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 		if (logger.isDebugEnabled()){logger.debug("PublicationDetailed element found: " +  elPublicationDetailed.getName());}
 		return success.getValue();
 	}
-
-
-
-
-
 }
