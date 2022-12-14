@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -301,17 +300,17 @@ public class DescriptiveDataSetService
 
                 for (DescriptionElementDto elementDto: elementDtos){
                     if (elementDto instanceof CategoricalDataDto){
-                        eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
+                        Feature feature = DefinedTermBase.getTermByUUID(elementDto.getFeatureUuid(), Feature.class);
                         CategoricalData data = CategoricalData.NewInstance(feature);
                         for (StateDataDto stateDto:((CategoricalDataDto) elementDto).getStates()){
-                            //FIXME 10196
-                            State state = DefinedTermBase.getTermByClassAndUUID(State.class, stateDto.getState().getUuid());
+                            //FIXME 10196 fixed?
+                            DefinedTermBase<?> state = DefinedTermBase.getTermByUUID(stateDto.getState().getUuid(), DefinedTermBase.class);
                             data.addStateData(state);
                             specimenDescription.addElement(data);
                         }
                     }
                     if (elementDto instanceof QuantitativeDataDto){
-                        eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
+                        Feature feature = DefinedTermBase.getTermByUUID(elementDto.getFeatureUuid(), Feature.class);
                         QuantitativeData data = QuantitativeData.NewInstance(feature);
                         if (((QuantitativeDataDto) elementDto).getMeasurementUnit() != null){
                             MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) elementDto).getMeasurementUnit().getUuid());
@@ -330,9 +329,9 @@ public class DescriptiveDataSetService
                 List<DescriptionElementDto> elementDtos = descriptionDto.getElements();
                 for (DescriptionElementDto elementDto: elementDtos){
                     if (elementDto instanceof CategoricalDataDto){
-                        eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
+                        Feature feature = DefinedTermBase.getTermByUUID(elementDto.getFeatureUuid(), Feature.class);
                         List<DescriptionElementBase> uniqueElementList = specimenDescription.getElements().stream().filter(element -> element.getUuid().equals(elementDto.getElementUuid())).collect(Collectors.toList());
-                        List<State> allStates = new ArrayList<>();
+                        List<DefinedTermBase<?>> allStates = new ArrayList<>();
                         CategoricalData element = null;
                         if (uniqueElementList.size() == 1){
                             element = HibernateProxyHelper.deproxy(uniqueElementList.get(0), CategoricalData.class);
@@ -340,14 +339,14 @@ public class DescriptiveDataSetService
                             element = CategoricalData.NewInstance(feature);
                         }
                         for (StateDataDto stateDto:((CategoricalDataDto) elementDto).getStates()){
-                            //FIXME 10196
-                            State state = DefinedTermBase.getTermByClassAndUUID(State.class, stateDto.getState().getUuid());
+                            //FIXME 10196 fixed?
+                            DefinedTermBase<?> state = DefinedTermBase.getTermByUUID(stateDto.getState().getUuid(), DefinedTermBase.class);
                             allStates.add(state);
                         }
                         element.setStateDataOnly(allStates);
                     }
                     if (elementDto instanceof QuantitativeDataDto){
-                        eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
+                        Feature feature = DefinedTermBase.getTermByUUID(elementDto.getFeatureUuid(), Feature.class);
                         QuantitativeData data = QuantitativeData.NewInstance(feature);
                         if (((QuantitativeDataDto) elementDto).getMeasurementUnit() != null){
                             MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) elementDto).getMeasurementUnit().getUuid());

@@ -713,6 +713,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 		DefinedTermBase.cacher = cacher;
 	}
 
+    /**
+     * Returns the term with the given {@link UUID} and the exact given {@link Class} from
+     * the cache or loads it from the database. If the term exists but has a
+     * different class <code>null</code> is returned. This is also the case for
+     * if the class is assignable from the given class.
+     *
+     * @see #getTermByUUID(UUID, Class)
+     */
 	public static <T extends DefinedTermBase> T getTermByClassAndUUID(Class<T> clazz, UUID uuid) {
 	    if(cacher != null) {
 	        CdmBase cdmBase = HibernateProxyHelper.deproxy(getCacher().load(uuid));
@@ -723,4 +731,17 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 	    }
 	    return null;
 	}
+
+    /**
+     * Returns the term from the cache or loads it from the database
+     * and casts it to the given class.
+     * In contrary to {@link #getTermByClassAndUUID(Class, UUID)} it
+     * throws an exception if the term can not be casted.
+     */
+    public static <T extends DefinedTermBase> T getTermByUUID(UUID uuid, Class<T> clazz) {
+        if(cacher != null) {
+            return HibernateProxyHelper.deproxy(getCacher().load(uuid), clazz);
+        }
+        return null;
+    }
 }

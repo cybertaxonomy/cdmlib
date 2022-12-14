@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -239,10 +238,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 }
             }
         }else{
-            Feature feature = DefinedTermBase.getTermByClassAndUUID(Feature.class, featureUuid);
-            if (feature == null){
-                feature = DefinedTermBase.getTermByClassAndUUID(Character.class, featureUuid);
-            }
+            Feature feature = DefinedTermBase.getTermByUUID(featureUuid, Feature.class);
             categoricalData = new CategoricalDataDto(FeatureDto.fromFeature(feature));
             categoricalData.setStateDataOnly(states);
         }
@@ -305,10 +301,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         }
         QuantitativeDataDto quantitativeData = null;
         if (descriptionElementBase == null){
-            Feature feature = DefinedTermBase.getTermByClassAndUUID(Feature.class, featureUuid);
-            if (feature == null){
-                feature = DefinedTermBase.getTermByClassAndUUID(Character.class, featureUuid);
-            }
+            Feature feature = DefinedTermBase.getTermByUUID(featureUuid, Feature.class);
             quantitativeData = new QuantitativeDataDto(FeatureDto.fromFeature(feature));
         }
 

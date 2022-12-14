@@ -63,7 +63,6 @@ import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
@@ -490,10 +489,8 @@ public class DescriptionServiceImpl
                         continue;
                     }
                     List<DescriptionElementBase> equalUuidsElements = descriptionElements.stream().filter( e -> e.getUuid().equals(descElementUuid)).collect(Collectors.toList());
-                    eu.etaxonomy.cdm.model.description.Feature feature =  DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Feature.class, descElement.getFeatureUuid());
-                    if (feature == null){
-                        feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, descElement.getFeatureUuid());
-                    }
+                    Feature feature = DefinedTermBase.getTermByUUID(descElement.getFeatureUuid(), Feature.class);
+
                     if (equalUuidsElements.size() == 0){
                         if (descElement instanceof CategoricalDataDto){
 
@@ -501,8 +498,8 @@ public class DescriptionServiceImpl
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
                             for (StateDataDto dataDto: stateDtos){
                                 //create new statedata
-                                //FIXME 10196
-                                State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
+                                //FIXME 10196 fixed
+                                DefinedTermBase<?> newState = DefinedTermBase.getTermByUUID(dataDto.getState().getUuid(), DefinedTermBase.class);
                                 StateData newStateData = StateData.NewInstance(newState);
                                 elementBase.addStateData(newStateData);
                             }

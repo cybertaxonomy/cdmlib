@@ -238,12 +238,12 @@ public class CategoricalData extends DescriptionElementBase {
      * All existing state data are removed.
      * @return
      */
-    public List<StateData> setStateDataOnly(List<State> states){
+    public List<StateData> setStateDataOnly(List<? extends DefinedTermBase<?>> states){
         List<StateData> stateDataList = new ArrayList<>(getStateData());
         for (StateData stateData : stateDataList) {
             removeStateData(stateData);
         }
-        for (State state : states) {
+        for (DefinedTermBase<?> state : states) {
             addStateData(state);
         }
         return this.stateData;
