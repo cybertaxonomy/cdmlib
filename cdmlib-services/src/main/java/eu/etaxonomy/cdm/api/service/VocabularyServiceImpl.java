@@ -81,7 +81,7 @@ public class VocabularyServiceImpl
         }else {
             List<TermVocabulary<T>> result = new ArrayList<>();
             for (TermType termType : termTypes) {
-                result.add((TermVocabulary<T>)dao.findByTermType(termType, propertyPaths));
+                result.addAll(dao.findByTermType(termType, propertyPaths));
             }
             return result;
         }
