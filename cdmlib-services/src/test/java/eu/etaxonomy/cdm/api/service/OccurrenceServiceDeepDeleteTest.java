@@ -15,7 +15,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -47,14 +48,14 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegrationTest {
 
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
+
     private final UUID FIELD_UNIT_UUID = UUID.fromString("b5f58da5-4442-4001-9d13-33f41518b72a");
     private final UUID DERIVED_UNIT_UUID = UUID.fromString("448be6e7-f19c-4a10-9a0a-97aa005f817d");
     private final UUID DNA_SAMPLE_UUID = UUID.fromString("bee4212b-aff1-484e-845f-065c7d6216af");
     private final UUID SEQUENCE_UUID = UUID.fromString("0b867369-de8c-4837-a708-5b7d9f6091be");
     private final UUID FIELD_UNIT2_UUID = UUID.fromString("ae798108-6483-4d09-900f-7f849c43bcc9");
-
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(OccurrenceServiceDeepDeleteTest.class);
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;
@@ -70,7 +71,6 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
     @SpringBeanByType
     private INameService nameService;
-
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")

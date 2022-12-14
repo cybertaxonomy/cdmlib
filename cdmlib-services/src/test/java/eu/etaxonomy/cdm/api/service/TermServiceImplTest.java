@@ -22,7 +22,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -37,7 +38,6 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.metadata.TermOrder;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -60,8 +59,9 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since 27.05.2008
  */
 public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
+
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private ITermService termService;
@@ -105,9 +105,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNull(termNotExist);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getContinentByUuid(java.util.UUID)}.
-     */
     @Test
     /* @DataSet
      * WARNING:
@@ -202,7 +199,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	termBase = termService.find(fromString);
     	assertEquals("Title cache did not update after adding a new representation for default language and saving the term", expecteTitleCacheAfterRepresentationChange, termBase.getTitleCache());
     }
-
 
     @Test
     @DataSets({

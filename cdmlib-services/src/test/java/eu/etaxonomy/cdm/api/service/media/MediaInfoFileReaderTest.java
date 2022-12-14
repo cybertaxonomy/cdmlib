@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2021 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service.media;
 
 import static org.junit.Assert.fail;
@@ -10,7 +15,8 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.http.HttpException;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,9 +31,9 @@ import eu.etaxonomy.cdm.common.media.MimeType;
  */
 public class MediaInfoFileReaderTest {
 
-    private static final String OFFLINE = "OFFLINE";
+    private static final Logger logger = LogManager.getLogger();
 
-    public static final Logger logger = LogManager.getLogger(MediaInfoFileReaderTest.class);
+    private static final String OFFLINE = "OFFLINE";
 
     private URI jpegUri;
     private URI tiffUri;

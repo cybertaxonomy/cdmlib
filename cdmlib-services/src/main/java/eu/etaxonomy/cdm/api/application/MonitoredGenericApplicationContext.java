@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.api.application;
 
 import java.util.concurrent.CancellationException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.QualifierAnnotationAutowireCandidateResolver;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -25,17 +26,16 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
  *
  * @author a.mueller
  * @since 29.09.2011
- *
  */
 public class MonitoredGenericApplicationContext extends GenericApplicationContext{
+
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CdmApplicationController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     final int countInvokeBeanFactoryPostProcessors = 10;
     final int countFinishBeanFactoryInitialization = 90;
     private final int countTasks = countInvokeBeanFactoryPostProcessors + countFinishBeanFactoryInitialization;
     private IProgressMonitor currentMonitor;
-
 
 // ************************************** CONSTRUCTOR ********************/
 

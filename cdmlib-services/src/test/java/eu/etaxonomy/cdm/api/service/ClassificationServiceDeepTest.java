@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
@@ -17,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTest{
 
-    private static final Logger logger = LogManager.getLogger(ClassificationServiceDeepTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private IClassificationService service;
@@ -95,8 +95,6 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
         Assert.assertNotEquals(taxonNodes.size(), taxonNodes2.size());
     }
 
-
-
     @Override
 //    @Test
     public void createTestDataSet() throws FileNotFoundException {
@@ -128,13 +126,11 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
     	TaxonNode p3 = classification.addChildTaxon(tp3, null, null);
     	TaxonNode p4 = classification.addChildTaxon(tp4, null, null);
 
-
     	taxonNodeService.saveOrUpdate(p1);
     	taxonNodeService.saveOrUpdate(p2);
     	taxonNodeService.saveOrUpdate(p3);
     	taxonNodeService.saveOrUpdate(p4);
     	service.saveOrUpdate(classification);
-
 
     	//create children
     	Taxon tc1 = map.get("Garstig alter subsp. ekel");

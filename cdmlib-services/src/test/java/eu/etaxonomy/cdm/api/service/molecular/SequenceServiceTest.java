@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service.molecular;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -22,14 +22,14 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-
 /**
  * @author pplitzner
  * @since 31.03.2014
- *
  */
 public class SequenceServiceTest extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = LogManager.getLogger(SequenceServiceTest.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private ISequenceService sequenceService;
@@ -48,12 +48,6 @@ public class SequenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("Moved SingleRead is not equal to origin SingleRead", singleRead, sequenceB.getSingleReads().iterator().next());
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -27,15 +28,15 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @since 23.08.2011
- *
  */
 @Ignore
 public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = LogManager.getLogger(PolytomousKeyServiceImplTest.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private IPolytomousKeyService service;
-	
+
 	@SpringBeanByType
 	private IPolytomousKeyNodeService nodeService;
 
@@ -52,8 +53,8 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
 	@Before
 	public void setUp() throws Exception {
 	}
-	
-//************************* TESTS ********************************************/	
+
+//************************* TESTS ********************************************/
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.ServiceBase#count(java.lang.Class)}.
@@ -63,31 +64,31 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
 		PolytomousKey key = PolytomousKey.NewTitledInstance("My test key");
 		service.save(key);
 		Taxon taxon = Taxon.NewInstance(null, null);
-		
-		
+
+
 		key.addTaxonomicScope(taxon);
-		
+
 //		Annotation annotation = Annotation.NewInstance("Any annotation", Language.DEFAULT());
 //		key.addAnnotation(annotation);
-		
+
 		PolytomousKeyNode child = PolytomousKeyNode.NewInstance();
 		Taxon taxon2 = Taxon.NewInstance(null, null);
-		
+
 		child.setTaxon(taxon2);
 		key.getRoot().addChild(child);
-		
+
 		service.save(key);
-		setComplete(); 
+		setComplete();
 		endTransaction();
 		System.out.println("Count");
-		printDataSet(System.out, new String[]{"PolytomousKey", "POLYTOMOUSKEYNODE", "POLYTOMOUSKEYNODE_LANGUAGESTRING", 
+		printDataSet(System.out, new String[]{"PolytomousKey", "POLYTOMOUSKEYNODE", "POLYTOMOUSKEYNODE_LANGUAGESTRING",
 				"POLYTOMOUSKEY_ANNOTATION","POLYTOMOUSKEY_CREDIT",
 				"POLYTOMOUSKEY_EXTENSION", "POLYTOMOUSKEY_MARKER", "POLYTOMOUSKEY_NAMEDAREA",
 				"POLYTOMOUSKEY_ORIGINALSOURCEBASE", "POLYTOMOUSKEY_RIGHTS", "POLYTOMOUSKEY_SCOPE",
 				"POLYTOMOUSKEY_TAXON", "POLYTOMOUSKEY_TAXONBASE",
 				"ANNOTATION","TAXONBASE"});
 //		printDataSet(System.out);
-		
+
 	}
 
 	/**
@@ -97,26 +98,26 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
 	@DataSet
 	public void testDelete() {
 		System.out.println("Delete start");
-		printDataSet(System.out, new String[]{"PolytomousKey", "POLYTOMOUSKEYNODE", "POLYTOMOUSKEYNODE_LANGUAGESTRING", 
+		printDataSet(System.out, new String[]{"PolytomousKey", "POLYTOMOUSKEYNODE", "POLYTOMOUSKEYNODE_LANGUAGESTRING",
 				"POLYTOMOUSKEY_ANNOTATION","POLYTOMOUSKEY_CREDIT",
 				"POLYTOMOUSKEY_EXTENSION", "POLYTOMOUSKEY_MARKER", "POLYTOMOUSKEY_NAMEDAREA",
 				"POLYTOMOUSKEY_ORIGINALSOURCEBASE", "POLYTOMOUSKEY_RIGHTS", "POLYTOMOUSKEY_SCOPE",
 				"POLYTOMOUSKEY_TAXON", "POLYTOMOUSKEY_TAXONBASE",
 				"ANNOTATION","TAXONBASE"});
-		
+
 		UUID uuid = UUID.fromString("0a709940-4f2e-43c1-8db1-f4745f2a4889");
 		PolytomousKey key = service.find(uuid);
 		PolytomousKeyNode someChild = key.getRoot().getChildren().iterator().next();
 //		service.delete(key);
 		key.getRoot().removeChild(someChild);
 		nodeService.delete(someChild);
-		
-		
-		setComplete(); 
+
+
+		setComplete();
 		endTransaction();
 		System.out.println("Delete End");
-		
-		printDataSet(System.out, new String[]{"PolytomousKey", "POLYTOMOUSKEYNODE", "POLYTOMOUSKEYNODE_LANGUAGESTRING", 
+
+		printDataSet(System.out, new String[]{"PolytomousKey", "POLYTOMOUSKEYNODE", "POLYTOMOUSKEYNODE_LANGUAGESTRING",
 				"POLYTOMOUSKEY_ANNOTATION","POLYTOMOUSKEY_CREDIT",
 				"POLYTOMOUSKEY_EXTENSION", "POLYTOMOUSKEY_MARKER", "POLYTOMOUSKEY_NAMEDAREA",
 				"POLYTOMOUSKEY_ORIGINALSOURCEBASE", "POLYTOMOUSKEY_RIGHTS", "POLYTOMOUSKEY_SCOPE",
@@ -137,7 +138,7 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

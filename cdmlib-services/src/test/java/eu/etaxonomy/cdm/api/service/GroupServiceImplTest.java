@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -21,14 +22,13 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class GroupServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(GroupServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
-    IGroupService groupService;
+    private IGroupService groupService;
 
     @SpringBeanByType
-    IUserService userService;
-
+    private IUserService userService;
 
     @Test
     public void testDeleteGroup(){

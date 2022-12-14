@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -79,11 +78,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 17.05.2010
  */
-
 public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
-    @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeTest.class);
-
 
     @SpringBeanByType
     private IOccurrenceService service;
@@ -93,7 +88,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IUserService userService;
-
 
     DerivedUnit specimen;
     DerivationEvent derivationEvent;
@@ -121,7 +115,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     LanguageString locality = LanguageString.NewInstance("My locality",
             Language.DEFAULT());
     DefinedTerm kindOfUnit = DefinedTerm.NewKindOfUnitInstance("Test kind of unit for field unit", "Test kind of unit", "Tkou");
-
 
     String accessionNumber = "888462535";
     String catalogNumber = "UU879873590";

@@ -14,7 +14,8 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -25,10 +26,11 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author pplitzner
  * @since 31.03.2014
- *
  */
 public class PrimerServiceTest extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = LogManager.getLogger(PrimerServiceTest.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private IPrimerService primerService;
@@ -46,13 +48,6 @@ public class PrimerServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals("Label is incorrect.", primerLabel, uuidAndTitleCache.getTitleCache());
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }
