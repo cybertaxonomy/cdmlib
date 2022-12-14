@@ -244,9 +244,9 @@ public class OwlImportUtil {
         return character;
     }
 
-    static DefinedTermBase createTerm(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+    static DefinedTermBase<?> createTerm(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         TermType termType = TermType.getByKey(termResource.getProperty(OwlUtil.propType).getString());
-        DefinedTermBase term = null;
+        DefinedTermBase<?> term = null;
         // create new term
         if(termType.equals(TermType.Feature)){
             term = createFeature(termResource, repo, model, state);
