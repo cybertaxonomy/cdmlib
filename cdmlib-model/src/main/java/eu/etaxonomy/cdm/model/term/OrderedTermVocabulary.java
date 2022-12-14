@@ -88,12 +88,21 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		return new TreeSet<T>();
 	}
 
+
+	/**
+	 * @see TermTree#asTermList()
+	 */
+	//should be at least synchronzied with TermTree methods
 	@Transient
 	public SortedSet<T> getOrderedTerms() {
 		SortedSet<T> result = getSortedSetOfTerms();
 		return result;
 	}
 
+	/**
+     * @deprecated not used therefore should be removed
+     */
+    @Deprecated
 	//FIXME #6794 remove completely
 	private SortedSet<T> getHigherAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<>();
@@ -102,6 +111,10 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		return result;
 	}
 
+	/**
+     * @deprecated not used therefore should be removed
+     */
+    @Deprecated
 	public SortedSet<T> getHigherTerms(T otb) {
 		SortedSet<T> result = getHigherAndEqualTerms(otb);
 		for (DefinedTermBase<?> setObjectUnproxied : terms){
@@ -114,7 +127,8 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		return result;
 	}
 
-	public SortedSet<T> getLowerTerms(T otb) {
+    //only used by addLowerTerms
+	SortedSet<T> getLowerTerms(T otb) {
 		/*SortedSet<T> result = getLowerAndEqualTerms(otb);
 		for (T setObject : terms){
 			if (setObject.compareTo(otb) == 0){
@@ -128,6 +142,10 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		return result;
 	}
 
+	/**
+	 * @deprecated not used therefore should be removed
+	 */
+	@Deprecated
 	public T getNextHigherTerm(T otb) {
 		try {
 			return getHigherTerms(otb).first();
@@ -136,6 +154,10 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		}
 	}
 
+	/**
+     * @deprecated not used therefore should be removed
+     */
+    @Deprecated
 	public T getNextLowerTerm(T otb) {
 		try {
 			return getLowerTerms(otb).last();
@@ -144,6 +166,10 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		}
 	}
 
+    /**
+     * @deprecated not used therefore can be removed
+     */
+    @Deprecated
 	@Transient
 	public T getLowestTerm() {
 		try {
@@ -155,6 +181,10 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		}
 	}
 
+	/**
+     * @deprecated not used therefore can be removed
+     */
+    @Deprecated
 	@Transient
 	public T getHighestTerm() {
 		try {
@@ -243,6 +273,9 @@ public class OrderedTermVocabulary<T extends DefinedTermBase>
 		return sortedSet;
 	}
 
+    /**
+     * Currently not yet implemented for {@link OrderedTermVocabulary}
+     */
     @Override
     public Set<TermNode> getTermRelations() {
         return super.termRelations();
