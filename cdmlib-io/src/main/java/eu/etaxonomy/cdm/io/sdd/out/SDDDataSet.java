@@ -173,7 +173,7 @@ public class SDDDataSet {
     	@XmlElement(name = "Scope", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = DefinedTerm.class),
     	@XmlElement(name = "Sex", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = DefinedTerm.class),
     	@XmlElement(name = "Stage", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = DefinedTerm.class),
-    	//FIXME 10196 correctly adapted?
+    	//TODO 10196 test if correctly adapted?
     	@XmlElement(name = "State", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = DefinedTermBase.class),
     	@XmlElement(name = "StatisticalMeasure", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = StatisticalMeasure.class),
     	@XmlElement(name = "SynonymType", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = SynonymType.class),

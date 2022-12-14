@@ -498,7 +498,6 @@ public class DescriptionServiceImpl
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
                             for (StateDataDto dataDto: stateDtos){
                                 //create new statedata
-                                //FIXME 10196 fixed
                                 DefinedTermBase<?> newState = DefinedTermBase.getTermByUUID(dataDto.getState().getUuid(), DefinedTermBase.class);
                                 StateData newStateData = StateData.NewInstance(newState);
                                 elementBase.addStateData(newStateData);
@@ -542,7 +541,6 @@ public class DescriptionServiceImpl
                                 desc.removeElement(data);
                             }else{
                                 for (StateDataDto dataDto: stateDtos){
-                                    //FIXME 10196 fixed
                                     DefinedTermBase<?> newState = DefinedTermBase.getTermByUUID(dataDto.getState().getUuid(), DefinedTermBase.class);
                                     StateData newStateData = StateData.NewInstance(newState);
                                     data.addStateData(newStateData);

@@ -303,7 +303,6 @@ public class DescriptiveDataSetService
                         Feature feature = DefinedTermBase.getTermByUUID(elementDto.getFeatureUuid(), Feature.class);
                         CategoricalData data = CategoricalData.NewInstance(feature);
                         for (StateDataDto stateDto:((CategoricalDataDto) elementDto).getStates()){
-                            //FIXME 10196 fixed?
                             DefinedTermBase<?> state = DefinedTermBase.getTermByUUID(stateDto.getState().getUuid(), DefinedTermBase.class);
                             data.addStateData(state);
                             specimenDescription.addElement(data);
@@ -339,7 +338,6 @@ public class DescriptiveDataSetService
                             element = CategoricalData.NewInstance(feature);
                         }
                         for (StateDataDto stateDto:((CategoricalDataDto) elementDto).getStates()){
-                            //FIXME 10196 fixed?
                             DefinedTermBase<?> state = DefinedTermBase.getTermByUUID(stateDto.getState().getUuid(), DefinedTermBase.class);
                             allStates.add(state);
                         }
