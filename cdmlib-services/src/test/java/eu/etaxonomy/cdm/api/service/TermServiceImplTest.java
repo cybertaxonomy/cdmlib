@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.TermServiceImpl.TermMovePosition;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.metadata.TermOrder;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -42,9 +45,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTerm;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -247,6 +254,74 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         //commitAndStartNewTransaction(tableNames);
         termBase =  (DefinedTerm)termService.load(termBase.getUuid());
         assertNotNull(termBase);
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    public void testMoveTerm(){
+	final String[] tableNames = new String[]{
+                "DefinedTermBase","Representation"};
+
+	commitAndStartNewTransaction(tableNames);
+	TermVocabulary<OrderedTerm> vocTest = OrderedTermVocabulary.NewOrderedInstance(TermType.DnaMarker,
+	        OrderedTerm.class, "Test Term Vocabulary", null, null, null);
+	vocTest.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test1", "marker1", "t1"));
+	vocTest = vocabularyService.save(vocTest);
+
+	OrderedTermVocabulary<OrderedTerm> vocDna = OrderedTermVocabulary.NewOrderedInstance(TermType.DnaMarker,
+	        OrderedTerm.class, "Test DNA marker", null, null, null);
+	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test", "marker", "t"));
+	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test2", "marker2", "t2"));
+	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test3", "marker3", "t3"));
+	vocDna = vocabularyService.save(vocDna);
+	/*
+	 * 					vocDna
+	 *   marker	   marker2	   marker3
+	 *
+	 */
+
+
+	Iterator<OrderedTerm> termsTest = vocTest.getTerms().iterator();
+	Iterator<OrderedTerm> termsDna = vocDna.getTerms().iterator();
+
+	TermDto termToMove = TermDto.fromTerm(termsTest.next());
+	OrderedTerm termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
+	assertTrue(termBase.getOrderIndex() == 1);
+	TermDto parentTerm = TermDto.fromTerm(termsDna.next());
+	TermDto secondTerm = TermDto.fromTerm(termsDna.next());
+	//move to other vocabulary
+	termService.moveTerm(termToMove, vocDna.getUuid());
+
+	/*
+	 * 		vocDna
+	 * marker		marker2		marker3		marker1
+	 *
+	 *
+	 */
+	//commitAndStartNewTransaction(tableNames);
+	termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
+	assertNotNull(termBase);
+	assertTrue(termBase.getVocabulary().getUuid().equals(vocDna.getUuid()));
+	vocTest = vocabularyService.load(vocDna.getUuid());
+	//include marker1
+	termService.moveTerm(termToMove,parentTerm.getUuid());
+	//commitAndStartNewTransaction(tableNames);
+	termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
+	OrderedTerm parent = (OrderedTerm) termService.load(parentTerm.getUuid());
+	assertTrue(parent.getIncludes().size() == 1);
+	assertNotNull(termBase);
+	//termToMove is included in and fourth term of vocabulary -> orderIndex == 4
+	assertTrue(termBase.getOrderIndex() == 4);
+	//marker2 should be moved behind marker3
+	termService.moveTerm(secondTerm,parentTerm.getUuid(), TermMovePosition.AFTER);
+	termBase =  (OrderedTerm)termService.load(secondTerm.getUuid());
+	parent = (OrderedTerm) termService.load(parentTerm.getUuid());
+	//secondTerm should be before termToMove
+	assertTrue(termBase.getOrderIndex() == parent.getOrderIndex() - 1);
+
     }
 
     /**

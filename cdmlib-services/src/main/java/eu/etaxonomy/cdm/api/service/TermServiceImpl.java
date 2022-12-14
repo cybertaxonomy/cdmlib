@@ -562,14 +562,14 @@ public class TermServiceImpl
                 OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(parent.getVocabulary(), OrderedTermVocabulary.class);
                 if(termMovePosition.equals(TermMovePosition.BEFORE)) {
                     term.getVocabulary().removeTerm(term);
-                    otVoc.addTermAbove(term, parent);
+                    otVoc.addTermBelow(term, parent);
                     if (parent.getPartOf() != null){
                         parent.getPartOf().addIncludes(term);
                     }
                 }
                 else if(termMovePosition.equals(TermMovePosition.AFTER)) {
                     term.getVocabulary().removeTerm(term);
-                    otVoc.addTermBelow(term, parent);
+                    otVoc.addTermAbove(term, parent);
                     if (parent.getPartOf() != null){
                         parent.getPartOf().addIncludes(term);
                     }
