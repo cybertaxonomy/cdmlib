@@ -80,8 +80,7 @@ public class GbifQueryGenerator {
         //            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, param, query.locality);
                 }
                 if(query.taxonName!=null && !query.taxonName.isEmpty()){
-                	String taxonName = StringUtils.replace(query.taxonName, " ", "+");
-                    ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "scientificName", query.taxonName);
+                	ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "scientificName", query.taxonName);
                 }
             }
             return queryParamsGET;
