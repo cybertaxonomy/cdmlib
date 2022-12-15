@@ -32,8 +32,9 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{
 
-    protected static final String BASE_URL = "http://api.gbif.org";
+    protected static final String BASE_URL = "https://api.gbif.org";
     private static final String SUB_PATH = "/v1/occurrence/search";
+   
 
     /**
      * Constructs a new GbifQueryServiceWrapper

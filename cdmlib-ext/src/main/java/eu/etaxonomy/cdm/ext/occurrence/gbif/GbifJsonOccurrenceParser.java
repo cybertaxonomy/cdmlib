@@ -427,7 +427,7 @@ public class GbifJsonOccurrenceParser {
                                     imageInf = MediaInfoFileReader.legacyFactoryMethod(uri)
                                         .readBaseInfo()
                                         .getCdmImageInfo();
-                                } catch (URISyntaxException |IOException | HttpException e) {
+                                } catch (URISyntaxException |IOException | HttpException | IllegalArgumentException e) {
                                     e.printStackTrace();
                                 }
                                // media.addIdentifier(mediaRecord.getString("identifier"), null);
