@@ -99,7 +99,7 @@ public class GbifQueryServiceWrapperTest {
         GbifResponse gbifResponse = records.iterator().next();
         Assert.assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
         Assert.assertEquals("protocol is wrong", GbifDataSetProtocol.BIOCASE, gbifResponse.getDataSetProtocol());
-        Assert.assertEquals("protocol is wrong", new URI("http://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
+        Assert.assertEquals("protocol is wrong", new URI("https://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
     }
 
     @Test
@@ -124,7 +124,7 @@ public class GbifQueryServiceWrapperTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null, false);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
