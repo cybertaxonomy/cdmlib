@@ -316,8 +316,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	termService.moveTerm(secondTermDto, markerUuid, TermMovePosition.AFTER);
     	OrderedTerm marker2 = (OrderedTerm)termService.load(secondTermUuid);
     	marker = (OrderedTerm) termService.load(markerUuid);
-    	//marker2 should be before termToMove
-    	assertTrue(marker2.getOrderIndex() == marker.getOrderIndex() - 1);
+    	assertTrue("marker2 should be behind marker", marker2.getOrderIndex() == marker.getOrderIndex() + 1);
     }
 
     /**
