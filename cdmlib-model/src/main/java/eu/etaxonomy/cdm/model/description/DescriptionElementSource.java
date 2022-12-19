@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.validation.annotation.ReferenceOrSpecimen;
 
 /**
  * This class represents an {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 	})
 @Entity
 @Audited
+@ReferenceOrSpecimen
 public class DescriptionElementSource extends NamedSourceBase{
 
     private static final long serialVersionUID = -8487673428764273806L;
