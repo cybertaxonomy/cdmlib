@@ -283,10 +283,12 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	Iterator<OrderedTerm> termsDna = vocDna.getTerms().iterator();
 
     	TermDto termToMove = TermDto.fromTerm(termsTest.next());
-    	OrderedTerm termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
+    	OrderedTerm termBase = (OrderedTerm)termService.load(termToMove.getUuid());
     	assertTrue(termBase.getOrderIndex() == 1);
-    	TermDto parentTerm = TermDto.fromTerm(termsDna.next());
-    	TermDto secondTerm = TermDto.fromTerm(termsDna.next());
+    	UUID markerUuid = termsDna.next().getUuid();
+    	TermDto secondTermDto = TermDto.fromTerm(termsDna.next());
+    	UUID secondTermUuid = secondTermDto.getUuid();
+
     	//move to other vocabulary
     	termService.moveTerm(termToMove, vocDna.getUuid());
 
@@ -295,25 +297,27 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	 * marker		marker2		marker3		marker1
     	 */
     	//commitAndStartNewTransaction(tableNames);
-    	termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
+    	termBase = (OrderedTerm)termService.load(termToMove.getUuid());
     	assertNotNull(termBase);
     	assertTrue(termBase.getVocabulary().getUuid().equals(vocDna.getUuid()));
+
     	vocTest = vocabularyService.load(vocDna.getUuid());
-    	//include marker1
-    	termService.moveTerm(termToMove,parentTerm.getUuid());
+    	//include marker1 in marker
+    	termService.moveTerm(termToMove, markerUuid);
     	//commitAndStartNewTransaction(tableNames);
-    	termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
-    	OrderedTerm parent = (OrderedTerm) termService.load(parentTerm.getUuid());
-    	assertTrue(parent.getIncludes().size() == 1);
+    	termBase = (OrderedTerm)termService.load(termToMove.getUuid());
+    	OrderedTerm marker = (OrderedTerm) termService.load(markerUuid);
+    	assertTrue(marker.getIncludes().size() == 1);
     	assertNotNull(termBase);
     	//termToMove is included in and fourth term of vocabulary -> orderIndex == 4
     	assertTrue(termBase.getOrderIndex() == 4);
-    	//marker2 should be moved behind marker3
-    	termService.moveTerm(secondTerm,parentTerm.getUuid(), TermMovePosition.AFTER);
-    	termBase =  (OrderedTerm)termService.load(secondTerm.getUuid());
-    	parent = (OrderedTerm) termService.load(parentTerm.getUuid());
-    	//secondTerm should be before termToMove
-    	assertTrue(termBase.getOrderIndex() == parent.getOrderIndex() - 1);
+
+    	//marker2 should be moved behind marker
+    	termService.moveTerm(secondTermDto, markerUuid, TermMovePosition.AFTER);
+    	OrderedTerm marker2 = (OrderedTerm)termService.load(secondTermUuid);
+    	marker = (OrderedTerm) termService.load(markerUuid);
+    	//marker2 should be before termToMove
+    	assertTrue(marker2.getOrderIndex() == marker.getOrderIndex() - 1);
     }
 
     /**
