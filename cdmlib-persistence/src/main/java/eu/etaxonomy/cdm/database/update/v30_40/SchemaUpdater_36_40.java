@@ -82,7 +82,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
 
         stepName = "Update symbols for terms";
         query = "UPDATE @@DefinedTermBase@@ SET symbol = idInVocabulary WHERE idInVocabulary <> '' AND termType IN ('PAT','TRT')";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //Add inverse symbol to terms
         stepName = "Add inverse symbol to terms";
@@ -98,7 +98,7 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
                     " INNER JOIN Representation r ON r.id = MN.inverserepresentations_id " +
                 " WHERE dtb.id = MN.DefinedTermBase_id AND r.abbreviatedlabel <> '' ) "
             + " WHERE termType IN ('PAT','TRT') ";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#5369
         renameColumnsAccordingToHibernate5(stepList);

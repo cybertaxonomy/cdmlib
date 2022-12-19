@@ -163,7 +163,10 @@ public class SingleTermRemover
 		}
 	}
 
-	private boolean checkTermInUse(ICdmDataSource datasource, IProgressMonitor monitor, int id, CaseType caseType) throws SQLException {
+	private boolean checkTermInUse(ICdmDataSource datasource,
+	        @SuppressWarnings("unused") IProgressMonitor monitor, int id, CaseType caseType)
+	                throws SQLException {
+
 		for (String query : checkUsedQueries){
 			query = String.format(caseType.replaceTableNames(query), id);
 			Number i = (Number)datasource.getSingleValue(query);
@@ -174,7 +177,7 @@ public class SingleTermRemover
 		return false;
 	}
 
-	public SingleTermRemover addCheckUsedQuery(String query, int adapt){
+	public SingleTermRemover addCheckUsedQuery(String query){
 		this.checkUsedQueries.add(query);
 		return this;
 	}

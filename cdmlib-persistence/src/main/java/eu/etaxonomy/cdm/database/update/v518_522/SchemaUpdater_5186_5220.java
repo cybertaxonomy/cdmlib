@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.database.update.v518_522;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
@@ -86,7 +87,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                 + "    OR id IN (SELECT source_id FROM @@TaxonNode@@) "
                 + "    OR id IN (SELECT source_id FROM @@NomenclaturalStatus_AUD@@) "
                 + "    OR id IN (SELECT source_id FROM @@TypeDesignationBase_AUD@@) ";
-        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepList, stepName, query, auditQuery, -99);
+        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepList, stepName, query, auditQuery);
 
         //#9327
         //add sourcedElement column

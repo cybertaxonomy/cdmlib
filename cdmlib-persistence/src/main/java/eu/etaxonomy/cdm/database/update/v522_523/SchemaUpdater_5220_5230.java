@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.database.update.v522_523;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
@@ -94,45 +95,45 @@ public class SchemaUpdater_5220_5230 extends SchemaUpdaterBase {
         String query = "UPDATE @@GrantedAuthorityImpl@@ "
                 + " SET uuid = '6d0c72a5-0d8a-4f2e-a8e0-31d7e0338f00' "
                 + " WHERE authority = 'ROLE_PROJECT_MANAGER'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         stepName = "Set uuid for role user manager";
         query = "UPDATE @@GrantedAuthorityImpl@@ "
                 + " SET uuid = '74d340a9-b472-4b97-b52a-c140e27a5c76' "
                 + " WHERE authority = 'ROLE_USER_MANAGER'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         stepName = "Set uuid for role publish";
         query = "UPDATE @@GrantedAuthorityImpl@@ "
                 + " SET uuid = '9ffa7879-cc67-4592-a14a-b251cccde1a7' "
                 + " WHERE authority = 'ROLE_PUBLISH'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //probably fixed already, but just in case
         stepName = "Set uuid for role project manager";
         query = "UPDATE @@GrantedAuthorityImpl@@ "
                 + " SET uuid = 'be004bf6-0498-48e3-9f06-ff93fc9cdc9a' "
                 + " WHERE authority = 'ROLE_REMOTING'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#9614 use underscore for role based group names
         stepName = "Use underscore for group Editor_Extended_Create";
         query = "UPDATE @@PermissionGroup@@ "
                 + " SET name = 'Editor_Extended_Create' "
                 + " WHERE name = 'EditorExtendedCreate'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         stepName = "Use underscore for group Project_Manager";
         query = "UPDATE @@PermissionGroup@@ "
                 + " SET name = 'Project_Manager' "
                 + " WHERE name = 'ProjectManager'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         stepName = "Use underscore for group Editor_Reference";
         query = "UPDATE @@PermissionGroup@@ "
                 + " SET name = 'Editor_Reference' "
                 + " WHERE name = 'Editor-Reference'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#9619
         stepName = "Add Taxon.conceptId";

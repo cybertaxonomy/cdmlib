@@ -108,7 +108,7 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
                 +       " (SELECT " + mnParentFkColumnName
                         + " FROM " + mnTableAud + " MN "
                         + " WHERE MN." + mnChildFkColumnName + " = c.id AND c.REV = MN.REV) ";
-        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(innerStepList, stepName, sql, sqlAudited, 99);
+        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(innerStepList, stepName, sql, sqlAudited);
 
         //delete old table
         step = TableDropper.NewInstance(innerStepList, "Drop MN table", mnTableName, includeAudTable, true);

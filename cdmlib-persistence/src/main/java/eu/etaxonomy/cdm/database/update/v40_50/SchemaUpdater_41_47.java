@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.database.update.v40_50;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
@@ -220,7 +221,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         stepName = "remove orphaned PolytomousKeyNodes";
         String query = " DELETE FROM @@PolytomousKeyNode@@ WHERE key_id NOT IN (SELECT id FROM @@PolytomousKey@@)";
         String aud_query = " DELETE FROM @@PolytomousKeyNode_AUD@@ WHERE key_id NOT IN (SELECT id FROM @@PolytomousKey_AUD@@)";
-        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepList, stepName, query, aud_query, -99);
+        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepList, stepName, query, aud_query);
 
         //#6226 remove orphaned key statements
         OrphanedKeyStatementRemover.NewInstance(stepList);
@@ -330,7 +331,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
             String name, int index) {
         String stepName = "Update value for " + name;
         String query = "UPDATE @@CdmMetaData@@ SET propertyName = '"+name+"' WHERE propertyNameOld = "+index;
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
     }
 
     /**
@@ -412,14 +413,14 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         //hibernate sequence
         String stepName = "Update hibernate sequence entry name for TaxonNameBase";
         String query = "UPDATE hibernate_sequences SET sequence_name = 'TaxonName' WHERE sequence_name = 'TaxonNameBase'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //grantedauthority for taxonnamebase
         stepName = "Update GrantedAuthorityImpl for TaxonNameBase";
         query = "UPDATE GrantedAuthorityImpl " +
                 " SET authority = Replace (authority, 'TAXONNAMEBASE','TAXONNAME') " +
                 " WHERE authority like '%TAXONNAMEBASE%' ";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
 
         //LSIDAuthority_namespaces for taxonnamebase
@@ -427,7 +428,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         query = "UPDATE @@LSIDAuthority_namespaces@@ " +
                 " SET namespaces_element = Replace (namespaces_element, 'TaxonNameBase','TaxonName') " +
                 " WHERE namespaces_element like '%TaxonNameBase%' ";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
     }
 
     /**

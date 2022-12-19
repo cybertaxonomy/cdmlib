@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.database.update.v40_50;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -102,7 +103,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
                   + "   AND NOT EXISTS (SELECT * FROM DescriptionBase_RightsInfo MN WHERE MN.descriptionbase_id = db.id) "
                   + "   AND NOT EXISTS (SELECT * FROM WorkingSet_DescriptionBase MN WHERE MN.descriptions_id = db.id) "
                   + " ) as drvTbl) ";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#5921
         //UPDATE congruent symbol in DefinedTermBase

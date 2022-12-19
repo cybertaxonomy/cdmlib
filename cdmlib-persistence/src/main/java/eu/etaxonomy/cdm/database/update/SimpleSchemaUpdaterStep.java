@@ -41,15 +41,14 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 
 	/**
      * Simple schema updater with update query only for non_AUD tables.
-	 *
-	 * @param stepName step name
-	 * @param defaultQuery the query
-	 * @param adapt preliminary
-	 * @return
-	 */
-	public static SimpleSchemaUpdaterStep NewNonAuditedInstance(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery, int adapt){
-		return new SimpleSchemaUpdaterStep(stepList, stepName, defaultQuery, false, null, null);
-	}
+     *
+     * @param stepName step name
+     * @param defaultQuery the query
+     * @return the updater step
+     */
+    public static SimpleSchemaUpdaterStep NewNonAuditedInstance(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery){
+        return new SimpleSchemaUpdaterStep(stepList, stepName, defaultQuery, false, null, null);
+    }
 
 	/**
 	 * Simple schema updater with update query for AUD and non_AUD tables.
@@ -73,10 +72,10 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 	 * @param defaultQuery the non_AUD update query
 	 * @param defaultQueryForAuditedTables the AUD update query
 	 * @param adapt preliminary
-	 * @return
+	 * @return the updater step
 	 */
 	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(List<ISchemaUpdaterStep> stepList, String stepName,
-	        String defaultQuery, String defaultQueryForAuditedTables, int adapt){
+	        String defaultQuery, String defaultQueryForAuditedTables){
 		boolean audit = StringUtils.isNotBlank(defaultQueryForAuditedTables);
 		return new SimpleSchemaUpdaterStep(stepList, stepName, defaultQuery, audit, null, defaultQueryForAuditedTables);
 	}

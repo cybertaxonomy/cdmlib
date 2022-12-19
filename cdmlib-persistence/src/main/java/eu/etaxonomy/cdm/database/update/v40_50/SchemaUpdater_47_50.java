@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
@@ -72,12 +73,12 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 		query = "UPDATE @@LSIDAuthority_namespaces@@ "
 		        + " SET namespaces_element = 'eu.etaxonomy.cdm.model.name.TaxonName' "
 		        + " WHERE namespaces_element = 'eu.etaxonomy.cdm.model.name.TaxonNameBase'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
 		//#6699 delete term version
 		stepName = "Delete term version";
 		query = "DELETE FROM @@CdmMetaData@@ WHERE propertyName = 'TERM_VERSION'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#6581 make nomenclatural reference and OriginalSource
         stepName = "Make nomenclatural reference and OriginalSource";
@@ -122,7 +123,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         query = "UPDATE @@PermissionGroup@@ "
                 + " SET uuid='1739df71-bf73-4dc6-8320-aaaf72cb555f', name='Admin' "
                 + " WHERE  name='admin' or name='Admin'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#7405 Rename WorkingSet to DescriptiveDataSet
         String oldTableName = "WorkingSet";
@@ -221,7 +222,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         query = " UPDATE @@DefinedTermBase@@ " +
                 " SET level_id = ( SELECT id FROM (SELECT id FROM DefinedTermBase WHERE uuid = '79db63a4-1563-461e-8e41-48f5722feca4') as drv) " +
                 " WHERE DTYPE = 'Country' ";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#6588
         stepName = "Add ExternalLink table";

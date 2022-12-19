@@ -161,21 +161,21 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		stepName = "Update idInVocabulary for Countries if necessary";
 		uuid = Country.uuidCountryVocabulary.toString();
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// TdwgAreas => all
 		stepName = "Update idInVocabulary for TDWG areas if necessary";
 		uuid = NamedArea.uuidTdwgAreaVocabulary.toString();
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Waterbody => all
 		stepName = "Update idInVocabulary for Waterbody if necessary";
 		uuid = NamedArea.uuidWaterbodyVocabulary.toString();
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Continent => None has an id

@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
@@ -71,7 +72,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 		//just in case not fixed before yet
 		stepName = "Delete term version";
 		query = "DELETE FROM @@CdmMetaData@@ WHERE propertyName = 'TERM_VERSION'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#7414 remove mediaCreatedOld column
         stepName = "remove mediaCreatedOld column";

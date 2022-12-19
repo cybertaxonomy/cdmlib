@@ -26,10 +26,6 @@ public class GbifResponse extends DataResponse {
 
     private final TaxonName scientificName;
 
-    /**
-     * @param derivedUnitFacade
-     * @param dataSetUrl
-     */
     public GbifResponse(DerivedUnitFacade derivedUnitFacade, URI dataSetUrl, GbifDataSetProtocol dataSetProtocol, String [] tripleID, TaxonName scientificName) {
         super(derivedUnitFacade,dataSetUrl, tripleID);
         this.dataSetProtocol = dataSetProtocol;

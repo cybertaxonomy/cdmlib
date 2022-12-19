@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.database.update;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -217,7 +218,7 @@ public class ColumnTypeChanger
 //        if (this.isAuditing){
 //            step = SimpleSchemaUpdaterStep.NewAuditedInstance(this.stepName + " - Move data", updateQuery, casedTableName, -99);
 //        }else{
-            step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(null, this.stepName + " - Move data", updateQuery, -99);
+            step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(null, this.stepName + " - Move data", updateQuery);
 //        }
         step.invoke(datasource, monitor, caseType, result);
 

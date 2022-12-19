@@ -140,7 +140,7 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
                 + "    GROUP BY fe.id, mu.id"
                 + "    HAVING COUNT(*) = 1"
                 + ")";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, size)
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
              .withErrorRecovery("SQL statement for adding missing measurement unit_ids failed");
 
 		return stepList;
