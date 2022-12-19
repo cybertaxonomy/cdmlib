@@ -450,13 +450,25 @@ public abstract class DescriptionElementBase
         return addPrimaryTaxonomicSource(reference, null);
     }
 
-
-
     @Override
     public DescriptionElementSource addSource(OriginalSourceType type, Reference reference,
             String microReference, String originalInformation) {
         DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, null, null,
                 reference, microReference, null, originalInformation);
+        addSource(newSource);
+        return newSource;
+    }
+
+    /**
+     * Adds a source which has a specimen as source.
+     *
+     * @see DescriptionElementSource#getSpecimen()
+     */
+    public DescriptionElementSource addSource(OriginalSourceType type, SpecimenOrObservationBase<?> specimen,
+            String microReference, String originalInformation) {
+        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, null, null,
+                null, microReference, null, originalInformation);
+        newSource.setSpecimen(specimen);
         addSource(newSource);
         return newSource;
     }

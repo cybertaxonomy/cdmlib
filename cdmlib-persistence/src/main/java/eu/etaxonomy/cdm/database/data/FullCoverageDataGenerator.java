@@ -429,11 +429,12 @@ public class FullCoverageDataGenerator {
 		Reference ref = ReferenceFactory.newArticle();
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
 		source.setNameUsedInSource(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()));
-	    source.setSpecimen(getSpecimen());
-		ExternalLink link = ExternalLink.NewInstance(ExternalLinkType.WebSite,
+	    ExternalLink link = ExternalLink.NewInstance(ExternalLinkType.WebSite,
 		        URI.create("http://wwww.abd.de"), "Somehow useful link", 445);
 		source.addLink(link);
 		handleAnnotatableEntity(source);
+		textData.addSource(OriginalSourceType.PrimaryTaxonomicSource, specimen, null, null);
+
 
 		taxonDescription.addDescriptionSource(ref);  //as long as it still exists
 
