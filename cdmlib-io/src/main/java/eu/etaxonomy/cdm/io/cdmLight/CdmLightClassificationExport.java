@@ -35,6 +35,9 @@ import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
+import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
+import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
@@ -56,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -63,6 +67,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -118,6 +123,8 @@ public class CdmLightClassificationExport
 
     @Autowired
     private IEditGeoService geoService;
+    
+    private CategoricalDataFormatter categoricalDataFormatter = null;
 
     public CdmLightClassificationExport() {
         this.ioName = this.getClass().getSimpleName();
@@ -672,6 +679,32 @@ public class CdmLightClassificationExport
                 } else {
                     state.getProcessor().put(table, textData, csvLine);
                 }
+            }else if (element instanceof CategoricalData) {
+            	//use formater
+            	CategoricalData categoricalData = (CategoricalData)element;
+            	String cache = CategoricalDataFormatter.NewInstance(new FormatKey[] {}).format(categoricalData);
+            	csvLine = new String[table.getSize()];
+                csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
+                if (cdmBase instanceof Taxon) {
+                    csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, cdmBase);
+                } else if (cdmBase instanceof TaxonName) {
+                    csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, cdmBase);
+                }
+                csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)] = cache;
+                csvLine[table.getIndex(CdmLightExportTable.FACT_CATEGORY)] = categoricalData.getFeature().getLabel();
+            	
+            }else if (element instanceof QuantitativeData) {
+            	QuantitativeData quantitativeData = (QuantitativeData) element;
+            	String cache = QuantitativeDataFormatter.NewInstance(new FormatKey[] {}).format(quantitativeData);
+            	csvLine = new String[table.getSize()];
+                csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
+                if (cdmBase instanceof Taxon) {
+                    csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, cdmBase);
+                } else if (cdmBase instanceof TaxonName) {
+                    csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, cdmBase);
+                }
+                csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)] = cache;
+                csvLine[table.getIndex(CdmLightExportTable.FACT_CATEGORY)] = quantitativeData.getFeature().getLabel();
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling single simple fact "
