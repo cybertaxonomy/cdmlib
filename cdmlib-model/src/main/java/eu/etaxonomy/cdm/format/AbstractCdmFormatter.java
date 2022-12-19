@@ -58,7 +58,6 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
         formatKeyMap.put(FormatKey.COMMA, COMMA_CHAR);
     }
 
-
     protected boolean isNotBlank(String str) {
         return StringUtils.isNotBlank(str);
     }

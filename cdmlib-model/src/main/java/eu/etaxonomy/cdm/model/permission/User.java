@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 public class User extends CdmBase implements UserDetails {
 
     private static final long serialVersionUID = 6582191171369439163L;
-    private static final Logger logger = LogManager.getLogger(User.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final String USERNAME_REGEX = "[A-Za-z0-9_\\.\\-]+";
 
@@ -95,7 +95,6 @@ public class User extends CdmBase implements UserDetails {
     @NotAudited
     @ValidPassword(groups=Level2.class)
     protected String password;
-
 
     /**
      * The salt for password hashing.

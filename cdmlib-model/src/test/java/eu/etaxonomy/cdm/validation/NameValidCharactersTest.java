@@ -68,7 +68,7 @@ public class NameValidCharactersTest extends ValidationTestBase  {
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
 
-        constraintViolations  = validator.validate(name, Default.class,Level2.class);
+        constraintViolations  = validator.validate(name, Default.class, Level2.class);
         assertFalse("There should be a constraint violation as this name is valid at the default level, but contains a letter with a grave and an acute",constraintViolations.isEmpty());
 	}
 
