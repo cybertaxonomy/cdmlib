@@ -205,8 +205,9 @@ public class TestModelUpdate {
 		System.out.println("Start TestModelUpdate");
 		testSelectedDb();
 
-//		updateRemoteWebappTestH2();
 //		updateAllTestH2();
+
+//		updateRemoteWebappTestH2();
 //		updateEdaphobasePostgres();
 
 		System.out.println("\nEnd Datasource");

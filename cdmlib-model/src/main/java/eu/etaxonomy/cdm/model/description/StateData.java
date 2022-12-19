@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
     "categoricalData",
     "state",
     "count",
+    "usePlural",
     "modifiers",
     "modifyingText"
 })
@@ -116,6 +117,8 @@ public class StateData
     @Field(name="modifyingText")
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     private Map<Language,LanguageString> modifyingText = new HashMap<>();
+
+    private boolean usePlural;
 
 //********************* FACTORY METHODS ************************\
 
@@ -289,8 +292,14 @@ public class StateData
         return this.modifyingText.remove(lang);
     }
 
-//*********************************** TO STRING *****************************************/
+    public boolean isUsePlural() {
+        return usePlural;
+    }
+    public void setUsePlural(boolean usePlural) {
+        this.usePlural = usePlural;
+    }
 
+//*********************************** TO STRING *****************************************/
 
     @Override
     public String toString() {
@@ -334,4 +343,5 @@ public class StateData
             return null;
         }
     }
+
 }
