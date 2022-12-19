@@ -258,66 +258,62 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testMoveTerm(){
-	final String[] tableNames = new String[]{
-                "DefinedTermBase","Representation"};
+    //	final String[] tableNames = new String[]{
+    //                "DefinedTermBase","Representation"};
 
-	commitAndStartNewTransaction(tableNames);
-	TermVocabulary<OrderedTerm> vocTest = OrderedTermVocabulary.NewOrderedInstance(TermType.DnaMarker,
-	        OrderedTerm.class, "Test Term Vocabulary", null, null, null);
-	vocTest.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test1", "marker1", "t1"));
-	vocTest = vocabularyService.save(vocTest);
+    	commitAndStartNewTransaction();
+    	TermVocabulary<OrderedTerm> vocTest = OrderedTermVocabulary.NewOrderedInstance(TermType.DnaMarker,
+    	        OrderedTerm.class, "Test Term Vocabulary", null, null, null);
+    	vocTest.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test1", "marker1", "t1"));
+    	vocTest = vocabularyService.save(vocTest);
 
-	OrderedTermVocabulary<OrderedTerm> vocDna = OrderedTermVocabulary.NewOrderedInstance(TermType.DnaMarker,
-	        OrderedTerm.class, "Test DNA marker", null, null, null);
-	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test", "marker", "t"));
-	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test2", "marker2", "t2"));
-	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test3", "marker3", "t3"));
-	vocDna = vocabularyService.save(vocDna);
-	/*
-	 * 					vocDna
-	 *   marker	   marker2	   marker3
-	 *
-	 */
+    	OrderedTermVocabulary<OrderedTerm> vocDna = OrderedTermVocabulary.NewOrderedInstance(TermType.DnaMarker,
+    	        OrderedTerm.class, "Test DNA marker", null, null, null);
+    	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test", "marker", "t"));
+    	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test2", "marker2", "t2"));
+    	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test3", "marker3", "t3"));
+    	vocDna = vocabularyService.save(vocDna);
+    	/*
+    	 * 					vocDna
+    	 *   marker	   marker2	   marker3
+    	 *
+    	 */
 
+    	Iterator<OrderedTerm> termsTest = vocTest.getTerms().iterator();
+    	Iterator<OrderedTerm> termsDna = vocDna.getTerms().iterator();
 
-	Iterator<OrderedTerm> termsTest = vocTest.getTerms().iterator();
-	Iterator<OrderedTerm> termsDna = vocDna.getTerms().iterator();
+    	TermDto termToMove = TermDto.fromTerm(termsTest.next());
+    	OrderedTerm termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
+    	assertTrue(termBase.getOrderIndex() == 1);
+    	TermDto parentTerm = TermDto.fromTerm(termsDna.next());
+    	TermDto secondTerm = TermDto.fromTerm(termsDna.next());
+    	//move to other vocabulary
+    	termService.moveTerm(termToMove, vocDna.getUuid());
 
-	TermDto termToMove = TermDto.fromTerm(termsTest.next());
-	OrderedTerm termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
-	assertTrue(termBase.getOrderIndex() == 1);
-	TermDto parentTerm = TermDto.fromTerm(termsDna.next());
-	TermDto secondTerm = TermDto.fromTerm(termsDna.next());
-	//move to other vocabulary
-	termService.moveTerm(termToMove, vocDna.getUuid());
-
-	/*
-	 * 		vocDna
-	 * marker		marker2		marker3		marker1
-	 *
-	 *
-	 */
-	//commitAndStartNewTransaction(tableNames);
-	termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
-	assertNotNull(termBase);
-	assertTrue(termBase.getVocabulary().getUuid().equals(vocDna.getUuid()));
-	vocTest = vocabularyService.load(vocDna.getUuid());
-	//include marker1
-	termService.moveTerm(termToMove,parentTerm.getUuid());
-	//commitAndStartNewTransaction(tableNames);
-	termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
-	OrderedTerm parent = (OrderedTerm) termService.load(parentTerm.getUuid());
-	assertTrue(parent.getIncludes().size() == 1);
-	assertNotNull(termBase);
-	//termToMove is included in and fourth term of vocabulary -> orderIndex == 4
-	assertTrue(termBase.getOrderIndex() == 4);
-	//marker2 should be moved behind marker3
-	termService.moveTerm(secondTerm,parentTerm.getUuid(), TermMovePosition.AFTER);
-	termBase =  (OrderedTerm)termService.load(secondTerm.getUuid());
-	parent = (OrderedTerm) termService.load(parentTerm.getUuid());
-	//secondTerm should be before termToMove
-	assertTrue(termBase.getOrderIndex() == parent.getOrderIndex() - 1);
-
+    	/*
+    	 * 		vocDna
+    	 * marker		marker2		marker3		marker1
+    	 */
+    	//commitAndStartNewTransaction(tableNames);
+    	termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
+    	assertNotNull(termBase);
+    	assertTrue(termBase.getVocabulary().getUuid().equals(vocDna.getUuid()));
+    	vocTest = vocabularyService.load(vocDna.getUuid());
+    	//include marker1
+    	termService.moveTerm(termToMove,parentTerm.getUuid());
+    	//commitAndStartNewTransaction(tableNames);
+    	termBase =  (OrderedTerm)termService.load(termToMove.getUuid());
+    	OrderedTerm parent = (OrderedTerm) termService.load(parentTerm.getUuid());
+    	assertTrue(parent.getIncludes().size() == 1);
+    	assertNotNull(termBase);
+    	//termToMove is included in and fourth term of vocabulary -> orderIndex == 4
+    	assertTrue(termBase.getOrderIndex() == 4);
+    	//marker2 should be moved behind marker3
+    	termService.moveTerm(secondTerm,parentTerm.getUuid(), TermMovePosition.AFTER);
+    	termBase =  (OrderedTerm)termService.load(secondTerm.getUuid());
+    	parent = (OrderedTerm) termService.load(parentTerm.getUuid());
+    	//secondTerm should be before termToMove
+    	assertTrue(termBase.getOrderIndex() == parent.getOrderIndex() - 1);
     }
 
     /**

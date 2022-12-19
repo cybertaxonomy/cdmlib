@@ -103,7 +103,7 @@ public class TaxonNodeServiceImpl
            extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao>
            implements ITaxonNodeService{
 
-    private static final Logger logger = LogManager.getLogger(TaxonNodeServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
