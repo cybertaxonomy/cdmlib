@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -51,6 +52,7 @@ public class OccurrenceStatus
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+	@NotNull
 	private DefinedTerm type;
 
     @XmlElement(name = "Name")
