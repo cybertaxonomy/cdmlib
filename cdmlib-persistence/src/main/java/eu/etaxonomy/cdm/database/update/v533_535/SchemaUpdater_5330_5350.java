@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SingleTermRemover;
+import eu.etaxonomy.cdm.database.update.VocabularyRemover;
 import eu.etaxonomy.cdm.database.update.v532_533.SchemaUpdater_5320_5330;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -94,6 +95,8 @@ public class SchemaUpdater_5330_5350 extends SchemaUpdaterBase {
             SingleTermRemover.NewInstance(stepList, stepName, uuid.toString(), (String)null);
             SingleTermRemover.NewAudInstance(stepList, stepName, uuid.toString(), null);
         }
+        UUID vocUuid = UUID.fromString("48917fde-d083-4659-b07d-413db843bd50");
+        VocabularyRemover.NewInstance(stepList, stepName, vocUuid.toString(), null);
 
 		return stepList;
     }
