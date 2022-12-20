@@ -116,7 +116,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                     + "       SELECT * "
                     + "       FROM @@DescriptionElementBase_OriginalSourceBase_AUD@@ MN "
                     + "       WHERE MN.sources_id = @@OriginalSourceBase_AUD@@.id)";
-         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
+         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud);
 
 		//#9327
         //add sourcedTaxon column
@@ -181,7 +181,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                 + "       SELECT * "
                 + "       FROM @@TaxonName_NomenclaturalStatus_AUD@@ MN "
                 + "       WHERE MN.status_id = @@NomenclaturalStatus_AUD@@.id)";
-         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
+         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud);
 
          //9211
          //move classification reference to classification source

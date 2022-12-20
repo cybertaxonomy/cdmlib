@@ -86,7 +86,7 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 		String query = " UPDATE @@DescriptionElementBase@@ " +
 					" SET unknownData = @FALSE@ " +
 					" WHERE DTYPE IN ('CategoricalData', 'QuantitativeData') ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "DescriptionElementBase", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "DescriptionElementBase");
 
 		return stepList;
 

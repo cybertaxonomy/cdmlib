@@ -354,7 +354,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         String query = "UPDATE @@TaxonNameBase@@ tnb "
                 + " SET anamorphic = @FALSE@ "
                 + " WHERE anamorphic IS NULL " ;
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNameBase", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNameBase");
 
         //#6368 Remove DTYPE
         stepName = "Remove DTYPE from TaxonNameBase";
@@ -471,7 +471,7 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         String query = "UPDATE @@TaxonNameBase@@ tnb "
                 + " SET nameType = '" + nameType + "'"
                 + " WHERE dtype = '" + dtype + "'" ;
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNameBase", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNameBase");
     }
 
 	@Override

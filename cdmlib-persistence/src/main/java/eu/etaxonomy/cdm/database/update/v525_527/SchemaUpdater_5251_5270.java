@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
@@ -79,7 +80,7 @@ public class SchemaUpdater_5251_5270 extends SchemaUpdaterBase {
 		String sql = "UPDATE @@TaxonName@@ "
 		        + " SET cultivarGroupEpithet = cultivarEpithet,  cultivarEpithet = null "
 		        + " WHERE rank_id IN (SELECT id FROM @@DefinedTermBase@@ r WHERE r.uuid = 'd763e7d3-e7de-4bb1-9d75-225ca6948659')";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "TaxonName", -99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "TaxonName");
 
 		//#9755 Add Gp abbreviation to cultivar group rank
 		stepName = "Add abbrev to cultivar group rank";

@@ -104,7 +104,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         stepName = "Delete orhphaned taxon nodes";
         String sql = "DELETE FROM @@TaxonNode@@ WHERE classification_id IS NULL";
         tableName = "TaxonNode";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 0);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //identifier versionable -> annotatable
         stepName = "Upgrade identifier from versionable to annotatable";
@@ -130,7 +130,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " +
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "", -99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "");
 
 
         //#4110 update idInVocabulary for some new databases
@@ -144,7 +144,6 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
     private void updateAreas(List<ISchemaUpdaterStep> stepList) {
 		String stepName;
 		String uuid;
-		ISchemaUpdaterStep step;
 		String tableName = "DefinedTermBase";
 
 		//ANSI - SQL

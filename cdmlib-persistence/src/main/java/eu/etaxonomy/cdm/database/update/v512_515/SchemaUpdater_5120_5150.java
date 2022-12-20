@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
@@ -128,17 +129,17 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         stepName = "Set TaxonNode.status";
         tableName = "TaxonNode";
         String sql = "UPDATE @@TaxonNode@@ SET status = 'DOU' WHERE doubtful = @TRUE@";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         stepName = "Set TaxonNode.status";
         tableName = "TaxonNode";
         sql = "UPDATE @@TaxonNode@@ SET status = 'UNP' WHERE unplaced = @TRUE@";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         stepName = "Set TaxonNode.status";
         tableName = "TaxonNode";
         sql = "UPDATE @@TaxonNode@@ SET status = 'EXC' WHERE excluded = @TRUE@";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //#9027
         stepName = "add availableFor column to DefinedTermBase(Feature)";
@@ -151,14 +152,14 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         sql = "UPDATE @@DefinedTermBase@@ "
                 + " SET availableFor = '#TAX#' "
                 + " WHERE DTYPE = 'Feature'";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         stepName = "Set availableFor default values for character";
         tableName = "DefinedTermBase";
         sql = "UPDATE @@DefinedTermBase@@ "
                 + " SET availableFor = '#TAX#OCC#' "
                 + " WHERE DTYPE = 'Character'";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         setAvailableFor(stepList, "71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f", "TNA");  //update protologue
         setAvailableFor(stepList, "2c355c16-cb04-4858-92bf-8da8d56dea95", "TNA");  //additional publication
@@ -192,7 +193,7 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         sql = "UPDATE @@DefinedTermBase@@ "
                 + " SET supportedDataTypes = '#' "
                 + " WHERE DTYPE = 'FEATURE' OR DTYPE = 'CHARACTER'";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         updateSupportDataType(stepList, "supportsTextData", "TDA");
         updateSupportDataType(stepList, "supportsCommonTaxonName", "CTN");
@@ -218,7 +219,7 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
                 + " INNER JOIN @@DescriptionBase@@ db ON db.id = deb.indescription_id "
                 + " WHERE db." + fkColumn + " IS NOT NULL "
              + " ) AND availableFor NOT LIKE '%#" + key + "#%'";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
     }
 
     private void updateAvailableFor(List<ISchemaUpdaterStep> stepList, String uuidStr, String key) {
@@ -227,7 +228,7 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         String sql = "UPDATE @@DefinedTermBase@@ "
                 + " SET availableFor = CONCAT(availableFor, '"+key+"#') "
                 + " WHERE uuid = '" + uuidStr + "'";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
     }
 
     private void setAvailableFor(List<ISchemaUpdaterStep> stepList, String uuidStr, String key) {
@@ -236,7 +237,7 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         String sql = "UPDATE @@DefinedTermBase@@ "
                 + " SET availableFor = '#" + key + "#' "
                 + " WHERE uuid = '" + uuidStr + "'";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
     }
 
     private void updateSupportDataType(List<ISchemaUpdaterStep> stepList, String methodName, String key) {
@@ -247,7 +248,7 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         String sql = "UPDATE @@DefinedTermBase@@ "
                 + " SET supportedDataTypes = CONCAT(supportedDataTypes, '"+key+"#') "
                 + " WHERE " + methodName + " = @TRUE@ ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
     }
 
     @Override

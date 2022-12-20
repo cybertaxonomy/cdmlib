@@ -112,7 +112,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
                 + " SET idInVocabulary = Replace(idInVocabulary, '\u2245', '\u225c'), symbol = Replace(symbol, '\u2245', '\u225c'), inverseSymbol = Replace(inverseSymbol, '\u2245', '\u225c')"
                 + " WHERE DTYPE like 'TaxonRel%' "
                 + "     AND (idInVocabulary like '%\u2245%' OR symbol like '%\u2245%' OR inverseSymbol like '%\u2245%' )";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "DefinedTermBase", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "DefinedTermBase");
 
         //#5921
         //UPDATE congruent symbol in Representations
@@ -120,7 +120,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         query = " UPDATE @@Representation@@ "
                 + " SET abbreviatedLabel = Replace(abbreviatedLabel, '\u2245', '\u225c') "
                 + " WHERE (abbreviatedLabel like '%\u2245%' )";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "Representation", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "Representation");
 
         //#5976
         //update sortindex on FeatureNode children
@@ -161,13 +161,13 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepName = "Move excluded from Taxon to TaxonNode";
         query = "UPDATE @@TaxonNode@@ tn " +
                 " SET excluded = (SELECT DISTINCT excluded FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNode", -99)
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNode")
                 //.addDefaultAuditing("TaxonBase") removed due to non unique results in subquery, solving this problem is too much work to be implemented here, so audited values will not be correct partly but always representing the current state
                 ;
 
         stepName = "Move excluded from Taxon to TaxonNode/set null to false";
         query = "UPDATE @@TaxonNode@@ SET excluded = 0 WHERE excluded IS NULL";
-        SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNode", -99);
+        SimpleSchemaUpdaterStep simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNode");
         simpleStep.put(DatabaseTypeEnum.PostgreSQL, query.replace("0", "false"));
         simpleStep.putAudited(DatabaseTypeEnum.PostgreSQL, query.replace("TaxonNode","TaxonNode_AUD").replace("0", "false"));
 
@@ -192,13 +192,13 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepName = "Move unplaced from Taxon to TaxonNode";
         query = "UPDATE @@TaxonNode@@ tn " +
                 " SET unplaced = (SELECT DISTINCT unplaced FROM @@TaxonBase@@ tb WHERE tb.id = tn.taxon_id)";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNode", -99)
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNode")
                 //.addDefaultAuditing("TaxonBase") removed due to non unique results in subquery, solving this problem is too much work to be implemented here, so audited values will not be correct partly but always representing the current state
                 ;
 
         stepName = "Move unplaced from Taxon to TaxonNode/set null to false";
         query = "UPDATE @@TaxonNode@@ SET unplaced = 0 WHERE unplaced IS NULL";
-        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNode", -99);
+        simpleStep = SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNode");
         simpleStep.put(DatabaseTypeEnum.PostgreSQL, query.replace("0", "false"));
         simpleStep.putAudited(DatabaseTypeEnum.PostgreSQL, query.replace("TaxonNode","TaxonNode_AUD").replace("0", "false"));
 
@@ -235,13 +235,13 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         stepName = "Add abbreviation to Rank 'Cultivar'";
         String updateSql = "UPDATE Representation SET abbreviatedLabel='cv.' WHERE label='Cultivar'";
         String nonAuditedTableName = "Representation";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName);
 
         //#5981  Add abbreviation to idInVoc for 'Cultivar'
         stepName = "#5981 Add abbreviation to idInVoc for 'Cultivar'";
         updateSql = "UPDATE DefinedTermBase SET idInVocabulary='cv.' WHERE uuid='5e98415b-dc6e-440b-95d6-ea33dbb39ad0'";
         nonAuditedTableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName);
 
         //#5952 Add identityCache
         stepName = "Add identityCache";
@@ -305,28 +305,28 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         String updateSql = "UPDATE @@TaxonBase@@ syn " +
                 " SET proParte = (SELECT DISTINCT proParte FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) " +
                 " WHERE acceptedTaxon_id IS NULL ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase", -99)
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase")
                 //.addDefaultAuditing("SynonymRelationship")  //difficult to implement due to non-uniqueness in subquery
                 ;
 
         updateSql = "UPDATE @@TaxonBase@@ " +
                 " SET proParte = @FALSE@ " +
                 " WHERE DTYPE='Synonym' AND proParte IS NULL ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase");
 
         //update partial
         stepName = "Update partial";
         updateSql = "UPDATE @@TaxonBase@@ syn " +
                 " SET partial=(SELECT DISTINCT partial FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id) " +
                 " WHERE acceptedTaxon_id IS NULL ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase", -99)
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase")
                 //.addDefaultAuditing("SynonymRelationship")  //difficult to implement due to non-uniqueness in subquery
                 ;
 
         updateSql = "UPDATE @@TaxonBase@@ " +
                 " SET partial = @FALSE@ " +
                 " WHERE DTYPE='Synonym' AND partial IS NULL ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase");
 
         //update synonym type
         stepName = "Update Synonym type";
@@ -334,7 +334,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
                 " SET type_id=(SELECT DISTINCT type_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)" +
                 " WHERE acceptedTaxon_id IS NULL ";
         //        String updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase");
 
         //update acceptedTaxon_id
         stepName = "Update acceptedTaxon_id";
@@ -342,32 +342,32 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
                 " SET acceptedTaxon_id=(SELECT DISTINCT relatedTo_id FROM @@SynonymRelationship@@ sr WHERE sr.relatedFrom_id = syn.id)" +
                 " WHERE acceptedTaxon_id IS NULL ";
 //        updateSqlAud = updateSql.replace("TaxonBase", "TaxonBase_AUD").replace("SynonymRelationship", "SynonymRelationship_AUD");
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, "TaxonBase");
 
 
 	    //rename SynonymRelationshipType to SynonymType in DefinedTermBase.DTYPE
         stepName = "Rename SynonymRelationshipType to SynonymType in DefinedTermBase.DTYPE";
         updateSql = "UPDATE DefinedTermBase SET DTYPE='SynonymType' WHERE DTYPE='SynonymRelationshipType'";
         String nonAuditedTableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName);
 
         //rename SynonymRelationshipType to SynonymType in DefinedTermBase.titleCache
         stepName = "Rename SynonymRelationshipType to SynonymType in DefinedTermBase.titleCache";
         updateSql = "UPDATE DefinedTermBase SET titleCache='SynonymType' WHERE titleCache='SynonymRelationshipType'";
         nonAuditedTableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName);
 
         //rename SynonymRelationshipType to SynonymType in Representation labels
         stepName = "Rename SynonymRelationshipType to SynonymType in Representation labels";
         updateSql = "UPDATE Representation SET label='Synonym Type' WHERE label='Synonym Relationship Type'";
         nonAuditedTableName = "Representation";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName);
 
         //rename SynonymRelationshipType to SynonymType in Representation text
         stepName = "Rename SynonymRelationshipType to SynonymType in Representation text";
         updateSql = "UPDATE Representation SET text='Synonym Type' WHERE text='Synonym Relationship Type'";
         nonAuditedTableName = "Representation";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, updateSql, nonAuditedTableName);
 
 	    //remove SynonymRelationship_Annotation
         stepName = "Remove SynonymRelationship_Annotation table";
@@ -428,7 +428,7 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         String query = "UPDATE @@DefinedTermBase@@ dtb "
                 + " SET symbol = '" + newSymbol + "'"
                 + " WHERE uuid = '" + uuid + "' AND symbol = '" + oldSymbol + "'" ;
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "DefinedTermBase", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "DefinedTermBase");
     }
 
 	@Override

@@ -181,7 +181,7 @@ public class SchemaUpdater_5220_5230 extends SchemaUpdaterBase {
         query = "UPDATE @@TaxonName@@ "
                 + " SET nameType = 'ICNP' "
                 + " WHERE nameType = 'ICNB'";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonName", -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonName");
 
 
         return stepList;

@@ -307,7 +307,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//remove figure #2539
 		stepName = "Remove Figure class";
 		query = "UPDATE @@Media@@ SET DTYPE = 'Media' WHERE DTYPE = 'Figure'";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "Media", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "Media");
 
 		// add doi to reference
 		stepName = "Add doi to Reference";
@@ -744,7 +744,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				 + " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
 				 + " WHERE m.flag = @FALSE@ AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase");
 
 		// remove publish marker MN table
 		stepName = "Remove existing TaxonBase publish markers MN";
@@ -755,7 +755,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				 + " FROM @@Marker@@ m INNER JOIN @@DefinedTermBase@@ mType ON m.markertype_id = mType.id "
 				 + " WHERE mType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc'  "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase_Marker", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase_Marker");
 
 		// update publish with existing publish false markers
 		stepName = "Remove existing TaxonBase publish markers";
@@ -788,7 +788,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
 				+ " WHERE m.flag = @FALSE@ AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "SpecimenOrObservationBase", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "SpecimenOrObservationBase");
 
 		// remove publish marker MN table
 		stepName = "Remove existing SpecimenOrObservationBase publish markers MN";
@@ -799,7 +799,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " FROM @@Marker@@ m INNER JOIN @@DefinedTermBase@@ mType ON m.markertype_id = mType.id "
 				+ " WHERE mType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc'  "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "SpecimenOrObservationBase_Marker", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "SpecimenOrObservationBase_Marker");
 
 		// update publish with existing publish false markers
 		stepName = "Remove existing SpecimenOrObservationBase publish markers";
@@ -1459,7 +1459,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				" SET idInVocabulary = 'sect.(bot.)' " +
 				" WHERE uuid = '3edff68f-8527-49b5-bf91-7e4398bb975c'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// avoid duplicate for subsection (bot.)
 		stepName = "Update idInVoc for subsection (bot.)";
@@ -1467,19 +1467,19 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				" SET idInVocabulary = 'subsect.(bot.)' " +
 				" WHERE uuid = 'd20f5b61-d463-4448-8f8a-c1ff1f262f59'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// avoid duplicate for section (zool.)
 		stepName = "Update idInVoc for section (zool.)";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = 'sect.(zool.)' WHERE uuid = '691d371e-10d7-43f0-93db-3d7fa1a62c54'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// avoid duplicate for subsection (zool.)
 		stepName = "Update idInVoc for subsection (zool.)";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = 'subsect.(zool.)' WHERE uuid = '0ed32d28-adc4-4303-a9ca-68e2acd67e33'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// SpecimenTypeDesignationStatus => all
 		stepName = "Update idInVocabulary for SpecimenTypeDesignationStatus";
@@ -1492,7 +1492,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update idInVoc for Phototype (PhT) to avoid duplicate for PT";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = 'PhT' WHERE uuid = 'b7807acc-f559-474e-ad4a-e7a41e085e34'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// NameTypeDesignationStatus => all
 		stepName = "Update idInVocabulary for NameTypeDesignationStatus";
@@ -1520,13 +1520,13 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update idInVoc for Misapplied Name Relationship";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = NULL WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// avoid duplicate for Invalid designation (remove '-')
 		stepName = "Update idInVoc for Invalid Designation";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = NULL WHERE uuid = '605b1d01-f2b1-4544-b2e0-6f08def3d6ed'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// PresenceTerm => all
 		stepName = "Update idInVocabulary for PresenceTerm";
@@ -1702,40 +1702,40 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// sortindex new #3700
 		stepName = "Update waterbody uuids";
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 1, uuid = 'af4271e5-8897-4e6f-9db7-54ea4f28cfc0' WHERE uuid = 'aa96ca19-46ab-6365-af29-e4842f13eb4c' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "DefinedTermBase", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 2, uuid = '77e79804-1b17-4c99-873b-933fe216e3da' WHERE uuid = '36aea55c-46ab-6365-af29-e4842f13eb4c' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 3, uuid = '3d68a327-104c-49d5-a2d8-c71c6600181b' WHERE uuid = '36aea55c-892c-6365-af29-e4842f13eb4c' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 4, uuid = 'ff744a37-5990-462c-9c20-1e85a9943851' WHERE uuid = '36aea55c-892c-4114-af29-d4b287f76fab' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 5, uuid = 'ef04f363-f67f-4a2c-8d98-110de4c5f654' WHERE uuid = 'aa96ca19-892c-4114-af29-d4b287f76fab' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 6, uuid = '8811a47e-29d6-4455-8f83-8916b78a692f' WHERE uuid = 'aa96ca19-892c-4114-a494-d4b287f76fab' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 7, uuid = '4cb4bbae-9aab-426c-9025-e34f809165af' WHERE uuid = 'd4cf6c57-892c-4114-bf57-96886eb7108a' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 8, uuid = '598fec0e-b93a-4947-a1f3-601e380797f7' WHERE uuid = 'd4cf6c57-892c-c953-a494-96886eb7108a' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 9, uuid = 'ee69385e-6c80-405c-be6e-974e9fd1e297' WHERE uuid = 'aa96ca19-46ab-c953-a494-96886eb7108a' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 10, uuid = '8dc16e70-74b8-4143-95cf-a659a319a854' WHERE uuid = 'aa96ca19-46ab-4114-a494-96886eb7108a' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// update DTYPE for country
 		stepName = "Update DTYPE for Countries";
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'Country' WHERE DTYPE = 'WaterbodyOrCountry' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// Rename tables
 		stepName = "Rename DefinedTermBase_WaterbodyOrCountry";

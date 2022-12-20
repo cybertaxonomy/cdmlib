@@ -157,7 +157,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + " SET nomenclaturalStanding = 'NO' "
                 + " WHERE termType IN ('NST','NRT') ";
         String nonAuditedTableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 //        + "     '82bab006-5aed-4301-93ec-980deb30cbb1',"   //status cons. prop.
 //        + "     '02f82bc5-1066-454b-a023-11967cba9092',"   //status orth. cons. prop.
         //nom. nov., comb. nov.
@@ -187,7 +187,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + "     '4e9c9702-a74d-4033-9d47-792ad123712c',"   //status nom. cons. des.
                 + "     '049c6358-1094-4765-9fae-c9972a0e7780'"   //relation is alternative name for
                 + "    ) ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         //ILLEGITIMATE
         stepName = "Set nom status and name relationship types to ILLEGITIMATE where appropriate";
@@ -201,7 +201,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + "     '2bef7039-c129-410b-815e-2a1f7249127b',"   //status zoo invalid
                 + "     'a61602c7-fbd4-4eb4-98a2-44919db8920b'"    //status zoo suppressed
                 + "    ) ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         //INVALID
         stepName = "Set nom status and name relationship types to INVALID where appropriate";
@@ -216,7 +216,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + "     '54900d07-a18f-4e11-b4be-3929bb78416a',"   //status pro syn.
                 + "     '6d9ed462-b761-4da3-9304-4749e883d4eb'"    //status not available (zool.)
                 + "    ) ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         //OTHER DESIGNATIONS
         stepName = "Set nom status and name relationship types to OTHER DESIGNATIONS where appropriate";
@@ -234,7 +234,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + "     'c6f9afcb-8287-4a2b-a6f6-4da3a073d5de',"   //relation misspelling for
                 + "     '6a6f7a88-991f-4f76-8ce9-4110839fae8b' "   //status(+relation) nom. oblitum (zool.)
                 + "    ) ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         //SET inverse nomenclatural standing
         //default NONE
@@ -243,7 +243,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + " SET nomenclaturalStandingInverse = 'NO' "
                 + " WHERE termType IN ('NRT') ";
         nonAuditedTableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         //VALID
         stepName = "Set inverse name relationship types to VALID where appropriate";
@@ -252,7 +252,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + " WHERE uuid IN ('049c6358-1094-4765-9fae-c9972a0e7780',"   //relation is alternative name for
                 + "        'e6439f95-bcac-4ebb-a8b5-69fa5ce79e6a'"   //relation rejected in favor of
                 + "    ) ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         //OTHER DESIGNATION
         stepName = "Set inverse name relationship types to OTHER DESIGNATION where appropriate";
@@ -261,7 +261,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + " WHERE uuid IN ("
                 + "        'e6439f95-bcac-4ebb-a8b5-69fa5ce79e6a'"   //relation conserved against
                 + "    ) ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
     }
 

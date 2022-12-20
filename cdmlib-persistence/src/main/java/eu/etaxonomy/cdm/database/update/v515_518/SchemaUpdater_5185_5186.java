@@ -80,7 +80,7 @@ public class SchemaUpdater_5185_5186 extends SchemaUpdaterBase {
                 + "     '24955174-aa5c-4e71-a2fd-3efc79e885db'"   //status nom. confus.
                 + "    ,'90f5012b-705b-4488-b4c6-002d2bc5198e'"   //status nom. ambig.
                 + "    ) ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
     }
 
     @Override

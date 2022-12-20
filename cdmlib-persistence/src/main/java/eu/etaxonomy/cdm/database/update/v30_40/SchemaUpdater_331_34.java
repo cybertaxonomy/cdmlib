@@ -92,7 +92,7 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         String query = " UPDATE @@TaxonBase@@ " +
                     " SET publish = @TRUE@ " +
                     " WHERE DTYPE IN ('Synonym') AND publish IS NULL ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase", 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase");
 
         addIdentifierTables(stepList);
 
@@ -102,13 +102,13 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         String sql = " UPDATE Reference r " +
                 " SET r.seriespart = r.series " +
                 " WHERE r.series is NOT NULL AND r.seriesPart IS NULL ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "Reference", 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "Reference");
 
         stepName = "Set series to NULL";
         sql = " UPDATE Reference r " +
                 " SET r.series = NULL " +
                 " WHERE r.series = r.seriesPart ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "Reference", 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "Reference");
 
         //TODO check all series are null
 

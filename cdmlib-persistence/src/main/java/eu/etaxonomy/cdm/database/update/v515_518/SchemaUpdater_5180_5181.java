@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.database.update.v515_518;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -55,7 +56,7 @@ public class SchemaUpdater_5180_5181 extends SchemaUpdaterBase {
                 + " SET DTYPE = 'NomenclaturalSource', sourceType='NOR' "
                 + " WHERE id IN (SELECT nomenclaturalSource_id FROM @@TaxonName@@ WHERE nomenclaturalSource_id IS NOT NULL) ";
         String sql_aud = "UPDATE @@OriginalSourceBase_AUD@@  SET DTYPE = 'NomenclaturalSource', sourceType='NOR'  WHERE id IN (SELECT nomenclaturalSource_id FROM @@TaxonName_AUD@@ WHERE nomenclaturalSource_id IS NOT NULL)";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud);
 
         return stepList;
     }

@@ -100,7 +100,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
                 + " SET idInVocabulary = 'nom. val.' "
                 + " WHERE uuid = '" + uuidTerm + "'";
 		tableName = "DefinedTermBase";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
 		//#7074 change type for Media.mediaCreated
 		changeTypeMediaCreated(stepList);
@@ -163,7 +163,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         query = "UPDATE @@FeatureTree@@ "
                 + " SET protectedTitleCache = @TRUE@ ";
         tableName = "FeatureTree";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //#7238 rename lastName and firstName
         stepName = "rename lastName";
@@ -286,7 +286,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
                 + " WHERE mediaCreatedOld IS NOT NULL ";
         String queryDefault = String.format(queryTemplate, "Left(Replace(Replace(Replace(mediaCreatedOld, '-', ''), ':', ''), ' ', '_'), 13)");
         String queryPostgres = String.format(queryTemplate, "to_char(mediaCreatedOld,'YYYYMMDD HH24MI')");
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, queryDefault, tableName, -99)
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, queryDefault, tableName)
                   .put(DatabaseTypeEnum.PostgreSQL, queryPostgres)
                   .putAudited(DatabaseTypeEnum.PostgreSQL, queryPostgres);
 
