@@ -75,8 +75,11 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
      */
     protected abstract String doFormat(T descEl, List<Language> preferredLanguages);
 
-
     protected String getLabel(DefinedTermBase<?> term, List<Language> preferredLanguages) {
+        return getLabel(term, preferredLanguages, false);
+    }
+
+    protected String getLabel(DefinedTermBase<?> term, List<Language> preferredLanguages, boolean usePlural) {
         if (term == null){
             return MISSING_TERM_LABEL;
         }
@@ -85,7 +88,7 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
             return term.toString();
         }
         if (isNotBlank(representation.getLabel())){
-            return representation.getLabel();
+            return usePlural && isNotBlank(representation.getPlural()) ? representation.getPlural() : representation.getLabel();
         }else if (isNotBlank(representation.getAbbreviatedLabel())){
             return representation.getAbbreviatedLabel();
         }else if (isNotBlank(representation.getText())){

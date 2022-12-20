@@ -1,5 +1,5 @@
 /**
-* Copyright (C) 2020 EDIT
+* Copyright (C) 2022 EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 *
@@ -17,15 +17,12 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
-import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
- * Test for {@link CategoricalDataFormatter}.
- *
  * @author a.mueller
- * @since 11.03.2020
+ * @date 20.12.2022
  */
-public class CategoricalDataFormatterTest extends TermTestBase {
+public class DefaultCategoricalDescriptionBuilderTest {
 
     private State state1;
     private State state2;

@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.format.description;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -66,7 +68,7 @@ public abstract class DescriptionBuilderBase<T extends DescriptionElementBase> {
 	/**
 	 * Returns either the text, label or abbreviation of a Representation.
 	 */
-	protected String getRightText(Representation representation){
+	protected String getRightText(Representation representation, boolean usePlural){
 		String result;
 		if (option==1){
 			result = representation.getAbbreviatedLabel();
@@ -80,13 +82,13 @@ public abstract class DescriptionBuilderBase<T extends DescriptionElementBase> {
                 return result;
             }
 		}
-		return representation.getLabel();
+		return (usePlural && StringUtils.isNotBlank(representation.getPlural())) ? representation.getPlural() : representation.getLabel();
 	}
 
 	/**
 	 * Returns a TextData with the name of the feature.
 	 */
 	public TextData buildTextDataFeature(Feature feature, List<Language> languages){
-		return TextData.NewInstance(getRightText(feature.getPreferredRepresentation(languages)),languages.get(0),null);
+		return TextData.NewInstance(getRightText(feature.getPreferredRepresentation(languages), false), languages.get(0), null);
 	}
 }
