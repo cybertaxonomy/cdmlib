@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
@@ -123,7 +122,7 @@ public class CdmLightClassificationExport
 
     @Autowired
     private IEditGeoService geoService;
-    
+
     private CategoricalDataFormatter categoricalDataFormatter = null;
 
     public CdmLightClassificationExport() {
@@ -682,7 +681,7 @@ public class CdmLightClassificationExport
             }else if (element instanceof CategoricalData) {
             	//use formater
             	CategoricalData categoricalData = (CategoricalData)element;
-            	String cache = CategoricalDataFormatter.NewInstance(new FormatKey[] {}).format(categoricalData);
+            	String cache = CategoricalDataFormatter.NewInstance(null).format(categoricalData);
             	csvLine = new String[table.getSize()];
                 csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
                 if (cdmBase instanceof Taxon) {
@@ -695,7 +694,7 @@ public class CdmLightClassificationExport
                 state.getProcessor().put(table, categoricalData, csvLine);
             }else if (element instanceof QuantitativeData) {
             	QuantitativeData quantitativeData = (QuantitativeData) element;
-            	String cache = QuantitativeDataFormatter.NewInstance(new FormatKey[] {}).format(quantitativeData);
+            	String cache = QuantitativeDataFormatter.NewInstance(null).format(quantitativeData);
             	csvLine = new String[table.getSize()];
                 csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
                 if (cdmBase instanceof Taxon) {
@@ -1990,7 +1989,7 @@ public class CdmLightClassificationExport
                     String label = "non ";
                     TaxonName relatedName = null;
                     if (relName.getFromName().equals(name)){
-                        relatedName = relName.getToName();                        
+                        relatedName = relName.getToName();
                         if (state.getConfig().isAddHTML()){
                         	nonRelNames += label + createNameWithItalics(relatedName.getTaggedName())+ " ";
                         }else{
