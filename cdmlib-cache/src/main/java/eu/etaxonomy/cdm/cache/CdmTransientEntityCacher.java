@@ -44,8 +44,8 @@ import net.sf.ehcache.statistics.FlatStatistics;
  *  - all objects put will be ancestors of CdmBase
  *  - all CdmBase objects in the cache will be already de-proxied
  *  - after any CdmBase object is put in the cache,
- *  all non-null / non-proxy CdmBase objects in the sub-graph
- *  will also be present in the cache.
+ *    all non-null / non-proxy CdmBase objects in the sub-graph
+ *    will also be present in the cache.
  *
  * @author cmathew
  * @since 14 Oct 2014
@@ -369,5 +369,4 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         //recursive loading should be handled by the permanent cache itself
         return permanentCache.isCachable(cdmEntity);
     }
-
 }

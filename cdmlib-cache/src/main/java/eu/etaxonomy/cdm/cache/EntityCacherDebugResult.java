@@ -37,7 +37,7 @@ import net.sf.ehcache.Element;
  */
 public class EntityCacherDebugResult {
 
-    private static final Logger logger = LogManager.getLogger(EntityCacherDebugResult.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private Map<CdmEntityInfo, CdmEntityInfo> duplicateCdmEntityMap;
 

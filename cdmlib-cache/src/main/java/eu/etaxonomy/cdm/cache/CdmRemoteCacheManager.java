@@ -19,11 +19,10 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.SizeOfPolicyConfiguration;
 
-
 public class CdmRemoteCacheManager {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CdmRemoteCacheManager.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private Cache cdmlibModelCache;
 

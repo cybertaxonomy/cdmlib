@@ -9,9 +9,6 @@ package eu.etaxonomy.cdm.cache;
  */
 public class ProxyUtilsException extends RuntimeException {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -560332689478356360L;
 
 	public ProxyUtilsException(String message) {

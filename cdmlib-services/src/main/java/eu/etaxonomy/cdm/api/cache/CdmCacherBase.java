@@ -33,10 +33,10 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
 
     public static final Logger logger = LogManager.getLogger();
 
+    public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
+
     @Autowired
     public CacheManager cacheManager;
-
-    public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
 
     /**
      * Constructor which initializes a singleton {@link net.sf.ehcache.CacheManager}
@@ -58,7 +58,7 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
     /**
      * Returns the singleton default cache manager.
      */
-    public void addCacheManager(CacheManager cacheManager) {
+    protected void setCacheManager(CacheManager cacheManager) {
 
         if(this.cacheManager == null){
             this.cacheManager = cacheManager;

@@ -44,7 +44,7 @@ import net.sf.ehcache.Cache;
  */
 public class CdmModelCacher {
 
-    private static final Logger logger = LogManager.getLogger(CdmModelCacher.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static String HB_CONFIG_FILE_PATH= "/eu/etaxonomy/cdm/mappings/hibernate.cfg.xml";
 
