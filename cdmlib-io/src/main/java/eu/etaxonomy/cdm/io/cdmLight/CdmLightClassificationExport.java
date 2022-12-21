@@ -692,7 +692,7 @@ public class CdmLightClassificationExport
                 }
                 csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)] = cache;
                 csvLine[table.getIndex(CdmLightExportTable.FACT_CATEGORY)] = categoricalData.getFeature().getLabel();
-            	
+                state.getProcessor().put(table, categoricalData, csvLine);
             }else if (element instanceof QuantitativeData) {
             	QuantitativeData quantitativeData = (QuantitativeData) element;
             	String cache = QuantitativeDataFormatter.NewInstance(new FormatKey[] {}).format(quantitativeData);
@@ -705,6 +705,7 @@ public class CdmLightClassificationExport
                 }
                 csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)] = cache;
                 csvLine[table.getIndex(CdmLightExportTable.FACT_CATEGORY)] = quantitativeData.getFeature().getLabel();
+                state.getProcessor().put(table, quantitativeData, csvLine);
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling single simple fact "
