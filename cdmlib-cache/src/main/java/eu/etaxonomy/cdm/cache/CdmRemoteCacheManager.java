@@ -24,7 +24,7 @@ public class CdmRemoteCacheManager {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    private Cache cdmlibModelCache;
+    private Cache cdmModelCache;
 
     private static CdmRemoteCacheManager cdmRemoteCacheManager = null;
 
@@ -34,17 +34,13 @@ public class CdmRemoteCacheManager {
 
     private static boolean cacheInitialised = false;
 
-    public enum CdmCacheManagerType {
-        CDMLIB_MODEL,
-        DEFAULT
-    }
-
     public static CdmRemoteCacheManager getInstance(){
         if(cdmRemoteCacheManager == null) {
             cdmRemoteCacheManager = new CdmRemoteCacheManager();
         }
         return cdmRemoteCacheManager;
     }
+
     private CdmRemoteCacheManager() {
 
         try {
@@ -58,17 +54,17 @@ public class CdmRemoteCacheManager {
             sizeOfConfig.setMaxDepth(1000);
             sizeOfConfig.setMaxDepthExceededBehavior("abort");
 
-            CacheConfiguration modelcc = new CacheConfiguration(CDM_MODEL_CACHE_NAME, 0)
+            CacheConfiguration cdmModelCacheConfiguration = new CacheConfiguration(CDM_MODEL_CACHE_NAME, 0)
                     .eternal(true)
                     .statistics(true)
                     .sizeOfPolicy(sizeOfConfig)
                     .overflowToOffHeap(false);
 
-            cdmlibModelCache = new Cache(modelcc);
+            cdmModelCache = new Cache(cdmModelCacheConfiguration);
 
-            CacheManager.create().addCache(cdmlibModelCache);
+            CacheManager.create().addCache(cdmModelCache);
             CdmModelCacher cmdmc = new CdmModelCacher();
-            cmdmc.cacheGetterFields(cdmlibModelCache);
+            cmdmc.cacheGetterFields(cdmModelCache);
 
         } catch (CacheException | ClassNotFoundException | IOException e) {
             throw new CdmClientCacheException(e);
@@ -76,7 +72,7 @@ public class CdmRemoteCacheManager {
     }
 
     public Cache getCdmModelGetMethodsCache(){
-        return cdmlibModelCache;
+        return cdmModelCache;
     }
 
     public static void removeEntityCaches() {

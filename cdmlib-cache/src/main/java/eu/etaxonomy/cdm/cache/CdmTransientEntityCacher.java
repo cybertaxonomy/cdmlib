@@ -75,7 +75,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     public CdmTransientEntityCacher(String cacheId) {
         this.cacheId = cacheId;
 
-        cache = new Cache(getEntityCacheConfiguration(cacheId));
+        CacheConfiguration cacheConfig = getEntityCacheConfiguration(cacheId);
+        cache = new Cache(cacheConfig);
 
         getCacheManager().removeCache(cache.getName());
         getCacheManager().addCache(cache);
