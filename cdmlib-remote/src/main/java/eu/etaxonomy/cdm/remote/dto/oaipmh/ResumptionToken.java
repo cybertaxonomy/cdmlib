@@ -4,8 +4,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema.
 // Generated on: 2009.11.02 at 12:58:05 PM GMT
 //
-
-
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import java.io.Serializable;
@@ -20,13 +18,11 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-
 
 /**
  * A resumptionToken may have 3 optional attributes
@@ -48,8 +44,6 @@ import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
  *   &lt;/simpleContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "resumptionTokenType", propOrder = {
@@ -99,98 +93,34 @@ public class ResumptionToken implements Serializable {
 
 	public ResumptionToken() { }
 
-	/**
-     * Gets the value of the value property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setValue(String value) {
         this.value = value;
     }
 
-    /**
-     * Gets the value of the expirationDate property.
-     *
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *
-     */
     public DateTime getExpirationDate() {
         return expirationDate;
     }
 
-    /**
-     * Sets the value of the expirationDate property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *
-     */
     public void setExpirationDate(DateTime value) {
         this.expirationDate = value;
     }
 
-    /**
-     * Gets the value of the completeListSize property.
-     *
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *
-     */
     public BigInteger getCompleteListSize() {
         return completeListSize;
     }
 
-    /**
-     * Sets the value of the completeListSize property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *
-     */
     public void setCompleteListSize(BigInteger value) {
         this.completeListSize = value;
     }
 
-    /**
-     * Gets the value of the cursor property.
-     *
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *
-     */
     public BigInteger getCursor() {
         return cursor;
     }
 
-    /**
-     * Sets the value of the cursor property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *
-     */
     public void setCursor(BigInteger value) {
         this.cursor = value;
     }
