@@ -19,22 +19,27 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.SizeOfPolicyConfiguration;
 
+/**
+ * By AM: A CacheManager wrapper singleton that starts the {@link CacheManager}
+ *        and initializes the cdm model cache (see {@link CdmModelCacher} as
+ *        cache handled by the cache manager. The model chache is configured as
+ *        eternal, 1000 entries, in-Memory cache with name defined  by
+ *        {@link CdmRemoteCacheManager#CDM_MODEL_CACHE_NAME}.
+ *
+ * @author c.matthew
+ */
 public class CdmRemoteCacheManager {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    private Cache cdmModelCache;
-
-    private static CdmRemoteCacheManager cdmRemoteCacheManager = null;
-
     public static final String CDM_MODEL_CACHE_NAME = "cdmModelGetMethodsCache";
 
-    private static Thread initThread;
+    private static CdmRemoteCacheManager cdmRemoteCacheManager;
 
-    private static boolean cacheInitialised = false;
+    private Cache cdmModelCache;
 
-    public static CdmRemoteCacheManager getInstance(){
+    public static CdmRemoteCacheManager INSTANCE(){
         if(cdmRemoteCacheManager == null) {
             cdmRemoteCacheManager = new CdmRemoteCacheManager();
         }
@@ -47,7 +52,7 @@ public class CdmRemoteCacheManager {
             // NOTE:Programmatically creating the cache manager may solve the problem of
             //      recreating data written to disk on startup
             //      see https://stackoverflow.com/questions/1729605/ehcache-persist-to-disk-issues
-            //String cacheFilePath = CDMLIB_CACHE_MANAGER_CONFIG_RESOURCE.getFile().getAbsolutePath();
+            //      String cacheFilePath = CDMLIB_CACHE_MANAGER_CONFIG_RESOURCE.getFile().getAbsolutePath();
             //InputStream in = this.getClass().getClassLoader().getResourceAsStream("cdmlib-ehcache.xml");
 
             SizeOfPolicyConfiguration sizeOfConfig = new SizeOfPolicyConfiguration();
@@ -56,7 +61,6 @@ public class CdmRemoteCacheManager {
 
             CacheConfiguration cdmModelCacheConfiguration = new CacheConfiguration(CDM_MODEL_CACHE_NAME, 0)
                     .eternal(true)
-                    .statistics(true)
                     .sizeOfPolicy(sizeOfConfig)
                     .overflowToOffHeap(false);
 

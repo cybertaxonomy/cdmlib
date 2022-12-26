@@ -36,13 +36,13 @@ public class CacheLoader {
 
     private static boolean isRecursiveEnabled = true;
 
-    protected final ICdmCacher cdmCacher;
+    private final ICdmCacher cdmCacher;
 
     private final Cache cdmlibModelCache;
 
     public CacheLoader(ICdmCacher cdmCacher) {
         this.cdmCacher = cdmCacher;
-        this.cdmlibModelCache = CdmRemoteCacheManager.getInstance().getCdmModelGetMethodsCache();
+        this.cdmlibModelCache = CdmRemoteCacheManager.INSTANCE().getCdmModelGetMethodsCache();
     }
 
     CdmModelFieldPropertyFromClass getFromCdmlibModelCache(String className) {

@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2018 EDIT
 * European Distributed Institute of Taxonomy
@@ -17,7 +16,6 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 /**
  * @author pplitzner
  * @since 16.04.2018
- *
  */
 public class TaxonRowWrapperDTO extends RowWrapperDTO<TaxonDescription> {
 

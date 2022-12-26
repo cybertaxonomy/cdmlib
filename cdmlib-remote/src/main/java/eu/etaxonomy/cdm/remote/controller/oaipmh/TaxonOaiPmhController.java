@@ -47,7 +47,7 @@ public class TaxonOaiPmhController
 
     @Override
     protected void addSets(ModelAndView modelAndView) {
-        Set<SetSpec> sets = new HashSet<SetSpec>();
+        Set<SetSpec> sets = new HashSet<>();
         sets.add(SetSpec.TAXON);
         sets.add(SetSpec.SYNONYM);
         modelAndView.addObject("sets",sets);
