@@ -195,7 +195,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	;
 
 	@SuppressWarnings("unused")
-	private final Logger logger = LogManager.getLogger(SpecimenOrObservationType.class);
+	private final Logger logger = LogManager.getLogger();
 
 
 	private SpecimenOrObservationType(UUID uuid, String defaultString, String key){

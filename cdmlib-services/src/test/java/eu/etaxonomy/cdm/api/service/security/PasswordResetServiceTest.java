@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(PasswordResetServiceTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final double maxRequestRate = 4.0;
 

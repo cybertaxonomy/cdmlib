@@ -81,7 +81,7 @@ public class PolytomousKey
             implements IIdentificationKey, IIntextReferenceTarget {
 
     private static final long serialVersionUID = -3368243754557343942L;
-    private static final Logger logger = LogManager.getLogger(PolytomousKey.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElementWrapper(name = "CoveredTaxa")
     @XmlElement(name = "CoveredTaxon")

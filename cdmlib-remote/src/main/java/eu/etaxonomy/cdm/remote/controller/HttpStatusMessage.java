@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class HttpStatusMessage {
 
-    public static final Logger logger = LogManager.getLogger(HttpStatusMessage.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public final static HttpStatusMessage UUID_MISSING = new HttpStatusMessage(HttpServletResponse.SC_BAD_REQUEST, "missing uuid parameter");
     public final static HttpStatusMessage UUID_INVALID = new HttpStatusMessage(HttpServletResponse.SC_BAD_REQUEST, "invalid uuid");

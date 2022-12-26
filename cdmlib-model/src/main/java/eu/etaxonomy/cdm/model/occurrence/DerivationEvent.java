@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 public class DerivationEvent extends EventBase {
 
 	private static final long serialVersionUID = 3661673673962819395L;
-	private static final Logger logger = LogManager.getLogger(DerivationEvent.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElementWrapper(name = "Originals")
 	@XmlElement(name = "Original")

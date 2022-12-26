@@ -107,7 +107,7 @@ public class OAuth2ServerConfiguration {
 
         private static final String CLIENT_ID = "any-client";
 
-        public static final Logger logger = LogManager.getLogger();
+        private static final Logger logger = LogManager.getLogger();
 
         @Autowired
         private UserApprovalHandler userApprovalHandler;

@@ -111,7 +111,7 @@ public class Taxon
             implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget{
 
     private static final long serialVersionUID = -584946869762749006L;
-    private static final Logger logger = LogManager.getLogger(Taxon.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final TaxonComparator defaultTaxonComparator = new TaxonComparator();
 

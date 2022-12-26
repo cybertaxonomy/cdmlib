@@ -23,6 +23,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -51,6 +53,8 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 @Service
 @Transactional(readOnly = true)
 public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final BasicNameValuePair SUBMIT_PARAM = new BasicNameValuePair("Submit", "Submit");
     private static final String QUERY_PARAM_NAME = "query";

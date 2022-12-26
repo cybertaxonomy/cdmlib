@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.service.idminter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.query.Query;
@@ -20,35 +21,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author a.kohlbecker
  * @since Dec 12, 2017
- *
  */
 public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
 
-    private static final Logger logger = LogManager.getLogger(RegistrationIdentifierMinter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     enum Method {
         naturalNumberIncrement
     }
 
     private SessionFactory factory;
+
     @Autowired
     protected void setSessionFactory (SessionFactory  factory){
         this.factory = factory;
     }
 
-    Integer minLocalId = 1;
+    private Integer minLocalId = 1;
 
-    Integer maxLocalId = Integer.MAX_VALUE;
+    private Integer maxLocalId = Integer.MAX_VALUE;
 
-    String identifierFormatString = null;
+    private String identifierFormatString = null;
 
-    Method method = Method.naturalNumberIncrement;
+    private Method method = Method.naturalNumberIncrement;
 
     private Pattern identifierPattern;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMinLocalId(String min) {
         if (min == null){
@@ -58,9 +56,6 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMaxLocalId(String max) {
         if (max == null){
@@ -70,9 +65,6 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     synchronized public Identifier<String> mint() throws OutOfIdentifiersException {
 
@@ -87,9 +79,6 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
         }
     }
 
-    /**
-     *
-     */
     protected Identifier<String> mintByNaturalNumberIncrement() {
         Integer localid = null;
         Object result = null;
@@ -166,19 +155,10 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
         return identifierPattern;
     }
 
-    /**
-     * @return the identifierFormatString
-     */
     public String getIdentifierFormatString() {
         return identifierFormatString;
     }
-
-    /**
-     * @param identifierFormatString the identifierFormatString to set
-     */
     public void setIdentifierFormatString(String identifierFormatString) {
         this.identifierFormatString = identifierFormatString;
     }
-
-
 }

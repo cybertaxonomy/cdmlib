@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -28,7 +29,7 @@ enum OrderHintPreset {
     BY_NOMENCLATURAL_ORDER_ASC(OrderHint.NOMENCLATURAL_SORT_ORDER),
     BY_NOMENCLATURAL_ORDER_DESC(OrderHint.NOMENCLATURAL_SORT_ORDER_DESC);
 
-    public static final Logger logger = LogManager.getLogger(OrderHintPreset.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final List<OrderHint> orderHints;
 

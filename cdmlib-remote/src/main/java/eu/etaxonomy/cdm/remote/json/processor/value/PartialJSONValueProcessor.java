@@ -25,7 +25,7 @@ import net.sf.json.processors.JsonValueProcessor;
  */
 public class PartialJSONValueProcessor implements JsonValueProcessor {
 
-    private static Logger logger = LogManager.getLogger(PartialJSONValueProcessor.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public Object processArrayValue(Object object, JsonConfig jsonConfig) {

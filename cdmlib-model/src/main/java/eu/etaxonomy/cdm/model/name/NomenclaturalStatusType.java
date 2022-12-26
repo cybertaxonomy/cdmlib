@@ -71,7 +71,7 @@ public class NomenclaturalStatusType
 
 	private static final long serialVersionUID = 1337101678484153972L;
 
-	private static Logger logger = LogManager.getLogger(NomenclaturalStatusType.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	//Botanical uuids
 	public static final UUID uuidIcnafpNomStatusVocabulary = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");

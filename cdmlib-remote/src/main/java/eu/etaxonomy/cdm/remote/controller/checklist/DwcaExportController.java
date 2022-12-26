@@ -1,4 +1,4 @@
-/*
+/**
 * Copyright  EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
@@ -23,7 +23,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ResourceLoaderAware;
@@ -108,7 +109,7 @@ public class DwcaExportController
 
     private final static long DAY_IN_MILLIS = HOUR_IN_MILLIS * 24;
 
-    private static final Logger logger = LogManager.getLogger(DwcaExportController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Helper method, which allows to convert strings directly into uuids.

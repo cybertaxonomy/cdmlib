@@ -15,7 +15,8 @@ import java.util.UUID;
 
 import javax.persistence.Tuple;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -54,7 +55,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
@@ -73,7 +73,7 @@ public class OccurrenceDaoHibernateImpl
           extends IdentifiableDaoBase<SpecimenOrObservationBase>
           implements IOccurrenceDao {
 
-    private static final Logger logger = LogManager.getLogger(TaxonDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IDescriptionDao descriptionDao;

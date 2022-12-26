@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 public class ClassificationIT extends WebServiceTestBase  {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Test
     public void checkInstanceIsOnline(){

@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupNomenclatureImport.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private final MarkupSpecimenImport specimenImport;
 

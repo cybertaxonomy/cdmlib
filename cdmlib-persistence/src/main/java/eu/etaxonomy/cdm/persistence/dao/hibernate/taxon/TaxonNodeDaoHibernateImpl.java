@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 		implements ITaxonNodeDao {
 
-	private static final Logger logger = LogManager.getLogger(TaxonNodeDaoHibernateImpl.class);
+	private static final Logger logger = LogManager.getLogger();
 
     private static final int DEFAULT_SET_SUBTREE_PARTITION_SIZE = 100;
 

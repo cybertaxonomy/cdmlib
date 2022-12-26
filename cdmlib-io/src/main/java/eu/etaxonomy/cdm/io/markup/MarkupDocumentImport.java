@@ -54,7 +54,7 @@ public class MarkupDocumentImport
 
     private static final long serialVersionUID = -961438861319456892L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupDocumentImport.class);
+	private static final Logger logger = LogManager.getLogger();
 
 
 	// TODO make part of state, but state is renewed when invoking the import a

@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(OccurrenceServiceTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;

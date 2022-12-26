@@ -65,7 +65,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @since 17.11.2008
  */
 public class EditGeoServiceUtilities {
-    private static final Logger logger = LogManager.getLogger(EditGeoServiceUtilities.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
 

@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
 public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGrantedAuthorityConverter {
 
     private static final long serialVersionUID = -41894743719582595L;
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<>();
 

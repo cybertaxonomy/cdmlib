@@ -83,7 +83,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         extends AbstractHibernateTaxonGraphProcessor
         implements BeforeTransactionCompletionProcess {
 
-    private static final Logger logger = LogManager.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String[] TAXONNAME_NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
     private static final String[] TAXONNAME_NOMENCLATURALSOURCE = new String[]{"nomenclaturalSource"};

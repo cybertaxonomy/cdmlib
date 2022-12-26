@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
@@ -26,11 +27,13 @@ import net.sf.json.JsonConfig;
 /**
  * @author n.hoffmann
  * @since Apr 9, 2010
- * @version 1.0
  */
-public class TaxonNodeBeanProcessor extends AbstractCdmBeanProcessor<TaxonNode>  implements IMultilanguageTextBeanProcessor {
+public class TaxonNodeBeanProcessor
+        extends AbstractCdmBeanProcessor<TaxonNode>
+        implements IMultilanguageTextBeanProcessor {
 
-	private static final Logger logger = LogManager.getLogger(TaxonNodeBeanProcessor.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	 private static final List<String> IGNORE_LIST = Arrays.asList("text");
 

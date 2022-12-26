@@ -101,7 +101,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @since 04.08.2008
  */
 public abstract class MarkupImportBase  {
-	private static final Logger logger = LogManager.getLogger(MarkupImportBase.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	//Base
 	protected static final String ALTITUDE = "altitude";

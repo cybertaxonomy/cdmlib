@@ -133,7 +133,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since 25.04.2016
  */
 public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
-	private static final Logger logger = LogManager.getLogger(ReferencedObjTypeUpdater.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String stepName = "Update referenced obj_type";
 

@@ -51,8 +51,7 @@ import eu.etaxonomy.cdm.persistence.permission.Role;
 public class CdmUserHelper implements UserHelper, Serializable {
 
     private static final long serialVersionUID = -2521474709047255979L;
-
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ICdmPermissionEvaluator permissionEvaluator;
@@ -60,7 +59,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Autowired
     @Lazy
     @Qualifier("cdmRepository")
-    protected CdmRepository repo;
+    private CdmRepository repo;
 
     private AuthenticationProvider runAsAuthenticationProvider;
 
@@ -71,7 +70,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
         runAsAutheticator.setRunAsAuthenticationProvider(runAsAuthenticationProvider);
     }
 
-    RunAsAuthenticator runAsAutheticator = new RunAsAuthenticator();
+    private RunAsAuthenticator runAsAutheticator = new RunAsAuthenticator();
 
     private SecurityContextAccess securityContextAccess;
 

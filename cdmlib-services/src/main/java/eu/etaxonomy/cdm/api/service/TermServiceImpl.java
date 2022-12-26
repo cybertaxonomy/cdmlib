@@ -68,7 +68,7 @@ public class TermServiceImpl
             implements ITermService{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TermServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private ILanguageStringDao languageStringDao;
 

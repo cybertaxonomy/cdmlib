@@ -31,21 +31,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 
-
 /**
  * @author l.morris
  * @since Jul 2, 2013
- *
  */
 public class ScratchpadsService {
 
-	private static final Logger logger = LogManager.getLogger(ScratchpadsService.class);
+	private static final Logger logger = LogManager.getLogger();
 
-	public static final String SCRATCHPADS_JSON_ENDPOINT = "http://scratchpads.eu/explore/sites-list/json";
+	private static final String SCRATCHPADS_JSON_ENDPOINT = "http://scratchpads.eu/explore/sites-list/json";
 
 	private static final char[] ILLEGAL_CHARACTERS = { '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':', '.' };
-
-	private static final String dir = "C:\\Users\\l.morris\\Downloads\\dwca_scratchpads\\";
 
 	public void harvest(){
 

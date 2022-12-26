@@ -92,45 +92,45 @@ public class NameCatalogueController
         extends AbstractController<TaxonName, INameService>
         implements ResourceLoaderAware {
 
-    private static final Logger logger = LogManager.getLogger(NameCatalogueController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private ResourceLoader resourceLoader;
 
     /** Taxonomic status 'accepted' string */
-    public static final String ACCEPTED_NAME_STATUS = "accepted";
+    private static final String ACCEPTED_NAME_STATUS = "accepted";
 
     /** Taxonomic status 'synonym' string */
-    public static final String SYNONYM_STATUS = "synonym";
+    private static final String SYNONYM_STATUS = "synonym";
 
     /** Flag 'doubtful' strings */
-    public static final String DOUBTFUL_FLAG = "doubtful";
+    private static final String DOUBTFUL_FLAG = "doubtful";
 
     /** Base scientific name search type */
     public static final String NAME_SEARCH = "name";
 
     /** Complete scientific name search type */
-    public static final String TITLE_SEARCH = "title";
+    private static final String TITLE_SEARCH = "title";
 
     /** Default name search type */
-    public static final String DEFAULT_SEARCH_TYPE = NAME_SEARCH;
+    private static final String DEFAULT_SEARCH_TYPE = NAME_SEARCH;
 
     /** Default max number of hits for the exact name search  */
-    public static final String DEFAULT_MAX_NB_FOR_EXACT_SEARCH = "100";
+    private static final String DEFAULT_MAX_NB_FOR_EXACT_SEARCH = "100";
 
     /** Classifcation 'default' key */
-    public static final String CLASSIFICATION_DEFAULT = "default";
+    private static final String CLASSIFICATION_DEFAULT = "default";
 
     /** Classifcation 'all' key */
-    public static final String CLASSIFICATION_ALL = "all";
+    private static final String CLASSIFICATION_ALL = "all";
 
     /** Classification to include uuids key */
-    public static final String INCLUDE_CLUUIDS = "cluuids";
+    private static final String INCLUDE_CLUUIDS = "cluuids";
 
     /** Fuzzy Name Cache search */
-    public static final String FUZZY_NAME_CACHE = "name";
+    private static final String FUZZY_NAME_CACHE = "name";
 
     /** Fuzzy Atomised Name search */
-    public static final String FUZZY_ATOMISED = "atomised";
+    private static final String FUZZY_ATOMISED = "atomised";
 
     private static final String DWC_DATASET_ID = "http://rs.tdwg.org/dwc/terms/datasetID";
 

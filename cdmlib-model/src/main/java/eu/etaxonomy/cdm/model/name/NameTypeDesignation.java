@@ -60,7 +60,7 @@ public class NameTypeDesignation
         extends TypeDesignationBase<NameTypeDesignationStatus>  {
 
 	private static final long serialVersionUID = 8478663508862210879L;
-	final static Logger logger = LogManager.getLogger(NameTypeDesignation.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "IsRejectedType")
 	private boolean rejectedType;

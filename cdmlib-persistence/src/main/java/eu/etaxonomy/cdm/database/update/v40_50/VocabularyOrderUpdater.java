@@ -29,8 +29,9 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @since 05.05.2018
  */
 public class VocabularyOrderUpdater extends SchemaUpdaterStepBase {
+
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(VocabularyOrderUpdater.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String stepName = "Update vocabulary order";
 

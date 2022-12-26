@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public abstract class DescriptionAggregationBase<T extends DescriptionAggregationBase<T, CONFIG>, CONFIG extends DescriptionAggregationConfigurationBase<T>> {
 
-    public static final Logger logger = LogManager.getLogger(DescriptionAggregationBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final long BATCH_MIN_FREE_HEAP = 150  * 1024 * 1024;  //800 MB
     /**

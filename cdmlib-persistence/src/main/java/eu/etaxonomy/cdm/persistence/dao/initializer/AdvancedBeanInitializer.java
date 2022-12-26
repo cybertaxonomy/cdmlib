@@ -52,7 +52,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
  */
 public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanInitializer<CDM> {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ICdmGenericDao genericDao;

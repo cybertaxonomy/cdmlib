@@ -46,7 +46,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 8477758472369568074L;
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
 
     private ICdmPermissionEvaluator permissionEvaluator;

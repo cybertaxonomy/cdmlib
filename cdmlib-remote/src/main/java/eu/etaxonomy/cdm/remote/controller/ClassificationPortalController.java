@@ -44,7 +44,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/classification/{uuid}"})
 public class ClassificationPortalController extends ClassificationController {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
             "source.citation.authorship",

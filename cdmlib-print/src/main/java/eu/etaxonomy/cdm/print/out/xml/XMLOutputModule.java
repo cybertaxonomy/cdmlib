@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  */
 public class XMLOutputModule extends PublishOutputModuleBase{
 
-	private static final Logger logger = LogManager.getLogger(XMLOutputModule.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public void output(Document document, File exportFolder, IProgressMonitor progressMonitor) {

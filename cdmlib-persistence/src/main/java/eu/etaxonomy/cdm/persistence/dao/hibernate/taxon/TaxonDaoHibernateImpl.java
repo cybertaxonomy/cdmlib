@@ -84,8 +84,9 @@ import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 public class TaxonDaoHibernateImpl
               extends IdentifiableDaoBase<TaxonBase>
               implements ITaxonDao {
+
 //    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
-    private static final Logger logger = LogManager.getLogger(TaxonDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public TaxonDaoHibernateImpl() {
         super(TaxonBase.class);

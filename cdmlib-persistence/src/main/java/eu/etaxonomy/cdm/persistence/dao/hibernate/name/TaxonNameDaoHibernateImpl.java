@@ -69,15 +69,15 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Qualifier("taxonNameDaoHibernateImpl")
 public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> implements ITaxonNameDao {
 
-    private static final Logger logger = LogManager.getLogger(TaxonNameDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ITaxonDao taxonDao;
 
     @Autowired
-
     private IHomotypicalGroupDao homotypicalGroupDao;
 
+    @SuppressWarnings("unchecked")
     public TaxonNameDaoHibernateImpl() {
         super(TaxonName.class);
         indexedClasses = new Class[1];

@@ -18,6 +18,8 @@ import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
@@ -29,6 +31,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 24.08.2010
  */
 public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private String sruVersion = "1.1";
 

@@ -62,7 +62,7 @@ public class DescriptionDaoImpl
             extends IdentifiableDaoBase<DescriptionBase>
             implements IDescriptionDao{
 
-    private static final Logger logger = LogManager.getLogger(DescriptionDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public DescriptionDaoImpl() {
         super(DescriptionBase.class);

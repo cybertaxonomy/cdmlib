@@ -37,7 +37,7 @@ import net.sf.json.util.PropertyFilter;
  */
 public abstract class AbstractBeanProcessor<T extends Object> implements JsonBeanProcessor{
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private Set<String> excludes = new HashSet<>();
 

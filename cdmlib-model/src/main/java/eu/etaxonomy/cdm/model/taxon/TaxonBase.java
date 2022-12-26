@@ -113,7 +113,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
            implements  IPublishable, IIntextReferenceTarget{
 
     private static final long serialVersionUID = -3589185949928938529L;
-    private static final Logger logger = LogManager.getLogger(TaxonBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final String ACC_TAXON_BRIDGE_PREFIX = "accTaxon";
 

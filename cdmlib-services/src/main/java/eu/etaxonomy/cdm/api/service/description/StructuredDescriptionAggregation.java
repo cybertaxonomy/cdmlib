@@ -20,6 +20,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -60,6 +63,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
  */
 public class StructuredDescriptionAggregation
         extends DescriptionAggregationBase<StructuredDescriptionAggregation, StructuredDescriptionAggregationConfiguration>{
+
+    private static final Logger logger = LogManager.getLogger();
 
     private DescriptiveDataSet dataSet;
 

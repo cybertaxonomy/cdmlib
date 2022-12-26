@@ -113,7 +113,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
                 implements IMultiLanguageTextHolder, IIntextReferenceTarget, IDescribable<DescriptionBase<S>>, IPublishable  {
 
     private static final long serialVersionUID = 6932680139334408031L;
-    private static final Logger logger = LogManager.getLogger(SpecimenOrObservationBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * An indication of what the unit record describes.

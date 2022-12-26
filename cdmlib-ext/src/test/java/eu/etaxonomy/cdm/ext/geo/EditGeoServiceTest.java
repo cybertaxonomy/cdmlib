@@ -67,7 +67,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since 08.10.2008
  */
 public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = LogManager.getLogger(EditGeoServiceTest.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
     private static URI editMapServiceUri;

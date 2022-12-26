@@ -15,7 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -44,7 +45,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
 
     private static final long serialVersionUID = 8329871164348514709L;
 
-    private static final Logger logger = LogManager.getLogger(DerivationTreeSummaryDTO.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private List<Link> specimenScans = new ArrayList<>();
     private List<MolecularData> molecularDataList = new ArrayList<>();
@@ -151,7 +152,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
         }
         return derivateDataDTO;
     }
-    
+
 //    private void updateDerivateTree(Set<DerivedUnitDTO> derivatives) {
 //    	 for (DerivedUnitDTO childDerivate : derivatives) {
 //    		 DerivationTreeSummaryDTO childTree = childDerivate.getDerivationTreeSummary();
@@ -159,7 +160,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
 //    			 this.addDetailImage(null, null);
 //    		 }
 //    	 }
-//    		 
+//
 //             // assemble molecular data
 //             //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
 //             if (childDerivate instanceof DNASampleDTO) {
@@ -168,7 +169,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
 //                     // TODO implement TissueSample assembly for web service
 //                 }
 //                 if (childDerivate.getRecordBase() == SpecimenOrObservationType.DnaSample) {
-//                     
+//
 //                     for (SequenceDTO sequence : dna.getSequences()) {
 //                         URI boldUri = null;
 //                         try {
@@ -210,8 +211,8 @@ public class DerivationTreeSummaryDTO implements Serializable {
 //             }
 //             // assemble media data
 //             else if (childDerivate.hasDetailImage) {
-//                 
-//                
+//
+//
 //                     // specimen scan
 //                     if (childDerivate.getKindOfUnit().getUuid().equals(DefinedTerm.uuidSpecimenScan)) {
 //                         this.addSpecimenScanUuid(childDerivate.get);

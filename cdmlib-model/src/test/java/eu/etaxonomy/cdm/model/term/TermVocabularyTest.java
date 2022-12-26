@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class TermVocabularyTest extends EntityTestBase {
 
 	@SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
 	private DefinedTermBase<?> dtb1;
 	private DefinedTermBase<?> dtb2;

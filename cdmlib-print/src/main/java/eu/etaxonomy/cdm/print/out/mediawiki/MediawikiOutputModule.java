@@ -45,9 +45,9 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  */
 public class MediawikiOutputModule extends PublishOutputModuleBase {
 
-	private static final Logger logger = LogManager.getLogger(MediawikiOutputModule.class);
+	private static final Logger logger = LogManager.getLogger();
 
-	public static String STYLESHEET_RESOURCE_DEFAULT = "src/main/resources/stylesheets/mediawiki/multipages.xsl";
+	private static final String STYLESHEET_RESOURCE_DEFAULT = "src/main/resources/stylesheets/mediawiki/multipages.xsl";
 
 	// default wiki - exportparameter
 	public String prefix="";

@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2017 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service;
 
 import java.math.BigDecimal;
@@ -88,7 +96,7 @@ public class DescriptiveDataSetService
         extends IdentifiableServiceBase<DescriptiveDataSet, IDescriptiveDataSetDao>
         implements IDescriptiveDataSetService {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IOccurrenceService occurrenceService;

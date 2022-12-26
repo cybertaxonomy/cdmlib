@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class SortIndexUpdater extends SchemaUpdaterStepBase {
 
-    private static final Logger logger = LogManager.getLogger(SortIndexUpdater.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private final String tableName;
     private final String sortIndexColumn;

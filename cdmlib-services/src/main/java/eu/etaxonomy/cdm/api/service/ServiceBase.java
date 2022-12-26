@@ -45,7 +45,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
             implements IService<T>, ApplicationContextAware {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ServiceBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected ApplicationContext appContext;
 

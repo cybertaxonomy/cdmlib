@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
-import eu.etaxonomy.cdm.remote.json.JsonpUtil;
+import eu.etaxonomy.cdm.remote.json.JsonUtil;
 
 /**
  * @author Andreas Kohlbecker
@@ -88,7 +88,7 @@ public class ProgressMonitorUtil {
                 jsonpRedirect = new JsonpRedirect(request, monitorPath);
             }
 
-            boolean isJSONP = dataRedirect || JsonpUtil.readJsonpCallback(request) != null;
+            boolean isJSONP = dataRedirect || JsonUtil.readJsonpCallback(request) != null;
             if(isJSONP){
                 response.setHeader("Location", jsonpRedirect.getRedirectURL());
                 mv.addObject(jsonpRedirect);

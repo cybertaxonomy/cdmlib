@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
  */
 public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupDocumentImportNoComponent.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private final MarkupKeyImport keyImport;
 

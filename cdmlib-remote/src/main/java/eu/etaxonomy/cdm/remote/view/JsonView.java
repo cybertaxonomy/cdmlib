@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.View;
 
 import eu.etaxonomy.cdm.opt.config.DataSourceProperties;
-import eu.etaxonomy.cdm.remote.json.JsonpUtil;
+import eu.etaxonomy.cdm.remote.json.JsonUtil;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -31,6 +31,8 @@ import net.sf.json.xml.XMLSerializer;
 
 
 public class JsonView extends BaseView implements View {
+
+    private static final Logger logger = LogManager.getLogger();
 
     static {
         optOut_BEANUTILS_520();
@@ -47,8 +49,6 @@ public class JsonView extends BaseView implements View {
         bub.getPropertyUtils().removeBeanIntrospector(SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS);
         BeanUtilsBean.setInstance(bub);
     }
-
-    public static final Logger logger = LogManager.getLogger(JsonView.class);
 
     private JsonConfig jsonConfig;
 
@@ -200,7 +200,7 @@ public class JsonView extends BaseView implements View {
         PrintWriter writer = response.getWriter();
 
         // read jsonp parameter from the request
-        String jsonpCallback = JsonpUtil.readJsonpCallback(request);
+        String jsonpCallback = JsonUtil.readJsonpCallback(request);
 
         try {
             // render

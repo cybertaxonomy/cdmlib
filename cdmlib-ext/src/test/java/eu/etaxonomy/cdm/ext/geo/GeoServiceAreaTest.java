@@ -23,7 +23,7 @@ import org.junit.Test;
  */
 public class GeoServiceAreaTest {
 
-    private static final Logger logger = LogManager.getLogger(GeoServiceAreaTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 // ********************************** TESTS ****************************************
 

@@ -44,7 +44,7 @@ public class EnumSetUserType<E extends Enum<E>>
 
     private static final long serialVersionUID = 1060802925284271666L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(EnumSetUserType.class);
+	private static final Logger logger = LogManager.getLogger();
 
     private static final String SEP = "#";
 

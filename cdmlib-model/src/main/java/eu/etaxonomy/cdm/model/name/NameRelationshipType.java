@@ -23,8 +23,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -71,7 +69,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
         implements INomenclaturalStanding {
 
     private static final long serialVersionUID = 8504916205254159334L;
-	static Logger logger = LogManager.getLogger(NameRelationshipType.class);
 
 	private static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
 	private static final UUID uuidMisspelling = UUID.fromString("c6f9afcb-8287-4a2b-a6f6-4da3a073d5de");

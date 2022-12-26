@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
@@ -34,7 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaVernacularExport extends DwcaDataExportBase {
     private static final long serialVersionUID = 3169086545830374918L;
 
-    private static final Logger logger = LogManager.getLogger(DwcaVernacularExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/VernacularName";
 	protected static final String fileName = "vernacular.txt";
@@ -90,9 +89,6 @@ public class DwcaVernacularExport extends DwcaDataExportBase {
             flushWriter(state, file);
         }
     }
-
-
-
 
 	private void handleCommonTaxonName(DwcaTaxExportState state, DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());

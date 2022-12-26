@@ -31,7 +31,7 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
         implements IAnnotatableDao<T> {
 
     @SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
 	public AnnotatableDaoBaseImpl(Class<T> type) {
 		super(type);

@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> extends AbstractListController<T, SERVICE> {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

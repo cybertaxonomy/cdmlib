@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGLE_MAPPER extends CdmSingleAttributeMapperBase> extends MultipleAttributeMapperBase<SINGLE_MAPPER> {
 
     @SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
 	private Class<MANY> manyClass;
 	private Class<ONE> oneClass;

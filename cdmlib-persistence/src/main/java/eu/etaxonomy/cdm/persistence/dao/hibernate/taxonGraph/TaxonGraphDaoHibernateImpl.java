@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.InitializingBean;
@@ -61,7 +62,7 @@ public class TaxonGraphDaoHibernateImpl
         implements ITaxonGraphDao, InitializingBean {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonGraphDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public TaxonGraphDaoHibernateImpl(IPreferenceDao preferenceDao) {
         super(preferenceDao);

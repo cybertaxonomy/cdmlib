@@ -5,7 +5,6 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.awt.Color;
@@ -22,6 +21,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -83,6 +84,8 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/description"})
 public class DescriptionListController
         extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService> {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ITermService termService;

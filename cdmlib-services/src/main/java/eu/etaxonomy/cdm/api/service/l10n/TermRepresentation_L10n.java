@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.service.l10n;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
  */
 public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
-    public static final Logger logger = LogManager.getLogger(TermRepresentation_L10n.class);
+    private static final Logger logger = LogManager.getLogger();
 
     String label = null;
     String abbreviatedLabel = null;
@@ -45,9 +46,6 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
 
     /**
      * Shortcut for {@link #from(TermBase, boolean)} with <code>useInverseRepresentation = false</code>.
-     *
-     * @param term
-     * @return
      */
     public static TermRepresentation_L10n from(TermBase term) {
         return TermRepresentation_L10n.from(term, false);

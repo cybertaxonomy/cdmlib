@@ -97,7 +97,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
 
     private static final long serialVersionUID = 7912083412108359559L;
-    private static final Logger logger = LogManager.getLogger(IdentifiableEntity.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlTransient
     public static final boolean PROTECTED = true;

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.api.service.lsid.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,27 +31,29 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 @Service("lsidDataService")
 @Transactional
 public class LsidDataServiceImpl implements LSIDDataService {
-	private static final Logger logger = LogManager.getLogger(LsidDataServiceImpl.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private LSIDRegistry lsidRegistry;
-	
+
 	@Autowired
 	public void setLsidRegistry(LSIDRegistry lsidRegistry) {
 		this.lsidRegistry = lsidRegistry;
 	}
 
-	public InputStream getData(LSID lsid) throws LSIDServerException {
+	@Override
+    public InputStream getData(LSID lsid) throws LSIDServerException {
 		IIdentifiableDao<?> identfiableDAO = lsidRegistry.lookupDAO(lsid);
 		if(identfiableDAO == null) { // we do not have a mapping for lsids with this authority or namespace
 			throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
 		}
-		    
+
 		try {
 			IIdentifiableEntity i = identfiableDAO.find(lsid);
 			if(i == null) { // we have a mapping for lsids with this authority and namespace, but no lsid stored
 				throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
 			}
-			
+
 			if(i.getData() != null) {
     			return new ByteArrayInputStream(i.getData());
 			} else {
@@ -61,13 +64,14 @@ public class LsidDataServiceImpl implements LSIDDataService {
 		}
 	}
 
-	public InputStream getDataByRange(LSID lsid, Integer start, Integer length)
+	@Override
+    public InputStream getDataByRange(LSID lsid, Integer start, Integer length)
 			throws LSIDServerException {
 		IIdentifiableDao<?> identfiableDAO = lsidRegistry.lookupDAO(lsid);
 		if(identfiableDAO == null) { // we do not have a mapping for lsids with this authority or namespace
 			throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
 		}
-		    
+
 		try {
 			IIdentifiableEntity i = identfiableDAO.find(lsid);
 			if(i == null) { // we have a mapping for lsids with this authority and namespace, but no lsid stored
@@ -85,7 +89,8 @@ public class LsidDataServiceImpl implements LSIDDataService {
 		}
 	}
 
-	public void initService(LSIDServiceConfig arg0) throws LSIDServerException {
+	@Override
+    public void initService(LSIDServiceConfig arg0) throws LSIDServerException {
 		//TODO
 		logger.warn("initService(LSIDServiceConfig) not yet implemented");
 	}

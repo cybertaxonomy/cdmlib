@@ -28,10 +28,9 @@ import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
  */
 public class SwaggerStaticIT extends WebServiceTestBase {
 
-    public static final Logger logger = LogManager.getLogger(SwaggerStaticIT.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private String[] swaggerResourcesPaths = new String[]{"", "/configuration/ui", "/configuration/security" };
-
 
     @Test
     public void fetchSwaggerResources() {

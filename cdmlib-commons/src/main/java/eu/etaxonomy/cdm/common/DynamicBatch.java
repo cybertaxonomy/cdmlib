@@ -23,21 +23,20 @@ import org.apache.logging.log4j.Logger;
  */
 public class DynamicBatch {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
-    int batchSize;
-    int batchItemCount = -1;
-    Long batchMinFreeHeap = null;
-    List<Integer> items = null;
+    private int batchSize;
+    private int batchItemCount = -1;
+    private Long batchMinFreeHeap = null;
+    private List<Integer> items = null;
 
-    int gcTimeIncreaseCount = 0;
+    private int gcTimeIncreaseCount = 0;
 
     private int allowedGcIncreases = -1;
 
     private int itemWhereLimitsTouched = 0;
 
-
-    List<Integer> unprocessedIds = new ArrayList<>(batchSize);
+    private List<Integer> unprocessedIds = new ArrayList<>(batchSize);
 
     private final JvmMonitor jvmMonitor = new JvmMonitor();
 
@@ -74,7 +73,6 @@ public class DynamicBatch {
     }
 
     /**
-     *
      * @param allowedGcIncreases the amount of continuously observed increases of the gc time
      */
     public void setMaxAllowedGcIncreases(int allowedGcIncreases) {

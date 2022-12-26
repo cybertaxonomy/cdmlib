@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class OrderedTermVocabularyTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
 	private OrderedTerm otb1;
 	private OrderedTerm otb2;

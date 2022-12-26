@@ -14,7 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewE
 public class OrderHint implements Serializable {
 
     private static final long serialVersionUID = -6638812694578112279L;
+    private static final Logger logger = LogManager.getLogger();
 
     public enum SortOrder {
 
@@ -55,8 +57,6 @@ public class OrderHint implements Serializable {
             return hql;
         }
     }
-
-    public static final Logger logger = LogManager.getLogger(OrderHint.class);
 
     private final String propertyName;
 
@@ -120,7 +120,6 @@ public class OrderHint implements Serializable {
 
     /**
      * The property of a bean
-     * @return
      */
     public String getPropertyName() {
         return propertyName;
@@ -128,7 +127,6 @@ public class OrderHint implements Serializable {
 
     /**
      * possible sort orders are {@link SortOrder.ASCENDING} or {@link SortOrder.DESCENDING}
-     * @return
      */
     public SortOrder getSortOrder() {
         return sortOrder;

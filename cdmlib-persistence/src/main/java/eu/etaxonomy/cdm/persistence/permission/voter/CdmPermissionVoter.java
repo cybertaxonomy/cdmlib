@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
  */
 public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetEntityStates> {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static final EnumSet<CRUD> DELETE = EnumSet.of(CRUD.DELETE);
 

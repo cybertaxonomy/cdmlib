@@ -46,8 +46,9 @@ import eu.etaxonomy.cdm.common.XmlHelp;
  * @since 11.08.2011
  */
 public class GeoServiceArea {
+
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(GeoServiceArea.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String VALUE = "value";
     private static final String FIELD = "field";

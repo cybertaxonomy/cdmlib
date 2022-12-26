@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.database.update.v40_50;
 
 import java.util.ArrayList;
@@ -32,15 +31,14 @@ import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 
 /**
-/**
  * @author a.mueller
  * @date 09.06.2017
- *
  */
 public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_47_50.class);
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final String endSchemaVersion = "5.0.0.0.20180514";
 	private static final String startSchemaVersion = "4.7.0.0.201710040000";
 
@@ -50,10 +48,6 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 		return new SchemaUpdater_47_50();
 	}
 
-	/**
-	 * @param startSchemaVersion
-	 * @param endSchemaVersion
-	 */
 	protected SchemaUpdater_47_50() {
 		super(startSchemaVersion, endSchemaVersion);
 	}

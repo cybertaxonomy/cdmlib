@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements IRightsDao  {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(RightsDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public RightsDaoImpl(Class rightsClass) {
         super(rightsClass);

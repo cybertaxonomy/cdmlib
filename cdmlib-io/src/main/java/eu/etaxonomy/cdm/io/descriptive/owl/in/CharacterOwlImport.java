@@ -31,8 +31,7 @@ public class CharacterOwlImport
         extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
 
     private static final long serialVersionUID = -3659780404413458511L;
-
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     protected boolean doCheck(StructureTreeOwlImportState state) {

@@ -22,7 +22,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -91,7 +92,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
 public class TaxonPortalController extends TaxonController{
 
-    public static final Logger logger = LogManager.getLogger(TaxonPortalController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private INameService nameService;
@@ -248,7 +249,7 @@ public class TaxonPortalController extends TaxonController{
             "taxonNodes.source.citation.inReference.authorship",
             "acceptedTaxon.taxonNodes.classification",
             "secSource.nameUsedInSource"
-            
+
     }));
 
     @Override
@@ -569,7 +570,7 @@ public class TaxonPortalController extends TaxonController{
 //
 //        return mediafilteredForPreferredRepresentations;
 //    }
-    
+
     @RequestMapping(
             value = {"media"},
             method = RequestMethod.GET)
@@ -626,7 +627,7 @@ public class TaxonPortalController extends TaxonController{
                 includeTaxonDescriptions, includeOccurrences, false, includeTaxonNameDescriptions,
                 response, taxonInitStrategy, mediaInitStrategy);
     }
-    
+
     public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID taxonUuid,
             UuidList relationshipUuids, UuidList relationshipInversUuids,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals, Boolean includeTaxonNameDescriptions,
@@ -721,7 +722,7 @@ public class TaxonPortalController extends TaxonController{
 
         return listMediaForTaxon(taxon, includeRelationships, includeTaxonDescriptions, includeOccurrences, false, includeTaxonNameDescriptions, propertyPath);
     }
-    
+
     private List<Media> listMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals, Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 

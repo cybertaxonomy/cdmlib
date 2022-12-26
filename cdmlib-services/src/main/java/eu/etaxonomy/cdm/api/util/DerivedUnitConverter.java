@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -29,17 +30,14 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  */
 public class DerivedUnitConverter<TARGET extends DerivedUnit> {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private DerivedUnit source;
 
     private SpecimenTypeDesignation specimenTypeDesignation;
 
     private SpecimenTypeDesignation newSpecimenTypeDesignation;
 
-    private static final Logger logger = LogManager.getLogger(DerivedUnitConverter.class);
-
-    /**
-     * @param specimenTypeDesignation
-     */
     public DerivedUnitConverter(DerivedUnit source) throws Exception {
         if(source == null){
             throw new NullPointerException();
@@ -52,9 +50,6 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         }
     }
 
-    /**
-     * @param specimenTypeDesignation
-     */
     public DerivedUnitConverter(SpecimenTypeDesignation specimenTypeDesignation) {
         if(specimenTypeDesignation == null){
             throw new NullPointerException();
@@ -64,14 +59,10 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
     }
 
     /**
-     * converts the <code>source</code> <code>DerivedUnit</code> this converter has been created
+     * Converts the <code>source</code> <code>DerivedUnit</code> this converter has been created
      * for into a <code>DerivedUnit</code> of the type <code>TARGET</code>.
      * If the <code>source</code> instance was persisted the target instance will also be written
      * into data base and the source is deleted from there.
-     *
-     * @param targetType
-     * @param recordBasis
-     * @throws DerivedUnitConversionException
      */
     @SuppressWarnings("unchecked")
     public SpecimenTypeDesignation convertTo(Class<TARGET> targetType, SpecimenOrObservationType recordBasis) throws DerivedUnitConversionException {
@@ -115,9 +106,6 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
 
     }
 
-    /**
-     * @param newInstance
-     */
     private void copyPropertiesTo(TARGET target) {
         target.setAccessionNumber(source.getAccessionNumber());
         target.setBarcode(source.getBarcode());
@@ -169,17 +157,10 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
 
     }
 
-    /**
-     * @param targetType
-     * @return
-     */
     public boolean isSuppoprtedType(Class<TARGET> targetType) {
         return targetType.equals(MediaSpecimen.class) || targetType.equals(DerivedUnit.class);
     }
 
-    /**
-     * @return
-     */
     private boolean canConvert() {
 
         if(source.getClass().equals(DerivedUnit.class)) {
@@ -203,5 +184,4 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
     public DerivedUnit oldDerivedUnit(){
         return source;
     }
-
 }

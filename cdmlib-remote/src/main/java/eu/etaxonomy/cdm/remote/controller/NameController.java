@@ -53,7 +53,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/name/{uuid}"})
 public class NameController extends AbstractIdentifiableController<TaxonName, INameService>{
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     public static final EntityInitStrategy TYPEDESIGNATION_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "typeStatus.representations",

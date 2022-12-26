@@ -52,7 +52,7 @@ import net.sf.json.JsonConfig;
 @Component
 public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
-    private static final Logger logger = LogManager.getLogger(LocalXMLEntityFactory.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final JsonView xmlView;
 

@@ -42,9 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
     private static final long serialVersionUID = 7473543276142564219L;
 
-    private static final Logger logger = LogManager.getLogger(TcsRdfTaxonRelationsImport.class);
-
-	private static int modCount = 30000;
+    private static final Logger logger = LogManager.getLogger();
 
 	public TcsRdfTaxonRelationsImport(){
 		super();
@@ -55,9 +53,6 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
 		logger.warn("Creation of homotypic relations is still problematic");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-
 		return result;
 	}
 

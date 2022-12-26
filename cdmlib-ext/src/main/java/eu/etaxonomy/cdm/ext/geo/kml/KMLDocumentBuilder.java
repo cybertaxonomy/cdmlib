@@ -56,7 +56,7 @@ import tec.uom.se.quantity.Quantities;
  */
 public class KMLDocumentBuilder {
 
-	private final static Logger logger = LogManager.getLogger(KMLDocumentBuilder.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private Set<SpecimenOrObservationBase> occSet = new HashSet<>();
 

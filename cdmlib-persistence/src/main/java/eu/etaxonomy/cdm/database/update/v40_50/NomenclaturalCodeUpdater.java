@@ -12,7 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -22,7 +23,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
-
 /**
  * Updates the CdmPreference NomenclaturalCode  #3658
  *
@@ -30,7 +30,8 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @since 13.10.2016
  */
 public class NomenclaturalCodeUpdater extends SchemaUpdaterStepBase {
-    private static final Logger logger = LogManager.getLogger(NomenclaturalCodeUpdater.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String stepName = "Update nomenclatural code";
 

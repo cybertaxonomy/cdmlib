@@ -115,7 +115,7 @@ public class NameServiceImpl
           extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
           implements INameService {
 
-    static private final Logger logger = LogManager.getLogger(NameServiceImpl.class);
+    static private final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IOccurrenceService occurrenceService;

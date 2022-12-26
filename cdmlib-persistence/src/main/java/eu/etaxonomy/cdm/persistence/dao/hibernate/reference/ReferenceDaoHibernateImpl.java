@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -45,12 +46,14 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
  * @author a.mueller
- *
  */
 @Repository
 @Qualifier("referenceDaoHibernateImpl")
-public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> implements IReferenceDao {
-	private static final Logger logger = LogManager.getLogger(ReferenceDaoHibernateImpl.class);
+public class ReferenceDaoHibernateImpl
+        extends IdentifiableDaoBase<Reference>
+        implements IReferenceDao {
+
+    private static final Logger logger = LogManager.getLogger();
 
 	public ReferenceDaoHibernateImpl() {
 		super(Reference.class);

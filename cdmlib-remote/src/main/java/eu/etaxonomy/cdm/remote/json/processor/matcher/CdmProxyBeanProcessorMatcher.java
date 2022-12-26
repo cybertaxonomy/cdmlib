@@ -30,7 +30,7 @@ import net.sf.json.processors.JsonBeanProcessorMatcher;
  */
 public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public Object getMatch(Class target, Set set) {

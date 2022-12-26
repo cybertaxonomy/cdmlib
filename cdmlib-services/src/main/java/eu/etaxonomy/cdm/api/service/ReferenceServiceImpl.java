@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,11 +37,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly = true)
 public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IReferenceDao> implements IReferenceService {
 
-    static Logger logger = LogManager.getLogger(ReferenceServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    /**
-     * Constructor
-     */
     public ReferenceServiceImpl(){
         if (logger.isDebugEnabled()) { logger.debug("Load ReferenceService Bean"); }
     }
@@ -116,7 +114,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType type) {
         return dao.getUuidAndAbbrevTitleCacheForAuthor(limit, pattern, null);
     }
-    
+
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID, ReferenceType type) {
         return dao.getUuidAndAbbrevTitleCacheForAuthorID(limit, authorID, null);
@@ -195,28 +193,18 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
         return inReferenceType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids, ReferenceType refType ) {
-
         return dao.getUuidAndTitle(uuids, getInReferenceType(refType));
-
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids ) {
         return dao.getUuidAndTitle(uuids);
-
     }
 
     @Override
     public List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config){
         return dao.findByTitleAndAbbrevTitle(config.getClazz(),config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
     }
-
 }

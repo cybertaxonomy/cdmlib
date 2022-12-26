@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.TaxonGraphTest;
         }
     )
 public class CdmTestSuite {
+
     @SuppressWarnings("unused")
     private static final  Logger logger = LogManager.getLogger();
 

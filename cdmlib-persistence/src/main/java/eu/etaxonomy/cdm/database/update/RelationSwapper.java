@@ -12,7 +12,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -26,7 +27,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class RelationSwapper extends AuditedSchemaUpdaterStepBase {
 
-    private static final Logger logger = LogManager.getLogger(RelationSwapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final int PLACEHOLDER = -987;
 

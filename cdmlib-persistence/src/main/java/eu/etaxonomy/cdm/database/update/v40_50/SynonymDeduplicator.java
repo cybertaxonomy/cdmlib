@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
@@ -32,22 +30,12 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 public class SynonymDeduplicator
             extends SchemaUpdaterStepBase{
 
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(SynonymDeduplicator.class);
+    private static final String stepName = "Deduplicate synonyms code";
 
-    /**
-     * @return
-     */
     public static SynonymDeduplicator NewInstance(List<ISchemaUpdaterStep> stepList) {
         return new SynonymDeduplicator(stepList);
     }
 
-    private static final String stepName = "Deduplicate synonyms code";
-
-    /**
-     * @param stepList
-     * @param stepName
-     */
     protected SynonymDeduplicator(List<ISchemaUpdaterStep> stepList) {
         super(stepList, stepName);
     }
@@ -134,14 +122,8 @@ public class SynonymDeduplicator
             Integer oldExtensionId = rs.getInt(1);
             cloneExtension(newSynonymId, oldExtensionId, mnTableName, mnCol, datasource, caseType, tableName, specificParams, withSortIndex ? sortIndex : null);
         }
-
     }
 
-    /**
-     * @param id
-     * @param caseType
-     * @throws SQLException
-     */
     private void cloneExtension(Integer newSynonymId, Integer oldExtensionId, String mnTableName, String mnCol, ICdmDataSource datasource, CaseType caseType,
             String tableName, String specificParams, Integer sortIndex) throws SQLException {
 
@@ -181,6 +163,5 @@ public class SynonymDeduplicator
                     .replace("@sortIndexValue", sortIndexValueStr)
                     ;
         datasource.executeUpdate(insertMNSql);
-
     }
 }

@@ -9,7 +9,8 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +20,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 @Service
 @Transactional(readOnly = true)
 public class ServiceImpl extends ServiceBase<CdmBase, ICdmEntityDao<CdmBase>> implements IService<CdmBase> {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ServiceImpl.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	//@Autowired
 	//@Qualifier("mainDao")

@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.database.update.v40_50;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
@@ -30,26 +28,16 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  *
  */
 public class NomStatusInvalidUpdater extends SchemaUpdaterStepBase{
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(NomStatusInvalidUpdater.class);
 
-    /**
-     * @return
-     */
+    private static final String stepName = "Update 'invalid' status with wrong nomenclatural code";
+
     public static NomStatusInvalidUpdater NewInstance(List<ISchemaUpdaterStep> stepList) {
         return new NomStatusInvalidUpdater(stepList);
     }
 
-    private static final String stepName = "Update 'invalid' status with wrong nomenclatural code";
-
-    /**
-     * @param stepName
-     */
     protected NomStatusInvalidUpdater(List<ISchemaUpdaterStep> stepList) {
         super(stepList, stepName);
     }
-
-
 
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
@@ -66,7 +54,6 @@ public class NomStatusInvalidUpdater extends SchemaUpdaterStepBase{
 
             String botIdSql = String.format(statusSql, defTerm, botUuid);
             Number botId = (Number)datasource.getSingleValue(botIdSql);
-
 
             String sqlUpdate = "UPDATE @@NomenclaturalStatus@@ " +
                     " SET type_id = %d " +
@@ -95,8 +82,6 @@ public class NomStatusInvalidUpdater extends SchemaUpdaterStepBase{
                 String zooUpdate = String.format(sqlUpdate, zooId, botUuid, "= 'ZoologicalName'");
                 n = n + datasource.executeUpdate(zooUpdate);
             }
-
-
         } catch (Exception e) {
             String message = e.getMessage();
             monitor.warning(message, e);
@@ -105,5 +90,4 @@ public class NomStatusInvalidUpdater extends SchemaUpdaterStepBase{
 
         return;
     }
-
 }

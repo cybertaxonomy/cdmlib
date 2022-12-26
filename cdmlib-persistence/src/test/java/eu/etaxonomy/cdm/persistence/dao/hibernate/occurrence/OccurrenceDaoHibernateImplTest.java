@@ -13,7 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.h2.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(OccurrenceDaoHibernateImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
 	private IOccurrenceDao dao;

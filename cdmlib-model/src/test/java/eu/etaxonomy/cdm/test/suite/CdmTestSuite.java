@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 	)
 public class CdmTestSuite {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
 	// the class remains completely empty,

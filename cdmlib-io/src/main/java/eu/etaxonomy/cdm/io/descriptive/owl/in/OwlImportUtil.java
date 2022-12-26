@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class OwlImportUtil {
 
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static void addFeatureProperties(Feature feature, Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         if(termResource.hasProperty(OwlUtil.propFeatureIsCategorical)){

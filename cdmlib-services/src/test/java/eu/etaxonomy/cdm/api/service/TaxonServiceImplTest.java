@@ -88,7 +88,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(TaxonServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private ITaxonService service;

@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonBaseDefaultCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private final String expectedNameTitleCache = "Abies alba (L.) Mill.";
 	private final String expectedNameCache = "Abies alba";

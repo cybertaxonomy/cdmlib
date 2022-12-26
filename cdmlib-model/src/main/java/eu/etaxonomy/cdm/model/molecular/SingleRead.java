@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 public class SingleRead extends EventBase {
 
 	private static final long serialVersionUID = 1735535003073536132L;
-	private static final Logger logger = LogManager.getLogger(SingleRead.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	/** @see #getAmplificationResult()  */
 	@XmlElement(name = "AmplificationResult")

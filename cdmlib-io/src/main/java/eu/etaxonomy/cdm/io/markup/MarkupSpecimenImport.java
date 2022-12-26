@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.util.ArrayList;
@@ -68,11 +67,11 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @since 30.05.2012
- *
  */
 public class MarkupSpecimenImport extends MarkupImportBase  {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupSpecimenImport.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String ALTERNATIVE_COLLECTION_TYPE_STATUS = "alternativeCollectionTypeStatus";
 	private static final String ALTERNATIVE_COLLECTOR = "alternativeCollector";

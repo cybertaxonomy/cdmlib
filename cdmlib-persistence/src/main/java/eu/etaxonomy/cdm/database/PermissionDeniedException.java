@@ -3,7 +3,8 @@ package eu.etaxonomy.cdm.database;
 
 import java.util.EnumSet;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.springframework.security.core.Authentication;
 
@@ -17,13 +18,11 @@ import eu.etaxonomy.cdm.persistence.permission.Role;
  * @since Sep 4, 2012
  */
 public class PermissionDeniedException extends HibernateException {
+
     private static final long serialVersionUID = 6993452039967589921L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(PermissionDeniedException.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    /**
-     * @param message
-     */
     public PermissionDeniedException(String message) {
         super(message);
     }
@@ -43,29 +42,17 @@ public class PermissionDeniedException extends HibernateException {
                 + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
     }
 
-    /**
-     * @param authentication
-     * @param roles
-     */
     public PermissionDeniedException(Authentication authentication, Role[] roles) {
 
         super("Permission denied for '" + authentication.getName()
                 + "' none of the roles '" + roles + "' found in authentication.");
     }
 
-    /**
-     * @param cause
-     */
     public PermissionDeniedException(Throwable cause) {
         super(cause);
     }
 
-    /**
-     * @param message
-     * @param cause
-     */
     public PermissionDeniedException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

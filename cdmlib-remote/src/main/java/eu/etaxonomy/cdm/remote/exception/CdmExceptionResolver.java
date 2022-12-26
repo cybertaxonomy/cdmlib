@@ -20,7 +20,7 @@ import com.ibm.lsid.LSIDException;
 
 public class CdmExceptionResolver extends SimpleMappingExceptionResolver {
 
-	public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
 	public static String LSID_ERROR_CODE_HEADER = "LSID-Error-Code";
 

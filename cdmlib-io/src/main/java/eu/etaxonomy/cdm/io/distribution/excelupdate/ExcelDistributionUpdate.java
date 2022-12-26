@@ -51,7 +51,7 @@ public class ExcelDistributionUpdate
             extends ExcelImportBase<ExcelDistributionUpdateState, ExcelDistributionUpdateConfigurator, ExcelRowBase>{
 
     private static final long serialVersionUID = 621338661492857764L;
-    private static final Logger logger = LogManager.getLogger(ExcelDistributionUpdate.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String AREA_MAP = "AreaMap";
 

@@ -29,7 +29,7 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 // @EnableCaching // for future use
 public class EhCacheConfiguration implements DisposableBean {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired(required = false)
     public DiskStoreConfiguration diskStoreConfiguration = null;

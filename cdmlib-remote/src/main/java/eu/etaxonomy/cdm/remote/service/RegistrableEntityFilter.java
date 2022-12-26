@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 @Component
 public class RegistrableEntityFilter {
 
-    private static Logger logger = LogManager.getLogger(RegistrableEntityFilter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected UserHelper userHelper;
 

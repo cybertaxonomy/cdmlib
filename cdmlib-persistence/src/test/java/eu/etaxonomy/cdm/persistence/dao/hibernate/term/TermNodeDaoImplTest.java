@@ -36,17 +36,18 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since 2019-08-16
  */
 public class TermNodeDaoImplTest extends CdmTransactionalIntegrationTest {
-	@SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(TermNodeDaoImplTest.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private ITermTreeDao treeDao;
 
-	   @SpringBeanByType
-	    private ITermNodeDao nodeDao;
+    @SpringBeanByType
+    private ITermNodeDao nodeDao;
 
-	   @SpringBeanByType
-	    private IDefinedTermDao termDao;
+    @SpringBeanByType
+    private IDefinedTermDao termDao;
 
 	@Before
 	public void setUp() {}

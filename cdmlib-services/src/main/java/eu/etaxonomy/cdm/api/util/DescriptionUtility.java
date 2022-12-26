@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
  */
 public class DescriptionUtility {
 
-    private static final Logger logger = LogManager.getLogger(DescriptionUtility.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
     /**

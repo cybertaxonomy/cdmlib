@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -25,7 +26,7 @@ public class DeleteResult extends UpdateResult{
 
     private static final long serialVersionUID = 8856465763413085548L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DeleteResult.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private final Set<CdmBase> relatedObjects = new HashSet<>();
 	private Set<CdmBase> deletedObjects = new HashSet<>();

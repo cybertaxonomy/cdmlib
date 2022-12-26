@@ -63,7 +63,7 @@ public class TermNodeServiceImpl
         implements ITermNodeService {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermNodeServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     @Autowired

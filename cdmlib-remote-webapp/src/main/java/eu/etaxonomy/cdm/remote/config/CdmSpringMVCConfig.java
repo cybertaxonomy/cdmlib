@@ -56,16 +56,15 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
 //@DependsOn("objectMapperConfigurer")
 public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
 
+    private static final Logger logger = LogManager.getLogger();
+
     /**
      * turn caching off FOR DEBUGING ONLY !!!!
      */
     private static final boolean XML_VIEW_CACHING = true;
 
-    public static final Logger logger = LogManager.getLogger();
-
-
     @Autowired
-    protected ServletContext servletContext;
+    private ServletContext servletContext;
 
     @Autowired // is initialized in PreloadedBeans.class
     private ObjectMapper jsonObjectMapper;

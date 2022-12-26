@@ -55,9 +55,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class SpecimenUserInteraction implements ItemListener, Serializable {
 
     private static final long serialVersionUID = 6384263183459028523L;
-
     @SuppressWarnings("unused")
-    private static Logger log = LogManager.getLogger(SpecimenUserInteraction.class);
+    private static final Logger log = LogManager.getLogger();
 
     public Classification askForClassification(Map<String, Classification> classMap){
         List<String> possibilities = new ArrayList<String>(classMap.keySet());

@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
@@ -28,9 +26,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @since 12.06.2020
  */
 public class SecReference2SourceMover extends SchemaUpdaterStepBase {
-
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(SecReference2SourceMover.class);
 
     private final String tableName;
     private final String citationsIdAttr;

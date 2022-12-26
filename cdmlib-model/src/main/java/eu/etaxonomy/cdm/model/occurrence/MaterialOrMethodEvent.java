@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  *
  * @author a.mueller
  * @since 2013-07-08
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MaterialOrMethod", propOrder = {
@@ -62,7 +61,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class MaterialOrMethodEvent extends EventBase {
 
     private static final long serialVersionUID = -4799205199942053585L;
-	private static final Logger logger = LogManager.getLogger(MaterialOrMethodEvent.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "DefinedMaterialOrMethod")
     @XmlIDREF

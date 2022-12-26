@@ -200,7 +200,7 @@ public class TaxonName
                 INomenclaturalStanding {
 
     private static final long serialVersionUID = -791164269603409712L;
-    private static final Logger logger = LogManager.getLogger(TaxonName.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.

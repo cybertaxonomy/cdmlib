@@ -7,7 +7,8 @@
  */
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import net.sf.json.JsonConfig;
@@ -15,7 +16,7 @@ import net.sf.json.processors.JsonValueProcessor;
 
 public class URIJSONValueProcessor implements JsonValueProcessor {
 
-	private static final Logger logger = LogManager.getLogger(URIJSONValueProcessor.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public Object processArrayValue(Object obj, JsonConfig jsonConfig) {

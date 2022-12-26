@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +45,6 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since Jul 31, 2018
- *
  */
 @Controller
 @Api(value = "typeDesignation")
@@ -52,8 +52,7 @@ import io.swagger.annotations.Api;
 /* can not use BaseController since the getMethod needs to call service.loadTypeDesignation() which is generically not possible */
 public class TypeDesignationController extends AbstractController<TaxonName, INameService>  {
 
-
-    private static final Logger logger = LogManager.getLogger(TypeDesignationController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     @Autowired
@@ -88,7 +87,6 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
                     }
                 }
             }
-
         }
         return dtos;
     }
@@ -150,5 +148,4 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
         Pager<Annotation> p = pagerForSubCollectionOf(dtb.getAnnotations(), pageIndex, pageSize, response);
         return p;
     }
-
 }

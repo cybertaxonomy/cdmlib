@@ -43,7 +43,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  *
  */
 public class ImportHelper {
-	private static final Logger logger = LogManager.getLogger(ImportHelper.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	public static final boolean OVERWRITE = true;
 	public static final boolean  NO_OVERWRITE = false;

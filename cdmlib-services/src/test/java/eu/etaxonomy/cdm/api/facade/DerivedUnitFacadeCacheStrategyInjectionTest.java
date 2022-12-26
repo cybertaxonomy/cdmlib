@@ -64,7 +64,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
         extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeCacheStrategyInjectionTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private IOccurrenceService occService;
@@ -116,7 +116,6 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
     private DerivationEvent firstDerivationEvent;
     private FieldUnit firstFieldObject;
     private final Media media1 = Media.NewInstance();
-
 
 //****************************** SET UP *****************************************/
 
@@ -182,7 +181,6 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 		firstDerivationEvent.addOriginal(firstFieldObject);
 		existingGatheringEvent = GatheringEvent.NewInstance();
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
-
 	}
 
 	@Test

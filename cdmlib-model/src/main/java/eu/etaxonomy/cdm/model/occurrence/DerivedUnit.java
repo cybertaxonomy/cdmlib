@@ -87,7 +87,7 @@ public class DerivedUnit
         extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>> {
 
     private static final long serialVersionUID = -3525746216270843517L;
-	private static final Logger logger = LogManager.getLogger(DerivedUnit.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Collection")
 	@XmlIDREF

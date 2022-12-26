@@ -16,15 +16,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.PreferenceServiceImpl;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -39,19 +36,13 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
 /**
  * @author pplitzner
  * @since 11.03.2014
- *
  */
 @Service
 @Transactional(readOnly = true)
 public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISequenceDao> implements ISequenceService{
-    @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(PreferenceServiceImpl.class);
 
     @Autowired
-    IOccurrenceService occurrenceService;
-
-    @Autowired
-    ISingleReadDao singleReadDao;
+    private ISingleReadDao singleReadDao;
 
     @Override
     @Autowired
@@ -169,5 +160,4 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
         }
         return deleteSingleRead(singleRead, sequence);
     }
-
 }

@@ -64,7 +64,7 @@ public abstract class TermBase
 
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "URI")
     @Field(analyze = Analyze.NO)

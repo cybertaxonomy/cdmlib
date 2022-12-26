@@ -28,11 +28,13 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class AbstractRequestTokenStore<T extends AbstractRequestToken, X extends Object>  implements IAbstractRequestTokenStore<T, X> {
 
-    public static final int TOKEN_LENGTH = 50;
-    protected static Logger logger = LogManager.getLogger();
-    protected Map<String, T> tokenList = new HashMap<>();
-    private Integer tokenLifetimeMinutes = null;
+    private static final Logger logger = LogManager.getLogger();
 
+    public static final int TOKEN_LENGTH = 50;
+
+    private Map<String, T> tokenList = new HashMap<>();
+
+    private Integer tokenLifetimeMinutes = null;
 
     @Override
     public T create(String userEmailAddress, X additionalData) {

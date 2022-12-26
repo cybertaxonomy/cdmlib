@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Audited
 public class TaxonNodeAgentRelation extends AnnotatableEntity {
     private static final long serialVersionUID = -1476342569350403356L;
-    private static final Logger logger = LogManager.getLogger(TaxonNodeAgentRelation.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "TaxonNode")
     @XmlIDREF

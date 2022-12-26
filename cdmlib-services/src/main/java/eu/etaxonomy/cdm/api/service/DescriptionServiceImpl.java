@@ -112,7 +112,7 @@ public class DescriptionServiceImpl
         extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao>
         implements IDescriptionService {
 
-    private static final Logger logger = LogManager.getLogger(DescriptionServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected IDescriptionElementDao descriptionElementDao;
     protected ITermTreeDao featureTreeDao;

@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 @Transactional
 public class CdmMassIndexer implements ICdmMassIndexer {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<>();
 

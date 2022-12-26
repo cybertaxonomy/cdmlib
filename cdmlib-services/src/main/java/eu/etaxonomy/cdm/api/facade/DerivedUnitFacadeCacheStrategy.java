@@ -12,7 +12,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -21,7 +22,6 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -37,7 +37,7 @@ public class DerivedUnitFacadeCacheStrategy
 
     private static final long serialVersionUID = 1578628591216605619L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeCacheStrategy.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 
@@ -48,9 +48,9 @@ public class DerivedUnitFacadeCacheStrategy
 	private boolean includeReferenceSystem = true;
 
 	private String collectionAccessionSeperator = ": ";
-	
+
 	private boolean addTrailingDot = false;
- 
+
 	public static DerivedUnitFacadeCacheStrategy NewInstance(){
         return new DerivedUnitFacadeCacheStrategy();
 	}
@@ -61,9 +61,8 @@ public class DerivedUnitFacadeCacheStrategy
 
     public static DerivedUnitFacadeCacheStrategy NewInstance( boolean addTrailingDot, String collectionAccessionSeperator){
         return new DerivedUnitFacadeCacheStrategy(addTrailingDot, collectionAccessionSeperator);
-    }  
+    }
 
-	 
 //******************************* CONSTRUCTOR *******************************************/
 
 	 //default value constructor
@@ -75,7 +74,6 @@ public class DerivedUnitFacadeCacheStrategy
 	    	 this.collectionAccessionSeperator = collectionAccessionSeperator;
 	     }
 	 }
-	 
 
 	@Override
     public String getTitleCache(DerivedUnit derivedUnit) {

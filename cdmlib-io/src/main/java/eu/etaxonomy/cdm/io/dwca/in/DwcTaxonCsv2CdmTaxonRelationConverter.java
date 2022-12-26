@@ -45,11 +45,11 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
         extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
         implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private static final String SINGLE_CLASSIFICATION_ID = "1";
 
 	private static final String SINGLE_CLASSIFICATION = "Single Classification";
-
-	private static Logger logger = LogManager.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
 
 	private static final String ID = "id";
 

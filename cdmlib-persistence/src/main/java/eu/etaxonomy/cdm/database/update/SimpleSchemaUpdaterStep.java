@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
-	private static final Logger logger = LogManager.getLogger(SimpleSchemaUpdaterStep.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private final Map<DatabaseTypeEnum, String> queryMap = new HashMap<>();
 	private final Map<DatabaseTypeEnum, String> auditQueryMap = new HashMap<>();

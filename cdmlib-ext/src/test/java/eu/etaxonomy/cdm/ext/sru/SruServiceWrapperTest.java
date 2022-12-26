@@ -22,7 +22,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  */
 public class SruServiceWrapperTest {
-    public static final Logger logger = LogManager.getLogger(SruServiceWrapperTest.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String baseUrl = "http://gso.gbv.de/sru/DB=1.83/";
 
@@ -36,9 +37,6 @@ public class SruServiceWrapperTest {
         internetIsAvailable = true;
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         sruServiceWrapper = new SruServiceWrapper();

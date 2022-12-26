@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.database.update.v505_508;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -27,9 +25,6 @@ import eu.etaxonomy.cdm.database.update.TableCreator;
  */
 public class SchemaUpdater_58_581 extends SchemaUpdaterBase {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_58_581.class);
-
 	private static final String endSchemaVersion = "5.8.1.0.20190813";
 	private static final String startSchemaVersion = "5.8.0.0.201906020";
 
@@ -39,10 +34,6 @@ public class SchemaUpdater_58_581 extends SchemaUpdaterBase {
 		return new SchemaUpdater_58_581();
 	}
 
-	/**
-	 * @param startSchemaVersion
-	 * @param endSchemaVersion
-	 */
 	protected SchemaUpdater_58_581() {
 		super(startSchemaVersion, endSchemaVersion);
 	}
@@ -113,10 +104,6 @@ public class SchemaUpdater_58_581 extends SchemaUpdaterBase {
         return stepList;
     }
 
-    /**
-     * @param stepList
-     * @param string
-     */
     private void addExternalDataHandler(List<ISchemaUpdaterStep> stepList, String tableName) {
         //Add "lastRetrieved"
         String stepName = "Add 'lastRetrieved' to " + tableName;

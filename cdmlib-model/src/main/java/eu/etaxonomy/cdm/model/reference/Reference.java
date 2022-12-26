@@ -146,7 +146,7 @@ public class Reference
                    IIntextReferenceTarget {
 
     private static final long serialVersionUID = -2034764545042691295L;
-	private static final Logger logger = LogManager.getLogger(Reference.class);
+	private static final Logger logger = LogManager.getLogger();
 
 //  from E+M import (still needed?)
 //	@Column(length=255)

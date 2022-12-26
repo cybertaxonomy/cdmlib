@@ -114,7 +114,7 @@ public class OccurrenceServiceImpl
         extends IdentifiableServiceBase<SpecimenOrObservationBase, IOccurrenceDao>
         implements IOccurrenceService {
 
-    static private final Logger logger = LogManager.getLogger(OccurrenceServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IDescriptionService descriptionService;

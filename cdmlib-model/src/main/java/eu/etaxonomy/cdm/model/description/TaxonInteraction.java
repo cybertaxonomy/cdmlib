@@ -72,7 +72,7 @@ public class TaxonInteraction
 
     private static final long serialVersionUID = -5014025677925668627L;
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonInteraction.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Description")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)

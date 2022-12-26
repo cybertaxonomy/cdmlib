@@ -17,6 +17,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -29,17 +31,17 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
-
-
 /**
  * @author a.kohlbecker
  * @since 25.08.2010
  */
 public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 
+    private static final Logger logger = LogManager.getLogger();
+
 	private static URI identifier = null;
 
-	static String nameSpace = "http://purl.org/dc/elements/1.1/";
+	private static String nameSpace = "http://purl.org/dc/elements/1.1/";
 
 	static {
 	    identifier = URI.create("info:srw/schema/1/dc-v1.1");

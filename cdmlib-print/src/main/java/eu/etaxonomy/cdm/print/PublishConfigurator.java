@@ -35,9 +35,8 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  */
 public class PublishConfigurator implements Serializable {
 
-	private static final Logger logger = LogManager.getLogger(PublishConfigurator.class);
-
-	private static final long serialVersionUID = 4896190792717383839L;
+    private static final long serialVersionUID = 4896190792717383839L;
+	private static final Logger logger = LogManager.getLogger();
 
 	private ICdmApplication applicationConfiguration;
 
@@ -79,6 +78,7 @@ public class PublishConfigurator implements Serializable {
 	 */
 	public static PublishConfigurator NewLocalInstance(
 	        ICdmApplication applicationConfiguration) {
+
 		PublishConfigurator configurator = new PublishConfigurator();
 		configurator.setLocal();
 		configurator.setApplicationConfiguration(applicationConfiguration);

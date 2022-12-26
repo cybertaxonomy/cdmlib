@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
  */
 public class PolytomousKeyGenerator {
 
-    private static final Logger logger = LogManager.getLogger(PolytomousKeyGenerator.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Strings used for generating the statements of the key.

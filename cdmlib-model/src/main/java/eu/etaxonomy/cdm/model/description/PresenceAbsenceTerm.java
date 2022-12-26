@@ -79,7 +79,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 
     private static final long serialVersionUID = 1036807546935584396L;
-	private static final Logger logger = LogManager.getLogger(PresenceAbsenceTerm.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	//presence base
 	public static final UUID uuidPresent = UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");

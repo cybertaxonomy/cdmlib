@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -53,7 +52,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class MarkupFeatureImport extends MarkupImportBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupFeatureImport.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	protected static final String MODS_TITLEINFO = "titleInfo";
 

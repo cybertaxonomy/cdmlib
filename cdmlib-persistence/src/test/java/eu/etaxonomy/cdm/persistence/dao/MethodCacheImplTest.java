@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Method;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,12 +15,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class MethodCacheImplTest {
-    @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MethodCacheImplTest.class);
+
     private Taxon taxon;
     private IBotanicalName botanicalName;
 
-    IMethodCache methodCache;
+    private IMethodCache methodCache;
     private Reference nomenclaturalReference;
 
     @Before

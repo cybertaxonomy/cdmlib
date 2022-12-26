@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.dao.IMethodCache;
  */
 public abstract class AbstractBeanInitializer<CDM extends CdmBase> implements IBeanInitializer{
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IMethodCache methodCache;

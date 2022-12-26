@@ -72,7 +72,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 @Component
 public class IpniService  implements IIpniService{
-    private static final Logger logger = LogManager.getLogger(IpniService.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 
     //TYPE

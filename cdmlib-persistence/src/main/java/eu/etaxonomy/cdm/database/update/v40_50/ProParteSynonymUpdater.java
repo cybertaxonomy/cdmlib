@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
@@ -26,7 +24,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.TermType;
 
-
 /**
  * Updates the pro parte and partial synonyms. Makes them real concept relationships
  * #7334
@@ -35,11 +32,8 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @since 11.05.2018
  */
 public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ProParteSynonymUpdater.class);
 
 	private static final String stepName = "Make pro parte synonyms concept relationships";
-
 
 // **************************** STATIC METHODS ********************************/
 
@@ -103,7 +97,6 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
         return createRelType(datasource, monitor, caseType, result,
                 uuidTerm, symbol, description, uuidAfterTerm,
                 reverseDescription, reverseAbbrev);
-
     }
 
     private int createRelType(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
@@ -154,7 +147,6 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
 
         return id;
     }
-
 
     private void invokeSingle(boolean isPartial, int typeId, ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result){
@@ -210,14 +202,8 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
             result.addException(e, "Error occurred when trying to update proParte/partial synonyms",
                     this, "invokeSingle");
         }
-
     }
 
-
-    /**
-     * @param titleCache
-     * @return
-     */
     private String normalizeTitleCache(String titleCache) {
         if(titleCache == null){
             return "";
@@ -237,5 +223,4 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
         query = query.replaceAll("@TRUE@", getBoolean(true, datasource));
         return query;
     }
-
 }

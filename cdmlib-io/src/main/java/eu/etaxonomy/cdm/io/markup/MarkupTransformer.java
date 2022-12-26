@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.util.UUID;
@@ -32,10 +31,10 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  * @since 01.03.2010
  */
 public class MarkupTransformer extends InputTransformerBase {
-    private static final long serialVersionUID = -3910080152461421047L;
 
+    private static final long serialVersionUID = -3910080152461421047L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupTransformer.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	//preliminary
 	public static final UUID uuidKalimantan = UUID.fromString("05c6bce3-2e55-48cb-a414-707e936066d1");

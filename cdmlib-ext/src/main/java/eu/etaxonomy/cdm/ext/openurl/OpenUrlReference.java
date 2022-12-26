@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class OpenUrlReference extends Reference {
 
     private static final long serialVersionUID = 5523159432429746682L;
-    public static final Logger logger = LogManager.getLogger(OpenUrlReference.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String PAGETHUMB_BASE_URI = "http://www.biodiversitylibrary.org/pagethumb/";
 

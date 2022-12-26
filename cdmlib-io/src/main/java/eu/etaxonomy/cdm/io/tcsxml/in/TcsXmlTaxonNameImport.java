@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 
     private static final long serialVersionUID = -1978871518114999061L;
-    private static final Logger logger = LogManager.getLogger(TcsXmlTaxonNameImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 5000;
 

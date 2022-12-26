@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.print.out;
 
 import java.io.File;
@@ -17,14 +16,12 @@ import org.jdom.Document;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
-
 /**
  * Performs the publish process defined by the implementing class. Clients should consider extending <code>AbstractPublishOutputModule</code>
  *
  * @see {@link PublishOutputModuleBase}
  * @author n.hoffmann
  * @since Apr 8, 2010
- * @version 1.0
  */
 public interface IPublishOutputModule {
 

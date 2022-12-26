@@ -8,15 +8,11 @@
 */
 package eu.etaxonomy.cdm.test.integration;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.AccessDeniedException;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-securityTest.xml")
 public abstract class CdmTransactionalIntegrationTestWithSecurity extends CdmTransactionalIntegrationTest {
-
-    public static final Logger logger = LogManager.getLogger();
 
     /**
      * Finds a nested RuntimeExceptions of the types {@link PermissionDeniedException}, {@link AccessDeniedException}

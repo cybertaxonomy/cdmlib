@@ -5,7 +5,6 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
@@ -16,6 +15,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,6 +57,8 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/occurrence"})
 public class OccurrenceListController extends AbstractIdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> {
 
+    private static final Logger logger = LogManager.getLogger();
+
     @Autowired
     private ITaxonService taxonService;
 
@@ -81,12 +84,6 @@ public class OccurrenceListController extends AbstractIdentifiableListController
      * @param relationshipUuids a comma separated list of uuids e.g. CongruentTo;  "60974c98-64ab-4574-bb5c-c110f6db634d"
      * @param relationshipInversUuids a comma separated list of uuids
      * @param maxDepth null for unlimited
-     * @param pageIndex
-     * @param pageSize
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
      */
     @RequestMapping(
             value = {"byAssociatedTaxon"},
@@ -114,7 +111,6 @@ public class OccurrenceListController extends AbstractIdentifiableListController
         return service.pageByAssociatedTaxon(null, includeRelationships, associatedTaxon,
                 maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 orderHints, getInitializationStrategy());
-
     }
 
     @RequestMapping(value = "rootUnitDTOsByAssociatedTaxon", method = RequestMethod.GET)
@@ -130,22 +126,11 @@ public class OccurrenceListController extends AbstractIdentifiableListController
 
     /**
      *
-     * @param clazz
-     * @param queryString
      * @param boundingBox
      *            as
      *            minx(minlongitute),miny(minlatitute),maxx(maxlongitute),max(
      *            maxlatitute), e.g. 13.112,52.374,13.681,52.641 for the Berlin
      *            area
-     * @param languages
-     * @param highlighting
-     * @param pageIndex
-     * @param pageSize
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
-     * @throws ParseException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByFullText"})
     public Pager<SearchResult<SpecimenOrObservationBase>> doFindByFullText(

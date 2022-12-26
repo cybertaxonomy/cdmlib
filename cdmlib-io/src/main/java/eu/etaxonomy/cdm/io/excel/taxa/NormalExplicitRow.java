@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.util.ArrayList;
@@ -18,10 +17,8 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 /**
  * @author a.babadshanjan
  * @since 13.01.2009
- * @version 1.0
  */
 public class NormalExplicitRow extends ExcelRowBase {
-
 
     private String id;
     private String parentId;
@@ -54,7 +51,6 @@ public class NormalExplicitRow extends ExcelRowBase {
     private String taxonomicStatus;
 
     private String version;
-
 
     private String ipni_id;
     private String source;
@@ -94,123 +90,65 @@ public class NormalExplicitRow extends ExcelRowBase {
 
 // **************************** GETTER / SETTER *********************************/
 
-	/**
-	 * @return the parentId
-	 */
 	public String getParentId() {
 		return parentId;
 	}
-	/**
-	 * @param parentId the parentId to set
-	 */
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
 	}
-	/**
-	 * @return the name
-	 */
+
 	public String getScientificName() {
 		return scientificName;
 	}
-	/**
-	 * @param name the name to set
-	 */
 	public void setScientificName(String scientificName) {
 		this.scientificName = scientificName;
 	}
-	/**
-	 * @return the reference
-	 */
+
 	public String getReference() {
 		return reference;
 	}
-	/**
-	 * @param reference the reference to set
-	 */
 	public void setReference(String reference) {
 		this.reference = reference;
 	}
 
-	/**
-	 * @return the id
-	 */
 	public String getId() {
 		return id;
 	}
-
-	/**
-	 * @param id the id to set
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/**
-	 * @return the rank
-	 */
 	public String getRank() {
 		return rank;
 	}
-
-	/**
-	 * @param rank the rank to set
-	 */
 	public void setRank(String rank) {
 		this.rank = rank;
 	}
 
-	/**
-	 * @return the author
-	 */
 	public String getAuthor() {
 		return author;
 	}
-
-	/**
-	 * @param author the author to set
-	 */
 	public void setAuthor(String author) {
 		this.author = author;
 	}
 
-	/**
-	 * @return the nameStatus
-	 */
 	public String getNameStatus() {
 		return nameStatus;
 	}
-
-	/**
-	 * @param nameStatus the nameStatus to set
-	 */
 	public void setNameStatus(String nameStatus) {
 		this.nameStatus = nameStatus;
 	}
 
-	/**
-	 * @return the commonName
-	 */
 	public String getCommonName() {
 		return commonName;
 	}
-
-	/**
-	 * @param commonName the commonName to set
-	 */
 	public void setCommonName(String commonName) {
 		this.commonName = commonName;
 	}
 
-	/**
-	 * @return the language
-	 */
 	public String getLanguage() {
 		return language;
 	}
-
-	/**
-	 * @param language the language to set
-	 */
 	public void setLanguage(String language) {
 		this.language = language;
 	}
@@ -248,58 +186,31 @@ public class NormalExplicitRow extends ExcelRowBase {
 		return result;
 	}
 
-    /**
-     * @return the date
-     */
     public String getDate() {
         return date;
     }
-
-    /**
-     * @param date the date to set
-     */
     public void setDate(String date) {
         this.date = date;
     }
 
-    /**
-     * @return the family
-     */
     public String getFamily() {
         return family;
     }
-
-    /**
-     * @param family the family to set
-     */
     public void setFamily(String family) {
         this.family = family;
     }
 
-    /**
-     * @return the basionymAuthor
-     */
     public String getBasionymAuthor() {
         return basionymAuthor;
     }
-
-    /**
-     * @param basionymAuthor the basionymAuthor to set
-     */
     public void setBasionymAuthor(String basionymAuthor) {
         this.basionymAuthor = basionymAuthor;
     }
 
-    /**
-     * @return the infraFamily
-     */
+
     public String getInfraFamily() {
         return infraFamily;
     }
-
-    /**
-     * @param infraFamily the infraFamily to set
-     */
     public void setInfraFamily(String infraFamily) {
         this.infraFamily = infraFamily;
     }

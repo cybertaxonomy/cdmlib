@@ -6,14 +6,14 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service.lsid.impl;
 
 import java.util.Date;
 
 import javax.wsdl.WSDLException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,18 +33,19 @@ import eu.etaxonomy.cdm.api.service.lsid.LSIDWSDLWrapperFactory;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+
 /**
- *
  * @author Ben Szekely (<a href="mailto:bhszekel@us.ibm.com">bhszekel@us.ibm.com</a>)
  * @author ben
- *
  */
 @Service("lsidAuthorityService")
 @Transactional
 public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
-	@SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger(LsidAuthorityServiceImpl.class);
-	private String lsidDomain;
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
+
+    private String lsidDomain;
 	private Integer lsidPort;
 	private LSIDRegistry lsidRegistry;
 	private LSIDWSDLWrapperFactory lsidWSDLWrapperFactory;

@@ -77,9 +77,9 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 public class DistributionAggregation
             extends DescriptionAggregationBase<DistributionAggregation,DistributionAggregationConfiguration>{
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
-    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
+    private static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "description.elements.area",
             "description.elements.status",
             "description.elements.sources.citation.authorship",

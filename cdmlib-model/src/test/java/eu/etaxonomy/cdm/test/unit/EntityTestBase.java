@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  */
 public abstract class EntityTestBase extends TermTestBase {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
 	protected Class<CdmBase> clazzToTest = clazzToTest();
 	protected Class<CdmBase> clazzToTest(){

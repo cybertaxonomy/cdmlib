@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class WebServiceTestBase extends Assert {
 
-    public static final Logger logger = LogManager.getLogger(WebServiceTestBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private int port = 9180;
     private String baseUri = "";

@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,7 +29,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/description"})
 public class DescriptionListPortalController extends DescriptionListController {
 
-   public static final Logger logger = LogManager.getLogger(DescriptionListPortalController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -43,7 +44,6 @@ public class DescriptionListPortalController extends DescriptionListController {
             "elements.kindOfUnit"
     });
 
-
     protected static final List<String> DISTRIBUTION_INFO_INIT_STRATEGY = Arrays.asList(new String []{
             "sources.citation.authorship.$",
             "sources.nameUsedInSource",
@@ -51,9 +51,7 @@ public class DescriptionListPortalController extends DescriptionListController {
             "annotations"
     });
 
-
     public DescriptionListPortalController() {
-        super();
         setInitializationStrategy(DESCRIPTION_INIT_STRATEGY);
     }
 
@@ -61,5 +59,4 @@ public class DescriptionListPortalController extends DescriptionListController {
     protected List<String> getDescriptionInfoInitStrategy(){
         return DISTRIBUTION_INFO_INIT_STRATEGY;
     }
-
 }

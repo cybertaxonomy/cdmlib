@@ -31,7 +31,7 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  */
 public abstract class CdmCacherBase implements ICdmUuidCacher {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
 

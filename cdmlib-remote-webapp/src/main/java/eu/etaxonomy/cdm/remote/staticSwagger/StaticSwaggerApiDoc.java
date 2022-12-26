@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 @Controller
 public class StaticSwaggerApiDoc {
 
-    public static final Logger logger = LogManager.getLogger(StaticSwaggerApiDoc.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final String SWAGGER_STATIC = "swagger-static";
     public static final String JSON = ".json";

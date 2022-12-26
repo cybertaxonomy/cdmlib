@@ -38,12 +38,12 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
  */
 public abstract class PublishOutputModuleBase implements IPublishOutputModule {
 
-	private static final Logger logger = LogManager.getLogger(PublishOutputModuleBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * The date format used by {@link #generateFilenameWithDate(String, String)}
 	 */
-	public static final String DATE_FORMAT_NOW = "yyyyMMdd-HHmm";
+	private static final String DATE_FORMAT_NOW = "yyyyMMdd-HHmm";
 
 	private FilenameFilter filter = new FilenameFilter() {
 

@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.net.MalformedURLException;
@@ -76,17 +75,16 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author a.babadshanjan
  * @since 08.01.2009
  */
-
 @Component
 public class NormalExplicitImport extends TaxonExcelImportBase {
+
     private static final long serialVersionUID = 3642423349766191160L;
+    private static final Logger logger = LogManager.getLogger();
 
-    private static final Logger logger = LogManager.getLogger(NormalExplicitImport.class);
-
-	public static Set<String> validMarkers = new HashSet<>(Arrays.asList(new String[]{"", "valid", "accepted", "a", "v", "t", "!"}));
-	public static Set<String> synonymMarkers = new HashSet<>(Arrays.asList(new String[]{"**","invalid", "synonym", "s", "i"}));
-	public static Set<String> nameStatusMarkers = new HashSet<>(Arrays.asList(new String[]{"illegitimate", "nom. rej.", "nom. cons."}));
-	public static final UUID uuidRefExtension = UUID.fromString("a46533df-7a78-448f-9b80-36d087fbdf2a");
+	private static Set<String> validMarkers = new HashSet<>(Arrays.asList(new String[]{"", "valid", "accepted", "a", "v", "t", "!"}));
+	private static Set<String> synonymMarkers = new HashSet<>(Arrays.asList(new String[]{"**","invalid", "synonym", "s", "i"}));
+	private static Set<String> nameStatusMarkers = new HashSet<>(Arrays.asList(new String[]{"illegitimate", "nom. rej.", "nom. cons."}));
+	private static final UUID uuidRefExtension = UUID.fromString("a46533df-7a78-448f-9b80-36d087fbdf2a");
 
     private static final Object NOM_ILLEG = "illegitimate";
     private static final Object NOM_REJ = "nom. rej.";

@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class IpniServiceTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(IpniServiceTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private IpniService service1;
 	private static boolean internetIsAvailable = true;

@@ -13,7 +13,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrationTest {
 
-	protected static final Logger logger = LogManager.getLogger(Level2ValidationEventListenerTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private UUID uuid;
 	private TaxonBase<?> cdmBase;

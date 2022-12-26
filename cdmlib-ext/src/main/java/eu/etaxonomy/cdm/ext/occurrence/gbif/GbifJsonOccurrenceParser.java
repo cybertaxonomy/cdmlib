@@ -58,7 +58,7 @@ import net.sf.json.JSONObject;
  */
 public class GbifJsonOccurrenceParser {
 
-    private static final Logger logger = LogManager.getLogger(GbifJsonOccurrenceParser.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String DATASET_KEY = "datasetKey";
     private static final String DATASET_PROTOCOL = "protocol";

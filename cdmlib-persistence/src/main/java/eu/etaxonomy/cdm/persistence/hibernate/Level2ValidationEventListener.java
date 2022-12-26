@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -21,7 +22,7 @@ import eu.etaxonomy.cdm.persistence.validation.Level2ValidationTask;
 public class Level2ValidationEventListener extends ValidationEventListenerBase {
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(Level2ValidationEventListener.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public Level2ValidationEventListener(IEntityValidationCrud dao){
 	    super(dao);

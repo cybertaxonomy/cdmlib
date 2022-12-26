@@ -55,7 +55,7 @@ public class StatisticsDaoHibernateImpl
 	private static final int REFERENCE_LINK_RECURSION_DEPTH = 1;
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(StatisticsDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
 	public Long countDescriptiveSourceReferences() {

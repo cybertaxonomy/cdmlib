@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertNotNull;
@@ -86,7 +85,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
-    private static Logger logger = LogManager.getLogger(TaxonServiceSearchTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final int BENCHMARK_ROUNDS = 300;
 

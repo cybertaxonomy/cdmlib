@@ -14,7 +14,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,14 +33,13 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since 24.03.2011
- *
  */
 @Controller
 @Api("polytomousKey")
 @RequestMapping(value = {"/polytomousKey"})
 public class PolytomousKeyListController extends AbstractIdentifiableListController<PolytomousKey, IPolytomousKeyService> {
 
-    public static final Logger logger = LogManager.getLogger(PolytomousKeyListController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private ITaxonService taxonService;
 
@@ -74,6 +74,4 @@ public class PolytomousKeyListController extends AbstractIdentifiableListControl
         Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, null);
         return pager;
     }
-
 }
-

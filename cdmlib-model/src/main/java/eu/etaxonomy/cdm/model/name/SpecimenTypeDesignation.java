@@ -60,7 +60,7 @@ public class SpecimenTypeDesignation
         extends TypeDesignationBase<SpecimenTypeDesignationStatus> {
 
 	private static final long serialVersionUID = 6481627446997275007L;
-	private static final Logger logger = LogManager.getLogger(SpecimenTypeDesignation.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "TypeSpecimen")
 	@XmlIDREF

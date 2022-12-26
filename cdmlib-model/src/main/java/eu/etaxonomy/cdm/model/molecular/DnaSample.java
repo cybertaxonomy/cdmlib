@@ -63,7 +63,7 @@ public class DnaSample extends DerivedUnit {
 
 	private static final long serialVersionUID = -2978411330023671805L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DnaSample.class);
+	private static final Logger logger = LogManager.getLogger();
 
 // ****************** FACTORY METHOD *****************/
 

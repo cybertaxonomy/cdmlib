@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(NameServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID NAME1_UUID = UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384");
     private static final int NAME1_ID = 10;

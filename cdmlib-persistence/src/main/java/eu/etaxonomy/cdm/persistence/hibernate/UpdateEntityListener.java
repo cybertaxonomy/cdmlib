@@ -9,7 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
@@ -22,9 +23,10 @@ import eu.etaxonomy.cdm.model.permission.User;
 
 
 public class UpdateEntityListener implements SaveOrUpdateEventListener {
-	private static final long serialVersionUID = -3295612929556041686L;
+
+    private static final long serialVersionUID = -3295612929556041686L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(UpdateEntityListener.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {

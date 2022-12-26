@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -44,6 +46,8 @@ import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
  */
 public abstract class AbstractIdentifiableListController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>>
             extends BaseListController<T,SERVICE>  {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @InitBinder
     @Override

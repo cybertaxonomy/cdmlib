@@ -9,7 +9,8 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -25,10 +26,9 @@ public class NomenclaturalStatusDaoHibernateImpl
             implements INomenclaturalStatusDao {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(NomenclaturalStatusDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public NomenclaturalStatusDaoHibernateImpl() {
 		super(NomenclaturalStatus.class);
 	}
-
 }

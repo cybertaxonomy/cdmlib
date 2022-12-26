@@ -26,7 +26,7 @@ import net.sf.ehcache.config.DiskStoreConfiguration;
 @Configuration
 public class EhCacheDiskStoreConfiguration {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private DataSourceProperties dataSourceProperties = null;

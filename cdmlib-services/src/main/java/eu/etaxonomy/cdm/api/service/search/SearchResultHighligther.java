@@ -14,7 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
@@ -30,13 +31,11 @@ import org.apache.lucene.search.highlight.SimpleFragmenter;
 import org.apache.lucene.search.highlight.TokenStreamFromTermVector;
 
 /**
- *
  * @author Andreas Kohlbecker
- *
  */
 public class SearchResultHighligther {
 
-    public static final Logger logger = LogManager.getLogger(SearchResultHighligther.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public Map<String,String[]> getFragmentsWithHighlightedTerms(Analyzer analyzer, Query query, String[] fieldNames,  Document doc,  int fragmentNumber, int fragmentSize){
 

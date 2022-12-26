@@ -48,7 +48,7 @@ public abstract class SingleSourcedEntityBase
 
     static final long serialVersionUID = 2035568689268762760L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SingleSourcedEntityBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
     //the source for this single sourced entity
     @XmlElement(name = "source")

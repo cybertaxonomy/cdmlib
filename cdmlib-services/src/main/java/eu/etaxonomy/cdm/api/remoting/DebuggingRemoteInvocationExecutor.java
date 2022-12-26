@@ -32,7 +32,7 @@ import org.springframework.util.ClassUtils;
  */
 public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecutor {
 
-    private static final Logger logger = LogManager.getLogger(DebuggingRemoteInvocationExecutor.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public Object invoke(RemoteInvocation invocation, Object targetObject)
@@ -57,10 +57,6 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
         return invocationResult;
     }
 
-    /**
-     * @param targetObject
-     * @return
-     */
     private String targetCdmServiceInterfaces(Object targetObject) {
         String interfacesStr = targetObject.getClass().getName();
         if(interfacesStr.contains("$Proxy")){
@@ -71,8 +67,4 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
         }
         return interfacesStr;
     }
-
-
-
-
 }

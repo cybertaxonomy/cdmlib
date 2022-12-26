@@ -29,10 +29,10 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  *
  * @author n.hoffmann
  * @since Apr 8, 2010
- * @version 1.0
  */
 public class XMLHarvester {
-	private static final Logger logger = LogManager.getLogger(XMLHarvester.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	private IXMLEntityFactory factory;
 

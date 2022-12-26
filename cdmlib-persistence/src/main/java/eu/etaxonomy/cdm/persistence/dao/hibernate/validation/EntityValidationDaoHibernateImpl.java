@@ -15,7 +15,8 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationDao;
 public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityValidation> implements
         IEntityValidationDao {
 
-    private static final Logger logger = LogManager.getLogger(EntityValidationDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public EntityValidationDaoHibernateImpl() {
         super(EntityValidation.class);

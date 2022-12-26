@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import net.sf.json.JSONObject;
@@ -24,20 +25,13 @@ import net.sf.json.JsonConfig;
  */
 public class TaxonBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonBase> {
 
-	public static final Logger logger = LogManager.getLogger(TaxonBaseBeanProcessor.class);
+    private static final Logger logger = LogManager.getLogger();
 
-   private boolean skipTaggedTitle = false;
+    private boolean skipTaggedTitle = false;
 
-    /**
-     * @return the skipTaggedName
-     */
     public boolean isSkipTaggedTitle() {
         return skipTaggedTitle;
     }
-
-    /**
-     * @param skipTaggedName the skipTaggedName to set
-     */
     public void setSkipTaggedTitle(boolean skipTaggedTitle) {
         this.skipTaggedTitle = skipTaggedTitle;
     }
@@ -55,5 +49,4 @@ public class TaxonBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonBase> 
 	    }
 		return json;
 	}
-
 }

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 public class SchemaUpdater_5180_5181 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_5180_5181.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_18_00;
 	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_01;

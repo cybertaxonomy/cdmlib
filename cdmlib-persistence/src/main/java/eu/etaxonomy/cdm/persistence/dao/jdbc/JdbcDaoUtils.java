@@ -13,7 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author ayco_holleman
@@ -22,8 +23,7 @@ import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logge
  */
 public class JdbcDaoUtils {
 
-	private static final Logger logger = LogManager.getLogger(JdbcDaoUtils.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * Closes a JDBC {@code Statement} while trapping and suppressing any

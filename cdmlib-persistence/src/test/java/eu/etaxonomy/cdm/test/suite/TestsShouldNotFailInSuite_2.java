@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.test.suite;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,10 +29,6 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.name.TypeDesignationDaoHiberna
         }
     )
 public class TestsShouldNotFailInSuite_2 {
-
-    @SuppressWarnings("unused")
-    private static final  Logger logger = LogManager.getLogger(TestsShouldNotFailInSuite_2.class);
-
     // the class remains completely empty,
     // being used only as a holder for the above annotations
 

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
  */
 public class H2DatabaseType extends DatabaseTypeBase {
 
-	private static final Logger logger = LogManager.getLogger(H2DatabaseType.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	//typeName
 	private final String typeName = "H2 Database";

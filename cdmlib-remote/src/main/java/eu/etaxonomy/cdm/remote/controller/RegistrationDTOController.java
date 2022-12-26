@@ -60,7 +60,7 @@ import io.swagger.annotations.ApiOperation;
 public class RegistrationDTOController
             extends AbstractController<Registration, IRegistrationService>{
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static final List<OrderHint> ORDER_BY_DATE_AND_ID = Arrays.asList(
             new OrderHint("registrationDate", SortOrder.DESCENDING),

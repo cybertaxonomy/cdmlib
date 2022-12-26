@@ -35,9 +35,9 @@ import org.jdom.transform.XSLTransformException;
  */
 public class Transformator {
 
-	private static final Logger logger = LogManager.getLogger(Transformator.class);
-	private Transformer transformer;
+	private static final Logger logger = LogManager.getLogger();
 
+	private Transformer transformer;
 
 	public Transformator(InputStream stylesheet) throws XSLTransformException{
 		if(stylesheet == null){

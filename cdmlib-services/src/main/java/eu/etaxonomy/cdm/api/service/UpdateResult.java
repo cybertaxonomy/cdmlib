@@ -34,9 +34,8 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 public class UpdateResult implements Serializable{
 
     private static final long serialVersionUID = -7040027587709706700L;
-
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(UpdateResult.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private Status status = Status.OK;
 

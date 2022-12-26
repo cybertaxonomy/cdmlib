@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class PolytomousKeyGeneratorTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(PolytomousKeyGeneratorTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final boolean debug = false;
 

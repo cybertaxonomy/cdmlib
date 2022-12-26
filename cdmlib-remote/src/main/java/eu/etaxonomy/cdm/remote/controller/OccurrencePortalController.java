@@ -43,7 +43,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/occurrence/{uuid}"})
 public class OccurrencePortalController extends OccurrenceController {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> DEFAULT_INIT_STRATEGY =  Arrays.asList(new String []{
             "$",

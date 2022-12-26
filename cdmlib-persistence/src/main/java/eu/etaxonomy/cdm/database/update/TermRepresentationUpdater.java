@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -28,9 +26,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class TermRepresentationUpdater
             extends SchemaUpdaterStepBase {
-
-    @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TermRepresentationUpdater.class);
 
 	public static final TermRepresentationUpdater NewInstance(List<ISchemaUpdaterStep> stepList,
 	        String stepName, UUID uuidTerm, String description,  String label, String abbrev,

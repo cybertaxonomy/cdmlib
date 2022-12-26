@@ -14,7 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,6 @@ import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 
 /**
  * Quick and dirty implementation of a location service as needed by the editor.
@@ -45,16 +45,10 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ILocationService {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(LocationServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
-    protected ITermVocabularyDao vocabularyDao;
-
-    @Autowired
-    protected IDefinedTermDao definedTermDao;
-
-    @Autowired
-    protected IOrderedTermVocabularyDao orderedVocabularyDao;
+    private IOrderedTermVocabularyDao orderedVocabularyDao;
 
     @Override
     protected void setDao(IDefinedTermDao dao) {
@@ -152,7 +146,4 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
 
         return topLevelTerms;
     }
-
-
-
 }

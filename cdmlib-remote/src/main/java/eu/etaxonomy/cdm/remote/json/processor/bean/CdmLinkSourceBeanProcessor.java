@@ -27,7 +27,7 @@ import net.sf.json.processors.JsonBeanProcessor;
  */
 public class CdmLinkSourceBeanProcessor implements JsonBeanProcessor {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public JSONObject processBean(Object bean, JsonConfig jsonConfig) {

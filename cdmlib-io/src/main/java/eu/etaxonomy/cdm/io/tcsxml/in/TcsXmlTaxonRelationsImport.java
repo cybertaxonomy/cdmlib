@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.io.InputStream;
@@ -49,16 +48,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
 /**
  * @author a.mueller
- *
  */
 @Component
 public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
     private static final long serialVersionUID = 6632990505515905663L;
 
-    private static final Logger logger = LogManager.getLogger(TcsXmlTaxonRelationsImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 30000;
 
@@ -68,7 +65,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 	public TcsXmlTaxonRelationsImport(){
 		super();
-
 	}
 
 	@Override
@@ -76,8 +72,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
 		logger.warn("Creation of homotypic relations is still problematic");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
 
 		return result;
 	}

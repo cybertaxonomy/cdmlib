@@ -31,10 +31,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.config.SendEmailConfigurer;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
-
 public class EmailSendTest extends CdmIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(EmailSendTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String SUBJECT = "eu.etaxonomy.cdm.test.function.EmailSendTest";
 

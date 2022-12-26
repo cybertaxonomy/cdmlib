@@ -98,7 +98,7 @@ public class TaxonNode
             implements ITaxonTreeNode, ITreeNode<TaxonNode>{
 
     private static final long serialVersionUID = -4743289894926587693L;
-    private static final Logger logger = LogManager.getLogger(TaxonNode.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "taxon")
     @XmlIDREF

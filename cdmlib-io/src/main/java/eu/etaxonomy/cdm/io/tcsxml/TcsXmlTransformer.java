@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,9 +32,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public final class TcsXmlTransformer {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TcsXmlTransformer.class);
 
+	@SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	//TypeDesignation
 	public static SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{

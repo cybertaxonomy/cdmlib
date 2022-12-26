@@ -26,7 +26,7 @@ public class DwcaResultWriter extends DwcaExportBase {
 
     private static final long serialVersionUID = -1657568483721887287L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(DwcaDescriptionExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     protected void doInvoke(DwcaTaxExportState state) {
@@ -35,9 +35,6 @@ public class DwcaResultWriter extends DwcaExportBase {
         state.getProcessor().createFinalResult();
     }
 
-    /**
-     * @param state
-     */
     protected void addReport(DwcaTaxExportState state) {
         if (state.getConfig().getDestination() != null){
             try {

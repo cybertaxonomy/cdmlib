@@ -74,7 +74,8 @@ import eu.etaxonomy.cdm.model.term.TermType;
  */
 public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_31_33.class);
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final String startSchemaVersion = "3.0.1.0.201104190000";
 	private static final String endSchemaVersion = "3.3.0.0.201309240000";
 

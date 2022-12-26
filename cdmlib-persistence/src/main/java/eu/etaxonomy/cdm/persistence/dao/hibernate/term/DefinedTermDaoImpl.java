@@ -85,7 +85,7 @@ public class DefinedTermDaoImpl
         extends IdentifiableDaoBase<DefinedTermBase>
         implements IDefinedTermDao{
 
-    private static final Logger logger = LogManager.getLogger(DefinedTermDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SuppressWarnings("unchecked")
     public DefinedTermDaoImpl() {

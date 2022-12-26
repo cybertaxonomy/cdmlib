@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.test.integration.TermLoaderIntegrationTest;
 			TaxonServiceImplTest.class
 			,TermServiceImplTest.class
 			,TermLoaderIntegrationTest.class
-			//,CreateDataTest.class
 		}
 	)
 public class CdmTestSuite {
@@ -43,7 +42,6 @@ public class CdmTestSuite {
 				TaxonServiceImplTest.class
 				,TermServiceImplTest.class
 				,TermLoaderIntegrationTest.class
-				//,CreateDataTest.class
 			);
 	}
 }

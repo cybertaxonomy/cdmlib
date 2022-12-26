@@ -77,7 +77,7 @@ public class DerivedUnitFacade {
 	private static final String METER = "m";
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DerivedUnitFacade.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";
 
@@ -103,9 +103,6 @@ public class DerivedUnitFacade {
 	/**
 	 * Creates a derived unit facade for a new derived unit of type
 	 * <code>type</code>.
-	 *
-	 * @param type
-	 * @return
 	 */
 	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type) {
 		return new DerivedUnitFacade(type, null, null);
@@ -124,9 +121,6 @@ public class DerivedUnitFacade {
 	/**
 	 * Creates a derived unit facade for a new derived unit of type
 	 * <code>type</code>.
-	 *
-	 * @param type
-	 * @return
 	 */
 	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type, FieldUnit fieldUnit) {
 		return new DerivedUnitFacade(type, fieldUnit, null);
@@ -140,12 +134,10 @@ public class DerivedUnitFacade {
 	 * @param fieldUnit the field unit to use
 	 * @param config the facade configurator to use
 	 * //TODO are there any ambiguities to solve with defining a field unit or a configurator
-	 * @return
 	 */
 	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type, FieldUnit fieldUnit, DerivedUnitFacadeConfigurator config) {
 		return new DerivedUnitFacade(type, fieldUnit, config);
 	}
-
 
 	/**
 	 * Creates a derived unit facade for a given derived unit using the default

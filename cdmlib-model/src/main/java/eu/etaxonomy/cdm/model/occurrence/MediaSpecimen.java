@@ -53,8 +53,7 @@ public class MediaSpecimen extends DerivedUnit {
 
 	private static final long serialVersionUID = -5717424451590705378L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MediaSpecimen.class);
-
+	private static final Logger logger = LogManager.getLogger();
 
 // ************** ATTRIBUTES ****************************/
 

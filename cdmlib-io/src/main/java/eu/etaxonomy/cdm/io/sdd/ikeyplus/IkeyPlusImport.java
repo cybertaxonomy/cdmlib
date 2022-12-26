@@ -50,8 +50,7 @@ import fr.lis.ikeyplus.utils.Utils;
 public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, IkeyPlusImportState>{
 
     private static final long serialVersionUID = -6817762818458834785L;
-
-    public static final Logger logger = LogManager.getLogger(IkeyPlusImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private TermVocabulary<Feature> featureVoc;
 

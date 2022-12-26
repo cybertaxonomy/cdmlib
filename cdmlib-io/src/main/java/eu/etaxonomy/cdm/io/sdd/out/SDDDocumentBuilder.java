@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.Marshaller;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xerces.dom.DocumentImpl;
@@ -36,9 +34,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.util.ResourceUtils;
-import org.xml.sax.SAXException;
 
-import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -194,9 +190,9 @@ public class SDDDocumentBuilder {
 
 	private final Language defaultLanguage = Language.DEFAULT();
 
-	private static final Logger logger = LogManager.getLogger(SDDDocumentBuilder.class);
+	private static final Logger logger = LogManager.getLogger();
 
-	public SDDDocumentBuilder() throws SAXException, IOException {
+	public SDDDocumentBuilder() {
 		document = new DocumentImpl();
 	}
 
@@ -204,22 +200,16 @@ public class SDDDocumentBuilder {
 			throws IOException {
 
 		this.cdmSource = cdmSource;
-		Marshaller marshaller;
-		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		logger.info("Start marshalling");
 		writeCDMtoSDD(sddDestination);
-
 	}
 
 	public void marshal(SDDDataSet cdmSource, String sddDestinationFileName)
 			throws IOException {
 
 		this.cdmSource = cdmSource;
-		Marshaller marshaller;
-		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		logger.info("Start marshalling");
 		writeCDMtoSDD(ResourceUtils.getFile(sddDestinationFileName));
-
 	}
 
     public void marshal(SDDDataSet dataSet, OutputStream stream) throws IOException {
@@ -242,6 +232,7 @@ public class SDDDocumentBuilder {
 
         writer.close();
     }
+
 	/**
 	 * Write the DOM document.
 	 *

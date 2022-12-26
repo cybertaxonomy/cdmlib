@@ -16,12 +16,10 @@ import org.junit.Test;
 /**
  * @author a.kohlbecker
  * @since Jul 1, 2016
- *
  */
 public class JvmMonitorTest extends Assert{
 
-
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Test
     public void testGcTime() {

@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -52,7 +53,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         implements IIdentifiableDao<T>{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(IdentifiableDaoBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected String defaultField = "titleCache_tokenized";
     protected Class<? extends T> indexedClasses[];
