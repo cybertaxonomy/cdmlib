@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.CacheConfiguration.CacheEventListenerFactoryConfiguration;
 import net.sf.ehcache.config.DiskStoreConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
@@ -50,14 +49,17 @@ public class EhCacheConfiguration implements DisposableBean {
 
         net.sf.ehcache.config.Configuration conf = new net.sf.ehcache.config.Configuration();
         if(diskStoreConfiguration != null){
-            logger.debug("creating CacheManager with disk store");
+            if (logger.isDebugEnabled()) { logger.debug("creating CacheManager with disk store");}
             conf.addDiskStore(diskStoreConfiguration);
         }
-        conf.addDefaultCache(getDefaultCacheConfiguration());
+        CacheConfiguration defaultConfig = getDefaultCacheConfiguration();
+        conf.addDefaultCache(defaultConfig);
 
+        //FIXME Caching by AM: setting the configuration does not work if the CacheManger
+        //                     singleton exists already (like in the TaxEditor)
         // creates a singleton
         cacheManager = CacheManager.create(conf);
-        logger.debug("CacheManager created");
+        if (logger.isDebugEnabled()) { logger.debug("CacheManager created");}
         return cacheManager;
     }
 
@@ -66,8 +68,6 @@ public class EhCacheConfiguration implements DisposableBean {
      * named {@link CdmCacherBase#DEFAULT_CACHE_NAME "cdmDefaultCache"}
      */
     protected CacheConfiguration getDefaultCacheConfiguration() {
-
-        CacheEventListenerFactoryConfiguration factory;
 
         // For a better understanding on how to size caches, refer to
         // http://ehcache.org/documentation/configuration/cache-size

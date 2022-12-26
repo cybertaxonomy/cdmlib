@@ -193,7 +193,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     /**
-     * Loads the {@link eu.etaxonomy.cdm.model.common.CdmBase cdmEntity}) graph recursively into the
+     * Loads the {@link eu.etaxonomy.cdm.model.common.CdmBase cdmEntity} graph recursively into the
      * cache.
      *
      * For in depth details on the whole mechanism see
