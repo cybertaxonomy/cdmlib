@@ -26,11 +26,12 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("OAI-PMH Taxa")
 @RequestMapping(value = "/taxon/oai", params = "verb")
-public class TaxonOaiPmhController extends AbstractOaiPmhController<TaxonBase, ITaxonService> {
+public class TaxonOaiPmhController
+        extends AbstractOaiPmhController<TaxonBase, ITaxonService> {
 
     @Override
     protected List<String> getPropertyPaths() {
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("createdBy");
         propertyPaths.add("updatedBy");
         propertyPaths.add("name.titleCache");
