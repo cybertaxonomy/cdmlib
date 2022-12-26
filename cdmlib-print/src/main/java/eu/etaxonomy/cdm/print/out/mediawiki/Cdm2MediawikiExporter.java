@@ -64,7 +64,7 @@ public class Cdm2MediawikiExporter {
 
 	//-------------------
 
-	private static final Logger logger = LogManager.getLogger(Cdm2MediawikiExporter.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private PublishConfigurator configurator = PublishConfigurator.NewRemoteInstance();
 

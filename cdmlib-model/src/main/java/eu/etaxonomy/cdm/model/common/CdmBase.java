@@ -95,7 +95,7 @@ public abstract class CdmBase
 
     private static final long serialVersionUID = -3053225700018294809L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CdmBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected static final int CLOB_LENGTH = 65536;
 

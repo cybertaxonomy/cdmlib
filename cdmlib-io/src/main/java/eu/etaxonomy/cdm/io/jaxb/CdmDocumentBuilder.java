@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextElement;
 //which allows to package the schemas into a jar file.
 public class CdmDocumentBuilder extends Jaxb2Marshaller  {
 
-    private static final Logger logger = LogManager.getLogger(CdmDocumentBuilder.class);
+    private static final Logger logger = LogManager.getLogger();
     private boolean formattedOutput = Boolean.TRUE;
     private String encoding = "UTF-8";
 

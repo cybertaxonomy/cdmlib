@@ -20,7 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.spi.RegionFactory;
 import org.hibernate.envers.boot.internal.EnversIntegrator;
 import org.springframework.beans.MutablePropertyValues;
@@ -40,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
  */
 public abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
-    private static final Logger logger = LogManager.getLogger(CdmDataSourceBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
     //	private static final int TIMEOUT = 10;

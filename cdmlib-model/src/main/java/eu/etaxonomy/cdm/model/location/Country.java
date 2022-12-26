@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class Country extends NamedArea {
 
     private static final long serialVersionUID = -6791671976199722843L;
-	private static final Logger logger = LogManager.getLogger(Country.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * 2 character ISO 3166 Country codes

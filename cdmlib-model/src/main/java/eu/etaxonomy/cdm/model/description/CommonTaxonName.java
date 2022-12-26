@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class CommonTaxonName extends DescriptionElementBase {
 
     private static final long serialVersionUID = 2643808051976643339L;
-    private static final Logger logger = LogManager.getLogger(CommonTaxonName.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Name")
     @Field(store=Store.YES)

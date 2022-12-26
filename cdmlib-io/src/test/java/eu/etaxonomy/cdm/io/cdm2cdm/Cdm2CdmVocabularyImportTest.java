@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(Cdm2CdmVocabularyImportTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static CdmApplicationController otherRepository;
 

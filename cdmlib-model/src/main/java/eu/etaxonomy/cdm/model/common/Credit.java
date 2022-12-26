@@ -38,7 +38,7 @@ public class Credit extends LanguageStringBase {
 
 	private static final long serialVersionUID = 5763391127298427701L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(Credit.class);
+	private static final Logger logger = LogManager.getLogger();
 
 // ********************** FACTORY **********************************************/
 

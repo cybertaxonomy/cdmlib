@@ -170,7 +170,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(CdmGenericDaoImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private CdmGenericDaoImpl cdmGenericDao;

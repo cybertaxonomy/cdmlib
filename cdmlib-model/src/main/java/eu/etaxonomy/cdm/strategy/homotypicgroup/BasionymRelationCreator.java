@@ -44,7 +44,7 @@ public class BasionymRelationCreator extends StrategyBase {
 
     private static final long serialVersionUID = -4711438819176248413L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(BasionymRelationCreator.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private UUID uuid = UUID.fromString("e9e1d1f5-e398-4ba7-81a6-92875573d7cb");
 

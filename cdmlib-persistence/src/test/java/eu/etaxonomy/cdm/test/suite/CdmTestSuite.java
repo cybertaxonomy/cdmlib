@@ -9,7 +9,8 @@
 
 package eu.etaxonomy.cdm.test.suite;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -39,7 +40,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.TaxonGraphTest;
     )
 public class CdmTestSuite {
     @SuppressWarnings("unused")
-    private static final  Logger logger = LogManager.getLogger(CdmTestSuite.class);
+    private static final  Logger logger = LogManager.getLogger();
 
     // the class remains completely empty,
     // being used only as a holder for the above annotations

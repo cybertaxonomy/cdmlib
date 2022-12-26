@@ -61,7 +61,7 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
      */
     private static final boolean XML_VIEW_CACHING = true;
 
-    public static final Logger logger = LogManager.getLogger(CdmSpringMVCConfig.class);
+    public static final Logger logger = LogManager.getLogger();
 
 
     @Autowired
@@ -146,7 +146,6 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
         logger.debug("configureDefaultServletHandling");
     }
 
-
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer
@@ -181,8 +180,7 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
        resolver.setViewResolvers(resolvers);
        logger.debug("contentNegotiatingViewResolver");
        return resolver;
-       }
-
+   }
 
    private ViewResolver getPatternViewResolver(String type) {
        PatternViewResolver resolver = new PatternViewResolver();
@@ -190,5 +188,4 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
        resolver.setCache(XML_VIEW_CACHING);
        return resolver;
    }
-
 }

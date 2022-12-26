@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 import java.io.Serializable;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.event.spi.AbstractEvent;
 import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.PostDeleteEvent;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class CdmDataChangeEvent extends AbstractEvent{
     private static final long serialVersionUID = 9113025682352080372L;
-    private static final Logger logger = LogManager.getLogger(CdmDataChangeEvent.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * The event types currently implemented

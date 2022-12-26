@@ -57,7 +57,7 @@ public class CsvDemoExport extends CsvDemoBase {
 
     private static final long serialVersionUID = 8265935377927091897L;
 
-    private static final Logger logger = LogManager.getLogger(CsvDemoExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "RedlistCoreTax.csv";

@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @Component
 public class CdmHibernateInterceptor extends EmptyInterceptor {
         private static final long serialVersionUID = 2536017420460052854L;
-        private static final Logger logger = LogManager.getLogger(CdmHibernateInterceptor.class);
+        private static final Logger logger = LogManager.getLogger();
 
         //FIXME problem is circular dependency (see VocabularyStoreImpl.staticInitialized
 //      @Autowired

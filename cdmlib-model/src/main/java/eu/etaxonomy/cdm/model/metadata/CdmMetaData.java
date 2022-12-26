@@ -38,7 +38,7 @@ public class CdmMetaData extends CdmBase{
 
     private static final long serialVersionUID = -3033376680593279078L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CdmMetaData.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String UNNAMED = "- UNNAMED -";
 

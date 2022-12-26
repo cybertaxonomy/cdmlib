@@ -20,7 +20,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,7 +46,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 8477758472369568074L;
 
-    public static final Logger logger = LogManager.getLogger(CdmSecurityHibernateInterceptor.class);
+    public static final Logger logger = LogManager.getLogger();
 
 
     private ICdmPermissionEvaluator permissionEvaluator;

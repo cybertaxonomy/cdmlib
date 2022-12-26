@@ -49,7 +49,7 @@ public class CdmPersistentDataSource
         implements ICdmPersistentSource {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CdmPersistentDataSource.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
 

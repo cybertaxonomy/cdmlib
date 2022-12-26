@@ -5,12 +5,12 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.json.processor.matcher;
 
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -27,19 +27,13 @@ import net.sf.json.processors.JsonBeanProcessorMatcher;
  * can handle HibernateProxys
  *
  * @author a.kohlbecker
- *
  */
 public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 
-    public static final Logger logger = LogManager.getLogger(CdmProxyBeanProcessorMatcher.class);
+    public static final Logger logger = LogManager.getLogger();
 
-    /* (non-Javadoc)
-     * @see net.sf.json.processors.JsonBeanProcessorMatcher#getMatch(java.lang.Class, java.util.Set)
-     */
-    @SuppressWarnings("unchecked")
     @Override
     public Object getMatch(Class target, Set set) {
-
 
         if (HibernateProxy.class.isAssignableFrom(target)) {
             if(logger.isDebugEnabled()){
@@ -47,7 +41,6 @@ public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
             }
             return HibernateProxy.class;
         }
-
 
         // TODO implement generically by making use of CdmBaseType
         if (TaxonBase.class.isAssignableFrom(target)) {
@@ -77,6 +70,4 @@ public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 
         return DEFAULT.getMatch(target, set);
     }
-
-
 }

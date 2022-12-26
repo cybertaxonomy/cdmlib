@@ -95,7 +95,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             implements ICdmImport<CONFIG, STATE>{
 
     private static final long serialVersionUID = 8730012744209195616L;
-    private static final Logger logger = LogManager.getLogger(CdmImportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;

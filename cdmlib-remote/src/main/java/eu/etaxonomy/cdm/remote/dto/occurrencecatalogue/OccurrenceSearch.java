@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -13,7 +14,6 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.remote.controller.BaseListController;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
 /**
@@ -29,7 +29,7 @@ public class OccurrenceSearch implements RemoteResponse {
     private OccurrenceSearchRequest request;
     private final List<OccurrenceSearchResponse> response;
 
-    public static final Logger logger = LogManager.getLogger(BaseListController.class);
+    public static final Logger logger = LogManager.getLogger();
 
     public OccurrenceSearch() {
     	this.response = new ArrayList<OccurrenceSearchResponse>();

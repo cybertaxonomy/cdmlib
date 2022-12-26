@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
 public class CdmPersistenceUtils implements ApplicationContextAware {
 
-    private static final Logger logger = LogManager.getLogger(CdmPersistenceUtils.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static ApplicationContext applicationContext;
 

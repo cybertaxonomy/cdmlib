@@ -1,9 +1,15 @@
 /**
- *
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.boot.Metadata;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -18,10 +24,10 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
  *
  * @author a.mueller
  * @since 30.03.2013
- *
  */
 public class CdmListenerIntegrator implements Integrator {
-    private static final Logger logger = LogManager.getLogger(CdmListenerIntegrator.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void integrate(Metadata metadata,

@@ -27,7 +27,7 @@ public class ColumnTypeChanger
 
     private static final String _OLDXXX = "_oldxxx";
 
-    private static final Logger logger = LogManager.getLogger(ColumnTypeChanger.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private final String columnName;
 	private final Datatype newColumnType;
@@ -35,7 +35,6 @@ public class ColumnTypeChanger
 	private final Object defaultValue;
 	private final boolean isNotNull;
 	private final String referencedTable;
-
 
 
 	public static final ColumnTypeChanger NewStringSizeInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, int newSize, boolean includeAudTable){

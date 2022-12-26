@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.util.Arrays;
@@ -32,18 +31,16 @@ import io.swagger.annotations.Api;
 public class ClassificationListController extends AbstractIdentifiableListController<Classification,IClassificationService> {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ClassificationListController.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "reference.authorship"
     });
 
-
     @Override
     @Autowired
     public void setService(IClassificationService service) {
         this.service = service;
     }
-
 }

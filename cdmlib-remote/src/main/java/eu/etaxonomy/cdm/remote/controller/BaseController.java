@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>>
         extends AbstractController<T, SERVICE> {
 
-    private static final Logger logger = LogManager.getLogger(BaseController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected Class<T> baseClass;
 

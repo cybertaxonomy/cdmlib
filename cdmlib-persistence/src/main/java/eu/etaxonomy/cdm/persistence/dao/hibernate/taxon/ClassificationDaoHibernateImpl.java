@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
@@ -17,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,7 +44,7 @@ public class ClassificationDaoHibernateImpl
         extends IdentifiableDaoBase<Classification>
         implements IClassificationDao {
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ClassificationDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ITaxonNodeDao taxonNodeDao;

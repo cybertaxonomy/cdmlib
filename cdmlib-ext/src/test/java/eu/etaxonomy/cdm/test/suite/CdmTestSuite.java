@@ -23,7 +23,7 @@ import org.junit.runners.Suite;
 		}
 	)
 public class CdmTestSuite {
-	static Logger logger = LogManager.getLogger(CdmTestSuite.class);
+	static Logger logger = LogManager.getLogger();
 
 	// the class remains completely empty,
 	// being used only as a holder for the above annotations
