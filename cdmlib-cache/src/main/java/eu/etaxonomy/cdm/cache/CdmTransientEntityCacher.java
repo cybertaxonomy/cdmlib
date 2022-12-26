@@ -92,8 +92,6 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     /**
      * Generates an id for this session.
-     * @param sessionOwner
-     * @return
      */
     private static String generateCacheId(Object sessionOwner) {
         return sessionOwner.getClass().getName() +  String.valueOf(sessionOwner.hashCode());
