@@ -51,13 +51,13 @@
   
   <dependencies>
     <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-io</artifactId>
+       <groupId>eu.etaxonomy</groupId>
+       <artifactId>cdmlib-test</artifactId>
+       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-test</artifactId>
-        <scope>test</scope>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-io</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

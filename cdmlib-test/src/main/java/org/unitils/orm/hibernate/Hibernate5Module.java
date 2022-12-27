@@ -17,7 +17,6 @@ import org.unitils.orm.hibernate.util.Hibernate5SessionFactoryLoader;
 /**
  * @author a.mueller
  * @since 03.11.2015
- *
  */
 public class Hibernate5Module extends HibernateModule {
 

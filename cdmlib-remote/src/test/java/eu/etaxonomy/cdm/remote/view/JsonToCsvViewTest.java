@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.view;
 
 import java.io.File;
@@ -55,7 +63,7 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
     @Before
     public void setUp() throws Exception {
 
-        model = new HashMap<String,Object>();
+        model = new HashMap<>();
         identifyView = new IdentifyView();
         identifyView.setMarshaller(marshaller);
 
@@ -85,7 +93,7 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
         demoRecord.setAuthorName("Author");
         demoRecord.setDatasetName("Classification");
 
-        ArrayList<CsvDemoRecord> recordList = new ArrayList<CsvDemoRecord>();
+        ArrayList<CsvDemoRecord> recordList = new ArrayList<>();
         logger.info(recordList.size());
         recordList.add(demoRecord);
         recordList.add(demoRecord);
