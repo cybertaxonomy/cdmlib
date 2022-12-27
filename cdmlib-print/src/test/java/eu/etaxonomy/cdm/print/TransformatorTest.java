@@ -19,10 +19,8 @@ import javax.xml.transform.TransformerException;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
@@ -50,8 +48,8 @@ public class TransformatorTest {
 	 * @throws XSLTransformException
 	 * @throws IOException
 	 */
-	@Test
-	@Ignore
+	@SuppressWarnings("unused")
+    @Test
 	public void testTransformator() throws XSLTransformException, IOException  {
 		URL stylesheet = TransformatorTest.class.getResource(OdfOutputModule.STYLESHEET_RESOURCE_DEFAULT);
 		new Transformator(stylesheet);
@@ -70,8 +68,8 @@ public class TransformatorTest {
 
 		Document output = transformator.transform(input);
 
-		XMLOutputter outputter = new XMLOutputter();
-		outputter.output(output, System.out);
+//		XMLOutputter outputter = new XMLOutputter();
+//		outputter.output(output, System.out);
 
 		assertNotNull("Output document should not be null", output);
 	}
