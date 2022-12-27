@@ -56,30 +56,16 @@
   
   <!-- bootstrap the Web Configuration -->
   <bean class="eu.etaxonomy.cdm.remote.config.MultiWebSecurityConfiguration" />
-  
-  <bean class="eu.etaxonomy.cdm.opt.config.EhCacheDiskStoreConfiguration" />
 
   <!-- OAI-PMH TODO externalize? -->
+  <!-- TODO Do we really need this here? It exists in remote.xml already which 
+       is imported (see above) -->
   <bean name="taxonOaiPmhController"
-    class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
-    <property name="cachingModel" ref="taxonOaiPmhCacheMapping" />
-  </bean>
-
-  <bean name="taxonOaiPmhCacheMapping"
-    class="org.springmodules.cache.provider.ehcache.EhCacheCachingModel">
+         class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
+    <property name="cacheManager" ref="cacheManager"/>
     <property name="cacheName"
       value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken" />
-  </bean>
-
-  <bean id="serializableFactory" class="org.springmodules.cache.serializable.XStreamSerializableFactory" />
-
-  <bean id="cacheProviderFacade" class="org.springmodules.cache.provider.ehcache.EhCacheFacade">
-    <!-- 
-        the cacheManager is provided by the eu.etaxonomy.cdm.api.config.EhCacheConfiguration
-        in cdmlib-services
-     -->
-    <property name="cacheManager" ref="cacheManager" />
-    <property name="serializableFactory" ref="serializableFactory" />
+    <!-- OLD: see comment on AbstractOaiPmhController.cacheManager <property name="cachingModel" ref="taxonOaiPmhCacheMapping" /> -->
   </bean>
 
 </beans>

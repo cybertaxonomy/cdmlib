@@ -116,16 +116,18 @@
 
   <!-- OAI-PMH -->
   <bean name="taxonOaiPmhController"
-    class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
-    <property name="cachingModel" ref="taxonOaiPmhCacheMapping"/>
+        class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
+    <property name="cacheManager" ref="cacheManager"/>
+    <property name="cacheName"
+      value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken"/>
+    <!-- OLD:  <property name="cachingModel" ref="taxonOaiPmhCacheMapping"/> -->
   </bean>
 
-  <bean name="taxonOaiPmhCacheMapping"
+<!-- OLD: <bean name="taxonOaiPmhCacheMapping"
     class="org.springmodules.cache.provider.ehcache.EhCacheCachingModel">
     <property name="cacheName"
       value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken"/>
-  </bean>
-
+  </bean> 
   <bean id="serializableFactory"
     class="org.springmodules.cache.serializable.XStreamSerializableFactory"/>
 
@@ -133,5 +135,5 @@
     <property name="cacheManager" ref="cacheManager"/>
     <property name="serializableFactory" ref="serializableFactory"/>
   </bean>
-
+ -->
 </beans>
