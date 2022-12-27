@@ -11,7 +11,7 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
     ">
     
-<!--         We do not use spelling suggestions anymore. This one relates to springmodules which is -->
+<!--     We do not use spelling suggestions anymore. This one relates to springmodules which is -->
 <!--     somewhat outdated. Once we work again with spelling suggestions we better use a modern -->
 <!--     approache, e.g. annotation based. -->
    <!--  <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
