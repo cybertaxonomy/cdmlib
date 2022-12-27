@@ -8,10 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
-import io.swagger.annotations.Api;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -30,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.remote.editor.LSIDAuthorityPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * Controller which accepts incoming requests to the LSIDAuthorityService
@@ -65,7 +62,7 @@ import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 @Api(value="lsid_authority",
     description="Controller which accepts incoming requests to the LSIDAuthorityService.")
 public class AuthorityController {
-    private static Log log = LogFactory.getLog(AuthorityController.class);
+
     private LSIDAuthorityService lsidAuthorityService;
 
     @Autowired

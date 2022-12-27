@@ -48,11 +48,9 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
- *
  * <h2>Creating create DbUnit dataset files</h2>
  * In order to create DbUnit datasets  for integration tests it is highly recommended method to use the
  * {@link #writeDbUnitDataSetFile(String[])} method.
- *
  */
 @Component
 public class DataBaseTablePrinter {
