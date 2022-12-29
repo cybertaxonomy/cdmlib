@@ -67,12 +67,14 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
  * @since 20.09.2012
  * <p>
  *  This controller enables an export of the cdm platform via a
- *  REST request. It is debatable if this a wanted behavior.
+ *  REST request. It is debatable if this is a wanted behavior.
  *  For the time being it serves its purpose.
  */
 @Controller
 @RequestMapping(value = { "/checklist" })
 public class ChecklistDemoController extends AbstractController implements ResourceLoaderAware{
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ApplicationContext appContext;
@@ -88,7 +90,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
     private ResourceLoader resourceLoader;
 
-
     /**
      * There should only be one processes operating on the export
      * therefore the according progress monitor uuid is stored in this static
@@ -98,7 +99,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
     private final static long DAY_IN_MILLIS = 86400000;
 
-    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Helper method, which allows to convert strings directly into uuids.

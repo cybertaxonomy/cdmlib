@@ -38,7 +38,6 @@ import io.swagger.annotations.Api;
  * <p>
  * @author a.kohlbecker
  * @since 18.06.2009
- *
  */
 //@Controller // http://gso.gbv.de/sru/DB=2.1/ is defunctional!!! thus this controller is disabled
 @Api(value="ext_bhl-e", description="Provides searche via the SRU (search and retrieve) API of BHL-E ")

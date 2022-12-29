@@ -70,8 +70,7 @@ import io.swagger.annotations.Api;
 @Controller
 @Api(value = "agent")
 @RequestMapping(value = {"/agent/{uuid}"})
-public class AgentController extends AbstractIdentifiableController<AgentBase, IAgentService>
-{
+public class AgentController extends AbstractIdentifiableController<AgentBase, IAgentService> {
 
     private static final Logger logger = LogManager.getLogger();
 

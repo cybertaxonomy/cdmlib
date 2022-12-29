@@ -60,11 +60,11 @@ import eu.etaxonomy.cdm.remote.view.FileDownloadView;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
 
 /**
+ * This controller exports taxonomies via Darwin Core Archive
+ * (https://en.wikipedia.org/wiki/Darwin_Core_Archive).
+ *
  * @author a.mueller
  * @since 28.06.2017
- * <p>
- *  This controller exports taxonomies via Darwin Core Archive
- *  (https://en.wikipedia.org/wiki/Darwin_Core_Archive).
  */
 @Controller
 @RequestMapping(value = { "/dwca" })
@@ -154,11 +154,6 @@ public class DwcaExportController
      * This service endpoint is for generating the documentation site.
      * If any request of the other endpoint below is incomplete or false
      * then this method will be triggered.
-     *
-     * @param response
-     * @param request
-     * @return
-     * @throws IOException
      */
     public ModelAndView exportGetExplanation(HttpServletResponse response,
             HttpServletRequest request, Resource res) throws IOException{
@@ -178,8 +173,6 @@ public class DwcaExportController
         mv.setView(hv);
         return mv;
     }
-
-
 
     /**
      *

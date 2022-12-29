@@ -59,7 +59,6 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 /**
  * @author a.oppermann
  * @since 20.09.2012
- *
  */
 @Controller
 @RequestMapping(value = { "/csv" })

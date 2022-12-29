@@ -62,7 +62,9 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("occurrence_catalogue")
 @RequestMapping(value = { "/occurrence_catalogue" })
-public class OccurrenceCatalogueController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService> implements ResourceLoaderAware{
+public class OccurrenceCatalogueController
+        extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>
+        implements ResourceLoaderAware{
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -106,8 +108,6 @@ public class OccurrenceCatalogueController extends AbstractController<SpecimenOr
             "sources.citationMicroReference",
             "rights.abbreviatedText"
     });
-
-
 
     public OccurrenceCatalogueController() {
         super();

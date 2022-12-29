@@ -64,6 +64,8 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
     @SuppressWarnings("unchecked")
     public BaseController (){
 
+       //define base class   //TODO can't we do this more straight forward e.g.
+                             //by an abstract method returning the class?
        Type superClass = this.getClass().getGenericSuperclass();
        while(true){
            if(superClass instanceof ParameterizedType){

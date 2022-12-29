@@ -140,7 +140,7 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
     protected void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         // DefaultServletHandlerConfigurer: delegates unhandled requests by forwarding to
         // the Servlet container's "default" servlet, since the DispatcherServlet is mapped to "/"
-        // so static content ad welcome files are handled by the default servlet
+        // so static content as welcome files are handled by the default servlet
         configurer.enable();
         logger.debug("configureDefaultServletHandling");
     }
