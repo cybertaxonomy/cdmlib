@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springmodules.cache.CachingModel;
+import org.springmodules.cache.provider.CacheProviderFacade;
 
 import eu.etaxonomy.cdm.api.service.IAuditEventService;
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
@@ -47,12 +49,6 @@ import eu.etaxonomy.cdm.remote.editor.SetSpecEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.exception.CannotDisseminateFormatException;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
 
 public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>> {
 
@@ -72,61 +68,24 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     private Integer pageSize;
 
-    private String cacheName;
+    private CacheProviderFacade cacheProviderFacade;
 
-    private Cache cache;
+    private CachingModel cachingModel;
 
     private boolean onlyItemsWithLsid = false;
 
-
-    //***** PRELIMINARY CACHE HANDLING  by AM
-    //This is a quick and dirty implementation to remove springmodules dependency
-    //The former code used springmodules EhCacheFacade.
-    //New implementation should use current Spring and current EhCache version.
-    //This should be implemented correctly once upgraded to Spring 5.x and EhCache 3.x
-    //
-    //The cache is needed for the TaxonOaiPmhController.resumptionToken
-    //
-    //see also remote.xml entries and remote-test applicationRemoteContext.xml
-    private CacheManager cacheManager;
-    @Autowired   //if we create the bean via annotations once
-    public void setCacheManager(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
+    /**
+     * sets cache name to be used
+     */
+    @Autowired
+    public void setCacheProviderFacade(CacheProviderFacade cacheProviderFacade) {
+        this.cacheProviderFacade = cacheProviderFacade;
     }
 
-    public void setCacheName(String cacheName) {
-        this.cacheName = cacheName;
-
-        cacheManager = (cacheManager == null) ? CacheManager.getInstance(): cacheManager;
-        if (cache == null) {
-//            cache = CacheManager.getCacheManager("oaipmh").getCache(cacheName);
-            //if we run in test environment the cache name can be set multiple times in the same JVM
-            cache = cacheManager.getCache(cacheName);
-        }
-        if (cache == null) {
-
-            //TODO further define OAI-Cache configuration
-            CacheConfiguration oaiCacheConfiguration = new CacheConfiguration(cacheName, 5000)
-                    .eternal(false)
-                    .timeToLiveSeconds(60*60*2);  //2h
-
-            //TODO how to define the disk path? Seems to be defined via
-            //cacheManager configuration which is out of scope here
-            //Is it not possible to defined a separate disk path for each cache?
-            //Do further testing once upgraded to EhCache 3.x
-            PersistenceConfiguration persistenceConfig = new PersistenceConfiguration();
-            persistenceConfig.strategy(Strategy.LOCALTEMPSWAP);
-            oaiCacheConfiguration.persistence(persistenceConfig);
-
-            cache = new Cache(oaiCacheConfiguration);
-            cacheManager.addCache(cache);
-        }
+    @Autowired
+    public void setCachingModel(CachingModel cachingModel) {
+        this.cachingModel = cachingModel;
     }
-
-    public String getCacheName() {
-        return cacheName;
-    }
-    //************* END PRELIMINARY CACHE HANDLING  ******************/
 
     public abstract void setService(SERVICE service);
 
@@ -352,11 +311,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
         modelAndView.addObject("pager",results);
 
-        if(results.getCount() > results.getRecords().size() && cache != null) {
+        if(results.getCount() > results.getRecords().size() && cacheProviderFacade != null) {
             ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
             modelAndView.addObject("resumptionToken",resumptionToken);
-            Element element = new Element(resumptionToken.getValue(), resumptionToken);
-            cache.put(element);
+            cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
         }
 
         return modelAndView;
@@ -365,8 +323,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListIdentifiers", "resumptionToken"})
     public ModelAndView listIdentifiers(@RequestParam(value = "resumptionToken",required = true) String rToken) {
         ResumptionToken resumptionToken;
-        if(cache != null && cache.get(rToken) != null) {
-            resumptionToken = (ResumptionToken) cache.get(rToken).getObjectValue();
+        if(cacheProviderFacade != null && cacheProviderFacade.getFromCache(rToken, cachingModel) != null) {
+            resumptionToken = (ResumptionToken) cacheProviderFacade.getFromCache(rToken, cachingModel);
             ModelAndView modelAndView = new ModelAndView("oai/listIdentifiers");
             modelAndView.addObject("metadataPrefix",resumptionToken.getMetadataPrefix());
 
@@ -405,12 +363,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             if(results.getCount() > ((results.getPageSize() * results.getCurrentIndex()) + results.getRecords().size())) {
                 resumptionToken.updateResults(results);
                 modelAndView.addObject("resumptionToken", resumptionToken);
-                Element element = new Element(resumptionToken.getValue(), resumptionToken);
-                cache.put(element);
+                cacheProviderFacade.putInCache(resumptionToken.getValue(),cachingModel, resumptionToken);
             } else {
                 resumptionToken = ResumptionToken.emptyResumptionToken();
                 modelAndView.addObject("resumptionToken",resumptionToken);
-                cache.remove(rToken);
+                cacheProviderFacade.removeFromCache(rToken,cachingModel);
             }
 
             return modelAndView;
@@ -469,11 +426,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
         modelAndView.addObject("pager",results);
 
-        if(results.getCount() > results.getRecords().size() && cache != null) {
+        if(results.getCount() > results.getRecords().size() && cacheProviderFacade != null) {
             ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
             modelAndView.addObject("resumptionToken",resumptionToken);
-            Element element = new Element(resumptionToken.getValue(), resumptionToken);
-            cache.put(element);
+            cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
         }
 
         return modelAndView;
@@ -483,8 +439,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     public ModelAndView listRecords(@RequestParam("resumptionToken") String rToken) {
 
        ResumptionToken resumptionToken;
-       if(cache != null && cache.get(rToken) != null) {
-               resumptionToken = (ResumptionToken) cache.get(rToken).getObjectValue();
+       if(cacheProviderFacade != null && cacheProviderFacade.getFromCache(rToken,cachingModel) != null) {
+               resumptionToken = (ResumptionToken) cacheProviderFacade.getFromCache(rToken,cachingModel);
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.addObject("metadataPrefix",resumptionToken.getMetadataPrefix());
 
@@ -531,12 +487,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             if(results.getCount() > ((results.getPageSize() * results.getCurrentIndex()) + results.getRecords().size())) {
                 resumptionToken.updateResults(results);
                 modelAndView.addObject("resumptionToken",resumptionToken);
-                Element element = new Element(resumptionToken.getValue(), resumptionToken);
-                cache.put(element);
+                cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
             } else {
                 resumptionToken = ResumptionToken.emptyResumptionToken();
                 modelAndView.addObject("resumptionToken",resumptionToken);
-                cache.remove(rToken);
+                cacheProviderFacade.removeFromCache(rToken, cachingModel);
             }
 
             return modelAndView;

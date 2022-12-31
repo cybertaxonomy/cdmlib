@@ -52,17 +52,16 @@
   
   <!-- bootstrap the Web Configuration -->
   <bean class="eu.etaxonomy.cdm.remote.config.MultiWebSecurityConfiguration" />
+  
+<!--   <bean class="eu.etaxonomy.cdm.opt.config.EhCacheDiskStoreConfiguration" /> -->
 
   <!-- OAI-PMH TODO externalize? -->
   <bean name="taxonOaiPmhController"
     class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
-    <property name="cacheManager" ref="cacheManager"/>
-    <property name="cacheName"
-      value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken"/>
-    <!-- OLD:  <property name="cachingModel" ref="taxonOaiPmhCacheMapping" /> -->
+    <property name="cachingModel" ref="taxonOaiPmhCacheMapping" />
   </bean>
 
-<!-- <bean name="taxonOaiPmhCacheMapping"
+  <bean name="taxonOaiPmhCacheMapping"
     class="org.springmodules.cache.provider.ehcache.EhCacheCachingModel">
     <property name="cacheName"
       value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken" />
@@ -71,13 +70,13 @@
   <bean id="serializableFactory" class="org.springmodules.cache.serializable.XStreamSerializableFactory" />
 
   <bean id="cacheProviderFacade" class="org.springmodules.cache.provider.ehcache.EhCacheFacade">
-    <!- 
+    <!-- 
         the cacheManager is provided by the eu.etaxonomy.cdm.api.config.EhCacheConfiguration
         in cdmlib-services
-     ->
+     -->
     <property name="cacheManager" ref="cacheManager" />
     <property name="serializableFactory" ref="serializableFactory" />
-  </bean> -->
+  </bean>
   
   
 
@@ -89,10 +88,10 @@
         eu/etaxonomy/cdm/service/api/conf which cannot be used in this context. Therefore we are 
         using the EhCacheManagerFactoryBean here to initialize the cacheManager bean.
      -->
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-      <property name="configLocation" value="classpath:/eu/etaxonomy/cdm/remote/ehcache.xml"/>
-      <property name="shared" value="true"/>
-    </bean> 
+<!--     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"> -->
+<!--       <property name="configLocation" value="classpath:/eu/etaxonomy/cdm/remote/ehcache.xml"/> -->
+<!--       <property name="shared" value="true"/> -->
+<!--     </bean>  -->
 
     <context:component-scan base-package="eu/etaxonomy/cdm/remote/controller"/> 
 </beans>
