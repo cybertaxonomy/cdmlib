@@ -70,6 +70,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     NOMENCLATURALSTATUS("NomenclaturalStatus"),
     NOMENCLATURALSOURCE("NomenclaturalSource"),
     NOMENCLATURALSTATUSTYPE("NomenclaturalStatusType"),
+    OCCURRENCESTATUS("OccurrenceStatus"),
     PRESENCEABSENCETERM("PresenceAbsenceTerm"),
     POLYTOMOUSKEY("PolytomousKey"),
     POLYTOMOUSKEYNODE("PolytomousKeyNode"),
