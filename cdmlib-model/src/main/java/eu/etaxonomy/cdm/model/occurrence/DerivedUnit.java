@@ -549,6 +549,11 @@ public class DerivedUnit
 			result.setStoredUnder(this.storedUnder);
 			//preservation
 			result.setPreservation(this.preservation);
+			//status
+			result.status = new HashSet<>();
+			for (OccurrenceStatus status: this.getStatus()) {
+			    result.addStatus(status.clone());
+			}
 			//no changes to: accessionNumber, catalogNumber, collectorsNumber
 			return result;
 		} catch (CloneNotSupportedException e) {

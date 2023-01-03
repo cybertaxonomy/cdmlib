@@ -51,12 +51,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 28.10.2008
  */
-public class SpecimenTest {
+public class SpecimenTest extends EntityTestBase {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -294,6 +295,8 @@ public class SpecimenTest {
 //		specimen.addMedia(media);    #3597
 		specimen.addRights(right);
 		specimen.addSource(source);
+		DefinedTerm destroyed = DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed);
+		specimen.addStatus(OccurrenceStatus.NewInstance(destroyed));
 
 		try {
 			Thread.sleep(200);
@@ -366,6 +369,12 @@ public class SpecimenTest {
 		assertEquals(source.getId(), ((OriginalSourceBase)specimenClone.getSources().iterator().next()).getId());
 		assertNotSame(source, specimenClone.getSources().iterator().next());
 		assertEquals(1, specimenClone.getSources().size());
+		//test status
+		assertEquals(1, specimenClone.getStatus().size());
+		assertEquals("unit should be adapted to new unit", specimenClone, specimenClone.getStatus().iterator().next().getUnit());
+	    assertEquals("old status should still link to old specimen", specimen, specimen.getStatus().iterator().next().getUnit());
+	    assertSame("Type should be same", specimen.getStatus().iterator().next().getType(), specimenClone.getStatus().iterator().next().getType());
+	    assertNotNull("... and not null", specimen.getStatus().iterator().next().getType());
 	}
 
     @Test
