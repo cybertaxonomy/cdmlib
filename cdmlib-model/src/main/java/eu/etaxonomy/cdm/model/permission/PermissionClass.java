@@ -37,6 +37,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     CLASSIFICATION("Classification"),
     COLLECTION("Collectioni"),
     DEFINEDTERM("DefinedTerm"),
+    DERIVATIONEVENT("DerivationEvent"),
     DESCRIPTIONBASE("Description"),
     DESCRIPTIONELEMENTBASE("DescriptionElement"),
     DESCRIPTIONELEMENTSOURCE("DescriptionElementSource"),
