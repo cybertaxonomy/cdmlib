@@ -77,7 +77,7 @@ public class VocabularyServiceImpl
     @Override
     public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(Set<TermType> termTypes, List<String> propertyPaths){
         if (termTypes.size() == 1) {
-            return findByTermType(termTypes, propertyPaths);
+            return findByTermType(termTypes.iterator().next(), propertyPaths);
         }else {
             List<TermVocabulary<T>> result = new ArrayList<>();
             for (TermType termType : termTypes) {
