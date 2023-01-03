@@ -28,10 +28,9 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
  * (irrespective of the entities that violated them).
  *
  * @author ayco_holleman
- *
  */
-public interface IEntityValidationService extends IService<EntityValidation>,
-        IEntityValidationCrud {
+public interface IEntityValidationService
+        extends IService<EntityValidation>, IEntityValidationCrud {
 
     /**
      * Save the result of an entity validation to the error tables. Previous validation
@@ -43,12 +42,12 @@ public interface IEntityValidationService extends IService<EntityValidation>,
      * @param crudEventType
      *            The CRUD operation triggering the validation
      */
-@Override
-//    Note that this method should not
-//    * be exposed via cdmlib-services, because this is a backend-only affair. Populating
-//    * the error tables is done by the CVI (more particularly by an
-//    * {@link EntityValidationTaskBase}). External software like the TaxEditor can and should
-//    * not have access to this method.
+    @Override
+    //    Note that this method should not
+    //    * be exposed via cdmlib-services, because this is a backend-only affair. Populating
+    //    * the error tables is done by the CVI (more particularly by an
+    //    * {@link EntityValidationTaskBase}). External software like the TaxEditor can and should
+    //    * not have access to this method.
     <T extends ICdmBase> void  saveEntityValidation(T validatedEntity, Set<ConstraintViolation<T>> errors, CRUDEventType crudEventType, Class<?>[] validationGroups);
 
 
