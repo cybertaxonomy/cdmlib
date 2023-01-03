@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
 
 import static org.junit.Assert.assertEquals;
@@ -17,7 +16,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
@@ -218,14 +217,17 @@ public class SpecimenTest {
 
 		//Null test is not full implemented, but an error is thrown if null throws
 		//null pointer exception somewhere
-		DerivedUnit specimenNullClone = specimen.clone();
+		@SuppressWarnings("unused")
+        DerivedUnit specimenNullClone = specimen.clone();
 
 		String accessionNumber = "accNumber";
 		String catalogNumber = "catNumber";
 		Collection collection = Collection.NewInstance();
 		collection.setCode("code");
 		DateTime created = new DateTime();
-		Person createdBy = Person.NewTitledInstance("creator");
+		Person createdByPerson = Person.NewTitledInstance("creator");
+		User createdBy = User.NewInstance("username", "pwd");
+		createdBy.setPerson(createdByPerson);
 		DerivationEvent derivedFrom = DerivationEvent.NewInstance(null);
 		int id = 22;
 		String individualCount = "25";
@@ -234,8 +236,8 @@ public class SpecimenTest {
 		try {
 			lsid = new LSID("urn:lsid:example.com:foo:1");
 		} catch (MalformedLSIDException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Assert.fail();
 		}
 //		DerivedUnit nextVersion = DerivedUnit.NewPreservedSpecimenInstance();
 //		DerivedUnit previousVersion = DerivedUnit.NewPreservedSpecimenInstance();
@@ -244,9 +246,11 @@ public class SpecimenTest {
 		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
 		TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		String titleCache = "title";
-		Calendar updated = Calendar.getInstance();
-		Person updatedBy = Person.NewTitledInstance("updatedPerson");
-		UUID uuid = UUID.randomUUID();
+		DateTime updated = DateTime.now();
+		Person updatedByPerson = Person.NewTitledInstance("updatedPerson");
+	    User updatedBy = User.NewInstance("updated", "pwd2");
+	    updatedBy.setPerson(updatedByPerson);
+	    UUID uuidSpecimen = UUID.randomUUID();
 
 		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
 		String definition = "definition";
@@ -265,7 +269,7 @@ public class SpecimenTest {
 		specimen.setCatalogNumber(catalogNumber);
 		specimen.setCollection(collection);
 		specimen.setCreated(created);
-//		specimen.setCreatedBy(createdBy);
+		specimen.setCreatedBy(createdBy);
 		specimen.setDerivedFrom(derivedFrom);
 		specimen.setId(id);
 		specimen.setIndividualCount(individualCount);
@@ -276,9 +280,9 @@ public class SpecimenTest {
 		specimen.setSex(sex);
 		specimen.setStoredUnder(storedUnder);
 		specimen.setTitleCache(titleCache, protectedTitleCache);
-//		specimen.setUpdated(updated);
-//		specimen.setUpdatedBy(updatedBy);
-		specimen.setUuid(uuid);
+		specimen.setUpdated(updated);
+		specimen.setUpdatedBy(updatedBy);
+		specimen.setUuid(uuidSpecimen);
 
 		specimen.addAnnotation(annotation);
 		specimen.putDefinition(Language.DEFAULT(), definition);
@@ -296,8 +300,11 @@ public class SpecimenTest {
 		} catch (InterruptedException e) {
 			//ignore
 		}
+
+		//clone
 		DerivedUnit specimenClone = specimen.clone();
 
+		//test
 		assertFalse(id == specimenClone.getId());
 		assertFalse(created.equals(specimenClone.getCreated()));
 		assertFalse(createdBy.equals(specimenClone.getCreatedBy()));
@@ -305,8 +312,7 @@ public class SpecimenTest {
 		assertFalse(updatedBy.equals(specimenClone.getUpdatedBy()));
 		assertNull(specimenClone.getUpdatedBy());
 		assertNull(specimenClone.getCreatedBy());
-		assertFalse(uuid.equals(specimenClone.getUuid()));
-
+		assertFalse(uuidSpecimen.equals(specimenClone.getUuid()));
 
 		assertEquals(accessionNumber, specimenClone.getAccessionNumber());
 		assertEquals(catalogNumber, specimenClone.getCatalogNumber());
@@ -364,7 +370,7 @@ public class SpecimenTest {
 
     @Test
     public void beanTests(){
-//      #5307 Test that BeanUtils does not fail
+        //#5307 Test that BeanUtils does not fail
         BeanUtils.getPropertyDescriptors(DerivedUnit.class);
         BeanUtils.getPropertyDescriptors(SpecimenOrObservationBase.class);
         BeanUtils.getPropertyDescriptors(FieldUnit.class);
