@@ -23,6 +23,12 @@ import com.sun.xml.bind.CycleRecoverable;
 import eu.etaxonomy.cdm.remote.dto.tdwg.Actor;
 import eu.etaxonomy.cdm.remote.dto.tdwg.Concept;
 
+/**
+ * TaxonConcept class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonConcept", propOrder = {
 	    "primary",

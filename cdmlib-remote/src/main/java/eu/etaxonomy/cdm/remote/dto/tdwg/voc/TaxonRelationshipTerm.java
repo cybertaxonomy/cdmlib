@@ -15,6 +15,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
 
+/**
+ * TaxonRelationshipTerm class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonRelationshipTerm", propOrder = {})
 @XmlRootElement(name = "TaxonRelationshipTerm", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")

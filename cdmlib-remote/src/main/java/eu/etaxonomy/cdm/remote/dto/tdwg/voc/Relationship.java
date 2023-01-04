@@ -16,6 +16,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
 
+/**
+ * Relationship class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Relationship", propOrder = {
 	    "fromTaxon",
