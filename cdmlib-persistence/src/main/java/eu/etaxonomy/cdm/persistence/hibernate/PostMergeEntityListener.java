@@ -136,9 +136,9 @@ public class PostMergeEntityListener implements MergeEventListener {
                     //    * addDeleteAddHomotypicSynonymWithAnnotations
                     //    * addHeterotypicSynonym
                     //    * testAddHomotypicSynonym
-                    //All due to failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.taxon.TaxonNode.childNodes, could not initialize proxy - no Session
+                    //All due to failing to lazily initialize a collection of role: eu.etaxonomy.cdm.model.taxon.TaxonNode.childNodes, could not initialize proxy - no Session
                     //We need to check if this is an issue in the test behavior or in the solution itself.
-                    //We could also try to atleast add a check if the children list is attached to a session
+                    //We could also try to at least add a check if the children list is attached to a session
                     //before initializing it.
                     //
                     logger.warn("Error in PostMergeEntityListener during handleTreeNodes: " + e.getMessage());

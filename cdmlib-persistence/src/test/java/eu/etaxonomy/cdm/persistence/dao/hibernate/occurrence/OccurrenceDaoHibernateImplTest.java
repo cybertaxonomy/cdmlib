@@ -47,7 +47,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
 	@Test
 	public void testRebuildIndex() {
-		logger.warn("Not yet implemented");
+		logger.warn("testRebuildIndex not yet implemented");
 	}
 
     @Test
@@ -135,7 +135,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 	    status.setCitationMicroReference("222");
 	    dao.saveOrUpdate(specimen);
 	    try {
-            commitAndStartNewTransaction(new String[]{"OccurrenceStatus","OccurrenceStatus_Annotation","Annotation","SpecimenOrObservationBase"});
+            commitAndStartNewTransaction(new String[]{/*"OccurrenceStatus","OccurrenceStatus_Annotation","Annotation","SpecimenOrObservationBase" */});
             Assert.fail("Updating status without type should throw an exception");
         } catch (ConstraintViolationException e) {
             //constraint violation expected

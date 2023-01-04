@@ -155,7 +155,7 @@ public class DerivedUnit
 	@XmlElementWrapper(name = "OccurrenceStatuses")
     @XmlElement(name = "OccurrenceStatus")
     @OneToMany(fetch= FetchType.LAZY, mappedBy = "unit", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @IndexedEmbedded(depth=1)
     private Set<OccurrenceStatus> status = new HashSet<>();
