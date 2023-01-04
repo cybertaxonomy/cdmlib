@@ -122,7 +122,6 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
         return new CacheConfiguration(cacheId, 0)
             .eternal(true)
-            .statistics(true)
             .sizeOfPolicy(sizeOfConfig)
             .overflowToOffHeap(false);
     }

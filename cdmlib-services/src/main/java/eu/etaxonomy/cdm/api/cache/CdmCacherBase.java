@@ -80,8 +80,7 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
                 .eternal(false)
                 // default ttl and tti set to 2 hours
                 .timeToLiveSeconds(60*60*2)
-                .timeToIdleSeconds(60*60*2)
-                .statistics(true);
+                .timeToIdleSeconds(60*60*2);
 
         return cc;
     }
