@@ -20,7 +20,6 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.CacheConfiguration.CacheEventListenerFactoryConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 /**
@@ -33,13 +32,14 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
+    public static final String DEFAULT_CACHE_NAME = "cdmEntityDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
 
     @Autowired
     public CacheManager cacheManager;
 
     /**
      * Constructor which initializes a singleton {@link net.sf.ehcache.CacheManager}
+     * if not yet initialzed
      */
     public CdmCacherBase() {
         init();
@@ -71,7 +71,7 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
      * Returns the default cache configuration.
      */
     protected CacheConfiguration getDefaultCacheConfiguration() {
-        CacheEventListenerFactoryConfiguration factory;
+
         // For a better understanding on how to size caches, refer to
         // http://ehcache.org/documentation/configuration/cache-size
 
@@ -87,8 +87,6 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
 
     /**
      * Returns the default cache
-     *
-     * @return
      */
     public Cache getDefaultCache() {
         Cache defaultCache = cacheManager.getCache(DEFAULT_CACHE_NAME);

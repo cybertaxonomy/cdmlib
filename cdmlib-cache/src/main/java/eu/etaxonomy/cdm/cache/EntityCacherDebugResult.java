@@ -220,14 +220,15 @@ public class EntityCacherDebugResult {
     }
 
     private String getCachesContainingEntity(CdmBase cdmEntity) {
-        Cache defaultCache = CacheManager.create().getCache(CdmCacherBase.DEFAULT_CACHE_NAME);
         String caches = "";
+
+        Cache defaultCache = CacheManager.create().getCache(CdmCacherBase.DEFAULT_CACHE_NAME);
         Element dce = defaultCache.get(cdmEntity.getUuid());
         if(dce != null && dce.getObjectValue() == cdmEntity) {
             caches = "{DC}";
         }
 
-        Object cte = cacher.getFromCache(CdmTransientEntityCacher.generateKey(cdmEntity));
+        CdmBase cte = cacher.getFromCache(CdmTransientEntityCacher.generateKey(cdmEntity));
         if(cte != null && cte == cdmEntity) {
             caches += "{TC}";
         }
