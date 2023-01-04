@@ -52,7 +52,7 @@ public class OccurrenceStatus
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@NotNull
+	@NotNull(message="Occurrence status must have a type defined")
 	private DefinedTerm type;
 
     @XmlElement(name = "Name")
