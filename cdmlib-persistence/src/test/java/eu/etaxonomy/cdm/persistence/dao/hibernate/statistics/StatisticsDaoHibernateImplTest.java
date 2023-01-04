@@ -177,7 +177,7 @@ public class StatisticsDaoHibernateImplTest
 	}
 
 	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml")
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testGetAllChildNodes() {
 		List<UUID> result;
 		createDataSet();
