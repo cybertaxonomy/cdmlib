@@ -146,7 +146,8 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
         "taxonName"
     })
 	public static class HasName extends LinkType {
-		@XmlElement(name = "TaxonName", namespace = "http://rs.tdwg.org/ontology/voc/TaxonName#")
+
+	    @XmlElement(name = "TaxonName", namespace = "http://rs.tdwg.org/ontology/voc/TaxonName#")
 		private TaxonName taxonName;
 
         protected HasName() {}
@@ -155,7 +156,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
         	if(useRelation) {
 			    if(taxonName != null && taxonName.getIdentifier() != null) {
 			    	this.setResource(taxonName.getIdentifier());
-			    }  else {
+			    } else {
 			    	this.taxonName = taxonName;
 			    }
 			} else {

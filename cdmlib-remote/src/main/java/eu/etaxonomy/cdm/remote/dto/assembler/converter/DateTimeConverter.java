@@ -17,6 +17,12 @@ import org.joda.time.DateTime;
 import com.github.dozermapper.core.CustomConverter;
 import com.github.dozermapper.core.MappingException;
 
+/**
+ * DateTimeConverter for Dozer mappings.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 public class DateTimeConverter implements CustomConverter {
 
 	@Override

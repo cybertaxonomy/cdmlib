@@ -16,6 +16,12 @@ import com.github.dozermapper.core.CustomFieldMapper;
 import com.github.dozermapper.core.classmap.ClassMap;
 import com.github.dozermapper.core.fieldmap.FieldMap;
 
+/**
+ * HibernateProxyFieldMapper for Dozer mappings.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 public class HibernateProxyFieldMapper implements CustomFieldMapper {
 
 	@Override

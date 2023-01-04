@@ -159,20 +159,20 @@
     </mapping>
     
     <mapping> 
-        <class-a>eu.etaxonomy.cdm.model.taxon.Synonym</class-a>
-        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
+       <class-a>eu.etaxonomy.cdm.model.taxon.Synonym</class-a>
+       <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
        <field>
            <a>this</a>
            <b>fromTaxon</b>
        </field>
        <field>
-         <a>acceptedTaxon</a>
-         <b>toTaxon</b>
+           <a>acceptedTaxon</a>
+           <b>toTaxon</b>
        </field>
        <field>
-            <a>type</a>
-            <b>relationshipCategory</b>
-        </field>
+           <a>type</a>
+           <b>relationshipCategory</b>
+       </field>
        <field-exclude>
            <a>createdBy.username</a>
            <b>creator</b>
@@ -206,7 +206,6 @@
            <a>updatedBy.username</a>
            <b>contributor</b>
        </field-exclude>
-
-</mapping>
+    </mapping>
     
 </mappings>
