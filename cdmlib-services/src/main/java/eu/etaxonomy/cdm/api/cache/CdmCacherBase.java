@@ -91,9 +91,11 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
     public Cache getDefaultCache() {
         Cache defaultCache = cacheManager.getCache(DEFAULT_CACHE_NAME);
         if(defaultCache == null) {
+            CacheConfiguration defaultCacheConfig = getDefaultCacheConfiguration();
+            defaultCache = new Cache(defaultCacheConfig);
+
             // Create default cache
-            cacheManager.addCache(DEFAULT_CACHE_NAME);
-            defaultCache = cacheManager.getCache(DEFAULT_CACHE_NAME);
+            cacheManager.addCache(defaultCache);
             //FIXME write test to check if default config as defined in EhCacheConfiguration is being used
         }
         return defaultCache;
