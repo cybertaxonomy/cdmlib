@@ -37,7 +37,6 @@ import org.joda.time.Partial;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -196,7 +195,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
     }
 
     @Test
-    @Ignore //FIXME #10201
     public void testDeepMapping() throws MalformedLSIDException {
 
         if(!OaiPmhViewTest.dozerXsdIsAvailable()){

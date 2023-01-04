@@ -102,6 +102,9 @@
         <entry key="constantConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.ConstantConverter"/>
         </entry>
+        <entry key="enumConverter">
+          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.EnumConverter"/>
+        </entry>
       </map>
     </property>
   </bean>
