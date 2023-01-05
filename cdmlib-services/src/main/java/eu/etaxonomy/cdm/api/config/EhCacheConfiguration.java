@@ -70,7 +70,7 @@ public class EhCacheConfiguration implements DisposableBean {
     protected CacheConfiguration getDefaultCacheConfiguration() {
 
         // For a better understanding on how to size caches, refer to
-        // http://ehcache.org/documentation/configuration/cache-size
+        // https://www.ehcache.org/documentation/2.8/configuration/cache-size.html
 
         CacheConfiguration cc = new CacheConfiguration(CdmPermanentCacheBase.PERMANENT_CACHE_NAME, 500)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
