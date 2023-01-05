@@ -550,7 +550,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
       @Override
       public Set<T> getGeneralizationOf(boolean recursive) {
-          Set<T> result = new HashSet<T>();
+          Set<T> result = new HashSet<>();
         result.addAll(this.generalizationOf);
         if (recursive){
             for (T child : this.generalizationOf){

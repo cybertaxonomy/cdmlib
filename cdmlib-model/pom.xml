@@ -79,10 +79,10 @@
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
           </dependency>
-      </dependencies>
+        </dependencies>
       </plugin>
-    </plugins>
-  	<pluginManagement>
+      </plugins>  	
+      <pluginManagement>
   		<plugins>
   			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
   			<plugin>
@@ -116,7 +116,7 @@
   				</configuration>
   			</plugin>
   		</plugins>
-  	</pluginManagement>
+      </pluginManagement>
   </build>
   <dependencies>
     <dependency>

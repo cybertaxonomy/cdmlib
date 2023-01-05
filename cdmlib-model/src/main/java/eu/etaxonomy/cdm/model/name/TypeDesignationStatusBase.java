@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import javax.persistence.Entity;
@@ -56,6 +55,7 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
         extends DefinedTermBase<T> {
 
 	private static final long serialVersionUID = -7204587330204725285L;
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
 //********************************** Constructor *********************************/
@@ -96,7 +96,7 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
     /**
      * Returns the boolean value indicating whether <i>this</i> type designation
      * status is itself "lectotype" or a kind of "lectotype" (<code>true</code>) or not
-     * (<code>false</code>). Lectotyp is used in a wider sense here including all
+     * (<code>false</code>). Lectotype is used in a wider sense here including all
      * status requiring a designation source including neotypes and epitypes.<BR>
      *
      * A "lectotype" in the wider sense is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit
