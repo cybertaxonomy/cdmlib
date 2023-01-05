@@ -34,7 +34,8 @@ import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
  *
  */
 public class LocalH2 extends BasicDataSource {
-	private static final Logger logger = LogManager.getLogger(LocalH2.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	private final String sep = System.getProperty("file.separator");
 

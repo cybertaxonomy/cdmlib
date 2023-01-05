@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 /**
@@ -39,10 +40,11 @@ import org.hibernate.envers.Audited;
 })
 @Entity
 @Audited
-public class Extension extends VersionableEntity implements Cloneable {
+public class Extension extends VersionableEntity {
+
 	private static final long serialVersionUID = -857207737641432202L;
 	@SuppressWarnings("unused")
-	private static final  Logger logger = LogManager.getLogger(Extension.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Value")
 	@Lob

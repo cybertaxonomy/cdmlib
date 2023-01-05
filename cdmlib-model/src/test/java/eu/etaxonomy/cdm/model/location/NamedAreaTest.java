@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.model.location;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class NamedAreaTest extends EntityTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(NamedAreaTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private NamedArea namedArea1;
 	private NamedAreaLevel level1;

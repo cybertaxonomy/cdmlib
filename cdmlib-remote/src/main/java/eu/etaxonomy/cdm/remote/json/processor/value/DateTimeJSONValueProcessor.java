@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -22,9 +20,6 @@ import net.sf.json.processors.JsonValueProcessor;
  * @since 24.07.2008
  */
 public class DateTimeJSONValueProcessor implements JsonValueProcessor {
-
-	@SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger(DateTimeJSONValueProcessor.class);
 
 	private static DateTimeFormatter iso8601Format = ISODateTimeFormat.dateTime();
 

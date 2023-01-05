@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
         implements ICdmExporter<T>, ApplicationContextAware {
 
-    private static final Logger logger = LogManager.getLogger(CdmApplicationAwareDefaultExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected ApplicationContext applicationContext;
 

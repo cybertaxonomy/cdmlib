@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import javax.persistence.Entity;
@@ -15,10 +14,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
@@ -52,10 +52,11 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Entity
 @Audited
 public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<T>>
-        extends OrderedTermBase<T> {
+        extends DefinedTermBase<T> {
 
 	private static final long serialVersionUID = -7204587330204725285L;
-	static Logger logger = LogManager.getLogger(TypeDesignationStatusBase.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 //********************************** Constructor *********************************/
 
@@ -95,7 +96,7 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
     /**
      * Returns the boolean value indicating whether <i>this</i> type designation
      * status is itself "lectotype" or a kind of "lectotype" (<code>true</code>) or not
-     * (<code>false</code>). Lectotyp is used in a wider sense here including all
+     * (<code>false</code>). Lectotype is used in a wider sense here including all
      * status requiring a designation source including neotypes and epitypes.<BR>
      *
      * A "lectotype" in the wider sense is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit

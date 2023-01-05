@@ -17,7 +17,8 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -52,7 +54,7 @@ public class MarkupDocumentImport
 
     private static final long serialVersionUID = -961438861319456892L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupDocumentImport.class);
+	private static final Logger logger = LogManager.getLogger();
 
 
 	// TODO make part of state, but state is renewed when invoking the import a
@@ -211,7 +213,7 @@ public class MarkupDocumentImport
 	}
 
 	@Override
-    public NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
+    public NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, OrderedTermVocabulary<NamedAreaLevel> voc){
 		return super.getNamedAreaLevel(state, uuid, label, text, labelAbbrev, voc);
 	}
 

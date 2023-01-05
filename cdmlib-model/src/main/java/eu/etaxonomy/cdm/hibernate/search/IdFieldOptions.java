@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
@@ -28,7 +29,7 @@ import org.hibernate.search.bridge.LuceneOptions;
  */
 public class IdFieldOptions implements LuceneOptions {
 
-	private static final Logger logger = LogManager.getLogger(IdFieldOptions.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public Store getStore() {

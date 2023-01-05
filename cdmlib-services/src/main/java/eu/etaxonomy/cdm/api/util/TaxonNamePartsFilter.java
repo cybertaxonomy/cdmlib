@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 
@@ -45,7 +46,7 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
     }
 
     public Optional<String> uninomialQueryString(String query){
-         if(rank.isLower(Rank.GENUS())){
+         if(rank.isLowerThan(RankClass.Genus)){
              return optionalForNonNull(genusOrUninomial);
         } else {
             return Optional.of(appendWildcard(query));
@@ -55,7 +56,7 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
     public Optional<String> infraGenericEpithet(String query){
         if(rank.isInfraGeneric()){
             return Optional.of(appendWildcard(query));
-        } else if(rank.isLower(Rank.GENUS())) {
+        } else if(rank.isLowerThan(RankClass.Genus)) {
             return optionalForNonNull(infraGenericEpithet);
         } else {
             // mask invalid data as null
@@ -64,7 +65,7 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
     }
 
     public Optional<String> specificEpithet(String query){
-        if(rank.isLower(Rank.SPECIES())){
+        if(rank.isLowerThan(RankClass.Species)){
             return optionalForNonNull(specificEpithet);
         } else if(rank.isSpecies()) {
             return Optional.of(appendWildcard(query));

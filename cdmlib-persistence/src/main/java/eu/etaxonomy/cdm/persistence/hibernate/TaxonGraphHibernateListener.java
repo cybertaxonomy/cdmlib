@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  */
 public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener {
 
-    private static final Logger logger = LogManager.getLogger(TaxonGraphHibernateListener.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final long serialVersionUID = 5062518307839173935L;
 

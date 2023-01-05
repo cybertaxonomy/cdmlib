@@ -6,7 +6,6 @@
 */
 package eu.etaxonomy.cdm.remote.server;
 
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -16,8 +15,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assume;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.MethodRule;
@@ -66,22 +65,18 @@ import eu.etaxonomy.cdm.common.URI;
  * @see AssumptionViolatedException
  *
  * @author Dave Syer
- *
  */
 public class ServerRunning implements MethodRule {
 
-    /**
-     *
-     */
+    private static final Logger logger = LogManager.getLogger();
+
     private static final String CONNECT_TEST_PATH = "/classification.json";
 
-    private static Log logger = LogFactory.getLog(ServerRunning.class);
-
     // Static so that we only test once on failure: speeds up test suite
-    private static Map<Integer, Boolean> serverOnline = new HashMap<Integer, Boolean>();
+    private static Map<Integer, Boolean> serverOnline = new HashMap<>();
 
     // Static so that we only test once on failure
-    private static Map<Integer, Boolean> serverOffline = new HashMap<Integer, Boolean>();
+    private static Map<Integer, Boolean> serverOffline = new HashMap<>();
 
     private final boolean assumeOnline;
 

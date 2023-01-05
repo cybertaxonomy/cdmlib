@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
-import eu.etaxonomy.cdm.model.term.TermType;
 
 public enum CdmMetaDataPropertyName implements IKeyTerm{
 
@@ -30,7 +30,7 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
     private int oldPropertyId;
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermType.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private CdmMetaDataPropertyName(String label, String key, int oldPropertyId){
         this.label = label;

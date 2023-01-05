@@ -8,33 +8,22 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author a.mueller
  * @since 03.01.2011
- *
  */
 public class ViralNameTest {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ViralNameTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private IViralName viralName1;
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		viralName1 = TaxonNameFactory.NewViralInstance(Rank.SPECIES());
@@ -42,14 +31,10 @@ public class ViralNameTest {
 
 //****************** TESTS ******************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.ViralName#clone()}.
-	 */
 	@Test
 	public void testClone() {
 		viralName1.setAcronym("MJU455");
-		IViralName clone = (IViralName)viralName1.clone();
+		IViralName clone = viralName1.clone();
 		Assert.assertEquals("Acronym should be equal", "MJU455", clone.getAcronym());
 	}
-
 }

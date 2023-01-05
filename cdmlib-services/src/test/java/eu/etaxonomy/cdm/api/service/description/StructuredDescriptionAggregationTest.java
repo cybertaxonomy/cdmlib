@@ -17,7 +17,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -67,6 +68,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -81,7 +83,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger(StructuredDescriptionAggregationTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID T_LAPSANA_UUID = UUID.fromString("f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8");
     private static final UUID TN_LAPSANA_UUID = UUID.fromString("f4d29e9f-6484-4184-af2e-9704e96a17e3");
@@ -114,7 +116,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
 
     @SpringBeanByType
-    private ICdmRepository repository;
+    private ICdmApplication repository;
 
     @SpringBeanByType
     private ITermService termService;
@@ -851,7 +853,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void addCategoricalData(DescriptionBase<?> desc, UUID featureUuid, UUID stateUUID) {
         Feature feature = (Feature)termService.find(featureUuid);
-        State state = (State)termService.find(stateUUID);
+        DefinedTermBase<?> state = termService.find(stateUUID);
         CategoricalData cd = CategoricalData.NewInstance(state, feature);
         desc.addElement(cd);
     }

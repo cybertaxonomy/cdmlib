@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.database.update.v30_40;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -29,8 +27,6 @@ import eu.etaxonomy.cdm.database.update.TableDropper;
  */
 public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_34_341.class);
 	private static final String endSchemaVersion = "3.4.1.0.201411210000";
 	private static final String startSchemaVersion = "3.4.0.0.201407010000";
 
@@ -103,7 +99,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " +
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "", -99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "");
 
 		mergePresenceAbsenceVocs(stepList);
 
@@ -211,7 +207,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " +
                 " SET absenceterm = @@FALSE@@ " +
                 " WHERE termType = 'PAT' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
  		//vocabulary for absence terms
 		stepName ="Update AbsenceTerm vocabulary";
@@ -227,7 +223,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
                 	  		+ " WHERE dtb2.termtype = 'PAT' AND dtb2.absenceterm = 0 "
                 	  		+ ") as tmp )" +
                 " WHERE DTYPE = 'AbsenceTerm' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
  		//PAT  - DTYPE
  		stepName ="Update PresenceAbsenceTerms DTYPE";
@@ -235,28 +231,28 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " +
                 " SET DTYPE = 'PresenceAbsenceTerm' " +
                 " WHERE termType = 'PAT' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
  		//PAT  - remove absence vocabulary
  		stepName ="Remove Absence Vocabulary I";
 		tableName = "TermVocabulary_Representation";
  		query = " DELETE FROM TermVocabulary_Representation " +
 				" WHERE TermVocabulary_id in (SELECT id FROM TermVocabulary WHERE uuid = '5cd438c8-a8a1-4958-842e-169e83e2ceee') ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
  		//PAT  - remove absence vocabulary
  		stepName ="Remove Absence Vocabulary II";
 		tableName = "TermVocabulary_Representation";
  		query = " DELETE FROM TermVocabulary"
  				+ " WHERE uuid = '5cd438c8-a8a1-4958-842e-169e83e2ceee' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
  		//PAT  - remove absence vocabulary
  		stepName ="Remove Absence Vocabulary III";
 		tableName = "Representation";
  		query = " DELETE FROM Representation "
  				+ " WHERE text = 'AbsenceTerm'  AND label = 'AbsenceTerm' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
  		//PAT  - update representation
  		stepName ="Update Presence Absence vocabulary representation";
@@ -264,7 +260,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
  		query = " UPDATE Representation "
  				+ " SET text = 'Presence Absence Term', label = 'Presence Absence Term' "
  				+ " WHERE text = 'Presence Term'  AND label = 'Presence Term' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
  		//PAT  - update titlecache
  		stepName ="Update Presence Absence vocabulary titlecache";
@@ -272,7 +268,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
  		query = " UPDATE TermVocabulary "
  				+ " SET titleCache = 'Presence Absence Term' "
  				+ " WHERE uuid = 'adbbbe15-c4d3-47b7-80a8-c7d104e53a05' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 	}
 
 	@Override

@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
@@ -56,7 +57,6 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
  * @author ayco_holleman
  *
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 // @formatter:off
 @XmlType(name = "EntityValidation", propOrder = { "ValidatedEntityId", "ValidatedEntityUuid", "ValidatedEntityClass",
@@ -68,9 +68,8 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 public class EntityValidation extends CdmBase {
 
     private static final long serialVersionUID = 9120571815593117363L;
-
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(EntityValidation.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static EntityValidation newInstance() {
         return new EntityValidation();

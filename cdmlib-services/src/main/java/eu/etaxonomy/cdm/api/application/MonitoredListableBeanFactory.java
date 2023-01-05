@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -24,11 +25,11 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 /**
  * @author a.mueller
  * @since 29.09.2011
- *
  */
 public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MonitoredListableBeanFactory.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	private boolean isInitializingBeans = false;
 	private IProgressMonitor currentMonitor;

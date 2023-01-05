@@ -110,8 +110,8 @@ public class SortableTaxonNodeQueryResult {
         this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, parentNodeUuid);
     }
 
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache) {
-        this(taxonNodeUuid, taxonNodeId, null, taxonUuid, taxonTitleCache, null, null);
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache, String treeIndex) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, null);
     }
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
         this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, null);

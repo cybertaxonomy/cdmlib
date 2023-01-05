@@ -35,7 +35,7 @@ import com.ibm.wsdl.util.StringUtils;
  */
 public class LSIDWSDLLocator implements WSDLLocator {
 
-	private static Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
 	 private Reader baseReader = null;
 	 private Reader importReader = null;

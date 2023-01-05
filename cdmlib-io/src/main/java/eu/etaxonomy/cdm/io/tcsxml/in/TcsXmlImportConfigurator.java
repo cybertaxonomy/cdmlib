@@ -13,7 +13,8 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
 public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = LogManager.getLogger(TcsXmlImportConfigurator.class);
+
+    private static final long serialVersionUID = -3595056567919160339L;
+    private static final Logger logger = LogManager.getLogger();
 
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
@@ -81,7 +84,8 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 //	@Autowired
 //	TcsXmlTaxonRelationsImport tcsXmlTaxonRelationsIO;
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     protected void makeIoClassList(){
 //		ioBeans = new String[]{
 //				"tcsXmlMetaDataImport"
@@ -109,49 +113,28 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		return new TcsXmlImportConfigurator(uri, destination);
 	}
 
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	private TcsXmlImportConfigurator() {
 		super(defaultTransformer);
 //		setSource(url);
 //		setDestination(destination);
 	}
 
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	private TcsXmlImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(uri);
 		setDestination(destination);
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
 	@Override
     public TcsXmlImportState getNewState() {
 		return new TcsXmlImportState(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
 	@Override
     public URI getSource() {
 		return super.getSource();
 	}
 
-	/**
-	 * @param file
-	 */
 	@Override
     public void setSource(URI uri) {
 		super.setSource(uri);
@@ -189,10 +172,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		return true;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -204,10 +183,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		return sourceReference;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
 	@Override
     public String getSourceNameString() {
 		if (this.getSource() == null){
@@ -225,28 +200,15 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		this.tcsXmlNamespace = tcsXmlNamespace;
 	}
 
-
-	/**
-	 * @return the funMetaDataDetailed
-	 */
 	public Method getFunctionMetaDataDetailed() {
 		if (functionMetaDataDetailed == null){
 			functionMetaDataDetailed = getDefaultFunction(TcsXmlMetaDataImport.class, "defaultMetaDataDetailedFunction");
 		}
 		return functionMetaDataDetailed;
-
 	}
-
-	/**
-	 * @param funMetaDataDetailed the funMetaDataDetailed to set
-	 */
 	public void setFunctionMetaDataDetailed(Method functionMetaDataDetailed) {
 		this.functionMetaDataDetailed = functionMetaDataDetailed;
 	}
-
-
-
-
 
 	public DO_REFERENCES getDoReferences() {
 		return doReferences;
@@ -287,51 +249,27 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		this.doRelNames = doRelNames;
 	}
 
-	/**
-	 * @return the doMetaData
-	 */
 	public boolean isDoMetaData() {
 		return doMetaData;
 	}
-
-	/**
-	 * @param doMetaData the doMetaData to set
-	 */
 	public void setDoMetaData(boolean doMetaData) {
 		this.doMetaData = doMetaData;
 	}
 
-
-	/**
-	 * @return the doSpecimen
-	 */
 	public boolean isDoSpecimen() {
 		return doSpecimen;
 	}
-
-	/**
-	 * @param doSpecimen the doSpecimen to set
-	 */
 	public void setDoSpecimen(boolean doSpecimen) {
 		this.doSpecimen = doSpecimen;
 	}
 
-	/**
-	 * @return the placeholderClass
-	 */
 	public ITcsXmlPlaceholderClass getPlaceholderClass() {
 		if (placeholderClass == null){
 			placeholderClass = new DefaultTcsXmlPlaceholders();
 		}
 		return placeholderClass;
 	}
-
-	/**
-	 * @param placeholderClass the placeholderClass to set
-	 */
 	public void setPlaceholderClass(ITcsXmlPlaceholderClass placeholderClass) {
 		this.placeholderClass = placeholderClass;
 	}
-
-
 }

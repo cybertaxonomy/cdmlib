@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -68,10 +67,12 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Entity
 @Audited
 public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
-          extends OrderedTermBase<T> {
+          extends DefinedTermBase<T>
+          implements IRelationshipType {
+
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(RelationshipTermBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Symmetrical")
 	@Field(analyze = Analyze.NO)

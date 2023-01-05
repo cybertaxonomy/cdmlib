@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TypeDesignationDaoHibernateImplTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private ITypeDesignationDao typeDesignationDao;

@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class OwlImportUtil {
 
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static void addFeatureProperties(Feature feature, Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         if(termResource.hasProperty(OwlUtil.propFeatureIsCategorical)){
@@ -227,8 +227,8 @@ public class OwlImportUtil {
         return feature;
     }
 
-    static State createState(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
-        State stateTerm = findTerm(State.class, termResource, repo, model, state);
+    static DefinedTermBase<?> createState(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+        DefinedTermBase<?> stateTerm = findTerm(DefinedTermBase.class, termResource, repo, model, state);
         if(stateTerm==null){
             stateTerm = State.NewInstance();
         }
@@ -243,9 +243,9 @@ public class OwlImportUtil {
         return character;
     }
 
-    static DefinedTermBase createTerm(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
+    static DefinedTermBase<?> createTerm(Resource termResource, ICdmRepository repo, Model model, StructureTreeOwlImportState state){
         TermType termType = TermType.getByKey(termResource.getProperty(OwlUtil.propType).getString());
-        DefinedTermBase term = null;
+        DefinedTermBase<?> term = null;
         // create new term
         if(termType.equals(TermType.Feature)){
             term = createFeature(termResource, repo, model, state);

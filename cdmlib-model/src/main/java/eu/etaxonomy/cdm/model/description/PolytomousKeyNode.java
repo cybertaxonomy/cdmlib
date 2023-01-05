@@ -155,7 +155,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Audited
 public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
 
-	private static final Logger logger = LogManager.getLogger(PolytomousKeyNode.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	// This is the main key a node belongs to. Although other keys may also
 	// reference <code>this</code> node, a node usually belongs to a given key.

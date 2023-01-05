@@ -79,7 +79,7 @@ public class Classification
             implements ITaxonTreeNode{
 
     private static final long serialVersionUID = -753804821474209635L;
-    private static final Logger logger = LogManager.getLogger(Classification.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Name")
     @OneToOne(fetch = FetchType.LAZY)

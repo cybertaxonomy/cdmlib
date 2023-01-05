@@ -15,7 +15,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -33,9 +34,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @since 20.04.2011
  */
 public class DwcaImageExport extends DwcaDataExportBase {
-    private static final long serialVersionUID = -4997807762779037215L;
 
-    private static final Logger logger = LogManager.getLogger(DwcaImageExport.class);
+    private static final long serialVersionUID = -4997807762779037215L;
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Image";
 	protected static final String fileName = "images.txt";
@@ -56,13 +57,6 @@ public class DwcaImageExport extends DwcaDataExportBase {
     @Override
     protected void doInvoke(DwcaTaxExportState state){}
 
-    /**
-     * @param state
-     * @param node
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws UnsupportedEncodingException
-     */
     @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
@@ -98,9 +92,6 @@ public class DwcaImageExport extends DwcaDataExportBase {
             flushWriter(state, file);
         }
     }
-
-
-
 
 	private void handleMedia(DwcaTaxExportState state, DwcaImageRecord record, Media media, MediaRepresentation repr, MediaRepresentationPart part, Taxon taxon) {
 		record.setId(taxon.getId());
@@ -142,5 +133,4 @@ public class DwcaImageExport extends DwcaDataExportBase {
 	public boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoImages();
 	}
-
 }

@@ -10,12 +10,13 @@
 package eu.etaxonomy.cdm.io.taxonx;
 
 import java.io.InputStream;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -28,20 +29,21 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @since 29.07.2008
- * @version 1.0
  */
-public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = LogManager.getLogger(TaxonXImportConfigurator.class);
+public class TaxonXImportConfigurator
+        extends ImportConfiguratorBase<TaxonXImportState, URI>
+        implements IImportConfigurator {
+
+    private static final long serialVersionUID = 3552085472908890807L;
+    private static final Logger logger = LogManager.getLogger();
 
 	//if true the information in the mods part (taxonxHeader)
 	private boolean doMods = true;
 	private boolean doFacts = true;
 	private boolean doTypes = true;
 
-
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
-
 
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
@@ -50,7 +52,8 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	private String originalSourceTaxonNamespace = "TaxonConcept";
 	private String originalSourceId;
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				TaxonXModsImport.class,
@@ -61,11 +64,6 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 		};
 	}
 
-	/**
-	 * @param uri
-	 * @param destination
-	 * @return
-	 */
 	public static TaxonXImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new TaxonXImportConfigurator(uri, destination);
 	}

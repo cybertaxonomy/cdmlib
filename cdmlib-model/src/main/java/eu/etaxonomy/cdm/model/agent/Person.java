@@ -86,7 +86,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 public class Person extends TeamOrPersonBase<Person>{
 
     private static final long serialVersionUID = 4153566493065539763L;
-	public static final Logger logger = LogManager.getLogger(Person.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name="NomenclaturalTitle")
     @Field(index=Index.YES)

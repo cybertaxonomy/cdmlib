@@ -27,7 +27,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
@@ -55,10 +56,9 @@ public abstract class CsvDemoBase
             implements ICdmExport<CsvDemoExportConfigurator, CsvDemoExportState>{
 
     private static final long serialVersionUID = -2962456879635841019L;
-    private static final Logger logger = LogManager.getLogger(CsvDemoBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final boolean IS_CORE = true;
-
 
 	protected Set<Integer> existingRecordIds = new HashSet<>();
 	protected Set<UUID> existingRecordUuids = new HashSet<>();
@@ -69,8 +69,6 @@ public abstract class CsvDemoBase
 		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 		return allNodes.size();
 	}
-
-
 
 	/**
 	 * Returns the list of {@link TaxonNode taxon nodes} that are part in one of the given {@link Classification classifications}
@@ -128,43 +126,25 @@ public abstract class CsvDemoBase
 		}
 	}
 
-
 	protected String getTaxonLogString(TaxonBase<?> taxon) {
 		return taxon.getTitleCache() + "(" + taxon.getId() + ")";
 	}
 
-
-	/**
-	 * @param el
-	 * @return
-	 */
 	protected boolean recordExists(CdmBase el) {
 		return existingRecordIds.contains(el.getId());
 	}
 
-
-	/**
-	 * @param sec
-	 */
 	protected void addExistingRecord(CdmBase cdmBase) {
 		existingRecordIds.add(cdmBase.getId());
 	}
 
-	/**
-	 * @param el
-	 * @return
-	 */
 	protected boolean recordExistsUuid(CdmBase el) {
 		return existingRecordUuids.contains(el.getUuid());
 	}
 
-	/**
-	 * @param sec
-	 */
 	protected void addExistingRecordUuid(CdmBase cdmBase) {
 		existingRecordUuids.add(cdmBase.getUuid());
 	}
-
 
 	protected String getSources(ISourceable<?> sourceable, CsvTaxExportConfiguratorRedlist config) {
 		String result = "";
@@ -179,13 +159,6 @@ public abstract class CsvDemoBase
 		return result;
 	}
 
-
-	/**
-	 * @param config
-	 * @return
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
 	protected FileOutputStream createFileOutputStream(CsvTaxExportConfiguratorRedlist config, String thisFileName) throws IOException, FileNotFoundException {
 		String filePath = config.getDestinationNameString();
 		String fileName = filePath + File.separatorChar + thisFileName;
@@ -197,15 +170,6 @@ public abstract class CsvDemoBase
 		return fos;
 	}
 
-
-	/**
-	 * @param config
-	 * @param factory
-	 * @return
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws XMLStreamException
-	 */
 	protected XMLStreamWriter createXmlStreamWriter(CsvTaxExportStateRedlist state, String fileName)
 			throws IOException, FileNotFoundException, XMLStreamException {
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -220,15 +184,6 @@ public abstract class CsvDemoBase
 		return writer;
 	}
 
-
-	/**
-	 * @param coreTaxFileName
-	 * @param config
-	 * @return
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws UnsupportedEncodingException
-	 */
 	protected PrintWriter createPrintWriter(final String fileName, CsvTaxExportStateRedlist state)
 					throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
@@ -244,28 +199,12 @@ public abstract class CsvDemoBase
 		return writer;
 	}
 
-
-
-
-	/**
-	 * Closes the writer
-	 * @param writer
-	 * @param state
-	 */
 	protected void closeWriter(PrintWriter writer, CsvTaxExportStateRedlist state) {
 		if (writer != null && state.isZip() == false){
 			writer.close();
 		}
 	}
 
-
-
-	/**
-	 * Closes the writer.
-	 * Note: XMLStreamWriter does not close the underlying stream.
-	 * @param writer
-	 * @param state
-	 */
 	protected void closeWriter(XMLStreamWriter writer, CsvTaxExportStateRedlist state) {
 		if (writer != null && state.isZip() == false){
 			try {

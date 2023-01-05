@@ -11,13 +11,14 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -35,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByNameComparator;
  */
 public class TaxonNodeDtoByNameComparatorTest {
 
-    private static final Logger logger = LogManager.getLogger(TaxonNodeDtoByNameComparatorTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Test
     @Ignore

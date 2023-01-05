@@ -25,7 +25,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
@@ -41,7 +42,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.mueller, a.oppermann
  * @since 18.10.2012
- *
  */
 public abstract class CsvExportBaseRedlist
         extends CdmExportBase<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist, IExportTransformer, File>
@@ -49,7 +49,7 @@ public abstract class CsvExportBaseRedlist
 
     private static final long serialVersionUID = 2719567114724597599L;
 
-    private static final Logger logger = LogManager.getLogger(CsvExportBaseRedlist.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final boolean IS_CORE = true;
 
@@ -78,43 +78,25 @@ public abstract class CsvExportBaseRedlist
 		}
 	}
 
-
 	protected String getTaxonLogString(TaxonBase<?> taxon) {
 		return taxon.getTitleCache() + "(" + taxon.getId() + ")";
 	}
 
-
-	/**
-	 * @param el
-	 * @return
-	 */
 	protected boolean recordExists(CdmBase el) {
 		return existingRecordIds.contains(el.getId());
 	}
 
-
-	/**
-	 * @param sec
-	 */
 	protected void addExistingRecord(CdmBase cdmBase) {
 		existingRecordIds.add(cdmBase.getId());
 	}
 
-	/**
-	 * @param el
-	 * @return
-	 */
 	protected boolean recordExistsUuid(CdmBase el) {
 		return existingRecordUuids.contains(el.getUuid());
 	}
 
-	/**
-	 * @param sec
-	 */
 	protected void addExistingRecordUuid(CdmBase cdmBase) {
 		existingRecordUuids.add(cdmBase.getUuid());
 	}
-
 
 	protected String getSources(ISourceable<?> sourceable, CsvTaxExportConfiguratorRedlist config) {
 		String result = "";
@@ -129,13 +111,6 @@ public abstract class CsvExportBaseRedlist
 		return result;
 	}
 
-
-	/**
-	 * @param config
-	 * @return
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
 	protected FileOutputStream createFileOutputStream(CsvTaxExportConfiguratorRedlist config, String thisFileName) throws IOException, FileNotFoundException {
 		String filePath = config.getDestinationNameString();
 		String fileName = filePath + File.separatorChar + thisFileName;
@@ -147,15 +122,6 @@ public abstract class CsvExportBaseRedlist
 		return fos;
 	}
 
-
-	/**
-	 * @param config
-	 * @param factory
-	 * @return
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws XMLStreamException
-	 */
 	protected XMLStreamWriter createXmlStreamWriter(CsvTaxExportStateRedlist state, String fileName)
 			throws IOException, FileNotFoundException, XMLStreamException {
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -170,15 +136,6 @@ public abstract class CsvExportBaseRedlist
 		return writer;
 	}
 
-
-	/**
-	 * @param coreTaxFileName
-	 * @param config
-	 * @return
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws UnsupportedEncodingException
-	 */
 	protected PrintWriter createPrintWriter(final String fileName, CsvTaxExportStateRedlist state)
 					throws IOException, FileNotFoundException, UnsupportedEncodingException {
 
@@ -199,16 +156,12 @@ public abstract class CsvExportBaseRedlist
 
 	/**
 	 * Closes the writer
-	 * @param writer
-	 * @param state
 	 */
 	protected void closeWriter(PrintWriter writer, CsvTaxExportStateRedlist state) {
 		if (writer != null && state.isZip() == false){
 			writer.close();
 		}
 	}
-
-
 
 	/**
 	 * Closes the writer.
@@ -225,6 +178,7 @@ public abstract class CsvExportBaseRedlist
 			}
 		}
 	}
+
 	protected void clearExistingRecordIds(){
 		existingRecordIds.clear();
 	}

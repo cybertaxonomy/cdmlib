@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
  */
 public class ManifestComposer {
 
-    public static final Logger logger = LogManager.getLogger(ManifestComposer.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private IMediaToolbox mediaTools;
 

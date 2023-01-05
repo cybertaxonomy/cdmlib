@@ -9,10 +9,7 @@
 package eu.etaxonomy.cdm.api.application;
 
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -64,19 +61,6 @@ import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
  * @since 21.05.2008
  */
 public interface ICdmRepository extends ICdmImportSource {
-
-    /**
-     * Starts a read only transaction
-     */
-    public TransactionStatus startTransaction();
-
-    public TransactionStatus startTransaction(Boolean readOnly);
-
-    public void commitTransaction(TransactionStatus tx);
-
-    public void rollbackTransaction(TransactionStatus txStatus);
-
-	public Object getBean(String string);
 
     public IAnnotationService getAnnotationService();
 
@@ -130,15 +114,7 @@ public interface ICdmRepository extends ICdmImportSource {
 
 	public IDescriptiveDataSetService getDescriptiveDataSetService();
 
-	public PlatformTransactionManager getTransactionManager();
-
-	public ProviderManager getAuthenticationManager();
-
-	public ConversationHolder NewConversation();
-
 	public ICollectionService getCollectionService();
-
-	public ILongRunningTasksService getLongRunningTasksService();
 
     public ITermTreeService getTermTreeService();
 
@@ -176,4 +152,7 @@ public interface ICdmRepository extends ICdmImportSource {
 
 	void authenticate(String username, String password);
 
+    public ProviderManager getAuthenticationManager();
+
+    public ILongRunningTasksService getLongRunningTasksService();
 }

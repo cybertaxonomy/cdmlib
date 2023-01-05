@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
-
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -68,6 +67,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
     "categoricalData",
     "state",
     "count",
+    "usePlural",
     "modifiers",
     "modifyingText"
 })
@@ -79,7 +79,7 @@ public class StateData
         implements IModifiable, IMultiLanguageTextHolder{
 
     private static final long serialVersionUID = -4380314126624505415L;
-    private static final Logger logger = LogManager.getLogger(StateData.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "CategoricalData")
     @XmlIDREF
@@ -88,12 +88,14 @@ public class StateData
     @IndexedEmbedded(depth=1)
     private CategoricalData categoricalData;
 
-    @XmlElement(name = "State")
+    @XmlElement(name = "State", type=DefinedTermBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth=1)
-    private State state;
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
+    @IndexedEmbedded(depth=1, targetElement=DefinedTermBase.class)
+    //we could also use DefinedTermBase here, we use only DefinedTermBase<?> for
+    //better understanding the code #10196
+    private DefinedTermBase<?> state;
 
     //#8625 for statistically counting aggregated state data
     @Column(name="number")  //rename to avoid conflicts with SQL syntax
@@ -102,7 +104,7 @@ public class StateData
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})   remove cascade #5755
+    //no  cascade #5755
     @IndexedEmbedded(depth=1)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
     private Set<DefinedTerm> modifiers = new HashSet<>();
@@ -115,6 +117,8 @@ public class StateData
     @Field(name="modifyingText")
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     private Map<Language,LanguageString> modifyingText = new HashMap<>();
+
+    private boolean usePlural;
 
 //********************* FACTORY METHODS ************************\
 
@@ -131,7 +135,7 @@ public class StateData
      * <b>NOTE:</b> {@link State}  is a sub class of {@link DefinedTermBase}.
      * If the state passed as parameter has been created newly it <b>has to be persisted before</b> it is possible to save the StateData.
      */
-    public static StateData NewInstance(State state){
+    public static StateData NewInstance(DefinedTermBase<?> state){
         StateData stateData = new StateData();
         stateData.setState(state);
         return stateData;
@@ -151,13 +155,13 @@ public class StateData
     /**
      * Returns the {@link State state term} used in <i>this</i> state data.
      */
-    public State getState(){
+    public DefinedTermBase<?> getState(){
         return this.state;
     }
     /**
      * @see	#getState()
      */
-    public void setState(State state){
+    public void setState(DefinedTermBase<?> state){
         this.state = state;
     }
 
@@ -251,26 +255,6 @@ public class StateData
      * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
      * used to qualify the validity of <i>this</i> state data.
      *
-     *
-     * @param text		the string describing the validity
-     * 					in a particular language
-     * @param language	the language in which the text string is formulated
-     *
-     * @see    	   		#getModifyingText()
-     * @see    	   		#putModifyingText(LanguageString)
-     * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
-     * 					Use the {@link #putModifyingText(Language, String) putModifyingText} method instead
-     */
-    @Deprecated
-    public LanguageString addModifyingText(String text, Language language){
-        return this.putModifyingText(language, text);
-    }
-
-    /**
-     * Creates a {@link LanguageString language string} based on the given text string
-     * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
-     * used to qualify the validity of <i>this</i> state data.
-     *
      * @param language	the language in which the text string is formulated
      * @param text		the string describing the validity
      * 					in a particular language
@@ -308,8 +292,14 @@ public class StateData
         return this.modifyingText.remove(lang);
     }
 
-//*********************************** TO STRING *****************************************/
+    public boolean isUsePlural() {
+        return usePlural;
+    }
+    public void setUsePlural(boolean usePlural) {
+        this.usePlural = usePlural;
+    }
 
+//*********************************** TO STRING *****************************************/
 
     @Override
     public String toString() {
@@ -353,4 +343,5 @@ public class StateData
             return null;
         }
     }
+
 }

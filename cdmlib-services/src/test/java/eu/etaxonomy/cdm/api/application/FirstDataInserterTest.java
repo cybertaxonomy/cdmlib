@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.api.application;
 
 import java.io.FileNotFoundException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -21,7 +22,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.TaxonServiceImplTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -36,7 +36,7 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 //    private final String[] tableNames = new String[]{"USERACCOUNT", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL", "CDMMETADATA", "PERMISSIONGROUP"};
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonServiceImplTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -66,8 +66,6 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 //        printDataSet(System.err, tableNames);
     }
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

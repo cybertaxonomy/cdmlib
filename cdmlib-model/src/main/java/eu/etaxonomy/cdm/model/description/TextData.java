@@ -78,7 +78,7 @@ public class TextData
         implements IMultiLanguageTextHolder, Cloneable{
 
     private static final long serialVersionUID = -2165015581278282615L;
-    private static final Logger logger = LogManager.getLogger(TextData.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //@XmlElement(name = "MultiLanguageText", type = MultilanguageText.class)
     @XmlElement(name = "MultiLanguageText")

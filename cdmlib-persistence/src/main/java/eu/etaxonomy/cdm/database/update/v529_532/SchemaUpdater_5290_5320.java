@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_5290_5320.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_29_00;
 	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_32_00;
@@ -140,7 +140,7 @@ public class SchemaUpdater_5290_5320 extends SchemaUpdaterBase {
                 + "    GROUP BY fe.id, mu.id"
                 + "    HAVING COUNT(*) = 1"
                 + ")";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, size)
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
              .withErrorRecovery("SQL statement for adding missing measurement unit_ids failed");
 
 		return stepList;

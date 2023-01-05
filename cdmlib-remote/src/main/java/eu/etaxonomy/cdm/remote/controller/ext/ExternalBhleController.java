@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,18 +38,17 @@ import io.swagger.annotations.Api;
  * <p>
  * @author a.kohlbecker
  * @since 18.06.2009
- *
  */
 //@Controller // http://gso.gbv.de/sru/DB=2.1/ is defunctional!!! thus this controller is disabled
 @Api(value="ext_bhl-e", description="Provides searche via the SRU (search and retrieve) API of BHL-E ")
 @RequestMapping(value = { "/ext/bhl-e/" })
 public class ExternalBhleController {
 
-    public static final Logger logger = LogManager.getLogger(ExternalBhleController.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    public static String baseUrl = "http://gso.gbv.de/sru/DB=2.1/";
+    private static String baseUrl = "http://gso.gbv.de/sru/DB=2.1/";
 
-    SruServiceWrapper sruServiceWrapper;
+    private SruServiceWrapper sruServiceWrapper;
 
     /**
      *
@@ -74,5 +74,4 @@ public class ExternalBhleController {
         mv.addObject(referenceList);
         return mv;
     }
-
 }

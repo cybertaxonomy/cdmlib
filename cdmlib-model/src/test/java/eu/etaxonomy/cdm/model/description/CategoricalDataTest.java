@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -75,7 +76,7 @@ public class CategoricalDataTest {
         stateData2.addModifier(DefinedTerm.NewModifierInstance(null, "Any modifer", null));
         data.addStateData(stateData2);
 
-        List<State> states = data.getStatesOnly();
+        List<DefinedTermBase<?>> states = data.getStatesOnly();
         Assert.assertEquals("There should be 2 states", 2, states.size());
 
     }
@@ -96,7 +97,7 @@ public class CategoricalDataTest {
         useCategoryVocabulary.addTerm(useCategory2);
         State useCategory3 = State.NewInstance("My 3rd use category", "use category 3", null);
         useCategoryVocabulary.addTerm(useCategory3);
-        List<State> newStates = new ArrayList<State>();
+        List<State> newStates = new ArrayList<>();
         newStates.addAll(Arrays.asList(useCategory2, useCategory3));
 
         // setting new states and thus removing useCategory1
@@ -110,7 +111,7 @@ public class CategoricalDataTest {
 
     @Test
     public void testClone(){
-        CategoricalData clone = (CategoricalData)categorialData.clone();
+        CategoricalData clone = categorialData.clone();
         assertNotSame(clone, categorialData);
         assertEquals(1, clone.getStateData().size());
         assertEquals(clone.getStateData().size(), categorialData.getStateData().size() );

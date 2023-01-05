@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import java.sql.DatabaseMetaData;
@@ -34,7 +33,6 @@ import eu.etaxonomy.cdm.database.types.SybaseDatabaseType;
 
 /**
  * @author a.mueller
- *
  */
 public enum DatabaseTypeEnum {
 	MySQL(1),
@@ -50,15 +48,13 @@ public enum DatabaseTypeEnum {
     MariaDB(11),  //not yet tested
     ;
 
+    private static final Logger logger = LogManager.getLogger();
+
 //	/**
 //	 *
 //	 */
 //	private static final String P6SPY_DRIVER_CLASS_NAME = "com.p6spy.engine.spy.P6SpyDriver";
 
-	/**
-	 * Constructor
-	 * @param i
-	 */
 	private DatabaseTypeEnum(int i) {
 		switch(i)
         {
@@ -70,8 +66,6 @@ public enum DatabaseTypeEnum {
             	this.dbType = new PostgreSQLDatabaseType(); break;
         	case 4:
              	this.dbType = new OracleDatabaseType(); break;
-//            case 5:
-//            	this.dbType = new SqlServer2000DatabaseType(); break;
             case 6:
             	this.dbType = new SqlServer2005DatabaseType(); break;
             case 7:
@@ -93,21 +87,12 @@ public enum DatabaseTypeEnum {
 		return dbType;
 	}
 
- 	//Logger
-	private static final Logger logger = LogManager.getLogger(DatabaseTypeEnum.class);
 	protected IDatabaseType dbType;
 
-
-    /**
-     * @return
-     */
     public String getName(){
     	return dbType.getName();
     }
 
-	/**
-	 * @return
-	 */
 	public String getDriverClassName(){
 //		if(useP6Spy){
 //			return P6SPY_DRIVER_CLASS_NAME;
@@ -125,23 +110,14 @@ public enum DatabaseTypeEnum {
 		return dbType.getDataSourceClass();
 	}
 
-	/**
-	 * @return
-	 */
 	public String getUrl(){
 		return dbType.getUrlString();
 	}
 
-	/**
-	 * @return
-	 */
 	public String getHibernateDialectCanonicalName(){
 		return dbType.getHibernateDialectCanonicalName();
 	}
 
-    /**
-     * @return
-     */
     public int getDefaultPort(){
     	return dbType.getDefaultPort();
     }
@@ -218,10 +194,6 @@ public enum DatabaseTypeEnum {
     	return null;
     }
 
-    /**
-     * @param metaData
-     * @return
-     */
     public static DatabaseTypeEnum byDatabaseMetaData(DatabaseMetaData metaData) {
         if (metaData == null){
             return null;
@@ -293,7 +265,4 @@ public enum DatabaseTypeEnum {
         }
         return null;
     }
-
-
 }
-

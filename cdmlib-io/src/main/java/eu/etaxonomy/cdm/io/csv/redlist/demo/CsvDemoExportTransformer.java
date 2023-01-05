@@ -1,18 +1,18 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.dwca.out.TermMapping;
@@ -29,8 +29,10 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  *
  */
 public class CsvDemoExportTransformer extends InputTransformerBase {
-	private static final Logger logger = LogManager.getLogger(CsvDemoExportTransformer.class);
-	
+
+    private static final long serialVersionUID = 6221481051977850259L;
+    private static final Logger logger = LogManager.getLogger();
+
 //	private static Map<UUID, String> nomStatusMap = new HashMap<UUID, String>();
 	private static TermMapping nomStatusMapping;
 	private static TermMapping rankMapping;
@@ -40,13 +42,13 @@ public class CsvDemoExportTransformer extends InputTransformerBase {
 	private static TermMapping lifeStageMapping;
 	private static TermMapping occStatusMapping;
 	private static TermMapping establishmentMeansMapping;
-	
+
 
 //	public static String transformToGbifTaxonomicStatus(){
 //		//TODO
 //		return null;
 //	}
-	
+
 	public static String transformToGbifNomStatus(NomenclaturalStatusType nomStatus){
 		if ( nomStatus == null){
 			return null;
@@ -81,7 +83,7 @@ public class CsvDemoExportTransformer extends InputTransformerBase {
 //		nomStatusMap.put(NomenclaturalStatusType.uuidLegitimate, "legitimate");  //why english not latin ??
 //		nomStatusMap.put(NomenclaturalStatusType.uuidNovum, "novum");
 //		nomStatusMap.put(NomenclaturalStatusType.uuidNudum, "nudum");
-//		//TODO 
+//		//TODO
 //		nomStatusMap.put(NomenclaturalStatusType.uuidOpusUtiqueOppr, "opressa");
 //		//TODO
 //		nomStatusMap.put(NomenclaturalStatusType.uuidOrthographyConserved, "orthographia");
@@ -91,15 +93,15 @@ public class CsvDemoExportTransformer extends InputTransformerBase {
 //		nomStatusMap.put(NomenclaturalStatusType.uuidRejected, "rejiciendum");
 //		nomStatusMap.put(NomenclaturalStatusType.uuidRejectedProp, "rejiciendumProp");
 ////		nomStatusMap.put(NomenclaturalStatusType.uuidSanctioned, "");
-//		
+//
 //		nomStatusMap.put(NomenclaturalStatusType.uuidSubnudum, "rejiciendum");
 //		nomStatusMap.put(NomenclaturalStatusType.uuidSuperfluous, "superfluum");
 //		nomStatusMap.put(NomenclaturalStatusType.uuidValid, "valid");
-//		
+//
 //		//CDM is missing abortivum, available, combinatio, negatum, oblitum,
 //		//               protectum, rejiciendumUtique, rejiciendumUtiqueProp
 //	}
-	
+
 	public static String transformToGbifRank(Rank term){
 		if ( term == null){
 			return null;
@@ -118,7 +120,7 @@ public class CsvDemoExportTransformer extends InputTransformerBase {
 			return result;
 		}
 	}
-	
+
 	public static String transformSpecimenTypeStatusToGbif(SpecimenTypeDesignationStatus status){
 		if ( status == null){
 			return null;
@@ -137,8 +139,8 @@ public class CsvDemoExportTransformer extends InputTransformerBase {
 			return result;
 		}
 	}
-	
-	
+
+
 	public static String transformNameTypeStatusToGbif(NameTypeDesignationStatus status){
 		if ( status == null){
 			return null;
@@ -233,5 +235,5 @@ public class CsvDemoExportTransformer extends InputTransformerBase {
 			return result;
 		}
 	}
-	
+
 }

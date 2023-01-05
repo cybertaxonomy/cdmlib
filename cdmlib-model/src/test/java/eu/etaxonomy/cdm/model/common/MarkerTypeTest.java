@@ -13,7 +13,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -25,7 +26,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class MarkerTypeTest extends EntityTestBase {
 
 	@SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(MarkerTypeTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");
 	private static final UUID uuidToBeChecked = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");

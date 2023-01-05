@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 public class ShpAttributesToNamedAreaMapper {
 
-    public static final Logger logger = LogManager.getLogger(ShpAttributesToNamedAreaMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final char COMMA = ',';
 

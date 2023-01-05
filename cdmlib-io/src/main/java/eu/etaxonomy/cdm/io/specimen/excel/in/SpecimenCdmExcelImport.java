@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.text.ParseException;
@@ -15,7 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -75,9 +75,9 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class SpecimenCdmExcelImport
         extends ExcelTaxonOrSpecimenImportBase<SpecimenCdmExcelImportState, SpecimenCdmExcelImportConfigurator, SpecimenRow>
         implements ICdmIO<SpecimenCdmExcelImportState> {
-    private static final long serialVersionUID = 5489033387543936839L;
 
-    private static final Logger logger = LogManager.getLogger(SpecimenCdmExcelImport.class);
+    private static final long serialVersionUID = 5489033387543936839L;
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String WORKSHEET_NAME = "Specimen";
 
@@ -359,7 +359,6 @@ public class SpecimenCdmExcelImport
 			message = String.format(message, row.getAltitudeMax(), state.getCurrentLine());
 			logger.warn(message);
 			return;
-
 		}
 	}
 
@@ -383,12 +382,6 @@ public class SpecimenCdmExcelImport
 		}
 	}
 
-
-	/**
-	 * @param state
-	 * @param row
-	 * @param facade
-	 */
 	private void handleDeterminations(SpecimenCdmExcelImportState state,SpecimenRow row, DerivedUnitFacade facade) {
 		boolean isFirstDetermination = true;
 		DeterminationLight commonDetermination = row.getCommonDetermination();
@@ -515,9 +508,7 @@ public class SpecimenCdmExcelImport
 				}else if (name.getInfraSpecificEpithet() != null){
 					name.setRank(Rank.INFRASPECIFICTAXON());
 				}
-
 			}
-
 		}
 		//sec
 		Reference sec = null;
@@ -562,11 +553,6 @@ public class SpecimenCdmExcelImport
 	/**
 	 * This method tries to find the best matching taxon depending on the import configuration,
 	 * the taxon name information and the concept information available.
-	 *
-	 * @param state
-	 * @param determinationLight
-	 * @param createIfNotExists
-	 * @return
 	 */
 	private Taxon findBestMatchingTaxon(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, boolean createIfNotExists) {
 		INonViralName name = makeTaxonName(state, determinationLight);
@@ -598,12 +584,6 @@ public class SpecimenCdmExcelImport
 		}
 	}
 
-	/**
-	 * @param state
-	 * @param determinationLight
-	 * @param name
-	 * @return
-	 */
 	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state, DeterminationLight determinationLight,
 				INonViralName name) {
 		String titleCache = determinationLight.fullName;
@@ -616,11 +596,6 @@ public class SpecimenCdmExcelImport
 		return titleCache;
 	}
 
-	/**
-	 * @param state
-	 * @param determinationLight
-	 * @return
-	 */
 	private INonViralName makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
 		INonViralName name = TaxonNameFactory.NewNonViralInstance(null);
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
@@ -842,7 +817,6 @@ public class SpecimenCdmExcelImport
 		}
 	}
 
-
 	private void handleExactLocation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 
 		//reference system
@@ -931,7 +905,6 @@ public class SpecimenCdmExcelImport
 		//no second path defined yet
 		return;
 	}
-
 
 	@Override
 	protected String getWorksheetName(SpecimenCdmExcelImportConfigurator config) {

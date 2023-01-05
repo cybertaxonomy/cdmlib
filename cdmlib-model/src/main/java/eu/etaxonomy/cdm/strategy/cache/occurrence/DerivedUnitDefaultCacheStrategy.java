@@ -14,7 +14,8 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -39,7 +40,7 @@ public class DerivedUnitDefaultCacheStrategy
 
     private static final long serialVersionUID = -3905309456296895952L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(DerivedUnitDefaultCacheStrategy.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID uuid = UUID.fromString("2746bca3-f58a-4b5d-b4ec-ece9785731fe");
 

@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -53,7 +54,7 @@ public class ExtendedTimePeriod extends TimePeriod {
 
     private static final long serialVersionUID = -6543644293635460526L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ExtendedTimePeriod.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static ExtendedTimePeriodFormatter formatter = ExtendedTimePeriodFormatter.NewDefaultInstance();
 

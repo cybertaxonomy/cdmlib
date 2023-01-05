@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class HibernateProxyHelper {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(HibernateProxyHelper.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	// ************************** Hibernate proxies *******************/
 	/**

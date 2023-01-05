@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 public class Primer extends AnnotatableEntity {
 
 	private static final long serialVersionUID = 6179007910988646989L;
-	private static final Logger logger = LogManager.getLogger(Primer.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	/** @see #getLabel() */
 	@XmlElement(name = "Label")

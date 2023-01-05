@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.pilotOutputHtml;
 
 import java.io.FileWriter;
@@ -16,7 +15,8 @@ import java.util.Set;
 
 import javax.xml.bind.Marshaller;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
@@ -39,18 +39,16 @@ import eu.etaxonomy.cdm.model.term.Representation;
  *
  * @author h.fradin
  * @since 10.12.2008
- * @version 1.0
  */
-
 public class PilotOutputDocumentBuilder {
 
-	private SDDDataSet cdmSource;
+    private static final Logger logger = LogManager.getLogger();
 
-	private static final Logger logger = LogManager.getLogger(PilotOutputDocumentBuilder.class);
+    private SDDDataSet cdmSource;
 
 	// private SDDContext sddContext;
 
-	public PilotOutputDocumentBuilder() throws IOException {
+	public PilotOutputDocumentBuilder(){
 
 	}
 

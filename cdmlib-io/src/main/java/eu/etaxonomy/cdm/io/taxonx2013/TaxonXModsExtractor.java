@@ -1,6 +1,13 @@
+/**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.io.taxonx2013;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,12 +16,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -25,17 +34,13 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 public class TaxonXModsExtractor extends TaxonXExtractor{
 
-    private final Map<String,UUID> personMap = new HashMap<String, UUID>();
+    private static final Logger logger = LogManager.getLogger();
 
-    private final Logger logger = LogManager.getLogger(getClass());
-
+    private final Map<String,UUID> personMap = new HashMap<>();
 
 	private final String AUTHOR = "author";
     private final String EDITOR = "editor";
 
-    /**
-     * @param agentService
-     */
     public TaxonXModsExtractor(TaxonXImport importer) {
         this.importer = importer;
     }
@@ -130,8 +135,6 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             }else{
             	logger.warn("mods item not recognized yet: " + modsChildNodeName);
             }
-
-
         }
         modsMap.put("people",StringUtils.join(roleList.toArray(),SPLITTER));
 
@@ -229,13 +232,12 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 		return null;
 	}
 
-
     private void handleNameTypePersonal(Node node, List<String> roleList, List<Person> persons, List<String> editors) {
     	boolean newRole=false;
         String content="";
         String role =null;
 
-        List<String> nameParts = new ArrayList<String>();
+        List<String> nameParts = new ArrayList<>();
 
     	NodeList tmp = node.getChildNodes();
         for (int j=0;j<tmp.getLength();j++){
@@ -293,10 +295,6 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         }
 	}
 
-	/**
-     * @param item
-     * @param modsMap
-     */
     private void addRelatedMods(Node node, Map<String, String> modsMap, Reference ref) {
         NodeList tmp =node.getChildNodes();
         NodeList partNodes = null;
@@ -314,8 +312,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 
         Map<String,String> mapmap=null;
 
-        Map<String, String> relatedInfoMap = new HashMap<String, String>();
-        List<String> roleList = new ArrayList<String>();
+        Map<String, String> relatedInfoMap = new HashMap<>();
+        List<String> roleList = new ArrayList<>();
         String content="";
 
         relatedInfoMap.put("type",node.getAttributes().getNamedItem("type").getNodeValue());
@@ -452,7 +450,6 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             }
         }
 
-
         handleModsNames(children, inRef);
 
         relatedInfoMap.put("relatedRoles", StringUtils.join(roleList.toArray(),SPLITTER));
@@ -463,8 +460,6 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 	/**
 	 * Returns empty reference which best fits to the given ref as in-reference.
 	 * TODO move to {@link ReferenceType} or {@link ReferenceFactory}
-	 * @param ref
-	 * @return
 	 */
 	private Reference getBestInreference(Reference ref) {
 		if (ref.getType().equals(ReferenceType.Article)){
@@ -474,9 +469,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 		}else{
 			//TODO support more types
 			logger.warn("In-Reference type not yet supported for :" + ref.getType());
-
 		}
 		return null;
 	}
-
 }

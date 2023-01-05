@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(DwcaExportTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID UUID_SUBSPEC_NODE = UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac");
     private static final String UUID_UNPUBLISHED_TAXON = "e5cdc392-4e0b-49ad-84e9-8c4b22d1827c";

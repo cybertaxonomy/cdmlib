@@ -6,14 +6,14 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.database.update.v40_50;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
@@ -31,15 +31,14 @@ import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 
 /**
-/**
  * @author a.mueller
  * @date 09.06.2017
- *
  */
 public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_47_50.class);
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final String endSchemaVersion = "5.0.0.0.20180514";
 	private static final String startSchemaVersion = "4.7.0.0.201710040000";
 
@@ -49,10 +48,6 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 		return new SchemaUpdater_47_50();
 	}
 
-	/**
-	 * @param startSchemaVersion
-	 * @param endSchemaVersion
-	 */
 	protected SchemaUpdater_47_50() {
 		super(startSchemaVersion, endSchemaVersion);
 	}
@@ -72,12 +67,12 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
 		query = "UPDATE @@LSIDAuthority_namespaces@@ "
 		        + " SET namespaces_element = 'eu.etaxonomy.cdm.model.name.TaxonName' "
 		        + " WHERE namespaces_element = 'eu.etaxonomy.cdm.model.name.TaxonNameBase'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
 		//#6699 delete term version
 		stepName = "Delete term version";
 		query = "DELETE FROM @@CdmMetaData@@ WHERE propertyName = 'TERM_VERSION'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#6581 make nomenclatural reference and OriginalSource
         stepName = "Make nomenclatural reference and OriginalSource";
@@ -99,7 +94,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
                 + " SET idInVocabulary = 'nom. val.' "
                 + " WHERE uuid = '" + uuidTerm + "'";
 		tableName = "DefinedTermBase";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
 		//#7074 change type for Media.mediaCreated
 		changeTypeMediaCreated(stepList);
@@ -122,7 +117,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         query = "UPDATE @@PermissionGroup@@ "
                 + " SET uuid='1739df71-bf73-4dc6-8320-aaaf72cb555f', name='Admin' "
                 + " WHERE  name='admin' or name='Admin'";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#7405 Rename WorkingSet to DescriptiveDataSet
         String oldTableName = "WorkingSet";
@@ -162,7 +157,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         query = "UPDATE @@FeatureTree@@ "
                 + " SET protectedTitleCache = @TRUE@ ";
         tableName = "FeatureTree";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //#7238 rename lastName and firstName
         stepName = "rename lastName";
@@ -221,7 +216,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         query = " UPDATE @@DefinedTermBase@@ " +
                 " SET level_id = ( SELECT id FROM (SELECT id FROM DefinedTermBase WHERE uuid = '79db63a4-1563-461e-8e41-48f5722feca4') as drv) " +
                 " WHERE DTYPE = 'Country' ";
-        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#6588
         stepName = "Add ExternalLink table";
@@ -285,7 +280,7 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
                 + " WHERE mediaCreatedOld IS NOT NULL ";
         String queryDefault = String.format(queryTemplate, "Left(Replace(Replace(Replace(mediaCreatedOld, '-', ''), ':', ''), ' ', '_'), 13)");
         String queryPostgres = String.format(queryTemplate, "to_char(mediaCreatedOld,'YYYYMMDD HH24MI')");
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, queryDefault, tableName, -99)
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, queryDefault, tableName)
                   .put(DatabaseTypeEnum.PostgreSQL, queryPostgres)
                   .putAudited(DatabaseTypeEnum.PostgreSQL, queryPostgres);
 

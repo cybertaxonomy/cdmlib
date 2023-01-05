@@ -28,14 +28,15 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * This class implements {@link IGeoServiceAreaMapping}. The mapping
  * is stored as a technical annotation of the area.
  * The area is saved while the mapping is set.
+ *
  * @author a.mueller
  * @since 15.08.2011
- *
  */
 @Component
 public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
+
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(GeoServiceAreaAnnotatedMapping.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ITermService termService;

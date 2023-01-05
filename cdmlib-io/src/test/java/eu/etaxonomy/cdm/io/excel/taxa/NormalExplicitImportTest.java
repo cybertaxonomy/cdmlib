@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,22 +65,22 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(NormalExplicitImportTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	@SpringBeanByType
-	ITaxonService taxonService;
+	private ITaxonService taxonService;
 
 	@SpringBeanByType
-	ITermService termService;
+	private ITermService termService;
 
 	@SpringBeanByType
-	IClassificationService classificationService;
+	private IClassificationService classificationService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator uuidConfigurator;

@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.database;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
  * @since 18.12.2008
  */
 public class CdmDataSourceTest {
-	private static final Logger logger = LogManager.getLogger(CdmDataSourceTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static String server;
 	private static String database;

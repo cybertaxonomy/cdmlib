@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  */
 public class OdfOutputModule extends PublishOutputModuleBase {
 
-	private static final Logger logger = LogManager.getLogger(OdfOutputModule.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	public static String STYLESHEET_RESOURCE_DEFAULT = "/stylesheets/odf/cdmToOdfText.xsl";
 

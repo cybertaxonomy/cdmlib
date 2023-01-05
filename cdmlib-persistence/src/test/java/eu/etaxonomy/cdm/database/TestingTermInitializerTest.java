@@ -70,7 +70,7 @@ public class TestingTermInitializerTest extends CdmIntegrationTest {
     public final void testTermsAreLoaded() {
         assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized", TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
         assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(), taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
-        assertNotNull("SynonymType.INFERREDEPITHET should be loaded" + SynonymType.INFERRED_EPITHET_OF());
+        assertNotNull("SynonymType.INFERREDEPITHET should be loaded" + SynonymType.INFERRED_EPITHET_OF);
     }
 
     @Test

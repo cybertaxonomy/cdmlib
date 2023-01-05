@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
-
 	@Override
     @Transactional(readOnly = true)
 	public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
@@ -65,8 +63,4 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
 	public int countMarkers(Class<? extends T> clazz, Boolean technical) {
 		return dao.countMarkers(clazz, technical);
 	}
-
-
-
-
 }

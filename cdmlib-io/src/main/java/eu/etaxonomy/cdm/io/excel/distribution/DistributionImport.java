@@ -9,14 +9,14 @@
 package eu.etaxonomy.cdm.io.excel.distribution;
 
 import java.io.FileNotFoundException;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactor
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
@@ -47,8 +48,7 @@ public class DistributionImport
         extends CdmImportBase<ExcelImportConfiguratorBase, ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>> {
 
     private static final long serialVersionUID = 7765309119416657235L;
-
-    private static final Logger logger = LogManager.getLogger(DistributionImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /* used */
     private static final String EDIT_NAME_COLUMN = "EDIT";
@@ -109,7 +109,6 @@ public class DistributionImport
     	return;
 	}
 
-
 	/**
 	 *  Reads the data of one Excel sheet row
 	 */
@@ -163,7 +162,6 @@ public class DistributionImport
     		saveRecord(editName, distributionList, status, literatureNumber, literature);
     	}
     }
-
 
 	/**
 	 *  Stores the data of one Excel sheet row in the database
@@ -270,7 +268,6 @@ public class DistributionImport
     	}
     }
 
-
 	@Override
 	protected boolean doCheck(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
 		boolean result = true;
@@ -278,10 +275,8 @@ public class DistributionImport
 		return result;
 	}
 
-
 	@Override
 	protected boolean isIgnore(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
 		return false;
 	}
-
 }

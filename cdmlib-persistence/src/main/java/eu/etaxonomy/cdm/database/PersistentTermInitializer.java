@@ -45,13 +45,14 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
  */
 @Component
 public class PersistentTermInitializer extends DefaultTermInitializer {
-    private static final Logger logger = LogManager.getLogger(PersistentTermInitializer.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     private boolean omit = false;
-    protected ITermVocabularyDao vocabularyDao;
+    private ITermVocabularyDao vocabularyDao;
 
-    protected PlatformTransactionManager transactionManager;
-    protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+    private PlatformTransactionManager transactionManager;
+    private DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
 
     public PersistentTermInitializer() {
         txDefinition.setName("PersistentTermInitializer.initialize()");

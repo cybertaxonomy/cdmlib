@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
@@ -27,11 +28,10 @@ import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
- *
  */
 public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 
-    public static final Logger logger = LogManager.getLogger(TermBaseBeanProcessor.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[] {
             "representations",
@@ -106,11 +106,6 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         return json;
     }
 
-    /**
-     * @param json
-     * @param representation_L10n
-     * @param term
-     */
     private void handleL10nRepresentation(JSONObject json, ITermRepresentation_L10n representation_L10n, boolean isInverse, TermBase term) {
         String baseLabel = isInverse? "inverseRepresentation_L10n" : "representation_L10n";
         if(representation_L10n.getLabel() != null || representation_L10n.getAbbreviatedLabel() != null) {
@@ -132,5 +127,4 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
             json.element(baseLabel,term.getClass().getSimpleName() +  "<" + term.getUuid() + ">");
         }
     }
-
 }

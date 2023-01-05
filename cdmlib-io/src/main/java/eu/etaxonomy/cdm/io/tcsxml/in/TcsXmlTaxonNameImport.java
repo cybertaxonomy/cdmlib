@@ -14,7 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -40,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 
     private static final long serialVersionUID = -1978871518114999061L;
-    private static final Logger logger = LogManager.getLogger(TcsXmlTaxonNameImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 5000;
 
@@ -440,7 +442,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			String uninomial = (elUninomial == null)? "" : elUninomial.getTextNormalize();
 			if (StringUtils.isNotBlank(uninomial)){
 				nonViralName.setGenusOrUninomial(uninomial);
-				if (nonViralName.getRank() != null && nonViralName.getRank().isLower(Rank.GENUS())){  // TODO check
+				if (nonViralName.getRank() != null && nonViralName.getRank().isLowerThan(RankClass.Genus)){  // TODO check
 					logger.warn("Name " + simple + " lower then 'genus' but has a canonical name part 'Uninomial'.");
 				}
 			}
@@ -455,7 +457,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				String genus = elGenus.getTextNormalize();
 				if (StringUtils.isNotBlank(genus)){
 					nonViralName.setGenusOrUninomial(genus);
-					if (nonViralName.getRank() != null &&  ! nonViralName.getRank().isLower(Rank.GENUS() )){  // TODO check
+					if (nonViralName.getRank() != null &&  ! nonViralName.getRank().isLowerThan(RankClass.Genus )){  // TODO check
 						logger.warn("Name " + simple + " is not lower then 'genus' but has canonical name part 'Genus'.");
 					}
 				}
@@ -479,7 +481,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			String specificEpithet = (elSpecificEpithet == null)? "" : elSpecificEpithet.getTextNormalize();
 			if (! specificEpithet.trim().equals("")){
 				nonViralName.setSpecificEpithet(specificEpithet);
-				if (nonViralName.getRank() != null && name.getRank().isHigher(Rank.SPECIES()) ){
+				if (nonViralName.getRank() != null && name.isSupraSpecific()){
 					logger.warn("Name " + simple + " is not species or below but has canonical name part 'SpecificEpithet'.");
 				}
 			}

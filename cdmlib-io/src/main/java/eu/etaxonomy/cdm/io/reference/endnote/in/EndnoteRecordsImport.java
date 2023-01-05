@@ -16,12 +16,12 @@
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -43,12 +43,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
-import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+
 /**
  * @author a.bukhman
- *
  */
 @Component
 public class EndnoteRecordsImport
@@ -56,7 +55,7 @@ public class EndnoteRecordsImport
         implements ICdmIO<EndnoteImportState> {
 
     private static final long serialVersionUID = -8591314328811284619L;
-    private static final Logger logger = LogManager.getLogger(EndnoteRecordsImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 1000;
 
@@ -119,14 +118,12 @@ public class EndnoteRecordsImport
 		TeamOrPersonBase<?> author = null;
 		IPrintedUnitBase printedUnitBase = null;
 
-
 		int i = 0;
 		// for each Record in Endnote
 		for (Element elRecord : elRecordList){
 			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
-			List<String> elementList = new ArrayList<String>();
+
 			//create Record element
-			IPublicationBase publicationBase = null;
 			CdmBase cdmBase = null;
 
 			Reference article = ReferenceFactory.newArticle();

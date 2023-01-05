@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.config;
 
 import java.util.ArrayList;
@@ -14,7 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 
@@ -25,11 +25,10 @@ import eu.etaxonomy.cdm.common.XmlHelp;
  * as configured in the CDM sources config file.
  *
  * @author cmathew
- *
  */
 public class CdmPersistentXMLSource {
-	private static final Logger logger = LogManager.getLogger(CdmPersistentXMLSource.class);
 
+    private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * CDM sources config file name
@@ -46,7 +45,6 @@ public class CdmPersistentXMLSource {
 	 * jDom Element represeting the CDM source as stored in the source config file
 	 */
 	private Element bean;
-
 
 	/**
 	 * Post fix represeting the type of source (data / remote)
@@ -184,8 +182,6 @@ public class CdmPersistentXMLSource {
 	/**
 	 * Returns the list of properties that are defined in the
 	 * cdm source xml config file.
-	 *
-	 * @return
 	 */
 	public Properties getCdmSourceProperties(){
 		Properties result = new Properties();
@@ -203,5 +199,4 @@ public class CdmPersistentXMLSource {
 		}
 		return result;
 	}
-
 }

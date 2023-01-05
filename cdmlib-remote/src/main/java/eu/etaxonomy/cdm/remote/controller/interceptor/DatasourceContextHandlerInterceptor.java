@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller.interceptor;
 
 import java.util.regex.Matcher;
@@ -15,7 +14,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import eu.etaxonomy.cdm.database.NamedContextHolder;
@@ -33,7 +33,8 @@ import eu.etaxonomy.cdm.database.NamedContextHolder;
  */
 @Deprecated
 public class DatasourceContextHandlerInterceptor extends HandlerInterceptorAdapter {
-	private static final Logger logger = LogManager.getLogger(DatasourceContextHandlerInterceptor.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	private final static Pattern basepathPattern = Pattern.compile("^/([^/]+)/.*");
 
@@ -49,12 +50,9 @@ public class DatasourceContextHandlerInterceptor extends HandlerInterceptorAdapt
         return true;
 	}
 
-
-
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 		NamedContextHolder.clearContextKey();
 		logger.info("datasource context cleared");
-
 	}
 }

@@ -20,7 +20,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -46,15 +47,12 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 /**
  * @author k.luther
  * @since 15.07.2016
- *
  */
 @Component
 public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase>> {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private static final Logger logger = LogManager.getLogger(GbifImport.class);
+
+    private static final long serialVersionUID = 3631757505818095911L;
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     protected boolean doCheck(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state) {
@@ -62,14 +60,6 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
         return true;
     }
 
-
-
-
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.specimen.SpecimenImportBase#doInvoke(eu.etaxonomy.cdm.io.common.ImportStateBase)
-     */
     @Override
     protected void doInvoke(SpecimenImportStateBase state) {
        // GbifImportState gbifImportState = (GbifImportState)state;
@@ -95,8 +85,6 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
-
             }
             if (results == null){
                 logger.info("There were no results for the query: " + config.getOccurenceQuery().toString());
@@ -168,22 +156,13 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
                 break;
             }
 
-
-
-
             //this.setUnitPropertiesXML( item, abcdFieldGetter, state);
         //   updateProgress(state, "Importing data for unit "+state.getDataHolder().unitID+" ("+i+"/"+unitsList.getLength()+")");
 
             //import unit + field unit data
             this.handleSingleUnit(state, response);
-
         }
-
-
         commitTransaction(state.getTx());
-
-
-
     }
 
     @Override
@@ -287,9 +266,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
         //TODO: pop state
         state.reset();
         state.setDerivedUnitBase(currentUnit);
-
     }
-
 
     @Override
     protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
@@ -590,11 +567,6 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
         return;
     }
 
-
-    /**
-     * @param state
-     * @param derivedUnitFacade
-     */
     private void handleCollectionData(
             SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
             DerivedUnitFacade derivedUnitFacade) {
@@ -604,21 +576,14 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
 
            collection = getCollection(institution, collection.getCode(), state);
        }
-
     }
 
-
-    /**
-     * @param state
-     * @param derivedUnitFacade
-     */
     private void handleDeterminations(
             SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
             DerivedUnitFacade derivedUnitFacade) {
+
         SpecimenImportConfiguratorBase config = state.getConfig();
 
-
-        String scientificName = "";
         boolean preferredFlag = false;
 
         if (state.getDataHolder().getNomenclatureCode() == ""){
@@ -643,13 +608,8 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
                 linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, null, null, null);
             }
         }
-
     }
 
-    /**
-     * @param names
-     * @param item
-     */
     private TaxonName findBestMatchingNames(GbifResponse item, SpecimenImportStateBase state) {
        //TODO
         if (item.getScientificName() != null){
@@ -671,29 +631,17 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
                return result;
            }
         }
-       return null;
-
+        return null;
     }
 
-
-
-    /**
-     * @param titleCache
-     * @param state
-     * @return
-     */
     private List<TaxonName> findExistingNames(String nameCache, SpecimenImportStateBase state) {
         return getNameService().findNamesByNameCache(nameCache, MatchMode.LIKE, null);
     }
-
-
 
     @Override
     protected boolean isIgnore(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state) {
         return false;
     }
-
-
 
     /*
      * "key": 1257570425,
@@ -771,7 +719,4 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
 "collectionID": "http://biocol.org/urn:lsid:biocol.org:col:15859
      *
      */
-
-
-
 }

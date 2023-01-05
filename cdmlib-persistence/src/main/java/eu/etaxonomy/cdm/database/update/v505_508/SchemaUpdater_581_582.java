@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.database.update.v505_508;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -26,9 +24,6 @@ import eu.etaxonomy.cdm.database.update.TableCreator;
  * @date 14.08.2019
  */
 public class SchemaUpdater_581_582 extends SchemaUpdaterBase {
-
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_581_582.class);
 
 	private static final String endSchemaVersion = "5.8.2.0.20190815";
 	private static final String startSchemaVersion = "5.8.1.0.20190813";

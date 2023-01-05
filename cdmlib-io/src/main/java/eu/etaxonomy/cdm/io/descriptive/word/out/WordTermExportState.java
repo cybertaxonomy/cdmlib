@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.word.out;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
 
@@ -21,12 +22,9 @@ import eu.etaxonomy.cdm.io.common.XmlExportState;
 public class WordTermExportState extends XmlExportState<WordTermExportConfigurator>{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(WordTermExportState.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public WordTermExportState(WordTermExportConfigurator config) {
         super(config);
     }
-
-
-
 }

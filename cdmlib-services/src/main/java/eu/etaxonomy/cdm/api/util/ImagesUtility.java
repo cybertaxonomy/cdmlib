@@ -14,7 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -32,7 +33,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @since Jan 27, 2010
  */
 public class ImagesUtility {
-	private static final Logger logger = LogManager.getLogger(ImagesUtility.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * Quick and dirty method to get an element's first image file.
@@ -66,7 +68,7 @@ public class ImagesUtility {
 	 */
 	@Deprecated
 	public static List<ImageFile> getOrderedImages(DescriptionElementBase element){
-		List<ImageFile> imageList = new ArrayList<ImageFile>();
+		List<ImageFile> imageList = new ArrayList<>();
 		MediaRepresentation representation = getImageMediaRepresentation(element);
 		if (representation != null) {
 			for (MediaRepresentationPart part : representation.getParts()){

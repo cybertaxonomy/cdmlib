@@ -6,15 +6,16 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
@@ -69,7 +71,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     private static final long serialVersionUID = 6977221584815363620L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(Synonym.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "acceptedTaxon")
     @XmlIDREF
@@ -81,11 +83,12 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 //    @NotNull(groups = Level2.class)
     private Taxon acceptedTaxon;
 
-    @XmlElement(name = "Type")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.EAGER)
-    private SynonymType type;
+    @XmlAttribute(name ="Type")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.SynonymType")}
+    )
+    private SynonymType type = SynonymType.SYNONYM_OF;
 
 //************************************* FACTORY ****************************/
     /**
@@ -185,7 +188,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
      * homotypic group} of the {@link Taxon accepted taxon}.
      */
     private void checkHomotypic() {
-        if (type != null && type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())
+        if (type != null && type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF)
                 && acceptedTaxon != null && acceptedTaxon.getName() != null){
                 acceptedTaxon.getName().getHomotypicalGroup().addTypifiedName(this.getName());
         }

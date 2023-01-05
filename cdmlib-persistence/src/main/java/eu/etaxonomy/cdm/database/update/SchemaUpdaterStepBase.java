@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -28,7 +29,8 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @since 13.09.2010
  */
 public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
-	private static final Logger logger = LogManager.getLogger(SchemaUpdaterStepBase.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	protected String stepName;
 

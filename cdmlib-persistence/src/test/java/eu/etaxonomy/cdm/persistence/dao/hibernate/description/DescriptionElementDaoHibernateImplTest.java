@@ -12,10 +12,9 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -40,35 +39,28 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author a.mueller
  * @since 25.11.2010
- *
  */
-public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = LogManager.getLogger(DescriptionElementDaoHibernateImplTest.class);
+public class DescriptionElementDaoHibernateImplTest
+        extends CdmTransactionalIntegrationTest {
+
+    private static final Logger logger = LogManager.getLogger();
+
+    private final UUID uuidSingleTextData = UUID.fromString("31a0160a-51b2-4565-85cf-2be58cb561d6");
+    private final UUID uuidDobuleTextData = UUID.fromString("50f6b799-3585-40a7-b69d-e7be77b2651a");
+
+    private final boolean printDatasets = false;
+
+    @SpringBeanByType
+	private IDescriptionElementDao descriptionElementDao;
 
 	@SpringBeanByType
-	IDescriptionElementDao descriptionElementDao;
+    private IDescriptionDao descriptionDao;
 
 	@SpringBeanByType
-    IDescriptionDao descriptionDao;
-
-
-	@SpringBeanByType
-	IDefinedTermDao termDao;
+	private IDefinedTermDao termDao;
 
 	@SpringBeanByType
-	ITaxonDao taxonDao;
-
-
-	private final UUID uuidSingleTextData = UUID.fromString("31a0160a-51b2-4565-85cf-2be58cb561d6");
-	private final UUID uuidDobuleTextData = UUID.fromString("50f6b799-3585-40a7-b69d-e7be77b2651a");
-
-	private final boolean printDatasets = false;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {}
-
-	@Before
-	public void setUp() throws Exception {}
+	private ITaxonDao taxonDao;
 
 // ***************************** TESTS ************************************/
 
@@ -77,9 +69,8 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	 */
 	@Test
 	public void testCountMedia() {
-		logger.warn("Not yet implemented");
+		logger.warn("testCountMedia not yet implemented");
 	}
-
 
 	/**
 	 * See #2114
@@ -191,7 +182,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	 */
 	@Test
 	public void testCountClassOfQextendsDescriptionElementBaseString() {
-		logger.warn("Not yet implemented");
+		logger.warn("testCountClassOfQextendsDescriptionElementBaseString not yet implemented");
 	}
 
 	/**
@@ -199,7 +190,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	 */
 	@Test
 	public void testGetMedia() {
-		logger.warn("Not yet implemented");
+		logger.warn("testGetMedia not yet implemented");
 	}
 
 	/**
@@ -207,7 +198,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	 */
 	@Test
 	public void testSearch() {
-		logger.warn("Not yet implemented");
+		logger.warn("testSearch not yet implemented");
 	}
 
 	/**
@@ -215,7 +206,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	 */
 	@Test
 	public void testPurgeIndex() {
-		logger.warn("Not yet implemented");
+		logger.warn("testPurgeIndex not yet implemented");
 	}
 
 	/**
@@ -223,7 +214,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	 */
 	@Test
 	public void testRebuildIndex() {
-		logger.warn("Not yet implemented");
+		logger.warn("testRebuildIndex not yet implemented");
 	}
 
 	/**
@@ -231,7 +222,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	 */
 	@Test
 	public void testOptimizeIndex() {
-		logger.warn("Not yet implemented");
+		logger.warn("testOptimizeIndex not yet implemented");
 	}
 
 	/**
@@ -239,7 +230,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	 */
 	@Test
 	public void testCountString() {
-		logger.warn("Not yet implemented");
+		logger.warn("testCountString not yet implemented");
 	}
 
 	/**

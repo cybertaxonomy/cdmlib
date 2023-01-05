@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.view;
 
 import java.io.File;
@@ -8,41 +16,34 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.CDL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.servlet.View;
 
-
 /**
  * This class is a generic approach to generate a csv output from POJOs.
- * Yet there will be a problem with multidimensional structures. It is 
+ * Yet there will be a problem with multidimensional structures. It is
  * recommended to flatten these out before handing your data over to this
  * view.
  * <p>
  *<b>This is a experimental class, can be changed in the future</b>
- * 
- * 
- * @author a.oppermann
  *
+ * @author a.oppermann
  */
 public class CsvFileDownloadView implements View{
 
-	private File file;
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
-	Logger logger = LogManager.getLogger(CsvFileDownloadView.class);
+    private File file;
 
-	/**
-	 * 
-	 * @param file
-	 */
 	public CsvFileDownloadView(File file){
 		this.file = file;
 	}
 
-	
-	
 	@Override
 	public String getContentType() {
 		return null;
@@ -51,7 +52,7 @@ public class CsvFileDownloadView implements View{
 	@Override
 	public void render(Map<String, ?> model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-        
+
         ArrayList<?> list = (ArrayList<?>) model.get("csv");
         JSONObject obj;
         JSONObject result = new JSONObject();

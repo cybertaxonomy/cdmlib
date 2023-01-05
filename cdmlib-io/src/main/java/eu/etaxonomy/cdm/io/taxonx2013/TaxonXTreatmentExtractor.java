@@ -26,7 +26,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -75,13 +77,12 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 /**
  * @author pkelbert
  * @since 2 avr. 2013
- *
  */
 public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     private static final String PUBLICATION_YEAR = "publicationYear";
 
-	private static final Logger logger = LogManager.getLogger(TaxonXTreatmentExtractor.class);
+	private static final Logger logger = LogManager.getLogger();
 
     private static final String notMarkedUp = "Not marked-up";
     private static final UUID proIbioTreeUUID = UUID.fromString("2c49f506-c7f7-44de-a8b9-2e695de3769c");
@@ -1570,7 +1571,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                 sourceHandler.addSource(refMods, synonym);
-                acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+                acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
             }
         }
         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -1746,7 +1747,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
                     }
                 }
 
@@ -1779,11 +1780,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
                     }
-
                 }
-
 
                 if (!currentMyName.getIdentifier().isEmpty() && (currentMyName.getIdentifier().length()>2)){
                     setLSID(currentMyName.getIdentifier(), acceptedTaxon);
@@ -1855,7 +1854,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (!synonymsSet.contains(synonym) && ! (synoExist)) {
                         sourceHandler.addSource(refMods, synonym);
 
-                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+                        acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
                     }
                 }
             }
@@ -1863,13 +1862,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
     }
 
-
-
-    /**
-     * @param identifier
-     * @param acceptedTaxon
-     */
-    @SuppressWarnings("rawtypes")
     private void setLSID(String identifier, TaxonBase<?> taxon) {
         //logger.info("setLSID");
         //        boolean lsidok=false;
@@ -1883,7 +1875,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             } catch (MalformedLSIDException e) {
                 logger.warn("Malformed LSID");
             }
-
         }
 
         //logger.info("search reference for LSID");
@@ -2396,7 +2387,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (atomisedNameStr.length()>fullName.length()) {
                         newName=atomisedNameStr;
                     } else {
-                        if (fullName.length()>atomisedNameStr.length() && (rank.isLower(Rank.SPECIES()) && fullName.length()>2 && !fullName.substring(0, 1).equals("."))) {
+                        if (fullName.length()>atomisedNameStr.length() && (rank.isLowerThan(RankClass.Species) && fullName.length()>2 && !fullName.substring(0, 1).equals("."))) {
                             newName=askWhichScientificName(fullName,atomisedNameStr,classification.getTitleCache(),name);
                         } else {
                             newName=fullName;
@@ -2537,7 +2528,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (atomisedNameStr.length()>fullName.length()) {
                         newName = atomisedNameStr;
                     } else {
-                        if (fullName.length()>atomisedNameStr.length() && (rank.isLower(Rank.SPECIES()) && fullName.length()>2 && !fullName.substring(0, 1).equals("."))) {
+                        if (fullName.length()>atomisedNameStr.length() && (rank.isLowerThan(RankClass.Species) && fullName.length()>2 && !fullName.substring(0, 1).equals("."))) {
                             newName = askWhichScientificName(fullName, atomisedNameStr, classification.getTitleCache(), name);
                         } else {
                             newName = fullName;
@@ -2748,7 +2739,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 } else if(rankListToPrint.contains(nodeName.toLowerCase())) {
                     atomisedName.add(node.getTextContent().trim());
                 } else{
-                    if (rank.isHigher(Rank.GENUS()) && (nodeName.indexOf("dwcranks:")>-1 || nodeName.indexOf("dwc:Family")>-1)) {
+                    if (rank.isSupraGeneric() && (nodeName.indexOf("dwcranks:")>-1 || nodeName.indexOf("dwc:Family")>-1)) {
                         atomisedName.add(node.getTextContent().trim());
                     }else if (nodeName.equals("#text")){
                     	String text = node.getTextContent();
@@ -2792,19 +2783,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         return fullName;
     }
 
-    /**
-     * @param rank
-     * @param fullName
-     * @param atomisedMap
-     * @param myname
-     * @return
-     */
     private String extractAuthorFromNames(Rank rank, String name, HashMap<String, String> atomisedMap, MyName myname) {
         logger.info("extractAuthorFromNames");
         String fullName=name;
         if (atomisedMap.get("dwc:scientificnameauthorship") == null && fullName!=null){
             //            System.out.println("rank : "+rank.toString());
-            if(rank.isHigher(Rank.SPECIES())){
+            if(rank.isSupraSpecific()){
                 try{
                     String author=null;
                     if(atomisedMap.get("dwcranks:subgenus") != null) {
@@ -3902,7 +3886,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     TaxonName tnb =  tmpb.getName();
                     Rank crank=null;
                     if (tnb != null){
-                         if(globalrank.equals(rank) || (globalrank.isLower(Rank.SPECIES()) && rank.equals(Rank.SPECIES()))){
+                         if(globalrank.equals(rank) || (globalrank.isLowerThan(RankClass.Species) && rank.equals(Rank.SPECIES()))){
                             if (tnb.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(fullname) ){
                                 crank =tnb.getRank();
                                 if (crank !=null && rank !=null){
@@ -3981,11 +3965,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     tnb.setTitleCache(fullname, true);
                     //                    tnb.setGenusOrUninomial(fullname);
                 }
-                if(rank.isHigher(Rank.GENUS())) {
+                if(rank.isSupraGeneric()) {
                     tnb.setGenusOrUninomial(partialname);
                 }
 
-                if(rank.isHigher(Rank.SPECIES())) {
+                if(rank.isSupraSpecific()) {
                     tnb.setTitleCache(partialname, true);
                 }
 

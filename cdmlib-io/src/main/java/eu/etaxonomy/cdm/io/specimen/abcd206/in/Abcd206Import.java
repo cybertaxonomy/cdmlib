@@ -19,7 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -82,10 +83,9 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> {
 
     private static final long serialVersionUID = 3918095362150986307L;
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
-
-    private static final Logger logger = LogManager.getLogger(Abcd206Import.class);
 
     public Abcd206Import() {
         super();

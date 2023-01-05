@@ -11,17 +11,18 @@ package eu.etaxonomy.cdm.io.excel.common;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.distribution.excelupdate.ExcelDistributionUpdateConfigurator;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
@@ -43,7 +44,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         extends CdmImportBase<CONFIG, STATE> {
 
     private static final long serialVersionUID = 2759164811664484732L;
-    private static final Logger logger = LogManager.getLogger(ExcelImportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 
@@ -190,22 +191,14 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 		return result;
 	}
 
-	/**
-	 *
-	 *
-	 * @param record
-	 * @return
-	 */
 	protected abstract void analyzeRecord(Map<String,String> record, STATE state);
 
 	protected abstract void firstPass(STATE state);
 	protected abstract void secondPass(STATE state);
 
-
 	public ExcelImportConfiguratorBase getConfigurator() {
 		return configurator;
 	}
-
 
 	protected int floatString2IntValue(String value) {
 		int intValue = 0;
@@ -224,12 +217,6 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 		return String.valueOf(i);
 	}
 
-
-	/**
-	 * @param start
-	 * @param end
-	 * @return
-	 */
 	protected TimePeriod getTimePeriod(String start, String end) {
 		String strPeriod = CdmUtils.concat(" - ", start, end);
 		TimePeriod result = TimePeriodParser.parseString(strPeriod);
@@ -319,7 +306,6 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         return record;
     }
 
-
     /**
      * @see #getTaxonByCdmId(ExcelImportState, String, String, String, String, Class, String)
      */
@@ -350,7 +336,6 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
             state.getResult().addWarning(message, null, line);
         }
     }
-
 
     /**
      * Non transaction save method to retrieve the source reference

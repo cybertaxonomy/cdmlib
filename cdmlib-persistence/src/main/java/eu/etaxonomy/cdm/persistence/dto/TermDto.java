@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -46,17 +45,8 @@ public class TermDto extends AbstractTermDto{
     private String idInVocabulary = null;
     private Collection<TermDto> includes;
     private Collection<TermDto> generalizationOf;
-//    this should be handled in vocabularyDto
-//    private Set<Representation> vocRepresentations = null;
-//    private String vocRepresentation_L10n = null;
-//    private String vocRepresentation_L10n_abbreviatedLabel = null;
     private Collection<UUID> media = null;
     private NamedAreaLevel level = null;
-
-//    private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
-//            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, String titleCache) {
-//        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, titleCache);
-//    }
 
     public TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,  String titleCache) {
@@ -101,9 +91,9 @@ public class TermDto extends AbstractTermDto{
                         (partOf!=null?partOf.getUuid():null),
                         (kindOf!=null?kindOf.getUuid():null),
                         (vocabulary!=null?vocabulary.getUuid():null),
-                        (term instanceof OrderedTermBase)?((OrderedTermBase<?>) term).getOrderIndex():null,
-                         term.getIdInVocabulary(),
-                         term.getTitleCache());
+                        term.getOrderIndex(),
+                        term.getIdInVocabulary(),
+                        term.getTitleCache());
         dto.setUri(term.getUri());
         if(initializeToTop){
             if(partOf!=null){

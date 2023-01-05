@@ -6,16 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.reference;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 public class ReferenceFactory {
-	private static final Logger logger = LogManager.getLogger(ReferenceFactory.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	public static Reference newArticle(){
 		return new Reference(ReferenceType.Article);

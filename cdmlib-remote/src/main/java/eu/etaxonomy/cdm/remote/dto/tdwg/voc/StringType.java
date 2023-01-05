@@ -17,7 +17,8 @@ import javax.xml.bind.annotation.XmlValue;
 
 @XmlType(name = "StringType", propOrder = {})
 public class StringType {
-	@XmlValue
+
+    @XmlValue
     public String value;
 
     @XmlAttribute(name = "lang", namespace = "http://www.w3.org/XML/1998/namespace")

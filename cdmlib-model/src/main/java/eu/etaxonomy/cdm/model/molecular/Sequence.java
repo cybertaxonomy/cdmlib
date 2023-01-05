@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -89,7 +90,7 @@ public class Sequence
                extends AnnotatableEntity {
 
 	private static final long serialVersionUID = 8298983152731241775L;
-	private static final Logger logger = LogManager.getLogger(Sequence.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//TODO move to cdmlib-ext?
 	private static final String GENBANK_BASE_URI = "http://www.ncbi.nlm.nih.gov/nuccore/%s";

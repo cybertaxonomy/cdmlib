@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class AlternativeTreeRoot extends TaxonNode {
 	private static final long serialVersionUID = 3194452473289639597L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(AlternativeTreeRoot.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private TaxonNode replacedTaxonNode;
 

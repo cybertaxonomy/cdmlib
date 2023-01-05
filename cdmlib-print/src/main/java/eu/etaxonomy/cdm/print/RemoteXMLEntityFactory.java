@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
  */
 public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
-	private static final Logger logger = LogManager.getLogger(RemoteXMLEntityFactory.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private URL serviceUrl;
 

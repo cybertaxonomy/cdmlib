@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
@@ -17,7 +16,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -70,10 +70,9 @@ import io.swagger.annotations.Api;
 @Controller
 @Api(value = "agent")
 @RequestMapping(value = {"/agent/{uuid}"})
-public class AgentController extends AbstractIdentifiableController<AgentBase, IAgentService>
-{
+public class AgentController extends AbstractIdentifiableController<AgentBase, IAgentService> {
 
-    private static final Logger logger = LogManager.getLogger(AgentController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> TAXONNODEAGENTRELATIONS_INIT_STRATEGY = Arrays.asList(new String[]{
             // NOTE: all other cases are covered in the TaxonNodeDaoHibernateImpl method
@@ -102,18 +101,7 @@ public class AgentController extends AbstractIdentifiableController<AgentBase, I
     }
 
     /**
-     *
      * See also {@link TaxonController#doGetTaxonNodeAgentRelations(UUID, UUID, Integer, Integer, HttpServletRequest, HttpServletResponse)}
-     *
-     * @param uuid
-     * @param classificationUuid
-     * @param pageIndex
-     * @param pageSize
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
-     *
      */
     @RequestMapping(value = "taxonNodeAgentRelations", method = RequestMethod.GET)
     public Pager<TaxonNodeAgentRelation>  doGetTaxonNodeAgentRelations(

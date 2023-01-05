@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Constructor;
@@ -15,7 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -40,7 +40,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
         implements ICdmIO<STATE>, IIoObservable {
 
     private static final long serialVersionUID = -2216451655392574659L;
-    private static final Logger logger = LogManager.getLogger(CdmIoBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final Set<IIoObserver> observers = new HashSet<>();
     protected String ioName = null;
@@ -297,7 +297,6 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
         //for performance improvement one may read:
         //http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
 //		Object o = new SecurityManager().getSecurityContext();
-
 
         fire(event);
     }

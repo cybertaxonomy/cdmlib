@@ -16,7 +16,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -49,7 +50,7 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
 
     static final Class<?>[] DEFAULT_VALIDATION_GROUPS = new Class<?>[] { Level2.class, Level3.class };
 
-    private static final Logger logger = LogManager.getLogger(BatchValidator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
     private ICdmRepository repository;

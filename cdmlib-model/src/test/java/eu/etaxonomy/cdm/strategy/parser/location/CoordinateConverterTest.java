@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.strategy.parser.location;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,10 +21,10 @@ import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionR
 /**
  * @author a.mueller
  * @since 07.06.2010
- *
  */
 public class CoordinateConverterTest {
-	private static final Logger logger = LogManager.getLogger(CoordinateConverterTest.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private CoordinateConverter coordinateConverter;
 

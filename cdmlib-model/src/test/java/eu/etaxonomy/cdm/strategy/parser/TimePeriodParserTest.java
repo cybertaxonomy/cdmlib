@@ -14,7 +14,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.Assert;
@@ -29,8 +30,9 @@ import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
  * @author a.mueller
  */
 public class TimePeriodParserTest {
-	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TimePeriodParserTest.class);
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 //	private TimePeriod onlyStartYear;
 //	private TimePeriod onlyEndYear;

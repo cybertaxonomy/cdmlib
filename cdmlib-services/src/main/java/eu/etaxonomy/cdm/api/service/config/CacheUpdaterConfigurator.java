@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -26,7 +27,7 @@ public class CacheUpdaterConfigurator implements Serializable{
 
     private static final long serialVersionUID = 6102562152485923714L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CacheUpdaterConfigurator.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private List<Class<? extends IdentifiableEntity>> classList;
 	private IProgressMonitor monitor;

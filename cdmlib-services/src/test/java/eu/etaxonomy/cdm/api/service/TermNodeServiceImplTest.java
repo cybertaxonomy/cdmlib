@@ -203,7 +203,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
 
 
     @Test
-    @DataSet(loadStrategy=RefreshLoadStrategy.class ,value="TermNodeServiceImplTest-indexing.xml")
+    @DataSet(loadStrategy=RefreshLoadStrategy.class, value="TermNodeServiceImplTest-indexing.xml")
     //this may fail in single test if it is the first test as long as #8174 is not fixed
     public void testIndexMoveNode() {
         //in feature tree

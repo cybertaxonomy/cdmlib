@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen;
-
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -19,7 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -46,6 +45,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -71,7 +71,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
-
 /**
  * @author p.kelbert
  * @since 20.10.2008
@@ -80,7 +79,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         extends CdmImportBase<CONFIG, STATE> {
 
     private static final long serialVersionUID = 4423065367998125678L;
-    private static final Logger logger = LogManager.getLogger(SpecimenImportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 
@@ -788,7 +787,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        Taxon subspecies = null;
 	        Taxon parent = null;
 	        if(rank!=null){
-	            if (rank.isLower(Rank.GENUS() )){
+	            if (rank.isLowerThan(RankClass.Genus)){
 	                String genusOrUninomial = nvname.getGenusOrUninomial();
 	                TaxonName taxonName = getOrCreateTaxonName(genusOrUninomial, Rank.GENUS(), preferredFlag, state, -1);
 	                genus = getOrCreateTaxonForName(taxonName, state);
@@ -810,7 +809,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                        parent = linkParentChildNode(genus, subgenus, classification, state);
 	                    }            }
 	            }
-	            if (rank.isLower(Rank.SPECIES())){
+	            if (rank.isLowerThan(RankClass.Species)){
 	                if (subgenus!=null){
 	                    String prefix = nvname.getGenusOrUninomial();
 	                    String name = nvname.getInfraGenericEpithet();

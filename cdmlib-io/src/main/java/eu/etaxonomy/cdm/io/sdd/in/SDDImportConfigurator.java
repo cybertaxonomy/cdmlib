@@ -37,7 +37,7 @@ public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportSt
         implements IImportConfigurator, IMatchingImportConfigurator {
 
     private static final long serialVersionUID = -960998183005112130L;
-    private static final Logger logger = LogManager.getLogger(SDDImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//TODO
 	private static IInputTransformer defaultTransformer = new SDDTransformer();
@@ -47,39 +47,29 @@ public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportSt
 	//xml xmlNamespace
 	Namespace sddNamespace;
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				SDDImport.class
 		};
-	};
+	}
 
 	public static SDDImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new SDDImportConfigurator(uri, destination);
 	}
 
-
-	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
-	 * @param destination
-	 */
 	private SDDImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(defaultTransformer);
 		setSource(uri);
 		setDestination(destination);
 	}
 
-
 	@Override
     public SDDImportState getNewState() {
 		return new SDDImportState(this);
 	}
 
-
-	/**
-	 * @return
-	 */
 	public Element getSourceRoot(){
 		try {
 			URL url;
@@ -131,17 +121,10 @@ public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportSt
 		this.sddNamespace = xmlNamespace;
 	}
 
-	/**
-	 * @param doMatchTaxa the doMatchTaxa to set
-	 */
 	@Override
     public void setReuseExistingTaxaWhenPossible(boolean doMatchTaxa) {
 		this.doMatchTaxa = doMatchTaxa;
 	}
-
-	/**
-	 * @return the doMatchTaxa
-	 */
 	@Override
     public boolean isReuseExistingTaxaWhenPossible() {
 		return doMatchTaxa;

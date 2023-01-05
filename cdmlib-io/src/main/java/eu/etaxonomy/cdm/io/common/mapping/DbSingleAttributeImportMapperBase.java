@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +13,8 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -27,9 +27,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 12.05.2009
  */
 public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportStateBase<?,?>, CDM_BASE extends CdmBase> extends CdmSingleAttributeMapperBase implements IDbImportMapper<STATE, CDM_BASE>  {
-	private static final Logger logger = LogManager.getLogger(DbSingleAttributeImportMapperBase.class);
 
-	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<>();
+    private static final Logger logger = LogManager.getLogger();
+
+    protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<>();
 //	private Integer precision = null;
 	protected boolean obligatory = true;
 	protected boolean ignore = false;
@@ -50,7 +51,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		this.obligatory = obligatory;
 	}
 
-
 	@Override
     public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
@@ -66,14 +66,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		}
 	}
 
-
-	/**
-	 * @param destinationClass
-	 * @return
-		 * @throws NoSuchMethodException
-		 * @throws SecurityException
-		 * @throws NoSuchMethodException
-	 */
 	protected Class getTargetClass(Class<?> destinationClass) throws SecurityException, NoSuchMethodException{
 		Class result = destinationClass;
 		String destinationAttribute = getDestinationAttribute();
@@ -109,11 +101,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return result;
 	}
 
-
-	/**
-	 * @param split
-	 * @return
-	 */
 	private String removeCast(String split) {
 		int index = split.lastIndexOf(")");
 		if (split.length() > index){
@@ -124,11 +111,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return split;
 	}
 
-
-	/**
-	 * @param split
-	 * @return
-	 */
 	private String getCastedResultClass(String split) {
 		String castString = null;
 		split = split.trim();
@@ -140,22 +122,12 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return castString;
 	}
 
-
-	/**
-	 * @param clazz
-	 * @return
-	 */
 	private String getMethodName(Class clazz) {
 		String cdmAttributeName = getTargetClassAttribute(getDestinationAttribute());
 		String result = ImportHelper.getSetterMethodName(clazz, cdmAttributeName);
 		return result;
 	}
 
-
-	/**
-	 * @param destinationAttribute
-	 * @return
-	 */
 	private String getTargetClassAttribute(String destinationAttribute) {
 		if (destinationAttribute == null){
 			return null;
@@ -207,7 +179,6 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return objectToInvoke;
 	}
 
-
 	private Method getMethod() {
 		if (destinationMethod != null){
 			return destinationMethod;
@@ -216,23 +187,18 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		}
 	}
 
-
 	protected Object getValue(ResultSet rs) throws SQLException{
 		return getDbValue(rs);
 	}
 
 	/**
 	 * Returns the database value for the attribute
-	 * @param rs
-	 * @return
-	 * @throws SQLException
 	 */
 	protected Object getDbValue(ResultSet rs) throws SQLException{
 		String columnLabel = getSourceAttribute();
 		Object value = rs.getObject(columnLabel);
 		return value;
 	}
-
 
 //	/**
 //	 * @return the index
@@ -285,15 +251,8 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 			e.printStackTrace();
 			return -1;
 		}
-
 	}
 
-
-	/**
-	 * @param rs
-	 * @return
-	 * @throws SQLException
-	 */
 	protected String getStringDbValue(ResultSet rs, String attribute) throws SQLException {
 		Object oId = rs.getObject(attribute);
 		String id = String.valueOf(oId);
@@ -304,5 +263,4 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 //		String destAtt = CdmUtils.Nz(getDestinationAttribute());
 //		return this.getClass().getSimpleName() +"[" + sourceAtt + "->" + destAtt + "]";
 //	}
-
 }

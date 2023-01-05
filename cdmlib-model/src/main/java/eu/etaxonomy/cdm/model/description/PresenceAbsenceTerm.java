@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -35,7 +36,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -76,21 +76,21 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
+public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 
     private static final long serialVersionUID = 1036807546935584396L;
-	private static final Logger logger = LogManager.getLogger(PresenceAbsenceTerm.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	//presence base
 	public static final UUID uuidPresent = UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");
-	private static final UUID uuidPresentDoubfully = UUID.fromString("75a60279-a4c2-4f53-bc57-466028a4b3db");
+	public static final UUID uuidPresentDoubfully = UUID.fromString("75a60279-a4c2-4f53-bc57-466028a4b3db");
 
 	//presence
 	public static final UUID uuidNative = UUID.fromString("ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7");
-	private static final UUID uuidNativeDoubtfullyNative = UUID.fromString("310373bf-7df4-4d02-8cb3-bcc7448805fc");
+	public static final UUID uuidNativeDoubtfullyNative = UUID.fromString("310373bf-7df4-4d02-8cb3-bcc7448805fc");
 	public static final UUID uuidCultivated = UUID.fromString("9eb99fe6-59e2-4445-8e6a-478365bd0fa9");
 	public static final UUID uuidIntroduced = UUID.fromString("643cf9d1-a5f1-4622-9837-82ef961e880b");
-	private static final UUID uuidIntroducedDoubtfullyIntroduced = UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
+	public static final UUID uuidIntroducedDoubtfullyIntroduced = UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
 	public static final UUID uuidIntroducedUncertainDegreeNaturalisation = UUID.fromString("da159544-b0dd-4599-a9c9-640826af8c17");
 	public static final UUID uuidIntroducedAdventitious = UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
 	public static final UUID uuidNaturalised = UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
@@ -119,12 +119,12 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 
 	//absence
 	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
-	private static final UUID uuidReportedInError = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
+	public static final UUID uuidReportedInError = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
 
 	public static final UUID uuidNativeError = UUID.fromString("61cee840-801e-41d8-bead-015ad866c2f1");
 	private static final UUID uuidIntroducedReportedError = UUID.fromString("aeec2947-2700-4623-8e32-9e3a430569d1");
 	private static final UUID uuidCultivatedReportedError = UUID.fromString("9d4d3431-177a-4abe-8e4b-1558573169d6");
-	private static final UUID uuidNativeFormerlyNative = UUID.fromString("5c397f7b-59ef-4c11-a33c-45691ceda91b");
+	public static final UUID uuidNativeFormerlyNative = UUID.fromString("5c397f7b-59ef-4c11-a33c-45691ceda91b");
 	private static final UUID uuidNativeDoubtfullyNativeReportedError = UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06");
 	private static final UUID uuidIntroducedFormerlyIntroduced = UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
 	private static final UUID uuidEndemicReportedError = UUID.fromString("679b215d-c231-4ee2-ae12-3ffc3dd528ad");

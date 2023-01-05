@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +60,7 @@ public class CommonServiceImpl
         implements ICommonService {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CommonServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IOriginalSourceDao originalSourceDao;
@@ -378,7 +379,7 @@ public class CommonServiceImpl
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances) {
         //this is very ugly, I know, but for now I do not want to copy the saveAll method from CdmEntityDaoBase to genericDao
         //and generally the saveAll method should work for other CdmBase types with generics removed
-        return (Map<UUID, T>) originalSourceDao.saveAll((Collection)newInstances);
+        return originalSourceDao.saveAll((Collection)newInstances);
     }
 
     @Override
@@ -386,7 +387,7 @@ public class CommonServiceImpl
     public <T extends CdmBase> Map<UUID,T> saveOrUpdate(Collection<T> newInstances) {
         //this is very ugly, I know, but for now I do not want to copy the saveAll method from CdmEntityDaoBase to genericDao
         //and generally the saveAll method should work for other CdmBase types with generics removed
-        return (Map<UUID, T>) originalSourceDao.saveOrUpdateAll((Collection)newInstances);
+        return originalSourceDao.saveOrUpdateAll((Collection)newInstances);
     }
 
     @Override

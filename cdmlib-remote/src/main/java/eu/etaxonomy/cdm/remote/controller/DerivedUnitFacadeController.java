@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -42,15 +43,13 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since 28.06.2010
- *
  */
 @Controller
 @Api("derivedUnitFacade")
 @RequestMapping(value = {"/derivedUnitFacade/{uuid}"})
 public class DerivedUnitFacadeController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>{
 
-    private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeController.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     private IOccurrenceService service;
 
@@ -106,7 +105,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
     public List<MediaDTO> doGetFieldObjectMediaDTO(
         @PathVariable("uuid") UUID occurrenceUuid,
         HttpServletRequest request,
-        HttpServletResponse response) throws IOException {
+        HttpServletResponse response) {
 
         logger.info("doGetFieldObjectMediaDTO() - " + readPathParameter(request, null));
 

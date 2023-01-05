@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-public interface ILoadableTerm<T extends IDefinedTerm>{
+public interface ILoadableTerm<T extends IDefinedTerm> {
 
 	/**
 	 * Fills the {@link ILoadableTerm term} with contents from a csvLine. If the csvLine
@@ -25,5 +25,5 @@ public interface ILoadableTerm<T extends IDefinedTerm>{
 	 */
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId);
 
-	public  void writeCsvLine(CSVWriter writer, T term);
+	public void writeCsvLine(CSVWriter writer, T term);
 }

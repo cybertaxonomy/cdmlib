@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.ByteArrayOutputStream;
@@ -21,7 +20,8 @@ import java.util.List;
 
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -52,7 +52,7 @@ public class JaxbExport
             implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
 
     private static final long serialVersionUID = -525533131708894145L;
-    private static final Logger logger = LogManager.getLogger(JaxbExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private DataSet dataSet;
 

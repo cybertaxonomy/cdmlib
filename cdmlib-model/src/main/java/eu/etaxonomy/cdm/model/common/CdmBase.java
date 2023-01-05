@@ -90,11 +90,12 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
     "createdBy"
 })
 @MappedSuperclass
-public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptive, Cloneable{
+public abstract class CdmBase
+        implements Serializable, ICdmBase, ISelfDescriptive, Cloneable{
 
     private static final long serialVersionUID = -3053225700018294809L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CdmBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected static final int CLOB_LENGTH = 65536;
 
@@ -566,20 +567,10 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 
 //********************** CLONE *****************************************/
 
-//    protected void clone(CdmBase clone){
-//        clone.setCreatedBy(createdBy);
-//        clone.setId(id);
-//        clone.propertyChangeSupport=new PropertyChangeSupport(clone);
-//        //Constructor Attributes
-//        //clone.setCreated(created);
-//        //clone.setUuid(getUuid());
-//
-//    }
-
     @Override
     public CdmBase clone() throws CloneNotSupportedException{
         CdmBase result = (CdmBase)super.clone();
-        result.propertyChangeSupport=new PropertyChangeSupport(result);
+        result.propertyChangeSupport = new PropertyChangeSupport(result);
 
         //TODO ?
         result.setId(0);
@@ -590,5 +581,4 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         //no changes to: -
         return result;
     }
-
 }

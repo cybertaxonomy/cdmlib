@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.test.function;
 
 import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Ignore;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
@@ -33,9 +34,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeMap;
 @Ignore
 public class TestConversationEnabled implements IConversationEnabled {
 
-    private static final Logger logger = LogManager.getLogger(TestConversationEnabled.class);
-
-//	private ConversationHolder conversationHolder;
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public ConversationHolder getConversationHolder() {

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
@@ -17,7 +16,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -57,7 +57,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}"})
 public class DescriptionController extends AbstractIdentifiableController<DescriptionBase, IDescriptionService> {
 
-    private static final Logger logger = LogManager.getLogger(DescriptionController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ITermTreeService termTreeService;
@@ -170,7 +170,4 @@ public class DescriptionController extends AbstractIdentifiableController<Descri
         mv.addObject(textData);
         return mv;
     }
-
-
-
 }

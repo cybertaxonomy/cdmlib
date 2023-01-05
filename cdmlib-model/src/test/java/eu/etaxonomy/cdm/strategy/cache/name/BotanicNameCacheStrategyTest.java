@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 
-	private static final Logger logger = LogManager.getLogger(BotanicNameCacheStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String familyNameString = "Familia";
 	private static final String genusNameString = "Genus";

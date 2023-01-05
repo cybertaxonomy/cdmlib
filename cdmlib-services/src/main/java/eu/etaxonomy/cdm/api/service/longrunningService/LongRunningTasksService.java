@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -61,7 +61,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
 
     @Autowired
     @Qualifier("cdmRepository")
-    private ICdmRepository repository;
+    private ICdmApplication repository;
 
     @Override
     public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid) {

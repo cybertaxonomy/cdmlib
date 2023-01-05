@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -44,8 +43,6 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 
     /**
      * Returns a term according to it's uri
-     * @param uri
-     * @return
      */
     public DefinedTermBase getByUri(URI uri);
 
@@ -176,6 +173,19 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
     public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config);
 
     /**
+     * @param termUuids
+     * @param config
+     * @return
+     */
+    public DeleteResult delete(List<UUID> termUuids, TermDeletionConfigurator config);
+
+    /**
+     * @param termUuids
+     * @param config
+     * @return
+     */
+    public DeleteResult deleteTerms(List<DefinedTermBase> terms, TermDeletionConfigurator config);
+    /**
      * @param label
      * @return
      */
@@ -216,7 +226,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * Move the given term to the given parent
      * @param termDto the {@link TermDto} of the term to move
      * @param parentUuid the {@link UUID} of the new parent term
-     * @param termMovePosition enum to specify the position for {@link OrderedTermBase}s in an {@link OrderedTermVocabulary}
+     * @param termMovePosition enum to specify the position for {@link DefinedTermBase}s in an {@link OrderedTermVocabulary}
      */
     public UpdateResult moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition);
 

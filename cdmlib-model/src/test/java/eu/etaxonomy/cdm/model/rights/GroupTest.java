@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.rights;
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +22,6 @@ import eu.etaxonomy.cdm.model.permission.User;
 /**
  * @author n.hoffmann
  * @since Mar 9, 2011
- * @version 1.0
  */
 public class GroupTest {
 
@@ -32,9 +30,6 @@ public class GroupTest {
 	private GrantedAuthority grantedAuthority;
 	private User user;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		group = Group.NewInstance(groupName);

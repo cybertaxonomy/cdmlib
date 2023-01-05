@@ -19,8 +19,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
  * @author m.venin
  * @since 2010
  */
-public abstract class AbstractCategoricalDescriptionBuilder
-        extends DescriptionBuilder<CategoricalData>{
+public abstract class CategoricalDescriptionBuilderBase
+        extends DescriptionBuilderBase<CategoricalData>{
 
 	@Override
     public TextData build(CategoricalData data, List<Language> languages) {

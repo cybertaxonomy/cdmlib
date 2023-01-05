@@ -391,12 +391,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         // prepare some synonym relation ships for some tests
         Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
         Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
-        taxonRethera.addSynonym(synAtroposAgassiz, SynonymType.SYNONYM_OF());
+        taxonRethera.addSynonym(synAtroposAgassiz, SynonymType.SYNONYM_OF);
 //        logger.warn("addSynonym(..)");
 
         Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
         Taxon taxonRetheraSecCdmTest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
-        taxonRetheraSecCdmTest.addSynonym(synAtroposLeach, SynonymType.SYNONYM_OF());
+        taxonRetheraSecCdmTest.addSynonym(synAtroposLeach, SynonymType.SYNONYM_OF);
         this.taxonDao.save(taxonRetheraSecCdmTest);
 
         Taxon test = (Taxon)this.taxonDao.findByUuid(retheraSecCdmtest);
@@ -462,12 +462,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         // prepare some synonym relation ships for some tests
         Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
         Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
-        taxonRethera.addSynonym(synAtroposAgassiz, SynonymType.SYNONYM_OF());
+        taxonRethera.addSynonym(synAtroposAgassiz, SynonymType.SYNONYM_OF);
         //logger.warn("addSynonym(..)");
         this.taxonDao.clear();
         Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
         Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
-        taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymType.SYNONYM_OF());
+        taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymType.SYNONYM_OF);
         this.taxonDao.clear();
 
         // 1. searching for a taxon (Rethera)
@@ -501,7 +501,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         //   attache a synonym first
         Synonym syn = (Synonym)taxonDao.findByUuid(this.atroposLeach);
         Taxon tax = (Taxon) taxonDao.findByUuid(rethera);
-        tax.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
+        tax.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
 
         taxonDao.save(tax);
         results = taxonDao.findByNameTitleCache(doTaxa, doSynonyms, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, namedAreas,
@@ -776,7 +776,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
 
-        long numberOfTaxonomicSynonyms = taxonDao.countSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF());
+        long numberOfTaxonomicSynonyms = taxonDao.countSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF);
         assertEquals("countSynonyms should return 4", 3, numberOfTaxonomicSynonyms);
     }
 
@@ -786,7 +786,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
 
-        List<Synonym> synonyms = taxonDao.getSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF(), null, null,null,null);
+        List<Synonym> synonyms = taxonDao.getSynonyms(taxon, SynonymType.HETEROTYPIC_SYNONYM_OF, null, null,null,null);
 
         assertNotNull("getSynonyms should return a List", synonyms);
         assertEquals("getSynonyms should return 4 Synonyms", 3, synonyms.size());

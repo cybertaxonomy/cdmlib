@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.api.cache;
 
 import java.io.FileNotFoundException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,11 +29,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore
-public class CdmCacherBaseTest extends CdmIntegrationTest {
-	private static final Logger logger = LogManager.getLogger(CdmCacherBaseTest.class);
+public class CdmPermanentCacheBaseTest extends CdmIntegrationTest {
+
+	private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
-	private CdmCacherBase cdmCacherBase;
+	private CdmPermanentCacheBase cdmCacherBase;
 
     @SpringBeanByType
     private IReferenceService referenceService;

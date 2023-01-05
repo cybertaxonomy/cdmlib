@@ -17,7 +17,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
@@ -35,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationDao;
  */
 public abstract class EntityValidationTaskBase implements Runnable {
 
-    private static final Logger logger = LogManager.getLogger(EntityValidationTaskBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final ICdmBase entity;
     private final CRUDEventType crudEventType;

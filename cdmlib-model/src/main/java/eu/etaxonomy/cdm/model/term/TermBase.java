@@ -64,7 +64,7 @@ public abstract class TermBase
 
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "URI")
     @Field(analyze = Analyze.NO)
@@ -98,15 +98,12 @@ public abstract class TermBase
     TermBase(){}
 
     protected TermBase(TermType type){
-        super();
         if (type == null){
         	throw new IllegalArgumentException("TermType must not be null");
         }else{
         	this.termType = type;
         }
     }
-
-
 
     protected TermBase(TermType type, String term, String label, String labelAbbrev, Language lang) {
         this(type);
@@ -159,8 +156,6 @@ public abstract class TermBase
 
     /**
      * @see #getPreferredRepresentation(Language)
-     * @param language
-     * @return
      */
     public Representation getPreferredRepresentation(Language language) {
         Representation repr = getRepresentation(language);

@@ -16,7 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class TaxonTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private Reference sec;
 	private Reference misSec;
@@ -81,8 +82,8 @@ public class TaxonTest extends EntityTestBase {
 		// synonymy
 		syn1=Synonym.NewInstance(name1,sec);
 		syn2=Synonym.NewInstance(name2,sec);
-		child1.addSynonym(syn1, SynonymType.HETEROTYPIC_SYNONYM_OF());
-		child2.addSynonym(syn2, SynonymType.HOMOTYPIC_SYNONYM_OF());
+		child1.addSynonym(syn1, SynonymType.HETEROTYPIC_SYNONYM_OF);
+		child2.addSynonym(syn2, SynonymType.HOMOTYPIC_SYNONYM_OF);
 		//misaplication
 		misTaxon1 = Taxon.NewInstance(name4, misSec);
 		misTaxon2 = Taxon.NewInstance(name4, misSec);
@@ -119,7 +120,7 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testAddSynonym() {
-		freeT.addSynonym(syn1, SynonymType.HETEROTYPIC_SYNONYM_OF());
+		freeT.addSynonym(syn1, SynonymType.HETEROTYPIC_SYNONYM_OF);
 		assertTrue(freeT.getSynonyms().contains(syn1));
 		assertTrue(syn1.getAcceptedTaxon().equals(freeT));
 		assertFalse(freeT.getSynonyms().contains(syn2));
@@ -191,7 +192,7 @@ public class TaxonTest extends EntityTestBase {
         // add a synonym to the taxon
         taxon.addHomotypicSynonym(synonym);
         //synonym type must be homotypic
-        Assert.assertEquals("Synonym must be homotypic", SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym.getType());
+        Assert.assertEquals("Synonym must be homotypic", SynonymType.HOMOTYPIC_SYNONYM_OF, synonym.getType());
         // get the homotypic group of that synonym
         HomotypicalGroup homotypicGroupOfSynonym = synonym.getHomotypicGroup();
         // everything is fine

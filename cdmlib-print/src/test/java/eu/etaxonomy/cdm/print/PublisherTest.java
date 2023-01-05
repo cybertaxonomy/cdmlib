@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,10 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
+
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 import eu.etaxonomy.cdm.print.out.mediawiki.MediawikiOutputModule;
 import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
@@ -26,53 +28,49 @@ import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
 /**
  * @author n.hoffmann
  * @since Apr 9, 2010
- * @version 1.0
  */
-//@Ignore // Implement this test in a more generic way
+// Implement this test in a more generic way
 public class PublisherTest {
-	private static final Logger logger = LogManager.getLogger(PublisherTest.class);
 
-	private static PublishConfigurator configurator; 
-	
+    private static final Logger logger = LogManager.getLogger();
+
+	private static PublishConfigurator configurator;
+
 	private static Publisher publisher;
-	
+
 	private static IXMLEntityFactory factory;
-	
-	
-	/**
-	 * @throws java.lang.Exception
-	 */
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		
+
 		configurator = PublishConfigurator.NewRemoteInstance();
-		
+
 //		configurator.setWebserviceUrl("http://localhost:8080/");
 		configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/");//central africa production
 		//TODO
-		//configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/caryophyllales/");					
+		//configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/caryophyllales/");
 		//http://160.45.63.201/cdmserver/flora_central_africa
 		//http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/
 
 		factory = configurator.getFactory();
-		
+
 		//setClassification();
 		setTaxonNode();
-		
+
 		//TODO: How do we get the uuid for the feature tree from the classification or taxonNode without hardcoding it?
-		//configurator.setFeatureTree(UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c"));//caryophyllales		
+		//configurator.setFeatureTree(UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c"));//caryophyllales
 		//configurator.setFeatureTree(UUID.fromString("051d35ee-22f1-42d8-be07-9e9bfec5bcf7"));//Ericaceae
 		configurator.setFeatureTree(UUID.fromString("051d35ee-22f1-42d8-be07-9e9bfec5bcf7"));
 		//configurator.setFeatureTree(UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568"));//ae9615b8-bc60-4ed0-ad96-897f9226d568 cichorieae
-		
+
 //		Element selectedTaxonNodeElement = new Element("TaxonNode");
-//		configurator.addSelectedTaxonNodeElements(selectedTaxonNodeElement);		
+//		configurator.addSelectedTaxonNodeElements(selectedTaxonNodeElement);
 		configurator.setExportFolder(new File("/home/sybille/tmp/"));
 //		configurator.setExportFolder(new File("/Users/l.morris/Documents")); //TODO: use a relative path
 	}
-	
+
 	private static void setTaxonNode() {
-		
+
 		//http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/taxonNode/a605e87e-113e-4ebd-ad97-f086b734b4da
 		//a95f7122-87c9-478b-a1e6-d9199d855356 agarista
 		//taxonNodeUuid a605e87e-113e-4ebd-ad97-f086b734b4da FeatureTree UUID 051d35ee-22f1-42d8-be07-9e9bfec5bcf7
@@ -83,12 +81,12 @@ public class PublisherTest {
 		//restionaceae 0044aae4-721b-4726-85ff-752a89cff748
 		//UUID taxonNodeUuid = UUID.fromString("9440bd28-b462-4112-8906-a643b7d3f195");//caryophyllales
 		Element taxonNodeElement = factory.getTaxonNode(taxonNodeUuid);
-		configurator.addSelectedTaxonNodeElements(taxonNodeElement);		
-		
+		configurator.addSelectedTaxonNodeElements(taxonNodeElement);
+
 	}
-	
+
 	/*
-	 * Adds all TaxonNodes from a classification to the PublishConfigurator. Only tested with the smaller database Caryophyllales. 
+	 * Adds all TaxonNodes from a classification to the PublishConfigurator. Only tested with the smaller database Caryophyllales.
 	 * To run the Publisher on a single TaxonNode e.g. family or genus, call setTaxonNode instead.
 	 */
 	private static void setClassification() {
@@ -107,15 +105,15 @@ public class PublisherTest {
 			// 2. http://dev.e-taxonomy.eu/cdmserver/caryophyllales/portal/classification/9edc58b5-de3b-43aa-9f31-1ede7c009c2b/childNodes
 			// 3. get the taxonNode uuid from the classification
 			int count = 0;
-			
+
 			for(Element child2 : elements){
 				logger.warn("2 The element name is " + child2.getName() + " and value is " + child2.getValue());
 				// 1. get the value where the child2.getName is uuid
 
-				logger.warn("3 The uuid is " + child2.getChildText("uuid")); 
-				logger.warn("4 The uuid is " + child2.getChild("uuid")); 
-				logger.warn("5 The count is " + count); 
-				
+				logger.warn("3 The uuid is " + child2.getChildText("uuid"));
+				logger.warn("4 The uuid is " + child2.getChild("uuid"));
+				logger.warn("5 The count is " + count);
+
 				//filter out Fabales in FoCE - as it's huge and seems to cause the harvetsing to crash.
 				if (child2.getChildText("uuid") == "94bb5507-201d-4e34-9aa7-dce58fcd6a25") {
 					break;
@@ -139,22 +137,22 @@ public class PublisherTest {
 //	@Ignore
 	@Ignore
 	public void testPublishXml() {
-		
+
 		List<IPublishOutputModule> modules = new ArrayList();
 		//modules.add(new XMLOutputModule());
 		modules.add(new MediawikiOutputModule(""));
 		configurator.setOutputModules(modules);
-		
+
 		//configurator.setOutputModules(Arrays.asList(new IPublishOutputModule[]{new XMLOutputModule()}));
 		logger.warn("The number of selected taxon node elements is........ " + configurator.getSelectedTaxonNodeElements().size());
-		
+
 		Publisher.publish(configurator);
 	}
-	
+
 	@Ignore
 	public void textPublishOdf() {
 		configurator.setOutputModules(Arrays.asList(new IPublishOutputModule[]{new OdfOutputModule()}));
-		
+
 		Publisher.publish(configurator);
 	}
 }

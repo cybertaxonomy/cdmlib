@@ -159,7 +159,7 @@
 
   <xs:complexType name="Rank">
     <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
+      <xs:extension base="common:DefinedTermBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -202,7 +202,7 @@
 
   <xs:complexType name="TypeDesignationStatusBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
+      <xs:extension base="common:DefinedTermBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -272,7 +272,7 @@
 
   <xs:complexType name="NomenclaturalStatusType">
     <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
+      <xs:extension base="common:DefinedTermBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>

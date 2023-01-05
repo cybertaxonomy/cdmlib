@@ -17,7 +17,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.reference.NamedSource;
@@ -51,7 +52,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 
     private static final long serialVersionUID = -5030154633820061997L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(RelationshipBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlAttribute(name = "isDoubtful")
     private boolean doubtful;

@@ -24,7 +24,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -51,7 +52,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 
     private static final long serialVersionUID = -1892526642162438277L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(LanguageStringBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Text")
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)

@@ -43,7 +43,7 @@ public class TaxonNameDefaultCacheStrategy
         extends NameCacheStrategyBase
         implements INonViralNameCacheStrategy {
 
-    private static final Logger logger = LogManager.getLogger(TaxonNameDefaultCacheStrategy.class);
+    private static final Logger logger = LogManager.getLogger();
 	private static final long serialVersionUID = -6577757501563212669L;
 
     final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
@@ -53,9 +53,9 @@ public class TaxonNameDefaultCacheStrategy
     protected String basionymEnd = ")";
     protected String exAuthorSeperator = " ex ";
     private static String NOTHO = "notho";
-    protected CharSequence basionymAuthorCombinationAuthorSeperator = " ";
+    private CharSequence basionymAuthorCombinationAuthorSeperator = " ";
 
-    protected String zooAuthorYearSeperator = ", ";
+    private String zooAuthorYearSeperator = ", ";
 
     private String cultivarStart = "'";
     private String cultivarEnd = "'";

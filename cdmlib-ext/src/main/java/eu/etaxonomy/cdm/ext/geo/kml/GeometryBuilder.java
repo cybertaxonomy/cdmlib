@@ -63,7 +63,7 @@ import tec.uom.se.quantity.Quantities;
  */
 public class GeometryBuilder {
 
-	private final static Logger logger = LogManager.getLogger(GeometryBuilder.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	public enum CircleMethod {
 		circle, simpleCircleSmall, simpleCircle, reprojectedCircle;

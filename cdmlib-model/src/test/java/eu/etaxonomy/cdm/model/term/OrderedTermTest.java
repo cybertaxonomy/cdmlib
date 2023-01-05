@@ -13,29 +13,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-public class OrderedTermBaseTest extends EntityTestBase {
+public class OrderedTermTest extends EntityTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(OrderedTermBaseTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
-	private OrderedTermBase otb1;
-	private OrderedTermBase otb2;
-	private OrderedTermBase otb3;
-	private OrderedTermBase otb4;
+	private OrderedTerm otb1;
+	private OrderedTerm otb2;
+	private OrderedTerm otb3;
+	private OrderedTerm otb4;
 
 	@Before
 	public void setUp() throws Exception {
-		otb1 = new DerivedOrderedTermBase();
-		otb2 = new DerivedOrderedTermBase(TermType.Unknown, "term", "label", null);
-		otb3 = new DerivedOrderedTermBase();
-		otb4 = new DerivedOrderedTermBase();
+		otb1 = OrderedTerm.NewInstance(TermType.Unknown, null, null, null);
+		otb2 = OrderedTerm.NewInstance(TermType.Unknown, "term", "label", null);
+		otb3 = OrderedTerm.NewInstance(TermType.Unknown, null, null, null);
+		otb4 = OrderedTerm.NewInstance(TermType.Unknown, null, null, null);
 
 		otb1.orderIndex = 1;
 		otb2.orderIndex = 4;
@@ -43,28 +44,15 @@ public class OrderedTermBaseTest extends EntityTestBase {
 		otb4.orderIndex = 5;
 	}
 
-	private class DerivedOrderedTermBase extends OrderedTermBase<DerivedOrderedTermBase>{
-		private DerivedOrderedTermBase(){
-			super(TermType.Unknown);
-		}
-		private DerivedOrderedTermBase(TermType type, String term, String label, String labelAbbrev){
-			super(type, term, label, labelAbbrev);
-		}
-		@Override
-		protected void setDefaultTerms(TermVocabulary<DerivedOrderedTermBase> termVocabulary) {}
-		@Override
-		public void resetTerms() {};
-	}
-
 /************ TESTS *************************************/
 
 	@Test
-	public final void testOrderedTermBase() {
+	public final void testOrderedTerm() {
 		assertNotNull(otb1);
 	}
 
 	@Test
-	public final void testOrderedTermBaseStringString() {
+	public final void testOrderedTermStringString() {
 		assertNotNull(otb2);
 		assertEquals("label", otb2.getLabel());
 		//TODO assertEquals("term", otb2.getD);
@@ -72,9 +60,9 @@ public class OrderedTermBaseTest extends EntityTestBase {
 
 	@Test
 	public final void testCompareTo() {
-		//since an exception is thrown when comparing OrderedTermBase that do not belong
+		//since an exception is thrown when comparing ordered DefinedTermBases that do not belong
 		//to the same vocabulary this dummy vocabulary is added
-		OrderedTermVocabulary<OrderedTermBase<?>> voc = new OrderedTermVocabulary();
+		OrderedTermVocabulary<OrderedTerm> voc = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		otb1.vocabulary = voc;
 		otb2.vocabulary = voc;
 		otb3.vocabulary = voc;
@@ -99,7 +87,7 @@ public class OrderedTermBaseTest extends EntityTestBase {
 
 	@Test
 	public final void testDecreaseVoc() {
-		OrderedTermVocabulary<OrderedTermBase<?>> voc = new OrderedTermVocabulary();
+		OrderedTermVocabulary<DefinedTermBase<?>> voc = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		int before = otb1.orderIndex;
 		otb1.decreaseIndex(voc);
 		int after = otb1.orderIndex;
@@ -108,7 +96,7 @@ public class OrderedTermBaseTest extends EntityTestBase {
 
 	@Test
 	public final void testIncrementVoc() {
-		OrderedTermVocabulary<OrderedTermBase<?>> voc = new OrderedTermVocabulary();
+		OrderedTermVocabulary<DefinedTermBase<?>> voc = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		assertFalse(voc.indexChangeAllowed(otb1));
 		int before = otb1.orderIndex;
 		otb1.incrementIndex(voc);

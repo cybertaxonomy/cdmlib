@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -35,7 +36,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class AnnotationDaoTest extends CdmIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(AnnotationDaoTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private IAnnotationDao annotationDao;

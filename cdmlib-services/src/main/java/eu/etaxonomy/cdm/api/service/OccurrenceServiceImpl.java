@@ -114,7 +114,7 @@ public class OccurrenceServiceImpl
         extends IdentifiableServiceBase<SpecimenOrObservationBase, IOccurrenceDao>
         implements IOccurrenceService {
 
-    static private final Logger logger = LogManager.getLogger(OccurrenceServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IDescriptionService descriptionService;
@@ -249,24 +249,24 @@ public class OccurrenceServiceImpl
 	             }
              }
              if (collectOriginalMedia) {
-            	 for (SpecimenOrObservationBase original : derivedUnit.getOriginals()) {            		 	
-	                	 //collect media to the top of the tree 
+            	 for (SpecimenOrObservationBase original : derivedUnit.getOriginals()) {
+	                	 //collect media to the top of the tree
 	                     media.addAll(getMediaInHierarchy(original, true, false, pageSize, pageNumber, propertyPaths).getRecords());
 	             }
 	         }
          }
-         
-         
+
+
          return new DefaultPagerImpl<>(pageNumber, Long.valueOf(media.size()), pageSize, media);
     }
-    
-    
+
+
     @Override
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
     	return getMediaInHierarchy(rootOccurence, false, true, pageSize,
                 pageNumber, propertyPaths);
-       
+
     }
 
     @Override
@@ -569,14 +569,14 @@ public class OccurrenceServiceImpl
                         DerivedUnit derivedUnit = (DerivedUnit)unit;
                         boolean isAssociated = true;
                         for (DeterminationEvent determination:derivedUnit.getDeterminations()) {
-                        	if (determination.getTaxonName().equals(taxon.getName()) || determination.getTaxon().equals(taxon)){
+                        	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon())){
                         		isAssociated = true;
                         		break;
-                        	}else {                        		
+                        	}else {
                         		isAssociated = false;
                         	}
                         }
-                        
+
                         if (!isAssociated) {
                         	continue;
                         }

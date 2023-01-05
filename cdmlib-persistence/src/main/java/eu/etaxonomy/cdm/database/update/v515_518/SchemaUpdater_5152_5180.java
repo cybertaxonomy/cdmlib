@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_5152_5180.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_15_02;
 	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_00;
@@ -119,7 +120,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         String sql = " UPDATE @@OriginalSourceBase@@ "
                    + " SET DTYPE = 'DescriptionElementSource' "
                    + " WHERE id IN (SELECT source_id FROM TaxonNode tn)";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //9082
         //fix empty partials_start and partials_end handling
@@ -169,28 +170,28 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         sql = "UPDATE @@Representation@@ "
                    + " SET abbreviatedlabel = 'Fl.' "
                    + " WHERE abbreviatedlabel IS NULL AND label = 'Flowering Period' ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //add abbrevLabel to feature fruiting
         stepName = "add abbreviated label to feature fruiting";
         sql = "UPDATE @@Representation@@ "
                    + " SET abbreviatedlabel = 'Fr.' "
                    + " WHERE abbreviatedlabel IS NULL AND label = 'Fruiting Period' ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //add symbol to feature flowering
         stepName = "add abbreviated label to feature flowering";
         sql = "UPDATE @@DefinedTermBase@@ "
                    + " SET symbol = 'Fl.' "
                    + " WHERE uuid='03710cb5-606e-444a-a3e6-594268e3cc47' ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //add symbol to feature fruiting
         stepName = "add abbreviated label to feature fruiting";
         sql = "UPDATE @@DefinedTermBase@@ "
                    + " SET symbol = 'Fr.' "
                    + " WHERE uuid='04aa8993-24b4-43e3-888c-5afaa733376e' ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //#9120
         //update flowering period as supports temporal data
@@ -199,7 +200,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         sql = "UPDATE @@DefinedTermBase@@ "
                 + " SET supportedDataTypes = CONCAT(supportedDataTypes, 'TED#') "
                 + " WHERE uuid = '03710cb5-606e-444a-a3e6-594268e3cc47' AND supportedDataTypes NOT LIKE '%#TED#%' ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //#9124
         //add meter to altitude
@@ -249,13 +250,13 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
 //        String sql = "UPDATE @@"+tableName+"@@ "
 //                   + " SET "+columnName+"_start = NULL "
 //                   + " WHERE "+columnName+"_start = '00000000' ";
-//        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+//        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 //
 //        stepName = "fix empty partials_end handling for " + tableName;
 //        sql = "UPDATE @@"+tableName+"@@ "
 //                   + " SET "+columnName+"_end = NULL "
 //                   + " WHERE "+columnName+"_end = '00000000'";
-//        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+//        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
     }
 
     @Override

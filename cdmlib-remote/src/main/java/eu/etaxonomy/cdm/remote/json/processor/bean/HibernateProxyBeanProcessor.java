@@ -22,7 +22,7 @@ import net.sf.json.processors.JsonBeanProcessor;
  */
 public class HibernateProxyBeanProcessor extends CycleSetAccess implements JsonBeanProcessor {
 
-	public static final Logger logger = LogManager.getLogger(HibernateProxyBeanProcessor.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public JSONObject processBean(Object bean, JsonConfig jsonConfig) {

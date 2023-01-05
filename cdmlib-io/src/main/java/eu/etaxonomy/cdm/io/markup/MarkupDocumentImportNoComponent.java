@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
  */
 public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupDocumentImportNoComponent.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private final MarkupKeyImport keyImport;
 
@@ -340,7 +340,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				keyImport.makeKeyNodes(state, parentEvent, taxonTitle);
 				state.setCurrentTaxon(null);
 				state.setCurrentTaxonNum(null);
-				if (taxon.getName().getRank().isHigher(Rank.GENUS())){
+				if (taxon.getName().isSupraGeneric()){
 					state.setLatestGenusEpithet(null);
 				}else{
 					state.setLatestGenusEpithet(taxon.getName().getGenusOrUninomial());

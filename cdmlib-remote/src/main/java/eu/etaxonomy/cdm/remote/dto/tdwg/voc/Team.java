@@ -15,6 +15,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.Actor;
 
+/**
+ * Team class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Team", propOrder = {
 })

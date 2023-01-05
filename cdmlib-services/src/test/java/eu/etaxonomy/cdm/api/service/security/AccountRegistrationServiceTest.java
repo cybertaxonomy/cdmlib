@@ -45,21 +45,18 @@ import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
-
 public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest {
 
     private static final double maxRequestRate = 4.0;
 
-    Logger logger = LogManager.getLogger(AccountRegistrationServiceTest.class);
+    Logger logger = LogManager.getLogger();
 
     private static final int rateLimiterTimeout = 200;
     private static final String userName = "pwdResetTestUser";
     private static final String userPWD = "super_SECURE_123";
     private static final String userEmail = "pwdResetTestUser@cybertaxonomy.test";
 
-
     private static String base64UrlSaveCharClass = "[a-zA-Z0-9\\-_]";
-
 
     private static final String requestFormUrlTemplate = "http://cybertaxonomy.test/passwordReset?userName={%s}&sessID=f8d8sf8dsf";
 
@@ -274,5 +271,4 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     public void createTestDataSet() throws FileNotFoundException {
         // not needed
     }
-
 }

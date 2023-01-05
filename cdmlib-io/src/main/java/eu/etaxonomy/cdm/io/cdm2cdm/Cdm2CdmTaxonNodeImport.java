@@ -18,6 +18,8 @@ import eu.etaxonomy.cdm.io.common.ITaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
+ * Imports taxon based data from a CDM source to another CDM source.
+ *
  * @author a.mueller
  * @since 17.08.2019
  */
@@ -27,7 +29,6 @@ public class Cdm2CdmTaxonNodeImport
 
     private static final long serialVersionUID = -2111102574346601573L;
     private static final Logger logger = LogManager.getLogger();
-
 
     @Override
     protected void doInvoke(Cdm2CdmImportState state) {

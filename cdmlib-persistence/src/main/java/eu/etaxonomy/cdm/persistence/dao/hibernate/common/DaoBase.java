@@ -20,7 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class DaoBase {
 
-    final static Logger logger = LogManager.getLogger(DaoBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public final static boolean NO_UNPUBLISHED = false;  //constant for unpublished
     public final static boolean INCLUDE_UNPUBLISHED = true;  //constant for unpublished

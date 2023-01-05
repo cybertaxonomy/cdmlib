@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.media;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class MediaTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(MediaTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private Media media1;
     private Team team1;

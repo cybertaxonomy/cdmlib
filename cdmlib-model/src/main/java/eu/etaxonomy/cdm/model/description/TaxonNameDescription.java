@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -56,7 +57,7 @@ public class TaxonNameDescription
 
     private static final long serialVersionUID = -7349160369642038687L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonNameDescription.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name="TaxonName")
     @XmlIDREF

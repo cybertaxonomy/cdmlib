@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,12 +46,13 @@ public class OccurrenceStatus
         extends SingleSourcedEntityBase {
 
     private static final long serialVersionUID = 623891726208046243L;
-    private static Logger logger = LogManager.getLogger(OccurrenceStatus.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "OccurrenceStatusType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+	@NotNull(message="Occurrence status must have a type defined")
 	private DefinedTerm type;
 
     @XmlElement(name = "Name")

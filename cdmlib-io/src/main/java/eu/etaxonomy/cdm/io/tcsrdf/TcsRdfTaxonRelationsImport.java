@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -41,9 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
     private static final long serialVersionUID = 7473543276142564219L;
 
-    private static final Logger logger = LogManager.getLogger(TcsRdfTaxonRelationsImport.class);
-
-	private static int modCount = 30000;
+    private static final Logger logger = LogManager.getLogger();
 
 	public TcsRdfTaxonRelationsImport(){
 		super();
@@ -54,9 +53,6 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
 		logger.warn("Creation of homotypic relations is still problematic");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-
 		return result;
 	}
 
@@ -200,7 +196,6 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		return success;
 	}
 
-
 	private boolean makeSynRelType(SynonymType synRelType, Taxon taxonTo, TaxonBase fromTaxon){
 		boolean success = true;
 		if (! (fromTaxon instanceof Synonym )){
@@ -211,8 +206,8 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 			TaxonName synName = synonym.getName();
 			TaxonName accName = taxonTo.getName();
 			if (synName != null && accName != null && synName.isHomotypic(accName)
-						&& ( synRelType.equals(SynonymType.SYNONYM_OF()))){
-				synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF();
+						&& ( synRelType == SynonymType.SYNONYM_OF)){
+				synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF;
 			}
 			if (! relationExists(taxonTo, synonym, synRelType)){
 				taxonTo.addSynonym(synonym, synRelType);
@@ -274,7 +269,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				}
 				Set<Synonym> syns = typifiedName.getSynonyms();
 				for(Synonym syn:syns){
-					aboutTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF());
+					aboutTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF);
 				}
 			}
 

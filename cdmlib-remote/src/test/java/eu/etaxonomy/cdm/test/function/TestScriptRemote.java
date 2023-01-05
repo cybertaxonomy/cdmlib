@@ -9,26 +9,15 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.remote.controller.DescriptionListController;
 import eu.etaxonomy.cdm.remote.io.application.CdmRemoteApplicationController;
 
 /**
@@ -38,7 +27,7 @@ import eu.etaxonomy.cdm.remote.io.application.CdmRemoteApplicationController;
 public class TestScriptRemote {
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TestScriptRemote.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private void testNewConfigControler(){
 
@@ -122,26 +111,6 @@ public class TestScriptRemote {
 
     }
 
-    private void doGetDistributionInfo(CdmApplicationController appCtr) throws IOException {
-
-        UUID descUUID = UUID.fromString("2debf5ee-cb57-40bc-af89-173d1d17cefe");
-        Set<InfoPart> parts = new HashSet<>();
-        parts.add(InfoPart.tree);
-        parts.add(InfoPart.mapUriParams);
-        Set<NamedAreaLevel> omitLevels = new HashSet<>();
-        NamedAreaLevel areaLevel = (NamedAreaLevel)appCtr.getTermService().find(UUID.fromString("38efa5fd-d7f0-451c-9de9-e6cce41e2225"));
-        omitLevels.add(areaLevel);
-        HttpServletResponse response = null;
-        DescriptionListController descriptionListController = (DescriptionListController) appCtr.getBean("descriptionListController");
-        CondensedDistributionRecipe recipe = CondensedDistributionRecipe.EuroPlusMed;
-
-        ModelAndView mav = descriptionListController.doGetDistributionInfo(descUUID, parts, false, false, null,
-               omitLevels, null, null, recipe, null, response );
-        Map<String, Object> model = mav.getModel();
-        System.out.println(model);
-
-    }
-
 	private void test(){
 		System.out.println("Start TestScript");
 		testNewConfigControler();
@@ -154,5 +123,4 @@ public class TestScriptRemote {
 	    TestScriptRemote cc = new TestScriptRemote();
     	cc.test();
 	}
-
 }

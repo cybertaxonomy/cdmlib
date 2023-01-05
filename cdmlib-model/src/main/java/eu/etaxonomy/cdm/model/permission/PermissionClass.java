@@ -37,6 +37,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     CLASSIFICATION("Classification"),
     COLLECTION("Collectioni"),
     DEFINEDTERM("DefinedTerm"),
+    DERIVATIONEVENT("DerivationEvent"),
     DESCRIPTIONBASE("Description"),
     DESCRIPTIONELEMENTBASE("DescriptionElement"),
     DESCRIPTIONELEMENTSOURCE("DescriptionElementSource"),
@@ -69,6 +70,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     NOMENCLATURALSTATUS("NomenclaturalStatus"),
     NOMENCLATURALSOURCE("NomenclaturalSource"),
     NOMENCLATURALSTATUSTYPE("NomenclaturalStatusType"),
+    OCCURRENCESTATUS("OccurrenceStatus"),
     PRESENCEABSENCETERM("PresenceAbsenceTerm"),
     POLYTOMOUSKEY("PolytomousKey"),
     POLYTOMOUSKEYNODE("PolytomousKeyNode"),
@@ -92,7 +94,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     USER("User"),
     ;
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private PermissionClass(String key){
         //we have no UUIDs defined yet, but needed for tests

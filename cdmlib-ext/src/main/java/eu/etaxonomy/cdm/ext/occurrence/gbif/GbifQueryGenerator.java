@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
@@ -79,7 +80,7 @@ public class GbifQueryGenerator {
         //            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, param, query.locality);
                 }
                 if(query.taxonName!=null && !query.taxonName.isEmpty()){
-                    ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "scientificName", query.taxonName);
+                	ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "scientificName", query.taxonName);
                 }
             }
             return queryParamsGET;

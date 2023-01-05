@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service.lsid.impl;
 
 import java.util.HashMap;
@@ -15,8 +14,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -33,7 +32,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILsidAuthorityDao;
 
 @Component
 public class LsidRegistryImpl implements LSIDRegistry {
-	private static Log log = LogFactory.getLog(LsidRegistryImpl.class);
+
+	private static final Logger logger = LogManager.getLogger();
+
     //	 the main registry, stores all pattern mappings.
 	private Map<String,IIdentifiableDao<? extends IdentifiableEntity>> registry = new HashMap<>();
 
@@ -77,7 +78,7 @@ public class LsidRegistryImpl implements LSIDRegistry {
 				}
 
 				if(!foundDao) {
-					log.warn("Did not find DAO serving classes of type " + clazz + " for authority " + lsidAuthority.getAuthority() + " with namespace " + namespace);
+					logger.warn("Did not find DAO serving classes of type " + clazz + " for authority " + lsidAuthority.getAuthority() + " with namespace " + namespace);
 				}
 			}
 		}
@@ -100,10 +101,10 @@ public class LsidRegistryImpl implements LSIDRegistry {
 
 		IIdentifiableDao<? extends IdentifiableEntity> identifiableDAO = registry.get(lookup.toString());
 		if (identifiableDAO != null) {
-			log.info("Found DAO " + identifiableDAO.getClass().getSimpleName());
+			logger.info("Found DAO " + identifiableDAO.getClass().getSimpleName());
 			return identifiableDAO;
 		}
-		log.info("Didn't find dao, returning null");
+		logger.info("Didn't find dao, returning null");
 		return null;
 	}
 }

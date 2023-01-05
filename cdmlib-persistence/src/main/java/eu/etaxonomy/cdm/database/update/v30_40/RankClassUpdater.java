@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.database.update.v30_40;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -27,7 +28,8 @@ import eu.etaxonomy.cdm.model.name.RankClass;
  * @since 15.12.2013
  */
 public class RankClassUpdater extends SchemaUpdaterStepBase {
-	private static final Logger logger = LogManager.getLogger(RankClassUpdater.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String stepName = "Update rank class values";
 

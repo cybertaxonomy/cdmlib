@@ -23,11 +23,11 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author a.kohlbecker
  * @since 16.12.2010
- *
  */
 public class StreamUtils {
 
-	public static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final int BUFFER_SIZE = 4096;
 
 	/**

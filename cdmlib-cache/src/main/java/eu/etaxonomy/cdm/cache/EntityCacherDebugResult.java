@@ -24,7 +24,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.springframework.util.ReflectionUtils;
 
-import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
+import eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import net.sf.ehcache.Cache;
@@ -37,7 +37,7 @@ import net.sf.ehcache.Element;
  */
 public class EntityCacherDebugResult {
 
-    private static final Logger logger = LogManager.getLogger(EntityCacherDebugResult.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private Map<CdmEntityInfo, CdmEntityInfo> duplicateCdmEntityMap;
 
@@ -220,14 +220,15 @@ public class EntityCacherDebugResult {
     }
 
     private String getCachesContainingEntity(CdmBase cdmEntity) {
-        Cache defaultCache = CacheManager.create().getCache(CdmCacherBase.DEFAULT_CACHE_NAME);
         String caches = "";
+
+        Cache defaultCache = CacheManager.create().getCache(CdmPermanentCacheBase.PERMANENT_CACHE_NAME);
         Element dce = defaultCache.get(cdmEntity.getUuid());
         if(dce != null && dce.getObjectValue() == cdmEntity) {
             caches = "{DC}";
         }
 
-        Object cte = cacher.getFromCache(CdmTransientEntityCacher.generateKey(cdmEntity));
+        CdmBase cte = cacher.getFromCache(CdmTransientEntityCacher.generateKey(cdmEntity));
         if(cte != null && cte == cdmEntity) {
             caches += "{TC}";
         }

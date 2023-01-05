@@ -111,7 +111,7 @@ public class Taxon
             implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget{
 
     private static final long serialVersionUID = -584946869762749006L;
-    private static final Logger logger = LogManager.getLogger(Taxon.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final TaxonComparator defaultTaxonComparator = new TaxonComparator();
 
@@ -1459,7 +1459,7 @@ public class Taxon
         }
         synonym.setPublish(this.isPublish());
 
-        addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF(), secReference, secDetail);
+        addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF, secReference, secDetail);
         return synonym;
     }
 
@@ -1512,7 +1512,7 @@ public class Taxon
      */
     public void addHomotypicSynonym(Synonym synonym){
     	if (!this.getSynonyms().contains(synonym)){
-    		addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
+    		addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
     	} else{
     		logger.warn("Tried to add a synonym to an accepted taxon that already is a synonym of this taxon.");
     	}
@@ -1608,7 +1608,7 @@ public class Taxon
         Set<Synonym> synonyms = this.getSynonyms();
         List<Synonym> result = new ArrayList<>();
         for(Synonym synonym : synonyms) {
-            if(synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
+            if(synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF)){
                 result.add(synonym);
             }
         }

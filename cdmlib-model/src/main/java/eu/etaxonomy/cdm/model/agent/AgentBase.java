@@ -22,7 +22,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -63,7 +64,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy<? ext
 
 	private static final long serialVersionUID = 7732768617469448829L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(AgentBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Contact")
     @Embedded

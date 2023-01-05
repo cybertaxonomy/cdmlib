@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.jaxb;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -10,8 +11,8 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 public class CdmAccessor<BeanT,ValueT> extends Accessor<BeanT,ValueT> {
 
-	private static final Logger logger = LogManager.getLogger(CdmAccessor.class);
-	
+    private static final Logger logger = LogManager.getLogger();
+
 	private Accessor<BeanT, ValueT> delegate;
 
 	public CdmAccessor(Accessor<BeanT, ValueT> delegate) {
@@ -36,10 +37,10 @@ public class CdmAccessor<BeanT,ValueT> extends Accessor<BeanT,ValueT> {
 	}
 
 	protected ValueT hideLazy(ValueT value) {
-		if (Hibernate.isInitialized(value)) {			
+		if (Hibernate.isInitialized(value)) {
 			if(value instanceof HibernateProxy) {
 				logger.info("Accessor Returning " + value + " as unwrapped proxy");
-				return (ValueT)((HibernateProxy)value).getHibernateLazyInitializer().getImplementation();						
+				return (ValueT)((HibernateProxy)value).getHibernateLazyInitializer().getImplementation();
 			} else {
 				logger.info("Accessor Returning " + value);
 			    return value;

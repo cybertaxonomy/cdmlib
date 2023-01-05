@@ -15,7 +15,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
@@ -42,13 +43,12 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 //FIXME this class replicates lots of code in CdmDataSourceBase, we may want to merge it
 //in a common helper class to avoid redundant code
 public class WrappedCdmDataSource implements ICdmDataSource {
-	private static final Logger logger = LogManager.getLogger(WrappedCdmDataSource.class);
 
+    private static final Logger logger = LogManager.getLogger();
 
 	private final DataSource datasource;
 
 	private Connection connection;
-
 
 	public WrappedCdmDataSource(DataSource datasource) {
 		if (datasource == null){
@@ -57,9 +57,6 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 		this.datasource = datasource;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Connection getConnection() throws SQLException {
 		if (this.connection == null){
@@ -224,9 +221,6 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 		throw new UnsupportedOperationException("getHibernatePropertiesBean() not supported by WrappedCdmDataSource");
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
             HibernateConfiguration hibernateConfig) {
@@ -269,12 +263,6 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 	    }
 	}
 
-    /**
-     * @param dbType
-     * @param jdbcUrl
-     * @return
-     * @throws URISyntaxException
-     */
     private String getDatabaseFrom(String jdbcUrl) throws URISyntaxException {
         DatabaseTypeEnum type = DatabaseTypeEnum.byConnectionString(jdbcUrl);
         if (type == null){
@@ -401,5 +389,4 @@ public class WrappedCdmDataSource implements ICdmDataSource {
 			throw new RuntimeException(e);
 		}
 	}
-
 }

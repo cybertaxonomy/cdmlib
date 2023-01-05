@@ -19,13 +19,17 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.validation.annotation.ReferenceOrSpecimen;
 
 /**
  * This class represents an {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}
@@ -40,15 +44,17 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 18.09.2009
  */
 @XmlType(name = "DescriptionElementSource", propOrder = {
-	    "sourcedElement"
+	    "sourcedElement",
+	    "specimen"
 	})
 @Entity
 @Audited
+@ReferenceOrSpecimen
 public class DescriptionElementSource extends NamedSourceBase{
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DescriptionElementSource.class);
+	private static final Logger logger = LogManager.getLogger();
 
 // ************************* FIELDS ********************************/
 
@@ -57,6 +63,14 @@ public class DescriptionElementSource extends NamedSourceBase{
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     private DescriptionElementBase sourcedElement;
+
+    //#10194
+    @XmlElement(name = "specimen")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    private SpecimenOrObservationBase specimen;
 
 //************************* FACTORY ******************************/
 
@@ -157,6 +171,13 @@ public class DescriptionElementSource extends NamedSourceBase{
                 sourcedElement.addSource(this);
             }
         }
+    }
+
+    public SpecimenOrObservationBase getSpecimen() {
+        return specimen;
+    }
+    public void setSpecimen(SpecimenOrObservationBase specimen) {
+        this.specimen = specimen;
     }
 
 //*********************************** CLONE *********************************************************/

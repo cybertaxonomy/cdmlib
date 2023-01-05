@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.remote.io.application;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -23,11 +24,9 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 public class CdmRemoteApplicationController extends CdmIoApplicationController {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CdmRemoteApplicationController.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/applicationRemoteContext.xml";
-
 
 	public static CdmRemoteApplicationController NewRemoteInstance() {
 		return CdmRemoteApplicationController.NewRemoteInstance(null, null);

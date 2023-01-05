@@ -125,8 +125,8 @@ public class TestScriptService {
 //       dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
-		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
+
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
 		doTemporary(appCtr);
 
@@ -191,8 +191,8 @@ public class TestScriptService {
 		UUID taxonUuid1 = UUID.fromString("3bae1c86-1235-4e2e-be63-c7f8c4410527");
 		UUID taxonUuid2 = UUID.fromString("235d3872-defe-4b92-bf2f-75a7c91510de");
 		List<UUID> taxonUuids = Arrays.asList(new UUID[]{taxonUuid1, taxonUuid2});
-		Rank maxRank = DefinedTermBase.getTermByClassAndUUID(Rank.class, UUID.fromString("af5f2481-3192-403f-ae65-7c957a0f02b6"));
-		Rank minRank = DefinedTermBase.getTermByClassAndUUID(Rank.class, UUID.fromString("78786e16-2a70-48af-a608-494023b91904"));
+		Rank maxRank = DefinedTermBase.getTermByUUID(UUID.fromString("af5f2481-3192-403f-ae65-7c957a0f02b6"), Rank.class);
+		Rank minRank = DefinedTermBase.getTermByUUID(UUID.fromString("78786e16-2a70-48af-a608-494023b91904"), Rank.class);
         List<GroupedTaxonDTO> groupedTaxa = appCtr.getClassificationService().groupTaxaByHigherTaxon(taxonUuids, classificationUuid, minRank, maxRank);
         System.out.println(groupedTaxa);
     }

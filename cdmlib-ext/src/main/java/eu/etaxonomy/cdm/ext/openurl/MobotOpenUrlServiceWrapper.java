@@ -18,6 +18,8 @@ import java.util.Map;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
@@ -44,6 +46,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  */
 public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlReference> {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private String urlVersion = "Z39.88-2004";
 

@@ -34,7 +34,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -81,18 +82,17 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
  */
 public class TaxonXExtractor {
 
+    private static final Logger logger = LogManager.getLogger();
+
     protected TaxonXImport importer;
     protected TaxonXImportState state2;
     private final Map<String,String> namesAsked = new HashMap<>();
     private final Map<String,Rank>ranksAsked = new HashMap<>();
 
-    Logger logger = LogManager.getLogger(TaxonXExtractor.class);
-
     public class ReferenceBuilder{
         private int nbRef=0;
         private boolean foundBibref=false;
         private final TaxonXAddSources sourceHandler;
-
 
         public ReferenceBuilder(TaxonXAddSources sourceHandler) {
             this.sourceHandler=sourceHandler;
@@ -149,7 +149,6 @@ public class TaxonXExtractor {
             importer.getTaxonService().saveOrUpdate(acceptedTaxon);
             //                        logger.warn("BWAAHHHH: "+nameToBeFilled.getParsingProblems()+", "+ref);
             nbRef++;
-
         }
     }
 
@@ -581,14 +580,6 @@ public class TaxonXExtractor {
         return s;
     }
 
-
-
-    /**
-     * @param name
-     * @return
-     * @throws TransformerException
-     * @throws TransformerFactoryConfigurationError
-     */
     protected String askWhichScientificName(String fullname,String atomised,String classificationName, Node fullParagraph) throws TransformerFactoryConfigurationError, TransformerException {
         //        logger.info("getScientificName for "+ fullname);
         //        JFrame frame = new JFrame("I have a question");
@@ -629,7 +620,6 @@ public class TaxonXExtractor {
             return s;
         }
     }
-
 
     protected int askAddParent(String s){
         //        boolean hack=true;
@@ -695,12 +685,6 @@ public class TaxonXExtractor {
         return r;
     }
 
-    /**
-     * @param name
-     * @return
-     * @throws TransformerException
-     * @throws TransformerFactoryConfigurationError
-     */
     protected String askFeatureName(String paragraph){
         //        logger.info("getScientificName for "+ fullname);
         //        JFrame frame = new JFrame("I have a question");
@@ -721,13 +705,6 @@ public class TaxonXExtractor {
         return s;
     }
 
-    /**
-     * @param taxonname2
-     * @param bestMatchingTaxon
-     * @param refMods
-     * @param similarityAuthor
-     * @return
-     */
     protected boolean askIfReuseBestMatchingTaxon(INonViralName taxonname2, Taxon bestMatchingTaxon, Reference refMods, double similarityScore, double similarityAuthor) {
         Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
                 UIManager.getString("OptionPane.noButtonText")};
@@ -839,10 +816,6 @@ public class TaxonXExtractor {
         }
     }
 
-    /**
-     * @param fullLineRefName
-     * @return
-     */
     protected int askIfNameContained(String fullLineRefName) {
 
         JTextArea textArea = new JTextArea("Is a scientific name contained in this sentence ? Type 0 if contains a name, 1 if it's only a reference. Press 2 if it's to be ignored \n"+fullLineRefName);
@@ -862,11 +835,6 @@ public class TaxonXExtractor {
         return Integer.valueOf(s);
     }
 
-
-    /**
-     * @param name
-     * @return
-     */
     protected Rank askForRank(String fullname,Rank rank, NomenclaturalCode nomenclaturalCode) {
         //        logger.info("askForRank for "+ fullname+ ", "+rank);
         //        JFrame frame = new JFrame("I have a question");
@@ -918,7 +886,6 @@ public class TaxonXExtractor {
             }
             ranksAsked.put(fullname,cR);
             return cR;
-
         }
     }
 
@@ -969,10 +936,7 @@ public class TaxonXExtractor {
             }
         }
         return s;
-
     }
-
-
 
     /**
      * asks for the hierarchical parent, based on the current classification
@@ -1013,12 +977,9 @@ public class TaxonXExtractor {
         return returnTaxon;
     }
 
-
     /**
-     *
      * @param r: the rank as string (with dwc tags)
      * @return Rank : the Rank object corresponding to the current string
-     *
      */
     protected Rank getRank(String r){
         if (r==null) {
@@ -1086,7 +1047,6 @@ public class TaxonXExtractor {
         return rank;
     }
 
-
     /**
      * @param ato: atomised taxon name data
      * @return rank present in the xmldata fields
@@ -1126,8 +1086,7 @@ public class TaxonXExtractor {
      * Format a XML node for a clean (screen) output with tags
      * @param Node : the node to format
      * @return String : the XML section formated for a screen output
-     * */
-
+     */
     protected String formatNode(Node node) throws TransformerFactoryConfigurationError, TransformerException{
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -1154,8 +1113,6 @@ public class TaxonXExtractor {
     /**
      * Tries to match the status string against any new name status
      * and returns the status if it matches. Returns <code>null</code> otherwise.
-     * @param status
-     * @return
      */
     protected String newNameStatus(String status){
     	String pattern = "(" + "((sp|spec|gen|comb|)\\.\\s*nov.)" +
@@ -1238,24 +1195,24 @@ public class TaxonXExtractor {
     //TypeDesignation
     protected  SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
         switch (typeStatusId){
-        case 0: return null;
-        case 1: return SpecimenTypeDesignationStatus.HOLOTYPE();
-        case 2: return SpecimenTypeDesignationStatus.LECTOTYPE();
-        case 3: return SpecimenTypeDesignationStatus.NEOTYPE();
-        case 4: return SpecimenTypeDesignationStatus.EPITYPE();
-        case 5: return SpecimenTypeDesignationStatus.ISOLECTOTYPE();
-        case 6: return SpecimenTypeDesignationStatus.ISONEOTYPE();
-        case 7: return SpecimenTypeDesignationStatus.ISOTYPE();
-        case 8: return SpecimenTypeDesignationStatus.PARANEOTYPE();
-        case 9: return SpecimenTypeDesignationStatus.PARATYPE();
-        case 10: return SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE();
-        case 11: return SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE();
-        case 12: return SpecimenTypeDesignationStatus.SYNTYPE();
-        case 21: return SpecimenTypeDesignationStatus.ICONOTYPE();
-        case 22: return SpecimenTypeDesignationStatus.PHOTOTYPE();
-        default: {
-            throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
-        }
+            case 0: return null;
+            case 1: return SpecimenTypeDesignationStatus.HOLOTYPE();
+            case 2: return SpecimenTypeDesignationStatus.LECTOTYPE();
+            case 3: return SpecimenTypeDesignationStatus.NEOTYPE();
+            case 4: return SpecimenTypeDesignationStatus.EPITYPE();
+            case 5: return SpecimenTypeDesignationStatus.ISOLECTOTYPE();
+            case 6: return SpecimenTypeDesignationStatus.ISONEOTYPE();
+            case 7: return SpecimenTypeDesignationStatus.ISOTYPE();
+            case 8: return SpecimenTypeDesignationStatus.PARANEOTYPE();
+            case 9: return SpecimenTypeDesignationStatus.PARATYPE();
+            case 10: return SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE();
+            case 11: return SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE();
+            case 12: return SpecimenTypeDesignationStatus.SYNTYPE();
+            case 21: return SpecimenTypeDesignationStatus.ICONOTYPE();
+            case 22: return SpecimenTypeDesignationStatus.PHOTOTYPE();
+            default: {
+                throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
+            }
         }
     }
 }

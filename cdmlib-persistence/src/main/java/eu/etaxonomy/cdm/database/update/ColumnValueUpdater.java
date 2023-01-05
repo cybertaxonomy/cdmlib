@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -24,7 +25,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class ColumnValueUpdater
         extends AuditedSchemaUpdaterStepBase {
 
-    private static final Logger logger = LogManager.getLogger(ColumnValueUpdater.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final String columnName;
     private final String newValueStr;

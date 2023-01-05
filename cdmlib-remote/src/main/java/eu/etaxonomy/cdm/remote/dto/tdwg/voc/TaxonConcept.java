@@ -23,6 +23,12 @@ import com.sun.xml.bind.CycleRecoverable;
 import eu.etaxonomy.cdm.remote.dto.tdwg.Actor;
 import eu.etaxonomy.cdm.remote.dto.tdwg.Concept;
 
+/**
+ * TaxonConcept class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonConcept", propOrder = {
 	    "primary",
@@ -140,7 +146,8 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
         "taxonName"
     })
 	public static class HasName extends LinkType {
-		@XmlElement(name = "TaxonName", namespace = "http://rs.tdwg.org/ontology/voc/TaxonName#")
+
+	    @XmlElement(name = "TaxonName", namespace = "http://rs.tdwg.org/ontology/voc/TaxonName#")
 		private TaxonName taxonName;
 
         protected HasName() {}
@@ -149,7 +156,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
         	if(useRelation) {
 			    if(taxonName != null && taxonName.getIdentifier() != null) {
 			    	this.setResource(taxonName.getIdentifier());
-			    }  else {
+			    } else {
 			    	this.taxonName = taxonName;
 			    }
 			} else {

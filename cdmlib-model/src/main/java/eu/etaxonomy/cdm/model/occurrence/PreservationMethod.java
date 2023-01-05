@@ -57,7 +57,7 @@ public class PreservationMethod extends MaterialOrMethodEvent {
 
 	private static final long serialVersionUID = 2366116167028862401L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(PreservationMethod.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Medium")
     @XmlIDREF

@@ -11,15 +11,17 @@ package eu.etaxonomy.cdm.strategy.match;
 
 import java.lang.reflect.Field;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
  * @since 07.08.2009
  */
 public abstract class FieldMatcherBase {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(FieldMatcherBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private String propertyName ;
 	private Field field;

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import static org.junit.Assert.assertEquals;
@@ -16,11 +15,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-import org.junit.After;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -30,34 +28,21 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 /**
  * @author a.mueller
  * @since 22.04.2008
- * @version 1.0
  */
 public class MarkerTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(MarkerTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static boolean flag1;
 	private static Marker marker1;
 	private static MarkerType markerType1;
 	private static AnnotatableEntity annotatedObject1;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		flag1 = true;
@@ -66,14 +51,6 @@ public class MarkerTest extends EntityTestBase {
 		annotatedObject1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		annotatedObject1.addMarker(marker1);
 	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 
 /* *************** TESTS ********************************************/
 

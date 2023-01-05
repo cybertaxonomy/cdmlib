@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.permission.User;
 @Transactional(readOnly = false)
 public class PasswordResetService extends AccountSelfManagementService implements IPasswordResetService {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     @Qualifier("passwordResetTokenStore")

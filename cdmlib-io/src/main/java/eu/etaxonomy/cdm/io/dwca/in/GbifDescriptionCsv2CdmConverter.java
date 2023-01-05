@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
@@ -42,7 +43,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(GbifDescriptionCsv2CdmConverter.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String CORE_ID = "coreId";
 
@@ -114,10 +115,6 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	/**
 	 * Determines the feature by the dc:type attribute. Tries to reuse existing
 	 * features.
-	 *
-	 * @param item
-	 * @param resultList
-	 * @return
 	 */
 	private Feature getFeatureByDcType(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList) {
 		String descriptionType = item.get(TermUri.DC_TYPE);

@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -21,7 +22,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @since 16.09.2010
  */
 public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
-	private static final Logger logger = LogManager.getLogger(ColumnAdder.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private final String newColumnName;
 	private final Datatype columnType;
@@ -33,8 +35,6 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 
 	/**
 	 * Add ForeignKey.
-	 * @param referencedTable
-	 * @return
 	 */
 	public static final ColumnAdder NewIntegerInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull, String referencedTable){
 		return new ColumnAdder(stepList, stepName, tableName, newColumnName, Datatype.INTEGER, null, null, includeAudTable, null, notNull, referencedTable);
@@ -184,7 +184,6 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 
 		return updateQuery;
 	}
-
 
 	/**
 	 * Returns the sql keywords for adding a column. This is usually 'ADD' or 'ADD COLUMN'

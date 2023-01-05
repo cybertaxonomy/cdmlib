@@ -27,8 +27,9 @@ import eu.etaxonomy.cdm.common.UriUtils;
  */
 public class MobotOpenUrlServiceWrapperTest {
 
-    public static final Logger logger = LogManager.getLogger(MobotOpenUrlServiceWrapperTest.class);
-	public static final String baseUrl = "http://www.biodiversitylibrary.org/openurl";
+    private static final Logger logger = LogManager.getLogger();
+
+    public static final String baseUrl = "http://www.biodiversitylibrary.org/openurl";
 
 	private MobotOpenUrlServiceWrapper openUrlServiceWrapper;
 	private static boolean internetIsAvailable = true;

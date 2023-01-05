@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -23,8 +24,9 @@ import eu.etaxonomy.cdm.model.common.LSID;
  * @since 29.04.2011
  */
 public class DwcaId {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaId.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private Integer intId;
 	private String strId;
@@ -47,7 +49,6 @@ public class DwcaId {
 	public void setId(LSID lsid){
 		this.lsidId = lsid;
 	}
-
 
 	public void setId(ICdmBase cdmBase) {
 		this.setId(cdmBase.getId());
@@ -78,6 +79,4 @@ public class DwcaId {
 	private String nullSafe(Object o){
 		return o == null ? null : o.toString();
 	}
-
-
 }

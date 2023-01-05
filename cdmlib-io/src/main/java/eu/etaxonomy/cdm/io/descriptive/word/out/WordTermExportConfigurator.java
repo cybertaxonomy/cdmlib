@@ -6,32 +6,29 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.descriptive.word.out;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 
-
 /**
- *
  * @author pplitzner
  * @since Oct 18, 2018
- *
  */
 public class WordTermExportConfigurator extends XmlExportConfiguratorBase<WordTermExportState> {
 
     private static final long serialVersionUID = -4360021755279592592L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(WordTermExportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    private TermTree featureTree;
+    private TermTree<?> featureTree;
 
 
     private WordTermExportConfigurator(ICdmDataSource source, File destinationFolder, TermTree featureTree) {

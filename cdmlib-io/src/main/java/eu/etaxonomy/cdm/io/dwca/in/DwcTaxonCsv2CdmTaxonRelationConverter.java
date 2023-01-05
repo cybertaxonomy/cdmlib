@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
@@ -44,11 +45,11 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
         extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
         implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private static final String SINGLE_CLASSIFICATION_ID = "1";
 
 	private static final String SINGLE_CLASSIFICATION = "Single Classification";
-
-	private static Logger logger = LogManager.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
 
 	private static final String ID = "id";
 
@@ -275,7 +276,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 				if (accTaxon == null){
 						fireWarningEvent("NON-ID accepted Name Usage not yet implemented or taxon for name usage id not available", item, 4);
 				} else{
-					accTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+					accTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
 				}
 
 				// FIXME : no information regarding misapplied name available at this point,

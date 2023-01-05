@@ -111,7 +111,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
 	;
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ReferenceType.class);
+	private static final Logger logger = LogManager.getLogger();
 
 
 	private ReferenceType(UUID uuid, String defaultString, String key, ReferenceType parent){

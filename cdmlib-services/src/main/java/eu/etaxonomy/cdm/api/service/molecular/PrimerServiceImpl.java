@@ -11,14 +11,12 @@ package eu.etaxonomy.cdm.api.service.molecular;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
-import eu.etaxonomy.cdm.api.service.PreferenceServiceImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -31,13 +29,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author pplitzner
  * @since 11.03.2014
- *
  */
 @Service
 @Transactional(readOnly = true)
 public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao> implements IPrimerService{
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(PreferenceServiceImpl.class);
 
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {

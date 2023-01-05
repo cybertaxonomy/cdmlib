@@ -429,10 +429,12 @@ public class FullCoverageDataGenerator {
 		Reference ref = ReferenceFactory.newArticle();
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
 		source.setNameUsedInSource(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()));
-		ExternalLink link = ExternalLink.NewInstance(ExternalLinkType.WebSite,
+	    ExternalLink link = ExternalLink.NewInstance(ExternalLinkType.WebSite,
 		        URI.create("http://wwww.abd.de"), "Somehow useful link", 445);
 		source.addLink(link);
 		handleAnnotatableEntity(source);
+		textData.addSource(OriginalSourceType.PrimaryTaxonomicSource, specimen, null, null);
+
 
 		taxonDescription.addDescriptionSource(ref);  //as long as it still exists
 
@@ -684,7 +686,7 @@ public class FullCoverageDataGenerator {
 
 		TaxonName synName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec, "123");
-		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF());
+		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
 		taxon.setDoubtful(true);
 		handleIdentifiableEntity(syn);
 

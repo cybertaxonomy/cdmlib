@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.excel.distribution;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.URI;
-
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class DistributionImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
 
     private static final long serialVersionUID = -4283236727158858201L;
-    private static final Logger logger = LogManager.getLogger(DistributionImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     @SuppressWarnings("unchecked")
@@ -40,15 +40,9 @@ public class DistributionImportConfigurator extends ExcelImportConfiguratorBase 
 		return new DistributionImportConfigurator(uri, destination);
 	}
 
-
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	private DistributionImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(uri, destination);
 	}
-
 
 	@Override
     public ExcelImportState getNewState() {
@@ -65,6 +59,4 @@ public class DistributionImportConfigurator extends ExcelImportConfiguratorBase 
 		}
 		return sourceReference;
 	}
-
-
 }

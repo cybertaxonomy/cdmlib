@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.ByteArrayOutputStream;
@@ -17,7 +16,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
@@ -25,17 +25,16 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
-
 /**
  * @author a.oppermann
  * @since 17.10.2012
  */
-public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<CsvTaxExportStateRedlist> {
+public class CsvTaxExportConfiguratorRedlist
+        extends XmlExportConfiguratorBase<CsvTaxExportStateRedlist> {
 
     private static final long serialVersionUID = 423795815976481982L;
-
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CsvTaxExportConfiguratorRedlist.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";
@@ -79,10 +78,6 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 		};
 	}
 
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	private CsvTaxExportConfiguratorRedlist(ICdmDataSource source, File destination) {
 		super(destination, source, defaultTransformer);
 	}
@@ -92,9 +87,6 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 		return super.getDestination();
 	}
 
-	/**
-	 * @param file
-	 */
 	@Override
 	public void setDestination(File fileName) {
 		super.setDestination(fileName);
@@ -281,14 +273,11 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 		return classificationTitleCache;
 	}
 
-	/**
-	 * @param areas
-	 */
 	public void setNamedAreas(List<NamedArea> areas) {
 		// TODO Auto-generated method stub
 		this.areas = areas;
-
 	}
+
 	public List<NamedArea> getNamedAreas(){
 		return areas;
 	}
@@ -303,5 +292,4 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
     public void setIncludeUnpublished(boolean includeUnpublished) {
         this.includeUnpublished = includeUnpublished;
     }
-
 }

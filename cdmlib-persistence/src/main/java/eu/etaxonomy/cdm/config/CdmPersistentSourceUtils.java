@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
  */
 public class CdmPersistentSourceUtils {
 
-	private static final Logger logger = LogManager.getLogger(CdmPersistentSourceUtils.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * Returns the directory containing the datasource config file

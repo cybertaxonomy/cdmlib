@@ -68,7 +68,7 @@ public class Collection
         extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> {
 
     private static final long serialVersionUID = -7833674897174732255L;
-	private static final Logger logger = LogManager.getLogger(Collection.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Code")
 	@Field(analyze = Analyze.NO)

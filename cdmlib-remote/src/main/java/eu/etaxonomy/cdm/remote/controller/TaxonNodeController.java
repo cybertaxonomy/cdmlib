@@ -44,7 +44,7 @@ import io.swagger.annotations.Api;
 //            by BaseController
 public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNodeService> {
 
-    public static final Logger logger = LogManager.getLogger(TaxonNodeController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     @Autowired

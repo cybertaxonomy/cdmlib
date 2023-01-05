@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 @Transactional
 public class StatisticsServiceImpl implements IStatisticsService {
 
-	private static final Logger logger = LogManager.getLogger(StatisticsServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	// this does not make sense, we just count nothing if no type is given.
 	// the one who calls this service should check that there are types given!

@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.compare.taxon;
 
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -35,7 +35,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 
     private static final long serialVersionUID = -1433623743189043446L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonComparator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	final private boolean includeRanks;
 

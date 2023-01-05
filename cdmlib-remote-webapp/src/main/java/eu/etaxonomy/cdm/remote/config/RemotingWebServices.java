@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Profile;
 @ImportResource(locations="classpath:/eu/etaxonomy/cdm/remoting-services.xml")
 public class RemotingWebServices {
 
-    public static final Logger logger = LogManager.getLogger(RemotingWebServices.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public RemotingWebServices() {
         logger.info("========================================");

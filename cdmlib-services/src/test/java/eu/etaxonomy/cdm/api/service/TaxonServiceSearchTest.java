@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertNotNull;
@@ -86,7 +85,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
-    private static Logger logger = LogManager.getLogger(TaxonServiceSearchTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final int BENCHMARK_ROUNDS = 300;
 
@@ -1793,7 +1792,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         n_abies_balsamea.setNameCache("Abies balsamea", true);
         Taxon t_abies_balsamea = Taxon.NewInstance(n_abies_balsamea, sec);
         t_abies_balsamea.setUuid(ABIES_BALSAMEA_UUID);
-        t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymType.SYNONYM_OF());
+        t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymType.SYNONYM_OF);
         taxonService.save(t_abies_balsamea);
 
         IBotanicalName n_abies_grandis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());

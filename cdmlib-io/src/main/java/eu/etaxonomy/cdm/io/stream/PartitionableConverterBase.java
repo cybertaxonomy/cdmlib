@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
@@ -37,12 +38,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>>
       implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 
-	private static final Logger logger = LogManager.getLogger(PartitionableConverterBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected STATE state;
 	protected CONFIG config;  //for convenience only (must always be same as state.getConfig())
-
-
 
 	public PartitionableConverterBase(STATE state) {
 		super();
@@ -96,8 +95,6 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		}
 	}
 
-
-
 	/**
 	 * Returns the value for the given term in the item.
 	 */
@@ -107,8 +104,6 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 
 	/**
 	 * Checks if the given term has a value in item that is not blank (null, empty or whitespace only).
-	 * @param term
-	 * @param item
 	 * @return true if value is not blank
 	 */
 	protected boolean exists(TermUri term, StreamItem item) {
@@ -134,14 +129,12 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		return result;
 	}
 
-
 	/**
 	 * Fills the the foreign key map with foreign keys required for this item.
 	 * @param next
 	 * @param foreignKeyMap
 	 */
 	protected abstract void makeForeignKeysForItem(StreamItem next, Map<String, Set<String>> foreignKeyMap);
-
 
 	/**
 	 * False if string is null, empty or whitespace only. True otherwise.
@@ -151,12 +144,8 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		return StringUtils.isNotBlank(string);
 	}
 
-
 	/**
 	 * Returns the key set for a given key or creates a new one.
-	 * @param key
-	 * @param fkMap
-	 * @return
 	 */
 	protected Set<String> getKeySet(String key, Map<String, Set<String>> fkMap) {
 		Set<String> keySet = fkMap.get(key);
@@ -186,7 +175,6 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		}
 	}
 
-
 	protected TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery) {
 		TaxonDescription result = null;
 		Set<TaxonDescription> descs = taxon.getDescriptions();
@@ -202,7 +190,6 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		}
 		return result;
 	}
-
 
     protected Language getDcLanguage(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList ) {
         String namespace = TermUri.DC_LANGUAGE.toString();
@@ -241,5 +228,4 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	protected boolean isBlank(String str){
 		return StringUtils.isBlank(str);
 	}
-
 }

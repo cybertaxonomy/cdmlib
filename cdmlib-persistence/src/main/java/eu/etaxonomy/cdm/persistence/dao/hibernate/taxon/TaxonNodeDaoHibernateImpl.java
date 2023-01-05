@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 		implements ITaxonNodeDao {
 
-	private static final Logger logger = LogManager.getLogger(TaxonNodeDaoHibernateImpl.class);
+	private static final Logger logger = LogManager.getLogger();
 
     private static final int DEFAULT_SET_SUBTREE_PARTITION_SIZE = 100;
 
@@ -1183,7 +1183,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     public String getTaxonNodeDtoQueryWithoutParent() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-		+	"tn.uuid, tn.id, t.uuid, t.titleCache"// rank "
+		+	"tn.uuid, tn.id, t.uuid, t.titleCache, tn.treeIndex"// rank "
             + ") "
             + " FROM TaxonNode tn "
             + "   LEFT JOIN tn.taxon AS t "     ;

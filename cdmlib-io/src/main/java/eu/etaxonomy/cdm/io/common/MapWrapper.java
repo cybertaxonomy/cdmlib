@@ -5,37 +5,36 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
-
+*/
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
-
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
- *
  */
 public class MapWrapper<T extends CdmBase> {
-	private static Logger logger = LogManager.getLogger(MapWrapper.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private Map internalMap;
-	private IService<CdmBase> service = null; 
-	
+	private IService<CdmBase> service = null;
+
 	public MapWrapper(IService<CdmBase> service){
 		makeNewMap(service);
 	}
-	
+
 	public void put(Object id, T cdmBase){
 		if (service != null){
 			throw new RuntimeException();
@@ -53,7 +52,7 @@ public class MapWrapper<T extends CdmBase> {
 			internalMap.put(id, uuid);
 		}
 	}
-	
+
 	public T get(Object id){
 		T result;
 		if (service == null){
@@ -63,10 +62,10 @@ public class MapWrapper<T extends CdmBase> {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Returns all values that are either stored in the wrapper or the database.
-	 * If <code>service</code> is null then only the elements stored in the wrapper are returned. 
+	 * If <code>service</code> is null then only the elements stored in the wrapper are returned.
 	 * @return
 	 */
 	public Set<T> getAllValues(){
@@ -81,16 +80,16 @@ public class MapWrapper<T extends CdmBase> {
 		}
 		return result;
 	}
-	
+
 	public boolean containsId(Object id){
 		return internalMap.containsKey(id);
 	}
-	
+
 	public Collection<T> objects(){
 		//TODO from service
-		return (Collection<T>)internalMap.values();
+		return internalMap.values();
 	}
-	
+
 	private T getObjectFromService(Object id){
 		if (service == null){
 			throw new RuntimeException("no service defined");
@@ -107,11 +106,11 @@ public class MapWrapper<T extends CdmBase> {
 			return result;
 		}
 	}
-	
+
 	public boolean makeEmpty(){
 		return makeNewMap(service);
 	}
-	
+
 	public boolean makeNewMap(IService<CdmBase> service){
 			if (service == null){
 				internalMap = new HashMap<Integer, CdmBase>();
@@ -121,20 +120,20 @@ public class MapWrapper<T extends CdmBase> {
 			}
 			return true;
 	}
-	
+
 	public int size() {
 		return internalMap.size();
 	}
-	
+
 	public Collection<T> objects(int start, int limit) {
-		
+
 		Map internalPartMap = new HashMap<Integer, CdmBase>();
 		int index = 0;
-		
+
 		for (int i = 0; i < limit; i++) {
-			
+
 			int j = start + i;
-			
+
 			Object object = internalMap.get(j);
 			if(object != null) {
 				internalPartMap.put(index, internalMap.get(j));
@@ -143,22 +142,22 @@ public class MapWrapper<T extends CdmBase> {
 				if (logger.isDebugEnabled()) { logger.debug("Object (" + j + ") is null"); }
 			}
 		}
-		return (Collection<T>)internalPartMap.values();
+		return internalPartMap.values();
 	}
-	
-		
+
+
 	public Collection<T> removeObjects(int start, int limit) {
-		
+
 		for (int i = start; i < start + limit; i++) {
 			internalMap.remove(i);
 			if (logger.isDebugEnabled()) { logger.debug("Object (" + i + ") removed"); }
 		}
-		return (Collection<T>)internalMap.values();
+		return internalMap.values();
 	}
 
-	
+
 	public Set<Object> keySet() {
 		return internalMap.keySet();
 	}
-	
+
 }

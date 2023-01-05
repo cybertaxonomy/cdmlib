@@ -1,4 +1,4 @@
-/*
+/**
 * Copyright  EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
@@ -23,7 +23,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.UUIDEditor;
 import org.springframework.context.ApplicationContext;
@@ -66,12 +67,14 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
  * @since 20.09.2012
  * <p>
  *  This controller enables an export of the cdm platform via a
- *  REST request. It is debatable if this a wanted behavior.
+ *  REST request. It is debatable if this is a wanted behavior.
  *  For the time being it serves its purpose.
  */
 @Controller
 @RequestMapping(value = { "/checklist" })
 public class ChecklistDemoController extends AbstractController implements ResourceLoaderAware{
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ApplicationContext appContext;
@@ -87,7 +90,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
     private ResourceLoader resourceLoader;
 
-
     /**
      * There should only be one processes operating on the export
      * therefore the according progress monitor uuid is stored in this static
@@ -97,9 +99,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
     private final static long DAY_IN_MILLIS = 86400000;
 
-
-
-    private static final Logger logger = LogManager.getLogger(ChecklistDemoController.class);
 
     /**
      * Helper method, which allows to convert strings directly into uuids.
@@ -112,9 +111,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
         binder.registerCustomEditor(NamedArea.class, new TermBaseListPropertyEditor<>(termService));
         binder.registerCustomEditor(UUID.class, new UUIDEditor());
     }
-
-
-
 
     /**
      * Documentation webservice for this controller.
@@ -179,12 +175,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * It takes advantage of pagination.
      *
      * @param classification uuid of the classification to export
-     * @param pageIndex
-     * @param pageSize
-     * @param response
-     * @param request
-     * @return
-     * @throws IOException
      */
     @RequestMapping(value = { "export" }, method = { RequestMethod.GET })
     public ModelAndView doGeneralExport(
@@ -227,9 +217,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
             Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-export.apt");
             return exportGetExplanation(response, request, resource);
         }
-
     }
-
 
     /**
      *
@@ -312,21 +300,12 @@ public class ChecklistDemoController extends AbstractController implements Resou
         }
     }
 
-
     //=========== Helper Methods ===============//
 
     /**
      *
      * This private methods finally triggers the export back in the io-package and will create a cache file
      * in system temp directory.
-     *
-     * @param downloadTokenValueId
-     * @param conceptExport
-     * @param demoExport
-     * @param response
-     * @param byteArrayOutputStream
-     * @param config
-     * @param defaultExport
      */
     private void performExport(File cacheFile, UuidList featureUuids,String classificationUUID, UuidList areas,
             String downloadTokenValueId, boolean demoExport, boolean conceptExport, String origin, HttpServletResponse response, IRestServiceProgressMonitor progressMonitor) {
@@ -403,5 +382,4 @@ public class ChecklistDemoController extends AbstractController implements Resou
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
-
 }

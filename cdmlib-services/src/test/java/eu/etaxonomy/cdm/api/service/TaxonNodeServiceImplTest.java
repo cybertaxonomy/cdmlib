@@ -137,7 +137,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = taxonNodeService.load(node2Uuid);
 		node4 = taxonNodeService.load(node4Uuid);
 		reference = referenceService.load(referenceUuid);
-		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHomotypicSynonymOf), SynonymType.class) ;
+		synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
 		referenceDetail = "test";
 
 		//TODO
@@ -232,7 +232,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(node2Uuid);
 		reference = referenceService.load(referenceUuid);
-		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHeterotypicSynonymOf), SynonymType.class) ;
+		synonymType = SynonymType.HETEROTYPIC_SYNONYM_OF;
 		referenceDetail = "test";
 
 		// descriptions
@@ -287,7 +287,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		HibernateProxyHelper.deproxy(t2.getHomotypicGroup());
 		t2.setName(HibernateProxyHelper.deproxy(t2.getName()));
 
-		termService.saveOrUpdate(synonymType);
 		assertFalse("taxon 2 must have a synonym now", t2.getSynonyms().isEmpty());
 		assertEquals("taxon 2 must have 3 synonyms now, the old taxon 1 and it's 2 synonyms", 3, t2.getSynonyms().size());
 		assertEquals("taxon 2 must have 2 descriptions now, taken form taxon 1", 2, t2.getDescriptions().size());

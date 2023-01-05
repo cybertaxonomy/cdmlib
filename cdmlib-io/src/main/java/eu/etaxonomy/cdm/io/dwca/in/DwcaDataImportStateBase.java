@@ -6,10 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
@@ -20,12 +20,11 @@ import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
  */
 public abstract class DwcaDataImportStateBase<CONFIG extends DwcaDataImportConfiguratorBase>
         extends StreamImportStateBase<CONFIG, StreamImportBase>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaDataImportStateBase.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	public DwcaDataImportStateBase(CONFIG config) {
 		super(config);
 	}
-
-
 }

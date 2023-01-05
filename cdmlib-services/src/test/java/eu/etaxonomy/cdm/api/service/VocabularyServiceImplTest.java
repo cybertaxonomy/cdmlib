@@ -41,7 +41,6 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
 	public void setUp() throws Exception {}
 
     @Test
-//    @Ignore //FIXME assertSame does not work yet
     public void testGetRankVocabulary() {
         List<TermVocabulary<Rank>> rankVocabularyList = vocabularyService.findByTermType(TermType.Rank, null);
         assertTrue(rankVocabularyList.size() == 1);

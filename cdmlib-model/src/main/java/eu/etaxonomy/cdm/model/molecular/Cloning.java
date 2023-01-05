@@ -50,7 +50,7 @@ public class Cloning extends MaterialOrMethodEvent {
 
 	private static final long serialVersionUID = 6179007910988646989L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(Cloning.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	/** @see #getStrain() */
     @XmlElement(name = "strain")

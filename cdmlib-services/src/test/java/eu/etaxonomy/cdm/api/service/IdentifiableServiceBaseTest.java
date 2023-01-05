@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.database.annotations.Transactional;
@@ -49,13 +49,12 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- *
  */
 @Transactional(TransactionMode.DISABLED)
 public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(IdentifiableServiceBaseTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private INameService nameService;
@@ -82,7 +81,6 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertNotNull("Service shoulb be initialized", nameService);
 	}
 
-
 	@Test
 	@DataSet
 	@ExpectedDataSet
@@ -95,13 +93,11 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 //		commitAndStartNewTransaction(new String[]{"TaxonName","TaxonName_AUD"});
 	}
 
-
 	@Test
 	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
 	public final void testFindByIdentifier(){
 		UUID uuidIdentifierType1 = UUID.fromString("02bb62db-a229-4eeb-83e6-a9a093943d5e");
 		UUID uuidIdentifierType2 = UUID.fromString("ef6e960f-5289-456c-b25c-cff7f4de2f63");
-
 
 		DefinedTerm it1 = (DefinedTerm)termService.find(uuidIdentifierType1);
 		Assert.assertNotNull("identifier type must not be null", it1);
@@ -133,7 +129,6 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		taxonPager = taxonService.findByIdentifier(Taxon.class, "ext-1234", it1, null, includeEntity, null, null, null);
 		entity = taxonPager.getRecords().get(0).getCdmEntity();
 		Assert.assertNull("Taxon must not be returned with includeEntity = false", entity.getEntity());
-
 
 
 		//Matchmode
@@ -328,7 +323,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         classification.addChildTaxon(tb, null, null);
         classificationService.saveOrUpdate(classification);
 
-        tb2.addSynonymName(null, SynonymType.HOMOTYPIC_SYNONYM_OF());
+        tb2.addSynonymName(null, SynonymType.HOMOTYPIC_SYNONYM_OF);
 
         commitAndStartNewTransaction(null);
 

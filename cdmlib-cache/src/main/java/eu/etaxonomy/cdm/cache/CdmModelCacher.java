@@ -44,7 +44,7 @@ import net.sf.ehcache.Cache;
  */
 public class CdmModelCacher {
 
-    private static final Logger logger = LogManager.getLogger(CdmModelCacher.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static String HB_CONFIG_FILE_PATH= "/eu/etaxonomy/cdm/mappings/hibernate.cfg.xml";
 
@@ -53,6 +53,7 @@ public class CdmModelCacher {
     public static final String CDM_MAP_SER_FILE_PATH = CDM_MAP_SER_FOLDER + CDM_MAP_SER_FILE;
 
     public void cacheGetterFields(Cache cache) throws IOException, ClassNotFoundException {
+
         Map<String, CdmModelFieldPropertyFromClass> modelClassMap = loadModelClassMap();
 
         cache.removeAll();

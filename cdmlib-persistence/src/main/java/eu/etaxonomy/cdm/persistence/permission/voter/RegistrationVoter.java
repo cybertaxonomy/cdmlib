@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.persistence.permission.voter;
 
 import java.util.Collection;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -23,6 +25,8 @@ import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
  * @since Feb 24, 2014
  */
 public class RegistrationVoter extends CdmPermissionVoter {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {

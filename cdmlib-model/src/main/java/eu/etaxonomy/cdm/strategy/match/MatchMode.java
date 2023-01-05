@@ -6,14 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.match;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.ICheckEmpty;
-
 
 /**
  * Enumeration for matching modes.
@@ -38,7 +37,7 @@ public enum MatchMode {
     //value, otherwise dirty data which should not be matched
     //e.g. NewParsedJournalInstance-authorship
 
-	private static final Logger logger = LogManager.getLogger(MatchMode.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public MatchResult matches(Object obj1, Object obj2, IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException{
 		if (this == EQUAL_REQUIRED){

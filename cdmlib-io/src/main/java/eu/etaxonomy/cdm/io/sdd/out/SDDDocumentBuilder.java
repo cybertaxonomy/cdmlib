@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.Marshaller;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xerces.dom.DocumentImpl;
@@ -36,15 +34,14 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.util.ResourceUtils;
-import org.xml.sax.SAXException;
 
-import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -193,9 +190,9 @@ public class SDDDocumentBuilder {
 
 	private final Language defaultLanguage = Language.DEFAULT();
 
-	private static final Logger logger = LogManager.getLogger(SDDDocumentBuilder.class);
+	private static final Logger logger = LogManager.getLogger();
 
-	public SDDDocumentBuilder() throws SAXException, IOException {
+	public SDDDocumentBuilder() {
 		document = new DocumentImpl();
 	}
 
@@ -203,22 +200,16 @@ public class SDDDocumentBuilder {
 			throws IOException {
 
 		this.cdmSource = cdmSource;
-		Marshaller marshaller;
-		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		logger.info("Start marshalling");
 		writeCDMtoSDD(sddDestination);
-
 	}
 
 	public void marshal(SDDDataSet cdmSource, String sddDestinationFileName)
 			throws IOException {
 
 		this.cdmSource = cdmSource;
-		Marshaller marshaller;
-		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		logger.info("Start marshalling");
 		writeCDMtoSDD(ResourceUtils.getFile(sddDestinationFileName));
-
 	}
 
     public void marshal(SDDDataSet dataSet, OutputStream stream) throws IOException {
@@ -241,6 +232,7 @@ public class SDDDocumentBuilder {
 
         writer.close();
     }
+
 	/**
 	 * Write the DOM document.
 	 *
@@ -672,7 +664,7 @@ public class SDDDocumentBuilder {
 					DESCRIPTIVE_CONCEPTS);
 			int f = cdmSource.getTerms().size();
 			for (int i = 0; i < f; i++) {
-				DefinedTermBase dtb = cdmSource.getTerms().get(i);
+				DefinedTermBase<?> dtb = cdmSource.getTerms().get(i);
 				if (dtb instanceof Feature) {
 					ElementImpl elFeat = new ElementImpl(document,
 							DESCRIPTIVE_CONCEPT);
@@ -753,15 +745,14 @@ public class SDDDocumentBuilder {
 								charactersCount);
 						buildRepresentation(elCategoricalCharacter, character);
 
-						Set<TermVocabulary<State>> enumerations = character
+						Set<TermVocabulary<? extends DefinedTermBase>> enumerations = character
 								.getSupportedCategoricalEnumerations();
 						if (enumerations != null) {
 							if (enumerations.size() > 0) {
 								ElementImpl elStates = new ElementImpl(
 										document, STATES);
-								TermVocabulary tv = (TermVocabulary) enumerations
-										.toArray()[0];
-								Set<State> stateList = tv.getTerms();
+								TermVocabulary<? extends DefinedTermBase> tv = enumerations.iterator().next();
+								Set<? extends DefinedTermBase> stateList = tv.getTerms();
 								for (int j = 0; j < stateList.size(); j++) {
 									ElementImpl elStateDefinition = new ElementImpl(
 											document, STATE_DEFINITION);
@@ -937,7 +928,7 @@ public class SDDDocumentBuilder {
 		List<StateData> states = categoricalData.getStateData();
 		for (Iterator<StateData> sd = states.iterator(); sd.hasNext();) {
 			StateData stateData = sd.next();
-			State s = stateData.getState();
+			DefinedTermBase<?> s = stateData.getState();
 			buildState(categorical, s);
 		}
 		element.appendChild(categorical);
@@ -946,7 +937,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds State associated with a Categorical
 	 */
-	public void buildState(ElementImpl element, State s) throws ParseException {
+	public void buildState(ElementImpl element, DefinedTermBase<?> s) throws ParseException {
 
 		// <SummaryData>
 		// <Categorical ref="c4">
@@ -1307,9 +1298,9 @@ public class SDDDocumentBuilder {
 				Set<FeatureState> innaplicableIf = parent.getInapplicableIf();
 				ElementImpl elInnaplicableIf = new ElementImpl(document, "InapplicableIf");
 				for (FeatureState featureState : innaplicableIf) {
-				    State state = featureState.getState();
+				    DefinedTermBase<?> state = featureState.getState();
 					ElementImpl elState = new ElementImpl(document, STATE);
-					buildReference(state, states, REF, elState, "State",
+					buildReference(CdmBase.deproxy(state, DefinedTermBase.class), states, REF, elState, "State",
 							statesCount);
 					elInnaplicableIf.appendChild(elState);
 				}
@@ -1322,8 +1313,8 @@ public class SDDDocumentBuilder {
 						"OnlyApplicableIf");
 				for (FeatureState featureState : onlyApplicableIf) {
 					ElementImpl elState = new ElementImpl(document, STATE);
-					State state = featureState.getState();
-                    buildReference(state, states, REF, elState, "State",
+					DefinedTermBase<?> state = featureState.getState();
+                    buildReference(CdmBase.deproxy(state, DefinedTermBase.class), states, REF, elState, "State",
 							statesCount);
 					elOnlyApplicableIf.appendChild(elState);
 				}
@@ -1418,7 +1409,7 @@ public class SDDDocumentBuilder {
 			element.setAttribute(refOrId, (String) references.get(ve));
 		} else {
 			if (ve instanceof IdentifiableEntity) {
-				IdentifiableEntity ie = (IdentifiableEntity) ve;
+				IdentifiableEntity<?> ie = (IdentifiableEntity) ve;
 				if (ie.getSources().size() > 0) {
 					IdentifiableSource os = (IdentifiableSource) ie
 							.getSources().toArray()[0];

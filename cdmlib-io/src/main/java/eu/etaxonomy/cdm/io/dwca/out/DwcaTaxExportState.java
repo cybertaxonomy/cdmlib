@@ -20,7 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.io.common.ZipWriter;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaTaxExportState extends XmlExportState<DwcaTaxExportConfigurator>{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaTaxExportState.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private DwcaResultProcessor processor = new DwcaResultProcessor(this);
 

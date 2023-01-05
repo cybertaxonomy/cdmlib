@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class DefaultMatchStrategyTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DefaultMatchStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private DefaultMatchStrategy matchStrategy;
 	private IBook book1;

@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
@@ -32,7 +33,7 @@ public class MediaSpecimenDefaultCacheStrategy
 
     private static final long serialVersionUID = 798148956185549004L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MediaSpecimenDefaultCacheStrategy.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final UUID uuid = UUID.fromString("2df06501-0e2f-4255-b1e6-091be7293f7c");
 

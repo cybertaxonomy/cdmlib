@@ -36,17 +36,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class ServiceWrapperBase<T extends CdmBase> {
 
-	public static final Logger logger = LogManager.getLogger(ServiceWrapperBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private URL baseUrl;
 
-	private final boolean followRedirects = true;
-
 	protected Map<String, SchemaAdapterBase<T>> schemaAdapterMap;
 
-	/**
-	 * @param baseUrl the baseUrl to set
-	 */
 	public void setBaseUrl(String baseUrl) {
 		try {
 			this.baseUrl = new URL(baseUrl);
@@ -54,17 +49,10 @@ public class ServiceWrapperBase<T extends CdmBase> {
 			logger.error(e);
 		}
 	}
-
-	/**
-	 * @return the baseUrl
-	 */
 	public String getBaseUrl() {
 		return baseUrl.toString();
 	}
 
-	/**
-	 * @param schemaAdapterMap the schemaAdapterMap to set
-	 */
 	public void setSchemaAdapterMap(Map<String, SchemaAdapterBase<T>> schemaAdapterMap) {
 		this.schemaAdapterMap = schemaAdapterMap;
 	}

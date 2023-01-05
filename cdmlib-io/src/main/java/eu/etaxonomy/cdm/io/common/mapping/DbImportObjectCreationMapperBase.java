@@ -13,7 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public abstract class DbImportObjectCreationMapperBase<CREATE extends VersionableEntity, STATE extends DbImportStateBase<?,?>>
         extends DbImportMultiAttributeMapperBase<CREATE, STATE>  {
 
-    private static final Logger logger = LogManager.getLogger(DbImportObjectCreationMapperBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 //******************************* ATTRIBUTES ***************************************/
 
@@ -104,7 +105,6 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 
 	/**
 	 * Returns the transformer from the configuration
-	 * @return
 	 */
 	protected IInputTransformer getTransformer(){
 		return getState().getTransformer();

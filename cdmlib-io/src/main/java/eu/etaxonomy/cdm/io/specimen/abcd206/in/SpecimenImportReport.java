@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
@@ -36,12 +37,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * Gathers information about the ABCD import and presents them in a suitable way.
  * @author pplitzner
  * @since Jan 23, 2015
- *
  */
 public class SpecimenImportReport {
 
-    static private final Logger logger = LogManager.getLogger(SpecimenImportReport.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     private final List<Taxon> createdTaxa = new ArrayList<>();
     private final Map<Taxon, List<UnitIdSpecimen>> taxonToAssociatedSpecimens =  new HashMap<>();

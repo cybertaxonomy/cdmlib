@@ -73,6 +73,20 @@ public class VocabularyServiceImpl
 	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths) {
 		return dao.findByTermType(termType, propertyPaths);
 	}
+
+    @Override
+    public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(Set<TermType> termTypes, List<String> propertyPaths){
+        if (termTypes.size() == 1) {
+            return findByTermType(termTypes.iterator().next(), propertyPaths);
+        }else {
+            List<TermVocabulary<T>> result = new ArrayList<>();
+            for (TermType termType : termTypes) {
+                result.addAll(dao.findByTermType(termType, propertyPaths));
+            }
+            return result;
+        }
+    }
+
 	/**
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getLanguageVocabulary()

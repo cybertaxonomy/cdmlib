@@ -17,7 +17,7 @@ import net.sf.json.processors.JsonValueProcessor;
 
 public class UUIDJSONValueProcessor implements JsonValueProcessor {
 
-	private static final Logger logger = LogManager.getLogger(UUIDJSONValueProcessor.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public Object processArrayValue(Object obj, JsonConfig jsonConfig) {

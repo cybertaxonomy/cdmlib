@@ -42,9 +42,11 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
  */
 @Service
 @Transactional(readOnly = true)
-public class AccountRegistrationService extends AccountSelfManagementService implements IAccountRegistrationService {
+public class AccountRegistrationService
+        extends AccountSelfManagementService
+        implements IAccountRegistrationService {
 
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String EMAIL_EXISTS = "An account for this email address already exits.";
 

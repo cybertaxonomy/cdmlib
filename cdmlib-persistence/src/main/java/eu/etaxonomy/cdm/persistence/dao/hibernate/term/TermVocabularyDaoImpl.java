@@ -48,8 +48,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.mueller
  */
 @Repository
-public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> implements
-		ITermVocabularyDao {
+public class TermVocabularyDaoImpl
+        extends IdentifiableDaoBase<TermVocabulary>
+        implements ITermVocabularyDao {
 
 	@SuppressWarnings("unchecked")
     public TermVocabularyDaoImpl() {

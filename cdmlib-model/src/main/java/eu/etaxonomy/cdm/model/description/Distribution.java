@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -55,10 +56,11 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class Distribution extends DescriptionElementBase implements Cloneable {
-    private static final long serialVersionUID = 8366462435651559730L;
+public class Distribution extends DescriptionElementBase {
 
-    private static final Logger logger = LogManager.getLogger(Distribution.class);
+    private static final long serialVersionUID = 8366462435651559730L;
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "NamedArea")
     @XmlIDREF

@@ -1,13 +1,22 @@
+/**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.io.taxonx2013;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -16,9 +25,9 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 
 public class TaxonXXMLFieldGetter {
 
-    private static final Logger logger = LogManager.getLogger(TaxonXXMLFieldGetter.class);
-    private final Document doc;
+    private static final Logger logger = LogManager.getLogger();
 
+    private final Document doc;
 
     private final NomenclaturalCode nomenclaturalCode;
     private Classification classification;

@@ -14,7 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -118,7 +119,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -133,7 +133,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since 25.04.2016
  */
 public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
-	private static final Logger logger = LogManager.getLogger(ReferencedObjTypeUpdater.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String stepName = "Update referenced obj_type";
 
@@ -410,7 +411,6 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
         specificClasses.put(TeamOrPersonBase.class, AgentBase.class);
         specificClasses.put(TermVocabulary.class, TermVocabulary.class);
         specificClasses.put(TypeDesignationStatusBase.class, DefinedTermBase.class);
-        specificClasses.put(OrderedTermBase.class, DefinedTermBase.class);
         specificClasses.put(OrderedTermVocabulary.class, TermVocabulary.class);
         specificClasses.put(Rights.class, Rights.class);
         specificClasses.put(RelationshipTermBase.class, DefinedTermBase.class);

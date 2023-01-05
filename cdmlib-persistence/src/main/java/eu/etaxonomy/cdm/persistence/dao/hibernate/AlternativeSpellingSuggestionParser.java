@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
@@ -41,24 +41,24 @@ import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 import org.hibernate.search.indexes.IndexReaderAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.IAlternativeSpellingSuggestionParser;
-
 
 /**
  * @author unknown
  *
  * @param <T>
- * @deprecated Use current methods for alternative spelling suggestions. This class is no longer supported
- * after migration to hibernate 4.x.
+ * @deprecated Use current methods for alternative spelling suggestions. This class is
+ * no longer supported after migration to hibernate 4.x.
  */
 @Deprecated
 public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 		extends HibernateDaoSupport
 		implements IAlternativeSpellingSuggestionParser {
-	private static Log log = LogFactory.getLog(AlternativeSpellingSuggestionParser.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private String defaultField;
 	protected Directory directory;
@@ -123,9 +123,6 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 					//#3344
 					boolean it = source.incrementToken();
 					t = source.getAttribute(Token.class);
-
-
-
 				} catch (IOException e) {
 					t = null;
 				}
@@ -165,18 +162,22 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 			try {
 				SpellChecker spellChecker = new SpellChecker(directory);
 				if (spellChecker.exist(queryText)) {
+				    spellChecker.close();
 					return new Term(field, queryText);
 				}
 				String[] similarWords = spellChecker.suggestSimilar(queryText, 1);
 				if (similarWords.length == 0) {
+				    spellChecker.close();
 					return new Term(field, queryText);
 				}
 				suggestedQuery = true;
+				spellChecker.close();
 				return new Term(field, similarWords[0]);
 			} catch (IOException e) {
 				throw new ParseException(e.getMessage());
 			}
 		}
+
 		public boolean hasSuggestedQuery() {
 			return suggestedQuery;
 		}
@@ -184,7 +185,7 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 
 	@Override
     public void refresh() {
-		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
 		SearchFactory searchFactory = fullTextSession.getSearchFactory();
 		try {
 			SpellChecker spellChecker = new SpellChecker(directory);
@@ -201,14 +202,14 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 
 					indexReader = ira.open(indexedClass);
 //					indexReader = readerProvider.openIndexReader(); //  .openReader(directoryProvider);
-					log.debug("Creating new dictionary for words in " + defaultField + " docs " + indexReader.numDocs());
+					logger.debug("Creating new dictionary for words in " + defaultField + " docs " + indexReader.numDocs());
 
 					Dictionary dictionary = new LuceneDictionary(indexReader, defaultField);
-					if(log.isDebugEnabled()) {
+					if(logger.isDebugEnabled()) {
 						BytesRefIterator iterator = dictionary.getEntryIterator();
 						BytesRef bytesRef;
 						while((bytesRef = iterator.next())  != null) {
-							log.debug("Indexing word " + bytesRef);
+							logger.debug("Indexing word " + bytesRef);
 						}
 					}
 
@@ -220,7 +221,7 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 					spellChecker.indexDictionary(dictionary, config, fullMerge);
 
 				} catch (CorruptIndexException cie) {
-					log.error("Spellings index is corrupted", cie);
+					logger.error("Spellings index is corrupted", cie);
 				} finally {
 					if (indexReader != null) {
 //						readerProvider.closeIndexReader(indexReader);
@@ -228,8 +229,9 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 					}
 				}
 			}
+			spellChecker.close();
 		}catch (IOException ioe) {
-			log.error(ioe);
+			logger.error(ioe);
 		}
 	}
 

@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
         @SuppressWarnings("unused")
-        private static final Logger logger = LogManager.getLogger(CdmLightExportTest.class);
+        private static final Logger logger = LogManager.getLogger();
 
         private static final UUID rootNodeUuid = UUID.fromString("a67b4efd-6148-46a9-a377-1efd14768cfa");
         private static final UUID node1Uuid = UUID.fromString("0fae5ad5-ffa2-4100-bcd7-8aa9dda0aebc");

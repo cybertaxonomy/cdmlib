@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.util.ArrayList;
@@ -21,7 +20,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -40,8 +40,9 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @since 26.04.2013
  */
 public class MarkupKeyImport  extends MarkupImportBase  {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MarkupKeyImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
 	public MarkupKeyImport(MarkupDocumentImport docImport) {

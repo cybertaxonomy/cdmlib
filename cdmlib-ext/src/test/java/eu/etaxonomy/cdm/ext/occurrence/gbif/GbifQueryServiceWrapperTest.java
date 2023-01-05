@@ -18,7 +18,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -71,26 +70,26 @@ public class GbifQueryServiceWrapperTest {
             "}";
 
     private final String dummyJsonDataset = "[" +
-    		"{"+
-        "\"key\": 29596,"+
-        "\"type\": \"BIOCASE\","+
-        "\"url\": \"http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen\","+
-        "\"createdBy\": \"crawler.gbif.org\","+
-        "\"modifiedBy\": \"crawler.gbif.org\","+
-        "\"created\": \"2014-01-13T10:32:05.170+0000\","+
-        "\"modified\": \"2014-01-13T10:32:05.170+0000\","+
-        "\"machineTags\": ["+
-         "   {"+
-         "       \"key\": 59486,"+
-         "      \"namespace\": \"metasync.gbif.org\","+
-         "       \"name\": \"conceptualSchema\","+
-         "       \"value\": \"http://www.tdwg.org/schemas/abcd/2.06\","+
-         "       \"createdBy\": \"crawler.gbif.org\","+
-         "       \"created\": \"2014-01-13T10:32:05.172+0000\""+
-         "   }"+
-        "]"+
-    "}"+
-"]";
+        "{"+
+            "\"key\": 29596,"+
+            "\"type\": \"BIOCASE\","+
+            "\"url\": \"http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen\","+
+            "\"createdBy\": \"crawler.gbif.org\","+
+            "\"modifiedBy\": \"crawler.gbif.org\","+
+            "\"created\": \"2014-01-13T10:32:05.170+0000\","+
+            "\"modified\": \"2014-01-13T10:32:05.170+0000\","+
+            "\"machineTags\": ["+
+             "   {"+
+             "       \"key\": 59486,"+
+             "      \"namespace\": \"metasync.gbif.org\","+
+             "       \"name\": \"conceptualSchema\","+
+             "       \"value\": \"http://www.tdwg.org/schemas/abcd/2.06\","+
+             "       \"createdBy\": \"crawler.gbif.org\","+
+             "       \"created\": \"2014-01-13T10:32:05.172+0000\""+
+             "   }"+
+            "]"+
+        "}"+
+    "]";
 
     @Test
     public void testJsonToCdmObject() throws URISyntaxException{
@@ -99,7 +98,7 @@ public class GbifQueryServiceWrapperTest {
         GbifResponse gbifResponse = records.iterator().next();
         Assert.assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
         Assert.assertEquals("protocol is wrong", GbifDataSetProtocol.BIOCASE, gbifResponse.getDataSetProtocol());
-        Assert.assertEquals("protocol is wrong", new URI("http://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
+        Assert.assertEquals("protocol is wrong", new URI("https://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
     }
 
     @Test
@@ -124,7 +123,6 @@ public class GbifQueryServiceWrapperTest {
     }
 
     @Test
-    @Ignore
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null, false);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
@@ -140,7 +138,6 @@ public class GbifQueryServiceWrapperTest {
         } catch (URISyntaxException e) {
             Assert.fail(e.getMessage());
         }
-
     }
 
     @Test
@@ -156,7 +153,5 @@ public class GbifQueryServiceWrapperTest {
     	} catch (URISyntaxException e) {
     		Assert.fail(e.getMessage());
     	}
-
     }
-
 }

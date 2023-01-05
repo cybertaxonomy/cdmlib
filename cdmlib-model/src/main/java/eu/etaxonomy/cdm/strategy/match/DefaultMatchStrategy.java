@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
@@ -55,7 +56,7 @@ public class DefaultMatchStrategy
             implements IMatchStrategyEqual, IParsedMatchStrategy {
 
     private static final long serialVersionUID = 5045874493910155162L;
-	private static final Logger logger = LogManager.getLogger(DefaultMatchStrategy.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	final static UUID uuid = UUID.fromString("69467b70-07ec-43a6-b779-3ec8d013837b");
 

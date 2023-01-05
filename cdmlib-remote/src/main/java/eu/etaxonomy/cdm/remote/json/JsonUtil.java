@@ -10,21 +10,12 @@ package eu.etaxonomy.cdm.remote.json;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 /**
  * @author a.kohlbecker
  * @since Jan 26, 2017
- *
  */
-public class JsonpUtil {
+public class JsonUtil {
 
-    public static final Logger logger = LogManager.getLogger(JsonpUtil.class);
-
-    /**
-     * @param request
-     * @return
-     */
     static public String readJsonpCallback(HttpServletRequest request) {
         String jsonpCallback= null;
         String queryString = request.getQueryString();
@@ -40,5 +31,4 @@ public class JsonpUtil {
         }
         return jsonpCallback;
     }
-
 }

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.util.Map;
@@ -14,7 +13,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -32,8 +32,7 @@ public class NamedAreaLevelExcelImport
          implements ICdmIO<SpecimenCdmExcelImportState> {
 
     private static final long serialVersionUID = 6790172880945153291L;
-
-    private static final Logger logger = LogManager.getLogger(NamedAreaLevelExcelImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String WORKSHEET_NAME = "AreaLevels";
 
@@ -45,7 +44,6 @@ public class NamedAreaLevelExcelImport
 	private static final String GEOSERVER_LABEL_COLUMN = "GeoserverLabel";
 	private static final String GEOSERVER_ATTRIBUTE_COLUMN = "GeoserverAttribute";
 	private static final String ORDER_INDEX_COLUMN = "OrderIndex";
-
 
 	public NamedAreaLevelExcelImport() {
 		super();
@@ -106,7 +104,6 @@ public class NamedAreaLevelExcelImport
     	return;
 	}
 
-
 	@Override
 	protected void firstPass(SpecimenCdmExcelImportState state) {
 		NamedAreaLevellRow row = state.getNamedAreaLevelRow();
@@ -134,17 +131,12 @@ public class NamedAreaLevelExcelImport
 		return;
 	}
 
-
-
 	@Override
 	protected void secondPass(SpecimenCdmExcelImportState state) {
 		//no second path defined yet
 		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(SpecimenCdmExcelImportState state) {
 		logger.warn("Validation not yet implemented for " + this.getClass().getSimpleName());
@@ -161,11 +153,8 @@ public class NamedAreaLevelExcelImport
 		return false;
 	}
 
-
 	@Override
 	protected boolean isIgnore(SpecimenCdmExcelImportState state) {
 		return !state.getConfig().isDoAreaLevels();
 	}
-
-
 }

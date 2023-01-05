@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 
@@ -25,7 +26,7 @@ public class TaxonNodeDeletionConfigurator extends NodeDeletionConfigurator {
 
     private static final long serialVersionUID = 1187266117499706532L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonNodeDeletionConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public boolean isDeleteTaxon() {
 		return isDeleteElement();

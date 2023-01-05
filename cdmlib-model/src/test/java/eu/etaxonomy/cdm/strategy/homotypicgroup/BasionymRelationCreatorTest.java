@@ -72,9 +72,9 @@ public class BasionymRelationCreatorTest extends TermTestBase {
         synonym2 = Synonym.NewInstance(synName2, null);
         synonym3 = Synonym.NewInstance(synName3, null);
 
-        taxon1.addSynonym(synonym1, SynonymType.SYNONYM_OF());
-        taxon1.addSynonym(synonym2, SynonymType.SYNONYM_OF());
-        taxon1.addSynonym(synonym3, SynonymType.SYNONYM_OF());
+        taxon1.addSynonym(synonym1, SynonymType.SYNONYM_OF);
+        taxon1.addSynonym(synonym2, SynonymType.SYNONYM_OF);
+        taxon1.addSynonym(synonym3, SynonymType.SYNONYM_OF);
     }
 
     @Test
@@ -92,9 +92,9 @@ public class BasionymRelationCreatorTest extends TermTestBase {
         Assert.assertEquals("Accepted and synonym2 should have same homotypic group", accName1.getHomotypicalGroup(), synName2.getHomotypicalGroup());
         Assert.assertEquals("Homotypical group shoul be taken from basionym", accNameGroup, accName1.getHomotypicalGroup());
         Assert.assertNotEquals("Accepted and synonym3 should not have same homotypic group due to different author", accName1.getHomotypicalGroup(), synName3.getHomotypicalGroup());
-        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym1.getType());
-        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym2.getType());
-        Assert.assertEquals(SynonymType.SYNONYM_OF(), synonym3.getType());
+        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym1.getType());
+        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym2.getType());
+        Assert.assertEquals(SynonymType.SYNONYM_OF, synonym3.getType());
     }
 
     @Test
@@ -113,9 +113,9 @@ public class BasionymRelationCreatorTest extends TermTestBase {
         Assert.assertEquals("Accepted and synonym2 should have same homotypic group", accName1.getHomotypicalGroup(), synName2.getHomotypicalGroup());
         Assert.assertEquals("Homotypical group shoul be taken from basionym", accNameGroup, accName1.getHomotypicalGroup());
         Assert.assertNotEquals("Accepted and synonym3 should not have same homotypic group due to different author", accName1.getHomotypicalGroup(), synName3.getHomotypicalGroup());
-        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym1.getType());
-        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym2.getType());
-        Assert.assertEquals(SynonymType.SYNONYM_OF(), synonym3.getType());
+        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym1.getType());
+        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym2.getType());
+        Assert.assertEquals(SynonymType.SYNONYM_OF, synonym3.getType());
     }
 
     @Test
@@ -130,9 +130,9 @@ public class BasionymRelationCreatorTest extends TermTestBase {
         Assert.assertNotEquals("Different last epithets should not match", accName1.getHomotypicalGroup(), synName1.getHomotypicalGroup());
         Assert.assertNotEquals("Different authors should not match", accName1.getHomotypicalGroup(), synName2.getHomotypicalGroup());
         Assert.assertNotEquals("Missing basionym author should not match", accName1.getHomotypicalGroup(), synName3.getHomotypicalGroup());
-        Assert.assertEquals(SynonymType.SYNONYM_OF(), synonym1.getType());
-        Assert.assertEquals(SynonymType.SYNONYM_OF(), synonym2.getType());
-        Assert.assertEquals(SynonymType.SYNONYM_OF(), synonym3.getType());
+        Assert.assertEquals(SynonymType.SYNONYM_OF, synonym1.getType());
+        Assert.assertEquals(SynonymType.SYNONYM_OF, synonym2.getType());
+        Assert.assertEquals(SynonymType.SYNONYM_OF, synonym3.getType());
     }
 
     @Test
@@ -151,9 +151,9 @@ public class BasionymRelationCreatorTest extends TermTestBase {
         Assert.assertEquals("Accepted and synonym1 should have same homotypic group", accName1.getHomotypicalGroup(), synName1.getHomotypicalGroup());
         Assert.assertEquals("Accepted and synonym2 should have same homotypic group", accName1.getHomotypicalGroup(), synName2.getHomotypicalGroup());
         Assert.assertEquals("Accepted and synonym3 should have same homotypic group", accName1.getHomotypicalGroup(), synName3.getHomotypicalGroup());
-        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym1.getType());
-        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym2.getType());
-        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym3.getType());
+        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym1.getType());
+        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym2.getType());
+        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym3.getType());
     }
 
     @Test
@@ -162,11 +162,11 @@ public class BasionymRelationCreatorTest extends TermTestBase {
         synName1.setBasionymAuthorship(person2);
         guesser.invoke(taxon1);
         Assert.assertNotEquals("Accepted and synonym1 should NOT have same homotypic group", accName1.getHomotypicalGroup(), synName1.getHomotypicalGroup());
-        Assert.assertEquals(SynonymType.SYNONYM_OF(), synonym1.getType());
+        Assert.assertEquals(SynonymType.SYNONYM_OF, synonym1.getType());
 
         person2.setNomenclaturalTitle(person1.getNomenclaturalTitleCache());
         guesser.invoke(taxon1);
         Assert.assertEquals("Accepted and synonym1 should have same homotypic group", accName1.getHomotypicalGroup(), synName1.getHomotypicalGroup());
-        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym1.getType());
+        Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym1.getType());
     }
 }

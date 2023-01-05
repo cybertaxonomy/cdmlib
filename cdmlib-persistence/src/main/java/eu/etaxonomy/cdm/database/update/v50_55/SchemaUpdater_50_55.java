@@ -6,14 +6,14 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.database.update.v50_55;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
@@ -31,14 +31,14 @@ import eu.etaxonomy.cdm.database.update.v40_50.SchemaUpdater_47_50;
 import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
-/**
  * @author a.mueller
  * @date 09.06.2017
  */
 public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_50_55.class);
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final String startSchemaVersion = "5.0.0.0.20180514";
 	private static final String endSchemaVersion = "5.5.0.0.20190221";
 
@@ -71,7 +71,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 		//just in case not fixed before yet
 		stepName = "Delete term version";
 		query = "DELETE FROM @@CdmMetaData@@ WHERE propertyName = 'TERM_VERSION'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
         //#7414 remove mediaCreatedOld column
         stepName = "remove mediaCreatedOld column";
@@ -103,7 +103,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         stepName = "update Point.precision from 0 to null";
         query = "UPDATE @@GatheringEvent@@ SET exactLocation_errorRadius = null WHERE exactLocation_errorRadius = 0 ";
         tableName = "GatheringEvent";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //#7859 CdmPreference.value as CLOB
         stepName = "Make CdmPreference.value a CLOB";
@@ -188,7 +188,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 //                + " WHERE uuid IN ('049c6358-1094-4765-9fae-c9972a0e7780', '6e23ad45-3f2a-462b-ad87-d2389cd6e26c', "
 //                + " 'c6f9afcb-8287-4a2b-a6f6-4da3a073d5de', 'eeaea868-c4c1-497f-b9fe-52c9fc4aca53') ";
 //        String tableName = "DefinedTermBase";
-//        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+//        step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //Taxonomically Included in
         String stepName = "Taxonomically Included in => is taxonomically included in";
@@ -293,7 +293,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"' , inverseSymbol = '"+UTF8.EN_DASH+"' "
                 + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417' ";
         String tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //Update pro parte misapplied name symbols
         stepName = "Update pro parte misapplied name symbols";
@@ -301,7 +301,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(p.p.)' , inverseSymbol = '"+UTF8.EN_DASH+"(p.p.)' "
                 + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206' ";
         tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //Update partial misapplied name symbols
         stepName = "Update partial misapplied name symbols";
@@ -309,7 +309,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(part.)' , inverseSymbol = '"+UTF8.EN_DASH+"(part.)' "
                 + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
         tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //Update pro parte synonym symbols
         stepName = "Update pro parte synonym symbols";
@@ -317,7 +317,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 + " SET symbol='⊃p.p.' , inverseSymbol = 'p.p.' "
                 + " WHERE uuid = '8a896603-0fa3-44c6-9cd7-df2d8792e577' ";
         tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //Update partial synonym symbols
         stepName = "Update partial synonym symbols";
@@ -325,7 +325,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 + " SET symbol='⊃part.' , inverseSymbol = 'part.' "
                 + " WHERE uuid = '9d7a5e56-973c-474c-b6c3-a1cb00833a3c' ";
         tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
     }
 
@@ -339,7 +339,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 + " WHERE uuid IN ('049c6358-1094-4765-9fae-c9972a0e7780', '6e23ad45-3f2a-462b-ad87-d2389cd6e26c', "
                 + " 'c6f9afcb-8287-4a2b-a6f6-4da3a073d5de', 'eeaea868-c4c1-497f-b9fe-52c9fc4aca53') ";
         String tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //orthographic variant for
         stepName = "orthographic variant for => is orthographic variant for";

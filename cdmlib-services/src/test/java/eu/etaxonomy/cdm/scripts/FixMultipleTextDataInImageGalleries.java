@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.scripts;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
@@ -38,10 +38,10 @@ import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
  *
  * @author n.hoffmann
  * @since Jun 9, 2010
- * @version 1.0
  */
 public class FixMultipleTextDataInImageGalleries {
-	public static final Logger logger = LogManager.getLogger(FixMultipleTextDataInImageGalleries.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	public static ICdmDataSource dataSource(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
@@ -66,11 +66,6 @@ public class FixMultipleTextDataInImageGalleries {
 		return destination;
 	}
 
-	/**
-	 * @param args
-	 * @throws TermNotFoundException
-	 * @throws DataSourceNotFoundException
-	 */
 	public static void main(String[] args) throws DataSourceNotFoundException, TermNotFoundException {
 
 		CdmApplicationController applicationController = CdmApplicationController.NewInstance(dataSource());

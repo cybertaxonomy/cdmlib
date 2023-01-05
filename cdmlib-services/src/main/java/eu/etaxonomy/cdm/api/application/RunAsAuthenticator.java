@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.application;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.intercept.RunAsUserToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -27,11 +28,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *
  * @author a.kohlbecker
  * @since Jul 24, 2017
- *
  */
 public class RunAsAuthenticator {
 
-    public static final Logger logger = LogManager.getLogger(RunAsAuthenticator.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * must match the key in eu/etaxonomy/cdm/services_security.xml
@@ -41,9 +41,7 @@ public class RunAsAuthenticator {
     // not to be autowired, since the FirstdataInserter must be usable without security
     private AuthenticationProvider runAsAuthenticationProvider = null;
 
-
     private Authentication authentication;
-
 
     /**
     * needed to work around the broken @RunAs("ROLE_ADMIN") which seems to be
@@ -58,7 +56,6 @@ public class RunAsAuthenticator {
 
        SecurityContext securityContext = SecurityContextHolder.getContext();
        authentication = securityContext.getAuthentication();
-
 
        Collection<GrantedAuthority> rules = new ArrayList<>();
        rules.add(ga);
@@ -88,18 +85,10 @@ public class RunAsAuthenticator {
        logger.debug("last authentication restored: " + (authentication != null ? authentication : "NULL"));
    }
 
-   /**
-    * @return the runAsAuthenticationProvider
-    */
    public AuthenticationProvider getRunAsAuthenticationProvider() {
        return runAsAuthenticationProvider;
    }
-
-   /**
-    * @param runAsAuthenticationProvider the runAsAuthenticationProvider to set
-    */
    public void setRunAsAuthenticationProvider(AuthenticationProvider runAsAuthenticationProvider) {
        this.runAsAuthenticationProvider = runAsAuthenticationProvider;
    }
-
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -53,7 +54,7 @@ public class CategoricalDataDto extends DescriptionElementDto {
             }
             Integer count = stateData.getCount();
             UUID uuid = stateData.getUuid();
-            TermDto termDto = TermDto.fromTerm(stateData.getState());
+            TermDto termDto = TermDto.fromTerm(CdmBase.deproxy(stateData.getState(), DefinedTermBase.class));
             stateDataDto = new StateDataDto(termDto, count, uuid);
             stateDtos.add(stateDataDto);
         }

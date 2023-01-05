@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -24,7 +25,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class NameRelationshipTypeTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(NameRelationshipTypeTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Test
     public void testNomenclaturalStanding() {

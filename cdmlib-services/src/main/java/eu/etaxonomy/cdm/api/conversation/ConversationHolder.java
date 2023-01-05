@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.conversation;
 
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListene
  */
 public class ConversationHolder {
 
-    private static final Logger logger = LogManager.getLogger(ConversationHolder.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -130,10 +130,6 @@ public class ConversationHolder {
 
     /**
      * Create a new Conversation holder and optionally bind it immediately.
-     *
-     * @param dataSource
-     * @param sessionFactory
-     * @param transactionManager
      */
     public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory,
             PlatformTransactionManager transactionManager, boolean bindNow) {
@@ -148,7 +144,6 @@ public class ConversationHolder {
                 TransactionSynchronizationManager.unbindResource(getDataSource());
             }
         }
-
     }
 
     /**
@@ -227,16 +222,10 @@ public class ConversationHolder {
         return this.sessionHolder;
     }
 
-    /**
-     * @return
-     */
     private DataSource getDataSource() {
         return this.dataSource;
     }
 
-    /**
-     * @return true if this longSession is bound to the session factory.
-     */
     public boolean isBound(){
         //return sessionHolder != null && longSession != null && longSession.isConnected();
         SessionHolder currentSessionHolder = (SessionHolder)TransactionSynchronizationManager.getResource(getSessionFactory());

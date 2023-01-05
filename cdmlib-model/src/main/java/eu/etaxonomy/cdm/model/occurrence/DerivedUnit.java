@@ -87,7 +87,7 @@ public class DerivedUnit
         extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>> {
 
     private static final long serialVersionUID = -3525746216270843517L;
-	private static final Logger logger = LogManager.getLogger(DerivedUnit.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Collection")
 	@XmlIDREF
@@ -151,10 +151,11 @@ public class DerivedUnit
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private final Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
-    @XmlElementWrapper(name = "OccurrenceStatuses")
+    //#2506
+	@XmlElementWrapper(name = "OccurrenceStatuses")
     @XmlElement(name = "OccurrenceStatus")
     @OneToMany(fetch= FetchType.LAZY, mappedBy = "unit", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @IndexedEmbedded(depth=1)
     private Set<OccurrenceStatus> status = new HashSet<>();
@@ -422,14 +423,14 @@ public class DerivedUnit
      * @param  occStatus  the occurrence status of <i>this</i> unit which should be deleted
      * @see               #getStatus()
      */
-    public void removeStatus(OccurrenceStatus nomStatus) {
+    public void removeStatus(OccurrenceStatus status) {
         //TODO to be implemented?
         logger.warn("not yet fully implemented?");
-        this.status.remove(nomStatus);
+        this.status.remove(status);
     }
 
-    public void setStatus(Set<OccurrenceStatus> nomStatus) throws SetterAdapterException {
-        new EntityCollectionSetterAdapter<DerivedUnit, OccurrenceStatus>(DerivedUnit.class, OccurrenceStatus.class, "status", "addStatus", "removeStatus").setCollection(this, nomStatus);
+    public void setStatus(Set<OccurrenceStatus> status) throws SetterAdapterException {
+        new EntityCollectionSetterAdapter<DerivedUnit, OccurrenceStatus>(DerivedUnit.class, OccurrenceStatus.class, "status", "addStatus", "removeStatus").setCollection(this, status);
     }
 
 // ****************** METHODS ********************************************/
@@ -548,6 +549,11 @@ public class DerivedUnit
 			result.setStoredUnder(this.storedUnder);
 			//preservation
 			result.setPreservation(this.preservation);
+			//status
+			result.status = new HashSet<>();
+			for (OccurrenceStatus status: this.getStatus()) {
+			    result.addStatus(status.clone());
+			}
 			//no changes to: accessionNumber, catalogNumber, collectorsNumber
 			return result;
 		} catch (CloneNotSupportedException e) {

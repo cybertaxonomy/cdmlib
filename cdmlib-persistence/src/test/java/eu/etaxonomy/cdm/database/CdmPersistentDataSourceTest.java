@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 @Ignore
 public class CdmPersistentDataSourceTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CdmPersistentDataSourceTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static CdmPersistentDataSource dataSource;
 

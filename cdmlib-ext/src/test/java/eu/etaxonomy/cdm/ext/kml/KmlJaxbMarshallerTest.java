@@ -24,10 +24,9 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 public class KmlJaxbMarshallerTest {
 
-	private Kml kml;
+    private static final Logger logger = LogManager.getLogger();
 
-    private static final Logger logger = LogManager.getLogger(KmlJaxbMarshallerTest.class);
-
+    private Kml kml;
 
 	@Before
 	public void makeKML() {
@@ -39,7 +38,6 @@ public class KmlJaxbMarshallerTest {
 		builder.addSpecimenOrObservationBase(fu);
 		kml = builder.build();
 	}
-
 
 	@Test
 	public void marshallTest() throws JAXBException, IOException {
@@ -59,5 +57,4 @@ public class KmlJaxbMarshallerTest {
 		assertTrue(kml.contains("<kml:coordinates>-112.292238941097,36.09520916122063</kml:coordinates>"));
 		assertTrue(kml.contains("<kml:altitudeMode>absolute</kml:altitudeMode>"));
 	}
-
 }

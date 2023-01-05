@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -84,52 +85,52 @@ import io.swagger.annotations.Api;
  * @author c.mathew
  * @since 15-Apr-2012
  */
-
 @Controller
 @Api("name_catalogue")
 @RequestMapping(value = { "/name_catalogue" })
-public class NameCatalogueController extends AbstractController<TaxonName, INameService> implements ResourceLoaderAware {
+public class NameCatalogueController
+        extends AbstractController<TaxonName, INameService>
+        implements ResourceLoaderAware {
 
-
-    private static final Logger logger = LogManager.getLogger(NameCatalogueController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private ResourceLoader resourceLoader;
 
     /** Taxonomic status 'accepted' string */
-    public static final String ACCEPTED_NAME_STATUS = "accepted";
+    private static final String ACCEPTED_NAME_STATUS = "accepted";
 
     /** Taxonomic status 'synonym' string */
-    public static final String SYNONYM_STATUS = "synonym";
+    private static final String SYNONYM_STATUS = "synonym";
 
     /** Flag 'doubtful' strings */
-    public static final String DOUBTFUL_FLAG = "doubtful";
+    private static final String DOUBTFUL_FLAG = "doubtful";
 
     /** Base scientific name search type */
     public static final String NAME_SEARCH = "name";
 
     /** Complete scientific name search type */
-    public static final String TITLE_SEARCH = "title";
+    private static final String TITLE_SEARCH = "title";
 
     /** Default name search type */
-    public static final String DEFAULT_SEARCH_TYPE = NAME_SEARCH;
+    private static final String DEFAULT_SEARCH_TYPE = NAME_SEARCH;
 
     /** Default max number of hits for the exact name search  */
-    public static final String DEFAULT_MAX_NB_FOR_EXACT_SEARCH = "100";
+    private static final String DEFAULT_MAX_NB_FOR_EXACT_SEARCH = "100";
 
     /** Classifcation 'default' key */
-    public static final String CLASSIFICATION_DEFAULT = "default";
+    private static final String CLASSIFICATION_DEFAULT = "default";
 
     /** Classifcation 'all' key */
-    public static final String CLASSIFICATION_ALL = "all";
+    private static final String CLASSIFICATION_ALL = "all";
 
     /** Classification to include uuids key */
-    public static final String INCLUDE_CLUUIDS = "cluuids";
+    private static final String INCLUDE_CLUUIDS = "cluuids";
 
     /** Fuzzy Name Cache search */
-    public static final String FUZZY_NAME_CACHE = "name";
+    private static final String FUZZY_NAME_CACHE = "name";
 
     /** Fuzzy Atomised Name search */
-    public static final String FUZZY_ATOMISED = "atomised";
+    private static final String FUZZY_ATOMISED = "atomised";
 
     private static final String DWC_DATASET_ID = "http://rs.tdwg.org/dwc/terms/datasetID";
 
@@ -858,7 +859,6 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                             lsidString
                      );
 
-
                     Set<Synonym> syns = taxon.getSynonyms();
                     // add synonyms (if exists) to taxon information object
                     for (Synonym syn : syns) {
@@ -872,8 +872,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         String rank = (synnvn.getRank() == null)? "" : synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
                         String relLabel = syn.getType()
-                                .getInverseRepresentation(Language.DEFAULT())
-                                .getLabel();
+                                .getInverseRepresentation(Language.DEFAULT());
 
                         secTitle = "" ;
                         modified = "";
@@ -1021,8 +1020,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
                         String name = accnvn.getTitleCache();
                         String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
-                        String relLabel = synonym.getType().getRepresentation(Language.DEFAULT())
-                                .getLabel();
+                        String relLabel = synonym.getType().getLabel(Language.DEFAULT());
                         dt = accTaxon.getUpdated();
                         modified = fmt.print(dt);
 

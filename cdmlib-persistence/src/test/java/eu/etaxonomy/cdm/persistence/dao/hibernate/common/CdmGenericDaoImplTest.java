@@ -133,7 +133,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -141,7 +140,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -172,7 +170,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(CdmGenericDaoImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private CdmGenericDaoImpl cdmGenericDao;
@@ -258,7 +256,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				LSIDAuthority.class,
 				Marker.class,
 				MarkerType.class,
-				OrderedTermBase.class,
 				OrderedTermVocabulary.class,
 				OriginalSourceBase.class,
 				RelationshipTermBase.class,
@@ -336,7 +333,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				SpecimenOrObservationBase.class,
 				Reference.class,
 				Synonym.class,
-				SynonymType.class,
 				Taxon.class,
 				TaxonBase.class,
 				TaxonNode.class,

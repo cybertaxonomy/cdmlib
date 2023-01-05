@@ -63,7 +63,7 @@ public class DeterminationEvent extends EventBase {
 
 	private static final long serialVersionUID = 5065341354427569773L;
 
-	private static final Logger logger = LogManager.getLogger(DeterminationEvent.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "IdentifiedUnit")
 	@XmlIDREF

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.Extension;
@@ -21,18 +22,18 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 
 /**
- *  Object creation mapper which creates a extensions.
- *  
+ * Object creation mapper which creates a extensions.
+ *
  * @author a.mueller
  * @since 11.03.2010
- * @version 1.0
  */
-public class DbImportExtensionCreationMapper extends DbImportSupplementCreationMapperBase<Extension, IdentifiableEntity, DbImportStateBase<?, ?>, ExtensionType > {
-	private static final Logger logger = LogManager.getLogger(DbImportExtensionCreationMapper.class);
+public class DbImportExtensionCreationMapper
+        extends DbImportSupplementCreationMapperBase<Extension, IdentifiableEntity, DbImportStateBase<?, ?>, ExtensionType > {
+
+    private static final Logger logger = LogManager.getLogger();
 
 //************************** FACTORY METHODS ***************************************************************/
-	
-	
+
 	/**
 	 * Creates an extension mapper which creates an empty extension.
 	 *
@@ -43,7 +44,7 @@ public class DbImportExtensionCreationMapper extends DbImportSupplementCreationM
 	public static DbImportExtensionCreationMapper NewInstance(String dbExtendedObjectAttribute, String extendedObjectNamespace){
 		return new DbImportExtensionCreationMapper(dbExtendedObjectAttribute, extendedObjectNamespace, null,  null, null);
 	}
-	
+
 	/**
 	 * Creates an extension mapper which creates an extension and sets the extension value,
 	 * the extension type and adds an annotation holding the original source id
@@ -59,7 +60,7 @@ public class DbImportExtensionCreationMapper extends DbImportSupplementCreationM
 		return new DbImportExtensionCreationMapper(dbExtendedObjectAttribute, extendedObjectNamespace, dbExtensionValueAttribute, dbIdAttribute, extensionType);
 	}
 
-	
+
 //********************************* CONSTRUCTOR ****************************************/
 
 	protected DbImportExtensionCreationMapper(String dbSupplementedObjectAttribute, String supplementedObjectNamespace, String dbSupplementValueAttribute, String dbIdAttribute, ExtensionType supplementType) {
@@ -68,9 +69,6 @@ public class DbImportExtensionCreationMapper extends DbImportSupplementCreationM
 
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportSupplementCreationMapperBase#addSupplement(eu.etaxonomy.cdm.model.common.AnnotatableEntity, java.lang.String, eu.etaxonomy.cdm.model.common.AnnotatableEntity)
-	 */
 	@Override
 	protected boolean addSupplement(Extension extension, IdentifiableEntity identifiableEntity, String id) {
 		if (identifiableEntity != null){
@@ -83,25 +81,17 @@ public class DbImportExtensionCreationMapper extends DbImportSupplementCreationM
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportSupplementCreationMapperBase#setSupplementValue(java.lang.Object)
-	 */
 	@Override
 	protected void setSupplementValue(ResultSet rs, Extension extension) throws SQLException {
 		String value = rs.getString(dbSupplementValueAttribute);
 		extension.setValue(value);
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
-	 */
 	@Override
 	protected Extension createObject(ResultSet rs) throws SQLException {
 		Extension extension = Extension.NewInstance();
 		extension.setType(this.supplementType);
 		return extension;
 	}
-
-	
 }

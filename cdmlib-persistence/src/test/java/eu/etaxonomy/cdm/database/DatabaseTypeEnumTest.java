@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import static org.junit.Assert.assertEquals;
@@ -15,36 +14,24 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 /**
  * @author a.mueller
- *
  */
 public class DatabaseTypeEnumTest {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DatabaseTypeEnumTest.class);
+	private static final Logger logger = LogManager.getLogger();
+
 	private static DatabaseTypeEnum dbEnum;
 	private static DatabaseTypeEnum dbEnumSql2005;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		dbEnum = DatabaseTypeEnum.MySQL;
 		dbEnumSql2005 = DatabaseTypeEnum.SqlServer2005;
-	}
-
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
 	}
 
 	/**
@@ -140,5 +127,4 @@ public class DatabaseTypeEnumTest {
         String dbName = type.getDatabaseType().getDatabaseNameByConnectionString(connectionString);
         assertEquals("cdm_test", dbName);
     }
-
 }

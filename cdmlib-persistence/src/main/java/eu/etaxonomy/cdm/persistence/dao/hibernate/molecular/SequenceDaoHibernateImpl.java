@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.molecular;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -18,19 +19,14 @@ import eu.etaxonomy.cdm.persistence.dao.molecular.ISequenceDao;
 /**
  * @author pplitzner
  * @since 11.03.2014
- *
  */
 @Repository
 public class SequenceDaoHibernateImpl extends AnnotatableDaoBaseImpl<Sequence> implements ISequenceDao{
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(SequenceDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    /**
-     * @param type
-     */
     public SequenceDaoHibernateImpl() {
         super(Sequence.class);
     }
-
 }

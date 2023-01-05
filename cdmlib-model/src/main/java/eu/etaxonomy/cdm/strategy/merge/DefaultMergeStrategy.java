@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.merge;
 
 import java.lang.annotation.Annotation;
@@ -25,7 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -38,9 +38,10 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @author a.mueller
  * @since 31.07.2009
  */
-public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy  {
+public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy {
+
 	private static final long serialVersionUID = -8513956338156791995L;
-	private static final Logger logger = LogManager.getLogger(DefaultMergeStrategy.class);
+    private static final Logger logger = LogManager.getLogger();
 	final static UUID uuid = UUID.fromString("d85cd6c3-0147-452c-8fed-bbfb82f392f6");
 
 	public static DefaultMergeStrategy NewInstance(Class<? extends CdmBase> mergeClazz){

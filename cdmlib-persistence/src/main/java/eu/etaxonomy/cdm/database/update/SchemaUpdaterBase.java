@@ -12,7 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -31,7 +32,7 @@ public abstract class SchemaUpdaterBase
             implements ISchemaUpdater {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdaterBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	public static final boolean INCLUDE_AUDIT = true;
 	protected static final boolean INCLUDE_CDM_BASE = true;

@@ -34,7 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
@@ -113,7 +114,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 
 	private static final long serialVersionUID = 6754598791831848704L;
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(Feature.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static Map<UUID, Feature> termMap = null;
 
@@ -134,9 +135,10 @@ public class Feature extends AvailableForTermBase<Feature> {
 	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<>();
 
 	/* for M:M see #4843 */
-	@ManyToMany(fetch = FetchType.LAZY)
+	@SuppressWarnings("rawtypes")
+    @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
-	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<>();
+	private final Set<TermVocabulary<? extends DefinedTermBase>> supportedCategoricalEnumerations = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
@@ -595,11 +597,12 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * with <i>this</i> feature.
 	 *
 	 */
-	@XmlElementWrapper(name = "SupportedCategoricalEnumerations")
+	@SuppressWarnings("rawtypes")
+    @XmlElementWrapper(name = "SupportedCategoricalEnumerations")
 	@XmlElement(name = "SupportedCategoricalEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermVocabulary<State>> getSupportedCategoricalEnumerations() {
+	public Set<TermVocabulary<? extends DefinedTermBase>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
@@ -612,7 +615,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see    	   								#getSupportedCategoricalEnumerations()
 	 */
 	public void addSupportedCategoricalEnumeration(
-			TermVocabulary<State> supportedCategoricalEnumeration) {
+			TermVocabulary<? extends DefinedTermBase> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
 	/**
@@ -624,7 +627,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see     								#addSupportedCategoricalEnumeration(TermVocabulary)
 	 */
 	public void removeSupportedCategoricalEnumeration(
-			TermVocabulary<State> supportedCategoricalEnumeration) {
+			TermVocabulary<? extends DefinedTermBase> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 

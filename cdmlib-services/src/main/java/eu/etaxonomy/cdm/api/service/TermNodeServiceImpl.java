@@ -63,7 +63,7 @@ public class TermNodeServiceImpl
         implements ITermNodeService {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermNodeServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
     @Autowired
@@ -314,15 +314,10 @@ public class TermNodeServiceImpl
                     Feature feature = HibernateProxyHelper.deproxy(term, Feature.class);
                     change.getKey().setFeature(feature);
                 }
-
             }
             if (!change.getKey().getState().getUuid().equals(change.getValue().getState().getUuid())){
                 DefinedTermBase<?> term = termService.load(change.getValue().getState().getUuid());
-                if (term instanceof State){
-                    State state = HibernateProxyHelper.deproxy(term, State.class);
-                    change.getKey().setState(state);
-                }
-
+                change.getKey().setState(term);
             }
             if (inApplicable){
                 node.getInapplicableIf().add(change.getKey());
@@ -339,10 +334,7 @@ public class TermNodeServiceImpl
                 feature = HibernateProxyHelper.deproxy(term, Character.class);
             }
             DefinedTermBase<?> termState = termService.load(stateDto.getState().getUuid());
-            if (termState instanceof State){
-                state = HibernateProxyHelper.deproxy(termState, State.class);
-            }
-            FeatureState newState = FeatureState.NewInstance(feature, state);
+            FeatureState newState = FeatureState.NewInstance(feature, termState);
             if (inApplicable){
                 node.getInapplicableIf().add(newState);
             }else{

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public abstract class SchemaAdapterBase<T extends CdmBase> {
 
-	public static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * @return the identifier e.g. "info:srw/schema/1/dc-v1.1" for DublinCore
@@ -36,10 +36,6 @@ public abstract class SchemaAdapterBase<T extends CdmBase> {
 	 */
 	public abstract String getShortName();
 
-	/**
-	 * @param inputStream
-	 * @return
-	 */
 	public abstract List<T> getCmdEntities(InputStream inputStream) throws IOException;
 
 }

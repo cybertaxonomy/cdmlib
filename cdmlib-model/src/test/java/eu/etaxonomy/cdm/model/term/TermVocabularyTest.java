@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import static org.junit.Assert.assertEquals;
@@ -18,8 +17,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-import org.junit.After;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,9 +28,10 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.compare.term.TermIdInVocabularyComparator;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-
 public class TermVocabularyTest extends EntityTestBase {
-	private static Logger logger = LogManager.getLogger(TermVocabularyTest.class);
+
+	@SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	private DefinedTermBase<?> dtb1;
 	private DefinedTermBase<?> dtb2;
@@ -51,36 +51,18 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		dtb1 = new DerivedDefinedTermBase(TermType.Unknown, "otb1", "high", "h");
+		dtb1 = DefinedTerm.NewInstance(TermType.Unknown, "otb1", "high", "h");
 		dtb1.setIdInVocabulary("x");
-		dtb2 = new DerivedDefinedTermBase(TermType.Unknown, "term", "middel", "m");
-		dtb3 = new DerivedDefinedTermBase(TermType.Unknown, "otb3", "low", "l");
-		dtbFree = new DerivedDefinedTermBase();
-		voc1 = new TermVocabulary<>();
+		dtb2 = DefinedTerm.NewInstance(TermType.Unknown, "term", "middel", "m");
+		dtb3 = DefinedTerm.NewInstance(TermType.Unknown, "otb3", "low", "l");
+		dtbFree = DefinedTerm.NewInstance(TermType.Unknown);
+		voc1 = TermVocabulary.NewInstance(TermType.Unknown);
 		voc1.addTerm(dtb1);
 		voc1.addTerm(dtb2);
 		voc1.addTerm(dtb3);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	private class DerivedDefinedTermBase extends OrderedTermBase<DerivedDefinedTermBase>{
-        private static final long serialVersionUID = 280869784120656292L;
-        private DerivedDefinedTermBase(){
-			super(TermType.Unknown);
-		}
-		private DerivedDefinedTermBase(TermType type, String term, String label, String labelAbbrev){
-			super(type, term, label, labelAbbrev);
-		}
-		@Override
-		protected void setDefaultTerms(TermVocabulary<DerivedDefinedTermBase> termVocabulary) {}
-		@Override
-		public void resetTerms() {}
-	}
-
-/****************** TESTS ****************************************/
+//****************** TESTS ****************************************/
 
 	@Test
 	public final void testSetUp() {
@@ -117,9 +99,8 @@ public class TermVocabularyTest extends EntityTestBase {
         for (DefinedTermBase<?> term:terms){
             result.add(term);
         }
-       assertEquals(result.first(), dtb3);
-       assertEquals(result.last(), dtb1);
-
+        assertEquals(result.first(), dtb3);
+        assertEquals(result.last(), dtb1);
 	}
 
 	@Test
@@ -127,11 +108,6 @@ public class TermVocabularyTest extends EntityTestBase {
 		assertEquals(3, voc1.getTerms().size());
 		//assertNotSame(voc1.terms, voc1.getTerms());
 		assertTrue( voc1.terms.getClass().isAssignableFrom(voc1.getTerms().getClass()));
-	}
-
-	@Test
-	public final void testSetTerms() {
-		logger.warn("Not yet implemented"); // TODO
 	}
 
 	@Test
@@ -194,5 +170,4 @@ public class TermVocabularyTest extends EntityTestBase {
 	public final void testGetTermClass() {
 //		assertEquals(dtb1.getClass(), voc1.getTermClass());
 	}
-
 }

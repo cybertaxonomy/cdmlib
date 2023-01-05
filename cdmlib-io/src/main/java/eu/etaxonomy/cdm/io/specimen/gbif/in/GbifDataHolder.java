@@ -12,21 +12,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.ext.occurrence.gbif.GbifResponse;
 import eu.etaxonomy.cdm.io.specimen.SpecimenDataHolder;
-import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206DataHolder;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author k.luther
  * @since 15.07.2016
- *
  */
 public class GbifDataHolder extends SpecimenDataHolder{
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(Abcd206DataHolder.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //per import
     protected List<SpecimenTypeDesignationStatus> statusList;
@@ -73,7 +72,6 @@ public class GbifDataHolder extends SpecimenDataHolder{
     protected String gatheringCoordinateErrorMethod;
     */
 
-
     protected String key;
     protected String datasetKey;
     protected String publishingOrgKey;
@@ -113,37 +111,35 @@ public class GbifDataHolder extends SpecimenDataHolder{
     protected String day;
     protected String eventDate;
     protected String[] issues;
-   protected String lastInterpreted;
-   protected String identifiers;
-   protected String[] facts;
-   protected String[] relations;
-   protected String geodeticDatum;
-   protected String className;
-   protected String countryCode;
-   protected String country;
-   protected String nomenclaturalStatus;
-   protected String rightsHolder;
-   protected String identifier;
-   protected String recordNumber;
-   protected String nomenclaturalCode;
-   protected String county;
-   protected String locality;
-   protected String datasetName;
-   protected String gbifID;
-   protected String collectionCode;
-   protected String occurrenceID;
-   protected String type;
-   protected String taxonID;
-   protected String license;
-   protected String catalogNumber;
-   protected String recordedBy;
+    protected String lastInterpreted;
+    protected String identifiers;
+    protected String[] facts;
+    protected String[] relations;
+    protected String geodeticDatum;
+    protected String className;
+    protected String countryCode;
+    protected String country;
+    protected String nomenclaturalStatus;
+    protected String rightsHolder;
+    protected String identifier;
+    protected String recordNumber;
+    protected String nomenclaturalCode;
+    protected String county;
+    protected String locality;
+    protected String datasetName;
+    protected String gbifID;
+    protected String collectionCode;
+    protected String occurrenceID;
+    protected String type;
+    protected String taxonID;
+    protected String license;
+    protected String catalogNumber;
+    protected String recordedBy;
     protected String institutionCode;
     protected String ownerInstitutionCode;
     protected String bibliographicCitation;
     protected String identifiedBy;
     protected String collectionID;
-
-
 
     @Override
     public void reset() {
@@ -187,59 +183,43 @@ public class GbifDataHolder extends SpecimenDataHolder{
         day = null;
         eventDate = null;
         issues = null;
-       lastInterpreted = null;
-       identifiers = null;
-       facts =  null;
-       relations = null;
-       geodeticDatum = null;
-       className = null;
-       countryCode = null;
-       country = null;
-       nomenclaturalStatus = null;
-       rightsHolder = null;
-       identifier = null;
-       recordNumber = null;
-       nomenclaturalCode = null;
-       county = null;
-       locality = null;
-       datasetName = null;
-       gbifID = null;
-       collectionCode = null;
-       occurrenceID = null;
-       type = null;
-       taxonID = null;
-       license = null;
-       catalogNumber = null;
-       recordedBy = null;
-       institutionCode = null;
-       ownerInstitutionCode = null;
-       bibliographicCitation = null;
-       identifiedBy = null;
-       collectionID = null;
+        lastInterpreted = null;
+        identifiers = null;
+        facts =  null;
+        relations = null;
+        geodeticDatum = null;
+        className = null;
+        countryCode = null;
+        country = null;
+        nomenclaturalStatus = null;
+        rightsHolder = null;
+        identifier = null;
+        recordNumber = null;
+        nomenclaturalCode = null;
+        county = null;
+        locality = null;
+        datasetName = null;
+        gbifID = null;
+        collectionCode = null;
+        occurrenceID = null;
+        type = null;
+        taxonID = null;
+        license = null;
+        catalogNumber = null;
+        recordedBy = null;
+        institutionCode = null;
+        ownerInstitutionCode = null;
+        bibliographicCitation = null;
+        identifiedBy = null;
+        collectionID = null;
     }
 
-
-
-    /**
-     * @return the nomenclatureCode
-     */
     @Override
     public String getNomenclatureCode() {
         return nomenclaturalCode;
     }
-
-
-
-    /**
-     * @param nomenclatureCode the nomenclatureCode to set
-     */
     @Override
     public void setNomenclatureCode(String nomenclatureCode) {
         this.nomenclaturalCode = nomenclatureCode;
     }
-
-
-
-
-
 }

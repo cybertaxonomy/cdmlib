@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
 public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> implements Cloneable{
 
     private static final long serialVersionUID = -7586670941559035171L;
-	private static final Logger logger = LogManager.getLogger(FieldUnit.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "FieldNumber")
 	@Field

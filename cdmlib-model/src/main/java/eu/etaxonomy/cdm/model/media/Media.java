@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -90,7 +91,7 @@ public class Media
 
     private static final long serialVersionUID = -1927421567263473658L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(Media.class);
+    private static final Logger logger = LogManager.getLogger();
 
     // TODO once hibernate annotations support custom collection type
     // private MultilanguageText title = new MultilanguageText();

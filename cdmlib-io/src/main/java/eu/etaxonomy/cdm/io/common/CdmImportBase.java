@@ -95,7 +95,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             implements ICdmImport<CONFIG, STATE>{
 
     private static final long serialVersionUID = 8730012744209195616L;
-    private static final Logger logger = LogManager.getLogger(CdmImportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;
@@ -376,10 +376,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putReferenceSystem(refSystem);
 		}
 		return refSystem;
-
 	}
-
-
 
 	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc, Rank lowerRank, RankClass rankClass){
 		if (uuid == null){
@@ -543,7 +540,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 
 
-	protected NamedAreaLevel getNamedAreaLevel(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
+	protected NamedAreaLevel getNamedAreaLevel(STATE state, UUID uuid, String label, String text, String labelAbbrev, OrderedTermVocabulary<NamedAreaLevel> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -557,7 +554,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				namedAreaLevel = NamedAreaLevel.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = true;
-					voc = getVocabulary(state, TermType.NamedAreaLevel, uuidUserDefinedNamedAreaLevelVocabulary, "User defined vocabulary for named area levels", "User Defined Named Area Levels", null, null, isOrdered, namedAreaLevel);
+					voc = (OrderedTermVocabulary)getVocabulary(state, TermType.NamedAreaLevel, uuidUserDefinedNamedAreaLevelVocabulary, "User defined vocabulary for named area levels", "User Defined Named Area Levels", null, null, isOrdered, namedAreaLevel);
 				}
 				//FIXME only for debugging
 				Set<NamedAreaLevel> terms = voc.getTerms();
@@ -593,13 +590,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * Returns a {@link State} for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the state exists in the database, if not creating it anew (with vocabulary etc.).
 	 * If label, text and labelAbbrev are all <code>null</code> no state is created.
-	 * @param importState
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @param voc
-	 * @return
 	 */
 	protected State getStateTerm(STATE importState, UUID uuid, String label, String text, String labelAbbrev, OrderedTermVocabulary<State> voc) {
 		if (uuid == null){
@@ -1035,11 +1025,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param childTaxon
 	 */
 	protected void fillMissingEpithets(INonViralName parentName, INonViralName childName) {
-		if (isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
+		if (isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLowerThan(RankClass.Genus) ){
 			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
 		}
 
-		if (isBlank(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
+		if (isBlank(childName.getSpecificEpithet()) && childName.getRank().isLowerThan(RankClass.Species) ){
 			childName.setSpecificEpithet(parentName.getSpecificEpithet());
 		}
 		if (childName.isAutonym() && childName.getCombinationAuthorship() == null && childName.getBasionymAuthorship() == null ){

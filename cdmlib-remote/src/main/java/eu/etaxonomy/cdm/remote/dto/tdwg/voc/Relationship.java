@@ -16,6 +16,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
 
+/**
+ * Relationship class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Relationship", propOrder = {
 	    "fromTaxon",
@@ -55,7 +61,7 @@ public class Relationship extends BaseThing {
 	}
 
 	public void setRelationshipCategoryRelation(TaxonRelationshipTerm relationshipCategory) {
-		this.relationshipCategory = new RelationshipCategory(relationshipCategory,true);
+		this.relationshipCategory = new RelationshipCategory(relationshipCategory, true);
 	}
 
 	public TaxonConcept getToTaxon() {

@@ -37,6 +37,7 @@ public class CategoricalDataFormatterTest extends TermTestBase {
     @Before
     public void setUp() throws Exception {
         state1 = State.NewInstance("state1 text", "state1", "st.1");
+        state1.getRepresentations().iterator().next().setPlural("state1s");
         state2 = State.NewInstance("state2 text", "state2", "st.2");
         state3 = State.NewInstance("state3 text", "state3", "st.3");
         stateData1 = StateData.NewInstance(state1);
@@ -58,6 +59,12 @@ public class CategoricalDataFormatterTest extends TermTestBase {
         catData.addStateData(stateData3);
         text = formatter.format(catData, formatKey);
         Assert.assertEquals("state1, state2, state3", text);
+
+        //plural
+        stateData1.setUsePlural(true);
+        text = formatter.format(catData, formatKey);
+        Assert.assertEquals("state1s, state2, state3", text);
+
         //TODO test with modifiers and maybe with other basedata like timeperiod etc.
     }
 

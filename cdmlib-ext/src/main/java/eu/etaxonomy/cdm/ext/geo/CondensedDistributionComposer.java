@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 
 /**
@@ -64,7 +64,7 @@ public class CondensedDistributionComposer {
         IdInVoc,
         AbbrevLabel;
 
-        public String getSymbol(OrderedTermBase<?> term, List<Language> langs) {
+        public String getSymbol(DefinedTermBase<?> term, List<Language> langs) {
             if (this == Map){
                 //TODO not valid for areas yet
                 return statusSymbols.get(term.getUuid());

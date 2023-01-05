@@ -74,7 +74,8 @@ import eu.etaxonomy.cdm.model.term.TermType;
  */
 public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_31_33.class);
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final String startSchemaVersion = "3.0.1.0.201104190000";
 	private static final String endSchemaVersion = "3.3.0.0.201309240000";
 
@@ -196,7 +197,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String query = " UPDATE @@Representation@@ "
 				+ " SET abbreviatedlabel = 'ia' "
 				+ " WHERE abbreviatedlabel = 'id' AND label = 'introduced: adventitious (casual)' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing("Representation");
 
 		// termType for DefinedTerms and TermVocabulary, no type must be null
@@ -265,7 +266,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@Representation@@ "
 				+ " SET label = 'Sicily', text = 'Sicily' "
 				+ " WHERE (abbreviatedlabel = 'SIC-SI'  OR abbreviatedlabel = 'SIC')  AND label = 'Sicilia' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing("Representation");
 
 		// remove homotypical group form type designation base
@@ -307,7 +308,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//remove figure #2539
 		stepName = "Remove Figure class";
 		query = "UPDATE @@Media@@ SET DTYPE = 'Media' WHERE DTYPE = 'Figure'";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "Media", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "Media");
 
 		// add doi to reference
 		stepName = "Add doi to Reference";
@@ -316,7 +317,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		length = 255;
 		ColumnAdder.NewStringInstance(stepList, stepName, tableName, columnName,
 				length, INCLUDE_AUDIT);
-
 
 		// add start number to PolytomousKey
 		stepName = "Add start number column to PolytomousKey";
@@ -344,7 +344,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@SpecimenOrObservationBase@@ "
 				+ " SET DTYPE = 'DerivedUnit' "
 				+ " WHERE DTYPE = 'Specimen' OR DTYPE = 'Fossil' OR DTYPE = 'LivingBeing' OR DTYPE = 'Observation' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing("SpecimenOrObservationBase");
 
 		stepName = "Update Specimen -> DerivedUnit";
@@ -362,7 +362,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@SpecimenOrObservationBase@@ "
 				+ " SET DTYPE = 'FieldUnit' "
 				+ " WHERE DTYPE = 'FieldObservation' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing("SpecimenOrObservationBase");
 
 		stepName = "Update Specimen -> DerivedUnit";
@@ -450,7 +450,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// update RightsTerm to RightsType #1306
 		stepName = "Update RightsTerm -> RightsType";
 		String updateSql = "UPDATE @@DefinedTermBase@@ SET DTYPE = 'RightsType'  WHERE DTYPE = 'RightsTerm'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, updateSql, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, updateSql)
 				.setDefaultAuditing("DefinedTermBase");
 
 		// update Rights table to RightsInfo
@@ -745,7 +745,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				 + " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
 				 + " WHERE m.flag = @FALSE@ AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase");
 
 		// remove publish marker MN table
 		stepName = "Remove existing TaxonBase publish markers MN";
@@ -756,7 +756,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				 + " FROM @@Marker@@ m INNER JOIN @@DefinedTermBase@@ mType ON m.markertype_id = mType.id "
 				 + " WHERE mType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc'  "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase_Marker", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonBase_Marker");
 
 		// update publish with existing publish false markers
 		stepName = "Remove existing TaxonBase publish markers";
@@ -768,7 +768,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " AND markertype_id IN ( "
 				+ "SELECT id FROM @@DefinedTermBase@@ WHERE uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99); // AUD does not have markedObj_type
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query); // AUD does not have markedObj_type
 
 		// SpecimenOrObservationBase
 
@@ -789,7 +789,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
 				+ " WHERE m.flag = @FALSE@ AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "SpecimenOrObservationBase", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "SpecimenOrObservationBase");
 
 		// remove publish marker MN table
 		stepName = "Remove existing SpecimenOrObservationBase publish markers MN";
@@ -800,7 +800,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " FROM @@Marker@@ m INNER JOIN @@DefinedTermBase@@ mType ON m.markertype_id = mType.id "
 				+ " WHERE mType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc'  "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "SpecimenOrObservationBase_Marker", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "SpecimenOrObservationBase_Marker");
 
 		// update publish with existing publish false markers
 		stepName = "Remove existing SpecimenOrObservationBase publish markers";
@@ -821,7 +821,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " AND markertype_id IN ( "
 				+ "SELECT id FROM @@DefinedTermBase@@ WHERE uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
 		// remove all audited markers if no current markers exist
 		// this may remove more audited markers then expected but we do accept
@@ -833,7 +833,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " AND markertype_id IN ( "
 				+ "SELECT id FROM @@DefinedTermBase@@ WHERE uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
 	}
 
@@ -962,69 +962,69 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String query = String.format(baseQuery, ReferenceType.Article.getKey(),
 				String.valueOf(index++));
 		SimpleSchemaUpdaterStep
-				.NewNonAuditedInstance(stepList, stepName, query, 99).setDefaultAuditing(tableName);
+				.NewNonAuditedInstance(stepList, stepName, query).setDefaultAuditing(tableName);
 
 		// 1-Book
 		stepName = "Update reference refType for Book";
 		query = String.format(baseQuery, ReferenceType.Book.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 2-Book Section
 		stepName = "Update reference refType for Book Section";
 		query = String.format(baseQuery, ReferenceType.BookSection.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 3-CD / DVD
 		stepName = "Update reference refType for CD";
 		query = String.format(baseQuery, ReferenceType.CdDvd.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 4-Database
 		stepName = "Update reference refType for Database";
 		query = String.format(baseQuery, ReferenceType.Database.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 5-Generic
 		stepName = "Update reference refType for Generic";
 		query = String.format(baseQuery, ReferenceType.Generic.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 6-InProceedings
 		stepName = "Update reference refType for InProceedings";
 		query = String.format(baseQuery, ReferenceType.InProceedings.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 7-Journal
 		stepName = "Update reference refType for Journal";
 		query = String.format(baseQuery, ReferenceType.Journal.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 8-Map
 		stepName = "Update reference refType for Map";
 		query = String.format(baseQuery, ReferenceType.Map.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 9-Patent
 		stepName = "Update reference refType for Patent";
 		query = String.format(baseQuery, ReferenceType.Patent.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 10-Personal Communication
@@ -1032,47 +1032,43 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = String.format(baseQuery,
 				ReferenceType.PersonalCommunication.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 11-PrintSeries
 		stepName = "Update reference refType for PrintSeries";
 		query = String.format(baseQuery, ReferenceType.PrintSeries.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// 12-Proceedings
 		stepName = "Update reference refType for Proceedings";
 		query = String.format(baseQuery, ReferenceType.Proceedings.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
-		;
 
 		// 13-Report
 		stepName = "Update reference refType for Report";
 		query = String.format(baseQuery, ReferenceType.Report.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
-		;
 
 		// 14-Thesis
 		stepName = "Update reference refType for Thesis";
 		query = String.format(baseQuery, ReferenceType.Thesis.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
-		;
 
 		// 15-WebPage
 		stepName = "Update reference refType for WebPage";
 		query = String.format(baseQuery, ReferenceType.WebPage.getKey(),
 				String.valueOf(index++));
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
-		;
 	}
 
 	private void updateRecordBasis(List<ISchemaUpdaterStep> stepList) {
@@ -1084,56 +1080,56 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ SpecimenOrObservationType.FieldUnit.getKey() + "' "
 				+ " WHERE DTYPE = 'FieldUnit' OR DTYPE = 'FieldObservation'";
 		SimpleSchemaUpdaterStep
-				.NewNonAuditedInstance(stepList, stepName, query, 99)
+				.NewNonAuditedInstance(stepList, stepName, query)
 					.setDefaultAuditing(tableName);
 
 		// DerivedUnit
 		query = " UPDATE " + tableName + " SET recordBasis = '"
 				+ SpecimenOrObservationType.DerivedUnit.getKey() + "' "
 				+ " WHERE DTYPE = '" + DerivedUnit.class.getSimpleName() + "'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Living Being
 		query = " UPDATE " + tableName + " SET recordBasis = '"
 				+ SpecimenOrObservationType.LivingSpecimen.getKey() + "' "
 				+ " WHERE DTYPE = 'LivingBeing'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Observation
 		query = " UPDATE " + tableName + " SET recordBasis = '"
 				+ SpecimenOrObservationType.Observation.getKey() + "' "
 				+ " WHERE DTYPE = 'Observation'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Preserved Specimen
 		query = " UPDATE " + tableName + " SET recordBasis = '"
 				+ SpecimenOrObservationType.PreservedSpecimen.getKey() + "' "
 				+ " WHERE DTYPE = 'Specimen'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Fossil
 		query = " UPDATE " + tableName + " SET recordBasis = '"
 				+ SpecimenOrObservationType.Fossil.getKey() + "' "
 				+ " WHERE DTYPE = 'Fossil'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// DnaSample
 		query = " UPDATE " + tableName + " SET recordBasis = '"
 				+ SpecimenOrObservationType.DnaSample.getKey() + "' "
 				+ " WHERE DTYPE = 'DnaSample'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Unknown as default (if not yet handled before)
 		query = " UPDATE " + tableName + " SET recordBasis = '"
 				+ SpecimenOrObservationType.Unknown.getKey() + "' "
 				+ " WHERE recordBasis IS NULL ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 	}
 
@@ -1252,8 +1248,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " FROM @@DescriptionBase_SpecimenOrObservationBase@@ MN "
 				+ " WHERE MN.descriptions_id = @@DescriptionBase@@.id " + " LIMIT 1 " + ")";
 		SimpleSchemaUpdaterStep
-				.NewNonAuditedInstance(stepList, stepName, sql, 99);
-
+				.NewNonAuditedInstance(stepList, stepName, sql);
 	}
 
 	private void updateAbbrevTitle(List<ISchemaUpdaterStep> stepList) {
@@ -1264,7 +1259,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " SET abbrevTitle = left(title, 255), abbrevTitleCache = titleCache, protectedAbbrevTitleCache = protectedTitleCache";
 		// + " WHERE r.title IS NOT NULL AND r.protectedTitleCache = 1 ";
 		SimpleSchemaUpdaterStep
-				.NewNonAuditedInstance(stepList, stepName, query, 99)
+				.NewNonAuditedInstance(stepList, stepName, query)
 					.setDefaultAuditing(tableName);
 
 		// stepName =
@@ -1291,7 +1286,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " WHERE title IS NOT NULL AND protectedTitleCache = @FALSE@ AND "
 				+ " ( LENGTH(title) <= 15 AND title like '%.%.%' OR LENGTH(title) < 30 AND title like '%.%.%.%' OR LENGTH(title) < 45 AND title like '%.%.%.%.%' OR LENGTH(title) < 60 AND title like '%.%.%.%.%.%' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		stepName = "Update reference abbrevTitle, set null where abbrev title very unlikely";
@@ -1300,7 +1295,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " WHERE title IS NOT NULL AND protectedTitleCache = @FALSE@ AND "
 				+ " ( title NOT like '%.%' OR LENGTH(title) > 30 AND title NOT like '%.%.%' "
 				+ ")";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 	}
@@ -1427,7 +1422,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " WHERE EXISTS (SELECT * FROM @@TermVocabulary@@ voc WHERE voc.id = @@DefinedTermBase@@.vocabulary_id " +
 						" AND voc.uuid = '45ac7043-7f5e-4f37-92f2-3874aaaef2de') ";
 		SimpleSchemaUpdaterStep
-				.NewNonAuditedInstance(stepList, stepName, query, 99).setDefaultAuditing(
+				.NewNonAuditedInstance(stepList, stepName, query).setDefaultAuditing(
 						tableName); // not fully correct as we should join with
 									// TermVoc_AUD but good enough for this usecase
 
@@ -1435,28 +1430,28 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update idInVocabulary for undefined languages";
 		String uuid = "7fd1e6d0-2e76-4dfa-bad9-2673dd042c28";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Waterbody & Country => all
 		stepName = "Update idInVocabulary for WaterbodyOrCountries";
 		uuid = "006b1870-7347-4624-990f-e5ed78484a1a";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// TdwgAreas => all
 		stepName = "Update idInVocabulary for TDWG areas";
 		uuid = NamedArea.uuidTdwgAreaVocabulary.toString();
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Rank => some
 		stepName = "Update idInVocabulary for ranks";
 		uuid = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// avoid duplicate for section (bot.)
@@ -1465,7 +1460,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				" SET idInVocabulary = 'sect.(bot.)' " +
 				" WHERE uuid = '3edff68f-8527-49b5-bf91-7e4398bb975c'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// avoid duplicate for subsection (bot.)
 		stepName = "Update idInVoc for subsection (bot.)";
@@ -1473,45 +1468,45 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				" SET idInVocabulary = 'subsect.(bot.)' " +
 				" WHERE uuid = 'd20f5b61-d463-4448-8f8a-c1ff1f262f59'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// avoid duplicate for section (zool.)
 		stepName = "Update idInVoc for section (zool.)";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = 'sect.(zool.)' WHERE uuid = '691d371e-10d7-43f0-93db-3d7fa1a62c54'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// avoid duplicate for subsection (zool.)
 		stepName = "Update idInVoc for subsection (zool.)";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = 'subsect.(zool.)' WHERE uuid = '0ed32d28-adc4-4303-a9ca-68e2acd67e33'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// SpecimenTypeDesignationStatus => all
 		stepName = "Update idInVocabulary for SpecimenTypeDesignationStatus";
 		uuid = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// avoid duplicate for PT
 		stepName = "Update idInVoc for Phototype (PhT) to avoid duplicate for PT";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = 'PhT' WHERE uuid = 'b7807acc-f559-474e-ad4a-e7a41e085e34'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// NameTypeDesignationStatus => all
 		stepName = "Update idInVocabulary for NameTypeDesignationStatus";
 		uuid = "ab60e738-4d09-4c24-a1b3-9466b01f9f55";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// NomenclaturalStatusType => all, abbrevs.
 		stepName = "Update idInVocabulary for NomenclaturalStatusType";
 		uuid = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// TaxonRelationshipType, all but 2 (Invalid Designation for, Misapplied
@@ -1519,61 +1514,61 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update idInVocabulary for TaxonRelationshipType";
 		uuid = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// avoid duplicate for Misapplied Name (remove '-')
 		stepName = "Update idInVoc for Misapplied Name Relationship";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = NULL WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// avoid duplicate for Invalid designation (remove '-')
 		stepName = "Update idInVoc for Invalid Designation";
 		sql = " UPDATE @@DefinedTermBase@@ SET idInVocabulary = NULL WHERE uuid = '605b1d01-f2b1-4544-b2e0-6f08def3d6ed'";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// PresenceTerm => all
 		stepName = "Update idInVocabulary for PresenceTerm";
 		uuid = "adbbbe15-c4d3-47b7-80a8-c7d104e53a05";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// AbsenceTerm => all
 		stepName = "Update idInVocabulary for AbsenceTerm";
 		uuid = "5cd438c8-a8a1-4958-842e-169e83e2ceee";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Sex => all
 		stepName = "Update idInVocabulary for Sex";
 		uuid = "9718b7dd-8bc0-4cad-be57-3c54d4d432fe";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// ExtensionType => all
 		stepName = "Update idInVocabulary for ExtensionType";
 		uuid = "117cc307-5bd4-4b10-9b2f-2e14051b3b20";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// ReferenceSystem => all
 		stepName = "Update idInVocabulary for ReferenceSystem";
 		uuid = "ec6376e5-0c9c-4f5c-848b-b288e6c17a86";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// DeterminationModifier => all
 		stepName = "Update idInVocabulary for DeterminationModifier";
 		uuid = "fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77";
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// InstitutionType, MeasurementUnit, Scope, Stage, State, TextFormat,
@@ -1591,54 +1586,54 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 						TermType.MeasurementUnit.getKey(),
 						TermType.Scope.getKey(), TermType.Stage.getKey(),
 						TermType.State.getKey(), TermType.TextFormat.getKey(),
-						TermType.Modifier.getKey(), TermType.Method.getKey()), 99)
+						TermType.Modifier.getKey(), TermType.Method.getKey()))
 				.setDefaultAuditing(tableName);
 
 		stepName = "Update idInVocabulary for dummy state";
 		query = " UPDATE @@DefinedTermBase@@ "
 				+ " SET idinvocabulary = 'std' "
 				+ " WHERE uuid = '881b9c80-626d-47a6-b308-a63ee5f4178f' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
 		stepName = "Update idInVocabulary for dummy stage";
 		query = " UPDATE @@DefinedTermBase@@ "
 				+ " SET idinvocabulary = 'sgd' "
 				+ " WHERE uuid = '48f8e8a7-a2ac-4974-9ce8-6944afc5095e' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
 		stepName = "Update idInVocabulary for dummy modifier";
 		query = " UPDATE @@DefinedTermBase@@ "
 				+ " SET idinvocabulary = 'md' "
 				+ " WHERE uuid = 'efc38dad-205c-4028-ad9d-ae509a14b37a' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query);
 
 		// Remove state dummy
 		stepName = "Remove state dummy if possible";
 		uuid = "881b9c80-626d-47a6-b308-a63ee5f4178f";
 		String checkUsed = " SELECT count(*) as n FROM @@StateData@@ sd "
 				+ " WHERE sd.state_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove institution type dummy
 		stepName = "Remove institution type dummy term";
 		uuid = "bea94a6c-472b-421c-abc1-52f797c51dbf";
 		checkUsed = " SELECT count(*) as n FROM @@AgentBase_DefinedTermBase@@ MN "
 				+ " WHERE MN.types_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove measurement unit dummy
 		stepName = "Remove measurement unit dummy term";
 		uuid = "e19dd590-5be8-4c93-978f-b78554116289";
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionElementBase@@ deb "
 				+ " WHERE deb.unit_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove scope dummy
 		stepName = "Remove scope dummy term";
 		uuid = "2ace7f1f-4ce6-47e1-8a65-e3f6b724876c";
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionBase_Scope@@ MN "
 				+ " WHERE MN.scopes_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove stage dummy
 		stepName = "Remove stage dummy term";
@@ -1647,15 +1642,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " WHERE MN.scopes_id = %d ";
 		String checkUsed2 = " SELECT count(*) as n FROM @@SpecimenOrObservationBase@@ osb "
 				+ " WHERE osb.lifestage_id =  %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99)
-				.addCheckUsedQuery(checkUsed2, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed)
+				.addCheckUsedQuery(checkUsed2);
 
 		// Remove text format dummy
 		stepName = "Remove text format dummy if possible";
 		uuid = "5d095782-d99c-46bc-a158-edb2e47c9b63";
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionElementBase@@ deb "
 				+ " WHERE deb.format_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove modifier dummy
 		stepName = "Remove modifier dummy if possible";
@@ -1666,15 +1661,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " WHERE MN.modifiers_id = %d ";
 		String checkUsed3 = " SELECT count(*) as n FROM @@StatisticalMeasurementValue_DefinedTermBase@@ MN "
 				+ " WHERE MN.modifiers_id = %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99)
-				.addCheckUsedQuery(checkUsed2, 99).addCheckUsedQuery(checkUsed3, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed)
+				.addCheckUsedQuery(checkUsed2).addCheckUsedQuery(checkUsed3);
 
 		// Remove text preservation method dummy
 		stepName = "Remove preservation method dummy if possible";
 		uuid = "3edc2633-365b-4a9b-bc3a-f3f85f59dbdf";
 		checkUsed = " SELECT count(*) as n FROM @@SpecimenOrObservationBase@@ osb "
 				+ " WHERE osb.preservation_id =  %d ";
-		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed, 99);
+		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Split Country Vocabulary #3700
 		stepName = "Create Waterbody vocabulary";
@@ -1708,40 +1703,40 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// sortindex new #3700
 		stepName = "Update waterbody uuids";
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 1, uuid = 'af4271e5-8897-4e6f-9db7-54ea4f28cfc0' WHERE uuid = 'aa96ca19-46ab-6365-af29-e4842f13eb4c' ";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "DefinedTermBase", 99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 2, uuid = '77e79804-1b17-4c99-873b-933fe216e3da' WHERE uuid = '36aea55c-46ab-6365-af29-e4842f13eb4c' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 3, uuid = '3d68a327-104c-49d5-a2d8-c71c6600181b' WHERE uuid = '36aea55c-892c-6365-af29-e4842f13eb4c' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 4, uuid = 'ff744a37-5990-462c-9c20-1e85a9943851' WHERE uuid = '36aea55c-892c-4114-af29-d4b287f76fab' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 5, uuid = 'ef04f363-f67f-4a2c-8d98-110de4c5f654' WHERE uuid = 'aa96ca19-892c-4114-af29-d4b287f76fab' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 6, uuid = '8811a47e-29d6-4455-8f83-8916b78a692f' WHERE uuid = 'aa96ca19-892c-4114-a494-d4b287f76fab' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 7, uuid = '4cb4bbae-9aab-426c-9025-e34f809165af' WHERE uuid = 'd4cf6c57-892c-4114-bf57-96886eb7108a' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 8, uuid = '598fec0e-b93a-4947-a1f3-601e380797f7' WHERE uuid = 'd4cf6c57-892c-c953-a494-96886eb7108a' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 9, uuid = 'ee69385e-6c80-405c-be6e-974e9fd1e297' WHERE uuid = 'aa96ca19-46ab-c953-a494-96886eb7108a' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'NamedArea', orderindex = 10, uuid = '8dc16e70-74b8-4143-95cf-a659a319a854' WHERE uuid = 'aa96ca19-46ab-4114-a494-96886eb7108a' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// update DTYPE for country
 		stepName = "Update DTYPE for Countries";
 		sql = " UPDATE @@DefinedTermBase@@ SET DTYPE = 'Country' WHERE DTYPE = 'WaterbodyOrCountry' ";
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql,
-				"DefinedTermBase", 99);
+				"DefinedTermBase");
 
 		// Rename tables
 		stepName = "Rename DefinedTermBase_WaterbodyOrCountry";
@@ -1761,7 +1756,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// NULL for empty strings
 		stepName = "Update idInVocabulary, replace empty strings by null";
 		query = "Update @@DefinedTermBase@@ dtb SET idInVocabulary = NULL WHERE idInVocabulary = ''";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// MarkerType, AnnotationType, NamedAreaType, NamedAreaLevel, Feature,
@@ -1775,7 +1770,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// Clean up empty abbreviated labels in representations
 		stepName = "Update abbreviated label, replace empty strings by null";
 		query = "UPDATE @@Representation@@ SET abbreviatedLabel = NULL WHERE abbreviatedLabel = ''";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing("Representation"); // AUD not needed
 
 	}
@@ -1794,7 +1789,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.NaturalLanguageTerm.getKey() + "' "
 				+ " WHERE uuid = 'fdaba4b0-5c14-11df-a08a-0800200c9a66'";
 		SimpleSchemaUpdaterStep
-				.NewNonAuditedInstance(stepList, stepName, query, 99).setDefaultAuditing(
+				.NewNonAuditedInstance(stepList, stepName, query).setDefaultAuditing(
 						tableName);
 
 		// remaining vocabularies
@@ -1802,9 +1797,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = "UPDATE @@TermVocabulary@@ " + " SET termType = '"
 				+ TermType.Unknown.getKey() + "' "
 				+ " WHERE termType IS NULL";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
-
 	}
 
 	private void updateTermTypeForVocabularies(
@@ -1818,15 +1812,11 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " WHERE Exists (SELECT * FROM @@DefinedTermBase@@ dtb WHERE dtb.termType = '"
 				+ termType.getKey() + "' AND dtb.vocabulary_id = @@TermVocabulary@@.id)";
 		SimpleSchemaUpdaterStep
-				.NewNonAuditedInstance(stepList, stepName, query, 99).setDefaultAuditing(
+				.NewNonAuditedInstance(stepList, stepName, query).setDefaultAuditing(
 						"TermVocabulary"); // AUD not fully correct as subselect
 							// should also work on AUD, good enough for our purposes
 	}
 
-	/**
-	 * @param stepList
-	 * @param stepName
-	 */
 	private void updateTermTypesForTerms(List<ISchemaUpdaterStep> stepList) {
 		String stepName = "Update termType for NamedAreas";
 		String tableName = "DefinedTermBase";
@@ -1836,14 +1826,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				" SET termType = '" + TermType.NamedArea.getKey() + "' " +
 				" WHERE DTYPE = '" + NamedArea.class.getSimpleName() + "' OR DTYPE = 'TdwgArea' " +
 						"OR DTYPE = 'WaterbodyOrCountry' OR DTYPE = '"+ Country.class.getSimpleName() + "' OR DTYPE = 'Continent' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99).setDefaultAuditing(tableName);
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query).setDefaultAuditing(tableName);
 
 		// Lanugage
 		stepName = "Update termType for Language";
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.Language.getKey() + "' " + " WHERE DTYPE = '"
 				+ Language.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// RANK
@@ -1851,7 +1841,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.Rank.getKey() + "' " + " WHERE DTYPE = '"
 				+ Rank.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Feature
@@ -1859,7 +1849,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.Feature.getKey() + "' " + " WHERE DTYPE = '"
 				+ Feature.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// AnnotationType
@@ -1867,7 +1857,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.AnnotationType.getKey() + "' " + " WHERE DTYPE = '"
 				+ AnnotationType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// MarkerType
@@ -1875,7 +1865,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.MarkerType.getKey() + "' " + " WHERE DTYPE = '"
 				+ MarkerType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// ExtensionType
@@ -1883,7 +1873,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.ExtensionType.getKey() + "' " + " WHERE DTYPE = '"
 				+ ExtensionType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// DerivationEventType
@@ -1892,7 +1882,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.DerivationEventType.getKey() + "' "
 				+ " WHERE DTYPE = '"
 				+ DerivationEventType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// PresenceAbsenceTerm
@@ -1900,7 +1890,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.PresenceAbsenceTerm.getKey() + "' "
 				+ " WHERE DTYPE = 'PresenceTerm' OR DTYPE = 'AbsenceTerm'";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// NomenclaturalStatusType
@@ -1909,7 +1899,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.NomenclaturalStatusType.getKey() + "' "
 				+ " WHERE DTYPE = '"
 				+ NomenclaturalStatusType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// NameRelationshipType
@@ -1918,7 +1908,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.NameRelationshipType.getKey() + "' "
 				+ " WHERE DTYPE = '"
 				+ NameRelationshipType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// HybridRelationshipType
@@ -1927,16 +1917,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.HybridRelationshipType.getKey() + "' "
 				+ " WHERE DTYPE = '"
 				+ HybridRelationshipType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// SynonymType
 		stepName = "Update termType for SynonymRelationship Type";
-		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
-				+ TermType.SynonymType.getKey() + "' "
+		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = 'SRT'"
 				+ " WHERE DTYPE = '"
 				+ SynonymType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// TaxonRelationshipType
@@ -1945,7 +1934,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.TaxonRelationshipType.getKey() + "' "
 				+ " WHERE DTYPE = '"
 				+ TaxonRelationshipType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// NameTypeDesignationStatus
@@ -1954,7 +1943,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.NameTypeDesignationStatus.getKey() + "' "
 				+ " WHERE DTYPE = '"
 				+ NameTypeDesignationStatus.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// SpecimenTypeDesignationStatus
@@ -1963,7 +1952,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.SpecimenTypeDesignationStatus.getKey() + "' "
 				+ " WHERE DTYPE = '"
 				+ SpecimenTypeDesignationStatus.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// InstitutionType
@@ -1971,7 +1960,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.InstitutionType.getKey() + "' "
 				+ " WHERE DTYPE = 'InstitutionType' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// NamedAreaType
@@ -1979,7 +1968,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.NamedAreaType.getKey() + "' " + " WHERE DTYPE = '"
 				+ NamedAreaType.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// NamedAreaLevel
@@ -1987,7 +1976,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.NamedAreaLevel.getKey() + "' " + " WHERE DTYPE = '"
 				+ NamedAreaLevel.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// RightsType
@@ -1995,7 +1984,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.RightsType.getKey() + "' "
 				+ " WHERE DTYPE = 'RightsType' OR DTYPE = 'RightsTerm' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// MeasurementUnit
@@ -2003,7 +1992,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.MeasurementUnit.getKey() + "' " + " WHERE DTYPE = '"
 				+ MeasurementUnit.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// StatisticalMeasure
@@ -2012,7 +2001,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.StatisticalMeasure.getKey() + "' "
 				+ " WHERE DTYPE = '" + StatisticalMeasure.class.getSimpleName()
 				+ "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// PreservationMethod
@@ -2020,7 +2009,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.Method.getKey() + "' " + " WHERE DTYPE = '"
 				+ PreservationMethod.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Modifier
@@ -2028,28 +2017,28 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.Modifier.getKey() + "' "
 				+ " WHERE DTYPE = 'Modifier' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Scope
 		stepName = "Update termType for Scope";
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.Scope.getKey() + "' " + " WHERE DTYPE = 'Scope' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Stage
 		stepName = "Update termType for Stage";
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.Stage.getKey() + "' " + " WHERE DTYPE = 'Stage' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// Sex
 		stepName = "Update termType for Sex";
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.Sex.getKey() + "' " + " WHERE DTYPE = 'Sex' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// ReferenceSystem
@@ -2057,7 +2046,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.ReferenceSystem.getKey() + "' " + " WHERE DTYPE = '"
 				+ ReferenceSystem.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// State
@@ -2065,7 +2054,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.State.getKey() + "' " + " WHERE DTYPE = '"
 				+ State.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// NaturalLanguageTerm
@@ -2074,7 +2063,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ TermType.NaturalLanguageTerm.getKey() + "' "
 				+ " WHERE DTYPE = '"
 				+ NaturalLanguageTerm.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// TextFormat
@@ -2082,7 +2071,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.TextFormat.getKey() + "' " + " WHERE DTYPE = '"
 				+ TextFormat.class.getSimpleName() + "' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// DeterminationModifier
@@ -2090,7 +2079,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = " UPDATE @@DefinedTermBase@@ " + " SET termType = '"
 				+ TermType.DeterminationModifier.getKey() + "' "
 				+ " WHERE DTYPE = 'DeterminationModifier' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 	}
@@ -2108,21 +2097,17 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " SET DTYPE = 'DefinedTerm' "
 				+ " WHERE DTYPE = 'Stage' OR DTYPE = 'Scope' OR DTYPE = 'Sex' OR DTYPE = 'DeterminationModifier'  "
 				+ " OR DTYPE = 'Modifier' OR DTYPE = 'InstitutionType' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// update DTYPE for TDWG Areas and Continents -> NamedArea
 		stepName = "Update DTYPE for TDWG Areas and Continents";
 		query = " UPDATE @@DefinedTermBase@@ " + " SET DTYPE = 'NamedArea' "
 				+ " WHERE DTYPE = 'TdwgArea' OR DTYPE = 'Continent' ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
-
 	}
 
-	/**
-	 * @param stepList
-	 */
 	private void changeUriType(List<ISchemaUpdaterStep> stepList) {
 		// #3345
 		String stepName;
@@ -2231,7 +2216,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ " SET absoluteElevationMax = absoluteElevation + absoluteElevationError,  "
 				+ "     absoluteElevation =  absoluteElevation - absoluteElevationError"
 				+ " WHERE absoluteElevationError is not null ";
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(audTableName);
 		// TODO same for AUD
 
@@ -2309,7 +2294,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String query = String.format("UPDATE @@OriginalSourceBase@@ "
 				+ " SET %s = '%s' ", typeAttrName,
 				OriginalSourceType.Unknown.getKey());
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// all IMPORTS recognized by idInSOurce and by missing nameInSource
@@ -2321,7 +2306,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 						+ "((idInSource IS NOT NULL) OR (idNamespace IS NOT NULL))  AND "
 						+ "( nameUsedInSource_id IS NULL AND originalNameString IS NULL ) ",
 						typeAttrName, OriginalSourceType.Import.getKey());
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 
 		// all PRIMARY TAXONOMIC SOURCES recognized by missing idInSource and
@@ -2331,7 +2316,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				+ "(idInSource IS NULL AND idNamespace IS NULL) AND "
 				+ "( citation_id IS NOT NULL ) ", typeAttrName,
 				OriginalSourceType.PrimaryTaxonomicSource.getKey());
-		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, 99)
+		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query)
 				.setDefaultAuditing(tableName);
 	}
 

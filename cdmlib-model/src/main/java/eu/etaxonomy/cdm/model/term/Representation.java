@@ -42,8 +42,9 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.Representation")
 @Audited
 public class Representation extends LanguageStringBase {
+
     private static final long serialVersionUID = -4202420199587324532L;
-    private static final Logger logger = LogManager.getLogger(Representation.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Label")
     @Field(store=Store.YES)

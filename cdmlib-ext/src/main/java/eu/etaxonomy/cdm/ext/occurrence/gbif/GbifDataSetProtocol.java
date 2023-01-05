@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.ext.occurrence.gbif;
 /**
  * @author pplitzner
  * @since 28.05.2014
- *
  */
 public enum GbifDataSetProtocol {
     BIOCASE,

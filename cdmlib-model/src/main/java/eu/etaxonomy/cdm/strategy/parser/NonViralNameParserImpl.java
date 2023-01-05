@@ -59,7 +59,7 @@ public class NonViralNameParserImpl
             extends NonViralNameParserImplRegExBase
             implements INonViralNameParser<INonViralName> {
 
-    private static final Logger logger = LogManager.getLogger(NonViralNameParserImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 

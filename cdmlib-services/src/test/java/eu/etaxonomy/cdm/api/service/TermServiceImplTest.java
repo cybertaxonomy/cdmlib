@@ -16,18 +16,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.TermServiceImpl.TermMovePosition;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -42,9 +45,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTerm;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -53,8 +59,9 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since 27.05.2008
  */
 public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
+
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private ITermService termService;
@@ -98,9 +105,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNull(termNotExist);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getContinentByUuid(java.util.UUID)}.
-     */
     @Test
     /* @DataSet
      * WARNING:
@@ -196,7 +200,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	assertEquals("Title cache did not update after adding a new representation for default language and saving the term", expecteTitleCacheAfterRepresentationChange, termBase.getTitleCache());
     }
 
-
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -247,6 +250,73 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         //commitAndStartNewTransaction(tableNames);
         termBase =  (DefinedTerm)termService.load(termBase.getUuid());
         assertNotNull(termBase);
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    public void testMoveTerm(){
+    //	final String[] tableNames = new String[]{
+    //                "DefinedTermBase","Representation"};
+
+    	commitAndStartNewTransaction();
+    	TermVocabulary<OrderedTerm> vocTest = OrderedTermVocabulary.NewOrderedInstance(TermType.DnaMarker,
+    	        OrderedTerm.class, "Test Term Vocabulary", null, null, null);
+    	vocTest.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test1", "marker1", "t1"));
+    	vocTest = vocabularyService.save(vocTest);
+
+    	OrderedTermVocabulary<OrderedTerm> vocDna = OrderedTermVocabulary.NewOrderedInstance(TermType.DnaMarker,
+    	        OrderedTerm.class, "Test DNA marker", null, null, null);
+    	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test", "marker", "t"));
+    	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test2", "marker2", "t2"));
+    	vocDna.addTerm(OrderedTerm.NewInstance(TermType.DnaMarker, "test3", "marker3", "t3"));
+    	vocDna = vocabularyService.save(vocDna);
+    	/*
+    	 * 					vocDna
+    	 *   marker	   marker2	   marker3
+    	 *
+    	 */
+
+    	Iterator<OrderedTerm> termsTest = vocTest.getTerms().iterator();
+    	Iterator<OrderedTerm> termsDna = vocDna.getTerms().iterator();
+
+    	TermDto termToMove = TermDto.fromTerm(termsTest.next());
+    	OrderedTerm termBase = (OrderedTerm)termService.load(termToMove.getUuid());
+    	assertTrue(termBase.getOrderIndex() == 1);
+    	UUID markerUuid = termsDna.next().getUuid();
+    	TermDto secondTermDto = TermDto.fromTerm(termsDna.next());
+    	UUID secondTermUuid = secondTermDto.getUuid();
+
+    	//move to other vocabulary
+    	termService.moveTerm(termToMove, vocDna.getUuid());
+
+    	/*
+    	 * 		vocDna
+    	 * marker		marker2		marker3		marker1
+    	 */
+    	//commitAndStartNewTransaction(tableNames);
+    	termBase = (OrderedTerm)termService.load(termToMove.getUuid());
+    	assertNotNull(termBase);
+    	assertTrue(termBase.getVocabulary().getUuid().equals(vocDna.getUuid()));
+
+    	vocTest = vocabularyService.load(vocDna.getUuid());
+    	//include marker1 in marker
+    	termService.moveTerm(termToMove, markerUuid);
+    	//commitAndStartNewTransaction(tableNames);
+    	termBase = (OrderedTerm)termService.load(termToMove.getUuid());
+    	OrderedTerm marker = (OrderedTerm) termService.load(markerUuid);
+    	assertTrue(marker.getIncludes().size() == 1);
+    	assertNotNull(termBase);
+    	//termToMove is included in and fourth term of vocabulary -> orderIndex == 4
+    	assertTrue(termBase.getOrderIndex() == 4);
+
+    	//marker2 should be moved behind marker
+    	termService.moveTerm(secondTermDto, markerUuid, TermMovePosition.AFTER);
+    	OrderedTerm marker2 = (OrderedTerm)termService.load(secondTermUuid);
+    	marker = (OrderedTerm) termService.load(markerUuid);
+    	assertTrue("marker2 should be behind marker", marker2.getOrderIndex() == marker.getOrderIndex() + 1);
     }
 
     /**

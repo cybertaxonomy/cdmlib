@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.File;
@@ -14,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
-
 
 /**
  * @author a.mueller
@@ -28,16 +27,14 @@ import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTaxExportState> {
 
     private static final long serialVersionUID = -464609596078614735L;
-
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaTaxExportConfigurator.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";
 	private String fieldsEnclosedBy = "\"";
 	private boolean hasHeaderLines = true;
 	private String fieldsTerminatedBy=",";
-
 
 	private boolean doTaxa = true;
 	private boolean doResourceRelation = true;
@@ -64,8 +61,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	private List<UUID> featureExclusions = new ArrayList<>();
 
-
-
 	private String defaultTaxonSource;
 
 	private boolean withHigherClassification = false;
@@ -80,7 +75,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		return new DwcaTaxExportConfigurator(source, destinationFolder, emlRecord);
 	}
 
-
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
@@ -92,11 +86,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		};
 	}
 
-
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	private DwcaTaxExportConfigurator(ICdmDataSource source, File destination, DwcaEmlRecord emlRecord) {
 	    super(destination, source, defaultTransformer);
 		this.resultType = ExportResultType.MAP_BYTE_ARRAY;
@@ -328,5 +317,4 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
     public void setDoMisappliedNames(boolean doMisappliedNames) {
         this.doMisappliedNames = doMisappliedNames;
     }
-
 }

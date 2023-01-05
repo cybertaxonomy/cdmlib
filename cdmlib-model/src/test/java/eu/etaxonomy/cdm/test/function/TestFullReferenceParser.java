@@ -9,7 +9,8 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -22,8 +23,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @since 21.11.2008
  */
 public class TestFullReferenceParser {
-	private static final Logger logger = LogManager.getLogger(TestFullReferenceParser.class);
 
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	private boolean test(){
 		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
@@ -35,12 +37,8 @@ public class TestFullReferenceParser {
 		return true;
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		TestFullReferenceParser test = new TestFullReferenceParser();
 		test.test();
-
 	}
 }

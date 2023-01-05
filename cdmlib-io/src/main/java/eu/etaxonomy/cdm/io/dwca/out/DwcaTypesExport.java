@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
@@ -15,7 +14,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
@@ -46,14 +46,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaTypesExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = 8879154738843628476L;
-
-    private static final Logger logger = LogManager.getLogger(DwcaTypesExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/TypesAndSpecimen";
 	protected static final String fileName = "typesAndSpecimen.txt";
 
 	private DwcaMetaDataRecord metaRecord;
-
 
 	/**
 	 * Constructor
@@ -69,13 +67,6 @@ public class DwcaTypesExport extends DwcaDataExportBase {
     @Override
     protected void doInvoke(DwcaTaxExportState state){}
 
-    /**
-     * @param state
-     * @param node
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws UnsupportedEncodingException
-     */
     @Override
     protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)
             throws IOException, FileNotFoundException, UnsupportedEncodingException {
@@ -122,17 +113,6 @@ public class DwcaTypesExport extends DwcaDataExportBase {
         }
     }
 
-	/**
-	 * @param state
-	 * @param writer
-	 * @param taxon
-	 * @param nvn
-	 * @param config
-	 * @return
-	 * @throws IOException
-	 * @throws UnsupportedEncodingException
-	 * @throws FileNotFoundException
-	 */
 	private Set<TypeDesignationBase> handleTypeName(DwcaTaxExportState state,
 	        DwcaTaxExportFile file, TaxonBase<?> taxonBase,
 	        INonViralName nvn, DwcaMetaDataRecord metaRecord)
@@ -152,41 +132,41 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 		return designations;
 	}
 
-   private boolean handleType(DwcaTaxExportState state, DwcaTypesRecord record,
-           TypeDesignationBase<?> designation, TaxonBase<?> taxonBase,
-           DwcaTaxExportConfigurator config) {
-       designation = CdmBase.deproxy(designation);
-       if (designation instanceof TextualTypeDesignation){
-           return handleTextualType(state, record, (TextualTypeDesignation)designation, taxonBase, config);
-       }else if (designation instanceof TypeDesignationBase){
-           return handleSpecimen(state, record, null, designation, taxonBase, config);
-       }else{
-           throw new RuntimeException ("TypeDesignation type not handled");
-       }
-   }
+    private boolean handleType(DwcaTaxExportState state, DwcaTypesRecord record,
+            TypeDesignationBase<?> designation, TaxonBase<?> taxonBase,
+            DwcaTaxExportConfigurator config) {
+        designation = CdmBase.deproxy(designation);
+        if (designation instanceof TextualTypeDesignation){
+            return handleTextualType(state, record, (TextualTypeDesignation)designation, taxonBase, config);
+        }else if (designation instanceof TypeDesignationBase){
+            return handleSpecimen(state, record, null, designation, taxonBase, config);
+        }else{
+            throw new RuntimeException ("TypeDesignation type not handled");
+        }
+    }
 
 	private boolean handleTextualType(DwcaTaxExportState state, DwcaTypesRecord record,
 	            TextualTypeDesignation designation, TaxonBase<?> taxonBase,
 	            DwcaTaxExportConfigurator config) {
 
-	        if (designation == null){
-	            return false;
-	        }
+        if (designation == null){
+            return false;
+        }
 
-	        record.setId(taxonBase.getId());
-	        record.setUuid(taxonBase.getUuid());
-	        record.setBibliographicCitation(designation.getPreferredText(Language.DEFAULT()));
+        record.setId(taxonBase.getId());
+        record.setUuid(taxonBase.getUuid());
+        record.setBibliographicCitation(designation.getPreferredText(Language.DEFAULT()));
 
-	        //TODO ???
+        //TODO ???
 
 //	        record.setSource(getSources3(facade.innerDerivedUnit(), config));
 //	        record.setDescriptionSource(source2);
 
-	        //TODO missing
-	        record.setVerbatimLabel(designation.getPreferredText(Language.DEFAULT()));
+        //TODO missing
+        record.setVerbatimLabel(designation.getPreferredText(Language.DEFAULT()));
 
-	        return true;
-	    }
+        return true;
+    }
 
 	private boolean handleSpecimen(DwcaTaxExportState state, DwcaTypesRecord record, IndividualsAssociation individualsAssociation,
 	        TypeDesignationBase<?> designation, TaxonBase<?> taxonBase, DwcaTaxExportConfigurator config) {

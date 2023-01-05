@@ -23,7 +23,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -75,7 +76,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(OccurrenceServiceTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;
@@ -1636,7 +1637,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       //SYNONYM
       Synonym synonym = Synonym.NewInstance(synonymName, null);
       synonym.setUuid(synoymUuid);
-      taxon.addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
+      taxon.addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
 
       //IndividualsAssociation
       TaxonDescription taxonDescription = TaxonDescription.NewInstance();

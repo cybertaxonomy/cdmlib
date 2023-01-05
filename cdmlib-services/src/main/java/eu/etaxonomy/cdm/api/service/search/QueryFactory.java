@@ -69,13 +69,13 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 public class QueryFactory {
 
-    public static final Logger logger = LogManager.getLogger(QueryFactory.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    protected ILuceneIndexToolProvider toolProvider;
+    private ILuceneIndexToolProvider toolProvider;
 
-    Set<String> textFieldNames = new HashSet<>();
+    private Set<String> textFieldNames = new HashSet<>();
 
-    Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<>();
+    private Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<>();
 
     private final Class<? extends CdmBase> cdmBaseType;
 

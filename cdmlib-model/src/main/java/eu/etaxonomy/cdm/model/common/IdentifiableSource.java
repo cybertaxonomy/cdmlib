@@ -40,7 +40,7 @@ public class IdentifiableSource
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(IdentifiableSource.class);
+	private static final Logger logger = LogManager.getLogger();
 
 //********************************* FACTORY ********************************************************/
 

@@ -27,49 +27,34 @@ import eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeEvent.EventType;
 public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEvent>>{
 
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(CdmDataChangeMap.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private Map<EventType, Vector<CdmDataChangeEvent>> dataChangeMap;
 
 	public CdmDataChangeMap(){
-		dataChangeMap = new HashMap<EventType, Vector<CdmDataChangeEvent>>();
+		dataChangeMap = new HashMap<>();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#clear()
-	 */
 	@Override
     public void clear() {
 		dataChangeMap.clear();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#containsKey(java.lang.Object)
-	 */
 	@Override
     public boolean containsKey(Object key) {
 		return dataChangeMap.containsKey(key);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#containsValue(java.lang.Object)
-	 */
 	@Override
     public boolean containsValue(Object value) {
 		return dataChangeMap.containsValue(value);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#entrySet()
-	 */
 	@Override
     public Set entrySet() {
 		return dataChangeMap.entrySet();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#get(java.lang.Object)
-	 */
 	@Override
     public Vector<CdmDataChangeEvent> get(Object key) {
 		return dataChangeMap.get(key);
@@ -89,17 +74,11 @@ public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEve
         return vector;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#isEmpty()
-	 */
 	@Override
     public boolean isEmpty() {
 		return dataChangeMap.isEmpty();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#keySet()
-	 */
 	@Override
     public Set keySet() {
 		return dataChangeMap.keySet();
@@ -118,18 +97,11 @@ public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEve
 		dataChangeMap.put(type, vector);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.util.Map#remove(java.lang.Object)
-	 */
 	@Override
     public Vector<CdmDataChangeEvent> remove(Object key) {
 		return dataChangeMap.remove(key);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#size()
-	 */
 	@Override
     public int size() {
 		return dataChangeMap.size();
@@ -140,9 +112,6 @@ public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEve
 		return vector == null ? 0 : vector.size();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#values()
-	 */
 	@Override
     public Collection<Vector<CdmDataChangeEvent>> values() {
 		return dataChangeMap.values();
@@ -154,7 +123,7 @@ public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEve
 	 * @return
 	 */
 	public Collection<CdmDataChangeEvent> getAllEvents(){
-		Collection<CdmDataChangeEvent> values = new HashSet<CdmDataChangeEvent>();
+		Collection<CdmDataChangeEvent> values = new HashSet<>();
 		for (EventType type : EventType.values()){
 			if(dataChangeMap.get(type) != null){
 				for(CdmDataChangeEvent event : dataChangeMap.get(type)){
@@ -165,18 +134,12 @@ public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEve
 		return values;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#put(java.lang.Object, java.lang.Object)
-	 */
 	@Override
     public Vector<CdmDataChangeEvent> put(EventType key,
 			Vector<CdmDataChangeEvent> value) {
 		return dataChangeMap.put(key, value);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.util.Map#putAll(java.util.Map)
-	 */
 	@Override
     public void putAll(
 			Map<? extends EventType, ? extends Vector<CdmDataChangeEvent>> t) {

@@ -35,7 +35,6 @@ public interface IOriginalSource {
 
 	/*************** GETTER /SETTER ************************************/
 
-
 	/**
 	 * Returns the {@link OriginalSourceType type} of the source. The type defines the relationship
 	 * between the current data and the original data.

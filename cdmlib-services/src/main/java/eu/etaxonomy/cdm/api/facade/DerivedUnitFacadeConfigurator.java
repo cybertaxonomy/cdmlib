@@ -1,56 +1,51 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.facade;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 
 /**
  * @author a.mueller
- *
  */
 public class DerivedUnitFacadeConfigurator {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DerivedUnitFacadeConfigurator.class);
-	
-	
+	private static final Logger logger = LogManager.getLogger();
+
 	public static DerivedUnitFacadeConfigurator NewInstance(){
 		return new DerivedUnitFacadeConfigurator();
 	}
-	
-	
+
 	private boolean moveFieldObjectMediaToGallery = false;
-	
+
 	private boolean moveDerivedUnitMediaToGallery = false;
-	
+
 	private boolean throwExceptionForNonSpecimenPreservationMethodRequest = true;
-	
+
 	private boolean firePropertyChangeEvents = true;
 
-	
+
 	//needed if inititialization via property paths is required
 	private IOccurrenceService occurrenceService;
-	
-	//for object initialization 
+
+	//for object initialization
 	private List<String> propertyPaths;
 
-	
-	private DerivedUnitFacadeConfigurator(){
-		//
-	}
-	
-// ************************ GETTER / SETTER **********************************	
-	
+	private DerivedUnitFacadeConfigurator(){}
+
+// ************************ GETTER / SETTER **********************************
+
 	public void setMoveFieldObjectMediaToGallery(
 			boolean moveFieldObjectMediaToGallery) {
 		this.moveFieldObjectMediaToGallery = moveFieldObjectMediaToGallery;
@@ -73,11 +68,9 @@ public class DerivedUnitFacadeConfigurator {
 		this.occurrenceService = occurrenceService;
 	}
 
-	
 	/**
-	 * Needed for object initialization. 
+	 * Needed for object initialization.
 	 * @see #getPropertyPaths()
-	 * @return
 	 */
 	public IOccurrenceService getOccurrenceService() {
 		return occurrenceService;
@@ -91,7 +84,6 @@ public class DerivedUnitFacadeConfigurator {
 	 * Needed for object initialization.
 	 * Also requires to set occurrence service
 	 * @see #getOccurrenceService()
-	 * @return
 	 */
 	public List<String> getPropertyPaths() {
 		return propertyPaths;
@@ -119,6 +111,4 @@ public class DerivedUnitFacadeConfigurator {
 	public boolean isFirePropertyChangeEvents() {
 		return firePropertyChangeEvents;
 	}
-	
-	
 }

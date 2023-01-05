@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -26,16 +25,10 @@ import eu.etaxonomy.cdm.model.permission.User;
 /**
  * @author a.mueller
  * @since 12.08.2019
- *
  */
 public class UsernameRegexAdapter  extends SchemaUpdaterStepBase {
 
-
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(UsernameRegexAdapter.class);
-
     private static final String stepName = "Adapt username to username regex";
-
 
     public static final UsernameRegexAdapter NewInstance(List<ISchemaUpdaterStep> stepList){
         UsernameRegexAdapter result = new UsernameRegexAdapter(stepList);
@@ -53,15 +46,6 @@ public class UsernameRegexAdapter  extends SchemaUpdaterStepBase {
         doForTable(datasource, monitor, caseType, result, "PermissionGroup", "name");
     }
 
-    /**
-     * @param datasource
-     * @param monitor
-     * @param caseType
-     * @param result
-     * @param tableName
-     * @param attribute
-     * @throws SQLException
-     */
     private void doForTable(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
             SchemaUpdateResult result, String tableName, String attribute) throws SQLException {
         tableName = caseType.transformTo(tableName);
@@ -90,5 +74,4 @@ public class UsernameRegexAdapter  extends SchemaUpdaterStepBase {
             }
         }
     }
-
 }

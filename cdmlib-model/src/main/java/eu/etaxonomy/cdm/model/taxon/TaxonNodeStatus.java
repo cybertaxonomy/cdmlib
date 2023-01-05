@@ -109,7 +109,7 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
 // **************** END ENUM **********************/
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonNodeStatus.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private String shortLabel;
     private String symbol;

@@ -66,16 +66,6 @@
 
   <xs:element name="User" type="common:User"/>
 
-  <xs:complexType name="OrderedTermBase" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="common:DefinedTermBase">
-        <xs:sequence>
-          <xs:element name="OrderIndex" type="xs:int"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="DefinedTermBase" abstract="true">
     <xs:complexContent>
       <xs:extension base="common:TermBase">
@@ -469,7 +459,7 @@
 
   <xs:complexType name="RelationshipTermBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
+      <xs:extension base="common:DefinedTermBase">
         <xs:sequence>
           <xs:element name="Symmetric" type="xs:boolean"/>
           <xs:element name="Transitive" type="xs:boolean"/>
@@ -512,7 +502,7 @@
     <xs:complexContent>
       <xs:extension base="common:TermVocabulary">
         <xs:sequence>
-          <xs:element name="toBeChangedByObject" type="common:OrderedTermBase" minOccurs="0"/>
+          <xs:element name="toBeChangedByObject" type="common:DefinedTermBase" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

@@ -6,16 +6,15 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.specimen;
-
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -39,11 +38,11 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author p.kelbert
  * @since 20.10.2008
- * @version 1.0
  */
 public class UnitsGatheringEvent {
 
-    private static final Logger logger = LogManager.getLogger(UnitsGatheringEvent.class);
+    private static final Logger logger = LogManager.getLogger();
+
     private static final boolean DEBUG = false;
     private final GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 
@@ -349,9 +348,6 @@ public class UnitsGatheringEvent {
         return this.gatheringEvent.getCollectingMethod();
     }
 
-    /**
-     * @param gatheringTeam
-     */
     public void setTeam(String gatheringTeam, SpecimenSynthesysExcelImportConfigurator config) {
         Team t = new Team();
         if ((gatheringTeam != null) && !gatheringTeam.isEmpty()) {

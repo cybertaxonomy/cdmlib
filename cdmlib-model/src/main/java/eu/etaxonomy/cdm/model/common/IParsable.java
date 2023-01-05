@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.List;
@@ -17,7 +16,6 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 /**
  * @author a.mueller
  * @since 21.05.2008
- * @version 1.0
  */
 public interface IParsable {
 

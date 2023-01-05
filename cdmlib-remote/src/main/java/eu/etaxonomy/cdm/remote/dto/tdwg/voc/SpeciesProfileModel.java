@@ -21,6 +21,12 @@ import com.sun.xml.bind.CycleRecoverable;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
 
+/**
+ * SpeciesProfileModel class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpeciesProfileModel", propOrder = {
 	    "aboutTaxon",

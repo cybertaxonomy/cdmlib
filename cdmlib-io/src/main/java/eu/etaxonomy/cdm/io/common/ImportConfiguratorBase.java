@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Component
 public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOURCE>
         extends IoConfiguratorBase
-        implements IImportConfigurator{
+        implements IImportConfigurator {
 
     private static final long serialVersionUID = 7223140465020160905L;
 

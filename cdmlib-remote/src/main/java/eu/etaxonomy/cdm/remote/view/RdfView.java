@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.view;
 
-
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,10 +35,8 @@ import eu.etaxonomy.remote.dto.rdf.Rdf;
  * run through a marshaller to produce xml or json
  *
  * @author b.clarke,c.mathew
- * @version 1.0.0
  * @since 25-Nov-2012
  */
-
 public class RdfView extends AbstractView {
 
 	//FIXME : the standard marshaller as defined in remote.xml is not used in web service views so it

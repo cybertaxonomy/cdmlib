@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.opt.config;
 
 import java.io.File;
@@ -92,7 +91,7 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 @PropertySource(value="file:${user.home}/.cdmLibrary/cdmlib-remote.properties", ignoreResourceNotFound=true)
 public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
-    public static final Logger logger = LogManager.getLogger(DataSourceConfigurer.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected static final String HIBERNATE_DIALECT = "hibernate.dialect";
     protected static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.default.indexBase";
@@ -461,5 +460,4 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         logger.error("hibernate dialect mapping for "+url+ " not yet implemented or unavailable");
         return null;
     }
-
 }

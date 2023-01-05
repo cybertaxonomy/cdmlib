@@ -1,13 +1,22 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.io.stream.excel;
 
 import java.io.IOException;
-import eu.etaxonomy.cdm.common.URI;
 
 import org.apache.http.HttpException;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.dwca.in.DwcTaxonCsv2CdmTaxonRelationConverter;
 import eu.etaxonomy.cdm.io.dwca.in.DwcTaxonStreamItem2CdmTaxonConverter;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportBase;
@@ -29,9 +38,7 @@ public class ExcelStreamImport
         extends DwcaDataImportBase<ExcelStreamImportConfigurator, ExcelStreamImportState>{
 
     private static final long serialVersionUID = -1067536880817966304L;
-
-    private static final Logger logger = LogManager.getLogger(ExcelStreamImport.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
 	protected void doInvoke(ExcelStreamImportState state) {
@@ -94,5 +101,4 @@ public class ExcelStreamImport
 	protected boolean isIgnore(ExcelStreamImportState state) {
 		return false;  //we only have 1 import class for excel stream import
 	}
-
 }

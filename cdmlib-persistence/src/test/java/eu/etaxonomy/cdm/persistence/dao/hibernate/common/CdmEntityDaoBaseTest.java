@@ -19,7 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
  */
 public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSecurity {
 
-    private static final Logger logger = LogManager.getLogger(CdmEntityDaoBaseTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private UUID uuid;
     private TaxonBase<?> cdmBase;

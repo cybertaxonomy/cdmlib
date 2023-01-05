@@ -22,7 +22,6 @@ import java.util.Map;
  *
  * @author a.kohlbecker
  * @since Jun 15, 2018
- *
  */
 public class ReferencePropertyDefinitions {
 
@@ -208,6 +207,4 @@ public class ReferencePropertyDefinitions {
             super("No implementation for ReferenceType " + type.name());
         }
    }
-
-
 }

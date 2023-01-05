@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,7 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -60,7 +60,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -86,7 +85,7 @@ public class DefinedTermDaoImpl
         extends IdentifiableDaoBase<DefinedTermBase>
         implements IDefinedTermDao{
 
-    private static final Logger logger = LogManager.getLogger(DefinedTermDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SuppressWarnings("unchecked")
     public DefinedTermDaoImpl() {
@@ -115,7 +114,6 @@ public class DefinedTermDaoImpl
 		indexedClasses[20] = NameTypeDesignationStatus.class;
 		indexedClasses[21] = NomenclaturalStatusType.class;
 		indexedClasses[22] = SpecimenTypeDesignationStatus.class;
-		indexedClasses[23] = SynonymType.class;
 		indexedClasses[24] = TaxonRelationshipType.class;
 	}
 
@@ -622,32 +620,6 @@ public class DefinedTermDaoImpl
             List<OrderHint> orderHints, List<String> propertyPath) {
 
         return deduplicateResult(super.list(type, limit, start, orderHints, propertyPath));
-    }
-
-    /**
-     * Workaround for https://dev.e-taxonomy.eu/redmine/issues/5871 and #5945
-     * Terms with multiple representations return identical duplicates
-     * due to eager representation loading. We expect these duplicates to appear
-     * in line wo we only compare one term with its predecessor. If it already
-     * exists we remove it from the result.
-     * @param orginals
-     * @return
-     */
-    protected static <S extends CdmBase> List<S> deduplicateResult(List<S> orginals) {
-        List<S> result = new ArrayList<>();
-        Iterator<S> it = orginals.iterator();
-        S last = null;
-        while (it.hasNext()){
-            S a = it.next();
-            if (a != last){
-                //AM: why is this necessary?
-                if (!result.contains(a)){
-                    result.add(a);
-                }
-            }
-            last = a;
-        }
-        return result;
     }
 
     @Override

@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2020 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.format.description;
 
 import java.util.Iterator;
@@ -6,12 +14,12 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
-public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDescriptionBuilder{
+public class DefaultCategoricalDescriptionBuilder extends CategoricalDescriptionBuilderBase{
 
 	@Override
     protected TextData doBuild(List<StateData> states, List<Language> languages){
@@ -20,11 +28,11 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 		Language language = null;
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
-			State state = stateData.getState();
-			if(state != null && language==null) {
+			DefinedTermBase<?> state = stateData.getState();
+			if(state != null && language == null) {
 			    language = state.getPreferredRepresentation(languages).getLanguage();
 			}
-			if (language==null) {
+			if (language == null) {
 			    language = Language.DEFAULT();
 			}
 			if(stateData.getModifyingText()!=null && stateData.getModifyingText().get(language)!=null){
@@ -34,10 +42,10 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 			Set<DefinedTerm> modifiers = stateData.getModifiers(); // the states and their according modifiers are simply concatenated one after the other
 			for (Iterator<DefinedTerm> mod = modifiers.iterator() ; mod.hasNext() ;){
 				DefinedTerm modifier = mod.next();
-				categoricalDescription.append(" " + getRightText(modifier.getPreferredRepresentation(languages)));
+				categoricalDescription.append(" " + getRightText(modifier.getPreferredRepresentation(languages), false));
 			}
-			if(state!=null){
-			    categoricalDescription.append(" " + getRightText(state.getPreferredRepresentation(languages)));
+			if(state != null){
+			    categoricalDescription.append(" " + getRightText(state.getPreferredRepresentation(languages), stateData.isUsePlural()));
 			}
 			if(stateData.getCount()!=null){
 			    categoricalDescription.append(" ("+stateData.getCount()+")");
@@ -51,5 +59,4 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 
 		return textData;
 	}
-
 }

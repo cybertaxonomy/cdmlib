@@ -32,20 +32,20 @@ import net.sf.ehcache.Element;
  */
 public class CacheLoader {
 
-    private static final Logger logger = LogManager.getLogger(CacheLoader.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static boolean isRecursiveEnabled = true;
 
-    protected final ICdmCacher cdmCacher;
+    private final ICdmCacher cdmCacher;
 
     private final Cache cdmlibModelCache;
 
     public CacheLoader(ICdmCacher cdmCacher) {
         this.cdmCacher = cdmCacher;
-        this.cdmlibModelCache = CdmRemoteCacheManager.getInstance().getCdmModelGetMethodsCache();
+        this.cdmlibModelCache = CdmRemoteCacheManager.INSTANCE().getCdmModelGetMethodsCache();
     }
 
-    public CdmModelFieldPropertyFromClass getFromCdmlibModelCache(String className) {
+    CdmModelFieldPropertyFromClass getFromCdmlibModelCache(String className) {
         Element e = cdmlibModelCache.get(className);
         if (e == null) {
             return null;

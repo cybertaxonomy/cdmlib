@@ -15,7 +15,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -45,7 +46,7 @@ public class SpecimenDescription
 
 	private static final long serialVersionUID = -8506790426682192703L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SpecimenDescription.class);
+    private static final Logger logger = LogManager.getLogger();
 
 // ************************ FACTORY *******************************/
 

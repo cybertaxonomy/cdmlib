@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.excel.stream;
 
 import java.io.IOException;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +16,14 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.stream.IReader;
@@ -34,19 +35,15 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  *
  * @author a.oppermann
  * @since 16.05.2013
- *
  */
 public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 
-	private static Logger logger = LogManager.getLogger(ExcelToStreamConverter.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private URI source;
 
 	/**
-	 *
 	 * Factory
-	 * @param source
-	 * @return
 	 */
 	public static ExcelToStreamConverter<ExcelStreamImportState> NewInstance(URI source) {
 		return new ExcelToStreamConverter<ExcelStreamImportState>(source);
@@ -54,19 +51,11 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 
 	/**
 	 * Constructor
-	 * @param source
 	 */
 	public ExcelToStreamConverter(URI source){
 		this.source = source;
 	}
 
-	/**
-	 * @param state
-	 * @return
-	 * @throws HttpException
-	 * @throws IOException
-	 * @throws InvalidFormatException
-	 */
 	public IReader<ExcelRecordStream> getWorksheetStream(STATE state) throws IOException, HttpException, InvalidFormatException{
 //		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(source));
 //		HSSFWorkbook wb = new HSSFWorkbook(fs);
@@ -113,11 +102,6 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 		return new ListReader<>(streamList);
 	}
 
-
-	/**
-	 * @param wsName
-	 * @return
-	 */
 	private TermUri convertSheetName2TermUri(String wsName) {
 		if (StringUtils.isBlank(wsName)){
 			throw new IllegalArgumentException("Worksheet name must not be null or empty");
@@ -140,5 +124,4 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
             }
         }
     }
-
 }

@@ -6,16 +6,16 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.taxonx2013;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-
 
 /**
  * @author p.kelber
@@ -34,7 +33,7 @@ public class TaxonXImportConfigurator
 
     private static final long serialVersionUID = -7607808010688414010L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonXImportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private String defaultImportClassification = null;
     //if true the information in the mods part (taxonxHeader)
@@ -42,7 +41,6 @@ public class TaxonXImportConfigurator
     private boolean doFacts = true;
     private boolean doTypes = true;
     private boolean alwaysUseDefaultClassification = false;
-
 
     //TODO
     private static IInputTransformer defaultTransformer = null;
@@ -60,9 +58,7 @@ public class TaxonXImportConfigurator
     private String originalSourceId;
 
     private Map<String, Person> titleCachePerson;
-    private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
-
-
+    private Map<String,UUID> namedAreaDecisions = new HashMap<>();
 
     private static Reference sourceRef = null;
 
@@ -73,7 +69,6 @@ public class TaxonXImportConfigurator
     private Reference sourceURL;
     private boolean lastImport=false;
 
-
     @SuppressWarnings("unchecked")
     @Override
     protected void makeIoClassList(){
@@ -82,30 +77,16 @@ public class TaxonXImportConfigurator
         };
     }
 
-    /**
-     * @param uri
-     * @param destination
-     * @return
-     */
     public static TaxonXImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
         return new TaxonXImportConfigurator(uri, destination);
     }
 
-
-    /**
-     * @param url
-     * @param destination
-     */
     private TaxonXImportConfigurator(URI uri, ICdmDataSource destination) {
         super(defaultTransformer);
         setSource(uri);
         setDestination(destination);
     }
 
-    /**
-     * @param url
-     * @param destination
-     */
     private TaxonXImportConfigurator(ICdmDataSource destination) {
         super(defaultTransformer);
         setDestination(destination);
@@ -157,21 +138,13 @@ public class TaxonXImportConfigurator
         this.originalSourceId = originalSourceId;
     }
 
-
-    /**
-     * @return the doMods
-     */
     public boolean isDoMods() {
         return doMods;
     }
 
-    /**
-     * @param doMods the doMods to set
-     */
     public void setDoMods(boolean doMods) {
         this.doMods = doMods;
     }
-
 
     public boolean isDoFacts() {
         return doFacts;
@@ -180,8 +153,6 @@ public class TaxonXImportConfigurator
         this.doFacts = doFacts;
     }
 
-
-
     public boolean isDoTypes() {
         return doTypes;
     }
@@ -189,42 +160,24 @@ public class TaxonXImportConfigurator
         this.doTypes = doTypes;
     }
 
-
-    /**
-     * @return the isPublishReferences
-     */
     public boolean isPublishReferences() {
         return isPublishReferences;
     }
 
-    /**
-     * @param isPublishReferences the isPublishReferences to set
-     */
     public void setPublishReferences(boolean isPublishReferences) {
         this.isPublishReferences = isPublishReferences;
     }
 
-    /**
-     * @param b
-     */
     public void setDoAutomaticParsing(boolean b) {
 
     }
 
-    /**
-     * @param destination
-     * @return
-     */
     public static TaxonXImportConfigurator NewInstance(ICdmDataSource destination) {
         return new TaxonXImportConfigurator(destination);
     }
 
-    /**
-     * @param reference
-     */
     public static void setSourceRef(Reference reference) {
         sourceRef = reference;
-
     }
 
     public Map<String, Person> getPersons() {
@@ -249,9 +202,6 @@ public class TaxonXImportConfigurator
         return namedAreaDecisions.get(areaStr);
     }
 
-    /**
-     * @return
-     */
     public boolean doKeepOriginalSecundum() {
         return keepOriginalSecundum;
     }
@@ -260,9 +210,6 @@ public class TaxonXImportConfigurator
         this.keepOriginalSecundum = reuseSecundum;
     }
 
-    /**
-     * @return
-     */
     public Reference getSecundum() {
         if(secundum == null){
             secundum = ReferenceFactory.newGeneric();
@@ -271,7 +218,6 @@ public class TaxonXImportConfigurator
 
         return secundum;
     }
-
 
     public void setSecundum(Reference reference){
         this.secundum=reference;
@@ -285,7 +231,6 @@ public class TaxonXImportConfigurator
         this.maxRank = maxRank;
     }
 
-
     public boolean hasAskedForHigherRank(){
         return askedForHRank;
     }
@@ -294,9 +239,6 @@ public class TaxonXImportConfigurator
         askedForHRank=asked;
     }
 
-    /**
-     * @return
-     */
     public String getImportClassificationName() {
        return defaultImportClassification;
     }
@@ -305,24 +247,14 @@ public class TaxonXImportConfigurator
         defaultImportClassification=className;
     }
 
-    /**
-     * @param referenceUrl
-     */
     public void addOriginalSource(Reference referenceUrl) {
        this.sourceURL = referenceUrl;
-
     }
 
-    /**
-     * @return the sourceURL
-     */
     public Reference getOriginalSourceURL() {
         return sourceURL;
     }
 
-    /**
-     * @param b
-     */
     public void setLastImport(boolean b) {
         lastImport=b;
     }
@@ -340,7 +272,6 @@ public class TaxonXImportConfigurator
 		this.alwaysUseDefaultClassification = alwaysUseDefaultClassification;
 	}
 
-
 	public boolean isUseOldUnparsedSynonymExtraction() {
 		return isUseOldUnparsedSynonymExtraction;
 	}
@@ -348,7 +279,4 @@ public class TaxonXImportConfigurator
 	public void setUseOldUnparsedSynonymExtraction(boolean isUseOldUnparsedSynonymExtraction) {
 		this.isUseOldUnparsedSynonymExtraction = isUseOldUnparsedSynonymExtraction;
 	}
-
-
-
 }

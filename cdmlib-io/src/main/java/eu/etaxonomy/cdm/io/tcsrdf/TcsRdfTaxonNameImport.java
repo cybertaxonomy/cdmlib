@@ -6,13 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.io.InputStream;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -53,9 +52,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
     private static final long serialVersionUID = -2547422867292051979L;
 
-    private static final Logger logger = LogManager.getLogger(TcsRdfTaxonNameImport.class);
-
-	private static int modCount = 5000;
+    private static final Logger logger = LogManager.getLogger();
 
 	public TcsRdfTaxonNameImport(){
 		super();
@@ -102,12 +99,6 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	protected void doInvoke(TcsRdfImportState state){
 
 		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)state.getStore(ICdmIO.TEAM_STORE);
-
-		String tcsElementName;
-		Namespace tcsNamespace;
-		String value;
 
 		logger.info("start makeTaxonNames ...");
 		TcsRdfImportConfigurator config = state.getConfig();
@@ -171,8 +162,6 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		//Rank
 		prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"rankString");
 		String strRank = nameAbout.getProperty(prop).getString();
-
-
 
 		try {
 
@@ -679,7 +668,8 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	}
 
 	public TaxonName handleRdfElementFromStream(InputStream is, TcsRdfImportConfigurator config, MapWrapper<TaxonName> taxonNameMap, String uri){
-	Model model = ModelFactory.createDefaultModel();
+
+	    Model model = ModelFactory.createDefaultModel();
 		try{
 			model.read(is, null);
 
@@ -689,12 +679,9 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			String taxonNameNamespace = config.getTnNamespaceURIString();
 			return handleNameModel(model, config, taxonNameMap, uri);
 
-
 		}catch(Exception e){
 			logger.debug("The file was no valid rdf file");
 		}
-
 		return null;
 	}
-
 }

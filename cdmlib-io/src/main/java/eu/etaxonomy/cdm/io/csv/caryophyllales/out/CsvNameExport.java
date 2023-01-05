@@ -15,7 +15,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -55,17 +57,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
-
-
 /**
  * @author k.luther
  * @since 2015-Apr
  */
 @Component
 public class CsvNameExport extends CsvNameExportBase {
-    private static final long serialVersionUID = 7289805663701807425L;
 
-    private static final Logger logger = LogManager.getLogger(CsvNameExport.class);
+    private static final long serialVersionUID = 7289805663701807425L;
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IEditGeoService geoService;
@@ -509,7 +509,7 @@ public class CsvNameExport extends CsvNameExportBase {
     private HashMap<String, String> createNewRecord(TaxonNode childNode, CsvNameExportState state){
         HashMap<String, String> nameRecord = new HashMap<>();
         nameRecord.put("classification", childNode.getClassification().getTitleCache());
-        if (!childNode.getTaxon().getName().getRank().isLower(Rank.GENUS())){
+        if (!childNode.getTaxon().getName().getRank().isLowerThan(RankClass.Genus)){
             return null;
         }
         TaxonNode familyNode = getHigherNode(childNode, Rank.FAMILY());

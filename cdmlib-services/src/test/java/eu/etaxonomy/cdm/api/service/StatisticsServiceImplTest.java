@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -54,7 +55,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(StatisticsServiceImplTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	// constant if you want to printout the database content to console:
 	// only recommended for a small probe
@@ -426,7 +427,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					(taxonContextCounter.synonyms)++;
 					(taxonContextCounter.allTaxa)++;
 					taxon.addSynonym(synonym,
-							SynonymType.SYNONYM_OF());
+							SynonymType.SYNONYM_OF);
 
 					synonymCounter++;
 				}
@@ -647,7 +648,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	private Map<String, Number> createExpectedCountMap_ALL() {
-		Map<String, Number> countMap = new HashMap<String, Number>();
+		Map<String, Number> countMap = new HashMap<>();
 		createMap_ALL();
 		for (StatisticsTypeEnum type : TYPES) {
 			// System.out.println(""+typeMap_ALL.get(type.getLabel()));
@@ -658,11 +659,11 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	private List<Map<String, Number>> createExpectedCountMaps_CLASSIFICATION() {
 
-		List<Map<String, Number>> mapList = new ArrayList<Map<String, Number>>();
+		List<Map<String, Number>> mapList = new ArrayList<>();
 
 		for (int i = 0; i < NO_OF_CLASSIFICATIONS; i++) {
 
-			Map<String, Number> countMap = new HashMap<String, Number>();
+			Map<String, Number> countMap = new HashMap<>();
 
 			for (StatisticsTypeEnum type : TYPES) {
 				countMap.put(type.getLabel(),

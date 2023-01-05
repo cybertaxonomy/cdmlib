@@ -11,18 +11,18 @@ package eu.etaxonomy.cdm.io.stream;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 
-
 /**
  * @author a.mueller
- *
  */
 public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(LookAheadStream.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private final Queue<ITEM> fifo = new LinkedBlockingQueue<>();
 
@@ -86,5 +86,4 @@ public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 	public TermUri getTerm() {
 		return stream.getTerm();
 	}
-
 }

@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -56,9 +57,10 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
+
 	private static final long serialVersionUID = 5225908742890437668L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(HybridRelationshipType.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static Map<UUID, HybridRelationshipType> termMap = null;
 

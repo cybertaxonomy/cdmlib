@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 /**
  * @author a.kohlbecker
  */
-public enum CRUD  implements IEnumTerm<CRUD>{
+public enum CRUD implements IEnumTerm<CRUD>{
     CREATE("Create", "C"),
     READ("Read", "R"),
     UPDATE("Update", "U"),
@@ -67,5 +67,4 @@ public enum CRUD  implements IEnumTerm<CRUD>{
 
     public static CRUD getByKey(String key){return delegateVoc.getByKey(key);}
     public static CRUD getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
 }

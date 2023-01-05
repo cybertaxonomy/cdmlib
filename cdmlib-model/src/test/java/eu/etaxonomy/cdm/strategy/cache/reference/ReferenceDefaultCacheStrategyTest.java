@@ -13,7 +13,8 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class ReferenceDefaultCacheStrategyTest {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ReferenceDefaultCacheStrategyTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String SEP = TimePeriod.SEP;
 

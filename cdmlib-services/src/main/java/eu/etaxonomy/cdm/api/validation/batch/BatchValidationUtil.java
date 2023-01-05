@@ -17,7 +17,8 @@ import java.util.List;
 import javax.print.attribute.standard.Media;
 import javax.validation.Validator;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IService;
@@ -53,7 +54,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author ayco_holleman
  * @since 28 jan. 2015
- *
  */
 class BatchValidationUtil {
 
@@ -62,7 +62,7 @@ class BatchValidationUtil {
     }
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(BatchValidationUtil.class);
+    private static final Logger logger = LogManager.getLogger();
 
     // Ideally retrieved dynamically through reflection, but got stuck on
     // getXXXService methods in ICdmRepository returning proxies

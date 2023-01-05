@@ -74,7 +74,7 @@ public class TermNode <T extends DefinedTermBase>
             extends TermRelationBase<T, TermNode<T>, TermTree>
             implements ITreeNode<TermNode<T>> {
 
-    private static final Logger logger = LogManager.getLogger(TermNode.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Parent")
     @XmlIDREF

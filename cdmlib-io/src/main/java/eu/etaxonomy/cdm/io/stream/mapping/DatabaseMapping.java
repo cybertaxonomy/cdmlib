@@ -16,13 +16,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.stream.mapping.IImportMapping.CdmKey;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -32,13 +32,13 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
- * TODO inwork, currently it works with H2
+ * TODO in work, currently it works with H2
  * @author a.mueller
  * @since 22.03.2012
- *
  */
 public class DatabaseMapping implements IImportMapping {
-    private static final Logger logger = LogManager.getLogger(DatabaseMapping.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String DATABASE_INTERNAL_IMPORT_MAPPING = "_internalImportMapping";
 	protected static final String TABLE_IMPORT_MAPPING  = "importmapping";
@@ -71,9 +71,6 @@ public class DatabaseMapping implements IImportMapping {
         this(mappingId, null);
     }
 
-	/**
-	 * @param database
-	 */
 	public DatabaseMapping(String mappingId, String file) {
 		super();
 		initDatasource(file);
@@ -111,11 +108,6 @@ public class DatabaseMapping implements IImportMapping {
 		return this.datasource.executeUpdate(insertMappingSql);
 	}
 
-
-	/**
-	 * @param cdmKey
-	 * @return
-	 */
 	private String getCdmClassStr(Class cdmClass) {
 		String clazz = reverseShortCuts.get(cdmClass);
 		if (clazz == null){
@@ -124,14 +116,12 @@ public class DatabaseMapping implements IImportMapping {
 		return clazz;
 	}
 
-
 	private int deleteExistingMapping(String sourceNamespace, String sourceId) throws SQLException {
 	    String normalizedKey = normalizeKey(sourceId);
 		String deleteMappingSql = " DELETE FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s'";
 		deleteMappingSql = String.format(deleteMappingSql,TABLE_IMPORT_MAPPING, COL_TASK_ID, this.mappingId, COL_SOURCE_NS, sourceNamespace, COL_SOURCE_ID, normalizedKey);
 		return this.datasource.executeUpdate(deleteMappingSql);
 	}
-
 
 	private int deleteAll() throws SQLException {
 		String deleteMappingSql = " DELETE FROM %s WHERE %s = '%s' ";
@@ -145,7 +135,6 @@ public class DatabaseMapping implements IImportMapping {
 		ResultSet rs = this.datasource.executeQuery(sql);
 		rs.next();
 		return rs.getInt("n");
-
 	}
 
 	@Override
@@ -188,7 +177,6 @@ public class DatabaseMapping implements IImportMapping {
 		String selectMappingSql = " SELECT count(*) as n FROM %s" +
 			" WHERE %s = '%s' AND %s = '%s' AND %s = '%s' AND %s = '%s' ";
 
-
 		String cdmClass = getCdmClassStr(destinationClass);
 		String normalizedKey = normalizeKey(sourceId);
 		selectMappingSql = String.format(selectMappingSql,
@@ -208,8 +196,6 @@ public class DatabaseMapping implements IImportMapping {
     /**
      * Normalizes the key coming from the DwCA File.
      * This includes handling ' and keys with length > 255
-     * @param sourceKey
-     * @return
      */
     private String normalizeKey(String key) {
         if (key == null){
@@ -240,7 +226,6 @@ public class DatabaseMapping implements IImportMapping {
 		return partialMapping;
 	}
 
-
 	@Override
 	public void finish() {
 		try {
@@ -252,12 +237,6 @@ public class DatabaseMapping implements IImportMapping {
 		}
 	}
 
-
-	/**
-	 * @param clazzStr
-	 * @return
-	 * @throws ClassNotFoundException
-	 */
 	private Class<?> getCdmClass(String clazzStr) throws ClassNotFoundException {
 		Class<?> clazz = shortCuts.get(clazzStr);
 		if (clazz == null){
@@ -265,7 +244,6 @@ public class DatabaseMapping implements IImportMapping {
 		}
 		return clazz;
 	}
-
 
 	private void initDatasource(String file) {
 		getDatabase(file);
@@ -320,12 +298,7 @@ public class DatabaseMapping implements IImportMapping {
 		return datasource;
 	}
 
-    /**
-     * @param path
-     */
     private void makeDatasource(String path) {
         datasource = CdmDataSource.NewH2EmbeddedInstance("_tmpMapping", "a", "b", path);
     }
-
-
 }

@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,8 +31,9 @@ import eu.etaxonomy.cdm.validation.constraint.ValidTaxonomicYearValidator;
  * @author ben.clark
  */
 public class ValidTaxonomicYearTest extends ValidationTestBase {
+
 	@SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ValidTaxonomicYearTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     static Class<ValidTaxonomicYearValidator> validatorClass = ValidTaxonomicYearValidator.class;
     static Class<Level3> group = Level3.class;

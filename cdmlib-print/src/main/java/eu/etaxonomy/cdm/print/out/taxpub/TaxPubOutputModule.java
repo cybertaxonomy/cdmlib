@@ -10,8 +10,6 @@ package eu.etaxonomy.cdm.print.out.taxpub;
 
 import java.io.File;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -22,8 +20,6 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  * @since Aug 4, 2010
  */
 public class TaxPubOutputModule extends PublishOutputModuleBase {
-
-	private static final Logger logger = LogManager.getLogger(TaxPubOutputModule.class);
 
 	@Override
     public String getOutputFileSuffix() {

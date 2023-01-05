@@ -8,6 +8,8 @@
  */
 package eu.etaxonomy.cdm.remote.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -36,6 +38,8 @@ import org.springframework.context.annotation.Profile;
         "eu.etaxonomy.cdm.remote.service",
         "eu.etaxonomy.cdm.remote.config" })
 public class CdmSpringMVCConfigWithSwagger extends CdmSpringMVCConfig {
+
+    private static final Logger logger = LogManager.getLogger();
 
     public CdmSpringMVCConfigWithSwagger() {
         super();

@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,13 +17,10 @@ import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import io.swagger.annotations.Api;
 
-
 @Controller
 @Api("termTree")
 @RequestMapping(value = {"/termTree/{uuid}"})
 public class TermTreeController extends AbstractIdentifiableController<TermTree, ITermTreeService> {
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TermTreeController.class);
 
     @Override
     @Autowired

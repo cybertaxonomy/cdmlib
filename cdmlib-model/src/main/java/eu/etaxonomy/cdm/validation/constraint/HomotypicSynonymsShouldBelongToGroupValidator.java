@@ -29,7 +29,7 @@ public class HomotypicSynonymsShouldBelongToGroupValidator implements
 		if (synonym.getType() == null){
 		    return valid;
 		}
-		if(synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF())) {
+		if(synonym.getType().equals(SynonymType.HOMOTYPIC_SYNONYM_OF)) {
 			Taxon accepted = synonym.getAcceptedTaxon();
 
 			if (accepted != null && accepted.getName() != null && synonym.getName() != null){

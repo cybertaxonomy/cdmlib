@@ -6,12 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
@@ -25,12 +24,9 @@ import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
  */
 @Repository
 public class OrderedTermVocabularyDaoImpl
-        extends CdmEntityDaoBase<OrderedTermVocabulary<OrderedTermBase<?>>>
+        extends CdmEntityDaoBase<OrderedTermVocabulary<DefinedTermBase<?>>>
         implements IOrderedTermVocabularyDao {
 
-	/**
-	 * @param type
-	 */
 	public OrderedTermVocabularyDaoImpl() {
 		super((Class)OrderedTermVocabulary.class);
 	}

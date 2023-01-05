@@ -19,18 +19,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -43,6 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 
 /**
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
     private static final long serialVersionUID = 841703025922543361L;
 
-    private static final Logger logger = LogManager.getLogger(CsvTaxExportRedlist.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "RedlistCoreTax.csv";
@@ -209,12 +209,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	}
 
 	/**
-	 * handles misapplied {@link Taxon}
-	 * @param taxon
-	 * @param writer
-	 * @param classification
-	 * @param metaRecord
-	 * @param config
+	 * Handles misapplied {@link Taxon}
 	 */
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvTaxRecordRedlist record, CsvTaxExportConfiguratorRedlist config) {
 		Set<TaxonRelationship> misappliedNameRels = taxon.getMisappliedNameRelations();
@@ -237,18 +232,10 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * Taxon Status, Synonyms, {@link Feature features} data
 	 * @param record the concrete information record
 	 * @param taxonBase {@link Taxon}
-	 * @param name
-	 * @param acceptedTaxon
-	 * @param parent
-	 * @param basionym
-	 * @param isPartial
-	 * @param isProParte
-	 * @param config
-	 * @param type
 	 */
 	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase<?> taxonBase,
 			INonViralName name, Taxon acceptedTaxon, Classification classification,
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
+			TaxonRelationshipType relType, boolean isProParte, boolean isPartial,
 			CsvTaxExportConfiguratorRedlist config) {
 
 		List<Feature> features = config.getFeatures();
@@ -268,13 +255,12 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		handleDiscriptionData(record, (Taxon) taxonBase);
 		if(features!= null) {
 
-			List<List<String>> featureCells = new ArrayList<List<String>>(features.size());
+			List<List<String>> featureCells = new ArrayList<>(features.size());
 			for(int i = 0; i < features.size(); i++) {
-				featureCells.add(new ArrayList<String>());
+				featureCells.add(new ArrayList<>());
 			}
 			handleRelatedRedlistStatus(record, (Taxon)taxonBase, false, featureCells, features);
 			handleRelatedRedlistStatus(record, (Taxon)taxonBase, true, featureCells, features);
-
 		}
 		return;
 	}
@@ -282,18 +268,14 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	private void handleTaxonomicStatus(
 			CsvTaxRecordRedlist record,
 			INonViralName name,
-			RelationshipTermBase<?> type,
+			TaxonRelationshipType type,
 			boolean isProParte,
 			boolean isPartial) {
 		if (type == null){
 			record.setTaxonomicStatus(name.getNameType().acceptedTaxonStatusLabel());
 		}else{
 			String status = name.getNameType().synonymStatusLabel();
-			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
-				status = "heterotypicSynonym";
-			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
-				status = "homotypicSynonym";
-			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
+			if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				status = "misapplied";
 			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
                 status = "proParteMisapplied";
@@ -317,7 +299,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		for (Synonym synonym :synonyms ){
 			SynonymType type = synonym.getType();
 			if (type == null){ // should not happen
-				type = SynonymType.SYNONYM_OF();
+				type = SynonymType.SYNONYM_OF;
 			}
 			INonViralName name = synonym.getName();
 			synonymLabels.add(name.getTitleCache());
@@ -349,7 +331,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			for (DescriptionElementBase el : description.getElements()){
 				if(el.isInstanceOf(CategoricalData.class)){
 					CategoricalData categoricalData = CdmBase.deproxy(el, CategoricalData.class);
-					for(State state:categoricalData.getStatesOnly()){
+					for(DefinedTermBase<?> state:categoricalData.getStatesOnly()){
 						Feature stateFeature = categoricalData.getFeature();
 						// find matching feature and put data into according cell
 						for(int i = 0; i < features.size(); i++) {

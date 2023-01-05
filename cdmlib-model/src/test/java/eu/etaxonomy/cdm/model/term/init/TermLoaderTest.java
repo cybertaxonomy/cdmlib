@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,8 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
  * @author a.mueller
  */
 public class TermLoaderTest {
-	static Logger logger = LogManager.getLogger(TermLoaderTest.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 	private TermLoader termLoader;
 	private Map<UUID,DefinedTermBase> terms;
@@ -48,7 +50,7 @@ public class TermLoaderTest {
 		uuidTautonymy = UUID.fromString("84521f09-3e10-43f5-aa6f-2173a55a6790");
 	}
 
-/************** TESTS **********************************/
+//************** TESTS **********************************/
 
 	@Test
 	public void testLoadRanks() {

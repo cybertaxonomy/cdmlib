@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.model;
 
 import java.util.UUID;
@@ -5,25 +13,20 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * @author cmathew
- *
  * Cache class for CDM Entities based on Ehcache.
  * The class manages a singleton {@link net.sf.ehcache.CacheManager} having a
  * {@link net.sf.ehcache.Cache} initialised with a default configuration.
  *
  * FIXME: This interface should actually be in an external project which also
- * includes the implemented cachers.
+ *        includes the implemented cachers.
  *
- * @param <T>
+ * @author cmathew
  */
 public interface ICdmUuidCacher extends ICdmCacher {
 
     /**
      * Puts the (Key,Value) pair of ({@link java.util.UUID}, {@link eu.etaxonomy.cdm.model.common.CdmBase}),
      * in the cache
-     *
-     * @param uuid
-     * @param cdmEntity
      */
     public void put(UUID uuid, CdmBase cdmEntity);
 
@@ -36,15 +39,11 @@ public interface ICdmUuidCacher extends ICdmCacher {
 	 * (DefinedTermBase) entities.
 	 *
 	 * @param uuid of CDM Entity to return
-	 * @return
 	 */
 	public CdmBase load(UUID uuid);
 
 	/**
-	 * Get a CDM Entity object with given UUID from the (default) cache.
-	 *
-	 * @param uuid
-	 * @return
+	 * Get a CDM Entity object with given UUID from the cache.
 	 */
 	public CdmBase getFromCache(UUID uuid);
 

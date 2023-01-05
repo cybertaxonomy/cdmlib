@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.IIoObservable;
 import eu.etaxonomy.cdm.io.common.ObservableBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Core;
@@ -27,13 +27,13 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 /**
  * @author a.mueller
  * @since 17.10.2011
- *
  */
-public class CsvStream extends ObservableBase implements IIoObservable,IItemStream{
-    private static final long serialVersionUID = -4828538731087241715L;
+public class CsvStream extends ObservableBase
+        implements IItemStream{
 
+    private static final long serialVersionUID = -4828538731087241715L;
     @SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(CsvStream.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private final CSVReader csvReader;
 	private final ArchiveEntryBase archiveEntry;
@@ -150,10 +150,6 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 		return line;
 	}
 
-
-	/**
-	 * @return the term
-	 */
 	@Override
 	public TermUri getTerm() {
 		return term;
@@ -174,6 +170,4 @@ public class CsvStream extends ObservableBase implements IIoObservable,IItemStre
 			return "CsvStream for " + CdmUtils.Nz(archiveEntry.getRowType() + " at line " + line);
 		}
 	}
-
-
 }

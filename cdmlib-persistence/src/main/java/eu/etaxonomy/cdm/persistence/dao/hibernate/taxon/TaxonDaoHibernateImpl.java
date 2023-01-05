@@ -84,8 +84,9 @@ import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 public class TaxonDaoHibernateImpl
               extends IdentifiableDaoBase<TaxonBase>
               implements ITaxonDao {
+
 //    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
-    private static final Logger logger = LogManager.getLogger(TaxonDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public TaxonDaoHibernateImpl() {
         super(TaxonBase.class);
@@ -812,12 +813,12 @@ public class TaxonDaoHibernateImpl
             criteria.setProjection(Projections.rowCount());
             return (Long)criteria.uniqueResult();
         } else {
-            AuditQuery query = makeAuditQuery(Synonym.class,auditEvent);
+            AuditQuery query = makeAuditQuery(Synonym.class, auditEvent);
             query.add(AuditEntity.relatedId("acceptedTaxon").eq(taxon.getId()));
             query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
+                query.add(AuditEntity.property("type").eq(type));
             }
 
             return (Long)query.getSingleResult();
@@ -843,7 +844,7 @@ public class TaxonDaoHibernateImpl
             query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
+                query.add(AuditEntity.property("type").eq(type));
             }
 
             return (Long)query.getSingleResult();
@@ -1151,7 +1152,7 @@ public class TaxonDaoHibernateImpl
             query.add(AuditEntity.relatedId("acceptedTaxon").eq(taxon.getId()));
 
             if(type != null) {
-                query.add(AuditEntity.relatedId("type").eq(type.getId()));
+                query.add(AuditEntity.property("type").eq(type));
             }
 
             if(pageSize != null) {

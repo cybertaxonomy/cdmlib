@@ -52,12 +52,13 @@ import net.sf.json.JSONObject;
 /**
  * Utility class which provides the functionality to convert a JSON response
  * resulting from a GBIF query for occurrences to the corresponding CDM entities.
+ *
  * @author pplitzner
  * @since 22.05.2014
  */
 public class GbifJsonOccurrenceParser {
 
-    private static final Logger logger = LogManager.getLogger(GbifJsonOccurrenceParser.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String DATASET_KEY = "datasetKey";
     private static final String DATASET_PROTOCOL = "protocol";
@@ -427,7 +428,7 @@ public class GbifJsonOccurrenceParser {
                                     imageInf = MediaInfoFileReader.legacyFactoryMethod(uri)
                                         .readBaseInfo()
                                         .getCdmImageInfo();
-                                } catch (URISyntaxException |IOException | HttpException e) {
+                                } catch (URISyntaxException |IOException | HttpException | IllegalArgumentException e) {
                                     e.printStackTrace();
                                 }
                                // media.addIdentifier(mediaRecord.getString("identifier"), null);

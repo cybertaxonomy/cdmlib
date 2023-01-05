@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Assert;
@@ -61,12 +62,12 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  */
 public class NonViralNameParserImplTest extends TermTestBase {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private static final NomenclaturalCode ICNAFP = NomenclaturalCode.ICNAFP;
     private static final NomenclaturalCode ICZN = NomenclaturalCode.ICZN;
 
     private static final String SEP = TimePeriod.SEP;
-
-    private static final Logger logger = LogManager.getLogger(NonViralNameParserImplTest.class);
 
     final private String strNameAbies1 = "Abies alba";
     final private String strNameAbiesSub1 = "Abies alba subsp. beta";
@@ -95,7 +96,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         botanicCode = ICNAFP;
     }
 
-/*************** TEST *********************************************/
+//*************** TEST *********************************************/
 
     @Test
     public final void testNewInstance() {

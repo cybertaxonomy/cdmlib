@@ -1,12 +1,11 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
@@ -25,17 +25,17 @@ import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 /**
  * @author a.mueller
  * @since 12.11.2008
- * @version 1.0
  */
 public class ImportWrapper {
-	private static final Logger logger = LogManager.getLogger(ImportWrapper.class);
-	
+
+    private static final Logger logger = LogManager.getLogger();
+
 	private String label;
-	
+
 	private Class<? extends ICdmImporter> importClass = CdmApplicationAwareDefaultImport.class;
-	
+
 	private IImportConfigurator configuration;
-	
+
 	public static List<ImportWrapper> list(){
 		logger.debug("Create ImportWrapper list");
 		List<ImportWrapper> result = new ArrayList<ImportWrapper>();
@@ -48,7 +48,7 @@ public class ImportWrapper {
 		result.add(wrapper);
 		return result;
 	}
-	
+
 	public static ImportWrapper Abcd206WrapperInstance(){
 		String label = "ABCD 2.06";
 		Class<? extends ICdmImporter> clazz = CdmApplicationAwareDefaultImport.class;
@@ -60,7 +60,7 @@ public class ImportWrapper {
 		return wrapper;
 	}
 
-	
+
 	public static ImportWrapper TcsXml101WrapperInstance(){
 		String label = "TcsXML 1.1";
 		Class<? extends ICdmImporter> clazz = CdmApplicationAwareDefaultImport.class;
@@ -71,8 +71,8 @@ public class ImportWrapper {
 		wrapper.setConfiguration(config);
 		return wrapper;
 	}
-	
-	
+
+
 	public static ImportWrapper Jaxb10WrapperInstance(){
 		String label = "CDM 1.0 XML";
 		Class<? extends ICdmImporter> clazz = CdmApplicationAwareDefaultImport.class;
@@ -85,7 +85,7 @@ public class ImportWrapper {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param source
 	 * @param destination
 	 * @param secUUID
@@ -96,10 +96,10 @@ public class ImportWrapper {
 			Method methodInvoke = importClass.getDeclaredMethod("invoke", IImportConfigurator.class);
 			Method methodSetSource = configuration.getClass().getMethod("setSource", String.class);
 			methodSetSource.setAccessible(true);
-			
+
 			this.configuration.setDestination(destination);
 			methodSetSource.invoke(configuration, source);
-			
+
 			if (this.importClass == null){
 				return false;
 			}else{
@@ -120,12 +120,12 @@ public class ImportWrapper {
 		}
 		return false;
 	}
-	
-	
-	
-	
-// ***************  GETTER / SETTER *******************************************/	
-	
+
+
+
+
+// ***************  GETTER / SETTER *******************************************/
+
 	/**
 	 * @return the configuration
 	 */
@@ -167,7 +167,7 @@ public class ImportWrapper {
 	public void setImportClass(Class<? extends ICdmImporter> importClass) {
 		this.importClass = importClass;
 	}
-	
+
 //******* TEST **************************************//
 	/**
 	 * @param args
@@ -175,5 +175,5 @@ public class ImportWrapper {
 	public static void main(String[] args) {
 		ImportWrapper.list().get(1).invoke("", null, UUID.randomUUID());
 	}
-	
+
 }

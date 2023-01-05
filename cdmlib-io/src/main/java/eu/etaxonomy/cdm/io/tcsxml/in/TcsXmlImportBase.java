@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -48,9 +49,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @since 04.08.2008
  */
 public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfigurator, TcsXmlImportState> {
-    private static final long serialVersionUID = -2169244092211698392L;
 
-    private static final Logger logger = LogManager.getLogger(TcsXmlImportBase.class);
+    private static final long serialVersionUID = -2169244092211698392L;
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
 	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");

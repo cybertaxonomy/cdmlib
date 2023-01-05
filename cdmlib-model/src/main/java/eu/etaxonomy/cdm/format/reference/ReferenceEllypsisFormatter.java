@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.etaxonomy.cdm.format.AbstractEllypsisFormatter;
+import eu.etaxonomy.cdm.format.EllypsisFormatterBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
  * @author a.kohlbecker
  * @since Dec 12, 2018
  */
-public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Reference> {
+public class ReferenceEllypsisFormatter extends EllypsisFormatterBase<Reference> {
 
     /**
      * This init strategy should be used when the ReferenceEllypsisFormatter is being used

@@ -25,7 +25,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 
     private static final long serialVersionUID = 8375295443642690479L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TeamDefaultCacheStrategy.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
     public static final String FINAL_TEAM_CONCATINATION = " & ";

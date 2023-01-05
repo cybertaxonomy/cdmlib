@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.function.strategy;
 
 import static org.junit.Assert.assertTrue;
@@ -14,7 +13,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
@@ -26,12 +26,12 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
- *
  */
 public class TestTaxonNameParserBotanicalNameImpl {
-	private static final Logger logger = LogManager.getLogger(TestTaxonNameParserBotanicalNameImpl.class);
 
-	final private String strNameFamily = "Asteraceae";
+    private static final Logger logger = LogManager.getLogger();
+
+    final private String strNameFamily = "Asteraceae";
 	final private String strNameGenus = "Abies Müller";
 	final private String strNameAbies1 = "Abies alba";
 	final private String strNameAbiesSub1 = "Abies alba subsp. beta";

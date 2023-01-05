@@ -21,7 +21,7 @@ public class XmlImportState<CONFIG extends XmlImportConfiguratorBase, IO extends
         extends ImportStateBase<CONFIG, IO> {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(XmlImportState.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private XMLEventReader reader;
 

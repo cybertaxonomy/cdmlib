@@ -57,13 +57,15 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>>
         extends AbstractController<T, SERVICE> {
 
-    private static final Logger logger = LogManager.getLogger(BaseController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected Class<T> baseClass;
 
     @SuppressWarnings("unchecked")
     public BaseController (){
 
+       //define base class   //TODO can't we do this more straight forward e.g.
+                             //by an abstract method returning the class?
        Type superClass = this.getClass().getGenericSuperclass();
        while(true){
            if(superClass instanceof ParameterizedType){

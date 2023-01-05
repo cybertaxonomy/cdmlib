@@ -59,7 +59,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/dto/polytomousKey/"})
 public class PolytomousKeyNodeDtoController extends AbstractController<PolytomousKey, IPolytomousKeyService> {
 
-    public static final Logger logger = LogManager.getLogger(PolytomousKeyNodeDtoController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> KEY_INIT_STRATEGY = Arrays.asList(new String[]{
             "root.children"

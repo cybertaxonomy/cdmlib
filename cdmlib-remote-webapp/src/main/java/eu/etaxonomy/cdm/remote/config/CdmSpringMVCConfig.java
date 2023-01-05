@@ -56,16 +56,15 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
 //@DependsOn("objectMapperConfigurer")
 public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
 
+    private static final Logger logger = LogManager.getLogger();
+
     /**
      * turn caching off FOR DEBUGING ONLY !!!!
      */
     private static final boolean XML_VIEW_CACHING = true;
 
-    public static final Logger logger = LogManager.getLogger(CdmSpringMVCConfig.class);
-
-
     @Autowired
-    protected ServletContext servletContext;
+    private ServletContext servletContext;
 
     @Autowired // is initialized in PreloadedBeans.class
     private ObjectMapper jsonObjectMapper;
@@ -141,11 +140,10 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
     protected void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         // DefaultServletHandlerConfigurer: delegates unhandled requests by forwarding to
         // the Servlet container's "default" servlet, since the DispatcherServlet is mapped to "/"
-        // so static content ad welcome files are handled by the default servlet
+        // so static content as welcome files are handled by the default servlet
         configurer.enable();
         logger.debug("configureDefaultServletHandling");
     }
-
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
@@ -181,8 +179,7 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
        resolver.setViewResolvers(resolvers);
        logger.debug("contentNegotiatingViewResolver");
        return resolver;
-       }
-
+   }
 
    private ViewResolver getPatternViewResolver(String type) {
        PatternViewResolver resolver = new PatternViewResolver();
@@ -190,5 +187,4 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
        resolver.setCache(XML_VIEW_CACHING);
        return resolver;
    }
-
 }

@@ -5,10 +5,11 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
@@ -18,6 +19,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 /**
  * Base class for all import/export configurators.
+ *
  * @author a.babadshanjan
  * @since 16.11.2008
  */
@@ -26,7 +28,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
     private static final long serialVersionUID = -2254648962451309933L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(IoConfiguratorBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
     public static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
@@ -37,7 +39,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 
-	protected ICdmRepository cdmApp = null;
+	protected ICdmApplication cdmApp = null;
 
 	//authentification token
 	protected UsernamePasswordAuthenticationToken authenticationToken;
@@ -67,11 +69,11 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	}
 
 	@Override
-    public ICdmRepository getCdmAppController(){
+    public ICdmApplication getCdmAppController(){
 		return this.cdmApp;
 	}
 	@Override
-    public void setCdmAppController(ICdmRepository cdmApp) {
+    public void setCdmAppController(ICdmApplication cdmApp) {
 		this.cdmApp = cdmApp;
 	}
 

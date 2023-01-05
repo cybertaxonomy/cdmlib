@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
@@ -34,17 +36,18 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since 2019-08-16
  */
 public class TermNodeDaoImplTest extends CdmTransactionalIntegrationTest {
-	@SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(TermNodeDaoImplTest.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
 	private ITermTreeDao treeDao;
 
-	   @SpringBeanByType
-	    private ITermNodeDao nodeDao;
+    @SpringBeanByType
+    private ITermNodeDao nodeDao;
 
-	   @SpringBeanByType
-	    private IDefinedTermDao termDao;
+    @SpringBeanByType
+    private IDefinedTermDao termDao;
 
 	@Before
 	public void setUp() {}
@@ -72,8 +75,8 @@ public class TermNodeDaoImplTest extends CdmTransactionalIntegrationTest {
         termDao.save(node.getTerm());
         termDao.save(applicable.getFeature());
         termDao.save(inApplicable.getFeature());
-        termDao.save(applicable.getState());
-        termDao.save(inApplicable.getState());
+        termDao.save((DefinedTermBase<?>)applicable.getState());
+        termDao.save((DefinedTermBase<?>)inApplicable.getState());
 
 
         // 2. end the transaction so that all data is actually written to the db

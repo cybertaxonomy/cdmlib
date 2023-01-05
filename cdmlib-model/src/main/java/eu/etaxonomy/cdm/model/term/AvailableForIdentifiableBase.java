@@ -32,7 +32,7 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
 
     private static final long serialVersionUID = -8671887501681406910L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(AvailableForIdentifiableBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
@@ -89,6 +89,4 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
     public void setAvailableForReference(boolean availableForReference) {
         setAvailableFor(CdmClass.REFERENCE, availableForReference);
     }
-
-
 }

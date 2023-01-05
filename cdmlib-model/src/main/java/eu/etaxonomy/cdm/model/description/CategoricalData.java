@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
@@ -26,13 +25,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -68,7 +69,8 @@ import eu.etaxonomy.cdm.validation.Level2;
 public class CategoricalData extends DescriptionElementBase {
 
     private static final long serialVersionUID = -6298361966947668998L;
-    private static final Logger logger = LogManager.getLogger(CategoricalData.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
     //whether the sequence of ordered states is important
     @XmlElement(name = "OrderRelevant")
@@ -106,8 +108,8 @@ public class CategoricalData extends DescriptionElementBase {
     /**
      * Creates a new empty categorical data instance.
      */
-    public static CategoricalData NewInstance(State state, Feature feature){
-        return new CategoricalData( Arrays.asList( new State[]{state}) , feature);
+    public static CategoricalData NewInstance(DefinedTermBase<?> state, Feature feature){
+        return new CategoricalData( Arrays.asList( new DefinedTermBase<?>[]{state}) , feature);
     }
 
 //*******************  CONSTRUCTOR *********************************************/
@@ -122,12 +124,11 @@ public class CategoricalData extends DescriptionElementBase {
     /**
      * Class constructor: creates a new empty categorical data instance.
      */
-    protected CategoricalData(List<State> states, Feature feature) {
+    protected CategoricalData(List<DefinedTermBase<?>> states, Feature feature) {
         super(feature);
-        for (State state : states){
+        for (DefinedTermBase<?> state : states){
             addStateData(state);
         }
-
     }
 
 // ****************** GETTER / SETTER *********************************************/
@@ -136,7 +137,6 @@ public class CategoricalData extends DescriptionElementBase {
      * Returns the (ordered) list of {@link State states} describing the {@link Feature feature}
      * corresponding to <i>this</i> categorical data.
      */
-
     public List<StateData> getStateData(){
         return this.stateData;
     }
@@ -165,12 +165,11 @@ public class CategoricalData extends DescriptionElementBase {
      * @see #addStateData(StateData)
      * @param state
      */
-    public StateData addStateData(State state){
+    public StateData addStateData(DefinedTermBase<?> state){
         StateData stateData = StateData.NewInstance(state);
         addStateData(stateData);
         return stateData;
     }
-
 
     /**
      * Removes one element from the set of {@link #getStateData() states}
@@ -215,7 +214,7 @@ public class CategoricalData extends DescriptionElementBase {
      * @param state the given {@link State}
      * @return <code>true</code> if the state exists
      */
-    public boolean hasState(State state) {
+    public boolean hasState(DefinedTermBase<?> state) {
         return getStatesOnly().contains(state);
     }
 
@@ -223,10 +222,10 @@ public class CategoricalData extends DescriptionElementBase {
      * Convenience method returning only the list of states. Leaving out modifiers and modifying text.
      */
     @Transient
-    public List<State> getStatesOnly(){
-        List<State> result = new ArrayList<>();
+    public List<eu.etaxonomy.cdm.model.term.DefinedTermBase<?>> getStatesOnly(){
+        List<DefinedTermBase<?>> result = new ArrayList<>();
         for (StateData stateData : getStateData()){
-            State state = stateData.getState();
+            DefinedTermBase<?> state = stateData.getState();
             if (state != null){
                 result.add(state);
             }
@@ -239,12 +238,12 @@ public class CategoricalData extends DescriptionElementBase {
      * All existing state data are removed.
      * @return
      */
-    public List<StateData> setStateDataOnly(List<State> states){
+    public List<StateData> setStateDataOnly(List<? extends DefinedTermBase<?>> states){
         List<StateData> stateDataList = new ArrayList<>(getStateData());
         for (StateData stateData : stateDataList) {
             removeStateData(stateData);
         }
-        for (State state : states) {
+        for (DefinedTermBase<?> state : states) {
             addStateData(state);
         }
         return this.stateData;
@@ -267,7 +266,6 @@ public class CategoricalData extends DescriptionElementBase {
                     (unknownData? ", unknownData=" + unknownData:"")
                 + "]";
     }
-
 
 //*********************************** CLONE *****************************************/
 

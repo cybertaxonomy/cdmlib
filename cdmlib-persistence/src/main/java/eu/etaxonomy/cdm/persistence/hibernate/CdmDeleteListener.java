@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.event.spi.DeleteEvent;
 import org.hibernate.event.spi.DeleteEventListener;
@@ -25,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 public class CdmDeleteListener implements DeleteEventListener {
 
     private static final long serialVersionUID = -5511287200489449838L;
-    protected static final Logger logger = LogManager.getLogger(CdmDeleteListener.class);
+    protected static final Logger logger = LogManager.getLogger();
 
     @Override
     public void onDelete(DeleteEvent event) throws HibernateException {

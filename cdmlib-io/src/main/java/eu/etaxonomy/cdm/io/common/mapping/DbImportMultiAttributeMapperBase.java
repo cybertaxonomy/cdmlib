@@ -6,13 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -21,9 +21,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @since 12.03.2010
  */
-public abstract class DbImportMultiAttributeMapperBase<CDMBASE extends CdmBase, STATE extends DbImportStateBase<?,?>> extends MultipleAttributeMapperBase<CdmSingleAttributeMapperBase> implements IDbImportMapper<STATE, CDMBASE>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DbImportMultiAttributeMapperBase.class);
+public abstract class DbImportMultiAttributeMapperBase<CDMBASE extends CdmBase, STATE extends DbImportStateBase<?,?>>
+        extends MultipleAttributeMapperBase<CdmSingleAttributeMapperBase>
+        implements IDbImportMapper<STATE, CDMBASE>{
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 //**************************** ATTRIBUTES ****************************************************
 
@@ -40,9 +43,6 @@ public abstract class DbImportMultiAttributeMapperBase<CDMBASE extends CdmBase, 
 
 	/**
 	 * Retrieves a related object from the state's related object map. Needs casting.
-	 * @param namespace
-	 * @param foreignKey
-	 * @return
 	 */
 	protected CdmBase getRelatedObject(String namespace, String foreignKey) {
 		STATE state = importMapperHelper.getState();

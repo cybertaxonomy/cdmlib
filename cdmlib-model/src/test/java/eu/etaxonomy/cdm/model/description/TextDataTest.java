@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +17,8 @@ import static org.junit.Assert.assertSame;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @author a.mueller
  * @since 23.04.2008
  */
-
 public class TextDataTest extends EntityTestBase {
+
     @SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(TextDataTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private TextData textDataLeer;
 	private TextData textData1;

@@ -22,13 +22,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -66,12 +66,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class NomenclaturalStatusType
-        extends OrderedTermBase<NomenclaturalStatusType>
+        extends DefinedTermBase<NomenclaturalStatusType>
         implements INomenclaturalStanding {
 
 	private static final long serialVersionUID = 1337101678484153972L;
 
-	private static Logger logger = LogManager.getLogger(NomenclaturalStatusType.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	//Botanical uuids
 	public static final UUID uuidIcnafpNomStatusVocabulary = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");
@@ -92,6 +92,7 @@ public class NomenclaturalStatusType
 	private static final UUID uuidOrthographyConserved = UUID.fromString("34a7d383-988b-4117-b8c0-52b947f8c711");
 	private static final UUID uuidRejectedProp = UUID.fromString("248e44c2-5436-4526-a352-f7467ecebd56");
 	private static final UUID uuidConserved = UUID.fromString("6330f719-e2bc-485f-892b-9f882058a966");
+	private static final UUID uuidNameAndOrthographyConserved = UUID.fromString("0f838183-ffa0-4014-928e-0e3a27eb3918");
 	private static final UUID uuidSanctioned = UUID.fromString("1afe55c4-76aa-46c0-afce-4dc07f512733");
 	private static final UUID uuidInvalid = UUID.fromString("b09d4f51-8a77-442a-bbce-e7832aaf46b7");
 	private static final UUID uuidNudum = UUID.fromString("e0d733a8-7777-4b27-99a3-05ab50e9f312");
@@ -589,6 +590,16 @@ public class NomenclaturalStatusType
      */
     public static final NomenclaturalStatusType ORTHOGRAPHY_REJECTED(){
         return getTermByUuid(uuidOrthographyRejected);
+    }
+
+    /**
+     * Combined status for name and orthography conserved.
+     *
+     * @see #CONSERVED()
+     * @see #ORTHOGRAPHY_CONSERVED()
+     */
+    public static final NomenclaturalStatusType NAME_AND_ORTHOGRAPHY_CONSERVED(){
+        return getTermByUuid(uuidNameAndOrthographyConserved);
     }
 
 	/**

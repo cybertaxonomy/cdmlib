@@ -24,7 +24,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.UUIDEditor;
 import org.springframework.context.ApplicationContext;
@@ -58,7 +59,6 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 /**
  * @author a.oppermann
  * @since 20.09.2012
- *
  */
 @Controller
 @RequestMapping(value = { "/csv" })
@@ -79,7 +79,7 @@ public class CsvExportController extends AbstractController{
 	@Autowired
 	public ProgressMonitorController progressMonitorController;
 
-	private static final Logger logger = LogManager.getLogger(CsvExportController.class);
+	private static final Logger logger = LogManager.getLogger();
 
 
     private static final List<String> TAXON_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{

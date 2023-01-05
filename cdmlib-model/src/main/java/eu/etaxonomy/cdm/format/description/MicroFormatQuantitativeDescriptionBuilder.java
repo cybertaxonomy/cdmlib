@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.description.TextFormat;
  * @author m.venin
  * @since 2010
  */
-public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitativeDescriptionBuilder {
+public class MicroFormatQuantitativeDescriptionBuilder extends QuantitativeDescriptionBuilderBase {
 
 	private String spanEnd = "</span>";
 

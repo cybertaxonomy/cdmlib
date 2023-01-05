@@ -22,7 +22,8 @@ import java.util.UUID;
 import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 @Repository
 public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
-    public static final Logger logger = LogManager.getLogger(EntityValidationCrudJdbcImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String SQL_INSERT_VALIDATION_RESULT = "INSERT INTO entityvalidation"
             + "(id, created, uuid,  crudeventtype, validatedentityclass, validatedentityid,"

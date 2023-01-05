@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.metadata;
  *
  * @author a.mueller
  * @since 03.06.2016
- *
  */
 public class TaxonNodePreferenceFilter {
 

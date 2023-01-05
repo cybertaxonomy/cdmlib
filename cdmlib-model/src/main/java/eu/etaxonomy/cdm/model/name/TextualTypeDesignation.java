@@ -206,7 +206,7 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
     private void fixHashMapHibernateBug() {
         //workaround for key problem
         if(! isHashMapHibernateBugFixed){
-            HashMap<Language, LanguageString> tmp = new HashMap<>();
+            Map<Language, LanguageString> tmp = new HashMap<>();
             tmp.putAll(text);
             text.clear();
             text.putAll(tmp);

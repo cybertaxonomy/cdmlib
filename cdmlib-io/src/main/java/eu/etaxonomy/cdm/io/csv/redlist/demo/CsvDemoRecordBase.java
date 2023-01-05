@@ -18,7 +18,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
@@ -49,7 +50,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 public abstract class CsvDemoRecordBase {
 
-	private static final Logger logger = LogManager.getLogger(CsvDemoRecordBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//TODO Collection_SEPARATOR
 	protected static final CharSequence COLLECTION_SEPARATOR = "@";

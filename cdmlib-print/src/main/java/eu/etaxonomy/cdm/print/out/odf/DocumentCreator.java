@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
  */
 public class DocumentCreator {
 
-	private static final Logger logger = LogManager.getLogger(DocumentCreator.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private OdfTextDocument outputDocument;
 	private OdfFileDom contentDom; // the document object model for content.xml
@@ -87,8 +87,6 @@ public class DocumentCreator {
 		}
 		return false;
 	}
-
-
 
 	/*
 	 * The default document has some content in it already (in the case of a

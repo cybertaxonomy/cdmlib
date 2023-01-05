@@ -87,13 +87,11 @@
         <entry key="dateTimeConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.DateTimeConverter"/>
         </entry>
-           <entry key="timePeriodConverter">
-            <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.TimePeriodConverter"/>
-          </entry>
+        <entry key="timePeriodConverter">
+          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.TimePeriodConverter"/>
+        </entry>
         <entry key="hibernateProxyDeepConverter">
-          <bean
-            class="eu.etaxonomy.cdm.remote.dto.assembler.converter.HibernateProxyNullSafeDeepConverter"
-          />
+          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.HibernateProxyNullSafeDeepConverter"/>
         </entry>
         <entry key="identifierConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.IdentifierConverter"/>
@@ -103,6 +101,9 @@
         </entry>
         <entry key="constantConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.ConstantConverter"/>
+        </entry>
+        <entry key="enumConverter">
+          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.EnumConverter"/>
         </entry>
       </map>
     </property>

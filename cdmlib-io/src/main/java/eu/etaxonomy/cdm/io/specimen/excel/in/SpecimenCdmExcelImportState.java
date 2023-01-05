@@ -6,14 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -27,27 +27,23 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @since 11.05.2009
- * @version 1.0
  */
 public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExcelImportConfigurator, SpecimenRow>{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SpecimenCdmExcelImportState.class);
 
-	private SpecimenRow specimenRow;
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
+
 	private NamedAreaLevellRow namedAreaLevelRow;
 
 	private Map<String, Reference> references = new HashMap<String, Reference>();
-	private Map<String, Collection> collections = new HashMap<String, Collection>();
-	private Map<String, Person> persons = new HashMap<String, Person>();
-	private Map<String, Team> teams = new HashMap<String, Team>();
-	private Map<String, TaxonName> names = new HashMap<String, TaxonName>();
-	private Map<String, UUID> areas = new HashMap<String, UUID>();
+	private Map<String, Collection> collections = new HashMap<>();
+	private Map<String, Person> persons = new HashMap<>();
+	private Map<String, Team> teams = new HashMap<>();
+	private Map<String, TaxonName> names = new HashMap<>();
+	private Map<String, UUID> areas = new HashMap<>();
 
-
-	private Map<String, NamedAreaLevel> postfixLevels = new HashMap<String, NamedAreaLevel>();
-	private Map<String, ExtensionType> postfixExtensionTypes = new HashMap<String, ExtensionType>();
-
-
+	private Map<String, NamedAreaLevel> postfixLevels = new HashMap<>();
+	private Map<String, ExtensionType> postfixExtensionTypes = new HashMap<>();
 
 	public SpecimenCdmExcelImportState(SpecimenCdmExcelImportConfigurator config) {
 		super(config);
@@ -116,7 +112,6 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 
 	public ExtensionType putPostfixExtensionType(String postfix, ExtensionType type) {
 		return this.postfixExtensionTypes.put(postfix, type);
-
 	}
 
 	public UUID putArea(String key, UUID areaUuid) {
@@ -126,7 +121,4 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	public UUID getArea(String key) {
 		return areas.get(key);
 	}
-
-
-
 }

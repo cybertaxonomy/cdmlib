@@ -9,7 +9,8 @@
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -23,8 +24,8 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * @since 25.05.2016
  */
 public class TitleWithoutYearAndAuthorHelper {
-    private static final Logger logger = LogManager.getLogger(TitleWithoutYearAndAuthorHelper.class);
 
+    private static final Logger logger = LogManager.getLogger();
     //article
     private static final String prefixArticleReferenceJounal = UTF8.EN_DASH + " ";
     private static final String prefixSeriesArticle = "ser.";

@@ -5,7 +5,6 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
@@ -16,7 +15,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -57,8 +57,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/descriptionElement"})
 public class DescriptionElementListController {
 
-    public static final Logger logger = LogManager.getLogger(DescriptionElementListController.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ITermService termService;
@@ -76,9 +75,6 @@ public class DescriptionElementListController {
             "multilanguageText"
     });
 
-    /**
-     * @return
-     */
     protected List<String> getInitializationStrategy() {
         return DESCRIPTION_ELEMENT_INIT_STRATEGY;
     }
@@ -102,19 +98,8 @@ public class DescriptionElementListController {
         binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
     }
 
-
     /**
      * Requires the query parameter "descriptionType" to be present
-     *
-     * @param features
-     * @param descriptionType
-     * @param type
-     * @param pageSize
-     * @param pageIndex
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
      */
     @RequestMapping(value = "byFeature", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<? extends DescriptionElementBase> doPageDescriptionElementsByFeature(
@@ -142,16 +127,6 @@ public class DescriptionElementListController {
 
     /**
      * Requires the query parameter "taxon"  to be present
-     *
-     * @param taxon_uuid
-     * @param features
-     * @param type
-     * @param pageSize
-     * @param pageIndex
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
      */
     @RequestMapping(value = "byTaxon", method = {RequestMethod.GET, RequestMethod.POST}) // mapped as absolute path, see CdmAntPathMatcher
     public <T extends DescriptionElementBase> Pager<T> doGetDescriptionElementsForTaxon(
@@ -202,5 +177,4 @@ public class DescriptionElementListController {
 
        return pager;
    }
-
 }

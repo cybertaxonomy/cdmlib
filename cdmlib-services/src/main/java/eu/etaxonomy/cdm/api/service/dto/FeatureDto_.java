@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -90,7 +91,7 @@ public class FeatureDto_ extends TermDto {
             termDto = TermDto.fromTerm(term);
             dto.recommendedStatisticalMeasures.add(termDto);
         }
-        for (TermVocabulary<?> voc: feature.getSupportedCategoricalEnumerations()){
+        for (TermVocabulary<? extends DefinedTermBase> voc: feature.getSupportedCategoricalEnumerations()){
             vocDto = TermVocabularyDto.fromVocabulary(voc);
             dto.supportedCategoricalEnumerations.add(vocDto);
         }

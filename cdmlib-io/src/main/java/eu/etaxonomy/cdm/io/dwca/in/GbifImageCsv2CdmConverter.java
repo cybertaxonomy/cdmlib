@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.stream.IReader;
@@ -30,19 +31,15 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(GbifImageCsv2CdmConverter.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String CORE_ID = "coreId";
 
-	/**
-	 * @param state
-	 */
 	public GbifImageCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
@@ -70,15 +67,11 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 		return new ListReader<>(resultList);
 	}
 
-
-
-
 	@Override
 	public String getSourceId(StreamItem item) {
 		String id = item.get(CORE_ID);
 		return id;
 	}
-
 
 //********************** PARTITIONABLE **************************************/
 
@@ -92,9 +85,7 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-
 	}
-
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
@@ -109,6 +100,4 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDa
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
 }

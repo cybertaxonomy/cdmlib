@@ -10,7 +10,8 @@ package eu.etaxonomy.cdm.test.function;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
@@ -20,7 +21,7 @@ import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
  */
 public class TestCdmApplicationUtils {
 
-	private static final Logger logger = LogManager.getLogger(TestCdmApplicationUtils.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private boolean testWritableResourceDirectory() throws IOException{
 		CdmPersistenceUtils.getWritableResourceDir();

@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.common.Tree;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
  */
 public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
 
-    public static final Logger logger = LogManager.getLogger(DistributionTree.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private final IDefinedTermDao termDao;
 
@@ -50,8 +51,6 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     }
 
     /**
-     * @param parentNode
-     * @param nodeToFind
      * @return false if the node was not found
      */
     public boolean hasChildNode(TreeNode<Set<Distribution>, NamedArea> parentNode, NamedArea nodeID) {
@@ -60,8 +59,6 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
 
     /**
      * Returns the (first) child node (of type TreeNode) with the given nodeID.
-     * @param parentNode
-     * @param nodeToFind
      * @return the found node or null
      */
     public TreeNode<Set<Distribution>, NamedArea> findChildNode(TreeNode<Set<Distribution>, NamedArea> parentNode, NamedArea  nodeID) {
@@ -78,8 +75,6 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     }
 
     /**
-     * @param distributions
-     * @param omitLevels
      * @param fallbackAreaMarkerTypes
      *      Areas are fallback areas if they have a {@link Marker} with one of the specified
      *      {@link MarkerType marker types}.

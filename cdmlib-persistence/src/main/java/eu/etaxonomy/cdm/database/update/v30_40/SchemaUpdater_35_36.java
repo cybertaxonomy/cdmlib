@@ -6,13 +6,10 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.database.update.v30_40;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
@@ -29,8 +26,6 @@ import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
  */
 public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_35_36.class);
 	private static final String startSchemaVersion = "3.5.0.0.201531030000";
 	private static final String endSchemaVersion = "3.6.0.0.201527040000";
 

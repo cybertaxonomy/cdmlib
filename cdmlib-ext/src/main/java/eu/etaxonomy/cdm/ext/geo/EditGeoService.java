@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 public class EditGeoService implements IEditGeoService {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(EditGeoService.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private IDescriptionDao dao;

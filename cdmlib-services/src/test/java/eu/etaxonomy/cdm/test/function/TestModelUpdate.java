@@ -48,7 +48,7 @@ public class TestModelUpdate {
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm533" : "cdm534");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm532" : "cdm535");
 //		database = "cdm_test1";
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
@@ -205,8 +205,9 @@ public class TestModelUpdate {
 		System.out.println("Start TestModelUpdate");
 		testSelectedDb();
 
-//		updateRemoteWebappTestH2();
 //		updateAllTestH2();
+
+//		updateRemoteWebappTestH2();
 //		updateEdaphobasePostgres();
 
 		System.out.println("\nEnd Datasource");

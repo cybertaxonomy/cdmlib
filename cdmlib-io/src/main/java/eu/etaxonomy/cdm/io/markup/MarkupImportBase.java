@@ -90,6 +90,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -100,7 +101,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @since 04.08.2008
  */
 public abstract class MarkupImportBase  {
-	private static final Logger logger = LogManager.getLogger(MarkupImportBase.class);
+
+	private static final Logger logger = LogManager.getLogger();
 
 	//Base
 	protected static final String ALTITUDE = "altitude";
@@ -1095,7 +1097,7 @@ public abstract class MarkupImportBase  {
 		return docImport.getMarkerType(state, uuid, label, text, labelAbbrev, voc);
 	}
 
-	protected NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
+	protected NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, OrderedTermVocabulary<NamedAreaLevel> voc){
 		return docImport.getNamedAreaLevel(state, uuid, label, text, labelAbbrev, voc);
 	}
 
@@ -1109,13 +1111,6 @@ public abstract class MarkupImportBase  {
 
 // *************************************** Concrete methods **********************************************/
 
-
-	/**
-	 * @param state
-	 * @param classValue
-	 * @param byAbbrev
-	 * @return
-	 */
 	protected Rank makeRank(MarkupImportState state, String value, boolean byAbbrev) {
 		Rank rank = null;
 		if (StringUtils.isBlank(value)) {

@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -50,7 +51,7 @@ public class Character extends Feature {
 
     private static final long serialVersionUID = -5631282599057455256L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(Feature.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Structure")
     @XmlIDREF

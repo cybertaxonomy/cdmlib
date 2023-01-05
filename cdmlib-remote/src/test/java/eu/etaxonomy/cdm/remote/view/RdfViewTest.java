@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2007 EDIT
+ * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
  *
@@ -140,7 +140,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		writer.close();
 
 		String resource = "/eu/etaxonomy/cdm/remote/view/RdfViewTest.rdf";
-		System.out.println(new String(outputStream.toByteArray()));
+//		System.out.println(new String(outputStream.toByteArray()));
 
 		XMLAssert.assertXMLEqual(
 		        new InputStreamReader(this.getClass().getResourceAsStream(resource)),
@@ -192,7 +192,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8" ));
 		rdfMarshaller.marshal(rdf, new StreamResult(writer));
 		writer.close();
-		System.out.println(new String(outputStream.toByteArray()));
+//		System.out.println(new String(outputStream.toByteArray()));
 
 		String resource = "/eu/etaxonomy/cdm/remote/view/NameInformationTest.rdf";
 		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));

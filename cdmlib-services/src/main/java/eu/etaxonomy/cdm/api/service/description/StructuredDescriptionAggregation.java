@@ -20,6 +20,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -36,7 +39,6 @@ import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
@@ -45,6 +47,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * Aggregates the character data for a given {@link DescriptiveDataSet}.<br>
@@ -60,6 +63,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class StructuredDescriptionAggregation
         extends DescriptionAggregationBase<StructuredDescriptionAggregation, StructuredDescriptionAggregationConfiguration>{
+
+    private static final Logger logger = LogManager.getLogger();
 
     private DescriptiveDataSet dataSet;
 
@@ -372,7 +377,7 @@ public class StructuredDescriptionAggregation
         List<StateData> dataToRemove = new ArrayList<>(elementToStay.getStateData());
         List<StateData> newData = new ArrayList<>(newElement.getStateData());
         for (StateData newStateData : newData){
-            State state = newStateData.getState();
+            DefinedTermBase<?> state = newStateData.getState();
             StateData oldStateData = firstByState(state, dataToRemove);
             if (oldStateData != null){
                 //for now only state and count is used for aggregation, below code needs to be adapted if this changes
@@ -394,7 +399,7 @@ public class StructuredDescriptionAggregation
         return updated;
     }
 
-    private StateData firstByState(State state, List<StateData> oldData) {
+    private StateData firstByState(DefinedTermBase<?> state, List<StateData> oldData) {
         if (state == null){
             return null;
         }
@@ -572,7 +577,7 @@ public class StructuredDescriptionAggregation
         }
         else{
             // split all StateData into those where the state already exists and those where it doesn't
-            List<State> statesOnly = aggregatedCategoricalData.getStatesOnly();
+            List<DefinedTermBase<?>> statesOnly = aggregatedCategoricalData.getStatesOnly();
             List<StateData> sdWithExistingStateInAggregation = cd.getStateData().stream().filter(sd->statesOnly.contains(sd.getState())).collect(Collectors.toList());
             List<StateData> sdWithNoExistingStateInAggregation = cd.getStateData().stream().filter(sd->!statesOnly.contains(sd.getState())).collect(Collectors.toList());
 

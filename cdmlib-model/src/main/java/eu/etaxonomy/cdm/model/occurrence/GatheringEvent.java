@@ -77,8 +77,9 @@ import eu.etaxonomy.cdm.model.location.Point;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed
 public class GatheringEvent extends EventBase {
+
 	private static final long serialVersionUID = 7980806082366532180L;
-	private static final Logger logger = LogManager.getLogger(GatheringEvent.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Locality")
 	@OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)

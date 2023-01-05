@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
@@ -42,10 +43,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
 
     private static final long serialVersionUID = -2441804641147165510L;
-
-    private static final Logger logger = LogManager.getLogger(TcsRdfReferenceImport.class);
-
-	private static int modCount = 1000;
+    private static final Logger logger = LogManager.getLogger();
 
 	public TcsRdfReferenceImport(){
 		super();
@@ -55,8 +53,6 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 	public boolean doCheck(TcsRdfImportState state){
 		boolean result = true;
 		result &= checkArticlesWithoutJournal(state.getConfig());
-		//result &= checkPartOfJournal(config);
-
 		return result;
 	}
 
@@ -73,7 +69,6 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 			return false;
 		}
 	}
-
 
 	protected static IRdfMapper[] standardMappers = new IRdfMapper[]{
 		//new CdmTextElementMapper("edition", "edition"),

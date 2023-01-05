@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <SPECIMENOROBSERVATIONBASE DTYPE="DerivedUnit" ID="5030" UUID="07e70de7-680b-48c1-9c94-50c1aa470a92" PROTECTEDTITLECACHE="false" TITLECACHE="(destroyed)" PROTECTEDIDENTITYCACHE="false" PUBLISH="true" RECORDBASIS="PS"/>
+  <OCCURRENCESTATUS ID="5000" UUID="f0885070-ad3e-422c-ae4e-04f3b4121dbe" TYPE_ID="[null]" UNIT_ID="5030"/> <!-- the missing type_id is on purpose -->
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="OccurrenceStatus" NEXT_VAL="5001"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="SpecimenOrObservationBase" NEXT_VAL="5031"/>
+</dataset>

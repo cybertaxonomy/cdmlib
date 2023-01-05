@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
@@ -91,8 +89,6 @@ import net.sf.cglib.proxy.MethodProxy;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class AssemblerTest extends UnitilsJUnit4 {
-
-    public static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
     private Mapper mapper;
@@ -209,7 +205,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         for(int i = 1; i < 1+3; i++) {
             Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
             synonym.setLsid(new LSID("urn:lsid:example.org:synyonms:" + i ));
-            taxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+            taxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
         }
 
         //taxon nodes

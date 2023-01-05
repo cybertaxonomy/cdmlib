@@ -13,7 +13,8 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
@@ -28,11 +29,11 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 /**
  * @author a.mueller
  * @since 18.04.2011
- *
  */
 public class DwcaTaxonRecord extends DwcaRecordBase{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaTaxonRecord.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private DwcaId scientificNameId;
 	private UUID acceptedNameUsageId;
@@ -49,7 +50,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	private String namePublishedIn;
 	private String higherClassification;
 
-
 	private String kingdom;
 	private String phylum;
 	private String clazz;
@@ -62,8 +62,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	private String infraGenericEpithet;
 	private String specificEpithet;
 	private String infraspecificEpithet;
-
-
 
 	private Rank taxonRank;
 	private String verbatimTaxonRank;
@@ -139,7 +137,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 			throw new RuntimeException(e);
 		}
 	}
-
 
 //	@Override
 //	public List<String> getHeaderList() {
@@ -307,7 +304,6 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
             state.getResult().addException(e, message);
         }
     }
-
 
     @Override
     protected void doWrite(DwcaTaxExportState state, PrintWriter writer) {
@@ -730,6 +726,4 @@ public class DwcaTaxonRecord extends DwcaRecordBase{
 	public void setGenusPart(String genusPart) {
 		this.genusPart = genusPart;
 	}
-
-
 }

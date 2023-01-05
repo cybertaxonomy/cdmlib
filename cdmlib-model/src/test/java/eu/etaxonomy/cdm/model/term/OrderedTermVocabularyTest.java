@@ -15,52 +15,40 @@ import static org.junit.Assert.fail;
 
 import java.util.SortedSet;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class OrderedTermVocabularyTest extends EntityTestBase {
-	@SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger(OrderedTermVocabularyTest.class);
 
-	private OrderedTermBase<?> otb1;
-	private OrderedTermBase<?> otb2;
-	private OrderedTermBase<?> otb3;
-	private OrderedTermBase<?> otbFree;
-	private OrderedTermVocabulary<OrderedTermBase<?>> oVoc1;
-	private OrderedTermVocabulary<OrderedTermBase<?>> oVoc2;
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
+
+	private OrderedTerm otb1;
+	private OrderedTerm otb2;
+	private OrderedTerm otb3;
+	private OrderedTerm otbFree;
+	private OrderedTermVocabulary<OrderedTerm> oVoc1;
+	private OrderedTermVocabulary<OrderedTerm> oVoc2;
 
 	@Before
 	public void setUp() throws Exception {
-		otb1 = new DerivedOrderedTermBase(TermType.Unknown,"otb1", "high", null);
-		otb2 = new DerivedOrderedTermBase(TermType.Unknown, "term", "middel", null);
-		otb3 = new DerivedOrderedTermBase(TermType.Unknown, "otb3", "low", null);
-		otbFree = new DerivedOrderedTermBase();
-		oVoc1 = new OrderedTermVocabulary<>();
+		otb1 = OrderedTerm.NewInstance(TermType.Unknown, "otb1", "high", null);
+		otb1.setId(1);
+		otb2 = OrderedTerm.NewInstance(TermType.Unknown, "term", "middel", null);
+		otb2.setId(2);
+		otb3 = OrderedTerm.NewInstance(TermType.Unknown, "otb3", "low", null);
+		otb3.setId(3);
+		otbFree = OrderedTerm.NewInstance(TermType.Unknown, null, null, null);
+		oVoc1 = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		oVoc1.addTerm(otb1);
 		oVoc1.addTerm(otb2);
 		oVoc1.addTerm(otb3);
 	}
-
-
-	private class DerivedOrderedTermBase extends OrderedTermBase<DerivedOrderedTermBase>{
-        private static final long serialVersionUID = -6661559531712274867L;
-        private DerivedOrderedTermBase(){
-			super(TermType.Unknown);
-		}
-		private DerivedOrderedTermBase(TermType type, String term, String label, String labelAbbrev){
-			super(type, term, label, labelAbbrev);
-		}
-		@Override
-		protected void setDefaultTerms(TermVocabulary<DerivedOrderedTermBase> termVocabulary) {}
-		@Override
-		public void resetTerms() {}
-	}
-
 
 //*************************** TESTS *************************************/
 
@@ -78,8 +66,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		assertNotNull(oVoc1.newTermSet());
 		assertTrue(SortedSet.class.isAssignableFrom(oVoc1.newTermSet().getClass()));
 	}
-
-
 
 	@Test
 	public final void testGetTerms() {
@@ -134,26 +120,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	}
 
 	@Test
-	@Ignore
-	public final void testGetEqualTerms() {
-		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
-//		otbFree.orderIndex = otb2.orderIndex;
-//		oVoc1.addTerm(otbFree);
-		assertEquals(3, oVoc1.size());
-		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
-		assertEquals(1, oVoc1.getEqualTerms(otb2).size());
-		assertEquals(1, oVoc1.getEqualTerms(otb3).size());
-		oVoc1.addTermEqualLevel(otbFree, otb2);
-		assertEquals(4, oVoc1.size());
-		assertEquals(2, oVoc1.getEqualTerms(otb2).size());
-
-		//as long as orderedTermVocabulary.terms is a set
-		//this won't work because terms.add() will not result
-		//in adding the term
-
-	}
-
-	@Test
 	public final void testGetHigherTerms() {
 		assertEquals(2, oVoc1.getHigherTerms(otb3).size());
 		assertEquals(1, oVoc1.getHigherTerms(otb2).size());
@@ -198,17 +164,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	}
 
 	@Test
-	public final void testAddTermEqualLevel() {
-		System.out.println(otb2.orderIndex);
-		oVoc1.addTermEqualLevel(otbFree, otb2);
-
-		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
-		assertEquals(2, oVoc1.getLowerAndEqualTerms(otbFree).size());
-		assertEquals(otb1.getLabel(), oVoc1.getNextHigherTerm(otbFree).getLabel());
-		assertEquals(otb3.getLabel(), oVoc1.getNextLowerTerm(otbFree).getLabel());
-	}
-
-	@Test
 	public final void testIndexChangeAllowed() {
 //		assertFalse(oVoc1.indexChangeAllowed(otb1));
 	}
@@ -216,7 +171,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testSize() {
 		assertEquals(3, oVoc1.size());
-		oVoc2 = new OrderedTermVocabulary<>();
+		oVoc2 = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		assertEquals(0, oVoc2.size());
 	}
 }

@@ -1,4 +1,4 @@
-/*
+/**
 * Copyright  EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
@@ -23,7 +23,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ResourceLoaderAware;
@@ -59,11 +60,11 @@ import eu.etaxonomy.cdm.remote.view.FileDownloadView;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
 
 /**
+ * This controller exports taxonomies via Darwin Core Archive
+ * (https://en.wikipedia.org/wiki/Darwin_Core_Archive).
+ *
  * @author a.mueller
  * @since 28.06.2017
- * <p>
- *  This controller exports taxonomies via Darwin Core Archive
- *  (https://en.wikipedia.org/wiki/Darwin_Core_Archive).
  */
 @Controller
 @RequestMapping(value = { "/dwca" })
@@ -108,7 +109,7 @@ public class DwcaExportController
 
     private final static long DAY_IN_MILLIS = HOUR_IN_MILLIS * 24;
 
-    private static final Logger logger = LogManager.getLogger(DwcaExportController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Helper method, which allows to convert strings directly into uuids.
@@ -153,11 +154,6 @@ public class DwcaExportController
      * This service endpoint is for generating the documentation site.
      * If any request of the other endpoint below is incomplete or false
      * then this method will be triggered.
-     *
-     * @param response
-     * @param request
-     * @return
-     * @throws IOException
      */
     public ModelAndView exportGetExplanation(HttpServletResponse response,
             HttpServletRequest request, Resource res) throws IOException{
@@ -177,8 +173,6 @@ public class DwcaExportController
         mv.setView(hv);
         return mv;
     }
-
-
 
     /**
      *

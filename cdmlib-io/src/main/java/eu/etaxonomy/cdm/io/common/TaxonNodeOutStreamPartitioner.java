@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.ArrayList;
@@ -15,10 +14,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -34,8 +34,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
         implements ITaxonNodeOutStreamPartitioner {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonNodeOutStreamPartitioner.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> defaultPropertyPaths = Arrays.asList(new String[]{"taxon","taxon.name"});
 
@@ -128,7 +127,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 //************************* STATIC ***************************************************/
 
 	public static <ST  extends IoStateBase>  TaxonNodeOutStreamPartitioner NewInstance(
-	        ICdmRepository repository, ST state,
+	        ICdmApplication repository, ST state,
             TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks){
 
@@ -139,7 +138,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	}
 
     public static <ST  extends IoStateBase> TaxonNodeOutStreamPartitioner NewInstance(
-            ICdmRepository repository, ST state,
+            ICdmApplication repository, ST state,
             TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks, List<String> propertyPath){
 
@@ -174,7 +173,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 //******************
 
 
-    private final ICdmRepository repository;
+    private final ICdmApplication repository;
 
 	private final TaxonNodeFilter filter;
 
@@ -205,7 +204,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 
 	//*********************** CONSTRUCTOR *************************************************/
 
-	private TaxonNodeOutStreamPartitioner(ICdmRepository repository, STATE state,
+	private TaxonNodeOutStreamPartitioner(ICdmApplication repository, STATE state,
 	        TaxonNodeFilter filter, Integer partitionSize,
 	        IProgressMonitor parentMonitor, Integer parentTicks, List<String> propertyPaths){
 		this.repository = repository;

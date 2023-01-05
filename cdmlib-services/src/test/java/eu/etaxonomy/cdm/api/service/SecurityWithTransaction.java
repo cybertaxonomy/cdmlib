@@ -12,7 +12,8 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -39,7 +40,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 
 /**
  * Test class only for development purposes, must be run in suite.
- *
  */
 //@RunWith(UnitilsJUnit4TestClassRunner.class)
 //@SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWithSecurity {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(SecurityWithTransaction.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByName
     private ITaxonService taxonService;
@@ -63,7 +63,6 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
     @SpringBeanByName
     private IUserService userService;
 
-
     @TestDataSource
     protected DataSource dataSource;
 
@@ -76,7 +75,6 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
     private ICdmPermissionEvaluator permissionEvaluator;
 
     private UsernamePasswordAuthenticationToken token;
-
 
     @Before
     public void setUp(){
@@ -101,7 +99,6 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
 		}
     }
 
-
     @Test
     public void testSaveOrUpdateDescription(){
 
@@ -122,8 +119,6 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
         Media media = Media.NewInstance();
         textData.addMedia(media);
 
-
-
         //descriptionService.saveDescriptionElement(textData);
         description.addElement(textData);
 
@@ -137,9 +132,6 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
         description = iterator.next();
         assertEquals(1, descriptions.size());
         assertEquals(2,description.getElements().size());
-
-
-
     }
 
     @Test
@@ -165,18 +157,8 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
 
         taxonNodeService.saveOrUpdate(node);
         assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
-
-
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

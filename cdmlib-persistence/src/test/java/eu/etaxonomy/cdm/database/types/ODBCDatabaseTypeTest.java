@@ -1,17 +1,18 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.database.types;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,21 +26,21 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 /**
  * @author a.mueller
  * @since 18.12.2008
- * @version 1.0
  */
 public class ODBCDatabaseTypeTest {
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(ODBCDatabaseTypeTest.class);
-	
-	static DatabaseTypeEnum enumType;
-	
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
+
+	private static DatabaseTypeEnum enumType;
+
 	CdmPersistentDataSource dataSource;
-	String server; 
+	String server;
 	String dbName;
 	int port;
 	String username;
 	String password;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -84,7 +85,7 @@ public class ODBCDatabaseTypeTest {
 		String expected = "jdbc:odbc:" + server ;
 		assertEquals(expected, enumType.getConnectionString(dataSource));
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType#getConnectionString(eu.etaxonomy.cdm.database.ICdmDataSource, int)}.
 	 */

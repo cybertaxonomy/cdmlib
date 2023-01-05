@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
@@ -17,13 +16,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class DwcaTaxonExport extends DwcaDataExportBase {
     private static final long serialVersionUID = -3770976064909193441L;
 
-    private static final Logger logger = LogManager.getLogger(DwcaTaxonExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	protected static final String fileName = "coreTax.txt";
@@ -110,19 +110,17 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         }
     }
 
-
-
 	private void handleSynonyms(DwcaTaxExportState state, Taxon taxon, DwcaTaxExportFile file,
 	        Classification classification, DwcaMetaDataRecord metaRecord) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		for (Synonym synonym :taxon.getSynonyms() ){
-           if (isUnpublished(state.getConfig(), synonym)){
-               return;
-           }
+            if (isUnpublished(state.getConfig(), synonym)){
+                return;
+            }
 
 		    DwcaTaxonRecord record = new DwcaTaxonRecord(metaRecord, state.getConfig());
 			SynonymType type = synonym.getType();
 			if (type == null){ // should not happen
-				type = SynonymType.SYNONYM_OF();
+				type = SynonymType.SYNONYM_OF;
 			}
 			TaxonName name = synonym.getName();
 			//????
@@ -182,24 +180,9 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         }
     }
 
-
-
-	/**
-	 * @param state
-	 * @param record
-	 * @param taxonBase
-	 * @param name
-	 * @param acceptedTaxon
-	 * @param parent
-	 * @param basionym
-	 * @param isPartial
-	 * @param isProParte
-	 * @param config
-	 * @param type
-	 */
 	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxonRecord record, TaxonBase<?> taxonBase, TaxonName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
-			RelationshipTermBase<?> relType) {
+			IRelationshipType relType) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 
@@ -386,22 +369,15 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         return null;
     }
 
-    /**
-	 * @param record
-	 * @param name
-	 * @param type
-	 * @param isPartial
-	 * @param isProParte
-	 */
 	private void handleTaxonomicStatus(DwcaTaxonRecord record,
-			INonViralName name, RelationshipTermBase<?> type) {
+			INonViralName name, IRelationshipType type) {
 		if (type == null){
 			record.setTaxonomicStatus(name.getNameType().acceptedTaxonStatusLabel());
 		}else{
 			String status = name.getNameType().synonymStatusLabel();
-			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
+			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF)){
 				status = "heterotypicSynonym";
-			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
+			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF)){
 				status = "homotypicSynonym";
 			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_SYNONYM_FOR())){
 			    status = "proParteSynonym";

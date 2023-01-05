@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -41,7 +42,7 @@ public class DescriptiveDataSetDao
         extends IdentifiableDaoBase<DescriptiveDataSet>
         implements IDescriptiveDataSetDao {
 
-    private static final Logger logger = LogManager.getLogger(DescriptiveDataSetDao.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Autowired
 	private ITermTreeDao termTreeDao;
@@ -202,7 +203,7 @@ public class DescriptiveDataSetDao
 
     private List<UUID> getNodeUuidsForDescriptiveDataSet(UUID uuid) {
         Session session = getSession();
-       
+
         String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.taxonSubtreeFilter as t WHERE a.uuid = :uuid";
         Query<UUID> query = session.createQuery(queryString, UUID.class);
         query.setParameter("uuid", uuid);

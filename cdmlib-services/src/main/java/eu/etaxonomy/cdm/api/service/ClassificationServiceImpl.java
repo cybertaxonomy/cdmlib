@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -27,7 +26,8 @@ import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,7 +90,7 @@ public class ClassificationServiceImpl
              extends IdentifiableServiceBase<Classification, IClassificationDao>
              implements IClassificationService {
 
-    private static final Logger logger = LogManager.getLogger(ClassificationServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ITaxonNodeDao taxonNodeDao;

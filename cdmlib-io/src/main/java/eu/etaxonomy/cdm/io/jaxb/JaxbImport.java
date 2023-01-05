@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.File;
@@ -14,7 +13,8 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -51,17 +51,12 @@ public class JaxbImport
             implements ICdmIO<JaxbImportState> {
 
     private static final long serialVersionUID = -96388140688227297L;
-    private static final Logger logger = LogManager.getLogger(JaxbImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 
-
 	/** Reads data from an XML file and stores them into a CDM DB.
-     *
-     * @param config
-     * @param stores (not used)
      */
-
 	@Override
 	protected void doInvoke(JaxbImportState state) {
 
@@ -101,7 +96,6 @@ public class JaxbImport
 
 		return;
 	}
-
 
 	/**  Saves data in DB */
 	private void saveData (JaxbImportState state, DataSet dataSet) {
@@ -238,7 +232,6 @@ public class JaxbImport
 		}
 		//commitTransaction(txStatus);
 
-
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoHomotypicalGroups() == true) {
@@ -360,9 +353,7 @@ public class JaxbImport
 		}
 
 		return;
-
 	}
-
 
 	private boolean saveTermVocabularies(
 			List<TermVocabulary<DefinedTermBase>> termVocabularies) {
@@ -392,14 +383,12 @@ public class JaxbImport
 		return success;
 	}
 
-
 	@Override
 	protected boolean doCheck(JaxbImportState state) {
 		boolean result = true;
 		logger.warn("No validation implemented for Jaxb import");
 		return result;
 	}
-
 
 	@Override
 	protected boolean isIgnore(JaxbImportState state) {

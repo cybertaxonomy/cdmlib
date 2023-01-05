@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.term;
 
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
@@ -18,6 +18,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  * @author a.mueller
  *
  */
-public interface IOrderedTermVocabularyDao extends ICdmEntityDao<OrderedTermVocabulary<OrderedTermBase<?>>> {
+public interface IOrderedTermVocabularyDao extends ICdmEntityDao<OrderedTermVocabulary<DefinedTermBase<?>>> {
 
 }

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.EnumSet;
@@ -94,7 +93,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         implements ICdmTarget{
 
     private static final long serialVersionUID = 5504218413819040193L;
-    private static final Logger logger = LogManager.getLogger(DescriptionBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement( name = "DescribedSpecimenOrObservation")
     @ManyToOne(fetch = FetchType.LAZY)

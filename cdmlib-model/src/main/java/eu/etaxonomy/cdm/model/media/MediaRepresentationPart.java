@@ -54,9 +54,10 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Entity
 @Audited
 public class MediaRepresentationPart extends VersionableEntity {
+
 	private static final long serialVersionUID = -1674422508643785796L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(MediaRepresentationPart.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	// where the media file is stored
 	@XmlElement(name = "URI")

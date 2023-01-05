@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -73,7 +74,7 @@ public class CharacterDto extends FeatureDto {
        }
 
        Set<TermVocabularyDto> supportedCategoricalDtos = new HashSet<>();
-       for (TermVocabulary<State> catVoc: character.getSupportedCategoricalEnumerations()){
+       for (TermVocabulary<? extends DefinedTermBase> catVoc: character.getSupportedCategoricalEnumerations()){
            supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary(catVoc));
        }
 

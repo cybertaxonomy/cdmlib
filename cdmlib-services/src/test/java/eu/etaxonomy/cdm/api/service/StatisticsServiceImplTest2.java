@@ -407,7 +407,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 					Synonym synonym = Synonym.NewInstance(name, sec);
 					taxonService.save(synonym);
 					taxon.addSynonym(synonym,
-							SynonymType.SYNONYM_OF());
+							SynonymType.SYNONYM_OF);
 
 					synonymCounter++;
 				}

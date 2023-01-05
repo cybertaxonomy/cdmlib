@@ -35,8 +35,10 @@ import eu.etaxonomy.cdm.model.common.Language;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Comparable<DefinedTerm> {
-	private static final long serialVersionUID = -6965540410672076893L;
+public class DefinedTerm
+        extends DefinedTermBase<DefinedTerm> {
+
+    private static final long serialVersionUID = -6965540410672076893L;
 
 	//Determination modifier
 	public static final UUID uuidConfer = UUID.fromString("20db670a-2db2-49cc-bbdd-eace33694b7f");

@@ -149,7 +149,7 @@ public enum PreferencePredicate
     ShowModifierFreeText(UUID.fromString("53d8e5eb-b659-45a1-b093-5f4b285028e3"),"Show Modifier Freetext", "facts.modifier.showFreeText", Boolean.TRUE),
     NamedAreaWithIdInVoc(UUID.fromString("edb0d2df-474b-4fac-b32b-8a0416ed39f8"),"Show Id In Vocabulary in Textfield", "facts.namedArea.showIdInVocabulary", Boolean.FALSE),
     EnableComputedDescription(UUID.fromString("eee33ea4-eb85-41fd-8b9d-787420a16463"),"Disable Computed Descriptions", "facts.computedDescriptions", EnabledComputedDescription.Disabled),
-
+    ShowSpecimenInFactSource(UUID.fromString("870d726f-6f22-4a1d-9c86-3dc4fc5c5f12"), "Show Specimen in Fact Sources", "showSpecimenInFactSources", Boolean.TRUE),
 
     //Names
     AvailableRanks(UUID.fromString("d6559e49-9d05-43bb-b13a-4a70514100af"), "Available Ranks", "AvailableRanks", null),

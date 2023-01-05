@@ -15,6 +15,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.Actor;
 
+/**
+ * Person class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Person", propOrder = {})
 @XmlRootElement(name = "Person", namespace = "http://rs.tdwg.org/ontology/voc/Person#")

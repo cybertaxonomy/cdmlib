@@ -87,7 +87,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
 
   <xs:complexType name="PresenceAbsenceTermBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
+      <xs:extension base="common:DefinedTermBase">
         <xs:sequence>
           <xs:element name="defaultColor" type="xs:string" minOccurs="0"/>
         </xs:sequence>
@@ -211,7 +211,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
 
    <xs:complexType name="State">
     <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
+      <xs:extension base="common:DefinedTermBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -235,7 +235,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
 
   <xs:complexType name="Modifier">
     <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
+      <xs:extension base="common:DefinedTermBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>

@@ -74,7 +74,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 public class Team extends TeamOrPersonBase<Team> {
 
     private static final long serialVersionUID = 97640416905934622L;
-	public static final Logger logger = LogManager.getLogger(Team.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache = false;

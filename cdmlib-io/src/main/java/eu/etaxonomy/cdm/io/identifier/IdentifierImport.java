@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -50,7 +51,7 @@ public class IdentifierImport
         extends SimpleImport<IdentifierImportConfigurator, File>{
 
     private static final long serialVersionUID = 5797541146159665997L;
-    private static Logger logger = LogManager.getLogger(IdentifierImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     protected void doInvoke(IdentifierImportConfigurator config) {

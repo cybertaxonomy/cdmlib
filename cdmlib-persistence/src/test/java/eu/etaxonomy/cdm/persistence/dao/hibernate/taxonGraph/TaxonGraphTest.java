@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonGraphTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     enum EventType{
         INSERT, UPDATE;

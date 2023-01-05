@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
@@ -15,7 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -36,21 +36,14 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @author a.mueller
  * @since 12.05.2009
  */
-public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity>
+public class DbImportExtensionMapper
+        extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, IdentifiableEntity>
         implements IDbImportMapper<DbImportStateBase<?,?>,IdentifiableEntity>{
 
-	private static final Logger logger = LogManager.getLogger(DbImportExtensionMapper.class);
+    private static final Logger logger = LogManager.getLogger();
 
 //************************** FACTORY METHODS ***************************************************************/
 
-	/**
-	 * @param dbAttributeString
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
-	 */
 	@Deprecated
 	public static DbImportExtensionMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev){
 		return new DbImportExtensionMapper(dbAttributeString, uuid, label, text, labelAbbrev);
@@ -69,13 +62,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	private UUID uuid;
 
 //******************************** CONSTRUCTOR *****************************************************************/
-	/**
-	 * @param dbAttributeString
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 */
+
 	private DbImportExtensionMapper(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev) {
 		super(dbAttributeString, dbAttributeString);
 		this.uuid = uuid;
@@ -84,10 +71,6 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		this.labelAbbrev = labelAbbrev;
 	}
 
-	/**
-	 * @param dbAttributeString
-	 * @param extensionType
-	 */
 	private DbImportExtensionMapper(String dbAttributeString, ExtensionType extensionType) {
 		super(dbAttributeString, dbAttributeString);
 		this.extensionType = extensionType;

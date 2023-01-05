@@ -41,7 +41,7 @@ public class RegistrationDaoHibernateImpl
             implements IRegistrationDao {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(RegistrationDaoHibernateImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public RegistrationDaoHibernateImpl() {
         super(Registration.class);

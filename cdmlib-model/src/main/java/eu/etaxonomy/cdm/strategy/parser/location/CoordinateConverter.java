@@ -19,18 +19,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
  * @since 07.06.2010
- *
  */
 public class CoordinateConverter {
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CoordinateConverter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //Patterns
     private List<CoordinatePattern> patterns;

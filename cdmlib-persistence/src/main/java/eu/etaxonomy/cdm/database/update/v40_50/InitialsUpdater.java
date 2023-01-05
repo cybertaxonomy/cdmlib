@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -28,29 +27,18 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
  * Updates the field Person.initials from Person.firstname.
  * @author a.mueller
  * @since 21.05.2017
- *
  */
 public class InitialsUpdater extends SchemaUpdaterStepBase{
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(InitialsUpdater.class);
 
-    /**
-     * @return
-     */
     public static InitialsUpdater NewInstance(List<ISchemaUpdaterStep> stepList) {
         return new InitialsUpdater(stepList);
     }
 
     private static final String stepName = "Make Person initials from firstname";
 
-    /**
-     * @param stepName
-     */
     protected InitialsUpdater(List<ISchemaUpdaterStep> stepList) {
         super(stepList, stepName);
     }
-
-
 
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
@@ -82,16 +70,6 @@ public class InitialsUpdater extends SchemaUpdaterStepBase{
         return;
     }
 
-
-
-    /**
-     * @param datasource
-     * @param formatter
-     * @param sqlRemoveFirstname
-     * @param rs
-     * @param monitor
-     * @throws SQLException
-     */
     private void handleSingle(ICdmDataSource datasource, PersonDefaultCacheStrategy formatter,
             String sqlRemoveFirstname, ResultSet rs, IProgressMonitor monitor, SchemaUpdateResult result) throws SQLException {
         try {
@@ -136,5 +114,4 @@ public class InitialsUpdater extends SchemaUpdaterStepBase{
             result.addException(e, message, this, "handleSingle");
         }
     }
-
 }

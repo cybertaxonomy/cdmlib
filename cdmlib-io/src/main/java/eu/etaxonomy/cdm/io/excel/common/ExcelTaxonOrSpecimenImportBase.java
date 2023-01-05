@@ -15,7 +15,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -34,12 +35,11 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportState<CONFIG, ROW>, CONFIG extends ExcelImportConfiguratorBase, ROW extends ExcelRowBase>
             extends ExcelImportBase<STATE, CONFIG, ROW> {
-	private static final Logger logger = LogManager.getLogger(ExcelTaxonOrSpecimenImportBase.class);
 
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final String CDM_UUID_COLUMN = "(?i)(CdmUuid)";
 	protected static final String IGNORE_COLUMN = "(?i)(Ignore|Not)";
-
 
 	protected static final String RANK_COLUMN = "(?i)(Rank)";
 	protected static final String FULL_NAME_COLUMN = "(?i)(FullName)";
@@ -76,14 +76,11 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 
 	/**
 	 * Analyzes a single record value and fills the row instance accordingly.
-	 * @param keyValue
-	 * @param state
-	 * @return
 	 */
 	protected abstract void analyzeSingleValue(KeyValue keyValue, STATE state);
 
 	/**
-	 *	DataHolder class for all key and value information for a cell.
+	 * DataHolder class for all key and value information for a cell.
 	 * Value is the value of the cell (as String). Key is the main attribute, further defined by postfix,
 	 * and in case of multiple values indexed.
 	 * TODO doc for refXXX
@@ -143,17 +140,8 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		static boolean isKeyName(String str){
 			return (byKeyName(str) != null);
 		}
-
 	}
 
-
-	/**
-	 * @param record
-	 * @param originalKey
-	 * @param state
-	 * @param keyValue
-	 * @return
-	 */
 	protected KeyValue makeKeyValue(Map<String, String> record, String originalKey, STATE state) {
 		KeyValue keyValue = new KeyValue();
 		keyValue.originalKey = originalKey;
@@ -235,7 +223,6 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		return SourceType.isKeyName(string);
 	}
 
-
 	private boolean handleBaseColumn(KeyValue keyValue, ExcelRowBase row) {
 		String key = keyValue.key;
 		String value = keyValue.value;
@@ -265,7 +252,6 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		}
 	}
 
-
 	protected boolean analyzeFeatures(STATE state, KeyValue keyValue) {
 		String key = keyValue.key;
 		Pager<Feature> features = getTermService().findByTitleWithRestrictions(Feature.class, key, null, null, null, null, null, null);
@@ -290,7 +276,6 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		}
 	}
 
-
 	protected void handleExtensions(IdentifiableEntity<?> identifiable, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		List<PostfixTerm> extensions = row.getExtensions();
 
@@ -302,9 +287,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			extension.setValue(exType.term);
 			identifiable.addExtension(extension);
 		}
-
 	}
-
 
 	protected void fireWarningEvent(String message, STATE state, int severity) {
 		fireWarningEvent(message, "Record" + state.getCurrentLine(), severity, 1);

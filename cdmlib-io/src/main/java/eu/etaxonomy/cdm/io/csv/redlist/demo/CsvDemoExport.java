@@ -29,12 +29,10 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -48,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * @author a.oppermann
@@ -58,7 +57,7 @@ public class CsvDemoExport extends CsvDemoBase {
 
     private static final long serialVersionUID = 8265935377927091897L;
 
-    private static final Logger logger = LogManager.getLogger(CsvDemoExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "RedlistCoreTax.csv";
@@ -157,7 +156,7 @@ public class CsvDemoExport extends CsvDemoBase {
             INonViralName name = taxon.getName();
             config.setClassificationTitleCache(classification.getTitleCache());
             if (! this.recordExists(taxon)){
-                handleTaxonBase(record, taxon, name, classification, null, false, false, config, node);
+                handleTaxonBase(record, taxon, name, classification, config, node);
                 recordList.add(record);
                 this.addExistingRecord(taxon);
             }
@@ -206,7 +205,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	    			config.setClassificationTitleCache(classification.getTitleCache());
 	    			if (! this.recordExists(taxon)){
 
-	    				handleTaxonBase(record, taxon, name, classification, null, false, false, config, node);
+	    				handleTaxonBase(record, taxon, name, classification, config, node);
 	    				//if(config.getDestination() != null){
 	    					record.write(writer);
 	    				//}
@@ -282,7 +281,6 @@ public class CsvDemoExport extends CsvDemoBase {
 	 */
 	private void handleTaxonBase(CsvDemoRecord record, TaxonBase<?> taxonBase,
 			INonViralName name, Classification classification,
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
 			CsvDemoExportConfigurator config, TaxonNode node) {
 
 		Taxon taxon = (Taxon) taxonBase;
@@ -322,7 +320,7 @@ public class CsvDemoExport extends CsvDemoBase {
 			record.setRank(rank);
 		}
 		if(config.isTaxonStatus()){
-			handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
+			handleTaxonomicStatus(record, name);
 		}
 		if(config.isAcceptedName()){
 			//TODO write routine for accepted Name
@@ -393,36 +391,13 @@ public class CsvDemoExport extends CsvDemoBase {
 
 	private void handleTaxonomicStatus(
 			CsvDemoRecord record,
-			INonViralName name,
-			RelationshipTermBase<?> type,
-			boolean isProParte,
-			boolean isPartial) {
-		if (type == null && name.getNameType()!= null && name.getNameType().acceptedTaxonStatusLabel() != null){
+			INonViralName name) {
+		if (name.getNameType()!= null && name.getNameType().acceptedTaxonStatusLabel() != null){
 			String acceptedTaxonStatusLabel = name.getNameType().acceptedTaxonStatusLabel();
 			if(StringUtils.isEmpty(acceptedTaxonStatusLabel)){
 				acceptedTaxonStatusLabel="";
 			}
 			record.setTaxonomicStatus(acceptedTaxonStatusLabel);
-		}else if(name.getNameType() != null && name.getNameType().synonymStatusLabel() != null){
-			String status = name.getNameType().synonymStatusLabel();
-			if (type.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
-				status = "heterotypicSynonym";
-			}else if(type.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
-				status = "homotypicSynonym";
-			}else if(type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
-				status = "misapplied";
-			}else if(type.equals(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR())){
-                status = "proParteMisapplied";
-            }
-			if (isProParte){
-				status = "proParteSynonym";
-			}else if (isPartial){
-				String message = "Partial synonym is not part of the gbif toxonomic status vocabulary";
-				logger.warn(message);
-				status = "partialSynonym";
-			}
-
-			record.setTaxonomicStatus(status);
 		}
 	}
 
@@ -436,7 +411,7 @@ public class CsvDemoExport extends CsvDemoBase {
 		for (Synonym synonym :synonyms ){
 			SynonymType type = synonym.getType();
 			if (type == null){ // should not happen
-				type = SynonymType.SYNONYM_OF();
+				type = SynonymType.SYNONYM_OF;
 			}
 			INonViralName name = synonym.getName();
 			synonymLabels.add(name.getTitleCache());
@@ -468,7 +443,7 @@ public class CsvDemoExport extends CsvDemoBase {
 			for (DescriptionElementBase el : description.getElements()){
 				if(el.isInstanceOf(CategoricalData.class)){
 					CategoricalData categoricalData = CdmBase.deproxy(el, CategoricalData.class);
-					for(State state:categoricalData.getStatesOnly()){
+					for(DefinedTermBase<?> state:categoricalData.getStatesOnly()){
 						Feature stateFeature = categoricalData.getFeature();
 						// find matching feature and put data into according cell
 						for(int i = 0; i < features.size(); i++) {

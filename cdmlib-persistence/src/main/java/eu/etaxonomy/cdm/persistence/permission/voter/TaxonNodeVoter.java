@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.persistence.permission.voter;
 import java.util.Collection;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -26,7 +27,7 @@ import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
  */
 public class TaxonNodeVoter extends CdmPermissionVoter {
 
-    public static final Logger logger = LogManager.getLogger(TaxonNodeVoter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {

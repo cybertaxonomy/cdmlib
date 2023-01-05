@@ -37,7 +37,7 @@ public class NomenclaturalSourceFormatter
 
     private static final long serialVersionUID = -6263443499465634548L;
 
-    private static final Logger logger = LogManager.getLogger(NomenclaturalSourceFormatter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String EMPTY_TITLE = "-";
     private static final String beforeMicroReference = ": ";

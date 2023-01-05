@@ -61,7 +61,7 @@ public class TaxonRelationship
         extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
     private static final long serialVersionUID = 1378437971941534653L;
-    static private final Logger logger = LogManager.getLogger(TaxonRelationship.class);
+    static private final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "RelatedFrom")
     @XmlIDREF

@@ -113,15 +113,14 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
      * @Deprecated for use by defined subclasses only
      */
     @Deprecated
-    protected Set<REL> termRelations() {
+    Set<REL> termRelations() {
         return termRelations;
     }
     /**
      * @Deprecated for use by defined subclasses only
      */
     @Deprecated
-    protected void termRelations(Set<REL> termRelations) {
+    void termRelations(Set<REL> termRelations) {
         this.termRelations = termRelations;
     }
-
 }

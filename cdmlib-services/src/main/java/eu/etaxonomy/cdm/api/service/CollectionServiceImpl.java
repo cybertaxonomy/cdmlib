@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,14 +29,13 @@ public class CollectionServiceImpl
             implements	ICollectionService {
 
 	@SuppressWarnings("unused")
-	static private final Logger logger = LogManager.getLogger(CollectionServiceImpl.class);
+	static private final Logger logger = LogManager.getLogger();
 
     @Autowired
 	@Override
 	protected void setDao(ICollectionDao dao) {
 		this.dao = dao;
 	}
-
 
 	@Override
 	@Transactional(readOnly = false)
@@ -45,7 +45,6 @@ public class CollectionServiceImpl
 		}
 		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
-
 
 	@Override
     public List<Collection> searchByCode(String code) {

@@ -11,17 +11,20 @@ package eu.etaxonomy.cdm.strategy.match;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author a.mueller
  * @since 06.08.2009
  */
-public class ParsedBaseMatchStrategy extends DefaultMatchStrategy implements IParsedMatchStrategy {
+public class ParsedBaseMatchStrategy
+        extends DefaultMatchStrategy
+        implements IParsedMatchStrategy {
 
     private static final long serialVersionUID = 1253144282030211050L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(ParsedBaseMatchStrategy.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	final static UUID uuid = UUID.fromString("4e2efeca-96a3-4894-80f4-f1015295f059");
 

@@ -27,7 +27,7 @@ import net.sf.json.processors.JsonValueProcessor;
  */
 public class HibernateJSONValueProcessor implements JsonValueProcessor {
 
-	public static final Logger logger = LogManager.getLogger(HibernateJSONValueProcessor.class);
+    private static final Logger logger = LogManager.getLogger();
 
 //	public Object processArrayValue(Object object, JsonConfig jsonConfig) {
 //		if(Hibernate.isInitialized(object)) {

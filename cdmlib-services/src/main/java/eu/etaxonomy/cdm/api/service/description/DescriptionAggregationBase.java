@@ -25,6 +25,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -68,7 +69,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public abstract class DescriptionAggregationBase<T extends DescriptionAggregationBase<T, CONFIG>, CONFIG extends DescriptionAggregationConfigurationBase<T>> {
 
-    public static final Logger logger = LogManager.getLogger(DescriptionAggregationBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final long BATCH_MIN_FREE_HEAP = 150  * 1024 * 1024;  //800 MB
     /**
@@ -81,14 +82,14 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 //    private static final int BATCH_SIZE_BY_RANK = 500;
     private static final int BATCH_SIZE_BY_TAXON = 200;
 
-    private ICdmRepository repository;
+    private ICdmApplication repository;
     private CONFIG config;
     private DeleteResult result;
 
     private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
 
-    public final DeleteResult invoke(CONFIG config, ICdmRepository repository){
+    public final DeleteResult invoke(CONFIG config, ICdmApplication repository){
         init(config, repository);
         return doInvoke();
     }
@@ -239,7 +240,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             // may grow too much and eats up all the heap
             commitTransaction(txStatus);
             txStatus = null;
-
 
             // flushing the session and to the index (flushAndClear() ) can impose a
             // massive heap consumption. therefore we explicitly do a check after the
@@ -513,7 +513,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     protected abstract String pluralDataType();
 
-    private void init(CONFIG config, ICdmRepository repository) {
+    private void init(CONFIG config, ICdmApplication repository) {
         this.repository = repository;
         this.config = config;
         if(config.getMonitor() == null){

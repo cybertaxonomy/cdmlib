@@ -18,11 +18,11 @@ import org.junit.Test;
  */
 public class ClassificationIT extends WebServiceTestBase  {
 
-    public static final Logger logger = LogManager.getLogger(ClassificationIT.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Test
     public void checkInstanceIsOnline(){
-        String response = httpGetJson("classification.json", null);
+        String response = httpGetJson("/classification.json", null);
         logger.debug("response: " + response);
         assertTrue(response.contains("My Classification"));
     }

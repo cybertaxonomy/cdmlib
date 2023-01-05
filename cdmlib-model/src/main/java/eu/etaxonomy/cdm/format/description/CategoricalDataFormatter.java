@@ -50,10 +50,8 @@ public class CategoricalDataFormatter
 
     private String getStateDataText(StateData stateData, List<Language> preferredLanguages) {
         String result = "";
-        result += getLabel(stateData.getState(), preferredLanguages);
+        result += getLabel(stateData.getState(), preferredLanguages, stateData.isUsePlural());
         //TODO modifier
         return result;
     }
-
-
 }

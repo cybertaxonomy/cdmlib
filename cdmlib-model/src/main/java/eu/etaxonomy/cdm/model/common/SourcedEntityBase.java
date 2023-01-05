@@ -53,7 +53,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 
     private static final long serialVersionUID = -5614669050360359126L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SourcedEntityBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "Source")

@@ -5,17 +5,17 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
 public class ClassJSONValueProcessor implements JsonValueProcessor {
 
-	private static final Logger logger = LogManager.getLogger(ClassJSONValueProcessor.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
 	public Object processArrayValue(Object obj, JsonConfig jsonConfig) {
@@ -37,5 +37,4 @@ public class ClassJSONValueProcessor implements JsonValueProcessor {
 		Class<?> clazz = (Class<?>) obj;
 		return clazz.getSimpleName();
 	}
-
 }

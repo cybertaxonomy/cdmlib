@@ -1,5 +1,12 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.service;
-
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -21,6 +28,10 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.test.util.LSIDMatchers;
 
+/**
+ * @author b.clark
+ * @date 2009
+ */
 public class AuthorityControllerTest extends UnitilsJUnit4 {
 
 	@Mock
@@ -45,7 +56,7 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
 			lsidAuthority = new LSIDAuthority("fred.org");
 		} catch (MalformedLSIDException e) { }
 
-		authorityService = org.easymock.classextension.EasyMock.createMock(LSIDAuthorityService.class);
+		authorityService = org.easymock.EasyMock.createMock(LSIDAuthorityService.class);
 		authorityController = new AuthorityController();
 		source = new Object();
 		expiringResponse = new ExpiringResponse(source, null);

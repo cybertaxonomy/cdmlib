@@ -35,8 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaTaxExport extends DwcaExportBase {
     private static final long serialVersionUID = -3770976064909193441L;
 
-    private static final Logger logger = LogManager.getLogger(DwcaTaxExport.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ITaxonNodeService taxonNodeService;
@@ -107,13 +106,8 @@ public class DwcaTaxExport extends DwcaExportBase {
 		}
 
 		return;
-
 	}
 
-    /**
-     * @param taxonExport
-     * @param state
-     */
     private void closeWriter(DwcaDataExportBase export, DwcaTaxExportState state) {
         if (!export.isIgnore(state)){
             export.closeWriter(state);
@@ -126,7 +120,6 @@ public class DwcaTaxExport extends DwcaExportBase {
         }
     }
 
-
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
@@ -134,10 +127,8 @@ public class DwcaTaxExport extends DwcaExportBase {
 		return result;
 	}
 
-
 	@Override
 	public boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoTaxa();
 	}
-
 }

@@ -21,7 +21,7 @@ public abstract class IoStateBase<CONFIG
         extends IIoConfigurator, IO extends ICdmIO, RESULT extends IoResultBase> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(IoStateBase.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private IO currentIO;
 

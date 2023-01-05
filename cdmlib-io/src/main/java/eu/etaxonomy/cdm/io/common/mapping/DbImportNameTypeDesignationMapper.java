@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
@@ -25,17 +24,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
- */
-/**
- * @author a.mueller
- * @since 02.03.2010
- * @version 1.0
- * @param <CDM_BASE>
- * @param <STATE>
  */
 public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>, T extends IDbImportTransformed> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
-	private static final Logger logger = LogManager.getLogger(DbImportNameTypeDesignationMapper.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
 //******************************** FACTORY METHOD ***************************************************/
 
@@ -54,10 +46,7 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 
 
 //********************************* CONSTRUCTOR ****************************************/
-	/**
-	 * @param relatedObjectNamespace
-	 * @param mappingImport
-	 */
+
 	protected DbImportNameTypeDesignationMapper(String fromAttribute, String toAttribute, NameTypeDesignationStatus designationStatus, String relatedObjectNamespace, String desigStatusAttribute) {
 		super();
 		//TODO make it a single attribute mapper
@@ -70,9 +59,6 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
     public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		STATE state = importMapperHelper.getState();
@@ -97,7 +83,6 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 		if (citationAttribute != null){
 			designationStatusValue = rs.getObject(designationStatusAttribute);
 		}
-
 
 		if (fromObject == null){
 			String warning  = "Higher rank name could not be found. Name type not added to higher rank name";
@@ -131,10 +116,6 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 
 	/**
 	 *	//TODO copied from DbImportObjectMapper. Maybe these can be merged again in future
-	 * @param rs
-	 * @param dbAttribute
-	 * @return
-	 * @throws SQLException
 	 */
 	protected CdmBase getRelatedObject(ResultSet rs, String dbAttribute) throws SQLException {
 		CdmBase result = null;
@@ -149,7 +130,6 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 
 	/**
 	 * Checks if cdmBase is of type Taxon
-	 * @param fromObject
 	 */
 	private TaxonName checkTaxonNameType(CdmBase cdmBase) {
 		if (! cdmBase.isInstanceOf(TaxonName.class)){
@@ -159,6 +139,4 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 		}
 		return (cdmBase.deproxy(cdmBase, TaxonName.class));
 	}
-
-
 }

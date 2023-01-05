@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
 import java.io.ByteArrayOutputStream;
@@ -17,7 +16,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-
 
 /**
  * @author a.oppermann
@@ -36,7 +35,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
     private static final long serialVersionUID = -2622502140734437961L;
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(CsvDemoExportConfigurator.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";

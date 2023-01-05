@@ -12,8 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
@@ -31,21 +29,13 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  *
  */
 public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase{
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(OrphanedKeyStatementRemover.class);
 
-    /**
-     * @return
-     */
+    private static final String stepName = "Remove orphaned key statements";
+
     public static OrphanedKeyStatementRemover NewInstance(List<ISchemaUpdaterStep> stepList) {
         return new OrphanedKeyStatementRemover(stepList);
     }
 
-    private static final String stepName = "Remove orphaned key statements";
-
-    /**
-     * @param stepName
-     */
     protected OrphanedKeyStatementRemover(List<ISchemaUpdaterStep> stepList) {
         super(stepList, stepName);
     }
@@ -66,8 +56,6 @@ public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase{
                 int id = rs.getInt("id");
                 handleSingleStatement(id, datasource, monitor, caseType, result);
             }
-
-
         } catch (Exception e) {
             String message = e.getMessage();
             monitor.warning(message, e);
@@ -76,14 +64,6 @@ public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase{
         return;
     }
 
-    /**
-     * @param id
-     * @param datasource
-     * @param monitor
-     * @param caseType
-     * @param result
-     * @throws SQLException
-     */
     private void handleSingleStatement(int keyStatementId, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
             SchemaUpdateResult result) throws SQLException {
         String selectSQL = " SELECT MN.label_id id" +
@@ -105,7 +85,5 @@ public class OrphanedKeyStatementRemover extends SchemaUpdaterStepBase{
         String deleteKeyStatement = "DELETE FROM @@KeyStatement@@ WHERE id = " + keyStatementId;
         deleteKeyStatement = caseType.replaceTableNames(deleteKeyStatement);
         datasource.executeUpdate(deleteKeyStatement);
-
     }
-
 }

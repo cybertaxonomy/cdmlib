@@ -51,7 +51,7 @@ public class TaxonXNomenclatureImport
         extends CdmImportBase<TaxonXImportConfigurator, TaxonXImportState>  {
 
     private static final long serialVersionUID = 796115831082828758L;
-    private static final Logger logger = LogManager.getLogger(TaxonXNomenclatureImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;

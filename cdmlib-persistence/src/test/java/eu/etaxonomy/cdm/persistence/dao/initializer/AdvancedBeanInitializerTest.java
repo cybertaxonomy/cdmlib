@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransactionalIntegrationTest {
 
-    private static final Logger logger = LogManager.getLogger(AdvancedBeanInitializerTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID personUuid = UUID.fromString("d0568bb1-4dc8-40dc-a405-d0b9e714a7a9");
 

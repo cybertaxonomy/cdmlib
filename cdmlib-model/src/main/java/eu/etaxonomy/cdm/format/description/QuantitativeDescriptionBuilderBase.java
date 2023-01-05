@@ -24,7 +24,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
  * @author m.venin
  * @since 2010
  */
-public abstract class AbstractQuantitativeDescriptionBuilder extends DescriptionBuilder<QuantitativeData>{
+public abstract class QuantitativeDescriptionBuilderBase
+        extends DescriptionBuilderBase<QuantitativeData>{
 
 	@Override
     public TextData build(QuantitativeData data, List<Language> languages) {

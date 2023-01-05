@@ -68,21 +68,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     private Integer pageSize;
 
-    public abstract void setService(SERVICE service);
-
     private CacheProviderFacade cacheProviderFacade;
 
     private CachingModel cachingModel;
 
     private boolean onlyItemsWithLsid = false;
-
-    public boolean isRestrictToLsid() {
-        return onlyItemsWithLsid;
-    }
-
-    public void setRestrictToLsid(boolean restrictToLsid) {
-        this.onlyItemsWithLsid = restrictToLsid;
-    }
 
     /**
      * sets cache name to be used
@@ -96,6 +86,16 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     public void setCachingModel(CachingModel cachingModel) {
         this.cachingModel = cachingModel;
     }
+
+    public abstract void setService(SERVICE service);
+
+    public boolean isRestrictToLsid() {
+        return onlyItemsWithLsid;
+    }
+    public void setRestrictToLsid(boolean restrictToLsid) {
+        this.onlyItemsWithLsid = restrictToLsid;
+    }
+
 
     /**
      * Subclasses should override this method to return a list of property
@@ -187,12 +187,6 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         return modelAndView;
     }
 
-    /**
-     * @param identifier
-     * @param metadataPrefix
-     * @param modelAndView
-     * @throws IdDoesNotExistException
-     */
     protected void finishModelAndView(LSID identifier,
             MetadataPrefix metadataPrefix, ModelAndView modelAndView)
             throws IdDoesNotExistException {
@@ -209,11 +203,6 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         }
     }
 
-    /**
-     * @param identifier
-     * @return
-     * @throws IdDoesNotExistException
-     */
     protected AuditEventRecord<T> obtainCdmEntity(LSID identifier)
             throws IdDoesNotExistException {
         T object = service.find(identifier);
@@ -232,7 +221,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
 
     /**
-     *  CannotDisseminateFormatException thrown by MetadataPrefixEditor
+     * CannotDisseminateFormatException thrown by MetadataPrefixEditor
      * @throws IdDoesNotExistException
      */
     @RequestMapping(method = RequestMethod.GET,params = "verb=ListMetadataFormats")
@@ -357,7 +346,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
                 clazz = resumptionToken.getSet().getSetClass();
             }
 
-            List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
+            List<AuditCriterion> criteria = new ArrayList<>();
             if(onlyItemsWithLsid){
                 //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
                 //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
@@ -373,7 +362,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
             if(results.getCount() > ((results.getPageSize() * results.getCurrentIndex()) + results.getRecords().size())) {
                 resumptionToken.updateResults(results);
-                modelAndView.addObject("resumptionToken",resumptionToken);
+                modelAndView.addObject("resumptionToken", resumptionToken);
                 cacheProviderFacade.putInCache(resumptionToken.getValue(),cachingModel, resumptionToken);
             } else {
                 resumptionToken = ResumptionToken.emptyResumptionToken();
@@ -481,7 +470,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
               modelAndView.addObject("set",resumptionToken.getSet());
               clazz = resumptionToken.getSet().getSetClass();
             }
-            List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
+            List<AuditCriterion> criteria = new ArrayList<>();
             if(onlyItemsWithLsid){
                 //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
                 //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
@@ -498,11 +487,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             if(results.getCount() > ((results.getPageSize() * results.getCurrentIndex()) + results.getRecords().size())) {
                 resumptionToken.updateResults(results);
                 modelAndView.addObject("resumptionToken",resumptionToken);
-                cacheProviderFacade.putInCache(resumptionToken.getValue(),cachingModel,resumptionToken);
+                cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
             } else {
                 resumptionToken = ResumptionToken.emptyResumptionToken();
                 modelAndView.addObject("resumptionToken",resumptionToken);
-                cacheProviderFacade.removeFromCache(rToken,cachingModel);
+                cacheProviderFacade.removeFromCache(rToken, cachingModel);
             }
 
             return modelAndView;
@@ -553,4 +542,5 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     public ModelAndView handleIdDoesNotExist(Exception ex, HttpServletRequest request) {
         return doException(ex,request,ErrorCode.ID_DOES_NOT_EXIST);
     }
+
 }

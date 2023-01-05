@@ -18,10 +18,7 @@ package eu.etaxonomy.cdm.model.common;
  *
  * @author n.hoffmann
  * @since Dec 2, 2010
- * @version 1.0
  */
 public interface IMultiLanguageTextHolder {
-
-
 
 }

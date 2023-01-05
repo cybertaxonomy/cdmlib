@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
+import eu.etaxonomy.cdm.format.description.DescriptionElementFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -75,7 +76,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author a.mueller
@@ -140,6 +144,8 @@ public class ReferencingObjectFormatter {
             resultString = getCache((NomenclaturalStatus) element);
         }else if (element instanceof GatheringEvent){
             resultString = getCache((GatheringEvent) element);
+        }else if (element instanceof TermNode){
+            resultString = getCache((TermNode<?>) element);
         }else if (element instanceof Marker) {
             Marker marker = (Marker) element;
             MarkerType type = marker.getMarkerType();
@@ -359,6 +365,51 @@ public class ReferencingObjectFormatter {
         }
 
         result = CdmUtils.concat("", parentStr, classificationStr, parentStr == invisible? "" : ")");
+
+        return result;
+    }
+
+    private static String getCache(TermNode<?> termNode) {
+        String result = "";
+        DefinedTermBase<?> term = termNode.getTerm();
+        if (term != null){
+            Representation prefRep = term.getPreferredRepresentation(Language.DEFAULT());
+            if (prefRep != null) {
+                result = CdmUtils.Nz(prefRep.getLabel());
+            }
+        }
+
+        final String invisible = "Invisible root of ";
+        String parentStr;
+        TermNode<?> parentNode = termNode.getParent();
+        if (parentNode == null){
+            parentStr = invisible;
+        }else{
+            DefinedTermBase<?> parentTerm = parentNode.getTerm();
+            if (parentTerm == null){
+                parentStr = " (root of ";
+            }else{
+                Representation prefParentRep = term.getPreferredRepresentation(Language.DEFAULT());
+                parentStr = " (child of " + (CdmUtils.Nz(prefParentRep.getLabel()));
+                parentStr += " in ";
+            }
+        }
+
+        //classification
+        TermTree<?> tree = termNode.getGraph();
+        String treeStr ;
+        if (tree != null){
+            Representation prefRep = tree.getPreferredRepresentation(Language.DEFAULT());
+            String prefRepStr = prefRep == null? null : CdmUtils.Ne(prefRep.getLabel());
+            treeStr = (prefRepStr == null) ? "tree:" + tree.getId() : prefRepStr;
+            if (isBlank(treeStr)){
+                treeStr = tree.toString();
+            }
+        }else{
+            treeStr = "-no classification-"; //should not happen
+        }
+
+        result = CdmUtils.concat("", parentStr, treeStr, parentStr == invisible? "" : ")");
 
         return result;
     }

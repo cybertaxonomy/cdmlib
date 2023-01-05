@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.database.update.v518_522;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_5186_5220.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_18_06;
 	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_22_00;
@@ -86,7 +87,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                 + "    OR id IN (SELECT source_id FROM @@TaxonNode@@) "
                 + "    OR id IN (SELECT source_id FROM @@NomenclaturalStatus_AUD@@) "
                 + "    OR id IN (SELECT source_id FROM @@TypeDesignationBase_AUD@@) ";
-        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepList, stepName, query, auditQuery, -99);
+        SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepList, stepName, query, auditQuery);
 
         //#9327
         //add sourcedElement column
@@ -115,7 +116,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                     + "       SELECT * "
                     + "       FROM @@DescriptionElementBase_OriginalSourceBase_AUD@@ MN "
                     + "       WHERE MN.sources_id = @@OriginalSourceBase_AUD@@.id)";
-         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
+         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud);
 
 		//#9327
         //add sourcedTaxon column
@@ -180,7 +181,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                 + "       SELECT * "
                 + "       FROM @@TaxonName_NomenclaturalStatus_AUD@@ MN "
                 + "       WHERE MN.status_id = @@NomenclaturalStatus_AUD@@.id)";
-         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
+         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud);
 
          //9211
          //move classification reference to classification source

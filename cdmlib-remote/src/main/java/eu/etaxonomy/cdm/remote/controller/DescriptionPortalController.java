@@ -15,7 +15,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +54,7 @@ import io.swagger.annotations.Api;
             "/portal/description/{uuid_list}"})
 public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService> {
 
-    private static final Logger logger = LogManager.getLogger(DescriptionPortalController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final EntityInitStrategy DESCRIPTION_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String [] {
             "$",

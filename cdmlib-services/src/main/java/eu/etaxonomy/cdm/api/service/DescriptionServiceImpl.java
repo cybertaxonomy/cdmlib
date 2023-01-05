@@ -21,7 +21,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,6 @@ import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
@@ -112,7 +112,7 @@ public class DescriptionServiceImpl
         extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao>
         implements IDescriptionService {
 
-    private static final Logger logger = LogManager.getLogger(DescriptionServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected IDescriptionElementDao descriptionElementDao;
     protected ITermTreeDao featureTreeDao;
@@ -489,10 +489,8 @@ public class DescriptionServiceImpl
                         continue;
                     }
                     List<DescriptionElementBase> equalUuidsElements = descriptionElements.stream().filter( e -> e.getUuid().equals(descElementUuid)).collect(Collectors.toList());
-                    eu.etaxonomy.cdm.model.description.Feature feature =  DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Feature.class, descElement.getFeatureUuid());
-                    if (feature == null){
-                        feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, descElement.getFeatureUuid());
-                    }
+                    Feature feature = DefinedTermBase.getTermByUUID(descElement.getFeatureUuid(), Feature.class);
+
                     if (equalUuidsElements.size() == 0){
                         if (descElement instanceof CategoricalDataDto){
 
@@ -500,7 +498,7 @@ public class DescriptionServiceImpl
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
                             for (StateDataDto dataDto: stateDtos){
                                 //create new statedata
-                                State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
+                                DefinedTermBase<?> newState = DefinedTermBase.getTermByUUID(dataDto.getState().getUuid(), DefinedTermBase.class);
                                 StateData newStateData = StateData.NewInstance(newState);
                                 elementBase.addStateData(newStateData);
                             }
@@ -518,12 +516,13 @@ public class DescriptionServiceImpl
                             data.getStatisticalValues().clear();
                             for (StatisticalMeasurementValueDto dataDto: valueDtos){
                                 //create new statedata
-                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid()), dataDto.getValue());
+                                StatisticalMeasure sm = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid());
+                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(sm, dataDto.getValue());
                                 statisticalValues.add(newStatisticalMeasurement);
                                 data.addStatisticalValue(newStatisticalMeasurement);
                             }
 
-//                            data.getStatisticalValues().addAll(statisticalValues);
+//                          data.getStatisticalValues().addAll(statisticalValues);
                             data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
                                     MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
                             desc.addElement(data);
@@ -542,12 +541,11 @@ public class DescriptionServiceImpl
                                 desc.removeElement(data);
                             }else{
                                 for (StateDataDto dataDto: stateDtos){
-                                        State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
-                                        StateData newStateData = StateData.NewInstance(newState);
-                                        data.addStateData(newStateData);
+                                    DefinedTermBase<?> newState = DefinedTermBase.getTermByUUID(dataDto.getState().getUuid(), DefinedTermBase.class);
+                                    StateData newStateData = StateData.NewInstance(newState);
+                                    data.addStateData(newStateData);
                                 }
                             }
-
                         }else if (elementBase.isInstanceOf(QuantitativeData.class)){
                             QuantitativeData data = HibernateProxyHelper.deproxy(elementBase, QuantitativeData.class);
 

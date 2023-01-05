@@ -23,6 +23,12 @@ import javax.xml.bind.annotation.XmlType;
 import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
 import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
 
+/**
+ * InfoItem class for TDWG Ontology mapping.
+ *
+ * @author ben.clark
+ * @date 2009
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InfoItem", propOrder = {
 	    "associatedTaxon",

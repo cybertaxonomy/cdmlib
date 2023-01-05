@@ -19,7 +19,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
@@ -58,14 +59,14 @@ import io.swagger.annotations.Api;
  * @author p.kelbert
  * @since March-2014
  */
-
 @Controller
 @Api("occurrence_catalogue")
 @RequestMapping(value = { "/occurrence_catalogue" })
-public class OccurrenceCatalogueController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService> implements ResourceLoaderAware{
+public class OccurrenceCatalogueController
+        extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>
+        implements ResourceLoaderAware{
 
-
-    private static final Logger logger = LogManager.getLogger(OccurrenceCatalogueController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private ResourceLoader resourceLoader;
 
@@ -107,8 +108,6 @@ public class OccurrenceCatalogueController extends AbstractController<SpecimenOr
             "sources.citationMicroReference",
             "rights.abbreviatedText"
     });
-
-
 
     public OccurrenceCatalogueController() {
         super();

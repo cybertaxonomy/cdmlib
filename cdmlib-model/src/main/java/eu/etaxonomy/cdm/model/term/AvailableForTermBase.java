@@ -35,7 +35,7 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase>
 
     private static final long serialVersionUID = 7991846649037898325L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(AvailableForTermBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlAttribute(name ="availableFor")
     @NotNull
@@ -90,14 +90,10 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase>
 
  // ****************************** CLONE ***********************************
 
-    /**
-    * @see java.lang.Object#clone()
-    */
    @Override
    public AvailableForTermBase<T> clone()  {
-       AvailableForTermBase<T> result;
 
-       result = (AvailableForTermBase<T>)super.clone();
+       AvailableForTermBase<T> result = (AvailableForTermBase<T>)super.clone();
 
        result.availableFor = this.availableFor.clone();
 

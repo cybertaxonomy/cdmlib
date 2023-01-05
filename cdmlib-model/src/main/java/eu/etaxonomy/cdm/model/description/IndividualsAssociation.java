@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -65,8 +66,10 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class IndividualsAssociation extends DescriptionElementBase
         implements IMultiLanguageTextHolder {
+
 	private static final long serialVersionUID = -4117554860254531809L;
-	private static final Logger logger = LogManager.getLogger(IndividualsAssociation.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)

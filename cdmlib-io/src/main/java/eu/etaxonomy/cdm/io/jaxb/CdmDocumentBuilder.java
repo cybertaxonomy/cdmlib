@@ -17,7 +17,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 
 import javax.xml.bind.JAXBException;
@@ -33,7 +32,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xml.resolver.tools.CatalogResolver;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -45,6 +45,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.CdmNamespacePrefixMapper;
 import eu.etaxonomy.cdm.jaxb.FormattedText;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextElement;
@@ -59,7 +60,7 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextElement;
 //which allows to package the schemas into a jar file.
 public class CdmDocumentBuilder extends Jaxb2Marshaller  {
 
-    private static final Logger logger = LogManager.getLogger(CdmDocumentBuilder.class);
+    private static final Logger logger = LogManager.getLogger();
     private boolean formattedOutput = Boolean.TRUE;
     private String encoding = "UTF-8";
 
@@ -75,7 +76,8 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
         "/schema/cdm/occurrence.xsd",
         "/schema/cdm/reference.xsd",
     "/schema/cdm/taxon.xsd"};
-    public static Class[] CONTEXT_CLASSES = {DataSet.class,FormattedText.class,MultilanguageTextElement.class};
+    public static Class[] CONTEXT_CLASSES = {
+            DataSet.class,FormattedText.class,MultilanguageTextElement.class};
 
     private Resource schemas[];
 
@@ -193,7 +195,6 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
         }
     }
 
-
     public <T> T unmarshal(Class<T> clazz,Reader reader) throws XmlMappingException {
         InputSource source = new InputSource(reader);
         return unmarshal(clazz,source);
@@ -216,7 +217,6 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
         } catch (FileNotFoundException e) {
             throw new UncategorizedMappingException(e.getMessage(), e);
         }
-
     }
 
     public void marshal(DataSet dataSet, Writer writer) throws XmlMappingException {
@@ -233,7 +233,4 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
         logger.info("Start marshalling");
         super.marshal(dataSet, result);
     }
-
 }
-
-

@@ -21,14 +21,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -59,9 +59,10 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class Rank extends OrderedTermBase<Rank> {
+public class Rank extends DefinedTermBase<Rank> {
+
     private static final long serialVersionUID = -8648081681348758485L;
-    private static final Logger logger = LogManager.getLogger(Rank.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID uuidEmpire = UUID.fromString("ac470211-1586-4b24-95ca-1038050b618d");
     private static final UUID uuidDomain = UUID.fromString("ffca6ec8-8b88-417b-a6a0-f7c992aac19b");
@@ -474,6 +475,20 @@ public class Rank extends OrderedTermBase<Rank> {
 
 // ******************************** METHODS ***************************************/
 
+    public boolean isHigherThan(RankClass rankClass) {
+        return this.rankClass.isHigher(rankClass);
+    }
+    public boolean isHigherOrEqualTo(RankClass rankClass) {
+        return this.rankClass.isHigher(rankClass) || this.rankClass == rankClass;
+    }
+
+    public boolean isLowerThan(RankClass rankClass) {
+        return this.rankClass.isLower(rankClass);
+    }
+    public boolean isLowerOrEqualTo(RankClass rankClass) {
+        return this.rankClass.isLower(rankClass) || this.rankClass == rankClass;
+    }
+
     /**
      * Returns the boolean value indicating whether <i>this</i> rank is higher than
      * the genus rank (true) or not (false). Returns false if <i>this</i> rank is null.
@@ -485,7 +500,15 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     @Transient
     public boolean isSupraGeneric(){
-        return this.rankClass.equals(RankClass.Suprageneric); // (this.isHigher(Rank.GENUS()));
+        return this.rankClass.isHigher(RankClass.Genus);
+    }
+
+    /**
+     * <code>true</code> if this rank is higher than the rank {@link Rank#SPECIES()}
+     */
+    @Transient
+    public boolean isSupraSpecific(){
+        return this.rankClass.isHigher(RankClass.Species);
     }
 
     /**
@@ -1066,7 +1089,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * It is necessary to skip the vocabulary check, otherwise we would have
      * problems in some CacheStrategies, due to uninitialized Vocabularies.
      *
-     * @see eu.etaxonomy.cdm.model.term.OrderedTermBase#compareTo(eu.etaxonomy.cdm.model.term.OrderedTermBase)
+     * @see eu.etaxonomy.cdm.model.term.DefinedTermBase#compareTo(eu.etaxonomy.cdm.model.term.DefinedTermBase)
      */
     @Override
     public int compareTo(Rank orderedTerm) {

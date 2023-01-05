@@ -6,12 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -20,8 +18,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DataSourceReloader {
-
-	static final Logger logger = LogManager.getLogger(DataSourceReloader.class);
 
 	private SessionFactory factory;
 
@@ -44,5 +40,4 @@ public class DataSourceReloader {
 		Map<String, DataSourceInfo> dataSourceInfos = getDataSource().testDataSources(dataSources);
 		return dataSourceInfos;
 	}
-
 }

@@ -17,6 +17,8 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -32,8 +34,11 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{
 
-    protected static final String BASE_URL = "http://api.gbif.org";
+    private static final Logger logger = LogManager.getLogger();
+
+    protected static final String BASE_URL = "https://api.gbif.org";
     private static final String SUB_PATH = "/v1/occurrence/search";
+
 
     /**
      * Constructs a new GbifQueryServiceWrapper

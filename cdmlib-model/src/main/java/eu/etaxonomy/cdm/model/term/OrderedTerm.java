@@ -31,7 +31,7 @@ import org.hibernate.envers.Audited;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
+public class OrderedTerm extends DefinedTermBase<OrderedTerm>  {
 
 	private static final long serialVersionUID = 5122485867783720769L;
 
@@ -43,7 +43,6 @@ public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
 
 	protected static Map<UUID, OrderedTerm> termMap = null;
 
-
 	protected static OrderedTerm getTermByUuid(UUID uuid){
         if (termMap == null || termMap.isEmpty()){
             return getTermByClassAndUUID(OrderedTerm.class, uuid);
@@ -52,16 +51,13 @@ public class OrderedTerm extends OrderedTermBase<OrderedTerm>  {
 		}
 	}
 
-
 	public static OrderedTerm NewInstance(TermType termType, String description, String label, String labelAbbrev){
 		return new OrderedTerm(termType, description, label, labelAbbrev);
 	}
 
-
 	public static OrderedTerm NewDnaQualityInstance(String description, String label, String labelAbbrev){
 		return new OrderedTerm(TermType.DnaQualityType, description, label, labelAbbrev);
 	}
-
 
 //******************* CONSTRUCTOR ***********************************/
 

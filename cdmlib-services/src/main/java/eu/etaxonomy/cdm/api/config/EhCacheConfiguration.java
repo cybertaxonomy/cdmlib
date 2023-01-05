@@ -8,16 +8,16 @@
 */
 package eu.etaxonomy.cdm.api.config;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
+import eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.CacheConfiguration.CacheEventListenerFactoryConfiguration;
 import net.sf.ehcache.config.DiskStoreConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
@@ -29,7 +29,7 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 // @EnableCaching // for future use
 public class EhCacheConfiguration implements DisposableBean {
 
-    public static final Logger logger = LogManager.getLogger(EhCacheConfiguration.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired(required = false)
     public DiskStoreConfiguration diskStoreConfiguration = null;
@@ -49,29 +49,30 @@ public class EhCacheConfiguration implements DisposableBean {
 
         net.sf.ehcache.config.Configuration conf = new net.sf.ehcache.config.Configuration();
         if(diskStoreConfiguration != null){
-            logger.debug("creating CacheManager with disk store");
+            if (logger.isDebugEnabled()) { logger.debug("creating CacheManager with disk store");}
             conf.addDiskStore(diskStoreConfiguration);
         }
-        conf.addDefaultCache(getDefaultCacheConfiguration());
+        CacheConfiguration defaultConfig = getDefaultCacheConfiguration();
+        conf.addDefaultCache(defaultConfig);
 
+        //FIXME Caching by AM: setting the configuration does not work if the CacheManger
+        //                     singleton exists already (like in the TaxEditor)
         // creates a singleton
         cacheManager = CacheManager.create(conf);
-        logger.debug("CacheManager created");
+        if (logger.isDebugEnabled()) { logger.debug("CacheManager created");}
         return cacheManager;
     }
 
     /**
      * Returns the default cache configuration for the cache
-     * named {@link CdmCacherBase#DEFAULT_CACHE_NAME "cdmDefaultCache"}
+     * named {@link CdmPermanentCacheBase#PERMANENT_CACHE_NAME "cdmDefaultCache"}
      */
     protected CacheConfiguration getDefaultCacheConfiguration() {
 
-        CacheEventListenerFactoryConfiguration factory;
-
         // For a better understanding on how to size caches, refer to
-        // http://ehcache.org/documentation/configuration/cache-size
+        // https://www.ehcache.org/documentation/2.8/configuration/cache-size.html
 
-        CacheConfiguration cc = new CacheConfiguration(CdmCacherBase.DEFAULT_CACHE_NAME, 500)
+        CacheConfiguration cc = new CacheConfiguration(CdmPermanentCacheBase.PERMANENT_CACHE_NAME, 500)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
                 .maxEntriesLocalHeap(10) // avoid ehache consuming too much heap
                 .eternal(false)

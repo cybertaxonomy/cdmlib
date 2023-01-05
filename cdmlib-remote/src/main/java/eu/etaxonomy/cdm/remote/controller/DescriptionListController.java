@@ -5,7 +5,6 @@
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.awt.Color;
@@ -22,6 +21,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -84,6 +85,8 @@ import io.swagger.annotations.Api;
 public class DescriptionListController
         extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService> {
 
+    private static final Logger logger = LogManager.getLogger();
+
     @Autowired
     private ITermService termService;
 
@@ -95,7 +98,7 @@ public class DescriptionListController
 
     @Autowired
     @Qualifier("cdmRepository")
-    private ICdmRepository repository;
+    private ICdmApplication repository;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;

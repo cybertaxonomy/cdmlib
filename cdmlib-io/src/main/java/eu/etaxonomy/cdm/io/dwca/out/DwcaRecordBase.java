@@ -17,7 +17,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
@@ -49,7 +50,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 public abstract class DwcaRecordBase {
 
-	private static final Logger logger = LogManager.getLogger(DwcaRecordBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//TODO Collection_SEPARATOR
 	protected static final CharSequence COLLECTION_SEPARATOR = "@";
@@ -239,11 +240,6 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	/**
-     * @param writer
-     * @param addSeparator
-     * @param fieldKey
-     */
     private void printHeader(PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
         if (StringUtils.isBlank(defaultValue)){
             String strToPrint = addSeparator ? config.getFieldsTerminatedBy() : "";
@@ -287,7 +283,6 @@ public abstract class DwcaRecordBase {
 	protected void registerFieldKey(URI key, String defaultValue) {
 		this.metaDataRecord.addFieldEntry(key, defaultValue);
 	}
-
 
 	protected String getRights(Rights rights) {
 		if (rights == null){
@@ -403,8 +398,6 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-
-
 	protected String getAgent(AgentBase<?> agent) {
 		if (agent == null){
 			return "";
@@ -414,7 +407,6 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-
 	protected String getFeature(Feature feature) {
 		if (feature == null){
 			return "";
@@ -423,7 +415,6 @@ public abstract class DwcaRecordBase {
 			return feature.getTitleCache();
 		}
 	}
-
 
 	protected String getTimePeriod(TimePeriod period) {
 		if (period == null){
@@ -462,7 +453,6 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-
 	protected String getDesignationType(TypeDesignationStatusBase<?> status) {
 		if (status == null){
 			return "";
@@ -482,9 +472,6 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-
-
-
 	protected void addKnownField(String string, String uri) throws URISyntaxException {
 		this.knownFields.put(string, new URI(uri));
 	}
@@ -493,14 +480,8 @@ public abstract class DwcaRecordBase {
 		this.knownTermFields.add(term);
 	}
 
-
 	//*************** CSV Methods ******************/
 
-    /**
-     * @param state
-     * @param taxon
-     * @return
-     */
     protected String getId(DwcaTaxExportState state, ICdmBase cdmBase) {
         if (cdmBase == null){
             return "";

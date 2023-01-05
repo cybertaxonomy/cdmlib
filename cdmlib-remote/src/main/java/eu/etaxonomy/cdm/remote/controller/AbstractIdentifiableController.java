@@ -14,7 +14,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +36,7 @@ import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 public abstract class AbstractIdentifiableController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>>
         extends BaseController<T,SERVICE>  {
 
-    private static final Logger logger = LogManager.getLogger(AbstractIdentifiableController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @InitBinder
     @Override
@@ -47,10 +48,6 @@ public abstract class AbstractIdentifiableController <T extends IdentifiableEnti
     /**
      * List identifiable entities by markers
      *
-     * @param type
-     * @param request
-     * @param response
-     * @return
      * @see AbstractIdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
      * @throws IOException
      */
@@ -59,7 +56,7 @@ public abstract class AbstractIdentifiableController <T extends IdentifiableEnti
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "refresh", defaultValue= "false", required = false) Boolean refresh,
             HttpServletRequest request,
-            HttpServletResponse response
+            @SuppressWarnings("unused") HttpServletResponse response
             )
             throws IOException {
 

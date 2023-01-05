@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.database.update.v30_40;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.database.update.ClassBaseTypeUpdater;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -31,8 +29,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  */
 public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_341_35.class);
 	private static final String startSchemaVersion = "3.4.1.0.201411210000";
 	private static final String endSchemaVersion = "3.5.0.0.201531030000";
 
@@ -108,7 +104,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
         stepName = "Delete orhphaned taxon nodes";
         String sql = "DELETE FROM @@TaxonNode@@ WHERE classification_id IS NULL";
         tableName = "TaxonNode";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 0);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         //identifier versionable -> annotatable
         stepName = "Upgrade identifier from versionable to annotatable";
@@ -134,7 +130,7 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 				" SET taxonname_id = (SELECT name_id FROM TaxonBase tb WHERE tb.id = taxon_id) " +
 				" WHERE taxon_id IS NOT NULL ";
 		tableName = "DeterminationEvent";
-		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "", -99);
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "");
 
 
         //#4110 update idInVocabulary for some new databases
@@ -148,7 +144,6 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
     private void updateAreas(List<ISchemaUpdaterStep> stepList) {
 		String stepName;
 		String uuid;
-		ISchemaUpdaterStep step;
 		String tableName = "DefinedTermBase";
 
 		//ANSI - SQL
@@ -165,21 +160,21 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		stepName = "Update idInVocabulary for Countries if necessary";
 		uuid = Country.uuidCountryVocabulary.toString();
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// TdwgAreas => all
 		stepName = "Update idInVocabulary for TDWG areas if necessary";
 		uuid = NamedArea.uuidTdwgAreaVocabulary.toString();
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Waterbody => all
 		stepName = "Update idInVocabulary for Waterbody if necessary";
 		uuid = NamedArea.uuidWaterbodyVocabulary.toString();
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
-				String.format(queryVocUuid, uuid), 99)
+				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Continent => None has an id

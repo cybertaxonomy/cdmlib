@@ -12,7 +12,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -25,7 +26,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 
 /**
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
  */
 public class DescriptionUtility {
 
-    private static final Logger logger = LogManager.getLogger(DescriptionUtility.class);
+    private static final Logger logger = LogManager.getLogger();
 
 
     /**
@@ -60,7 +60,7 @@ public class DescriptionUtility {
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see
-     * {@link OrderedTermBase#compareTo(OrderedTermBase)}. This rule is
+     * {@link DefinedTermBase#compareTo(DefinedTermBase)}. This rule is
      * optional, see parameter <code>statusOrderPreference</code></li>
      * <li><b>Sub area preference rule</b>: If there is an area with a <i>direct
      * sub area</i> and both areas have the same status only the

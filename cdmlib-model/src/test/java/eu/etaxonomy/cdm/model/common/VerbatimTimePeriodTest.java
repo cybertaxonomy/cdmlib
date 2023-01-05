@@ -16,7 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.MutableDateTime;
 import org.joda.time.Partial;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class VerbatimTimePeriodTest {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(VerbatimTimePeriodTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private VerbatimTimePeriod onlyStartYear;
     private VerbatimTimePeriod onlyEndYear;

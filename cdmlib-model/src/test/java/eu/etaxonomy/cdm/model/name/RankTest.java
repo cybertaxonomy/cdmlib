@@ -15,7 +15,8 @@ import static org.junit.Assert.fail;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class RankTest extends EntityTestBase {
 
-    private static Logger logger = LogManager.getLogger(RankTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final UUID uuidEmpire = UUID.fromString("ac470211-1586-4b24-95ca-1038050b618d");
 	private static final UUID uuidDomain = UUID.fromString("ffca6ec8-8b88-417b-a6a0-f7c992aac19b");
@@ -522,6 +523,16 @@ public class RankTest extends EntityTestBase {
         assertTrue(Rank.LUSUS().isInfraSpecific());
         assertTrue(Rank.SUBLUSUS().isInfraSpecific());
         assertTrue(Rank.PROLES().isInfraSpecific());
+	}
+
+	@Test
+	public void testIsHigherThanEtAl() {
+	    assertTrue(Rank.FAMILY().isHigherThan(RankClass.Genus));
+	    assertTrue(Rank.FAMILY().isHigherOrEqualTo(RankClass.Species));
+        assertTrue(Rank.SPECIES().isHigherOrEqualTo(RankClass.Species));
+	    assertTrue(Rank.SUBGENUS().isLowerThan(RankClass.Genus));
+        assertTrue(Rank.SUBSPECIES().isLowerOrEqualTo(RankClass.Infraspecific));
+        assertTrue(Rank.SPECIES().isLowerOrEqualTo(RankClass.Genus));
 	}
 
 	@Test

@@ -6,14 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.stream;
-
 
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -30,10 +29,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @since 14.05.2013
  */
 public abstract class StreamImportConfiguratorBase<STATE extends StreamImportStateBase, SOURCE extends Object> extends ImportConfiguratorBase<STATE, SOURCE> implements IImportConfigurator {
-    private static final long serialVersionUID = 4200675007263433594L;
 
+    private static final long serialVersionUID = 4200675007263433594L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(StreamImportConfiguratorBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//partitions
 	private boolean usePartitions = true;
@@ -56,7 +55,6 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 	public StreamImportConfiguratorBase(IInputTransformer transformer) {
 		super(transformer);
 	}
-
 
 	@Override
     @SuppressWarnings("unchecked")
@@ -85,8 +83,6 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 	}
 
 	protected abstract String getDefaultSourceReferenceTitle();
-
-
 
 	public boolean isUsePartitions() {
 		return usePartitions;
@@ -119,7 +115,6 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
 		this.sourceReferenceTitle = sourceReferenceTitle;
 	}
 
-
     public String getDatabaseMappingFile() {
         return databaseMappingFile;
     }
@@ -127,13 +122,10 @@ public abstract class StreamImportConfiguratorBase<STATE extends StreamImportSta
         this.databaseMappingFile = databaseMappingFile;
     }
 
-
     public UUID getStateUuid() {
         return stateUuid;
     }
     public void setStateUuid(UUID stateUuid) {
         this.stateUuid = stateUuid;
     }
-
-
 }

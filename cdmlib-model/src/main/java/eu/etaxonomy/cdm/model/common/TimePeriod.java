@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
 
     private static final long serialVersionUID = 3405969418194981401L;
-    private static final Logger logger = LogManager.getLogger(TimePeriod.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
     public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();

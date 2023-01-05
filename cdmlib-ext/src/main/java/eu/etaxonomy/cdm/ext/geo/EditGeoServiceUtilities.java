@@ -65,7 +65,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @since 17.11.2008
  */
 public class EditGeoServiceUtilities {
-    private static final Logger logger = LogManager.getLogger(EditGeoServiceUtilities.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
 
@@ -282,7 +283,7 @@ public class EditGeoServiceUtilities {
             // sort the label entries after the status terms
             Collections.sort(legendSortList);
             // since the status terms are have an inverse natural order
-            // (as all other ordered term, see OrderedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
+            // (as all other ordered term, see DefinedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
             // the sorted list must be reverted
 //            Collections.reverse(legendSortList);
             // remove the prepended order index (like 000000000000001 ) from the legend entries

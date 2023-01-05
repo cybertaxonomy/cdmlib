@@ -6,10 +6,10 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.excel.taxa;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
@@ -22,8 +22,9 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase;
 public abstract class TaxonExcelImportBase
         extends ExcelTaxonOrSpecimenImportBase<TaxonExcelImportState, ExcelImportConfiguratorBase, ExcelRowBase> {
 
+    private static final long serialVersionUID = -9012570426721006621L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TaxonExcelImportBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	/*
 	 * Supported Columns:
@@ -72,8 +73,6 @@ public abstract class TaxonExcelImportBase
 	protected static final String YEAR_COLUMN = "Year";
 	protected static final String FAMILY_COLUMN = "Family";
 
-
-
 	protected static final String BASIONYM_COLUMN = "Basionym";
     protected static final String REPLACED_SYNONYM_COLUMN = "ReplacedSynonym";
     protected static final String NOMENCLATURAL_SYNONYM_COLUMN = "NomenclaturalSynonym";
@@ -104,5 +103,3 @@ public abstract class TaxonExcelImportBase
     protected static final String SOURCE_COLUMN = "Source";
     protected static final String SOURCE_ID_COLUMN = "SourceId";
 }
-
-

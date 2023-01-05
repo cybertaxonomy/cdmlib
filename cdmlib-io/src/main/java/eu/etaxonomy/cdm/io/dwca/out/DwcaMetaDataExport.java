@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
@@ -33,7 +32,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 
     private static final long serialVersionUID = -4033439569151252697L;
 
-    private static final Logger logger = LogManager.getLogger(DwcaMetaDataExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	protected static final String fileName = "meta.xml";
 
@@ -129,7 +128,6 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 					writeFieldLine(writer, fieldEntry.index, fieldEntry.term, fieldEntry.defaultValue);
 				}
 			}
-
 		writer.writeEndElement();
 	}
 
@@ -142,7 +140,6 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		}
 		writer.writeAttribute("term", term.toString());
 		writer.writeEndElement();
-
 	}
 
 	private void writeId(XMLStreamWriter writer, boolean isCore) throws XMLStreamException {
@@ -152,26 +149,14 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		writer.writeEndElement();
 	}
 
-
 	private void writeFiles(XMLStreamWriter writer, String filename) throws XMLStreamException {
 		writer.writeStartElement("files");
 			writer.writeStartElement("location");
 			writer.writeCharacters(filename);
 			writer.writeEndElement();
 		writer.writeEndElement();
-
 	}
 
-	/**
-	 * @param writer
-	 * @param encoding
-	 * @param linesTerminatedBy
-	 * @param fieldsEnclosedBy
-	 * @param ignoreHeaderLines
-	 * @param rowType
-	 * @param elementName
-	 * @throws XMLStreamException
-	 */
 	private void writeElementStart(XMLStreamWriter writer, String elementName, String encoding,
 			String linesTerminatedBy, String fieldsEnclosedBy, String fieldsTerminatedBy,
 			String ignoreHeaderLines, String rowType)
@@ -185,8 +170,6 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		writer.writeAttribute("rowType", rowType);
 	}
 
-
-
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {
 		boolean result = true;
@@ -198,6 +181,4 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoMetaData();
 	}
-
-
 }

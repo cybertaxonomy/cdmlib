@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
@@ -58,7 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class CommonTaxonName extends DescriptionElementBase {
 
     private static final long serialVersionUID = 2643808051976643339L;
-    private static final Logger logger = LogManager.getLogger(CommonTaxonName.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Name")
     @Field(store=Store.YES)
@@ -108,7 +109,6 @@ public class CommonTaxonName extends DescriptionElementBase {
         return result;
     }
 
-
 // *************************** CONSTRUCTOR *************************************/
 
     /**
@@ -125,9 +125,6 @@ public class CommonTaxonName extends DescriptionElementBase {
      * @deprecated Deprecated because {@link Feature feature} should always be {@link Feature#COMMON_NAME() COMMON_NAME}
      * for all common name instances.
     */
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#setFeature(eu.etaxonomy.cdm.model.description.Feature)
-     */
     @Override
     @Deprecated
     public void setFeature(Feature feature) {
@@ -153,7 +150,6 @@ public class CommonTaxonName extends DescriptionElementBase {
     public String getName(){
         return this.name;
     }
-
     /**
      * @see	#getName()
      */
@@ -168,7 +164,6 @@ public class CommonTaxonName extends DescriptionElementBase {
     public NamedArea getArea() {
         return area;
     }
-
     /**
      * @see #getArea()
      * @param area
@@ -176,7 +171,6 @@ public class CommonTaxonName extends DescriptionElementBase {
     public void setArea(NamedArea area) {
         this.area = area;
     }
-
 
 //*********************************** CLONE *****************************************/
 

@@ -20,7 +20,6 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.CacheConfiguration.CacheEventListenerFactoryConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 /**
@@ -29,19 +28,20 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  *
  * @author cmathew
  */
-public abstract class CdmCacherBase implements ICdmUuidCacher {
+public abstract class CdmPermanentCacheBase implements ICdmUuidCacher {
 
-    public static final Logger logger = LogManager.getLogger(CdmCacherBase.class);
+    private static final Logger logger = LogManager.getLogger();
+
+    public static final String PERMANENT_CACHE_NAME = "cdmPermanentCache"; //TODO or better call it cdmTermCache? cdmProxyCache?
 
     @Autowired
     public CacheManager cacheManager;
 
-    public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
-
     /**
      * Constructor which initializes a singleton {@link net.sf.ehcache.CacheManager}
+     * if not yet initialzed
      */
-    public CdmCacherBase() {
+    public CdmPermanentCacheBase() {
         init();
     }
 
@@ -58,7 +58,7 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
     /**
      * Returns the singleton default cache manager.
      */
-    public void addCacheManager(CacheManager cacheManager) {
+    protected void setCacheManager(CacheManager cacheManager) {
 
         if(this.cacheManager == null){
             this.cacheManager = cacheManager;
@@ -70,55 +70,51 @@ public abstract class CdmCacherBase implements ICdmUuidCacher {
     /**
      * Returns the default cache configuration.
      */
-    protected CacheConfiguration getDefaultCacheConfiguration() {
-        CacheEventListenerFactoryConfiguration factory;
+    protected CacheConfiguration getPermanentCacheConfiguration() {
+
         // For a better understanding on how to size caches, refer to
         // http://ehcache.org/documentation/configuration/cache-size
 
-        CacheConfiguration cc = new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
+        CacheConfiguration cc = new CacheConfiguration(PERMANENT_CACHE_NAME, 500)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
                 .eternal(false)
                 // default ttl and tti set to 2 hours
                 .timeToLiveSeconds(60*60*2)
-                .timeToIdleSeconds(60*60*2)
-                .statistics(true);
+                .timeToIdleSeconds(60*60*2);
 
         return cc;
     }
 
     /**
-     * Returns the default cache
-     *
-     * @return
+     * Returns the permanent cache
      */
-    public Cache getDefaultCache() {
-        Cache defaultCache = cacheManager.getCache(DEFAULT_CACHE_NAME);
-        if(defaultCache == null) {
-            // Create default cache
-            cacheManager.addCache(DEFAULT_CACHE_NAME);
-            defaultCache = cacheManager.getCache(DEFAULT_CACHE_NAME);
-            //FIXME write test to check if default config as defined in EhCacheConfiguration is being used
+    public Cache getPermanentCache() {
+        Cache permanentCache = cacheManager.getCache(PERMANENT_CACHE_NAME);
+        if(permanentCache == null) {
+            CacheConfiguration defaultCacheConfig = getPermanentCacheConfiguration();
+            permanentCache = new Cache(defaultCacheConfig);
+            cacheManager.addCache(permanentCache);
         }
-        return defaultCache;
+        return permanentCache;
     }
 
     @Override
     public void dispose(){
-        cacheManager.getCache(DEFAULT_CACHE_NAME).dispose();
+        cacheManager.getCache(PERMANENT_CACHE_NAME).dispose();
     }
 
     /**
      * Gets the cache element corresponding to the given {@link java.util.UUID}
      */
     public Element getCacheElement(UUID uuid) {
-        return getDefaultCache().get(uuid);
+        return getPermanentCache().get(uuid);
     }
 
     @Override
     public  void put(UUID uuid, CdmBase cdmEntity) {
         CdmBase cachedCdmEntity = getFromCache(uuid);
         if(cachedCdmEntity == null) {
-            getDefaultCache().put(new Element(uuid, cdmEntity));
+            getPermanentCache().put(new Element(uuid, cdmEntity));
         }
     }
 

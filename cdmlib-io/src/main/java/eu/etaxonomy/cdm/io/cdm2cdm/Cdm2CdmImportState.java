@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class Cdm2CdmImportState
         extends ImportStateBase<Cdm2CdmImportConfigurator,Cdm2CdmImportBase>{
 
-    private ICdmRepository sourceRepository;
+    private ICdmApplication sourceRepository;
 
     private Map<UUID, CdmBase> permanentCache = new HashMap<>();
 
@@ -43,10 +43,10 @@ public class Cdm2CdmImportState
 
 // ************************* GETTER / SETTER ****************************/
 
-    public ICdmRepository getSourceRepository() {
+    public ICdmApplication getSourceRepository() {
         return sourceRepository;
     }
-    public void setSourceRepository(ICdmRepository sourceRepository) {
+    public void setSourceRepository(ICdmApplication sourceRepository) {
         this.sourceRepository = sourceRepository;
     }
 

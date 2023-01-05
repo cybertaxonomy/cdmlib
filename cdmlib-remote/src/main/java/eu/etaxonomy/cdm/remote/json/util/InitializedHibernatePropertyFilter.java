@@ -16,7 +16,7 @@ import net.sf.json.util.PropertyFilter;
 
 public class InitializedHibernatePropertyFilter implements PropertyFilter {
 
-	private static final Logger logger = LogManager.getLogger(InitializedHibernatePropertyFilter.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	@Override
     public boolean apply(Object source, String name, Object value) {

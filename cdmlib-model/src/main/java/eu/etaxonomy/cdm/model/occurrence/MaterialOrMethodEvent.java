@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  *
  * @author a.mueller
  * @since 2013-07-08
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MaterialOrMethod", propOrder = {
@@ -62,7 +61,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class MaterialOrMethodEvent extends EventBase {
 
     private static final long serialVersionUID = -4799205199942053585L;
-	private static final Logger logger = LogManager.getLogger(MaterialOrMethodEvent.class);
+	private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "DefinedMaterialOrMethod")
     @XmlIDREF
@@ -107,8 +106,6 @@ public class MaterialOrMethodEvent extends EventBase {
 	public String getDescription() {
 		return super.getDescription();
 	}
-
-
 	/**
 	 * @see #getDescription()
 	 * @see #setMaterialMethodText(String)
@@ -117,8 +114,6 @@ public class MaterialOrMethodEvent extends EventBase {
 	public void setDescription(String materialMethodText) {
 		super.setDescription(materialMethodText);
 	}
-
-
 
 	/**
 	 * A freetext describing the material or method or if
@@ -131,8 +126,6 @@ public class MaterialOrMethodEvent extends EventBase {
     public String getMaterialMethodText() {
 		return this.getDescription();
 	}
-
-
 	/**
 	 * @see #getMaterialMethodText()
 	 */
@@ -164,6 +157,7 @@ public class MaterialOrMethodEvent extends EventBase {
 	}
 
 // ********************* CLONE ********************/
+
 	/**
 	 * Clones <i>this</i> {@link Cloning}. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> cloning by

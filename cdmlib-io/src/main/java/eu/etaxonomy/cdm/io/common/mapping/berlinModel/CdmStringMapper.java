@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 public class CdmStringMapper extends CdmSingleAttributeMapperBase {
 
 	@SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
 	public CdmStringMapper(String dbAttributeString, String cdmAttributeString) {
 		super(dbAttributeString, cdmAttributeString);

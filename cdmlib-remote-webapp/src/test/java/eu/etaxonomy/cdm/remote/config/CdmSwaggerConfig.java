@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.config;
 
-
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Predicates.or;
 import static springfox.documentation.builders.PathSelectors.regex;
@@ -37,22 +36,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  *  For a detailed overview on the spring MVC and application context configuration and
  *  bootstrapping of this web application see:
  *  {@link https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/cdmlib-remote-webappConfigurationAndBootstrapping}
- *
- *
  */
 @Profile("swagger")
 @EnableSwagger2
 @Configuration
 public class CdmSwaggerConfig {
 
-    public static final Logger logger = LogManager.getLogger(CdmSwaggerConfig.class);
+    private static final Logger logger = LogManager.getLogger();
 
-    Collection<Class<? extends Object>> allCdmTypes = null;
+    private Collection<Class<? extends Object>> allCdmTypes = null;
 
     public CdmSwaggerConfig() {
         super();
         logger.debug("contructor");
-
     }
 
    /**
@@ -188,7 +184,6 @@ public class CdmSwaggerConfig {
           .ignoredParameterTypes(allCdmTpyes());
    }
 
-
    /**
     * FIXME remove or implement?
      * Disabled during the trassition to springfox,
@@ -206,15 +201,10 @@ public class CdmSwaggerConfig {
 //       ModelContext.addConverter(sessionConverter, true);
     }
 
+   //TODO failes to convert json to model
+   // "org.json4s.package$MappingException: Did not find value
+   //            which can be converted into java.lang.String"
 
-       //TODO failes to convert json to model
-       // "org.json4s.package$MappingException: Did not find value
-       //            which can be converted into java.lang.String"
-
-
-    /**
-     * @return
-     */
     private Class<Class<? extends Object>>[] allCdmTpyes() {
         if (allCdmTypes == null) {
             allCdmTypes = allCdmTypes();
@@ -224,21 +214,18 @@ public class CdmSwaggerConfig {
         return allCdmTypes.toArray(new Class[allCdmTypes.size()]);
     }
 
-/**
- * @return
- */
-private Collection<Class<? extends Object>> allCdmTypes() {
-    boolean includeAbstract = true;
-    boolean includeInterfaces = false;
-    Collection<Class<? extends Object>> classes = null;
+    private Collection<Class<? extends Object>> allCdmTypes() {
+        boolean includeAbstract = true;
+        boolean includeInterfaces = false;
+        Collection<Class<? extends Object>> classes = null;
 
-    CdmTypeScanner<Object> scanner = new CdmTypeScanner<Object>(includeAbstract, includeInterfaces);
-    scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
-    scanner.addIncludeFilter(new CdmAssignableTypeFilter(CdmBase.class, includeAbstract, includeInterfaces));
-    classes = scanner.scanTypesIn("eu/etaxonomy/cdm/model");
+        CdmTypeScanner<Object> scanner = new CdmTypeScanner<Object>(includeAbstract, includeInterfaces);
+        scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
+        scanner.addIncludeFilter(new CdmAssignableTypeFilter(CdmBase.class, includeAbstract, includeInterfaces));
+        classes = scanner.scanTypesIn("eu/etaxonomy/cdm/model");
 
-    return classes;
-}
+        return classes;
+    }
 
    private ApiInfo apiInfo(String title, String description) {
        ApiInfo apiInfo = new ApiInfo(
@@ -253,6 +240,4 @@ private Collection<Class<? extends Object>> allCdmTypes() {
          );
        return apiInfo;
      }
-
-
 }

@@ -6,13 +6,13 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.io.Serializable;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.event.spi.AbstractEvent;
 import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.PostDeleteEvent;
@@ -27,20 +27,19 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * The CrudEvent unifies all CRUD events into one interface.
  * Crud as in Create, Retrieve, Update, Delete. This event will only hold CdmBase objects.
  *
- *
  * @author n.hoffmann
  * @since 24.03.2009
  */
 public class CdmDataChangeEvent extends AbstractEvent{
+
     private static final long serialVersionUID = 9113025682352080372L;
-    private static final Logger logger = LogManager.getLogger(CdmDataChangeEvent.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * The event types currently implemented
      *
      * @author n.hoffmann
      * @since 25.03.2009
-     * @version 1.0
      */
     public enum EventType {
         INSERT, LOAD, UPDATE, DELETE
@@ -50,13 +49,11 @@ public class CdmDataChangeEvent extends AbstractEvent{
     private final EntityPersister persister;
     private final Set<CdmBase> affectedObjects;
 
-
     private final Object[] state;
     // for update only
     private Object[] oldState;
     private final Serializable id;
     protected final EventType eventType;
-
 
     private CdmDataChangeEvent(
             CdmBase entity,
@@ -67,6 +64,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
             EventSource source,
             EventType eventType
             ) {
+
         super(source);
         this.entity = entity;
         this.id = id;
@@ -76,9 +74,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
         this.eventType = eventType;
         this.affectedObjects = null;
     }
-    /**
-     * @param source
-     */
+
     private CdmDataChangeEvent(
             CdmBase entity,
             Set<CdmBase> affectedObjects,
@@ -137,10 +133,6 @@ public class CdmDataChangeEvent extends AbstractEvent{
         return eventType == EventType.DELETE;
     }
 
-    /**
-     * @param event
-     * @return
-     */
     public static CdmDataChangeEvent NewInstance(AbstractEvent event) {
 
         CdmDataChangeEvent mediationEvent = null;
@@ -202,8 +194,6 @@ public class CdmDataChangeEvent extends AbstractEvent{
     }
 
     public static CdmDataChangeEvent NewInstance(CdmBase entity, Set<CdmBase> affectedObjects, EventType eventType) {
-
         return new CdmDataChangeEvent(entity, affectedObjects, eventType);
     }
-
 }

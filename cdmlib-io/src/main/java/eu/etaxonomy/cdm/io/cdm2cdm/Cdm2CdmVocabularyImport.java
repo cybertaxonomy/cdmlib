@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -77,7 +77,7 @@ public class Cdm2CdmVocabularyImport
     }
 
     private void doSingleVocabulary(Cdm2CdmImportState state, UUID vocUuid) {
-        ICdmRepository source = sourceRepo(state);
+        ICdmApplication source = sourceRepo(state);
         TransactionStatus otherTx = source.startTransaction(true);
         TermVocabulary<DefinedTermBase> otherVoc = source.getVocabularyService().find(vocUuid);
         TermVocabulary<DefinedTermBase> thisVoc = null;
@@ -123,7 +123,7 @@ public class Cdm2CdmVocabularyImport
     }
 
     private void doSingleGraph(Cdm2CdmImportState state, UUID graphUuid) {
-        ICdmRepository source = sourceRepo(state);
+        ICdmApplication source = sourceRepo(state);
         TransactionStatus otherTx = source.startTransaction(true);
         TermTree<DefinedTermBase> otherGraph = source.getTermTreeService().find(graphUuid);
         TermTree<DefinedTermBase> thisGraph = null;

@@ -17,14 +17,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 @Component
 public class TermLoader implements ITermLoader {
 
-	private static final Logger logger = LogManager.getLogger(TermLoader.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	@Override
 	public void unloadAllTerms(){
@@ -43,7 +43,7 @@ public class TermLoader implements ITermLoader {
 		}
 	}
 
-	private <T extends DefinedTermBase> void unloadVocabularyType(VocabularyEnum vocType){
+	private <T extends DefinedTermBase<T>> void unloadVocabularyType(VocabularyEnum vocType){
 		Class<? extends DefinedTermBase> termClass = vocType.getClazz();
 		getInstance(termClass).resetTerms();
 		return;
@@ -76,19 +76,21 @@ public class TermLoader implements ITermLoader {
 	}
 
 	@Override
-	public <T extends DefinedTermBase<T>, S extends OrderedTermBase<S>> TermVocabulary<T> loadTerms(
+	public <T extends DefinedTermBase<T>> TermVocabulary<T> loadTerms(
 	        VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
 
 		try {
 			CSVReader reader = getCsvReader(vocType);
 			String [] nextLine = reader.readNext();
 
+			boolean orderRelevant = vocType.isOrderRelevant();
 			Class<T> termClass = (Class<T>)vocType.getClazz();
 
 			//vocabulary
 			TermVocabulary<T> voc;
 			TermType termType = TermType.Unknown;
-			if (OrderedTermBase.class.isAssignableFrom(termClass)){
+
+			if (orderRelevant){
 				voc = OrderedTermVocabulary.NewInstance(termType);
 			}else{
 				voc = TermVocabulary.NewInstance(termType);
@@ -103,7 +105,7 @@ public class TermLoader implements ITermLoader {
 			// Ugly, I know, but I don't think we can use a static method here . .
 
 			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance();
-			S lastInstance = null;
+			T lastInstance = null;
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
 				if (nextLine.length == 0){
@@ -134,32 +136,30 @@ public class TermLoader implements ITermLoader {
 	 * @param classDefiningTermInstance instance for calling readCsvLine
 	 * @return
 	 */
-	private <T extends DefinedTermBase<T>, S extends OrderedTermBase<S> > S handleSingleTerm(
-	            String[] csvLine, Map<UUID,DefinedTermBase> terms, Class<T> termClass,
-			TermVocabulary<T> voc, boolean abbrevAsId, S lastTerm,
+	private <T extends DefinedTermBase<T>> T handleSingleTerm(
+	        String[] csvLine, Map<UUID,DefinedTermBase> terms, Class<T> termClass,
+			TermVocabulary<T> voc, boolean abbrevAsId, T lastTerm,
 			T classDefiningTermInstance) {
+
 		T term = classDefiningTermInstance.readCsvLine(termClass, arrayedLine(csvLine), voc.getTermType(), terms, abbrevAsId);
 		terms.put(term.getUuid(), term);
-		if (voc.isInstanceOf(OrderedTermVocabulary.class) && term.isInstanceOf(OrderedTermBase.class)){
+		if (voc.isInstanceOf(OrderedTermVocabulary.class) && term.isOrderRelevant()){
 		    @SuppressWarnings("unchecked")
-            OrderedTermVocabulary<S> orderedVoc = CdmBase.deproxy(voc, OrderedTermVocabulary.class);
-		    @SuppressWarnings("unchecked")
-            S orderedTerm = (S)CdmBase.deproxy(term, OrderedTermBase.class);
+            OrderedTermVocabulary<T> orderedVoc = CdmBase.deproxy(voc, OrderedTermVocabulary.class);
 		    if (lastTerm != null){
-		        orderedVoc.addTermBelow(orderedTerm, lastTerm);
+		        orderedVoc.addTermBelow(term, lastTerm);
 		    }else{
-		        orderedVoc.addTerm(orderedTerm);
+		        orderedVoc.addTerm(term);
 		    }
-		    return orderedTerm;
+		    return term;
 		}else{
 		    voc.addTerm(term);
 		    return null;
 		}
 	}
 
-
 	@Override
-	public <T extends DefinedTermBase<T>,S extends OrderedTermBase<S>> Set<T> loadSingleTerms(VocabularyEnum vocType,
+	public <T extends DefinedTermBase<T>> Set<T> loadSingleTerms(VocabularyEnum vocType,
 			TermVocabulary<T> voc, Set<UUID> missingTerms) {
 		try {
 		    Class<T> termClass = (Class<T>)vocType.getClazz();
@@ -179,7 +179,7 @@ public class TermLoader implements ITermLoader {
 			}
 
 			UUID lastTermUuid = null;
-			S lastTerm = null;
+			T lastTerm = null;
 			while ((nextLine = reader.readNext()) != null) {
 				if (nextLine.length == 0){
 					continue;
@@ -187,8 +187,8 @@ public class TermLoader implements ITermLoader {
 				UUID uuid = UUID.fromString(nextLine[0]);
 				if (missingTerms.contains(uuid)){
 				    DefinedTermBase<?> nonOrderedLastTerm = allVocTerms.get(lastTermUuid);
-				    if (nonOrderedLastTerm.isInstanceOf(OrderedTermBase.class)){  //to avoid ClassCastException
-				        lastTerm = (S)allVocTerms.get(lastTermUuid);
+				    if (nonOrderedLastTerm.isOrderRelevant()){  //to avoid ClassCastException
+				        lastTerm = (T)allVocTerms.get(lastTermUuid);
 				    }
 					lastTerm = handleSingleTerm(nextLine, allVocTerms, termClass, voc, abbrevAsId, lastTerm, classDefiningTermInstance);
 				}

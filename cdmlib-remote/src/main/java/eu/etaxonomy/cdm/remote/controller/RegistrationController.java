@@ -47,7 +47,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = {"/registration"})
 public class RegistrationController extends BaseController<Registration, IRegistrationService> {
 
-    public static final Logger logger = LogManager.getLogger(RegistrationController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public RegistrationController(){
         setInitializationStrategy(Arrays.asList(new String[]{

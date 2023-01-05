@@ -9,12 +9,13 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -25,17 +26,16 @@ import eu.etaxonomy.cdm.model.media.Rights;
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public class DwcaReferenceRecord extends DwcaRecordBase{
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DwcaReferenceRecord.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private String isbnIssn;
 	private URI uri;
 	private String doi;
 	private LSID lsid;
-
 
 	private String bibliographicCitation;
 	private String title;
@@ -48,7 +48,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	private Set<Rights> rights;
 	private String taxonRemarks;
 	private String type;
-
 
 	public DwcaReferenceRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
@@ -158,14 +157,12 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 		this.isbnIssn = isbnIssn;
 	}
 
-
 	public String getBibliographicCitation() {
 		return bibliographicCitation;
 	}
 	public void setBibliographicCitation(String bibliographicCitation) {
 		this.bibliographicCitation = bibliographicCitation;
 	}
-
 
 	public String getTitle() {
 		return title;
@@ -174,14 +171,12 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 		this.title = title;
 	}
 
-
 	public AgentBase<?> getCreator() {
 		return creator;
 	}
 	public void setCreator(AgentBase<?> creator) {
 		this.creator = creator;
 	}
-
 
 	public VerbatimTimePeriod getDate() {
 		return date;
@@ -190,14 +185,12 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 		this.date = date;
 	}
 
-
 	public String getDescription() {
 		return description;
 	}
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 
 	public String getSubject() {
 		return subject;
@@ -206,14 +199,12 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 		this.subject = subject;
 	}
 
-
 	public Language getLanguage() {
 		return language;
 	}
 	public void setLanguage(Language language) {
 		this.language = language;
 	}
-
 
 	public Set<Rights> getRights() {
 		return rights;
@@ -222,7 +213,6 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 		this.rights = rights;
 	}
 
-
 	public String getTaxonRemarks() {
 		return taxonRemarks;
 	}
@@ -230,12 +220,10 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 		this.taxonRemarks = taxonRemarks;
 	}
 
-
 	public String getType() {
 		return type;
 	}
 	public void setType(String type) {
 		this.type = type;
 	}
-
 }

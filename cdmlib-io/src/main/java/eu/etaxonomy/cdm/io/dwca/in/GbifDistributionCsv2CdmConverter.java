@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
@@ -39,19 +40,15 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(GbifDistributionCsv2CdmConverter.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String CORE_ID = "coreId";
 
-	/**
-	 * @param state
-	 */
 	public GbifDistributionCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
@@ -107,15 +104,6 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		return new ListReader<>(resultList);
 	}
 
-
-
-	/**
-     * @param item
-	 * @param occurrenceStatus
-	 * @param establishmentMeans
-     * @param resultList
-     * @return
-     */
     private PresenceAbsenceTerm getPresenceAbsenceStatus(StreamItem item,
             String establishmentMeans, String occurrenceStatus, List<MappedCdmBase<? extends CdmBase>> resultList) {
 
@@ -167,10 +155,6 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
         return status;
     }
 
-    /**
-     * @param statusStr
-     * @return
-     */
     private PresenceAbsenceTerm getExistingPresenceAbsenceTerm(String statusStr) {
         TermVocabulary<PresenceAbsenceTerm> voc = PresenceAbsenceTerm.PRESENT().getVocabulary();
         for (PresenceAbsenceTerm status: voc.getTerms()){
@@ -227,7 +211,6 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
                     resultList.add(mcb);
                 }
 
-
     			state.putMapping(namespace, locationId, newArea);
     			return newArea;
     		}
@@ -243,10 +226,6 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
         }
 	}
 
-    /**
-     * @param locationId
-     * @return
-     */
     protected NamedArea getTdwgArea(String locationId) {
         if (locationId == null){
             return null;
@@ -261,7 +240,6 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		String id = item.get(CORE_ID);
 		return id;
 	}
-
 
 //********************** PARTITIONABLE **************************************/
 
@@ -284,9 +262,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-
 	}
-
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
@@ -303,6 +279,4 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
 }

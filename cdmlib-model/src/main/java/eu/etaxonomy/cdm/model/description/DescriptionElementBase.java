@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,7 +101,7 @@ public abstract class DescriptionElementBase
 
     private static final long serialVersionUID = 5000910777835755905L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(DescriptionElementBase.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //type, category of information. In structured descriptions characters
     @XmlElement(name = "Feature")
@@ -452,13 +450,25 @@ public abstract class DescriptionElementBase
         return addPrimaryTaxonomicSource(reference, null);
     }
 
-
-
     @Override
     public DescriptionElementSource addSource(OriginalSourceType type, Reference reference,
             String microReference, String originalInformation) {
         DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, null, null,
                 reference, microReference, null, originalInformation);
+        addSource(newSource);
+        return newSource;
+    }
+
+    /**
+     * Adds a source which has a specimen as source.
+     *
+     * @see DescriptionElementSource#getSpecimen()
+     */
+    public DescriptionElementSource addSource(OriginalSourceType type, SpecimenOrObservationBase<?> specimen,
+            String microReference, String originalInformation) {
+        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, null, null,
+                null, microReference, null, originalInformation);
+        newSource.setSpecimen(specimen);
         addSource(newSource);
         return newSource;
     }

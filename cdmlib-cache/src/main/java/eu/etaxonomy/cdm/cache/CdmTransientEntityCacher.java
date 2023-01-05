@@ -21,7 +21,7 @@ import javax.management.MBeanServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
+import eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase;
 import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
@@ -44,15 +44,15 @@ import net.sf.ehcache.statistics.FlatStatistics;
  *  - all objects put will be ancestors of CdmBase
  *  - all CdmBase objects in the cache will be already de-proxied
  *  - after any CdmBase object is put in the cache,
- *  all non-null / non-proxy CdmBase objects in the sub-graph
- *  will also be present in the cache.
+ *    all non-null / non-proxy CdmBase objects in the sub-graph
+ *    will also be present in the cache.
  *
  * @author cmathew
  * @since 14 Oct 2014
  */
 public class CdmTransientEntityCacher implements ICdmCacher {
 
-    private static final Logger logger = LogManager.getLogger(CdmTransientEntityCacher.class);
+    private static final Logger logger = LogManager.getLogger();
 
     //the key for this cacher within the CacheManager
     private final String cacheId;
@@ -61,7 +61,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     private final Cache cache;
 
     //permanent cache which is usually used to cache terms permanently
-    private static CdmCacherBase permanentCache;
+    private static CdmPermanentCacheBase permanentCache;
 
     private final CacheLoader cacheLoader;
 
@@ -75,7 +75,8 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     public CdmTransientEntityCacher(String cacheId) {
         this.cacheId = cacheId;
 
-        cache = new Cache(getEntityCacheConfiguration(cacheId));
+        CacheConfiguration cacheConfig = getEntityCacheConfiguration(cacheId);
+        cache = new Cache(cacheConfig);
 
         getCacheManager().removeCache(cache.getName());
         getCacheManager().addCache(cache);
@@ -91,8 +92,6 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     /**
      * Generates an id for this session.
-     * @param sessionOwner
-     * @return
      */
     private static String generateCacheId(Object sessionOwner) {
         return sessionOwner.getClass().getName() +  String.valueOf(sessionOwner.hashCode());
@@ -107,7 +106,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         return new CdmEntityCacheKey<T>(entityClass, cdmBase.getId());
     }
 
-    public static void setPermanentCacher(CdmCacherBase permanentCacher) {
+    public static void setPermanentCacher(CdmPermanentCacheBase permanentCacher) {
         permanentCache = permanentCacher;
     }
 
@@ -123,7 +122,6 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
         return new CacheConfiguration(cacheId, 0)
             .eternal(true)
-            .statistics(true)
             .sizeOfPolicy(sizeOfConfig)
             .overflowToOffHeap(false);
     }
@@ -137,9 +135,26 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     /**
      * Returns the cache corresponding to the cache id
+     * from the cache manager.
+     *
+     * Expected never to be null as the cache was
+     * added to the cache manager before. However,
+     * in some rare cases no cache is returned, maybe due
+     * to timeout issues or so. This still need further
+     * investigation (#7699).
+     * For now we throw an exception with some debugging information.
      */
     private Cache getCache() {
-        return  getCacheManager().getCache(cacheId);
+        Cache result = getCacheManager().getCache(cacheId);
+        if (result == null) {
+            throw new RuntimeException("No cache available for cacheId = "+cacheId+". See #7699." +
+                "\nAvailable caches are: " +  getCacheManager().getCacheNames() +
+                "\nCacheManager status is: " + getCacheManager().getStatus() +
+                "\n" + (cache == null ? "internal cache is null" : "Cache status is:" + cache.getStatus())
+                );
+        }else {
+            return result;
+        }
     }
 
     /**
@@ -175,7 +190,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     /**
-     * Loads the {@link eu.etaxonomy.cdm.model.common.CdmBase cdmEntity}) graph recursively into the
+     * Loads the {@link eu.etaxonomy.cdm.model.common.CdmBase cdmEntity} graph recursively into the
      * cache.
      *
      * For in depth details on the whole mechanism see
@@ -352,5 +367,4 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         //recursive loading should be handled by the permanent cache itself
         return permanentCache.isCachable(cdmEntity);
     }
-
 }

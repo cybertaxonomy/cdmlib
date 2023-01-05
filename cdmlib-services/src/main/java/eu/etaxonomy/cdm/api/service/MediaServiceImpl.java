@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
@@ -20,6 +19,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +62,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Service
 @Transactional(readOnly=true)
 public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     @Autowired
@@ -170,7 +173,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         updatedObject = handleDeleteMedia(media, textData, description,
                                 (IDescribable)objectToUpdate);
                     } else {
-                    	
+
                         // this should not be happen, because it is not deletable. see isDeletable
                         result.setAbort();
                     }
@@ -183,7 +186,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                 }else if (ref instanceof MediaRepresentation){
                     continue;
                 }else {
-                	
+
                     result.setAbort();
                 }
 

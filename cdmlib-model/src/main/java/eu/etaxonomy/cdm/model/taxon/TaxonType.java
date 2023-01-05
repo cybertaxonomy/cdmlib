@@ -24,7 +24,8 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  */
 @XmlEnum
 public enum TaxonType
-    implements IEnumTerm<TaxonType>{
+        implements IEnumTerm<TaxonType>{
+
     CONCEPT(UUID.fromString("d6e65c50-729a-4c80-8ec0-d30627c8b2f0"), "Concept","CO"),
     NAME_USAGE(UUID.fromString("a3ffccb8-8408-4fb4-8e38-9ffe84ca804f"), "Name Usage","NU"),
     ;

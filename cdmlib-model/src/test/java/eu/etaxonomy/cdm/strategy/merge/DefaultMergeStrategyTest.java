@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class DefaultMergeStrategyTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(DefaultMergeStrategyTest.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private DefaultMergeStrategy bookMergeStrategy;
 	private Reference book1;

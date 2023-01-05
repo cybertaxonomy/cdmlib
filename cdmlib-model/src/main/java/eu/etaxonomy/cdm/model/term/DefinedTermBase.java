@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import java.lang.reflect.Constructor;
@@ -52,27 +51,35 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-
 
 /**
  * workaround for enumerations, base type according to TDWG.  For linear ordering
  * use partOf relation and BreadthFirst. Default iterator order should therefore
  * be BreadthFirst (not DepthFirst)
+ *
  * @author m.doering
  * @since 08-Nov-2007 13:06:19
  */
@@ -80,6 +87,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @XmlType(name = "DefinedTermBase", propOrder = {
     "media",
     "vocabulary",
+    "orderIndex",
     "idInVocabulary",
     "symbol",
     "symbol2",
@@ -101,7 +109,14 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
     ReferenceSystem.class,
     RightsType.class,
     StatisticalMeasure.class,
-    TextFormat.class
+    TextFormat.class,
+    RelationshipTermBase.class,
+    PresenceAbsenceTerm.class,
+    State.class,
+    NamedArea.class,
+    NamedAreaLevel.class,
+    NomenclaturalStatusType.class,
+    Rank.class
 })
 @Entity
 @Audited
@@ -113,7 +128,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
             implements IDefinedTerm<T>, Comparable<T> {
 
     private static final long serialVersionUID = 2931811562248571531L;
-    private static final Logger logger = LogManager.getLogger(DefinedTermBase.class);
+    private static final Logger logger = LogManager.getLogger();
+
+    //Order index, value < 1 or null means that this term is not in order yet
+    @XmlElement(name = "OrderIndex")
+    protected Integer orderIndex;
 
 //	@XmlElement(name = "KindOf")
 //    @XmlIDREF
@@ -196,6 +215,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     private String symbol2;
 
     private ExternallyManaged externallyManaged;
+
 
 //***************************** CONSTRUCTOR *******************************************/
 
@@ -280,63 +300,55 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
       }
 
 
-    //TODO Comparable implemented only for fixing failing JAXB imports, may be removed when this is fixed
-  	@Override
-  	@Deprecated //for inner use only
-  	public int compareTo(T other) {
-		return ((Integer)this.getId()).compareTo(other.getId());
-	}
-
 	@Override
-      public Set<T> getIncludes(){
-          return this.includes;
-      }
+    public Set<T> getIncludes(){
+        return this.includes;
+    }
 
-      /**
-       * @see #getIncludes()
-      */
-      protected void setIncludes(Set<T> includes) {
-          this.includes = includes;
-      }
+    /**
+     * @see #getIncludes()
+     */
+    protected void setIncludes(Set<T> includes) {
+        this.includes = includes;
+    }
 
-      /**
-       * @see #getIncludes()
-       */
-      public void addIncludes(T includes) {
-          checkTermType(includes);
-          includes.setPartOf(this);
-          this.includes.add(includes);
-      }
+    /**
+     * @see #getIncludes()
+     */
+    public void addIncludes(T includes) {
+        checkTermType(includes);
+        includes.setPartOf(this);
+        this.includes.add(includes);
+    }
 
-      /**
-       * @see #getIncludes()
-       */
-      public void removeIncludes(T includes) {
-          if(this.includes.contains(includes)) {
-              includes.setPartOf(null);
-              this.includes.remove(includes);
-          }
-      }
+    /**
+     * @see #getIncludes()
+     */
+    public void removeIncludes(T includes) {
+        if(this.includes.contains(includes)) {
+            includes.setPartOf(null);
+            this.includes.remove(includes);
+        }
+    }
 
-      @Override
-      public Set<Media> getMedia(){
-          return this.media;
-      }
+    @Override
+    public Set<Media> getMedia(){
+        return this.media;
+    }
 
-      public void addMedia(Media media) {
-          this.media.add(media);
-      }
-      public void removeMedia(Media media) {
-          this.media.remove(media);
-      }
+    public void addMedia(Media media) {
+        this.media.add(media);
+    }
+    public void removeMedia(Media media) {
+        this.media.remove(media);
+    }
 
-      public TermVocabulary<T> getVocabulary() {
-          return this.vocabulary;
-      }
-
-      //for bedirectional use only, use vocabulary.addTerm instead
-      protected void setVocabulary(TermVocabulary<T> newVocabulary) {
-          this.vocabulary = newVocabulary;
+    public TermVocabulary<T> getVocabulary() {
+        return this.vocabulary;
+    }
+    //for bedirectional use only, use vocabulary.addTerm instead
+    protected void setVocabulary(TermVocabulary<T> newVocabulary) {
+        this.vocabulary = newVocabulary;
     }
 
     public String getSymbol() {
@@ -351,6 +363,176 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     }
     public void setSymbol2(String symbol2) {
         this.symbol2 = symbol2;
+    }
+
+//************************** ordered **********************************/
+
+    public boolean isOrderRelevant() {
+        return orderIndex != null;
+    }
+
+    /**
+     * Higher ordered terms have a lower order index,
+     * lower ordered terms have a higher order index:
+     * <p>
+     * <b>a.oderIndex &lt; b.oderIndex : a &gt; b</b>
+     * @return the order index of a term or <code>null</code> if the term is not ordered in it's vocabulary
+     */
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    @Override
+    public int compareTo(T other) {
+        if (isOrderRelevant()) {
+            /**
+             * Compares this DefinedTermBase with the specified DefinedTermBase for
+             * order. Returns a -1, 0, or +1 if the orderIndex of this object is greater
+             * than, equal to, or less than the specified object. In case the parameter
+             * is <code>null</code> the
+             * <p>
+             * <b>Note:</b> The compare logic of this method might appear to be <b>inverse</b>
+             * to the one mentioned in
+             * {@link java.lang.Comparable#compareTo(java.lang.Object)}. This is, because the logic here
+             * is that the lower the orderIndex the higher the term. E.g. the very high {@link Rank}
+             * Kingdom may have an orderIndex close to 1.
+             *
+             * @param orderedTerm
+             *            the DefinedTermBase to be compared
+             * @throws NullPointerException
+             *             if the specified object is null
+             */
+            return performCompareTo(other, false);
+        }else {
+            //@Deprecated //for inner use only
+            //TODO Comparable for non-ordered implemented only for fixing failing JAXB imports, may be removed when this is fixed
+            return ((Integer)this.getId()).compareTo(other.getId());
+        }
+    }
+
+    /**
+     * Compares this {@link DefinedTermBase ordered term} with the given {@link DefinedTermBase thatTerm} for
+     * order.  Returns a -1, 0, or +1 if the orderId of this object is greater
+     * than, equal to, or less than the specified object.
+     * <p>
+     * <b>Note:</b> The compare logic of this method is the <b>inverse logic</b>
+     * of the the one implemented in
+     * {@link java.lang.Comparable#compareTo(java.lang.Object)}
+     *
+     * @param orderedTerm
+     *            the DefinedTermBase to be compared
+     * @param skipVocabularyCheck
+     *            whether to skip checking if both terms to compare are in the
+     *            same vocabulary
+     * @throws NullPointerException
+     *             if the specified object is null
+     */
+    //overriden by PresenceAbsenceTerm, HybridRelationshipType and Rank
+    protected int performCompareTo(T thatTerm , boolean skipVocabularyCheck ) {
+
+        T thatTermLocal = CdmBase.deproxy(thatTerm);
+        if(!skipVocabularyCheck){
+            if (this.vocabulary == null || thatTermLocal.vocabulary == null){
+                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + thatTermLocal.toString() + ") of class " + this.getClass() + " or " + thatTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
+            }
+        }
+
+        int vocCompare = compareVocabularies(thatTermLocal);
+        if (vocCompare != 0){
+            return vocCompare;
+        }
+
+        int orderThat;
+        int orderThis;
+        try {
+            orderThat = thatTermLocal.orderIndex;
+            orderThis = orderIndex;
+        } catch (RuntimeException e) {
+            throw e;
+        }
+        if (orderThis > orderThat){
+            return -1;
+        }else if (orderThis < orderThat){
+            return 1;
+        } else {
+            if (skipVocabularyCheck){
+                String errorStr = "The term %s (ID: %s) is not attached to any vocabulary. This should not happen. "
+                        + "Please add the term to an vocabulary";
+                if (this.vocabulary == null){
+                    throw new IllegalStateException(String.format(errorStr, this.getLabel(), String.valueOf(this.getId())));
+                }else if (thatTermLocal.vocabulary == null){
+                    throw new IllegalStateException(String.format(errorStr, thatTermLocal.getLabel(), String.valueOf(thatTermLocal.getId())));
+                }
+            }
+            return 0;
+        }
+    }
+
+    //protected as overriden by PresenceAbsenceTerm
+    protected int compareVocabularies(T thatTerm) {
+        //if vocabularies are not equal order by voc.uuid to get a defined behavior
+        //ordering terms from 2 different vocabularies is generally not recommended
+        UUID thisVocUuid = this.vocabulary == null? null:this.vocabulary.getUuid();
+        UUID thatVocUuid = thatTerm.getVocabulary() == null? null:thatTerm.getVocabulary().getUuid();
+        int vocCompare = CdmUtils.nullSafeCompareTo(thisVocUuid, thatVocUuid);
+        return vocCompare;
+    }
+
+    /**
+     * If this term is lower than the parameter term, <code>true</code> is returned,
+     * else <code>false</code>.
+     * If the parameter term is <code>null</code> an Exception is thrown.
+     * See {@link #compareTo(DefinedTermBase)} for semantics of comparison.
+     *
+     * @param orderedTerm the term to compare with
+     * @return boolean result of the comparison
+     * @deprecated use a comparator instead
+     */
+    @Deprecated
+    public boolean isLower(T orderedTerm){
+        return (this.compareTo(orderedTerm) < 0 );
+    }
+
+    /**
+     * If this term is higher than the parameter term, <code>true</code> is returned,
+     * else false.
+     * If the parameter term is <code>null</code> an exception is thrown.
+     * See {@link #compareTo(DefinedTermBase)} for semantics of comparison.
+     *
+     * @param orderedTerm the term to compare with
+     * @see #compareTo(DefinedTermBase)
+     * @return boolean result of the comparison
+     * @deprecated use a comparator instead
+     */
+    @Deprecated
+    public boolean isHigher(T orderedTerm){
+        return (this.compareTo(orderedTerm) > 0 );
+    }
+
+    /**
+     * @deprecated To be used only by OrderedTermVocabulary
+     **/
+    @Deprecated
+    boolean decreaseIndex(OrderedTermVocabulary vocabulary){
+        if (vocabulary.indexChangeAllowed(this) == true){
+            orderIndex--;
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * @deprecated to be used only by OrderedTermVocabulary
+     **/
+    @Deprecated
+    boolean incrementIndex(OrderedTermVocabulary vocabulary){
+        if (vocabulary.indexChangeAllowed(this) == true){
+            orderIndex++;
+            return true;
+        }else{
+            return false;
+        }
     }
 
 //******************************* METHODS ******************************************************/
@@ -368,7 +550,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
       @Override
       public Set<T> getGeneralizationOf(boolean recursive) {
-          Set<T> result = new HashSet<T>();
+          Set<T> result = new HashSet<>();
         result.addAll(this.generalizationOf);
         if (recursive){
             for (T child : this.generalizationOf){
@@ -512,7 +694,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     // Currently the CDM Caching mechanism is only used for caching terms
     private static ICdmUuidCacher cacher;
 
-
     /**
      * Gets the CDM cacher object
      *
@@ -531,14 +712,35 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 		DefinedTermBase.cacher = cacher;
 	}
 
+    /**
+     * Returns the term with the given {@link UUID} and the exact given {@link Class} from
+     * the cache or loads it from the database. If the term exists but has a
+     * different class <code>null</code> is returned. This is also the case for
+     * if the class is assignable from the given class.
+     *
+     * @see #getTermByUUID(UUID, Class)
+     */
 	public static <T extends DefinedTermBase> T getTermByClassAndUUID(Class<T> clazz, UUID uuid) {
 	    if(cacher != null) {
-	        Object obj = HibernateProxyHelper.deproxy(getCacher().load(uuid));
+	        CdmBase cdmBase = HibernateProxyHelper.deproxy(getCacher().load(uuid));
 
-	        if(obj != null && obj.getClass().equals(clazz)) {
-	            return (T)obj;
+	        if(cdmBase != null && cdmBase.getClass().equals(clazz)) {
+	            return (T)cdmBase;
 	        }
 	    }
 	    return null;
 	}
+
+    /**
+     * Returns the term from the cache or loads it from the database
+     * and casts it to the given class.
+     * In contrary to {@link #getTermByClassAndUUID(Class, UUID)} it
+     * throws an exception if the term can not be casted.
+     */
+    public static <T extends DefinedTermBase> T getTermByUUID(UUID uuid, Class<T> clazz) {
+        if(cacher != null) {
+            return HibernateProxyHelper.deproxy(getCacher().load(uuid), clazz);
+        }
+        return null;
+    }
 }

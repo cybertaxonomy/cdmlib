@@ -35,11 +35,11 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 public abstract class AccountSelfManagementService implements IRateLimitedService {
 
     @SuppressWarnings("unused")
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
-    public static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
+    private static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
 
-    public static final double PERMITS_PER_SECOND = 0.3;
+    private static final double PERMITS_PER_SECOND = 0.3;
 
     @Autowired
     protected IUserDao userDao;

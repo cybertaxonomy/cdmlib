@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
@@ -43,7 +44,7 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
 
     private static final long serialVersionUID = 4756084824053120718L;
 
-    private static final Logger logger = LogManager.getLogger(DwcaDescriptionExport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Description";
 	protected static final String fileName = "description.txt";
@@ -153,7 +154,6 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
         //TODO missing
         record.setRightsHolder(null);
     }
-
 
     private void handleQuantitativeData(DwcaTaxExportState state, DwcaDescriptionRecord record,
             QuantitativeData quantData, Taxon taxon, DwcaTaxExportConfigurator config){

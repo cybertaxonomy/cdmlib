@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.io.InputStream;
@@ -16,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfTaxonNameImport;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -48,16 +48,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
 /**
  * @author a.mueller
- *
  */
 @Component
 public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
     private static final long serialVersionUID = 6632990505515905663L;
 
-    private static final Logger logger = LogManager.getLogger(TcsXmlTaxonRelationsImport.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static int modCount = 30000;
 
@@ -67,7 +65,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 	public TcsXmlTaxonRelationsImport(){
 		super();
-
 	}
 
 	@Override
@@ -75,8 +72,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
 		logger.warn("Creation of homotypic relations is still problematic");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
 
 		return result;
 	}
@@ -171,7 +166,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			String id = elTaxonName.getAttributeValue("id");
 			TaxonName name = taxonNameMap.get(removeVersionOfRef(id));
 
-			TaxonBase taxonBase = (TaxonBase)name.getTaxonBases().iterator().next();
+			TaxonBase taxonBase = name.getTaxonBases().iterator().next();
 
 			String ref = elBasionym.getAttributeValue("ref");
 			TaxonName basionymName = taxonNameMap.get(removeVersionOfRef(ref));
@@ -182,7 +177,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				if (basionymName.getTaxonBases().isEmpty()){
 					 basionym = Synonym.NewInstance(basionymName, null);
 				}else{
-					basionym = (TaxonBase)basionymName.getTaxonBases().iterator().next();
+					basionym = basionymName.getTaxonBases().iterator().next();
 				}
 				//Synonym basionymSyn;
 				if (basionym instanceof Taxon){
@@ -193,14 +188,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						//basionymName.getHomotypicalGroup().addTypifiedName(name);
 					} else if (taxonBase instanceof Synonym){
 						Synonym synonym = (Synonym) taxonBase;
-						((Taxon)basionym).addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
+						((Taxon)basionym).addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
 						basionym.getHomotypicGroup().setGroupBasionym(basionymName);
 						taxonStore.add(basionym);
 					}
 				}else{
 					if (taxonBase instanceof Taxon){
 						Synonym synonym = (Synonym) basionym;
-						((Taxon)taxonBase).addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
+						((Taxon)taxonBase).addSynonym(synonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
 						taxonBase.getHomotypicGroup().setGroupBasionym(basionymName);
 						taxonStore.add(taxonBase);
 					} else{
@@ -223,14 +218,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				Synonym basionymSyn = Synonym.NewInstance(basionymName, unknownSec());
 				if (taxonBase instanceof Taxon){
 					Taxon taxon = (Taxon)taxonBase;
-					taxon.addSynonym(basionymSyn, SynonymType.HOMOTYPIC_SYNONYM_OF());
+					taxon.addSynonym(basionymSyn, SynonymType.HOMOTYPIC_SYNONYM_OF);
 					taxon.getHomotypicGroup().setGroupBasionym(basionymName);
 					taxonStore.add(taxon);
 				} else{
 					Synonym syn = (Synonym) taxonBase;
 					if (syn.getAcceptedTaxon() != null){
 						Taxon accTaxon = syn.getAcceptedTaxon();
-						accTaxon.addSynonym(basionymSyn, SynonymType.HOMOTYPIC_SYNONYM_OF());
+						accTaxon.addSynonym(basionymSyn, SynonymType.HOMOTYPIC_SYNONYM_OF);
 						accTaxon.getHomotypicGroup().setGroupBasionym(basionymName);
 						taxonStore.add(accTaxon);
 					}
@@ -349,7 +344,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			if ("has vernacular".equalsIgnoreCase(strRelType)){
 				handleVernacular(success, state, elRelationship, fromTaxon);
 			}else{
-				RelationshipTermBase<?> relType = TcsXmlTransformer.tcsRelationshipType2Relationship(strRelType, isInverse);
+				IRelationshipType relType = TcsXmlTransformer.tcsRelationshipType2Relationship(strRelType, isInverse);
 
 				//toTaxon (should be part of relationshipType)
 				boolean isSynonym = (relType instanceof SynonymType);
@@ -379,8 +374,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 								TaxonName synName = synonym.getName();
 								TaxonName accName = taxonTo.getName();
 								if (synName != null && accName != null && synName.isHomotypic(accName)
-											&& ( synRelType.equals(SynonymType.SYNONYM_OF()))){
-									synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF();
+											&& ( synRelType.equals(SynonymType.SYNONYM_OF))){
+									synRelType = SynonymType.HOMOTYPIC_SYNONYM_OF;
 								}
 								if (! relationExists(taxonTo, synonym, synRelType)){
 									taxonTo.addSynonym(synonym, synRelType);
@@ -527,7 +522,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 									result = Taxon.NewInstance(name, null);
 								}else{
-									result = (TaxonBase)name.getTaxa().iterator().next();
+									result = name.getTaxa().iterator().next();
 								}
 								name.addSource(OriginalSourceType.Import, ref, "TaxonConcept", null, null);
 								result.addSource(OriginalSourceType.Import, ref, "TaxonConcept", null, null);
@@ -581,7 +576,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				}
 				Set<Synonym> syns = typifiedName.getSynonyms();
 				for(Synonym syn:syns){
-					aboutTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF());
+					aboutTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF);
 				}
 			}
 		}

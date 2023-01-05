@@ -10,24 +10,25 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * @author a.mueller
  * @since 03.05.2011
- *
  */
 public class TermMapping {
-	@SuppressWarnings("unused")
-	private static Logger logger = LogManager.getLogger(TermMapping.class);
+
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String COMMENT = "//";
 
@@ -41,7 +42,6 @@ public class TermMapping {
 	public TermMapping(String filename) throws IOException{
 		readMapping(filename);
 	}
-
 
 	private void readMapping(String filename) throws IOException {
 		String strResourceFileName = "mapping/" + filename;
@@ -58,7 +58,6 @@ public class TermMapping {
 				continue;
 			}
 			readMappingLine(nextLine);
-
 		}
 	}
 

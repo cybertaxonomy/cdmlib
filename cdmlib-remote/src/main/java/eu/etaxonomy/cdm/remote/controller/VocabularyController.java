@@ -15,7 +15,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,22 +33,19 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since 22.07.2010
- *
  */
 @Controller
 @Api("termVocabulary")
 @RequestMapping(value = {"/termVocabulary/{uuid}"})
 public class VocabularyController extends AbstractIdentifiableController<TermVocabulary, IVocabularyService> {
 
-    public static final Logger logger = LogManager.getLogger(VocabularyController.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     @Override
     public void setService(IVocabularyService service) {
         this.service = service;
     }
-
 
     @RequestMapping(value="terms", method=RequestMethod.GET, params="orderBy")
     public Pager<DefinedTermBase> terms(
@@ -64,5 +62,4 @@ public class VocabularyController extends AbstractIdentifiableController<TermVoc
 
         return pager;
     }
-
 }

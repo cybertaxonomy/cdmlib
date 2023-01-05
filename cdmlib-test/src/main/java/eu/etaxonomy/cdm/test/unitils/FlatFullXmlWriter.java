@@ -13,6 +13,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
@@ -22,8 +24,6 @@ import org.dbunit.dataset.datatype.TypeCastException;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.util.xml.XmlWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 
 /**
@@ -40,10 +40,7 @@ import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
  */
 public class FlatFullXmlWriter implements IDataSetConsumer{
 
-    /**
-     * Logger for this class
-     */
-    private static final Logger logger = LoggerFactory.getLogger(FlatFullXmlWriter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String DATASET = "dataset";
 

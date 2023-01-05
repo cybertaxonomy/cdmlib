@@ -17,17 +17,17 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * @author m.venin
  * @since 2010
  */
 public class MicroFormatCategoricalDescriptionBuilder
-        extends AbstractCategoricalDescriptionBuilder{
+        extends CategoricalDescriptionBuilderBase{
 
 	private final String spanEnd = "</span>";
 
@@ -38,7 +38,7 @@ public class MicroFormatCategoricalDescriptionBuilder
 		Language language = null;
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
-			State s = stateData.getState();
+			DefinedTermBase<?> s = stateData.getState();
 			if(s != null && language==null) {
                 language = s.getPreferredRepresentation(languages).getLanguage();
             }

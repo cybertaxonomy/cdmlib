@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class JvmMonitor {
 
-    public static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private long gcTimeLast = 0;
 

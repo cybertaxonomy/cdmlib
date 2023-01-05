@@ -2,7 +2,7 @@
  * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -11,19 +11,13 @@ package eu.etaxonomy.cdm.io.taxonx2013;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author a.mueller
  * @since 16.06.2010
- *
  */
 public class TaxonXDataHolder {
-    @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(TaxonXDataHolder.class);
-
 
     protected String atomisedStr;
     protected String nomenclatureCode;
@@ -52,12 +46,6 @@ public class TaxonXDataHolder {
     protected ArrayList<String> referenceList;
     protected ArrayList<String> multimediaObjects;
 
-    protected ArrayList<String> knownABCDelements = new ArrayList<String>();
-    protected HashMap<String,String> allABCDelements = new HashMap<String,String>();
-
-
-
-
-
-
+    protected ArrayList<String> knownABCDelements = new ArrayList<>();
+    protected HashMap<String,String> allABCDelements = new HashMap<>();
 }

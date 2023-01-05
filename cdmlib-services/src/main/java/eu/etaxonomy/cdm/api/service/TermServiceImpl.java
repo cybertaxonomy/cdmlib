@@ -20,7 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -68,7 +68,7 @@ public class TermServiceImpl
             implements ITermService{
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(TermServiceImpl.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private ILanguageStringDao languageStringDao;
 
@@ -341,13 +341,12 @@ public class TermServiceImpl
 				}
 			}
 
-
 			//included in
-			Set<DefinedTermBase> includedTerms = term.getIncludes();
+			Set<DefinedTermBase<?>> includedTerms = term.getIncludes();
 			if (includedTerms.size()> 0){
 			    if (config.isDeleteIncludedRelations()){
 			        DefinedTermBase parent = term.getPartOf();
-			        for (DefinedTermBase includedTerm: includedTerms){
+			        for (DefinedTermBase<?> includedTerm: includedTerms){
 			            term.removeIncludes(includedTerm);
 			            if (parent != null){
 			                parent.addIncludes(includedTerm);
@@ -395,7 +394,15 @@ public class TermServiceImpl
 	@Override
 	@Transactional(readOnly = false)
 	public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config){
+
+
 	    return delete(dao.load(termUuid), config);
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public DeleteResult delete(List<UUID> termUuids, TermDeletionConfigurator config){
+	    return deleteTerms(load(termUuids, null), config);
 	}
 
 	@Override
@@ -484,9 +491,9 @@ public class TermServiceImpl
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;
         for (NamedArea area: areas){
             if (type.equals(TermSearchField.NoAbbrev)){
-                uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), area.labelWithLevel(area, lang));
+                uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), NamedArea.labelWithLevel(area, lang));
             }else{
-                String display = area.labelWithLevel(area, lang);
+                String display = NamedArea.labelWithLevel(area, lang);
                 if (type.equals(TermSearchField.IDInVocabulary)){
                     display += " - " + area.getIdInVocabulary();
                 }else if (type.equals(TermSearchField.Symbol1)){
@@ -528,7 +535,7 @@ public class TermServiceImpl
         TermVocabulary vocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(termDto.getVocabularyUuid()));
         DefinedTermBase parent = HibernateProxyHelper.deproxy(dao.load(parentUuid));
         UpdateResult result = new UpdateResult();
-        if(parent==null){
+        if(parent == null){
             //new parent is a vocabulary
             TermVocabulary parentVocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(parentUuid));
             DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
@@ -541,40 +548,36 @@ public class TermServiceImpl
                 result.addUpdatedObject(term);
                 result.addUpdatedObject(vocabulary);
                 result.addUpdatedObject(parentVocabulary);
-
             }
             vocabularyService.saveOrUpdate(parentVocabulary);
-
         }
         else {
             DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
             //new parent is a term
-            if(parent.isInstanceOf(OrderedTermBase.class)
-                    && term.isInstanceOf(OrderedTermBase.class)
+            if(parent.isOrderRelevant()
+                    && term.isOrderRelevant()
                     && termMovePosition!=null
-                    && HibernateProxyHelper.deproxy(parent, OrderedTermBase.class).getVocabulary().isInstanceOf(OrderedTermVocabulary.class)) {
+                    && parent.getVocabulary().isInstanceOf(OrderedTermVocabulary.class)) {
                 //new parent is an ordered term
-                OrderedTermBase orderedTerm = HibernateProxyHelper.deproxy(term, OrderedTermBase.class);
-                OrderedTermBase targetOrderedDefinedTerm = HibernateProxyHelper.deproxy(parent, OrderedTermBase.class);
-                OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(targetOrderedDefinedTerm.getVocabulary(), OrderedTermVocabulary.class);
+                OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(parent.getVocabulary(), OrderedTermVocabulary.class);
                 if(termMovePosition.equals(TermMovePosition.BEFORE)) {
-                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
-                    otVoc.addTermAbove(orderedTerm, targetOrderedDefinedTerm);
-                    if (targetOrderedDefinedTerm.getPartOf() != null){
-                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    term.getVocabulary().removeTerm(term);
+                    otVoc.addTermAbove(term, parent);
+                    if (parent.getPartOf() != null){
+                        parent.getPartOf().addIncludes(term);
                     }
                 }
                 else if(termMovePosition.equals(TermMovePosition.AFTER)) {
-                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
-                    otVoc.addTermBelow(orderedTerm, targetOrderedDefinedTerm);
-                    if (targetOrderedDefinedTerm.getPartOf() != null){
-                        targetOrderedDefinedTerm.getPartOf().addIncludes(orderedTerm);
+                    term.getVocabulary().removeTerm(term);
+                    otVoc.addTermBelow(term, parent);
+                    if (parent.getPartOf() != null){
+                        parent.getPartOf().addIncludes(term);
                     }
                 }
                 else if(termMovePosition.equals(TermMovePosition.ON)) {
-                    orderedTerm.getVocabulary().removeTerm(orderedTerm);
-                    targetOrderedDefinedTerm.addIncludes(orderedTerm);
-                    targetOrderedDefinedTerm.getVocabulary().addTerm(orderedTerm);
+                    term.getVocabulary().removeTerm(term);
+                    parent.addIncludes(term);
+                    parent.getVocabulary().addTerm(term);
                 }
             }
             else{
@@ -675,5 +678,15 @@ public class TermServiceImpl
         AFTER,
         ON
     }
+
+
+	@Override
+	public DeleteResult deleteTerms(List<DefinedTermBase> terms, TermDeletionConfigurator config) {
+		DeleteResult result = new DeleteResult();
+		for (DefinedTermBase term: terms) {
+			result.includeResult(delete(term, config));
+		}
+		return result;
+	}
 
 }

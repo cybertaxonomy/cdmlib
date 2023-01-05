@@ -6,13 +6,13 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.database.update.v505_508;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.update.AllowNullUpdater;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.database.update.v50_55.SchemaUpdater_50_55;
 public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(SchemaUpdater_55_58.class);
+	private static final Logger logger = LogManager.getLogger();
 
 	private static final String startSchemaVersion = "5.5.0.0.20190221";
 	private static final String endSchemaVersion = "5.8.0.0.201906020";
@@ -382,7 +382,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"' , inverseSymbol = '"+UTF8.EN_DASH+"' "
                 + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417' ";
         String tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //Update pro parte misapplied name symbols
         stepName = "Update pro parte misapplied name symbols again";
@@ -390,7 +390,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(p.p.)' , inverseSymbol = '"+UTF8.EN_DASH+"(p.p.)' "
                 + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206' ";
         tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
 
         //Update partial misapplied name symbols
         stepName = "Update partial misapplied name symbols again";
@@ -398,7 +398,7 @@ public class SchemaUpdater_55_58 extends SchemaUpdaterBase {
                 + " SET symbol='"+UTF8.EM_DASH_DOUBLE+"(part.)' , inverseSymbol = '"+UTF8.EN_DASH+"(part.)' "
                 + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
         tableName = "DefinedTermBase";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, -99);
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName);
     }
 
 	@Override

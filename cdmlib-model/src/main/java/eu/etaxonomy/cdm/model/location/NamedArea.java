@@ -33,7 +33,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -49,7 +50,6 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -82,10 +82,10 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @ClassBridge(impl=DefinedTermBaseClassBridge.class, params={
     @Parameter(name="includeParentTerms", value="true")
 })
-public class NamedArea extends OrderedTermBase<NamedArea> {
+public class NamedArea extends DefinedTermBase<NamedArea> {
 
     private static final long serialVersionUID = 6248434369557403036L;
-    private static final Logger logger = LogManager.getLogger(NamedArea.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	//Continent UUIDs
     private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
@@ -829,7 +829,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
      * a new instance that differs only slightly from <i>this</i> NamedArea by
      * modifying only some of the attributes.
      *
-     * @see eu.etaxonomy.cdm.model.term.OrderedTermBase#clone()
+     * @see eu.etaxonomy.cdm.model.term.DefinedTermBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override

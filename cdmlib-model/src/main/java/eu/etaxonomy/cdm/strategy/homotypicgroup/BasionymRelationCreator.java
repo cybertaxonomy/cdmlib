@@ -44,7 +44,7 @@ public class BasionymRelationCreator extends StrategyBase {
 
     private static final long serialVersionUID = -4711438819176248413L;
     @SuppressWarnings("unused")
-    private static final Logger logger = LogManager.getLogger(BasionymRelationCreator.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private UUID uuid = UUID.fromString("e9e1d1f5-e398-4ba7-81a6-92875573d7cb");
 
@@ -60,7 +60,7 @@ public class BasionymRelationCreator extends StrategyBase {
         for (Synonym synonym: synonyms){
             TaxonName basionym = compareHomotypic(taxon.getName(), synonym.getName());
             if (basionym != null){
-                synonym.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
+                synonym.setType(SynonymType.HOMOTYPIC_SYNONYM_OF);
                 adaptHomotypicGroup(basionym, taxon.getName(), synonym.getName());
             }
         }
@@ -75,8 +75,8 @@ public class BasionymRelationCreator extends StrategyBase {
                 if (basionym != null){
                     adaptHomotypicGroup(basionym, syn1.getName(), syn2.getName());
                     if (taxon.getName().getBasionyms().contains(basionym)){
-                        syn1.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
-                        syn2.setType(SynonymType.HOMOTYPIC_SYNONYM_OF());
+                        syn1.setType(SynonymType.HOMOTYPIC_SYNONYM_OF);
+                        syn2.setType(SynonymType.HOMOTYPIC_SYNONYM_OF);
                     }
                 }
             }

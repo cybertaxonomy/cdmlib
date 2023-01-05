@@ -16,13 +16,9 @@
       - the views listed here are responsible for rdf repsponse formats 
     -->
 
-
-     <bean name="**/name_catalogue/* **/name_catalogue" class="eu.etaxonomy.cdm.remote.view.RdfView">
+    <bean name="**/name_catalogue/* **/name_catalogue" class="eu.etaxonomy.cdm.remote.view.RdfView">
       <property name="type" value="RDFXML" />
       <property name="rdfMarshaller" ref="rdfMarshaller"/>
       <property name="mapper" ref="dozerMapper"/>
     </bean>
-
-
-
 </beans>
