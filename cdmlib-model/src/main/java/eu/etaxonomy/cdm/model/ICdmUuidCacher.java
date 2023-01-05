@@ -43,9 +43,7 @@ public interface ICdmUuidCacher extends ICdmCacher {
 	public CdmBase load(UUID uuid);
 
 	/**
-	 * Get a CDM Entity object with given UUID from the (default) cache.
-	 *
-	 * @param uuid
+	 * Get a CDM Entity object with given UUID from the cache.
 	 */
 	public CdmBase getFromCache(UUID uuid);
 

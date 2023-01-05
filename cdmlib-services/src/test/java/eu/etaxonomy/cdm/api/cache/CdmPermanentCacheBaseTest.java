@@ -29,12 +29,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore
-public class CdmCacherBaseTest extends CdmIntegrationTest {
+public class CdmPermanentCacheBaseTest extends CdmIntegrationTest {
 
 	private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByType
-	private CdmCacherBase cdmCacherBase;
+	private CdmPermanentCacheBase cdmCacherBase;
 
     @SpringBeanByType
     private IReferenceService referenceService;

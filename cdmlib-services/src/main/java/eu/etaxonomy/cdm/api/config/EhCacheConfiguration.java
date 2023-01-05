@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
+import eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.DiskStoreConfiguration;
@@ -65,14 +65,14 @@ public class EhCacheConfiguration implements DisposableBean {
 
     /**
      * Returns the default cache configuration for the cache
-     * named {@link CdmCacherBase#DEFAULT_CACHE_NAME "cdmDefaultCache"}
+     * named {@link CdmPermanentCacheBase#PERMANENT_CACHE_NAME "cdmDefaultCache"}
      */
     protected CacheConfiguration getDefaultCacheConfiguration() {
 
         // For a better understanding on how to size caches, refer to
         // http://ehcache.org/documentation/configuration/cache-size
 
-        CacheConfiguration cc = new CacheConfiguration(CdmCacherBase.DEFAULT_CACHE_NAME, 500)
+        CacheConfiguration cc = new CacheConfiguration(CdmPermanentCacheBase.PERMANENT_CACHE_NAME, 500)
                 .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
                 .maxEntriesLocalHeap(10) // avoid ehache consuming too much heap
                 .eternal(false)

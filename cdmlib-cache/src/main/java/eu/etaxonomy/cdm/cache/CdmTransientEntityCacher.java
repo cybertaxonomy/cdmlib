@@ -21,7 +21,7 @@ import javax.management.MBeanServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
+import eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase;
 import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
@@ -61,7 +61,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     private final Cache cache;
 
     //permanent cache which is usually used to cache terms permanently
-    private static CdmCacherBase permanentCache;
+    private static CdmPermanentCacheBase permanentCache;
 
     private final CacheLoader cacheLoader;
 
@@ -106,7 +106,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         return new CdmEntityCacheKey<T>(entityClass, cdmBase.getId());
     }
 
-    public static void setPermanentCacher(CdmCacherBase permanentCacher) {
+    public static void setPermanentCacher(CdmPermanentCacheBase permanentCacher) {
         permanentCache = permanentCacher;
     }
 
