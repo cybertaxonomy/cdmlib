@@ -55,6 +55,7 @@ public class SynonymTypeChanger extends SchemaUpdaterStepBase {
             update(datasource, caseType, uuid, enumKey);
         }
 
+        //Note: this is incorrect, AND DTYPE = 'Synonym' was missing
         String sqlUpdate = " UPDATE @@TaxonBase@@ "
                 + " SET type = 'SYN' "
                 + " WHERE type_id IS NULL ";
