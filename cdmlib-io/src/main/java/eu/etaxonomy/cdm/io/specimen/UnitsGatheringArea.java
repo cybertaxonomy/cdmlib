@@ -205,7 +205,7 @@ public class UnitsGatheringArea {
             if (specimenImportAreaVocabulary == null){
                 specimenImportAreaVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
                 if (specimenImportAreaVocabulary == null){
-                    specimenImportAreaVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
+                    specimenImportAreaVocabulary = OrderedTermVocabulary.NewOrderedInstance(TermType.NamedArea, NamedArea.class, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
                     specimenImportAreaVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
                     specimenImportAreaVocabulary = vocabularyService.save(specimenImportAreaVocabulary);
                 }

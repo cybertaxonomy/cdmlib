@@ -942,7 +942,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         Class<T> clazz = null;
         if (voc == null){
             if (isOrdered){
-                voc = OrderedTermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
+                voc = OrderedTermVocabulary.NewOrderedInstance(termType, clazz, description, label, abbrev, termSourceUri);
             }else{
                 voc = TermVocabulary.NewInstance(termType, clazz, description, label, abbrev, termSourceUri);
             }

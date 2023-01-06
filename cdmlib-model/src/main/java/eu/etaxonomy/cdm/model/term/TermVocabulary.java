@@ -100,20 +100,14 @@ public class TermVocabulary<T extends DefinedTermBase>
 		return new TermVocabulary<T>(type);
 	}
 
-	/**
-	 * @deprecated use {@link #NewInstance(TermType, Class, String, String, String, URI)} instead
-	 */
-	@Deprecated
-	public static TermVocabulary NewInstance(TermType type, String description, String label, String abbrev, URI termSourceUri){
-		return new TermVocabulary(type, description, label, abbrev, termSourceUri, null);
-	}
-
-    public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz,
+    public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(
+            TermType type, @SuppressWarnings("unused") Class<T> clazz,
             String description, String label, String abbrev, URI termSourceUri){
         return new TermVocabulary<T>(type, description, label, abbrev, termSourceUri, null);
     }
 
-    public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz,
+    public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(
+            TermType type, @SuppressWarnings("unused") Class<T> clazz,
             String description, String label, String abbrev, URI termSourceUri, Language language){
         return new TermVocabulary<T>(type, description, label, abbrev, termSourceUri, language);
     }
