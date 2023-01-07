@@ -20,12 +20,12 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.VocabularyRemover;
-import eu.etaxonomy.cdm.database.update.v533_535.SchemaUpdater_5330_5350;
+import eu.etaxonomy.cdm.database.update.v500_535.SchemaUpdater_5330_5350;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
  * @author a.mueller
- * @date 30.09.2022
+ * @date 06.01.2023
  */
 public class SchemaUpdater_5350_5360 extends SchemaUpdaterBase {
 
