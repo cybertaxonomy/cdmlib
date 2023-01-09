@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
@@ -33,8 +32,12 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
-
-
+/**
+ * A generic service that is not base type dependend as are all services
+ * that inherit from {@link IService}.
+ *
+ * @author a.mueller
+ */
 public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 
 //
@@ -209,10 +212,9 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	/**
 	 * Returns the result of an HQL Query which does
 	 * not inlcude parameters
-	 * @see #getHqlResult(String, Object[])
+	 * @see #getHqlResult(String, Object[], Class)
 	 */
-	@SuppressWarnings("rawtypes")
-    public List getHqlResult(String hqlQuery);
+    public <T> List<T> getHqlResult(String hqlQuery, Class<T> clazz);
 
 	/**
 	 * Returns the result of an HQL Query which inlcudes parameters as
@@ -221,11 +223,9 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @param hqlQuery the HQL query
 	 * @param params the parameter values
 	 * @return  the result of the HQL query
-     * @see #getHqlResult(String)
+     * @see #getHqlResult(String, Class)
 	 */
-	@SuppressWarnings("rawtypes")
-    public List getHqlResult(String hqlQuery, Object[] params);
-
+    public <T> List<T> getHqlResult(String hqlQuery, Object[] params, Class<T> clazz);
 
     /**
      * Initializes a collection or map.
@@ -236,12 +236,6 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      */
     public Object initializeCollection(UUID ownerUuid, String fieldName);
 
-    /**
-     * @param ownerUuid
-     * @param fieldName
-     * @param propertyPaths
-     * @return
-     */
     public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> propertyPaths);
 
 	/**

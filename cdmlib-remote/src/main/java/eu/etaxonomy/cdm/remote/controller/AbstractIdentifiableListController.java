@@ -136,16 +136,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
     /**
      * List identifiable entities by markers
      *
-     * @param type
-     * @param markerType
-     * @param value
-     * @param pageIndex
-     * @param pageSize
-     * @param request
-     * @param response
-     * @return
      * @see AbstractIdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
-     * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByMarker"})
     public Pager<MarkedEntityDTO<T>> doFindByMarker(
@@ -179,12 +170,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
     /**
      * List identifiable entities by markers
      *
-     * @param type
-     * @param request
-     * @param response
-     * @return
      * @see AbstractIdentifiableListController#doFindByIdentifier(Class, String, String, Integer, Integer, MatchMode, Boolean, HttpServletRequest, HttpServletResponse)
-     * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"uuidAndTitleCache"})
     public List<UuidAndTitleCache<T>> doGetUuidAndTitleCache(
@@ -192,9 +178,8 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "pattern", required = false) String pattern,
             HttpServletRequest request,
-            HttpServletResponse response
-            )
-            throws IOException {
+            @SuppressWarnings("unused") HttpServletResponse response
+            ) {
 
         logger.info("doGetUuidAndTitleCache() " + requestPathAndQuery(request));
 

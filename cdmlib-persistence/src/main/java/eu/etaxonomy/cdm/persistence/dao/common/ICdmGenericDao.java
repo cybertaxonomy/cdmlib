@@ -187,23 +187,24 @@ public interface ICdmGenericDao {
 	/**
 	 * Returns the result of an hql query
 	 * TODO implement parameters
+	 * TODO maybe not correct as it is hibernate specific
 	 * @param hqlQuery
-	 * @return
-	 * @deprecated this is not clean implementation as it is hibernate related.
+	 * @return the result of the hibernate query
 	 */
-	@Deprecated
-	public List<?> getHqlResult(String hqlQuery, Object[] params) throws UnsupportedOperationException;
+    public <T> List<T> getHqlResult(String hqlQuery, Object[] params, Class<T> clazz) throws UnsupportedOperationException;
 
 	/**
 	 * TODO remove as this is Hibernate specific.
-	 * Returns a Query
+	 * Returns a Query.
 	 * @deprecated this is not clean implemantation as it is hibernate related.
 	 * Will be replaced in future
 	 * @param hqlQuery
 	 * @return
 	 */
 	@Deprecated
-	public Query getHqlQuery(String hqlQuery) throws UnsupportedOperationException;
+	public Query<?> getHqlQuery(String hqlQuery) throws UnsupportedOperationException;
+
+    public <T> Query<T> getHqlQuery(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException;
 
 
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);

@@ -30,7 +30,7 @@ import io.swagger.annotations.Api;
 /**
  * The ExternalGeoController class is a Spring MVC Controller.
  * <p>
- * The syntax of the mapped service URIs contains the the {datasource-name} path element.
+ * The syntax of the mapped service URIs contains the {datasource-name} path element.
  * The available {datasource-name}s are defined in a configuration file which
  * is loaded by the {@link UpdatableRoutingDataSource}. If the
  * UpdatableRoutingDataSource is not being used in the actual application
@@ -50,15 +50,11 @@ public class ExternalBhleController {
 
     private SruServiceWrapper sruServiceWrapper;
 
-    /**
-     *
-     */
     public ExternalBhleController() {
         sruServiceWrapper = new SruServiceWrapper();
         sruServiceWrapper.setBaseUrl(baseUrl);
         sruServiceWrapper.addSchemaAdapter(new DublinCoreSchemaAdapter());
     }
-
 
     @RequestMapping(value = { "grib/sru" }, method = RequestMethod.GET)
     public ModelAndView doSearchRetrieve(

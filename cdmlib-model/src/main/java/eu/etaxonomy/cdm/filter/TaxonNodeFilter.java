@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.filter;
 
 import java.io.Serializable;
@@ -25,6 +24,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
+ * Configuration for filtering taxon nodes. This filter defines a set
+ * of TaxonNodes. It can be used for searching and filtering data.
+ *
  * @author a.mueller
  */
 public class TaxonNodeFilter implements Serializable{
