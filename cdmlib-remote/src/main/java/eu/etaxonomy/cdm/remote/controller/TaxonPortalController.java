@@ -33,10 +33,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.portal.IPortalDtoService;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -107,6 +110,9 @@ public class TaxonPortalController extends TaxonController{
 
     @Autowired
     private IMediaToolbox mediaToolbox;
+
+    @Autowired
+    private IPortalDtoService portalDtoService;
 
 
     public static final EntityInitStrategy TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -288,6 +294,41 @@ public class TaxonPortalController extends TaxonController{
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
     }
+
+    /**
+     * TODO documentation
+     *
+     * @param taxonUuid the taxon uuid
+     * @param subtreeUuid the taxon node subtree filter
+     * @throws IOException
+     */
+    @RequestMapping(
+            value = {"page"},
+            method = RequestMethod.GET)
+    public ModelAndView doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
+            //TODO configuration data
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        if(request != null){
+            logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
+        }
+
+        //TODO is this current state of art?
+        ModelAndView mv = new ModelAndView();
+
+        //check taxon exists and not filtered
+        Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
+        taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+
+        TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+        config.taxonUuid = taxonUuid;
+        TaxonPageDto dto = portalDtoService.taxonPageDto(config);
+        mv.addObject(dto);
+        return mv;
+    }
+
 
     /**
      * Get the synonymy for a taxon identified by the <code>{taxon-uuid}</code>.
