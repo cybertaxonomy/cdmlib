@@ -18,21 +18,21 @@ import java.util.List;
  */
 public class TaxonPageDto extends TaxonBaseDto {
 
-    public HomotypicGroupDTO homotypicSynonyms;
+    private HomotypicGroupDTO homotypicSynonyms;
 
-    public ContainerDto<TaxonNodeDTO> taxonNodes;
+    private ContainerDto<TaxonNodeDTO> taxonNodes;
 
-    public ContainerDto<HomotypicGroupDTO> heterotypicSynonyms;
+    private ContainerDto<HomotypicGroupDTO> heterotypicSynonyms;
 
-    public ContainerDto<FactualDataDTO> factualData;
+    private ContainerDto<FactualDataDTO> factualData;
 
-    public ContainerDto<KeyDTO> keys;
+    private ContainerDto<KeyDTO> keys;
 
-    public ContainerDto<SpecimenDTO> specimens;
+    private ContainerDto<SpecimenDTO> specimens;
 
-    public ContainerDto<MediaDTO> media;
+    private ContainerDto<MediaDTO> media;
 
-    public List<MessagesDto> messages;
+    private List<MessagesDto> messages;
 
 //******************** subclasses *********************************/
 
@@ -64,6 +64,63 @@ public class TaxonPageDto extends TaxonBaseDto {
     public class MediaDTO extends CdmBaseDto{
 
     }
+
+    public HomotypicGroupDTO getHomotypicSynonyms() {
+        return homotypicSynonyms;
+    }
+    public void setHomotypicSynonyms(HomotypicGroupDTO homotypicSynonyms) {
+        this.homotypicSynonyms = homotypicSynonyms;
+    }
+
+    public ContainerDto<TaxonNodeDTO> getTaxonNodes() {
+        return taxonNodes;
+    }
+    public void setTaxonNodes(ContainerDto<TaxonNodeDTO> taxonNodes) {
+        this.taxonNodes = taxonNodes;
+    }
+
+    public ContainerDto<HomotypicGroupDTO> getHeterotypicSynonyms() {
+        return heterotypicSynonyms;
+    }
+    public void setHeterotypicSynonyms(ContainerDto<HomotypicGroupDTO> heterotypicSynonyms) {
+        this.heterotypicSynonyms = heterotypicSynonyms;
+    }
+
+    public ContainerDto<FactualDataDTO> getFactualData() {
+        return factualData;
+    }
+    public void setFactualData(ContainerDto<FactualDataDTO> factualData) {
+        this.factualData = factualData;
+    }
+
+    public ContainerDto<KeyDTO> getKeys() {
+        return keys;
+    }
+    public void setKeys(ContainerDto<KeyDTO> keys) {
+        this.keys = keys;
+    }
+
+    public ContainerDto<SpecimenDTO> getSpecimens() {
+        return specimens;
+    }
+    public void setSpecimens(ContainerDto<SpecimenDTO> specimens) {
+        this.specimens = specimens;
+    }
+
+    public ContainerDto<MediaDTO> getMedia() {
+        return media;
+    }
+    public void setMedia(ContainerDto<MediaDTO> media) {
+        this.media = media;
+    }
+
+    public List<MessagesDto> getMessages() {
+        return messages;
+    }
+    public void setMessages(List<MessagesDto> messages) {
+        this.messages = messages;
+    }
+
 
 
 

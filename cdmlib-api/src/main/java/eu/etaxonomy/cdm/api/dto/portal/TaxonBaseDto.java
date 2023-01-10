@@ -18,12 +18,40 @@ public class TaxonBaseDto extends CdmBaseDto {
 
     //TODO should we distinguish data parts (e.g. on general page we do not need last updates from synonymy)
     //lastUpdated
-    public String taxonLabel;
-    public String nameLabel;
+    private String taxonLabel;
+    private String nameLabel;
 
     //TODO should we keep formatting client side or should we do formatting on server side? Formatting means: filter, italics, order??
-    public List<TypedLabel> typedTaxonLabel;
-    public List<TypedLabel> typedNameLabel;
+    private List<TypedLabel> typedTaxonLabel;
+    private List<TypedLabel> typedNameLabel;
+
+    public String getTaxonLabel() {
+        return taxonLabel;
+    }
+    public void setTaxonLabel(String taxonLabel) {
+        this.taxonLabel = taxonLabel;
+    }
+
+    public String getNameLabel() {
+        return nameLabel;
+    }
+    public void setNameLabel(String nameLabel) {
+        this.nameLabel = nameLabel;
+    }
+
+    public List<TypedLabel> getTypedTaxonLabel() {
+        return typedTaxonLabel;
+    }
+    public void setTypedTaxonLabel(List<TypedLabel> typedTaxonLabel) {
+        this.typedTaxonLabel = typedTaxonLabel;
+    }
+
+    public List<TypedLabel> getTypedNameLabel() {
+        return typedNameLabel;
+    }
+    public void setTypedNameLabel(List<TypedLabel> typedNameLabel) {
+        this.typedNameLabel = typedNameLabel;
+    }
 
     //TaxonBase info
     //appendedPhras, useNameCache, doubtful, name, publish

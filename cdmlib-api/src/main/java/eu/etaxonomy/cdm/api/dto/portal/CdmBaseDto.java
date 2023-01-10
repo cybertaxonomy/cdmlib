@@ -19,12 +19,33 @@ public class CdmBaseDto {
 
     //the taxon uuid
     //TODO move to base class
-    public UUID uuid;
-    public int id;
+    private UUID uuid;
+    private int id;
 
     //computed from updated of all relevant data
     //uses java.time.XXX  to have less dependencies
     //TODO or should we use jodatime
-    public LocalDateTime lastUpdated;
+    private LocalDateTime lastUpdated;
+
+    public UUID getUuid() {
+        return uuid;
+    }
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
 }

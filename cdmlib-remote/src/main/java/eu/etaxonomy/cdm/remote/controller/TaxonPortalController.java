@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
@@ -305,7 +306,8 @@ public class TaxonPortalController extends TaxonController{
     @RequestMapping(
             value = {"page"},
             method = RequestMethod.GET)
-    public ModelAndView doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
+    @ResponseBody
+    public TaxonPageDto doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             //TODO configuration data
             HttpServletRequest request,
@@ -315,7 +317,7 @@ public class TaxonPortalController extends TaxonController{
         }
 
         //TODO is this current state of art?
-        ModelAndView mv = new ModelAndView();
+//        ModelAndView mv = new ModelAndView();
 
         //check taxon exists and not filtered
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
@@ -325,8 +327,7 @@ public class TaxonPortalController extends TaxonController{
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
         config.taxonUuid = taxonUuid;
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);
-        mv.addObject(dto);
-        return mv;
+        return dto;
     }
 
 

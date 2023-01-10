@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
 /**
  * @author a.mueller
@@ -30,9 +32,26 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
     @Autowired
     private ICdmGenericDao dao;
 
+    @Autowired
+    private ITaxonDao taxonDao;
+
     @Override
     public TaxonPageDto taxonPageDto(TaxonPageDtoConfiguration config) {
-        TaxonPageDto dto = new TaxonPageDto();
+
+        PortalDtoLoader loader = new PortalDtoLoader();
+        Taxon taxon = (Taxon)taxonDao.load(config.taxonUuid);
+        TaxonPageDto dto = null;
+        try {
+            dto = loader.load(taxon, config);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if (dto != null) {
+            return dto;
+        }
+
+        dto = new TaxonPageDto();
 
         //taxon data
         String taxonHql = " SELECT t.id as id, t.uuid as uuid, t.titleCache as taxonLabel,"
@@ -43,10 +62,10 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
         List<Object[]> hqlResult = dao.getHqlResult(taxonHql, new Object[] {config.taxonUuid}, Object[].class);
         dto.id = (int)hqlResult.get(0)[0];
         dto.uuid = (UUID)hqlResult.get(0)[1];
-        dto.taxonLabel = (String)hqlResult.get(0)[2];
-        dto.nameLabel = (String)hqlResult.get(0)[3];
-        dto.typedTaxonLabel = null;
-        dto.typedNameLabel = null;
+        dto.setTaxonLabel((String)hqlResult.get(0)[2]);
+        dto.setNameLabel((String)hqlResult.get(0)[3]);
+        dto.setTypedTaxonLabel(null);
+        dto.setTypedNameLabel(null);
 
         //taxonNodes
 

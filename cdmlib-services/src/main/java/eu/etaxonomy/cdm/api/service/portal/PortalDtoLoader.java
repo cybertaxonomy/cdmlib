@@ -9,13 +9,18 @@
 package eu.etaxonomy.cdm.api.service.portal;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
+import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -33,11 +38,32 @@ public class PortalDtoLoader {
 
        TaxonName name = taxon.getName();
 
-       result.id = taxon.getId();
-       result.uuid = taxon.getUuid();
-       result.lastUpdated = getLastUpdated(null, taxon);
-       result.nameLabel = name != null? name.getTitleCache() : "";
-       result.taxonLabel = CdmUtils.Nz(taxon.getTitleCache());
+       result.setId(taxon.getId());
+       result.setUuid(taxon.getUuid());
+       result.setLastUpdated(getLastUpdated(null, taxon));
+       result.setNameLabel(name != null? name.getTitleCache() : "");
+       result.setTaxonLabel(CdmUtils.Nz(taxon.getTitleCache()));
+
+       //TODO load feature tree
+//       Set<Feature> featureSet = new HashSet<>();
+        Set<Feature> featureSet = taxon.getDescriptions().stream()
+           .filter(d->!d.isImageGallery())
+           .flatMap(d->d.getElements().stream())
+           .map(el->el.getFeature())
+             .collect(Collectors.toSet())
+           ;
+        //TODO sort
+        if (!featureSet.isEmpty()) {
+            ContainerDto<TaxonPageDto.FactualDataDTO> factualData = new ContainerDto<>();
+            result.setFactualData(factualData);
+            for (Feature feature : featureSet) {
+                FeatureDto featureDto = new FeatureDto();
+                featureDto.setId(feature.getId());
+                featureDto.setUuid(feature.getUuid());
+                //TODO locale
+                featureDto.setLabel(feature.getTitleCache());
+            }
+        }
 
        return result;
    }
@@ -47,16 +73,17 @@ public class PortalDtoLoader {
      * and returns the resulting last date.
      */
     private LocalDateTime getLastUpdated(LocalDateTime existingLastDate, VersionableEntity dateToAddEntity) {
-        DateTime dateToAdd = dateToAddEntity.getUpdated() != null ? dateToAddEntity.getUpdated() : dateToAddEntity.getCreated();
 
+        DateTime dateToAdd = dateToAddEntity.getUpdated() != null ? dateToAddEntity.getUpdated() : dateToAddEntity.getCreated();
 
         LocalDateTime javaLocalDateTimeOfEntity = dateToAdd == null ? null:
                 LocalDateTime.of(dateToAdd.getYear(), dateToAdd.getMonthOfYear(),
                         dateToAdd.getDayOfMonth(), dateToAdd.getHourOfDay(),
                         dateToAdd.getMinuteOfHour(), dateToAdd.getSecondOfMinute());
 
-
-       if (javaLocalDateTimeOfEntity == null || javaLocalDateTimeOfEntity.compareTo(existingLastDate) < 0)  {
+       if (existingLastDate == null) {
+           return javaLocalDateTimeOfEntity;
+       }else if (javaLocalDateTimeOfEntity == null || javaLocalDateTimeOfEntity.compareTo(existingLastDate) < 0)  {
            return existingLastDate;
        }else {
            return javaLocalDateTimeOfEntity;
