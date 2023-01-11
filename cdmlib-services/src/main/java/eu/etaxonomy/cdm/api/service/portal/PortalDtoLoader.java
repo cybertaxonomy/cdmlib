@@ -80,7 +80,7 @@ public class PortalDtoLoader {
                 featureDto.setUuid(feature.getUuid());
                 //TODO locale
                 featureDto.setLabel(feature.getTitleCache());
-                features.getCollection().add(featureDto);
+                features.addItem(featureDto);
 
                 //
                 for (DescriptionElementBase fact : featureMap.get(feature)){

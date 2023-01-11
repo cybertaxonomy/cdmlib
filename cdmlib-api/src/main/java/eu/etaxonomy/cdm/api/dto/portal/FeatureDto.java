@@ -31,8 +31,7 @@ public class FeatureDto extends CdmBaseDto {
     public List<FactDto> getFacts() {
         return facts;
     }
-    public void setFacts(List<FactDto> facts) {
-        this.facts = facts;
+    public void addFact(FactDto factDto) {
+        facts.add(factDto);
     }
-
 }

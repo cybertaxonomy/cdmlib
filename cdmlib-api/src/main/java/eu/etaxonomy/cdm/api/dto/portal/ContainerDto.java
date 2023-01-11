@@ -52,8 +52,9 @@ public class ContainerDto<T extends CdmBaseDto> {
     public Collection<T> getCollection() {
         return collection;
     }
-    public void setCollection(Collection<T> collection) {
-        this.collection = collection;
+    public void addItem(T item) {
+        this.collection.add(item);
+        count++;
     }
 
     public LocalDateTime getLastUpdated() {
