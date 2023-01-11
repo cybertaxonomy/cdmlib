@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author a.mueller
  * @date 10.01.2023
@@ -16,11 +19,20 @@ public class FeatureDto extends CdmBaseDto {
 
     private String label;
 
+    private List<FactDto> facts = new ArrayList<>();
+
     public String getLabel() {
         return label;
     }
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public List<FactDto> getFacts() {
+        return facts;
+    }
+    public void setFacts(List<FactDto> facts) {
+        this.facts = facts;
     }
 
 }

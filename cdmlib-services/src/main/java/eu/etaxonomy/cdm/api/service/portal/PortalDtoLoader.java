@@ -9,18 +9,28 @@
 package eu.etaxonomy.cdm.api.service.portal;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
+import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.TypedLabel;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -45,28 +55,62 @@ public class PortalDtoLoader {
        result.setTaxonLabel(CdmUtils.Nz(taxon.getTitleCache()));
 
        //TODO load feature tree
-//       Set<Feature> featureSet = new HashSet<>();
-        Set<Feature> featureSet = taxon.getDescriptions().stream()
-           .filter(d->!d.isImageGallery())
-           .flatMap(d->d.getElements().stream())
-           .map(el->el.getFeature())
-             .collect(Collectors.toSet())
-           ;
-        //TODO sort
-        if (!featureSet.isEmpty()) {
-            ContainerDto<TaxonPageDto.FactualDataDTO> factualData = new ContainerDto<>();
-            result.setFactualData(factualData);
-            for (Feature feature : featureSet) {
+       Map<Feature,Set<DescriptionElementBase>> featureMap = new HashMap<>();
+
+       for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
+           if (taxonDescription.isImageGallery()) {
+               continue;
+           }
+           for (DescriptionElementBase deb : taxonDescription.getElements()) {
+               Feature feature = deb.getFeature();
+               if (featureMap.get(feature) == null) {
+                   featureMap.put(feature, new HashSet<>());
+               }
+               featureMap.get(feature).add(deb);
+           }
+       }
+
+       //TODO sort
+        if (!featureMap.isEmpty()) {
+            ContainerDto<FeatureDto> features = new ContainerDto<>();
+            result.setFactualData(features);
+            for (Feature feature : featureMap.keySet()) {
                 FeatureDto featureDto = new FeatureDto();
                 featureDto.setId(feature.getId());
                 featureDto.setUuid(feature.getUuid());
                 //TODO locale
                 featureDto.setLabel(feature.getTitleCache());
+                features.getCollection().add(featureDto);
+
+                //
+                for (DescriptionElementBase fact : featureMap.get(feature)){
+                    handleFact(featureDto, fact);
+                }
             }
         }
 
        return result;
    }
+
+    private void handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
+        if (fact.isInstanceOf(TextData.class)) {
+            TextData td = CdmBase.deproxy(fact, TextData.class);
+            //TODO locale
+            Language lang = null;
+            LanguageString ls = td.getPreferredLanguageString(lang);
+            String text = ls == null ? "" : CdmUtils.Nz(ls.getText());
+
+            FactDto factDto = new FactDto();
+            featureDto.getFacts().add(factDto);
+            TypedLabel typedLabel = new TypedLabel();
+            typedLabel.setClassAndId(td);
+            typedLabel.setLabel(text);
+            factDto.getTypedLabel().add(typedLabel);
+        }else {
+//            TODO
+        }
+
+    }
 
     /**
      * Compares an existing last date and the last date of an entity

@@ -24,7 +24,7 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     private ContainerDto<HomotypicGroupDTO> heterotypicSynonyms;
 
-    private ContainerDto<FactualDataDTO> factualData;
+    private ContainerDto<FeatureDto> factualData;
 
     private ContainerDto<KeyDTO> keys;
 
@@ -86,10 +86,10 @@ public class TaxonPageDto extends TaxonBaseDto {
         this.heterotypicSynonyms = heterotypicSynonyms;
     }
 
-    public ContainerDto<FactualDataDTO> getFactualData() {
+    public ContainerDto<FeatureDto> getFactualData() {
         return factualData;
     }
-    public void setFactualData(ContainerDto<FactualDataDTO> factualData) {
+    public void setFactualData(ContainerDto<FeatureDto> factualData) {
         this.factualData = factualData;
     }
 

@@ -18,12 +18,48 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class TypedLabel {
 
-    UUID uuid;   //or id?
+    private UUID uuid;   //or id?
 //    to make links possible
     //TODO remove model dependency?
-    Class<? extends CdmBase> cdmClass;
+    private Class<? extends CdmBase> cdmClass;
     //enum semantics   name_author, name_exauthor, separator ? => not needed if we pass all formatting rules from client to server
-    boolean isNamePart;  //is italics??
-    String label;
+    private Boolean isNamePart;  //is italics??
+    private String label;
+
+
+    public UUID getUuid() {
+        return uuid;
+    }
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public Class<? extends CdmBase> getCdmClass() {
+        return cdmClass;
+    }
+    public void setCdmClass(Class<? extends CdmBase> cdmClass) {
+        this.cdmClass = cdmClass;
+    }
+
+    public Boolean getIsNamePart() {
+        return isNamePart;
+    }
+    public void setIsNamePart(Boolean isNamePart) {
+        this.isNamePart = isNamePart;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setClassAndId(CdmBase cdmBase) {
+        this.uuid = cdmBase.getUuid();
+        this.cdmClass = cdmBase.getClass();
+    }
+
+
 
 }

@@ -22,14 +22,46 @@ import java.util.Collection;
  */
 public class ContainerDto<T extends CdmBaseDto> {
 
-    public int count;
+    private int count;
 
-    public boolean orderRelevant;
+    private boolean orderRelevant;
 
-    Collection<T> collection = new ArrayList<>();
+    private Collection<T> collection = new ArrayList<>();
 
     //computed from updated of all relevant data
     //uses java.time.XXX  to have less dependencies
     //TODO or should we use jodatime
-    public LocalDateTime lastUpdated;
+    private LocalDateTime lastUpdated;
+
+// ***************** GETTER / SETTER *********************/
+
+    public int getCount() {
+        return count;
+    }
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public boolean isOrderRelevant() {
+        return orderRelevant;
+    }
+    public void setOrderRelevant(boolean orderRelevant) {
+        this.orderRelevant = orderRelevant;
+    }
+
+    public Collection<T> getCollection() {
+        return collection;
+    }
+    public void setCollection(Collection<T> collection) {
+        this.collection = collection;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+
 }

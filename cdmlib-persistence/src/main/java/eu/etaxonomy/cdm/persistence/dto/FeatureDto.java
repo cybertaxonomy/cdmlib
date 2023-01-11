@@ -68,8 +68,6 @@ public class FeatureDto extends TermDto {
         this.recommendedModifierEnumeration = recommendedModifierEnumeration;
     }
 
-
-
     static public FeatureDto fromFeature(Feature term) {
         UUID partOfUuid = term.getPartOf() != null? term.getPartOf().getUuid(): null;
         UUID kindOfUuid = term.getKindOf() != null? term.getKindOf().getUuid(): null;
