@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.remote.controller.oaipmh;
 
 import java.util.ArrayList;
@@ -50,7 +58,8 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.exception.CannotDisseminateFormatException;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
 
-public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>> {
+public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SERVICE
+        extends IIdentifiableEntityService<T>> {
 
     protected SERVICE service;
 
@@ -95,7 +104,6 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     public void setRestrictToLsid(boolean restrictToLsid) {
         this.onlyItemsWithLsid = restrictToLsid;
     }
-
 
     /**
      * Subclasses should override this method to return a list of property
