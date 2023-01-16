@@ -49,6 +49,8 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
         }
         if (dto != null) {
             return dto;
+        }else if (true) {
+            return dto;
         }
 
         dto = new TaxonPageDto();

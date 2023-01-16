@@ -42,7 +42,7 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     public static class HomotypicGroupDTO  extends CdmBaseDto{
 
-        private ContainerDto<TaxonBaseDto> synonyms;   //Synonym has no relevant extra information therefore no more specific DTOS
+        private ContainerDto<TaxonBaseDto> synonyms = new ContainerDto<>();   //Synonym has no relevant extra information therefore no more specific DTOS
 
         //TODO
         //typification   //see also TypeDesignationWorkingSet implementation

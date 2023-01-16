@@ -81,7 +81,7 @@ public class PortalDtoLoader {
         List<Synonym> homotypicSynonmys = taxon.getHomotypicSynonymsByHomotypicGroup(comparator);
         if (!homotypicSynonmys.isEmpty()) {
             TaxonPageDto.HomotypicGroupDTO hgDto = new TaxonPageDto.HomotypicGroupDTO();
-            loadBaseData(taxon.getName().getHomotypicalGroup(), hgDto);
+            loadBaseData(name.getHomotypicalGroup(), hgDto);
             result.setHomotypicSynonyms(hgDto);
 
             for (Synonym syn : homotypicSynonmys) {
