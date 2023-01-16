@@ -1296,7 +1296,7 @@ public class TaxonServiceImpl
                  }
                  if (nameResult.isError() || nameResult.isAbort()){
                      result.addRelatedObject(name);
-                     result.addExceptions(nameResult.getExceptions());
+                     //result.addExceptions(nameResult.getExceptions()); this was already added in deleteTaxon!
                  }else{
                      result.includeResult(nameResult);
                  }
