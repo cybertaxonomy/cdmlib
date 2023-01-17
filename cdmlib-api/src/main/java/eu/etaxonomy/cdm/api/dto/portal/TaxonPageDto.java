@@ -9,6 +9,10 @@
 package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.List;
+import java.util.UUID;
+
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 
 /**
  * A DTO including all data relevant for a CDM Dataportal taxon page.
@@ -22,7 +26,9 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     private ContainerDto<TaxonNodeDTO> taxonNodes;
 
-    private ContainerDto<HomotypicGroupDTO> heterotypicSynonyms;
+    private ContainerDto<HomotypicGroupDTO> heterotypicSynonymGroups;
+
+    private ContainerDto<ConceptRelationDTO> conceptRelations;
 
     private ContainerDto<FeatureDto> factualData;
 
@@ -36,11 +42,25 @@ public class TaxonPageDto extends TaxonBaseDto {
 
 //******************** subclasses *********************************/
 
-    public class TaxonNodeDTO extends CdmBaseDto {
+    public static class TaxonNodeDTO extends CdmBaseDto {
+        private UUID classificationUuid;
+        private String classificationLabel;
 
+        public UUID getClassificationUuid() {
+            return classificationUuid;
+        }
+        public void setClassificationUuid(UUID classificationUuid) {
+            this.classificationUuid = classificationUuid;
+        }
+        public String getClassificationLabel() {
+            return classificationLabel;
+        }
+        public void setClassificationLabel(String classificationLabel) {
+            this.classificationLabel = classificationLabel;
+        }
     }
 
-    public static class HomotypicGroupDTO  extends CdmBaseDto{
+    public static class HomotypicGroupDTO extends CdmBaseDto{
 
         private ContainerDto<TaxonBaseDto> synonyms = new ContainerDto<>();   //Synonym has no relevant extra information therefore no more specific DTOS
 
@@ -56,7 +76,46 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
-    public class SpecimenDTO extends CdmBaseDto{
+    public static class ConceptRelationDTO extends TaxonBaseDto{
+        //TODO really needed or only in linkedLabel?
+        int relTaxonId;
+        UUID relTaxonUuid;
+        String relTaxonLabel;
+        String label;
+        List<TypedLabel> typedLabel;
+        public int getRelTaxonId() {
+            return relTaxonId;
+        }
+        public void setRelTaxonId(int relTaxonId) {
+            this.relTaxonId = relTaxonId;
+        }
+        public UUID getRelTaxonUuid() {
+            return relTaxonUuid;
+        }
+        public void setRelTaxonUuid(UUID relTaxonUuid) {
+            this.relTaxonUuid = relTaxonUuid;
+        }
+        public String getRelTaxonLabel() {
+            return relTaxonLabel;
+        }
+        public void setRelTaxonLabel(String relTaxonLabel) {
+            this.relTaxonLabel = relTaxonLabel;
+        }
+        public String getLabel() {
+            return label;
+        }
+        public void setLabel(String label) {
+            this.label = label;
+        }
+        public List<TypedLabel> getTypedLabel() {
+            return typedLabel;
+        }
+        public void setTypedLabel(List<TypedLabel> typedLabel) {
+            this.typedLabel = typedLabel;
+        }
+    }
+
+    public static class SpecimenDTO extends LabeledEntityDto {
 
     }
 
@@ -64,12 +123,80 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     }
 
-    public class KeyDTO extends CdmBaseDto{
+    public static class KeyDTO extends CdmBaseDto{
 
     }
 
-    public class MediaDTO extends CdmBaseDto{
+    public static class MediaDTO extends LabeledEntityDto{
+        private String description;
+        private ContainerDto<MediaRepresentationDTO> representations;
 
+        public String getDescription() {
+            return description;
+        }
+        public void setDescription(String description) {
+            this.description = description;
+        }
+        public ContainerDto<MediaRepresentationDTO> getRepresentations() {
+            return representations;
+        }
+        public void setRepresentations(ContainerDto<MediaRepresentationDTO> representations) {
+            this.representations = representations;
+        }
+    }
+
+    public static class MediaRepresentationDTO extends CdmBaseDto{
+
+        private Class<? extends MediaRepresentationPart> clazz;
+        private String mimeType;
+        private String suffix;  //TODO needed?
+        private URI uri;
+        private Integer size;
+        private int height;
+        private int width;
+
+        public Class<? extends MediaRepresentationPart> getClazz() {
+            return clazz;
+        }
+        public void setClazz(Class<? extends MediaRepresentationPart> clazz) {
+            this.clazz = clazz;
+        }
+        public String getMimeType() {
+            return mimeType;
+        }
+        public void setMimeType(String mimeType) {
+            this.mimeType = mimeType;
+        }
+        public String getSuffix() {
+            return suffix;
+        }
+        public void setSuffix(String suffix) {
+            this.suffix = suffix;
+        }
+        public URI getUri() {
+            return uri;
+        }
+        public void setUri(URI uri) {
+            this.uri = uri;
+        }
+        public Integer getSize() {
+            return size;
+        }
+        public void setSize(Integer size) {
+            this.size = size;
+        }
+        public int getHeight() {
+            return height;
+        }
+        public void setHeight(int height) {
+            this.height = height;
+        }
+        public int getWidth() {
+            return width;
+        }
+        public void setWidth(int width) {
+            this.width = width;
+        }
     }
 
     public HomotypicGroupDTO getHomotypicSynonyms() {
@@ -86,11 +213,11 @@ public class TaxonPageDto extends TaxonBaseDto {
         this.taxonNodes = taxonNodes;
     }
 
-    public ContainerDto<HomotypicGroupDTO> getHeterotypicSynonyms() {
-        return heterotypicSynonyms;
+    public ContainerDto<HomotypicGroupDTO> getHeterotypicSynonymGroups() {
+        return heterotypicSynonymGroups;
     }
-    public void setHeterotypicSynonyms(ContainerDto<HomotypicGroupDTO> heterotypicSynonyms) {
-        this.heterotypicSynonyms = heterotypicSynonyms;
+    public void setHeterotypicSynonymGroups(ContainerDto<HomotypicGroupDTO> heterotypicSynonymGroups) {
+        this.heterotypicSynonymGroups = heterotypicSynonymGroups;
     }
 
     public ContainerDto<FeatureDto> getFactualData() {
@@ -121,6 +248,12 @@ public class TaxonPageDto extends TaxonBaseDto {
         this.media = media;
     }
 
+    public ContainerDto<ConceptRelationDTO> getConceptRelations() {
+        return conceptRelations;
+    }
+    public void setConceptRelations(ContainerDto<ConceptRelationDTO> conceptRelations) {
+        this.conceptRelations = conceptRelations;
+    }
     public List<MessagesDto> getMessages() {
         return messages;
     }
