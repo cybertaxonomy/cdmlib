@@ -51,6 +51,9 @@ public class TaxonPageDto extends TaxonBaseDto {
             synonyms.addItem(synonymDto);
         }
 
+        public ContainerDto<TaxonBaseDto> getSynonyms() {
+            return synonyms;
+        }
     }
 
     public class SpecimenDTO extends CdmBaseDto{
