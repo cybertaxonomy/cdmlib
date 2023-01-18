@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 
 /**

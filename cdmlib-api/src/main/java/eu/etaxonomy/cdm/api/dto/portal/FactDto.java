@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.api.dto.portal;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.etaxonomy.cdm.format.common.TypedLabel;
+
 /**
  * @author a.mueller
  * @date 11.01.2023
