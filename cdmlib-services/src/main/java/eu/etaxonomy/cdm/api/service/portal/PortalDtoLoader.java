@@ -232,7 +232,7 @@ public class PortalDtoLoader {
             if (statusNote != null) {
                 //TODO handle fallback lang
                 LanguageString statusNoteStr = statusNote.get(language);
-                if (statusNoteStr == null || statusNote.size() > 0) {
+                if (statusNoteStr == null && statusNote.size() > 0) {
                     statusNoteStr = statusNote.entrySet().iterator().next().getValue();
                 }
                 if (statusNoteStr != null) {
