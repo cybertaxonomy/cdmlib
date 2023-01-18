@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -220,6 +221,25 @@ public class PortalDtoLoader {
                 dto.setClassificationUuid(node.getClassification().getUuid());
                 dto.setClassificationLabel(classification.getName().getText());
             }
+            //TODO lang/locale
+            Language language = Language.DEFAULT();
+
+            TaxonNodeStatus status = node.getStatus();
+            if (status != null) {
+                dto.setStatus(status.getLabel(language));
+            }
+            Map<Language, LanguageString> statusNote = node.getStatusNote();
+            if (statusNote != null) {
+                //TODO handle fallback lang
+                LanguageString statusNoteStr = statusNote.get(language);
+                if (statusNoteStr == null || statusNote.size() > 0) {
+                    statusNoteStr = statusNote.entrySet().iterator().next().getValue();
+                }
+                if (statusNoteStr != null) {
+                    dto.setStatusNote(statusNoteStr.getText());
+                }
+            }
+
             container.addItem(dto);
         }
         if (container.getCount() > 0) {

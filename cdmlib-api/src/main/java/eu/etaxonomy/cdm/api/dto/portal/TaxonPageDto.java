@@ -45,6 +45,8 @@ public class TaxonPageDto extends TaxonBaseDto {
     public static class TaxonNodeDTO extends CdmBaseDto {
         private UUID classificationUuid;
         private String classificationLabel;
+        private String status;
+        private String statusNote;
 
         public UUID getClassificationUuid() {
             return classificationUuid;
@@ -57,6 +59,18 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setClassificationLabel(String classificationLabel) {
             this.classificationLabel = classificationLabel;
+        }
+        public String getStatus() {
+            return status;
+        }
+        public void setStatus(String status) {
+            this.status = status;
+        }
+        public String getStatusNote() {
+            return statusNote;
+        }
+        public void setStatusNote(String statusNote) {
+            this.statusNote = statusNote;
         }
     }
 
@@ -260,9 +274,4 @@ public class TaxonPageDto extends TaxonBaseDto {
     public void setMessages(List<MessagesDto> messages) {
         this.messages = messages;
     }
-
-
-
-
-
 }
