@@ -125,15 +125,26 @@ public class TaxonPageDto extends TaxonBaseDto {
 
         private ContainerDto<TaxonBaseDto> synonyms = new ContainerDto<>();   //Synonym has no relevant extra information therefore no more specific DTOS
 
-        //TODO
-        //typification   //see also TypeDesignationWorkingSet implementation
+        private List<TypedLabel> typedTypes;
+        private String types;
 
         public void addSynonym(TaxonBaseDto synonymDto) {
             synonyms.addItem(synonymDto);
         }
-
         public ContainerDto<TaxonBaseDto> getSynonyms() {
             return synonyms;
+        }
+        public List<TypedLabel> getTypedTypes() {
+            return typedTypes;
+        }
+        public void setTypedTypes(List<TypedLabel> typedTypes) {
+            this.typedTypes = typedTypes;
+        }
+        public String getTypes() {
+            return types;
+        }
+        public void setTypes(String types) {
+            this.types = types;
         }
     }
 

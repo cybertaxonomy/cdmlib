@@ -35,6 +35,9 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.SpecimenDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
@@ -55,6 +58,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -283,16 +287,17 @@ public class PortalDtoLoader {
 
         //homotypic synonyms
         List<Synonym> homotypicSynonmys = taxon.getHomotypicSynonymsByHomotypicGroup(comparator);
+        TaxonPageDto.HomotypicGroupDTO homotypicGroupDto = new TaxonPageDto.HomotypicGroupDTO();
         if (!homotypicSynonmys.isEmpty()) {
-            TaxonPageDto.HomotypicGroupDTO hgDto = new TaxonPageDto.HomotypicGroupDTO();
-            loadBaseData(name.getHomotypicalGroup(), hgDto);
-            result.setHomotypicSynonyms(hgDto);
+            loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
 
             for (Synonym syn : homotypicSynonmys) {
-                loadSynonymsInGroup(hgDto, syn);
+                loadSynonymsInGroup(homotypicGroupDto, syn);
             }
         }
-        //TODO add typification for homot. syns
+        //TODO NPE
+        handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, config);
+        result.setHomotypicSynonyms(homotypicGroupDto);
 
         //heterotypic synonyms
         List<HomotypicalGroup> heteroGroups = taxon.getHeterotypicSynonymyGroups();
@@ -311,7 +316,27 @@ public class PortalDtoLoader {
             for (Synonym syn : heteroSyns) {
                 loadSynonymsInGroup(hgDto, syn);
             }
-            //TODO add typification for heterotyp. syns.
+            handleTypification(hg, hgDto, config);
+        }
+    }
+
+    private void handleTypification(HomotypicalGroup homotypicalGroup, HomotypicGroupDTO hgDto,
+            TaxonPageDtoConfiguration config) {
+
+        boolean withCitation = true;
+        boolean withStartingTypeLabel = true;
+        boolean withNameIfAvailable = false;
+        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(
+                withCitation, withStartingTypeLabel, withNameIfAvailable);
+        Set<TypeDesignationBase<?>> desigs = homotypicalGroup.getTypeDesignations();
+        try {
+            TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance((Set)desigs);
+            String label = formatter.format(manager);
+            hgDto.setTypes(label);
+
+        } catch (TypeDesignationSetException e) {
+            // TODO type desig error handling
+            e.printStackTrace();
         }
     }
 
