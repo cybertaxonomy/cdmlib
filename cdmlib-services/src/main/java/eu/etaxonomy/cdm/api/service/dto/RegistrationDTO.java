@@ -390,16 +390,14 @@ public class RegistrationDTO {
         return reg.getBlockedBy() != null && !reg.getBlockedBy().isEmpty();
     }
 
-    /**
-     * @return the blockedBy
-     */
     public Set<TypedEntityReference<Registration>> getBlockedBy() {
 
         if(blockedBy == null){
             blockedBy = new HashSet<>();
             if(reg.getBlockedBy() != null){
                 for(Registration blockReg : reg.getBlockedBy()){
-                    blockedBy.add(new TypedEntityReference<Registration>(Registration.class, blockReg.getUuid(), blockReg.getIdentifier()));
+                    TypedEntityReference<Registration> typedEntityRef = TypedEntityReference.fromEntityWithLabel(blockReg, blockReg.getIdentifier());
+                    blockedBy.add(typedEntityRef);
                 }
             }
         }

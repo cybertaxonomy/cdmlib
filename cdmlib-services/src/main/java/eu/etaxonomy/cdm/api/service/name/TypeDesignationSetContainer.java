@@ -255,7 +255,7 @@ public class TypeDesignationSetContainer {
         String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
-                new TypedEntityReference<>(baseEntity.getClass(), baseEntity.getUuid(), label);
+                TypedEntityReference.fromEntityWithLabel(baseEntity, label);
 
         return baseEntityReference;
     }

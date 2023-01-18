@@ -31,16 +31,16 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
     private Class<T> type;
 
     /**
-     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors (TODO: to be made protected once no longer used publicly)
+     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors
      */
     @Deprecated
-    public TypedEntityReference(Class<T> type, UUID uuid, String label) {
+    protected TypedEntityReference(Class<T> type, UUID uuid, String label) {
         super(uuid, label);
         this.type = type;
     }
 
     /**
-     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors (TODO: to be made protected once no longer used publicly)
+     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors
      */
     @Deprecated
     protected TypedEntityReference(T entity) {
@@ -63,7 +63,7 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         }
         entity = HibernateProxyHelper.deproxy(entity);
         if(withLabel && IdentifiableEntity.class.isAssignableFrom(entity.getClass())) {
-            return new TypedEntityReference<>((Class<T>)entity.getClass(), entity.getUuid(), ((IdentifiableEntity)entity).getTitleCache());
+            return fromEntityWithLabel(entity, ((IdentifiableEntity)entity).getTitleCache());
         } else {
             return new TypedEntityReference<>((Class<T>)entity.getClass(), entity.getUuid());
         }
