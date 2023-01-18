@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -337,7 +338,10 @@ public class TaxonPageDto extends TaxonBaseDto {
     public List<MessagesDto> getMessages() {
         return messages;
     }
-    public void setMessages(List<MessagesDto> messages) {
-        this.messages = messages;
+    public void addMessage(MessagesDto message) {
+        if (this.messages != null) {
+            this.messages = new ArrayList<>();
+        }
+        this.messages.add(message);
     }
 }

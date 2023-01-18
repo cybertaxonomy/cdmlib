@@ -24,6 +24,8 @@ import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
+import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
+import eu.etaxonomy.cdm.api.dto.portal.MessagesDto.MessageType;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
@@ -309,7 +311,7 @@ public class PortalDtoLoader {
             }
         }
         //TODO NPE
-        handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, config);
+        handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, result, config);
         result.setHomotypicSynonyms(homotypicGroupDto);
 
         //heterotypic synonyms
@@ -329,12 +331,12 @@ public class PortalDtoLoader {
             for (Synonym syn : heteroSyns) {
                 loadSynonymsInGroup(hgDto, syn);
             }
-            handleTypification(hg, hgDto, config);
+            handleTypification(hg, hgDto, result, config);
         }
     }
 
     private void handleTypification(HomotypicalGroup homotypicalGroup, HomotypicGroupDTO hgDto,
-            TaxonPageDtoConfiguration config) {
+            TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
         boolean withCitation = true;
         boolean withStartingTypeLabel = true;
@@ -348,8 +350,7 @@ public class PortalDtoLoader {
             hgDto.setTypes(label);
 
         } catch (TypeDesignationSetException e) {
-            // TODO type desig error handling
-            e.printStackTrace();
+            result.addMessage(new MessagesDto(MessageType.ERROR, "Error when creating type designation information"));
         }
     }
 

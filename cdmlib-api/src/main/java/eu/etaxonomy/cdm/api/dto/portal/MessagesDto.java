@@ -18,7 +18,34 @@ package eu.etaxonomy.cdm.api.dto.portal;
  */
 public class MessagesDto {
 
-//    enum type
+    public static enum MessageType{
+        ERROR,
+        WARN;
+    }
 
-    String message;
+    private MessageType type;
+    private String message;
+
+    public MessagesDto(MessageType type, String message) {
+        this.message = message;
+    }
+
+//************ GETTER / SETTER *****************
+
+
+    public String getMessage() {
+        return message;
+    }
+    public MessageType getType() {
+        return type;
+    }
+    public void setType(MessageType type) {
+        this.type = type;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+
 }
