@@ -409,8 +409,6 @@ public class PortalDtoLoader {
         hgDto.addSynonym(synDto);
     }
 
-
-
     private void loadFacts(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
        //TODO load feature tree
@@ -460,7 +458,8 @@ public class PortalDtoLoader {
 
             FactDto factDto = new FactDto();
             featureDto.getFacts().add(factDto);
-            TypedLabel typedLabel = new TypedLabel();
+            //TODO do we really need type information for textdata here?
+            TypedLabel typedLabel = new TypedLabel(td, text);
             typedLabel.setClassAndId(td);
             typedLabel.setLabel(text);
             factDto.getTypedLabel().add(typedLabel);
