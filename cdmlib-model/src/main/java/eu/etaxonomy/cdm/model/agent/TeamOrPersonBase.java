@@ -143,6 +143,9 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         return result;
     }
 
+    /**
+     * @see INomenclaturalAuthorCacheStrategy#getFullTitle(TeamOrPersonBase)
+     */
     @Transient
     public String getFullTitle() {
         @SuppressWarnings("unchecked")
