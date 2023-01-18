@@ -26,7 +26,7 @@ public class ContainerDto<T extends CdmBaseDto> {
 
     private boolean orderRelevant;
 
-    private Collection<T> collection = new ArrayList<>();
+    private Collection<T> items = new ArrayList<>();
 
     //computed from updated of all relevant data
     //uses java.time.XXX  to have less dependencies
@@ -49,11 +49,11 @@ public class ContainerDto<T extends CdmBaseDto> {
         this.orderRelevant = orderRelevant;
     }
 
-    public Collection<T> getCollection() {
-        return collection;
+    public Collection<T> getItems() {
+        return items;
     }
     public void addItem(T item) {
-        this.collection.add(item);
+        this.items.add(item);
         count++;
     }
 
