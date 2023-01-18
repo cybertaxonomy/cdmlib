@@ -46,7 +46,8 @@ public class TaxonPageDto extends TaxonBaseDto {
     public static class TaxonNodeAgentsRelDTO extends CdmBaseDto{  //only extend to CdmBaseDto to allow usage in ContainerDto
         private String agent;
         private UUID agentUuid;
-        //TODO external Link?
+        //TODO should it be a list?
+        private String agentLink;  //preferred external link
         //TODO better use DTOs?
         private String type;
         private UUID typeUuid;
@@ -75,6 +76,13 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setTypeUuid(UUID typeUuid) {
             this.typeUuid = typeUuid;
         }
+        public String getAgentLink() {
+            return agentLink;
+        }
+        public void setAgentLink(String agentLink) {
+            this.agentLink = agentLink;
+        }
+
     }
 
     public static class TaxonNodeDTO extends CdmBaseDto {

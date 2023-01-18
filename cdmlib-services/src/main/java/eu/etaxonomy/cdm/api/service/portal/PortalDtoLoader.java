@@ -270,6 +270,8 @@ public class PortalDtoLoader {
                     if (rel.getAgent() != null) {
                         agentDto.setAgent(rel.getAgent().getFullTitle());
                         agentDto.setAgentUuid(rel.getAgent().getUuid());
+                        //TODO compute preferred external link
+                        agentDto.setAgentLink(null);
                     }
                     if (rel.getType() != null) {
                         agentDto.setType(rel.getType().getTitleCache());
