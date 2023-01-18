@@ -42,11 +42,47 @@ public class TaxonPageDto extends TaxonBaseDto {
 
 //******************** subclasses *********************************/
 
+    public static class TaxonNodeAgentsRelDTO extends CdmBaseDto{  //only extend to CdmBaseDto to allow usage in ContainerDto
+        private String agent;
+        private UUID agentUuid;
+        //TODO external Link?
+        //TODO better use DTOs?
+        private String type;
+        private UUID typeUuid;
+
+        public String getAgent() {
+            return agent;
+        }
+        public void setAgent(String agent) {
+            this.agent = agent;
+        }
+        public UUID getAgentUuid() {
+            return agentUuid;
+        }
+        public void setAgentUuid(UUID agentUuid) {
+            this.agentUuid = agentUuid;
+        }
+        public String getType() {
+            return type;
+        }
+        public void setType(String type) {
+            this.type = type;
+        }
+        public UUID getTypeUuid() {
+            return typeUuid;
+        }
+        public void setTypeUuid(UUID typeUuid) {
+            this.typeUuid = typeUuid;
+        }
+    }
+
     public static class TaxonNodeDTO extends CdmBaseDto {
         private UUID classificationUuid;
         private String classificationLabel;
         private String status;
         private String statusNote;
+        private ContainerDto<TaxonNodeAgentsRelDTO> agents;
+
 
         public UUID getClassificationUuid() {
             return classificationUuid;
@@ -72,6 +108,16 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setStatusNote(String statusNote) {
             this.statusNote = statusNote;
         }
+        public ContainerDto<TaxonNodeAgentsRelDTO> getAgents() {
+            return agents;
+        }
+        public void addAgent(TaxonNodeAgentsRelDTO agent) {
+            if (agents == null) {
+                agents = new ContainerDto<>();
+            }
+            agents.addItem(agent);
+        }
+
     }
 
     public static class HomotypicGroupDTO extends CdmBaseDto{

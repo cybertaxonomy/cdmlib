@@ -216,6 +216,7 @@ public class PortalDtoLoader {
         for (TaxonNode node : taxon.getTaxonNodes()) {
             TaxonNodeDTO dto = new TaxonNodeDTO();
             loadBaseData(node, dto);
+            //classification
             Classification classification = node.getClassification();
             if (classification != null) {
                 dto.setClassificationUuid(node.getClassification().getUuid());
@@ -224,10 +225,12 @@ public class PortalDtoLoader {
             //TODO lang/locale
             Language language = Language.DEFAULT();
 
+            //status
             TaxonNodeStatus status = node.getStatus();
             if (status != null) {
                 dto.setStatus(status.getLabel(language));
             }
+            //statusNote
             Map<Language, LanguageString> statusNote = node.getStatusNote();
             if (statusNote != null) {
                 //TODO handle fallback lang
@@ -239,7 +242,25 @@ public class PortalDtoLoader {
                     dto.setStatusNote(statusNoteStr.getText());
                 }
             }
+            //agent relations
+            Set<TaxonNodeAgentRelation> agents = node.getAgentRelations();
+            if (!agents.isEmpty()) {
+                for (TaxonNodeAgentRelation rel : agents) {
+                    TaxonNodeAgentsRelDTO agentDto = new TaxonNodeAgentsRelDTO();
+                    loadBaseData(rel, agentDto);
 
+                    //TODO laod
+                    if (rel.getAgent() != null) {
+                        agentDto.setAgent(rel.getAgent().getFullTitle());
+                        agentDto.setAgentUuid(rel.getAgent().getUuid());
+                    }
+                    if (rel.getType() != null) {
+                        agentDto.setType(rel.getType().getTitleCache());
+                        agentDto.setTypeUuid(rel.getType().getUuid());
+                    }
+                    dto.addAgent(agentDto);
+                }
+            }
             container.addItem(dto);
         }
         if (container.getCount() > 0) {
