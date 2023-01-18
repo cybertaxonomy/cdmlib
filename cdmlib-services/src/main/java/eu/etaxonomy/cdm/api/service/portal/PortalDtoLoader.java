@@ -346,8 +346,10 @@ public class PortalDtoLoader {
         Set<TypeDesignationBase<?>> desigs = homotypicalGroup.getTypeDesignations();
         try {
             TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance((Set)desigs);
-            String label = formatter.format(manager);
+            List<TaggedText> tags = formatter.toTaggedText(manager);
+            String label = TaggedCacheHelper.createString(tags);
             hgDto.setTypes(label);
+            hgDto.setTypedTypes(null);
 
         } catch (TypeDesignationSetException e) {
             result.addMessage(new MessagesDto(MessageType.ERROR, "Error when creating type designation information"));

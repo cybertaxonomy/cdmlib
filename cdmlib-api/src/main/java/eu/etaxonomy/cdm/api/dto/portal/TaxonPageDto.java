@@ -15,6 +15,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * A DTO including all data relevant for a CDM Dataportal taxon page.
@@ -135,6 +136,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         private ContainerDto<TaxonBaseDto> synonyms = new ContainerDto<>();   //Synonym has no relevant extra information therefore no more specific DTOS
 
         private List<TypedLabel> typedTypes;
+        private List<TaggedText> taggedTypes;
         private String types;
 
         public void addSynonym(TaxonBaseDto synonymDto) {
@@ -154,6 +156,12 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setTypes(String types) {
             this.types = types;
+        }
+        public List<TaggedText> getTaggedTypes() {
+            return taggedTypes;
+        }
+        public void setTaggedTypes(List<TaggedText> taggedTypes) {
+            this.taggedTypes = taggedTypes;
         }
     }
 
