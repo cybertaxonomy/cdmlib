@@ -66,8 +66,9 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
         dto.setUuid((UUID)hqlResult.get(0)[1]);
         dto.setTaxonLabel((String)hqlResult.get(0)[2]);
         dto.setNameLabel((String)hqlResult.get(0)[3]);
-        dto.setTypedTaxonLabel(null);
-        dto.setTypedNameLabel(null);
+//        dto.setTypedTaxonLabel(null);
+//        dto.setTypedNameLabel(null);
+        dto.setTaggedTaxon(null);
 
         //taxonNodes
 

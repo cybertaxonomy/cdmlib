@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
 import java.util.List;
 
 import eu.etaxonomy.cdm.format.common.TypedLabel;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.mueller
@@ -27,6 +28,8 @@ public class TaxonBaseDto extends CdmBaseDto {
     private List<TypedLabel> typedTaxonLabel;
     private List<TypedLabel> typedNameLabel;
 
+    private List<TaggedText> taggedTaxon;
+
     public String getTaxonLabel() {
         return taxonLabel;
     }
@@ -41,19 +44,26 @@ public class TaxonBaseDto extends CdmBaseDto {
         this.nameLabel = nameLabel;
     }
 
-    public List<TypedLabel> getTypedTaxonLabel() {
-        return typedTaxonLabel;
+//    public List<TypedLabel> getTypedTaxonLabel() {
+//        return typedTaxonLabel;
+//    }
+//    public void setTypedTaxonLabel(List<TypedLabel> typedTaxonLabel) {
+//        this.typedTaxonLabel = typedTaxonLabel;
+//    }
+//
+//    public List<TypedLabel> getTypedNameLabel() {
+//        return typedNameLabel;
+//    }
+//    public void setTypedNameLabel(List<TypedLabel> typedNameLabel) {
+//        this.typedNameLabel = typedNameLabel;
+//    }
+    public List<TaggedText> getTaggedTaxon() {
+        return taggedTaxon;
     }
-    public void setTypedTaxonLabel(List<TypedLabel> typedTaxonLabel) {
-        this.typedTaxonLabel = typedTaxonLabel;
+    public void setTaggedTaxon(List<TaggedText> taggedTaxon) {
+        this.taggedTaxon = taggedTaxon;
     }
 
-    public List<TypedLabel> getTypedNameLabel() {
-        return typedNameLabel;
-    }
-    public void setTypedNameLabel(List<TypedLabel> typedNameLabel) {
-        this.typedNameLabel = typedNameLabel;
-    }
 
     //TaxonBase info
     //appendedPhras, useNameCache, doubtful, name, publish

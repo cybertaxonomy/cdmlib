@@ -64,12 +64,14 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
  * Loads the portal dto from a taxon instance.
@@ -90,6 +92,8 @@ public class PortalDtoLoader {
         result.setLastUpdated(getLastUpdated(null, taxon));
         result.setNameLabel(name != null? name.getTitleCache() : "");
         result.setTaxonLabel(CdmUtils.Nz(taxon.getTitleCache()));
+//        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
+        result.setTaggedTaxon(getTaggedTaxon(taxon, config));
 
         loadTaxonNodes(taxon, result, config);
         loadSynonyms(taxon, result, config);
@@ -100,6 +104,13 @@ public class PortalDtoLoader {
         loadKeys(taxon, result, config);
 
         return result;
+    }
+
+    private List<TaggedText> getTaggedTaxon(Taxon taxon, TaxonPageDtoConfiguration config) {
+        List<TypedLabel> result = new ArrayList<>();
+        TaxonBaseDefaultCacheStrategy<TaxonBase<?>> formatter = new TaxonBaseDefaultCacheStrategy<>();
+        List<TaggedText> tags = formatter.getTaggedTitle(taxon);
+        return tags;
     }
 
     private void loadKeys(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
@@ -459,9 +470,8 @@ public class PortalDtoLoader {
             FactDto factDto = new FactDto();
             featureDto.getFacts().add(factDto);
             //TODO do we really need type information for textdata here?
-            TypedLabel typedLabel = new TypedLabel(td, text);
+            TypedLabel typedLabel = new TypedLabel(text);
             typedLabel.setClassAndId(td);
-            typedLabel.setLabel(text);
             factDto.getTypedLabel().add(typedLabel);
         }else {
 //            TODO

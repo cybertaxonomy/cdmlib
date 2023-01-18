@@ -33,6 +33,10 @@ public class TypedLabel {
     private List<TypedLabel> innerLabels = null;
 
 
+    public TypedLabel(String label) {
+        this(null, null, label, null);
+    }
+
     public TypedLabel(TagEnum tagType, String label) {
         this(null, null, label, tagType);
     }
