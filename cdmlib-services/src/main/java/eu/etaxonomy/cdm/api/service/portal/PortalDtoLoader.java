@@ -349,7 +349,8 @@ public class PortalDtoLoader {
             List<TaggedText> tags = formatter.toTaggedText(manager);
             String label = TaggedCacheHelper.createString(tags);
             hgDto.setTypes(label);
-            hgDto.setTypedTypes(null);
+            hgDto.setTaggedTypes(tags);
+//            hgDto.setTypedTypes(null);
 
         } catch (TypeDesignationSetException e) {
             result.addMessage(new MessagesDto(MessageType.ERROR, "Error when creating type designation information"));
