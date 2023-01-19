@@ -51,7 +51,7 @@ public class TypedLabel {
 
     public TypedLabel(UUID uuid, Class<? extends ICdmBase> clazz, String label, TagEnum tagType) {
         this.uuid = uuid;
-        this.clazz = clazz.getSimpleName();
+        this.clazz = clazz == null? null : clazz.getSimpleName();
         this.label = label;
         this.tagType = tagType;
     }
