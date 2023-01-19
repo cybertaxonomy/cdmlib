@@ -30,19 +30,11 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     private Class<T> type;
 
-    /**
-     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors
-     */
-    @Deprecated
     protected TypedEntityReference(Class<T> type, UUID uuid, String label) {
         super(uuid, label);
         this.type = type;
     }
 
-    /**
-     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors
-     */
-    @Deprecated
     protected TypedEntityReference(T entity) {
         this.type = (Class<T>) entity.getClass();
         this.uuid = entity.getUuid();

@@ -765,7 +765,6 @@ public class OccurrenceServiceImpl
     @Override
     public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTOs(UUID unitUUID) {
 
-
         SpecimenOrObservationBase<?> entity = load(unitUUID);
         SpecimenOrObservationBaseDTO derivedUnitDTO = SpecimenOrObservationDTOFactory.fromEntity(entity);
         Collection<SpecimenOrObservationBaseDTO> rootUnitDTOs = new ArrayList<>();

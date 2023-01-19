@@ -35,11 +35,7 @@ public class CollectionDTO extends TypedEntityReference<Collection> {
         return new CollectionDTO(entity);
     }
 
-    /**
-     * @deprecated use factory instead
-     */
-    @Deprecated
-    public CollectionDTO(Collection collection) {
+    private CollectionDTO(Collection collection) {
         this(collection, new HashSet<>());
     }
 
