@@ -514,12 +514,18 @@ public class GbifJsonOccurrenceParser {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        if (neoJsonNode != null) {
-            if(neoJsonNode.has(URL)){
-                response.setEndpoint(URI.create(neoJsonNode.get(URL).textValue()));
-            }
-            if(neoJsonNode.has(TYPE)){
-                response.setProtocol(GbifDataSetProtocol.parseProtocol(neoJsonNode.get(TYPE).textValue()));
+
+        if (neoJsonNode != null && neoJsonNode.isArray()) {
+            for(Object o:neoJsonNode){
+                if (o instanceof ObjectNode) {
+                    ObjectNode node = (ObjectNode)o;
+                    if(node.has(URL)){
+                        response.setEndpoint(URI.create(node.get(URL).textValue()));
+                    }
+                    if(node.has(TYPE)){
+                        response.setProtocol(GbifDataSetProtocol.parseProtocol(node.get(TYPE).textValue()));
+                    }
+                }
             }
         }
         return response;
