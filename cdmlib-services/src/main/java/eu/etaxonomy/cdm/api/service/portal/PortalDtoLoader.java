@@ -108,8 +108,8 @@ public class PortalDtoLoader {
         return result;
     }
 
-    private List<TaggedText> getTaggedTaxon(Taxon taxon, TaxonPageDtoConfiguration config) {
-        List<TypedLabel> result = new ArrayList<>();
+    private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {
+//        List<TypedLabel> result = new ArrayList<>();
         TaxonBaseDefaultCacheStrategy<TaxonBase<?>> formatter = new TaxonBaseDefaultCacheStrategy<>();
         List<TaggedText> tags = formatter.getTaggedTitle(taxon);
         return tags;
@@ -307,7 +307,7 @@ public class PortalDtoLoader {
             loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
 
             for (Synonym syn : homotypicSynonmys) {
-                loadSynonymsInGroup(homotypicGroupDto, syn);
+                loadSynonymsInGroup(homotypicGroupDto, syn, config);
             }
         }
         //TODO NPE
@@ -329,7 +329,7 @@ public class PortalDtoLoader {
 
             List<Synonym> heteroSyns = taxon.getSynonymsInGroup(hg, comparator);
             for (Synonym syn : heteroSyns) {
-                loadSynonymsInGroup(hgDto, syn);
+                loadSynonymsInGroup(hgDto, syn, config);
             }
             handleTypification(hg, hgDto, result, config);
         }
@@ -416,11 +416,12 @@ public class PortalDtoLoader {
         conceptRelContainer.addItem(dto);
     }
 
-    private void loadSynonymsInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn) {
+    private void loadSynonymsInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn, TaxonPageDtoConfiguration config) {
         TaxonBaseDto synDto = new TaxonBaseDto();
         loadBaseData(syn, synDto);
         synDto.setNameLabel(syn.getName().getTitleCache());
         synDto.setTaxonLabel(syn.getTitleCache());
+        synDto.setTaggedTaxon(getTaggedTaxon(syn, config));
         //TODO
         hgDto.addSynonym(synDto);
     }
