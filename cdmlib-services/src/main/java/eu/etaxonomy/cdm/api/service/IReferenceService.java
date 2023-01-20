@@ -124,7 +124,7 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
      */
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
             ReferenceType type);
-    
+
     /**
      * @param limit
      * @param authorID
@@ -163,5 +163,11 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
      * @return
      */
     List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config);
+
+    /**
+     * @param uuids
+     * @return
+     */
+    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForUUIDS(Set<UUID> uuids);
 
 }
