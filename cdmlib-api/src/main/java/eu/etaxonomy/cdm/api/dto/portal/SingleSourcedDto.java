@@ -8,21 +8,19 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author a.mueller
- * @date 10.01.2023
+ * @date 19.01.2023
  */
-public class FeatureDto extends LabeledEntityDto {
+public class SingleSourcedDto extends AnnotatableDto {
 
-    private List<FactDto> facts = new ArrayList<>();
+    private SourceDto source;
 
-    public List<FactDto> getFacts() {
-        return facts;
+    public SourceDto getSource() {
+        return source;
     }
-    public void addFact(FactDto factDto) {
-        facts.add(factDto);
+
+    public void setSource(SourceDto source) {
+        this.source = source;
     }
 }

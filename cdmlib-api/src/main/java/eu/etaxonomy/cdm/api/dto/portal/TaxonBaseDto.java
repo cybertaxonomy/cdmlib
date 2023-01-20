@@ -10,14 +10,13 @@ package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.mueller
  * @date 07.01.2023
  */
-public class TaxonBaseDto extends CdmBaseDto {
+public class TaxonBaseDto extends IdentifiableDto {
 
     //TODO should we distinguish data parts (e.g. on general page we do not need last updates from synonymy)
     //lastUpdated
@@ -25,8 +24,8 @@ public class TaxonBaseDto extends CdmBaseDto {
     private String nameLabel;
 
     //TODO should we keep formatting client side or should we do formatting on server side? Formatting means: filter, italics, order??
-    private List<TypedLabel> typedTaxonLabel;
-    private List<TypedLabel> typedNameLabel;
+//    private List<TypedLabel> typedTaxonLabel;
+//    private List<TypedLabel> typedNameLabel;
 
     private List<TaggedText> taggedTaxon;
 

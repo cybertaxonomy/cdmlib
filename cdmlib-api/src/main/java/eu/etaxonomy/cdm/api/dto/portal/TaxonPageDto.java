@@ -204,7 +204,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
-    public static class SpecimenDTO extends LabeledEntityDto {
+    public static class SpecimenDTO extends IdentifiableDto {
 
     }
 
@@ -216,7 +216,8 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     }
 
-    public static class MediaDTO extends LabeledEntityDto{
+    public static class MediaDTO extends IdentifiableDto{
+
         private String description;
         private ContainerDto<MediaRepresentationDTO> representations;
 

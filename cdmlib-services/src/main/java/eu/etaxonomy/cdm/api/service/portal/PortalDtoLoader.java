@@ -18,14 +18,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
+import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
+import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto.MessageType;
+import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
+import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
+import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
@@ -44,9 +51,14 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -63,6 +75,9 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.ISourceable;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -158,7 +173,6 @@ public class PortalDtoLoader {
         if (container.getCount() > 0 ) {
             result.setSpecimens(container);
         }
-
     }
 
     private List<SpecimenOrObservationBase<?>> loadTypeSpecimen(TaxonName name, TaxonPageDtoConfiguration config) {
@@ -511,6 +525,76 @@ public class PortalDtoLoader {
     private void loadBaseData(CdmBase cdmBase, CdmBaseDto dto) {
         dto.setId(cdmBase.getId());
         dto.setUuid(cdmBase.getUuid());
+
+        loadAnnotatable(cdmBase, dto);
+        loadSources(cdmBase, dto);
+        //loadIdentifiable(cdmBase, dto);
     }
 
+    private void loadSources(CdmBase cdmBase, CdmBaseDto dto) {
+        if (dto instanceof SingleSourcedDto && cdmBase.isInstanceOf(SingleSourcedEntityBase.class)) {
+            //TODO other sourced
+            SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
+            SingleSourcedDto sourcedDto = (SingleSourcedDto)dto;
+            NamedSource source = sourced.getSource();
+            SourceDto sourceDto = new SourceDto();
+            loadSource(source, sourceDto);
+            sourcedDto.setSource(sourceDto);
+        } else if (dto instanceof SourcedDto && cdmBase instanceof ISourceable) {
+            @SuppressWarnings("unchecked")
+            ISourceable<OriginalSourceBase> sourced = (ISourceable<OriginalSourceBase>)cdmBase;
+            SourcedDto sourcedDto = (SourcedDto)dto;
+            for (OriginalSourceBase source : sourced.getSources()) {
+                SourceDto sourceDto = new SourceDto();
+                loadSource(source, sourceDto);
+                sourcedDto.addSource(sourceDto);
+            }
+        }
+    }
+
+    private void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
+        loadBaseData(source, sourceDto);
+//        source.getCitation();
+//        source.getLinks();
+//        nameInSource
+        //cdmSource
+        //specimen
+        //..
+
+    }
+
+    private void loadAnnotatable(CdmBase cdmBase, CdmBaseDto dto) {
+        if (dto instanceof AnnotatableDto && cdmBase.isInstanceOf(AnnotatableEntity.class)) {
+            AnnotatableEntity annotatable = CdmBase.deproxy(cdmBase, AnnotatableEntity.class);
+            AnnotatableDto annotatableDto = (AnnotatableDto)dto;
+            //annotation
+            for (Annotation annotation : annotatable.getAnnotations()) {
+                if (annotation.getAnnotationType() != null
+                        //TODO annotation type filter
+                        && annotation.getAnnotationType().getUuid().equals(AnnotationType.uuidEditorial)
+                        && StringUtils.isNotBlank(annotation.getText())) {
+
+                    AnnotationDto annotationDto = new AnnotationDto();
+                    annotatableDto.addAnnotation(annotationDto);
+                    //TODO id needed
+//                    loadBaseData(annotation, annotationDto);
+                    annotationDto.setText(annotation.getText());
+                    //language etc. currently not yet used
+                }
+            }
+
+            //marker
+            for (Marker marker : annotatable.getMarkers()) {
+                if (marker.getMarkerType() != null
+//                        && marker.getMarkerType().getUuid().equals(AnnotationType.uuidEditorial)
+                           ){
+
+                    MarkerDto markerDto = new MarkerDto();
+                    annotatableDto.addMarker(markerDto);
+//                    loadBaseData(marker, markerDto);
+                    markerDto.setValue(marker.getValue());
+                }
+            }
+        }
+    }
 }
