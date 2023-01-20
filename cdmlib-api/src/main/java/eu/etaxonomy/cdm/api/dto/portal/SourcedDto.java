@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
  * @author a.mueller
  * @date 19.01.2023
  */
-public class SourcedDto extends CdmBaseDto {
+public class SourcedDto extends AnnotatableDto {
 
     private ContainerDto<SourceDto> sources;
 

@@ -20,21 +20,13 @@ public class TaxonBaseDto extends IdentifiableDto {
 
     //TODO should we distinguish data parts (e.g. on general page we do not need last updates from synonymy)
     //lastUpdated
-    private String taxonLabel;
     private String nameLabel;
 
     //TODO should we keep formatting client side or should we do formatting on server side? Formatting means: filter, italics, order??
 //    private List<TypedLabel> typedTaxonLabel;
 //    private List<TypedLabel> typedNameLabel;
 
-    private List<TaggedText> taggedTaxon;
-
-    public String getTaxonLabel() {
-        return taxonLabel;
-    }
-    public void setTaxonLabel(String taxonLabel) {
-        this.taxonLabel = taxonLabel;
-    }
+    private List<TaggedText> taggedLabel;
 
     public String getNameLabel() {
         return nameLabel;
@@ -56,11 +48,11 @@ public class TaxonBaseDto extends IdentifiableDto {
 //    public void setTypedNameLabel(List<TypedLabel> typedNameLabel) {
 //        this.typedNameLabel = typedNameLabel;
 //    }
-    public List<TaggedText> getTaggedTaxon() {
-        return taggedTaxon;
+    public List<TaggedText> getTaggedLabel() {
+        return taggedLabel;
     }
-    public void setTaggedTaxon(List<TaggedText> taggedTaxon) {
-        this.taggedTaxon = taggedTaxon;
+    public void setTaggedLabel(List<TaggedText> taggedLabel) {
+        this.taggedLabel = taggedLabel;
     }
 
 
