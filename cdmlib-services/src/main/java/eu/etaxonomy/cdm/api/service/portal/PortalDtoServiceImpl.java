@@ -64,11 +64,11 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
         List<Object[]> hqlResult = dao.getHqlResult(taxonHql, new Object[] {config.taxonUuid}, Object[].class);
         dto.setId((int)hqlResult.get(0)[0]);
         dto.setUuid((UUID)hqlResult.get(0)[1]);
-        dto.setTaxonLabel((String)hqlResult.get(0)[2]);
+        dto.setLabel((String)hqlResult.get(0)[2]);
         dto.setNameLabel((String)hqlResult.get(0)[3]);
 //        dto.setTypedTaxonLabel(null);
 //        dto.setTypedNameLabel(null);
-        dto.setTaggedTaxon(null);
+        dto.setTaggedLabel(null);
 
         //taxonNodes
 

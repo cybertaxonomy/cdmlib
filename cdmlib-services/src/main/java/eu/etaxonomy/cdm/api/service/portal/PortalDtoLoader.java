@@ -108,9 +108,9 @@ public class PortalDtoLoader {
         loadBaseData(taxon, result);
         result.setLastUpdated(getLastUpdated(null, taxon));
         result.setNameLabel(name != null? name.getTitleCache() : "");
-        result.setTaxonLabel(CdmUtils.Nz(taxon.getTitleCache()));
+        result.setLabel(CdmUtils.Nz(taxon.getTitleCache()));
 //        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
-        result.setTaggedTaxon(getTaggedTaxon(taxon, config));
+        result.setTaggedLabel(getTaggedTaxon(taxon, config));
 
         loadTaxonNodes(taxon, result, config);
         loadSynonyms(taxon, result, config);
@@ -435,8 +435,8 @@ public class PortalDtoLoader {
         TaxonBaseDto synDto = new TaxonBaseDto();
         loadBaseData(syn, synDto);
         synDto.setNameLabel(syn.getName().getTitleCache());
-        synDto.setTaxonLabel(syn.getTitleCache());
-        synDto.setTaggedTaxon(getTaggedTaxon(syn, config));
+        synDto.setLabel(syn.getTitleCache());
+        synDto.setTaggedLabel(getTaggedTaxon(syn, config));
         //TODO
         hgDto.addSynonym(synDto);
     }
