@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -576,9 +577,11 @@ public class PortalDtoLoader {
 
                     AnnotationDto annotationDto = new AnnotationDto();
                     annotatableDto.addAnnotation(annotationDto);
-                    //TODO id needed
-//                    loadBaseData(annotation, annotationDto);
+                    //TODO id needed? but need to adapt dto and container then
+                    loadBaseData(annotation, annotationDto);
                     annotationDto.setText(annotation.getText());
+                    UUID uuidAnnotationType = annotation.getAnnotationType() == null ? null :annotation.getAnnotationType().getUuid();
+                    annotationDto.setTypeUuid(uuidAnnotationType);
                     //language etc. currently not yet used
                 }
             }
@@ -586,12 +589,19 @@ public class PortalDtoLoader {
             //marker
             for (Marker marker : annotatable.getMarkers()) {
                 if (marker.getMarkerType() != null
+                        //TODO markertype filter
 //                        && marker.getMarkerType().getUuid().equals(AnnotationType.uuidEditorial)
                            ){
 
                     MarkerDto markerDto = new MarkerDto();
                     annotatableDto.addMarker(markerDto);
-//                    loadBaseData(marker, markerDto);
+                    //TODO id needed? but need to adapt dto and container then
+                    loadBaseData(marker, markerDto);
+                    if (marker.getMarkerType() != null) {
+                        markerDto.setTypeUuid(marker.getMarkerType().getUuid());
+                        //TODO locale
+                        markerDto.setType(marker.getMarkerType().getTitleCache());
+                    }
                     markerDto.setValue(marker.getValue());
                 }
             }

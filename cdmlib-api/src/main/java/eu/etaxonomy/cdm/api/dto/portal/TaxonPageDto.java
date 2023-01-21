@@ -166,12 +166,13 @@ public class TaxonPageDto extends TaxonBaseDto {
     }
 
     public static class ConceptRelationDTO extends TaxonBaseDto{
+
         //TODO really needed or only in linkedLabel?
-        int relTaxonId;
-        UUID relTaxonUuid;
-        String relTaxonLabel;
-        String label;
-        List<TypedLabel> typedLabel;
+        private int relTaxonId;
+        private UUID relTaxonUuid;
+        private String relTaxonLabel;
+        private List<TypedLabel> typedLabel;
+
         public int getRelTaxonId() {
             return relTaxonId;
         }
@@ -189,12 +190,6 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setRelTaxonLabel(String relTaxonLabel) {
             this.relTaxonLabel = relTaxonLabel;
-        }
-        public String getLabel() {
-            return label;
-        }
-        public void setLabel(String label) {
-            this.label = label;
         }
         public List<TypedLabel> getTypedLabel() {
             return typedLabel;
