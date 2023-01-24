@@ -14,12 +14,14 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -30,10 +32,16 @@ import eu.etaxonomy.cdm.io.excel.taxa.TaxonListImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -269,6 +277,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
         Map<String, String> record = getRecord(state);
         String strUuidTaxon = record.get(colTaxonUuid);
+
         if (strUuidTaxon != null){
             UUID uuidTaxon;
             try {
@@ -294,10 +303,94 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 
             return CdmBase.deproxy(result, clazz);
-        }else{
+        } else {
             String message = "No taxon identifier column found";
             state.getResult().addWarning(message, null, line);
             return null;
+        }
+    }
+
+    /**
+     * Still a bit preliminary! Searches for taxa that match in name title cache,
+     * either as accepted taxa or synonyms. For the latter the accepted taxon is
+     * returned.
+     * If no name title cache match exists a name cache match is searched for.<BR>
+     * <BR>
+     * If the treeIndexFilter is set only taxa within the according
+     * taxonomic group are returned.
+     *
+     * @param colTaxonTitle not yet evaluated
+     */
+    protected Taxon getTaxonByNameMatch(STATE state, String colTaxonTitle, String colNameTitle, String colNameCache, String colAuthors, TreeIndex treeIndexFilter, String line) {
+        Map<String, String> record = getRecord(state);
+        String strNameTitleCache = record.get(colNameTitle).trim();
+        String strAuthors = record.get(colAuthors);
+        String message;
+        if (isNotBlank(strNameTitleCache)) {
+            strNameTitleCache = strNameTitleCache.trim();
+            MatchingTaxonConfigurator matchingConfig = new MatchingTaxonConfigurator();
+            matchingConfig.setTaxonNameTitle(strNameTitleCache);
+            Taxon taxon = getTaxonService().findBestMatchingTaxon(matchingConfig);
+            taxon = isInTreeIndexFilter(taxon, treeIndexFilter) ? taxon : null;
+
+            if (taxon != null) {
+                if (taxon.getName().getTitleCache().equals(strNameTitleCache)) {
+                    return taxon;
+                }else {
+                    message = line + " synonym match: " + strNameTitleCache + " => " + taxon.getName().getTitleCache();
+                    logger.warn(message);
+                    state.getResult().addWarning(message, null, line);
+                }
+            }else {
+                String nameCache = record.get(colNameCache);
+                List<TaxonName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
+                List<TaxonNode> nodes = names.stream().flatMap(n->n.getTaxonBases().stream())
+                        .map(tb->(tb.isInstanceOf(Synonym.class))? CdmBase.deproxy(tb,Synonym.class).getAcceptedTaxon(): CdmBase.deproxy(tb,Taxon.class))
+                        .flatMap(t->t.getTaxonNodes().stream())
+                        .filter(tn->isInTreeIndexFilter(tn, treeIndexFilter))
+                        .collect(Collectors.toList());
+                if (nodes.isEmpty()) {
+                    message = line + " no match: " + strNameTitleCache;
+                    logger.warn(message);
+                    state.getResult().addWarning(message, null, line);
+                }else {
+                    if (nodes.size() > 1) {
+                        message = line + " more then 1 ("+nodes.size()+") name cache matches: " + strNameTitleCache + " => " + nodes;
+                        logger.warn(message);
+                        state.getResult().addWarning(message, null, line);
+                    }
+                    taxon = nodes.iterator().next().getTaxon();
+                    message = nameCache + " differs in author: " + strAuthors + " <-> " + taxon.getName().getAuthorshipCache();
+                    logger.warn(message);
+                    state.getResult().addWarning(message, null, line);
+                }
+            }
+            return taxon;
+        }else {
+            message = line + " nameTitleCache is empty ";
+            logger.warn(message);
+            state.getResult().addWarning(message, null, line);
+            return null;
+        }
+    }
+
+    private boolean isInTreeIndexFilter(Taxon taxon, TreeIndex treeIndexFilter) {
+        boolean result = false;
+        if (taxon == null) {
+            return result;
+        }
+        for (TaxonNode tn : taxon.getTaxonNodes()) {
+            result |= isInTreeIndexFilter(tn, treeIndexFilter);
+        }
+        return result;
+    }
+
+    private boolean isInTreeIndexFilter(TaxonNode tn, TreeIndex treeIndexFilter) {
+        if (treeIndexFilter == null) {
+            return true;
+        }else {
+            TreeIndex treeIndex = TreeIndex.NewInstance(tn.treeIndex());
+            return treeIndexFilter.hasChild(treeIndex);
         }
     }
 

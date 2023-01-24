@@ -12,9 +12,14 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * Configurator for finding the best matching taxon.
+ *
+ * By default it includes synonyms but no unpublished taxa
+ * and does not filter by secundum reference or classification.
+ *
+ *
  * @author a.mueller
  * @since 23.05.2011
- *
  */
 public class MatchingTaxonConfigurator {
 

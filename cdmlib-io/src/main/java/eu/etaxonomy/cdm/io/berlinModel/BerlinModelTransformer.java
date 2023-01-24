@@ -160,6 +160,7 @@ public class BerlinModelTransformer {
     public static UUID uuidEMAreaCommonNameSouthEuropeanRussia = UUID.fromString("0aedc386-db44-4b2d-9897-1694b0344035");
     public static UUID uuidEMAreaCommonNameSpain = UUID.fromString("e512a268-02a7-4c65-a431-264c7349fd39");
     public static UUID uuidEMAreaCommonNameSweden = UUID.fromString("8cb32914-6c23-4f6a-a26f-47cc9da0a65a");
+    public static UUID uuidEMAreaCommonNameSwedenAndFinland = UUID.fromString("4c78d66f-0f19-49be-9c76-0d0ec69f4900");
     public static UUID uuidEMAreaCommonNameSwitzerland = UUID.fromString("20cebdad-5ac2-47fb-94d3-6eaac7242001");
     public static UUID uuidEMAreaCommonNameSyria = UUID.fromString("a09866fc-07d0-49c7-b7ca-70c03e6126c8");
     public static UUID uuidEMAreaCommonNameTenerife = UUID.fromString("18569798-b177-4210-8bcc-3c762d82ed3d");

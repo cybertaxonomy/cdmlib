@@ -8,13 +8,14 @@
 */
 package eu.etaxonomy.cdm.io.fact.in;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.fact.altitude.in.analyze.ExcelFormatAnalyzer;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 
 /**
  * Configurator base class for taxon fact excel imports.
@@ -30,13 +31,17 @@ public abstract class FactExcelImportConfiguratorBase<A extends ExcelFormatAnaly
     private UUID featureUuid;
     private String featureLabel;
 
+    private boolean allowNameMatching;
+
+    private TreeIndex treeIndexFilter = null;
+
     protected FactExcelImportConfiguratorBase(URI uri, ICdmDataSource destination, IInputTransformer transformer) {
         super(uri, destination, transformer);
     }
 
     public abstract A getAnalyzer();
 
-
+//***** GETTER / SETTER *******************/
 
     public UUID getFeatureUuid() {
         return featureUuid;
@@ -50,5 +55,19 @@ public abstract class FactExcelImportConfiguratorBase<A extends ExcelFormatAnaly
     }
     public void setFeatureLabel(String featureLabel) {
         this.featureLabel = featureLabel;
+    }
+
+    public boolean isAllowNameMatching() {
+        return allowNameMatching;
+    }
+    public void setAllowNameMatching(boolean allowNameMatching) {
+        this.allowNameMatching = allowNameMatching;
+    }
+
+    public TreeIndex getTreeIndexFilter() {
+        return treeIndexFilter;
+    }
+    public void setTreeIndexFilter(TreeIndex treeIndexFilter) {
+        this.treeIndexFilter = treeIndexFilter;
     }
 }

@@ -405,8 +405,17 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	}
 
+
+    /**
+     * Retrieves the named area for the given uuid. If language does not exist
+     * <code>null</code> is returned.
+     */
+    protected NamedArea getNamedArea(STATE state, UUID uuid){
+        return getNamedArea(state, uuid, null, null, null, null, null);
+    }
 	/**
-	 * Returns a named area for a given uuid by first . If the named area does not
+	 * Returns a named area for a given uuid by first ... . If a named area with the given
+	 * uuid does not exist and label, text and labelAbbrev is null, null is returned.
 	 */
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level){
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, null, null);
@@ -430,6 +439,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (namedArea == null){
 			DefinedTermBase<?> term = getTermService().find(uuid);
 			namedArea = CdmBase.deproxy(term,NamedArea.class);
+            if (namedArea == null && text == null && label == null && labelAbbrev == null){
+                return null;
+            }
 
 			if (vocabularyPreference == null){
 				vocabularyPreference =  new ArrayList<>();
@@ -646,7 +658,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				}
 				voc.addTerm(feature);
 				getTermService().save(feature);
-				state.putFeature(feature);
+			}
+			if (feature != null) {
+			    state.putFeature(feature);
 			}
 		}
 		return feature;

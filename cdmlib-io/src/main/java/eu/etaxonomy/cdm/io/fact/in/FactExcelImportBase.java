@@ -27,6 +27,7 @@ public abstract class FactExcelImportBase<STATE extends FactExcelImportStateBase
     protected static final String COL_NAME_CACHE = "nameCache";
     protected static final String COL_NAME_TITLE = "nameTitle";
     protected static final String COL_TAXON_TITLE = "taxonTitle";
+    protected static final String COL_AUTHORS = "authors";
 
     @Override
     protected void analyzeRecord(Map<String, String> record, STATE state) {
@@ -43,6 +44,10 @@ public abstract class FactExcelImportBase<STATE extends FactExcelImportStateBase
         Taxon taxon = getTaxonByCdmId(state, COL_TAXON_UUID,
                 COL_NAME_CACHE, COL_NAME_TITLE, COL_TAXON_TITLE,
                 Taxon.class, linePure);
+
+        if (taxon == null && state.getConfig().isAllowNameMatching()) {
+            taxon = getTaxonByNameMatch(state, COL_TAXON_TITLE, COL_NAME_TITLE, COL_NAME_CACHE, COL_AUTHORS, state.getConfig().getTreeIndexFilter(), line);
+        }
 
         doFirstPass(state, taxon, line, linePure);
     }
