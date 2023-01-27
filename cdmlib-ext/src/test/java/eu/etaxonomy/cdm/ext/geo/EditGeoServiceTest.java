@@ -70,7 +70,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
+    private static final String EDIT_MAPSERVICE_URI_STRING = "https://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
     private static URI editMapServiceUri;
 
     @SpringBeanByType
@@ -91,7 +91,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     @Before
     public void setUp() throws Exception {
         System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
-        editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STING);
+        editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STRING);
     }
 
 //******************************************** TESTS**************
