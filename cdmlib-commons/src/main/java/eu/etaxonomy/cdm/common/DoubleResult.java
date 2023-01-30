@@ -46,4 +46,11 @@ public class DoubleResult<S extends Object, T extends Object> {
 	public void setSecondResult(T secondResult) {
 		this.secondResult = secondResult;
 	}
+
+    @Override
+    public String toString() {
+        return "["+
+                firstResult+";"+secondResult+
+                "]";
+    }
 }

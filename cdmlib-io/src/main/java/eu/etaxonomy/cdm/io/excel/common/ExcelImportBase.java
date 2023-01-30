@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.excel.common;
 
 import java.io.ByteArrayInputStream;
@@ -292,16 +291,12 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
                 result = null;
             }
 
-
             if (result == null){
                 state.getResult().addError("Taxon for uuid  "+strUuidTaxon+" could not be found in database. "
                         + "Taxon could not be loaded. Data not imported.", null, line);
             }else{
                 verifyName(state, colNameCache, colNameTitleCache, colTaxonTitleCache, line, record, result);
             }
-            result = CdmBase.deproxy(result, clazz);
-
-
             return CdmBase.deproxy(result, clazz);
         } else {
             String message = "No taxon identifier column found";
@@ -318,6 +313,12 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
      * <BR>
      * If the treeIndexFilter is set only taxa within the according
      * taxonomic group are returned.
+     *
+     * Note (TODO): currently the matching only works on the exact same string
+     * (no whitespace, punctuation, etc. adaptation) and handles only the simple
+     * priority: accepted taxon name > synonym taxon name . If multiple matching
+     * synonyms are found not explicit priority computation is done among them
+     * and also no deduplication in case they belong both to the same accepted taxon.
      *
      * @param colTaxonTitle not yet evaluated
      */
@@ -337,7 +338,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
                 if (taxon.getName().getTitleCache().equals(strNameTitleCache)) {
                     return taxon;
                 }else {
-                    message = line + " synonym match: " + strNameTitleCache + " => " + taxon.getName().getTitleCache();
+                    message = "Synonym match: " + strNameTitleCache + " => " + taxon.getName().getTitleCache();
                     logger.warn(message);
                     state.getResult().addWarning(message, null, line);
                 }
@@ -350,12 +351,12 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
                         .filter(tn->isInTreeIndexFilter(tn, treeIndexFilter))
                         .collect(Collectors.toList());
                 if (nodes.isEmpty()) {
-                    message = line + " no match: " + strNameTitleCache;
+                    message = "no match: " + strNameTitleCache;
                     logger.warn(message);
                     state.getResult().addWarning(message, null, line);
                 }else {
                     if (nodes.size() > 1) {
-                        message = line + " more then 1 ("+nodes.size()+") name cache matches: " + strNameTitleCache + " => " + nodes;
+                        message = "more than 1 ("+nodes.size()+") name cache matches: " + strNameTitleCache + " => " + nodes;
                         logger.warn(message);
                         state.getResult().addWarning(message, null, line);
                     }
@@ -367,7 +368,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
             }
             return taxon;
         }else {
-            message = line + " nameTitleCache is empty ";
+            message = "nameTitleCache is empty ";
             logger.warn(message);
             state.getResult().addWarning(message, null, line);
             return null;

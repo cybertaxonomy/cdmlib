@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -75,6 +76,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	private SOURCE source;
 	protected Reference sourceReference;
 	private UUID sourceRefUuid;
+	private OriginalSourceType sourceType = OriginalSourceType.Import;
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 
@@ -291,7 +293,14 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.sourceRefUuid = sourceRefUuid;
 	}
 
-	@Override
+	public OriginalSourceType getSourceType() {
+        return sourceType;
+    }
+    public void setSourceType(OriginalSourceType sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    @Override
 	public boolean isOmitTermLoading() {
 		return false;
 	}
@@ -338,7 +347,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
      * If <code>false</code> auditing is switched off during import.
      * This is only applicable if an own application context is started
      * for the import/export. For imports into/from running application contexts
-     * it has no affect.
+     * it has no effect.
      */
     public boolean isRegisterAuditing() {
         return hibernateConfig.getRegisterEnvers();

@@ -12,13 +12,17 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.io.fact.in.FactExcelImportBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -46,8 +50,13 @@ public class CommonNameExcelImport
             String line, String linePure){
 
         if (taxon == null){
-//            return;
-            taxon = Taxon.NewInstance(null, null);
+            return;
+//            taxon = Taxon.NewInstance(null, null);
+        }
+
+        String commonNameText = getValue(state, COL_COMMON_NAME);
+        if (isBlank(commonNameText)) {
+            return;
         }
 
         UUID featureUuid = Feature.uuidCommonName;
@@ -61,7 +70,6 @@ public class CommonNameExcelImport
 
         NamedArea area = makeArea(state);
 
-        String commonNameText = getValue(state, COL_COMMON_NAME);
         CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameText, language, area);
 
         //source
@@ -72,7 +80,15 @@ public class CommonNameExcelImport
         //description
         TaxonDescription taxonDescription = this.getTaxonDescription(taxon, reference, !IMAGE_GALLERY, true);
         taxonDescription.addElement(commonName);
-        commonName.addImportSource(id, idNamespace, reference, linePure);
+        if (state.getConfig().getSourceType() == OriginalSourceType.PrimaryTaxonomicSource) {
+            DoubleResult<TaxonName, String> originalName = getOriginalName(state, taxon,
+                    state.getConfig().getColTaxonTitleCache(), state.getConfig().getColNameCache());
+            DescriptionElementSource source = commonName.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference, null, originalName.getSecondResult());
+            source.setNameUsedInSource(originalName.getFirstResult());
+        }else {
+            //TODO other source types
+            commonName.addImportSource(id, idNamespace, reference, linePure);
+        }
     }
 
     private Language makeLanguage(CommonNameExcelImportState state) {

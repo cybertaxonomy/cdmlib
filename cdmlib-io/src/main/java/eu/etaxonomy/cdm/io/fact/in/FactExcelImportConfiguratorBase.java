@@ -31,6 +31,11 @@ public abstract class FactExcelImportConfiguratorBase<A extends ExcelFormatAnaly
     private UUID featureUuid;
     private String featureLabel;
 
+    private String colNameCache = "nameCache";
+    private String colNameTitleCache = "nameTitle";
+    private String colTaxonTitleCache = "taxonTitle";
+    private String colAuthorship = "authors";
+
     private boolean allowNameMatching;
 
     private TreeIndex treeIndexFilter = null;
@@ -69,5 +74,33 @@ public abstract class FactExcelImportConfiguratorBase<A extends ExcelFormatAnaly
     }
     public void setTreeIndexFilter(TreeIndex treeIndexFilter) {
         this.treeIndexFilter = treeIndexFilter;
+    }
+
+    public String getColNameCache() {
+        return colNameCache;
+    }
+    public void setColNameCache(String colNameCache) {
+        this.colNameCache = colNameCache;
+    }
+
+    public String getColNameTitleCache() {
+        return colNameTitleCache;
+    }
+    public void setColNameTitleCache(String colNameTitleCache) {
+        this.colNameTitleCache = colNameTitleCache;
+    }
+
+    public String getColTaxonTitleCache() {
+        return colTaxonTitleCache;
+    }
+    public void setColTaxonTitleCache(String colTaxonTitleCache) {
+        this.colTaxonTitleCache = colTaxonTitleCache;
+    }
+
+    public String getColAuthorship() {
+        return colAuthorship;
+    }
+    public void setColAuthorship(String colAuthorship) {
+        this.colAuthorship = colAuthorship;
     }
 }
