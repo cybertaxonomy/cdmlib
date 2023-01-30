@@ -103,15 +103,18 @@ public class PersonDefaultCacheStrategy
     @Override
     public String getCollectorTitleCache(Person person){
         if (isNotBlank(person.getCollectorTitle())){
+            //if the collector title is set it equals the titlecache
             return person.getCollectorTitle();
         }else if (!person.isProtectedTitleCache() &&  isNotBlank(person.getFamilyName()) &&
                 (isNotBlank(person.getInitials()) || isNotBlank(person.getGivenName()))){
+            //otherwise compute from family name and initials/given name if all set and titlecache not protected
             if (isNotBlank(person.getInitials())){
                 return CdmUtils.concat(" ", person.getInitials(), person.getFamilyName());
             }else{
                 return CdmUtils.concat(" ", getInitialsFromGivenName(person.getGivenName(), false), person.getFamilyName());
             }
         }else{
+            //or from titlecache itself
             return getTitleCache(person);
         }
     }

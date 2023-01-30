@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.agent;
 
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -37,5 +39,11 @@ public interface INomenclaturalAuthorCacheStrategy<T extends TeamOrPersonBase>
 
     public String getFamilyTitle(T agent);
 
+    /**
+     * Computes the collector titlecache of the agent ( {@link Team team} or {@link Person person}).
+     *
+     * @param agent the agent
+     * @return the collector titlecache
+     */
     public String getCollectorTitleCache(T agent);
 }
