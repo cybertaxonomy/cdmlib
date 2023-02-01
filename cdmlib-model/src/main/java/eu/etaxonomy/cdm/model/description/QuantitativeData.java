@@ -382,6 +382,17 @@ public class QuantitativeData
 		return result;
 	}
 
+    public StatisticalMeasurementValue getSpecificStatisticalValueAsSMV(StatisticalMeasure type){
+        StatisticalMeasurementValue result = null;
+        for (StatisticalMeasurementValue value : statisticalValues){
+            if (type.equals(value.getType())){
+                result = value;
+                break;
+            }
+        }
+        return result;
+    }
+
     public Set<BigDecimal> getSpecificStatisticalValues(StatisticalMeasure type){
         Set<BigDecimal> result = new HashSet<>();
         for (StatisticalMeasurementValue value : statisticalValues){
