@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.format.description;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +56,11 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
         List<Language> preferredLanguages = new ArrayList<>();
         preferredLanguages.add(Language.DEFAULT());
         return format(object, preferredLanguages);
+    }
+
+    public String format(Object object, Language preferredLanguage) {
+        List<Language> languages = Arrays.asList(new Language[] {preferredLanguage});
+        return format(object, languages);
     }
 
     public String format(Object object, List<Language> preferredLanguages) {
