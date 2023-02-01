@@ -82,7 +82,7 @@ public class CommonNameExcelImport
         taxonDescription.addElement(commonName);
         if (state.getConfig().getSourceType() == OriginalSourceType.PrimaryTaxonomicSource) {
             DoubleResult<TaxonName, String> originalName = getOriginalName(state, taxon,
-                    state.getConfig().getColTaxonTitleCache(), state.getConfig().getColNameCache());
+                    state.getConfig().getColNameTitleCache(), state.getConfig().getColNameCache());
             DescriptionElementSource source = commonName.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference, null, originalName.getSecondResult());
             source.setNameUsedInSource(originalName.getFirstResult());
         }else {
