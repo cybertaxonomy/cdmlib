@@ -81,9 +81,9 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             // generic metadata
             assertFalse(cdmImageInfo.getMetaData().isEmpty());
             assertEquals(55, cdmImageInfo.getMetaData().size());
-            assertTrue(cdmImageInfo.getMetaData().containsKey("XResolution"));
+            assertTrue(cdmImageInfo.getMetaData().containsKey("X Resolution"));
             // multiple values for XResolution concatenated
-            assertEquals("300; 72", cdmImageInfo.getMetaData().get("XResolution"));
+            assertEquals("300; 72", cdmImageInfo.getMetaData().get("X Resolution"));
         }
     }
 
@@ -103,8 +103,8 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             // generic metadata
             assertFalse(cdmImageInfo.getMetaData().isEmpty());
             assertEquals(56, cdmImageInfo.getMetaData().size());
-            assertTrue(cdmImageInfo.getMetaData().containsKey("ExifVersion"));
-            assertEquals("48, 50, 50, 49", cdmImageInfo.getMetaData().get("ExifVersion"));
+            assertTrue(cdmImageInfo.getMetaData().containsKey("Exif Version"));
+            assertEquals("48, 50, 50, 49", cdmImageInfo.getMetaData().get("Exif Version"));
             // custom metadata stored in the "Keywords"
             assertEquals("Lactuca serriola", cdmImageInfo.getMetaData().get("Taxon"));
             assertEquals("Germany, Sachsen-Anhalt, am Jersleber See", cdmImageInfo.getMetaData().get("Locality"));
