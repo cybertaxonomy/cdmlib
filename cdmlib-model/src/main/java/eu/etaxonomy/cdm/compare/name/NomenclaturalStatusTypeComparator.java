@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.compare.name;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.LazyInitializationException;
+
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
 /**
@@ -21,6 +25,7 @@ public class NomenclaturalStatusTypeComparator implements
         Comparator<NomenclaturalStatusType>, Serializable {
 
     private static final long serialVersionUID = -231347917366470402L;
+    private static final Logger logger = LogManager.getLogger();
 
     private static NomenclaturalStatusTypeComparator singleton;
 
@@ -40,14 +45,20 @@ public class NomenclaturalStatusTypeComparator implements
             return 1;
         }
 
-        //TODO includes is maybe problematic due to lazy loading
-        if (o1.getIncludes().contains(o2)) {
-            return -1;
-        }else if (o2.getIncludes().contains(o1)) {
-            return 1;
-        }else {
-            //no natural order exist, use uuid to have a defined order at least
-            return o1.getUuid().compareTo(o2.getUuid());
+        //TODO includes is maybe problematic due to lazy loading (it happened at least 1x during an import)
+        try {
+            o1.getIncludes();
+            o2.getIncludes();
+            if (o1.getIncludes().contains(o2)) {
+                return -1;
+            }else if (o2.getIncludes().contains(o1)) {
+                return 1;
+            }
+        } catch (LazyInitializationException e) {
+            logger.warn("LazyInitializationException during compare of nomenclatural status types");
         }
+        //no natural order exist, use uuid to have a defined order at least
+        return o1.getUuid().compareTo(o2.getUuid());
+
     }
 }

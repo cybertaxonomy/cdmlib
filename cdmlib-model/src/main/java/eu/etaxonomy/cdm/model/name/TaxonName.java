@@ -1851,6 +1851,18 @@ public class TaxonName
         new EntityCollectionSetterAdapter<TaxonName, NomenclaturalStatus>(TaxonName.class, NomenclaturalStatus.class, "status", "addStatus", "removeStatus").setCollection(this, nomStatus);
     }
 
+    public boolean hasStatus(NomenclaturalStatusType type) {
+        if(this.status == null) {
+            return false;
+        }
+        for (NomenclaturalStatus status: this.status) {
+            if (CdmUtils.nullSafeEqual(type, status.getType())){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Generates the composed name string of <i>this</i> non viral taxon name without author
      * strings or year according to the strategy defined in
