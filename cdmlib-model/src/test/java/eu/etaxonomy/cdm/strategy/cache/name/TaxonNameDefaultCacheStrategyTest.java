@@ -307,6 +307,17 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Abies alba sublusus beta", strategy.getTitleCache(subSpeciesName));
     }
 
+    @Test
+    public void testWithoutRank() {
+        subSpeciesName.setRank(null);
+        Assert.assertEquals("Abies alba beta", strategy.getTitleCache(subSpeciesName));
+
+        subSpeciesName.setTrinomHybrid(true);
+        //Not sure if selfstanding notho is correct here, for now only to indicate that there is the hybridflag set
+        //TODO still misses for binom, and monom Hybridflag.
+        Assert.assertEquals("Abies alba notho beta", strategy.getTitleCache(subSpeciesName));
+    }
+
     //#9754
     @Test
     public void testCultivar(){

@@ -558,6 +558,9 @@ public class TaxonNameDefaultCacheStrategy
 
         String infraSpeciesEpi = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet());
         if (isNotBlank(infraSpeciesEpi)){
+            if (nonViralName.isTrinomHybrid()){
+                tags.add(new TaggedText(TagEnum.rank, NOTHO));
+            }
             tags.add(new TaggedText(TagEnum.name, infraSpeciesEpi));
         }
 
