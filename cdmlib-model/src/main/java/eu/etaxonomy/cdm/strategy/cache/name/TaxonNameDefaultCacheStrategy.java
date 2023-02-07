@@ -730,7 +730,8 @@ public class TaxonNameDefaultCacheStrategy
             boolean includeMarker, boolean addAppended){
         List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
         if (includeMarker || nonViralName.isTrinomHybrid()){
-            String marker = (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
+            String rankAbbrev = nonViralName.getRank()==null? "" : CdmUtils.Nz(nonViralName.getRank().getAbbreviation()).trim();
+            String marker = rankAbbrev.replace("null", "");   //TODO really needed?
             if (nonViralName.isTrinomHybrid()){
                 marker = CdmUtils.concat("", NOTHO, marker);
             }
@@ -812,8 +813,9 @@ public class TaxonNameDefaultCacheStrategy
 
 	@Override
     public String getLastEpithet(TaxonName taxonName) {
-        Rank rank = taxonName.getRank();
-        if(rank.isGenus() || rank.isSupraGeneric()) {
+	    Rank rank = taxonName.getRank();
+        //TODO potential NPE / used?
+	    if(rank.isGenus() || rank.isSupraGeneric()) {
             return taxonName.getGenusOrUninomial();
         } else if(rank.isInfraGeneric()) {
             return taxonName.getInfraGenericEpithet();
@@ -823,6 +825,4 @@ public class TaxonNameDefaultCacheStrategy
             return taxonName.getInfraSpecificEpithet();
         }
     }
-
-
 }
