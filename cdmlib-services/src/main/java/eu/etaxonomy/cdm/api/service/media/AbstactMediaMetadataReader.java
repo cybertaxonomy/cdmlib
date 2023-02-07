@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.api.service.media;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 
@@ -81,6 +83,9 @@ public abstract class AbstactMediaMetadataReader {
     }
 
     public void appendMetadataEntry(String key, String text) {
+        String[] splittedKey = StringUtils.splitByCharacterTypeCamelCase(key);
+        key = CdmUtils.concat(" ", splittedKey);
+
         if(cdmImageInfo.getMetaData().containsKey(key)) {
             cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
         } else {
