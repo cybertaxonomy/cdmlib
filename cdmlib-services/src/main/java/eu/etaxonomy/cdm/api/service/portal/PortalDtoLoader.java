@@ -444,24 +444,27 @@ public class PortalDtoLoader {
 
     private void loadFacts(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
-       //TODO load feature tree
-       Map<Feature,Set<DescriptionElementBase>> featureMap = new HashMap<>();
+        //TODO load feature tree
 
-       //load facts
-       for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-           if (taxonDescription.isImageGallery()) {
-               continue;
-           }
-           for (DescriptionElementBase deb : taxonDescription.getElements()) {
-               Feature feature = deb.getFeature();
-               if (featureMap.get(feature) == null) {
-                   featureMap.put(feature, new HashSet<>());
-               }
-               featureMap.get(feature).add(deb);
-           }
-       }
+        //load facts per feature
+        Map<Feature,Set<DescriptionElementBase>> featureMap = new HashMap<>();
 
-       //TODO sort
+        //... load facts
+        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
+            if (taxonDescription.isImageGallery()) {
+                continue;
+            }
+            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+                Feature feature = deb.getFeature();
+                if (featureMap.get(feature) == null) {
+                    featureMap.put(feature, new HashSet<>());
+                }
+                featureMap.get(feature).add(deb);
+            }
+        }
+
+        //TODO sort
+
         if (!featureMap.isEmpty()) {
             ContainerDto<FeatureDto> features = new ContainerDto<>();
             result.setFactualData(features);
@@ -479,7 +482,7 @@ public class PortalDtoLoader {
                 }
             }
         }
-   }
+    }
 
     private void handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
         if (fact.isInstanceOf(TextData.class)) {

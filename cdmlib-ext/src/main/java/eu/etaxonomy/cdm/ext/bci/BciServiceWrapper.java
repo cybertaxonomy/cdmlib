@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
@@ -78,7 +78,7 @@ public class BciServiceWrapper
 // ****************************** METHODS ****************************************************/
 
 	@Override
-    public List<Collection> getCollectionsByCode(String code, ICdmRepository appConfig){
+    public List<Collection> getCollectionsByCode(String code, ICdmRepository repository){
 
 		SchemaAdapterBase<Collection> schemaAdapter = schemaAdapterMap.get("recordSchema");
 		if(schemaAdapter == null){
@@ -109,11 +109,11 @@ public class BciServiceWrapper
 		String request = code;
 
 		@SuppressWarnings("unchecked")
-        List<Collection> result = (List<Collection>)queryService(request, appConfig, getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST), ServiceType.AUTHOR);
+        List<Collection> result = (List<Collection>)queryService(request, repository, getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST), ServiceType.AUTHOR);
 		return result;
 	}
 
-	private List<? extends IdentifiableEntity> queryService(String request, ICdmRepository appConfig, URL serviceUrl, ServiceType serviceType){
+	private List<? extends IdentifiableEntity> queryService(String request, ICdmRepository repository, URL serviceUrl, ServiceType serviceType){
 		try {
             // create the request url
             URL newUrl = new URL(serviceUrl.getProtocol(),
@@ -136,7 +136,7 @@ public class BciServiceWrapper
             // build the result
             List<? extends IdentifiableEntity<?>> result;
             if (serviceType.equals(ServiceType.AUTHOR)){
-            	result = buildCollectionList(content, appConfig);
+            	result = buildCollectionList(content, repository);
             }else if (serviceType.equals(ServiceType.NAME)){
             	//
             	result = null;
@@ -162,15 +162,15 @@ public class BciServiceWrapper
     }
 
 
-	private List<Collection> buildCollectionList(InputStream content, ICdmRepository appConfig) throws IOException {
-		List<Collection> result = new ArrayList<Collection>();
+	private List<Collection> buildCollectionList(InputStream content, ICdmRepository repository) throws IOException {
+		List<Collection> result = new ArrayList<>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
 
 		String headerLine = reader.readLine();
 
 		String line = reader.readLine();
 		while (StringUtils.isNotBlank(line)){
-			Collection collection = getCollectionFromLine(line, appConfig);
+			Collection collection = getCollectionFromLine(line, repository);
 			result.add(collection);
 			line = reader.readLine();
 		}
@@ -178,7 +178,7 @@ public class BciServiceWrapper
 		return result;
 	}
 
-	private Collection getCollectionFromLine(String line, ICdmRepository appConfig) {
+	private Collection getCollectionFromLine(String line, ICdmRepository repository) {
 		//urn:lsid:biocol.org:col:15727	http://biocol.org/urn:lsid:biocol.org:col:15727	University of Bergen Herbarium
 		String[] splits = line.split("\t");
 		if (splits.length != 3){
@@ -205,9 +205,8 @@ public class BciServiceWrapper
 		result.setName(collectionName);
 
 		//id, citation
-		Reference citation = getBciCitation(appConfig);
+		Reference citation = getBciCitation(repository);
 		result.addSource(OriginalSourceType.Lineage, id, null, citation, null);
-
 
 		return result;
 	}
@@ -219,14 +218,14 @@ public class BciServiceWrapper
 	}
 
 
-	private Reference getBciCitation(ICdmRepository appConfig) {
+	private Reference getBciCitation(ICdmRepository repository) {
 		Reference bciReference;
-		if (appConfig != null){
-			bciReference = appConfig.getReferenceService().find(uuidBci);
+		if (repository != null){
+			bciReference = repository.getReferenceService().find(uuidBci);
 			if (bciReference == null){
 				bciReference = getNewBciReference();
 				bciReference.setUuid(uuidBci);
-				appConfig.getReferenceService().save(bciReference);
+				repository.getReferenceService().save(bciReference);
 			}
 		}else{
 			bciReference = getNewBciReference();

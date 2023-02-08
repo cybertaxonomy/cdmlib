@@ -984,8 +984,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param derivedUnitFacade : the current derivedunitfacade
 	     */
 	    protected void handleIdentifications(STATE state, DerivedUnitFacade derivedUnitFacade) {
-	       SpecimenImportConfiguratorBase config = state.getConfig();
 
+	        SpecimenImportConfiguratorBase config = state.getConfig();
 
 	        String scientificName = "";
 	        boolean preferredFlag = false;

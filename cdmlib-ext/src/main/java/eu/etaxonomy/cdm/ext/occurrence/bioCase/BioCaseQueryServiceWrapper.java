@@ -153,11 +153,6 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
         return results;
     }
 
-    /**
-     * @param query
-     * @param endPoint
-     * @return
-     */
     public InputStream querySiblings(OccurenceQuery query, URI endPoint) throws ClientProtocolException, IOException{
         if(endPoint==null){
             logger.warn("URI for querying was null.");

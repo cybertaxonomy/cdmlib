@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.ext.geo.kml;
 
 import java.util.ArrayList;
@@ -46,11 +45,10 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
-import si.uom.SI;
 import tec.uom.se.quantity.Quantities;
+import tec.uom.se.unit.Units;
 
 /**
- *
  * @author Andreas Kohlbecker
  * @since Apr 21, 2020
  */
@@ -58,16 +56,16 @@ public class KMLDocumentBuilder {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	private Set<SpecimenOrObservationBase> occSet = new HashSet<>();
+	private Set<SpecimenOrObservationBase<?>> occSet = new HashSet<>();
 
-	private Map<FieldUnit, Set<SpecimenOrObservationBase>> fieldUnitMap = new HashMap<>();
+	private Map<FieldUnit, Set<SpecimenOrObservationBase<?>>> fieldUnitMap = new HashMap<>();
 	private Map<FieldUnit, Set<SpecimenOrObservationType>> fieldUnitRecordBases = new HashMap<>();
 
 	private Map<String, Style> styles = new HashMap<>();
 
 	private static final DefinedTerm KIND_OF_UNIT_UNSET = DefinedTerm.NewInstance(TermType.KindOfUnit);
 
-	public KMLDocumentBuilder addSpecimenOrObservationBase(SpecimenOrObservationBase occurrence) {
+	public KMLDocumentBuilder addSpecimenOrObservationBase(SpecimenOrObservationBase<?> occurrence) {
 		occSet.add(occurrence);
 		return this;
 	}
@@ -77,7 +75,7 @@ public class KMLDocumentBuilder {
 		Kml kml = KmlFactory.createKml();
 		List<Feature> documentFeatures = new ArrayList<>();
 
-		for (SpecimenOrObservationBase sob : occSet) {
+		for (SpecimenOrObservationBase<?> sob : occSet) {
 			mapFieldUnit(sob, null, null);
 		}
 		for (FieldUnit fu : fieldUnitMap.keySet()) {
@@ -90,7 +88,8 @@ public class KMLDocumentBuilder {
 		return kml;
 	}
 
-	private void mapFieldUnit(SpecimenOrObservationBase unitOfInterest, SpecimenOrObservationBase original, Set<SpecimenOrObservationType> recordBases) {
+	private void mapFieldUnit(SpecimenOrObservationBase<?> unitOfInterest,
+	        SpecimenOrObservationBase<?> original, Set<SpecimenOrObservationType> recordBases) {
 
 		if(original == null) {
 			original = unitOfInterest;
@@ -112,7 +111,7 @@ public class KMLDocumentBuilder {
 		} else if (original instanceof DerivedUnit) {
 			Set<SpecimenOrObservationBase> originals = ((DerivedUnit)original).getOriginals();
 			if (originals != null) {
-				for (SpecimenOrObservationBase parentOriginal : originals) {
+				for (SpecimenOrObservationBase<?> parentOriginal : originals) {
 					mapFieldUnit(original, parentOriginal, recordBases);
 				}
 			}
@@ -167,13 +166,6 @@ public class KMLDocumentBuilder {
 		return Optional.ofNullable(errorRadiusCicle);
 	}
 
-
-	/**
-	 * @param longitude
-	 * @param latitude
-	 * @param errorRadiusMeter
-	 * @return
-	 */
 	private LinearRing createKMLCircle(Double longitude, Double latitude, Integer errorRadiusMeter) {
 
 		GeometryBuilder.CircleMethod method = GeometryBuilder.CircleMethod.reprojectedCircle;
@@ -186,7 +178,7 @@ public class KMLDocumentBuilder {
 			switch (method) {
 			case simpleCircle:
 				// this is the best method so far !!!!
-				polygonGeom = gb.simpleCircle(Quantities.getQuantity(errorRadiusMeter.doubleValue(), SI.METRE),
+				polygonGeom = gb.simpleCircle(Quantities.getQuantity(errorRadiusMeter.doubleValue(), Units.METRE),
 						latitude, longitude);
 				break;
 			case simpleCircleSmall:
@@ -200,9 +192,11 @@ public class KMLDocumentBuilder {
 				break;
 			case reprojectedCircle:
 				// incomplete
-				SimpleFeature pointFeature = gb.createSimplePointFeature(longitude, latitude);
+				SimpleFeature pointFeature = GeometryBuilder.createSimplePointFeature(longitude, latitude);
 				polygonGeom = gb.bufferFeature(pointFeature, errorRadiusMeter.doubleValue());
 				break;
+			default:
+			    throw new RuntimeException("Unhandled method: " + method);
 			}
 			for (Coordinate coordinate : polygonGeom.getCoordinates()) {
 				lineString.addToCoordinates(coordinate.getX(), coordinate.getY());
@@ -289,10 +283,9 @@ public class KMLDocumentBuilder {
 		return "#" + key;
 	}
 
-
 	// TODO use also for .EditGeoService.registerDerivedUnitLocations(DerivedUnit
 	// derivedUnit, List<Point> derivedUnitPoints) !!!!!!!!!
-	public boolean isValidPoint(Point point) {
+	private boolean isValidPoint(Point point) {
 
 		if (point == null) {
 			return false;

@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,7 +74,6 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class IpniService  implements IIpniService{
 
     private static final Logger logger = LogManager.getLogger();
-
 
     //TYPE
     private static final String EAST_OR_WEST = "East or west";

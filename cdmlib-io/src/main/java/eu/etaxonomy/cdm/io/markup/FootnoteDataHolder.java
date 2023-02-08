@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Data holder class for footnotes. Maybe preliminary.

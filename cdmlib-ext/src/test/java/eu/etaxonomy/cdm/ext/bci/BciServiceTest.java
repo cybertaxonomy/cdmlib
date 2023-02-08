@@ -1,5 +1,10 @@
 /**
- * 
+ * Copyright (C) 2010 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
  */
 package eu.etaxonomy.cdm.ext.bci;
 
@@ -19,11 +24,11 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
  *
  */
 public class BciServiceTest {
-	
+
 	static String strUrl1;
 
 	private IBciServiceWrapper service1;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -33,7 +38,7 @@ public class BciServiceTest {
 	}
 
 // ******************************* TESTS ******************************************************/
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.ext.bci.BciServiceWrapper#BciService(java.net.URL)}.
 	 */
@@ -44,10 +49,10 @@ public class BciServiceTest {
 	}
 
 	@Test
-	@Ignore // service is under refactoring 
+	@Ignore // service is under refactoring
 	public void testGetCollectionsByCode(){
-		ICdmRepository config = null;
-		List<Collection> collectionList = service1.getCollectionsByCode("BG", config);
+		ICdmRepository repository = null;
+		List<Collection> collectionList = service1.getCollectionsByCode("BG", repository);
 		//expected web service result: urn:lsid:biocol.org:col:15727	http://biocol.org/urn:lsid:biocol.org:col:15727	University of Bergen Herbarium
 
 		Assert.assertEquals("There should be exactly 1 result for 'BG'", 1, collectionList.size());
@@ -55,14 +60,14 @@ public class BciServiceTest {
 		//title cache
 		Assert.assertEquals("Name for BG should be 'University of Bergen Herbarium'", "University of Bergen Herbarium", collection.getName());
 		Assert.assertEquals("LSID should be urn:lsid:biocol.org:col:15727", "urn:lsid:biocol.org:col:15727", collection.getLsid().getLsid());
-		
-		collectionList = service1.getCollectionsByCode("CM", config);
-		Assert.assertEquals("There should be exactly 3 result for 'CM'. If not try http://www.biocol.org/rest/lookup/code/CM", 3, collectionList.size());
-		
-	}
-	
 
-	
+		collectionList = service1.getCollectionsByCode("CM", repository);
+		Assert.assertEquals("There should be exactly 3 result for 'CM'. If not try http://www.biocol.org/rest/lookup/code/CM", 3, collectionList.size());
+
+	}
+
+
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.ext.ipni.IpniService#getServiceUrl()}.
 	 */

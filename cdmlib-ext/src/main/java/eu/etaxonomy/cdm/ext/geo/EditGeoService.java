@@ -207,17 +207,6 @@ public class EditGeoService implements IEditGeoService {
 
     		return kml;
     }
-//
-//    public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
-//            boolean statusOrderPreference,
-//            Set<MarkerType> hideMarkedAreas,
-//            MarkerType fallbackAreaMarkerType,
-//            CondensedDistributionConfiguration recipe,
-//            List<Language> langs) {
-//        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
-//        return getCondensedDistribution(distributions, statusOrderPreference,
-//                hideMarkedAreas, fallbackAreaMarkerType, recipe, langs);
-//    }
 
     @Override
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,

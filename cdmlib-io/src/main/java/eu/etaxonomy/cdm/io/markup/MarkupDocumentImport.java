@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.net.MalformedURLException;
@@ -60,7 +59,6 @@ public class MarkupDocumentImport
 	// TODO make part of state, but state is renewed when invoking the import a
 	// second time
 	private UnmatchedLeads unmatchedLeads;
-
 
 	@Autowired
 	private IEditGeoService editGeoService;
@@ -239,5 +237,4 @@ public class MarkupDocumentImport
 	public IEditGeoService getEditGeoService() {
 		return editGeoService;
 	}
-
 }

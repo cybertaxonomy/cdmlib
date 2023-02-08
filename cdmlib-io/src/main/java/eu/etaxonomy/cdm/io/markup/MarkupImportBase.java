@@ -35,8 +35,8 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -252,8 +252,8 @@ public abstract class MarkupImportBase  {
 		this.editGeoService = docImport.getEditGeoService();
 	}
 
-	private final Stack<QName> unhandledElements = new Stack<QName>();
-	private final Stack<QName> handledElements = new Stack<QName>();
+	private final Stack<QName> unhandledElements = new Stack<>();
+	private final Stack<QName> handledElements = new Stack<>();
 
 
 	protected <T extends CdmBase> void  save(Collection<T> collection, MarkupImportState state) {
