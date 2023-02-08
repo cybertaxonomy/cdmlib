@@ -295,20 +295,13 @@ public class ReferenceDefaultCacheStrategyTest {
 		Assert.assertEquals("Unexpected abbrev title cache",
 				"1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin: Springer",
 				book1.getTitleCache());
-	}
 
-	@Test
-	public void testPublisherDoublePoint() {
-		IBook book1 = ReferenceFactory.newBook();
-		book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
+		//check if there is a double point at the end of the volume. Deduplicate if present.
 		book1.setVolume("Fasc. 11.");
-		book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
-		book1.setPublisher("Springer");
-		book1.setPlacePublished("Berlin");
-		Assert.assertEquals("Unexpected abbrev title cache",
-				"1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin: Springer",
-				book1.getTitleCache());
-    }
+		Assert.assertEquals("double dottes should be deduplicated",
+                "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin: Springer",
+                book1.getTitleCache());
+	}
 
 // ***************************** Book Section ************************/
 
