@@ -12,9 +12,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -35,10 +37,14 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
     @Autowired
     private ITaxonDao taxonDao;
 
+    @Autowired()
+    @Qualifier("cdmRepository")
+    private ICdmRepository repository;
+
     @Override
     public TaxonPageDto taxonPageDto(TaxonPageDtoConfiguration config) {
 
-        PortalDtoLoader loader = new PortalDtoLoader();
+        PortalDtoLoader loader = new PortalDtoLoader(repository);
         Taxon taxon = (Taxon)taxonDao.load(config.taxonUuid);
         TaxonPageDto dto = null;
         try {

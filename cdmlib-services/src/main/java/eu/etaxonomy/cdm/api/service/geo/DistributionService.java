@@ -30,12 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
-import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
+import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.util.DescriptionUtility;
-import eu.etaxonomy.cdm.api.util.DistributionOrder;
-import eu.etaxonomy.cdm.api.util.DistributionTree;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -76,17 +79,22 @@ public class DistributionService implements IDistributionService {
     private IGeoServiceAreaMapping areaMapping;
 
     @Override
-    public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
-            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
-            boolean neverUseFallbackAreaAsParent, Set<NamedAreaLevel> omitLevels,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages,  List<String> propertyPaths, CondensedDistributionConfiguration config,
-            DistributionOrder distributionOrder, boolean ignoreDistributionStatusUndefined){
+    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, UUID taxonUUID,
+            boolean neverUseFallbackAreaAsParent, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            List<Language> languages, List<String> propertyPaths){
+
+        EnumSet<DistributionInfoDto.InfoPart> parts = config.getInfoParts();
+        boolean subAreaPreference = config.isSubAreaPreference();
+        boolean statusOrderPreference = config.isStatusOrderPreference();
+        Set<MarkerType> hiddenAreaMarkerTypes = config.getHiddenAreaMarkerTypeList();
+        Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
+        CondensedDistributionConfiguration condensedDistConfig = config.getCondensedDistrConfig();
+        DistributionOrder distributionOrder = config.getDistributionOrder();
 
         final boolean PREFER_AGGREGATED = true;
         final boolean PREFER_SUBAREA = true;
 
-        DistributionInfoDTO dto = new DistributionInfoDTO();
+        DistributionInfoDto dto = new DistributionInfoDto();
 
         if (propertyPaths == null){
             propertyPaths = Arrays.asList(new String []{});
@@ -120,22 +128,35 @@ public class DistributionService implements IDistributionService {
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
         // to all distributions, but KEEP fallback area distributions
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hiddenAreaMarkerTypes,
-                !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false, ignoreDistributionStatusUndefined);
+                !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false, config.isIgnoreDistributionStatusUndefined());
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
         }
 
         if(parts.contains(InfoPart.tree)) {
-            DistributionTree tree = DescriptionUtility.buildOrderedTree(omitLevels,
-                    filteredDistributions, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
-                    distributionOrder, termDao);
+            IDistributionTree tree;
+            if (config.isUseTreeDto()) {
+                Set<DistributionDto> filteredDtoDistributions = new HashSet<>();
+                for (Distribution distribution : filteredDistributions) {
+                    DistributionDto distDto = new DistributionDto(distribution);
+                    filteredDtoDistributions.add(distDto);
+                }
+
+                tree = DescriptionUtility.buildOrderedTreeDto(omitLevels,
+                        filteredDtoDistributions, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                        distributionOrder, termDao);
+            }else {
+                tree = DescriptionUtility.buildOrderedTree(omitLevels,
+                        filteredDistributions, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                        distributionOrder, termDao);
+            }
             dto.setTree(tree);
         }
 
         if(parts.contains(InfoPart.condensedDistribution)) {
             CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
-                    filteredDistributions, config, languages);
+                    filteredDistributions, condensedDistConfig, languages);
             dto.setCondensedDistribution(condensedDistribution);
         }
 
@@ -145,7 +166,7 @@ public class DistributionService implements IDistributionService {
             // only apply the subAreaPreference rule for the maps
             Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(
                     filteredDistributions, hiddenAreaMarkerType, !PREFER_AGGREGATED,
-                    IGNORE_STATUS_ORDER_PREF_, subAreaPreference, true, ignoreDistributionStatusUndefined);
+                    IGNORE_STATUS_ORDER_PREF_, subAreaPreference, true, config.isIgnoreDistributionStatusUndefined());
 
             dto.setMapUriParams(DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,

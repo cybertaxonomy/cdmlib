@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author a.mueller
@@ -17,12 +18,18 @@ import java.util.List;
  */
 public class FeatureDto extends LabeledEntityDto {
 
-    private List<FactDto> facts = new ArrayList<>();
+    private List<IFactDto> facts = new ArrayList<>();
 
-    public List<FactDto> getFacts() {
+    public FeatureDto(UUID uuid, int id, String label) {
+        super(uuid, id, label);
+    }
+
+// *********************** GETTER / ADDER ********************************/
+
+    public List<IFactDto> getFacts() {
         return facts;
     }
-    public void addFact(FactDto factDto) {
+    public void addFact(IFactDto factDto) {
         facts.add(factDto);
     }
 }

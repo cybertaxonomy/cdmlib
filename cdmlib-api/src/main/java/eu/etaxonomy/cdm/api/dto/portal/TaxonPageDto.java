@@ -46,6 +46,7 @@ public class TaxonPageDto extends TaxonBaseDto {
 //******************** subclasses *********************************/
 
     public static class TaxonNodeAgentsRelDTO extends CdmBaseDto{  //only extend to CdmBaseDto to allow usage in ContainerDto
+
         private String agent;
         private UUID agentUuid;
         //TODO should it be a list?

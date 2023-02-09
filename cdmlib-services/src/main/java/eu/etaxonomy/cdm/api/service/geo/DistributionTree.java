@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.util;
+package eu.etaxonomy.cdm.api.service.geo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,6 +21,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
+import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -32,11 +35,13 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 
 /**
- * TODO javadoc.
+ * Tree implementing {@link Tree} for {@link Distribution} and {@link NamedArea}
  *
  * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.model.location.NamedArea}
  */
-public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
+public class DistributionTree
+        extends Tree<Set<Distribution>, NamedArea>
+        implements IDistributionTree {
 
     private static final Logger logger = LogManager.getLogger();
 

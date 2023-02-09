@@ -15,6 +15,11 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.api.service.geo.DistributionTree;
+import eu.etaxonomy.cdm.api.service.portal.DistributionTreeDtoLoader;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -261,7 +266,7 @@ public class DescriptionUtility {
         return false;
     }
 
-    protected static boolean isMarkedHidden(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes) {
+    public static boolean isMarkedHidden(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes) {
         if(hiddenAreaMarkerTypes != null) {
             for(MarkerType markerType : hiddenAreaMarkerTypes){
                 if(area.hasMarker(markerType, true)){
@@ -275,6 +280,7 @@ public class DescriptionUtility {
     /**
      * Orders the given Distribution elements in a hierarchical structure.
      * This method will not filter out any of the distribution elements.
+     *
      * @param omitLevels
      * @param distributions
      * @param fallbackAreaMarkerTypes
@@ -305,6 +311,25 @@ public class DescriptionUtility {
         tree.recursiveSortChildren(distributionOrder); // TODO respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;
+    }
+
+    public static DistributionTreeDto buildOrderedTreeDto(Set<NamedAreaLevel> omitLevels,
+            Collection<DistributionDto> distributions,
+            Set<MarkerType> fallbackAreaMarkerTypes,
+            boolean neverUseFallbackAreaAsParent,
+            DistributionOrder distributionOrder,
+            IDefinedTermDao termDao) {
+
+        //TODO loader needed?
+        DistributionTreeDtoLoader loader = new DistributionTreeDtoLoader(termDao);
+        DistributionTreeDto dto = loader.load();
+
+        if (logger.isDebugEnabled()){logger.debug("order tree ...");}
+        //order by areas
+        loader.orderAsTree(dto, distributions, omitLevels, fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
+        loader.recursiveSortChildren(dto, distributionOrder); // TODO respect current locale for sorting
+        if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
+        return dto;
     }
 
     /**

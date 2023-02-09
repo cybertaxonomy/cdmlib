@@ -20,6 +20,13 @@ public class AnnotationDto extends CdmBaseDto {
     private UUID typeUuid;
     //TODO do we need type label, too?
 
+    public AnnotationDto() {
+        super(null, null, null);
+    }
+
+    public AnnotationDto(UUID uuid, int id) {
+        super(uuid, id, null);
+    }
 
     public String getText() {
         return text;

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.util.UUID;
+
 /**
  * @author a.mueller
  * @date 17.01.2023
@@ -15,6 +17,11 @@ package eu.etaxonomy.cdm.api.dto.portal;
 public class LabeledEntityDto extends CdmBaseDto {
 
     private String label;
+
+    public LabeledEntityDto(UUID uuid, Integer id, String label) {
+        super(uuid, id, null);
+        this.label = label;
+    }
 
     public String getLabel() {
         return label;

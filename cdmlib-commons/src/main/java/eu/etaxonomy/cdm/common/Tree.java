@@ -61,6 +61,7 @@ public class Tree<T,S> {
      * called from the toList() method with the root element as the first
      * argument. It appends to the second argument, which is passed by reference
      * as it recurses down the tree.
+     *
      * @param element the starting element.
      * @param list the output of the walk.
      */

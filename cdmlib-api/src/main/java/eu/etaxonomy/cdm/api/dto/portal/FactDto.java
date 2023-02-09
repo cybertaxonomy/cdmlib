@@ -17,11 +17,11 @@ import eu.etaxonomy.cdm.format.common.TypedLabel;
  * @author a.mueller
  * @date 11.01.2023
  */
-public class FactDto {
+public class FactDto implements IFactDto {
 
     private List<TypedLabel> typedLabel = new ArrayList<>();
 
-
+// ****************** GETTER / SETTER ***********************/
 
     public List<TypedLabel> getTypedLabel() {
         return typedLabel;

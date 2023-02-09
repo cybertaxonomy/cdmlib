@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.portal;
 
+import java.awt.Color;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,12 +21,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
@@ -44,13 +51,18 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.SpecimenDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
+import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
+import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -59,11 +71,14 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -100,6 +115,14 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
  */
 public class PortalDtoLoader {
 
+    private static final Logger logger = LogManager.getLogger();
+
+    private ICdmRepository repository;
+
+    public PortalDtoLoader(ICdmRepository repository) {
+        this.repository = repository;
+    }
+
     public TaxonPageDto load(Taxon taxon, TaxonPageDtoConfiguration config) {
         TaxonPageDto result = new TaxonPageDto();
 
@@ -132,7 +155,7 @@ public class PortalDtoLoader {
     }
 
     private void loadKeys(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
-        ContainerDto<KeyDTO> container =new ContainerDto<>();
+        ContainerDto<KeyDTO> container = new ContainerDto<>();
         //TODO
 
         if (container.getCount() > 0) {
@@ -143,7 +166,7 @@ public class PortalDtoLoader {
     private void loadSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
         //TODO load specimen from multiple places
 
-        ContainerDto<SpecimenDTO> container = new ContainerDto<TaxonPageDto.SpecimenDTO>();
+        ContainerDto<SpecimenDTO> container = new ContainerDto<>();
 
         List<SpecimenOrObservationBase<?>> specimens = new ArrayList<>();
         for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
@@ -469,19 +492,71 @@ public class PortalDtoLoader {
             ContainerDto<FeatureDto> features = new ContainerDto<>();
             result.setFactualData(features);
             for (Feature feature : featureMap.keySet()) {
-                FeatureDto featureDto = new FeatureDto();
-                featureDto.setId(feature.getId());
-                featureDto.setUuid(feature.getUuid());
                 //TODO locale
-                featureDto.setLabel(feature.getTitleCache());
+                FeatureDto featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
                 features.addItem(featureDto);
 
+                List<Distribution> distributions = new ArrayList<>();
                 //
                 for (DescriptionElementBase fact : featureMap.get(feature)){
-                    handleFact(featureDto, fact);
+                    if (fact.isInstanceOf(Distribution.class)) {
+                        distributions.add(CdmBase.deproxy(fact, Distribution.class));
+                    }else {
+                        handleFact(featureDto, fact);
+                    }
                 }
+
+                handleDistributions(config, featureDto, taxon, distributions);
             }
         }
+    }
+
+    private void handleDistributions(TaxonPageDtoConfiguration config, FeatureDto featureDto,
+            Taxon taxon, List<Distribution> distributions) {
+
+        if (distributions.isEmpty()) {
+            return;
+        }
+        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
+
+        CondensedDistributionConfiguration condensedConfig = distributionConfig.getCondensedDistrConfig();
+        String statusColorsString = distributionConfig.getStatusColorsString();
+
+        IDistributionService distributionService = repository.getDistributionService();
+
+        //copied from DescriptionListController
+
+        boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
+        distributionConfig.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
+        boolean fallbackAsParent = true;  //may become a service parameter in future
+
+        DistributionInfoDto dto;
+
+        //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
+        //are hidden markers on areas that have non-hidden subareas (#4408)
+        Set<MarkerType> hiddenAreaMarkerTypes = distributionConfig.getHiddenAreaMarkerTypeList();
+        if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()){
+            condensedConfig.hiddenAndFallbackAreaMarkers = hiddenAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+        }
+
+        List<String> initStrategy = null;
+
+        Map<PresenceAbsenceTerm, Color> distributionStatusColors;
+        try {
+            distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
+                    statusColorsString, repository.getTermService(), repository.getVocabularyService());
+        } catch (JsonProcessingException e) {
+            logger.error("JsonProcessingException when reading distribution status colors");
+            //TODO is null allowed?
+            distributionStatusColors = null;
+        }
+
+        dto = distributionService.composeDistributionInfoFor(distributionConfig, taxon.getUuid(),
+                fallbackAsParent,
+                distributionStatusColors, LocaleContext.getLanguages(),
+                initStrategy);
+
+        featureDto.addFact(dto);
     }
 
     private void handleFact(FeatureDto featureDto, DescriptionElementBase fact) {

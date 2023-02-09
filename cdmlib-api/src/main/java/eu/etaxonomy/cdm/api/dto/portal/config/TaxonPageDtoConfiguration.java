@@ -47,9 +47,21 @@ public class TaxonPageDtoConfiguration implements Serializable {
     boolean mapUriParams = true;
     boolean distributionTree = true;
 
+    private DistributionInfoConfiguration distributionInfoConfiguration = new DistributionInfoConfiguration();
+
 
     //formatting
     public List<Locale> locales = new ArrayList<>();  //is this data or formatting??
     public boolean formatSec = false;  //!!
+
+
+// ******************************* GETTER / SETTER ***********************************/
+
+    public DistributionInfoConfiguration getDistributionInfoConfiguration() {
+        return distributionInfoConfiguration;
+    }
+    public void setDistributionInfoConfiguration(DistributionInfoConfiguration distributionInfoConfiguration) {
+        this.distributionInfoConfiguration = distributionInfoConfiguration;
+    }
 
 }

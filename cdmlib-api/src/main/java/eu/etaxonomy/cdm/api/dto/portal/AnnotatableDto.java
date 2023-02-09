@@ -38,5 +38,4 @@ public class AnnotatableDto extends CdmBaseDto {
         }
         markers.addItem(marker);
     }
-
 }

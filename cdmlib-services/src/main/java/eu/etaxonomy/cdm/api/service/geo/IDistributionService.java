@@ -12,7 +12,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,10 +21,11 @@ import javax.xml.stream.XMLStreamException;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.util.DescriptionUtility;
-import eu.etaxonomy.cdm.api.util.DistributionOrder;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * This service has been extracted from cdmlib-ext IEditGeoService
@@ -58,12 +57,9 @@ public interface IDistributionService {
      * @param ignoreDistributionStatusUndefined workaround until #9500 is implemented to ignore status "undefined"
      * @return
      */
-    public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
-            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
-            boolean neverUseFallbackAreaAsParent, Set<NamedAreaLevel> omitLevels,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages,  List<String> propertyPaths, CondensedDistributionConfiguration config,
-            DistributionOrder distributionOrder, boolean ignoreDistributionStatusUndefined);
+    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, UUID taxonUUID,
+            boolean neverUseFallbackAreaAsParent, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            List<Language> languages, List<String> propertyPaths);
 
 
     /**

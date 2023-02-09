@@ -17,10 +17,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionComposer;
-import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionConfiguration;
-import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionComposer.SymbolUsage;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer.SymbolUsage;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;

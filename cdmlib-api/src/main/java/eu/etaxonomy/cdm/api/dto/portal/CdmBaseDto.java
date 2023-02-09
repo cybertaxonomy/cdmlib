@@ -17,10 +17,20 @@ import java.util.UUID;
  */
 public class CdmBaseDto {
 
+
     //the taxon uuid
     //TODO move to base class
     private UUID uuid;
-    private int id;
+    private Integer id;
+
+    public CdmBaseDto() {
+    }
+
+    public CdmBaseDto(UUID uuid, Integer id, LocalDateTime lastUpdated) {
+        this.uuid = uuid;
+        this.id = id;
+        this.lastUpdated = lastUpdated;
+    }
 
     //computed from updated of all relevant data
     //uses java.time.XXX  to have less dependencies
@@ -34,10 +44,10 @@ public class CdmBaseDto {
         this.uuid = uuid;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

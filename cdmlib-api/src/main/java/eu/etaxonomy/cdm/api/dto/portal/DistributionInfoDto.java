@@ -6,24 +6,27 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.api.util.DistributionTree;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.model.description.Distribution;
 
 /**
  * @author a.kohlbecker
  * @since Jan 29, 2014
  */
-public class DistributionInfoDTO {
+public class DistributionInfoDto implements IFactDto {
 
     private CondensedDistribution condensedDistribution = null;
-    private DistributionTree tree = null;
+    private IDistributionTree tree = null;
     private String mapUriParams = null;
+
+    //TODO remove elements ??
     private Set<Distribution> elements = null;
 
+// ****************** GETTER / SETTER ******************************/
 
     public CondensedDistribution getCondensedDistribution() {
         return condensedDistribution;
@@ -32,10 +35,10 @@ public class DistributionInfoDTO {
         this.condensedDistribution = condensedDistribution;
     }
 
-    public DistributionTree getTree() {
+    public IDistributionTree getTree() {
         return tree;
     }
-    public void setTree(DistributionTree tree) {
+    public void setTree(IDistributionTree tree) {
         this.tree = tree;
     }
 

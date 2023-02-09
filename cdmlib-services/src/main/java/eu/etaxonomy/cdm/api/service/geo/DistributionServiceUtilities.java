@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.geo;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -29,17 +28,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -567,7 +567,7 @@ public class DistributionServiceUtilities {
      */
     public static Map<PresenceAbsenceTerm, Color> buildStatusColorMap(String statusColorJson,
             ITermService termService, IVocabularyService vocabularyService)
-            throws IOException, JsonParseException, JsonMappingException {
+            throws JsonProcessingException {
 
         Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
         if(StringUtils.isNotEmpty(statusColorJson)){
