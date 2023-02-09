@@ -56,17 +56,10 @@ public class DistributionTree
     }
 
     /**
-     * @return false if the node was not found
-     */
-    public boolean hasChildNode(TreeNode<Set<Distribution>, NamedArea> parentNode, NamedArea nodeID) {
-        return findChildNode(parentNode, nodeID) != null;
-    }
-
-    /**
      * Returns the (first) child node (of type TreeNode) with the given nodeID.
      * @return the found node or null
      */
-    public TreeNode<Set<Distribution>, NamedArea> findChildNode(TreeNode<Set<Distribution>, NamedArea> parentNode, NamedArea  nodeID) {
+    public TreeNode<Set<Distribution>,NamedArea> findChildNode(TreeNode<Set<Distribution>, NamedArea> parentNode, NamedArea  nodeID) {
         if (parentNode.getChildren() == null) {
             return null;
         }
@@ -142,18 +135,19 @@ public class DistributionTree
         if (distributionOrder == null){
             distributionOrder = DistributionOrder.getDefault();
         }
-        _recursiveSortChildren(this.getRootElement(), distributionOrder.getComparator());
+        innerRecursiveSortChildren(this.getRootElement(), distributionOrder.getComparator());
     }
 
-    private void _recursiveSortChildren(TreeNode<Set<Distribution>, NamedArea> treeNode,
+    private void innerRecursiveSortChildren(TreeNode<Set<Distribution>, NamedArea> treeNode,
             Comparator<TreeNode<Set<Distribution>, NamedArea>> comparator){
+
         if (treeNode.children == null) {
             //nothing => stop condition
             return;
         }else {
             Collections.sort(treeNode.children, comparator);
             for (TreeNode<Set<Distribution>, NamedArea> child : treeNode.children) {
-                _recursiveSortChildren(child, comparator);
+                innerRecursiveSortChildren(child, comparator);
             }
         }
     }
@@ -186,7 +180,6 @@ public class DistributionTree
 
         //getting the highest area and inserting it into the tree
         NamedArea highestArea = namedAreaPath.get(0);
-
 
         TreeNode<Set<Distribution>, NamedArea> child = findChildNode(root, highestArea);
         if (child == null) {
@@ -267,7 +260,4 @@ public class DistributionTree
         }
         return omitLevelIds.contains(areaLevelId);
     }
-
-
-
 }

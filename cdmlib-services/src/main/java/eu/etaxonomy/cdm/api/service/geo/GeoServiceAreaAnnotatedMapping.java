@@ -53,7 +53,6 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
         return null;
     }
 
-
     @Override
     public void set(NamedArea area, GeoServiceArea geoServiceArea) {
         String xml = null;
@@ -78,7 +77,6 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
         area.addAnnotation(annotation);
 
         termService.saveOrUpdate(area);
-
     }
 
     @Override
