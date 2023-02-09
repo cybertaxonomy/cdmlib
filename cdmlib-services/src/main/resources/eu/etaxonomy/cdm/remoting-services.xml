@@ -36,6 +36,7 @@
         <prop key="/remoting/common.service">httpCommonService</prop>
         <prop key="/remoting/database.service">httpDatabaseService</prop>
         <prop key="/remoting/description.service">httpDescriptionService</prop>
+        <prop key="/remoting/distribution.service">httpDistributionService</prop>
         <prop key="/remoting/descriptionelement.service">httpDescriptionElementService</prop>
         <prop key="/remoting/descriptivedataset.service">httpDescriptiveDataSetService</prop>
         <prop key="/remoting/entityconstraintviolation.service">httpEntityConstraintViolationService</prop>
