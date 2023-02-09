@@ -124,37 +124,20 @@ public class TermDto extends AbstractTermDto{
 
     @Override
     public void localize(ITermRepresentation_L10n representation_L10n) {
-//        if(vocRepresentations!=null){
-//            representation_L10n.localize(vocRepresentations);
-//            if (representation_L10n.getLabel() != null) {
-//                setVocRepresentation_L10n(representation_L10n.getLabel());
-//            }
-//            if (representation_L10n.getAbbreviatedLabel() != null) {
-//                setVocRepresentation_L10n_abbreviatedLabel(representation_L10n.getAbbreviatedLabel());
-//            }
-//        }
+        if(this.vocabularyDto.getRepresentations()!=null){
+            this.vocabularyDto.localize(representation_L10n);
+        }
         super.localize(representation_L10n);
     }
 
-//    public void setVocRepresentation_L10n(String vocRepresentation_L10n) {
-//        this.vocRepresentation_L10n = vocRepresentation_L10n;
-//    }
-//
+
     public String getVocRepresentation_L10n() {
         return vocabularyDto == null ? null : vocabularyDto.getRepresentation_L10n();
     }
-//
-//    public void setVocRepresentation_L10n_abbreviatedLabel(String vocRepresentation_L10n_abbreviatedLabel) {
-//        this.vocRepresentation_L10n_abbreviatedLabel = vocRepresentation_L10n_abbreviatedLabel;
-//    }
-//
+
     public String getVocRepresentation_L10n_abbreviatedLabel() {
         return vocabularyDto == null ? null : vocabularyDto.getRepresentation_L10n_abbreviatedLabel();
     }
-//
-//    protected void addVocRepresentation(Representation vocRepresentation){
-//        this.vocRepresentations.add(vocRepresentation);
-//    }
 
     public void setPartOfDto(TermDto partOfDto) {
         this.partOfDto = partOfDto;
