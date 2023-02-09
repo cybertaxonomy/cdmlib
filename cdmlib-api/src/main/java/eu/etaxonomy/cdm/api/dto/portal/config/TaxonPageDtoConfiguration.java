@@ -23,30 +23,25 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private static final long serialVersionUID = -3017154740995350103L;
 
     //TODO should this be part of the configuration??
-    public UUID taxonUuid;
+    private UUID taxonUuid;
 
     //data
-    boolean withFacts = true;
-    boolean withSynonyms = true;
-    boolean withSpecimens = true;
-    boolean withKeys = true;
-    boolean withMedia = true;
-    boolean withTaxonNodes = true;
+    private boolean withFacts = true;
+    private boolean withSynonyms = true;
+    private boolean withSpecimens = true;
+    private boolean withKeys = true;
+    private boolean withMedia = true;
+    private boolean withTaxonNodes = true;
 
     //synonymy
     //TODO taxonrelations
     //should withSynonyms includeProparte and missapplications
     // => yes as long as there are no specific parameters in dataportals to handle them differently
-    boolean withTaxonRelationships = true;
-    UUID taxonRelationshipTypeTree = null;
+    private boolean withTaxonRelationships = true;
+    private UUID taxonRelationshipTypeTree = null;
 
     //facts
-    UUID featureTree = null;
-    boolean condensedDistribution = false;  //!!
-    //TODO CondensedDistributionConfiguration is still in cdmlib-ext
-    boolean mapUriParams = true;
-    boolean distributionTree = true;
-
+    private UUID featureTree = null;
     private DistributionInfoConfiguration distributionInfoConfiguration = new DistributionInfoConfiguration();
 
 
@@ -64,4 +59,70 @@ public class TaxonPageDtoConfiguration implements Serializable {
         this.distributionInfoConfiguration = distributionInfoConfiguration;
     }
 
+    public UUID getTaxonUuid() {
+        return taxonUuid;
+    }
+    public void setTaxonUuid(UUID taxonUuid) {
+        this.taxonUuid = taxonUuid;
+    }
+
+    public boolean isWithFacts() {
+        return withFacts;
+    }
+    public void setWithFacts(boolean withFacts) {
+        this.withFacts = withFacts;
+    }
+
+    public boolean isWithSynonyms() {
+        return withSynonyms;
+    }
+    public void setWithSynonyms(boolean withSynonyms) {
+        this.withSynonyms = withSynonyms;
+    }
+
+    public boolean isWithSpecimens() {
+        return withSpecimens;
+    }
+    public void setWithSpecimens(boolean withSpecimens) {
+        this.withSpecimens = withSpecimens;
+    }
+
+    public boolean isWithKeys() {
+        return withKeys;
+    }
+    public void setWithKeys(boolean withKeys) {
+        this.withKeys = withKeys;
+    }
+
+    public boolean isWithMedia() {
+        return withMedia;
+    }
+    public void setWithMedia(boolean withMedia) {
+        this.withMedia = withMedia;
+    }
+
+    public boolean isWithTaxonNodes() {
+        return withTaxonNodes;
+    }
+    public void setWithTaxonNodes(boolean withTaxonNodes) {
+        this.withTaxonNodes = withTaxonNodes;
+    }
+    public boolean isWithTaxonRelationships() {
+        return withTaxonRelationships;
+    }
+    public void setWithTaxonRelationships(boolean withTaxonRelationships) {
+        this.withTaxonRelationships = withTaxonRelationships;
+    }
+    public UUID getTaxonRelationshipTypeTree() {
+        return taxonRelationshipTypeTree;
+    }
+    public void setTaxonRelationshipTypeTree(UUID taxonRelationshipTypeTree) {
+        this.taxonRelationshipTypeTree = taxonRelationshipTypeTree;
+    }
+    public UUID getFeatureTree() {
+        return featureTree;
+    }
+    public void setFeatureTree(UUID featureTree) {
+        this.featureTree = featureTree;
+    }
 }

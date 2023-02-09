@@ -45,7 +45,7 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
     public TaxonPageDto taxonPageDto(TaxonPageDtoConfiguration config) {
 
         PortalDtoLoader loader = new PortalDtoLoader(repository);
-        Taxon taxon = (Taxon)taxonDao.load(config.taxonUuid);
+        Taxon taxon = (Taxon)taxonDao.load(config.getTaxonUuid());
         TaxonPageDto dto = null;
         try {
             dto = loader.load(taxon, config);
@@ -67,7 +67,7 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
                 + " FROM Taxon t JOIN t.name as n "
                 + " WHERE t.uuid = :uuid ";
         //TODO singleResult
-        List<Object[]> hqlResult = dao.getHqlResult(taxonHql, new Object[] {config.taxonUuid}, Object[].class);
+        List<Object[]> hqlResult = dao.getHqlResult(taxonHql, new Object[] {config.getTaxonUuid()}, Object[].class);
         dto.setId((int)hqlResult.get(0)[0]);
         dto.setUuid((UUID)hqlResult.get(0)[1]);
         dto.setLabel((String)hqlResult.get(0)[2]);
@@ -85,7 +85,7 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
                 + "    n.titleCache as nameLabel, n.homotypicalGroup.uuid "
                 + " FROM Synonym s JOIN s.acceptedTaxon t JOIN s.name as n "
                 + " WHERE t.uuid = :uuid ";
-        List<Object[]> sysnonymsResult = dao.getHqlResult(synonymsHql, new Object[] {config.taxonUuid}, Object[].class);
+        List<Object[]> sysnonymsResult = dao.getHqlResult(synonymsHql, new Object[] {config.getTaxonUuid()}, Object[].class);
 
         //facts
 

@@ -309,6 +309,7 @@ public class TaxonPortalController extends TaxonController{
     @ResponseBody
     public TaxonPageDto doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
+            @RequestParam(value = "featureTree", required = false) UUID featureTreeUuid,
             //TODO configuration data
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -325,7 +326,8 @@ public class TaxonPortalController extends TaxonController{
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
 
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
-        config.taxonUuid = taxonUuid;
+        config.setTaxonUuid(taxonUuid);
+        config.setFeatureTree(featureTreeUuid);
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);
         return dto;
     }
