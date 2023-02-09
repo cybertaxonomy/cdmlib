@@ -6,7 +6,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.api.facade;
+package eu.etaxonomy.cdm.facade;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,6 +39,9 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.facade.MethodNotSupportedByDerivedUnitTypeException;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -359,7 +362,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#NewInstance()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#NewInstance()}.
      */
     @Test
     public void testNewInstanceGatheringEventCreated() {
@@ -379,7 +382,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#NewInstance(eu.etaxonomy.cdm.model.occurrence.Specimen)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#NewInstance(eu.etaxonomy.cdm.model.occurrence.Specimen)}
      * .
      */
     @Test
@@ -480,7 +483,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addCollectingArea(eu.etaxonomy.cdm.model.location.NamedArea)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addCollectingArea(eu.etaxonomy.cdm.model.location.NamedArea)}
      * .
      */
     @Test
@@ -511,7 +514,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addCollectingArea(eu.etaxonomy.cdm.model.location.NamedArea)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addCollectingArea(eu.etaxonomy.cdm.model.location.NamedArea)}
      * .
      */
     @Test
@@ -536,7 +539,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for getting and setting absolute elevation.
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAbsoluteElevation()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getAbsoluteElevation()}
      * .
      */
     @Test
@@ -548,7 +551,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAbsoluteElevationError()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getAbsoluteElevationError()}
      * .
      */
     @Test
@@ -637,7 +640,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollectingMethod()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getCollectingMethod()}
      * .
      */
     @Test
@@ -651,7 +654,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getDistanceToGround()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getDistanceToGround()}
      * .
      */
     @Test
@@ -663,7 +666,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getDistanceToWaterSurface()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getDistanceToWaterSurface()}
      * .
      */
     @Test
@@ -714,7 +717,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getExactLocation()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getExactLocation()}.
      */
     @Test
     public void testGetSetExactLocation() {
@@ -749,7 +752,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getGatheringEventDescription()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getGatheringEventDescription()}
      * .
      */
     @Test
@@ -766,7 +769,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getTimeperiod()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getTimeperiod()}.
      */
     @Test
     public void testGetTimeperiod() {
@@ -803,7 +806,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addFieldObjectDefinition(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addFieldObjectDefinition(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}
      * .
      */
     @Test
@@ -840,7 +843,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addFieldObjectMedia(eu.etaxonomy.cdm.model.media.Media)}
      * .
      */
     @Test
@@ -893,7 +896,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getEcology()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getEcology()}
      * .
      */
     @Test
@@ -952,7 +955,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getPlantDescription()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getPlantDescription()}
      * .
      */
     @Test
@@ -1039,7 +1042,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getLifeform()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getLifeform()}
      * .
      */
     @Test
@@ -1127,7 +1130,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getFieldNumber()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getFieldNumber()}.
      */
     @Test
     public void testGetSetFieldNumber() {
@@ -1155,7 +1158,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getFieldNotes()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getFieldNotes()}.
      */
     @Test
     public void testGetSetFieldNotes() {
@@ -1168,7 +1171,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#setGatheringEvent(eu.etaxonomy.cdm.model.occurrence.GatheringEvent)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#setGatheringEvent(eu.etaxonomy.cdm.model.occurrence.GatheringEvent)}
      * .
      */
     @Test
@@ -1188,7 +1191,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#innerGatheringEvent()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#innerGatheringEvent()}
      * .
      */
     @Test
@@ -1203,7 +1206,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getIndividualCount()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getIndividualCount()}
      * .
      */
     @Test
@@ -1216,7 +1219,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getLifeStage()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getLifeStage()}.
      */
     @Test
     public void testGetSetLifeStage() {
@@ -1232,7 +1235,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getSex()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getSex()}.
      */
     @Test
     public void testGetSetSex() {
@@ -1249,7 +1252,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getSex()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getSex()}.
      */
     @Test
     public void testGetSetKindOfUnit() {
@@ -1264,7 +1267,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getLocality()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getLocality()}.
      */
     @Test
     public void testGetSetLocality() {
@@ -1284,7 +1287,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDerivedUnitDefinition(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addDerivedUnitDefinition(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}
      * .
      */
     @Test
@@ -1321,7 +1324,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}
      * .
      */
     @Test
@@ -1364,7 +1367,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}
      * .
      */
     @Test
@@ -1415,7 +1418,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDerivedUnitMedia(eu.etaxonomy.cdm.model.media.Media)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addDerivedUnitMedia(eu.etaxonomy.cdm.model.media.Media)}
      * .
      */
     @Test
@@ -1469,7 +1472,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAccessionNumber()}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getAccessionNumber()}
      * .
      */
     @Test
@@ -1484,7 +1487,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCatalogNumber()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getCatalogNumber()}.
      */
     @Test
     public void testGetCatalogNumber() {
@@ -1497,7 +1500,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getPreservation()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getPreservation()}.
      */
     @Test
     public void testGetPreservation() {
@@ -1553,7 +1556,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getStoredUnder()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getStoredUnder()}.
      */
     @Test
     public void testGetStoredUnder() {
@@ -1582,7 +1585,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getTitleCache()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getTitleCache()}.
      */
     @Test
     public void testGetTitleCache() {
@@ -1597,7 +1600,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#setTitleCache(java.lang.String)}
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#setTitleCache(java.lang.String)}
      * .
      */
     @Test
@@ -1615,7 +1618,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#innerDerivedUnit()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#innerDerivedUnit()}.
      */
     @Test
     public void testGetSpecimen() {
@@ -1625,7 +1628,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollection()}.
+     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getCollection()}.
      */
     @Test
     public void testGetSetCollection() {

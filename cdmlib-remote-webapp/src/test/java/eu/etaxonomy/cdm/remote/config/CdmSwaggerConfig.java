@@ -209,7 +209,7 @@ public class CdmSwaggerConfig {
         if (allCdmTypes == null) {
             allCdmTypes = allCdmTypes();
             allCdmTypes.add(eu.etaxonomy.cdm.api.service.pager.Pager.class);
-            allCdmTypes.add(eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.class);
+            allCdmTypes.add(eu.etaxonomy.cdm.facade.DerivedUnitFacade.class);
         }
         return allCdmTypes.toArray(new Class[allCdmTypes.size()]);
     }

@@ -6,7 +6,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.api.facade;
+package eu.etaxonomy.cdm.facade;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -20,11 +20,10 @@ import java.util.Set;
 
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -274,47 +273,47 @@ public class DerivedUnitFacade {
 		setCacheStrategy();
 
 	}
-
-	private DerivedUnit getInitializedDerivedUnit(
-			DerivedUnit derivedUnit) {
-		IOccurrenceService occurrenceService = this.config
-				.getOccurrenceService();
-		if (occurrenceService == null) {
-			return derivedUnit;
-		}
-		List<String> propertyPaths = this.config.getPropertyPaths();
-		if (propertyPaths == null) {
-			return derivedUnit;
-		}
-		propertyPaths = getDerivedUnitPropertyPaths(propertyPaths);
-		DerivedUnit result = (DerivedUnit) occurrenceService.load(
-				derivedUnit.getUuid(), propertyPaths);
-		return result;
-	}
-
-	/**
-	 * Initializes the derived unit according to the configuartions property
-	 * path. If the property path is <code>null</code> or no occurrence service
-	 * is given the returned object is the same as the input parameter.
-	 *
-	 * @param fieldUnit
-	 * @return
-	 */
-	private FieldUnit getInitializedFieldUnit(FieldUnit fieldUnit) {
-		IOccurrenceService occurrenceService = this.config
-				.getOccurrenceService();
-		if (occurrenceService == null) {
-			return fieldUnit;
-		}
-		List<String> propertyPaths = this.config.getPropertyPaths();
-		if (propertyPaths == null) {
-			return fieldUnit;
-		}
-		propertyPaths = getFieldObjectPropertyPaths(propertyPaths);
-		FieldUnit result = (FieldUnit) occurrenceService.load(
-				fieldUnit.getUuid(), propertyPaths);
-		return result;
-	}
+//
+//	private DerivedUnit getInitializedDerivedUnit(
+//			DerivedUnit derivedUnit) {
+//		IOccurrenceService occurrenceService = this.config
+//				.getOccurrenceService();
+//		if (occurrenceService == null) {
+//			return derivedUnit;
+//		}
+//		List<String> propertyPaths = this.config.getPropertyPaths();
+//		if (propertyPaths == null) {
+//			return derivedUnit;
+//		}
+//		propertyPaths = getDerivedUnitPropertyPaths(propertyPaths);
+//		DerivedUnit result = (DerivedUnit) occurrenceService.load(
+//				derivedUnit.getUuid(), propertyPaths);
+//		return result;
+//	}
+//
+//	/**
+//	 * Initializes the derived unit according to the configurations property
+//	 * path. If the property path is <code>null</code> or no occurrence service
+//	 * is given the returned object is the same as the input parameter.
+//	 *
+//	 * @param fieldUnit
+//	 * @return
+//	 */
+//	private FieldUnit getInitializedFieldUnit(FieldUnit fieldUnit) {
+//		IOccurrenceService occurrenceService = this.config
+//				.getOccurrenceService();
+//		if (occurrenceService == null) {
+//			return fieldUnit;
+//		}
+//		List<String> propertyPaths = this.config.getPropertyPaths();
+//		if (propertyPaths == null) {
+//			return fieldUnit;
+//		}
+//		propertyPaths = getFieldObjectPropertyPaths(propertyPaths);
+//		FieldUnit result = (FieldUnit) occurrenceService.load(
+//				fieldUnit.getUuid(), propertyPaths);
+//		return result;
+//	}
 
 	/**
 	 * Transforms the property paths in a way that the facade is handled just

@@ -459,7 +459,7 @@
               </property>
           </bean>
         </entry>
-        <entry key="eu.etaxonomy.cdm.api.facade.DerivedUnitFacade">
+        <entry key="eu.etaxonomy.cdm.facade.DerivedUnitFacade">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DerivedUnitFacadeBeanProcessor"/>
         </entry>
         <entry key="eu.etaxonomy.cdm.model.location.Point">

@@ -6,14 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.facade;
+package eu.etaxonomy.cdm.facade;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 
 /**
  * @author a.mueller
@@ -34,10 +32,6 @@ public class DerivedUnitFacadeConfigurator {
 	private boolean throwExceptionForNonSpecimenPreservationMethodRequest = true;
 
 	private boolean firePropertyChangeEvents = true;
-
-
-	//needed if inititialization via property paths is required
-	private IOccurrenceService occurrenceService;
 
 	//for object initialization
 	private List<String> propertyPaths;
@@ -63,18 +57,18 @@ public class DerivedUnitFacadeConfigurator {
 	public boolean isMoveDerivedUnitMediaToGallery() {
 		return moveDerivedUnitMediaToGallery;
 	}
-
-	public void setOccurrenceService(IOccurrenceService occurrenceService) {
-		this.occurrenceService = occurrenceService;
-	}
-
-	/**
-	 * Needed for object initialization.
-	 * @see #getPropertyPaths()
-	 */
-	public IOccurrenceService getOccurrenceService() {
-		return occurrenceService;
-	}
+//
+//	public void setOccurrenceService(IOccurrenceService occurrenceService) {
+//		this.occurrenceService = occurrenceService;
+//	}
+//
+//	/**
+//	 * Needed for object initialization.
+//	 * @see #getPropertyPaths()
+//	 */
+//	public IOccurrenceService getOccurrenceService() {
+//		return occurrenceService;
+//	}
 
 	public void setPropertyPaths(List<String> propertyPaths) {
 		this.propertyPaths = propertyPaths;
