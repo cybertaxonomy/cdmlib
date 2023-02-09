@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.geo;
+package eu.etaxonomy.cdm.api.service.geo;
 
 import static org.junit.Assert.assertTrue;
 
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,7 +83,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     private GeoServiceAreaAnnotatedMapping mapping;
 
     @SpringBeanByType
-    private IEditGeoService editGeoService;
+    private IDistributionService editGeoService;
 
     @SpringBeanByType
     private ITaxonService taxonService ;
@@ -114,7 +114,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
                 distributions, null, false, statusOrderPreference, subAreaPreference, true, false);
 
-        String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
+        String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                 mapping, null, null, languages );
         logger.warn(result);
         Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"));
@@ -143,7 +143,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
 //        boolean subAreaPreference = false;
 //        boolean statusOrderPreference = false;
-        String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
+        String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
                 distributions,
                 mapping,
                 null, // presenceAbsenceTermColors
@@ -184,7 +184,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         presenceAbsenceColorMap = null;
         List<Language> languages = new ArrayList<>();
 
-        String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
+        String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
                 distributions,
                 mapping,
                 null, null, languages );
@@ -332,7 +332,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         presenceAbsenceColorMap = null;
         List<Language> languages = new ArrayList<>();
 
-        String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
+        String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(distributions,
                 mapping,
                 null, null, languages );
         //TODO Set semantics is not determined

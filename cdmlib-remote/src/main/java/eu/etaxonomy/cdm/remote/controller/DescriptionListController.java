@@ -46,14 +46,14 @@ import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
+import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionRecipe;
+import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.util.DistributionOrder;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionConfiguration;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
-import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -94,7 +94,7 @@ public class DescriptionListController
     private IVocabularyService vocabularyService ;
 
     @Autowired
-    private IEditGeoService geoService;
+    private IDistributionService distributionService;
 
     @Autowired
     @Qualifier("cdmRepository")
@@ -301,10 +301,10 @@ public class DescriptionListController
 
                 EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
-                Map<PresenceAbsenceTerm, Color> distributionStatusColors = EditGeoServiceUtilities.buildStatusColorMap(
+                Map<PresenceAbsenceTerm, Color> distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
                         statusColorsString, termService, vocabularyService);
 
-                dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
+                dto = distributionService.composeDistributionInfoFor(parts, taxonUuid,
                         subAreaPreference, statusOrderPreference, hiddenAreaMarkerTypes, fallbackAsParent,
                         omitLevels, distributionStatusColors, LocaleContext.getLanguages(),
                         getDescriptionInfoInitStrategy(), condensedConfig, distributionOrder,

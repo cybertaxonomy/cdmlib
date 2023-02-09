@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.util.DescriptionUtility;
@@ -90,7 +91,10 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
     private static final Logger logger = LogManager.getLogger();
 
     @Autowired
-    private IEditGeoService geoservice;
+    private IEditGeoService geoService;
+
+    @Autowired
+    private IDistributionService distributionService;
 
     @Autowired
     private IDescriptionService descriptionService;
@@ -173,7 +177,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
 
         List<TaxonDescription> taxonDescriptions = page.getRecords();
-        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
+        String uriParams = distributionService.getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference, statusOrderPreference,
                 hideMarkedAreas, presenceAbsenceTermColors, langs);
         mv.addObject(uriParams);
@@ -213,7 +217,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(uuid, relationshipUuids,
 				relationshipInversUuids, maxDepth, response);
 
-        OccurrenceServiceRequestParameterDto dto = geoservice.getOccurrenceServiceRequestParameters(specimensOrObersvations,
+        OccurrenceServiceRequestParameterDto dto = geoService.getOccurrenceServiceRequestParameters(specimensOrObersvations,
                 specimenOrObservationTypeColors );
 
         return dto;
@@ -299,7 +303,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         if(namedAreaUuids != null) {
             areaUuidSet = namedAreaUuids.asSet();
         }
-        Map<NamedArea, String> resultMap = geoservice.mapShapeFileToNamedAreas(
+        Map<NamedArea, String> resultMap = distributionService.mapShapeFileToNamedAreas(
                 reader, idSearchFields , wmsLayerName , vocabUuid, areaUuidSet);
         Map<String, String> flatResultMap = new HashMap<String, String>(resultMap.size());
         for(NamedArea area : resultMap.keySet()){

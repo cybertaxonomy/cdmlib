@@ -21,12 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.HomotypicalGroupComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionConfiguration;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.XmlExportState;
@@ -68,7 +68,7 @@ public class CsvNameExport extends CsvNameExportBase {
     private static final Logger logger = LogManager.getLogger();
 
     @Autowired
-    private IEditGeoService geoService;
+    private IDistributionService distributionService;
 
     private HashMap<UUID, HashMap<String,String>> familyMap = new HashMap<>();
     private HashMap<UUID, HashMap<String,String>> genusMap = new HashMap<>();
@@ -463,7 +463,7 @@ public class CsvNameExport extends CsvNameExportBase {
             langs.add(Language.ENGLISH());
 
             //TODO add condensed distribution configuration to export configuration
-            CondensedDistribution conDis = geoService.getCondensedDistribution(
+            CondensedDistribution conDis = distributionService.getCondensedDistribution(
                     distributions, true, null, CondensedDistributionConfiguration.NewCubaInstance(), langs );
 
             nameRecord.put(columnName, conDis.toString());

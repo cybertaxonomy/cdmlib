@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.geo;
+package eu.etaxonomy.cdm.api.service.geo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,7 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionComposer.SymbolUsage;
+import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionComposer;
+import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.service.geo.CondensedDistributionComposer.SymbolUsage;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;

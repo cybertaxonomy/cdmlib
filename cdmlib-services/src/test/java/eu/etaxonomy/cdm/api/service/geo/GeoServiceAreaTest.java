@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.geo;
+package eu.etaxonomy.cdm.api.service.geo;
 
 import static org.junit.Assert.fail;
 
@@ -16,6 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.api.service.geo.GeoServiceArea;
 
 /**
  * @author a.mueller
@@ -28,7 +30,7 @@ public class GeoServiceAreaTest {
 // ********************************** TESTS ****************************************
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.geo.GeoServiceArea#add(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.geo.GeoServiceArea#add(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testAdd() {
@@ -36,7 +38,7 @@ public class GeoServiceAreaTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.geo.GeoServiceArea#getAreasMap()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.geo.GeoServiceArea#getAreasMap()}.
 	 */
 	@Test
 	public void testGetAreas() {
@@ -44,7 +46,7 @@ public class GeoServiceAreaTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.geo.GeoServiceArea#valueOf(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.geo.GeoServiceArea#valueOf(java.lang.String)}.
 	 */
 	@Test
 	public void testValueOf() {
@@ -59,7 +61,7 @@ public class GeoServiceAreaTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.geo.GeoServiceArea#toXml()}.
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.geo.GeoServiceArea#toXml()}.
 	 */
 	@Test
 	public void testToXml() {

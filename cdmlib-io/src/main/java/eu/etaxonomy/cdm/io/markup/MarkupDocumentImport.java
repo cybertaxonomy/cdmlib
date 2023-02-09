@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -61,7 +61,7 @@ public class MarkupDocumentImport
 	private UnmatchedLeads unmatchedLeads;
 
 	@Autowired
-	private IEditGeoService editGeoService;
+	private IDistributionService editGeoService;
 
 	public MarkupDocumentImport() {
 		super();
@@ -234,7 +234,7 @@ public class MarkupDocumentImport
 		return super.getImageMedia(uriString, readMediaData);
 	}
 
-	public IEditGeoService getEditGeoService() {
+	public IDistributionService getEditGeoService() {
 		return editGeoService;
 	}
 }

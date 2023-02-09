@@ -42,9 +42,9 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.geo.GeoServiceArea;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.ext.geo.GeoServiceArea;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
@@ -243,13 +243,14 @@ public abstract class MarkupImportBase  {
 
 	protected MarkupDocumentImport docImport;
 
-	private final IEditGeoService editGeoService;
+	private final IDistributionService distributionService;
+
 	protected MarkupFeatureImport featureImport;
 
 	public MarkupImportBase(MarkupDocumentImport docImport) {
 		super();
 		this.docImport = docImport;
-		this.editGeoService = docImport.getEditGeoService();
+		this.distributionService = docImport.getEditGeoService();
 	}
 
 	private final Stack<QName> unhandledElements = new Stack<>();
@@ -1297,7 +1298,7 @@ public abstract class MarkupImportBase  {
 					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
 					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
-					this.editGeoService.setMapping(area, geoServiceArea);
+					this.distributionService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 				if ("Luzon".equals(areaName)){
@@ -1310,7 +1311,7 @@ public abstract class MarkupImportBase  {
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
 
-					this.editGeoService.setMapping(area, geoServiceArea);
+					this.distributionService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 				if ("Mindanao".equals(areaName)){
@@ -1324,7 +1325,7 @@ public abstract class MarkupImportBase  {
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
 
-					this.editGeoService.setMapping(area, geoServiceArea);
+					this.distributionService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 				if ("Palawan".equals(areaName)){
@@ -1335,7 +1336,7 @@ public abstract class MarkupImportBase  {
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
 
-					this.editGeoService.setMapping(area, geoServiceArea);
+					this.distributionService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 
