@@ -353,8 +353,12 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     protected List<String> mediaMetadataKeyIncludes(){
         CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameIncludes));
         if(pref == null) {
+            if (PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue() == null) {
+                return new ArrayList<>();
+            }
             return Arrays.asList(PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString().split(","));
         }
-        return pref.splitStringListValue();
+       // return pref.splitStringListValue();
+        return Arrays.asList(pref.getValue().split(","));
     }
 }

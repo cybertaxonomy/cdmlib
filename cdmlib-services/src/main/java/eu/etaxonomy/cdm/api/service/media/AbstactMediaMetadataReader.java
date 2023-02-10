@@ -84,8 +84,9 @@ public abstract class AbstactMediaMetadataReader {
 
     public void appendMetadataEntry(String key, String text) {
         String[] splittedKey = StringUtils.splitByCharacterTypeCamelCase(key);
+        
         key = CdmUtils.concat(" ", splittedKey);
-
+        key = StringUtils.replace(key, "  ", " ");
         if(cdmImageInfo.getMetaData().containsKey(key)) {
             cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
         } else {
