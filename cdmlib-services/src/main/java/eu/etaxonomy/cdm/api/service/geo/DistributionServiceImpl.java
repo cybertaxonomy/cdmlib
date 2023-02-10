@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
  */
 @Service
 @Transactional(readOnly = true)
-public class DistributionService implements IDistributionService {
+public class DistributionServiceImpl implements IDistributionService {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();

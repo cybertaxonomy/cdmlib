@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 08.10.2008
  */
-public class DistributionServiceTest extends CdmTransactionalIntegrationTest {
+public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
