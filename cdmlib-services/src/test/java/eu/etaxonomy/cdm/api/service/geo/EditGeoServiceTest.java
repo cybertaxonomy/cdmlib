@@ -253,7 +253,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(null);
 
         // import and map shapefile attributes from csv
-        InputStream is = getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/ext/geo/cyprusdivs.csv");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/api/service/geo/cyprusdivs.csv");
         List<String> idSearchFields = new ArrayList<String>();
         idSearchFields.add("bdcode");
         String wmsLayerName = "cyprusdivs";
