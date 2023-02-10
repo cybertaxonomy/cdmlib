@@ -19,8 +19,8 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer.SymbolUsage;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -183,8 +183,6 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         distributions.remove(nativeDist);
         distributions.add(introducedDist);
         Assert.assertEquals("[iFR(J)]", composer.createCondensedDistribution(distributions, languages, config).getHtmlString());
-
-
     }
 
     @Test
