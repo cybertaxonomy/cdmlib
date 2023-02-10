@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.geo;
+package eu.etaxonomy.cdm.format.description.distribution;
 
 import java.util.HashSet;
 import java.util.Set;

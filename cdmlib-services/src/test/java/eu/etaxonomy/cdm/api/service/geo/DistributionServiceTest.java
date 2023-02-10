@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 08.10.2008
  */
-public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
+public class DistributionServiceTest extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -83,7 +83,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     private GeoServiceAreaAnnotatedMapping mapping;
 
     @SpringBeanByType
-    private IDistributionService editGeoService;
+    private IDistributionService distributionService;
 
     @SpringBeanByType
     private ITaxonService taxonService ;
@@ -257,7 +257,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         List<String> idSearchFields = new ArrayList<String>();
         idSearchFields.add("bdcode");
         String wmsLayerName = "cyprusdivs";
-        editGeoService.mapShapeFileToNamedAreas(new InputStreamReader(is), idSearchFields, wmsLayerName, uuidCyprusDivisionsVocabulary, null);
+        distributionService.mapShapeFileToNamedAreas(new InputStreamReader(is), idSearchFields, wmsLayerName, uuidCyprusDivisionsVocabulary, null);
 
         divisions.clear();
         Set<DefinedTermBase> terms = vocabService.load(uuidCyprusDivisionsVocabulary).getTerms();
@@ -380,7 +380,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         }
         taxonDescriptions.addAll(taxon.getDescriptions());
 
-        String distributions = editGeoService.getDistributionServiceRequestParameterString(taxonDescriptions,
+        String distributions = distributionService.getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference, statusOrderPreference, hideMarkedAreas, presenceAbsenceTermColors, langs);
         System.out.println(distributions);
         Assert.assertTrue("Distribution string should contain the non-persited distribution Germany", distributions.contains("DEU"));

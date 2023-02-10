@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.geo;
+package eu.etaxonomy.cdm.format.description.distribution;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,10 +17,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer.SymbolUsage;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -53,6 +51,8 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
     private CondensedDistributionConfiguration config;
 
     private Distribution bawueDistribution;
+
+    private static final String endemic = UTF8.BLACK_CIRCLE.toString();
 
     @Before
     public void setUp(){
@@ -134,7 +134,7 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
                 distributions, languages, config);
 
-        Assert.assertEquals("● <b>GER(B BW)</b> ?IT [cFR(J) nS]", condensedDistribution.toString());
+        Assert.assertEquals(endemic + " <b>GER(B BW)</b> ?IT [cFR(J) nS]", condensedDistribution.toString());
     }
 
     @Test
@@ -142,10 +142,10 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         createDefaultDistributions();
 
         bawueDistribution.setStatus(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
-        Assert.assertEquals("● <b>GER(B</b> dBW<b>)</b> ?IT [cFR(J) nS]", composer.createCondensedDistribution(distributions, languages, config).toString());
+        Assert.assertEquals(endemic + " <b>GER(B</b> dBW<b>)</b> ?IT [cFR(J) nS]", composer.createCondensedDistribution(distributions, languages, config).toString());
 
         bawueDistribution.setStatus(PresenceAbsenceTerm.CASUAL());
-        Assert.assertEquals("● <b>GER(B)</b> ?IT [cFR(J) aGER(BW) nS]", composer.createCondensedDistribution(distributions, languages, config).toString());
+        Assert.assertEquals(endemic +" <b>GER(B)</b> ?IT [cFR(J) aGER(BW) nS]", composer.createCondensedDistribution(distributions, languages, config).toString());
 
         //#9583
         distributions = new HashSet<>();
@@ -164,7 +164,7 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
                 distributions, languages, config);
 
-        Assert.assertEquals("● <b>GER(B BW)</b> ?IT [aFR(cJ) nS]", condensedDistribution.toString());
+        Assert.assertEquals(endemic + " <b>GER(B BW)</b> ?IT [aFR(cJ) nS]", condensedDistribution.toString());
     }
 
 
@@ -213,6 +213,6 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
                 distributions, languages, config);
 
-        Assert.assertEquals("●<b>EU</b>(<b>GER</b>(<b>GER(B) GER(BW)</b>) a<b>FR</b>(c<b>FR(J)</b>) ?<b>IT</b> n<b>S</b>)", condensedDistribution.toString());
+        Assert.assertEquals(endemic + "<b>EU</b>(<b>GER</b>(<b>GER(B) GER(BW)</b>) a<b>FR</b>(c<b>FR(J)</b>) ?<b>IT</b> n<b>S</b>)", condensedDistribution.toString());
     }
 }

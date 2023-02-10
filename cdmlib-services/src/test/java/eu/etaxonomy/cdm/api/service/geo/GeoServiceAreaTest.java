@@ -17,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.service.geo.GeoServiceArea;
-
 /**
  * @author a.mueller
  * @since 12.08.2011
@@ -29,25 +27,16 @@ public class GeoServiceAreaTest {
 
 // ********************************** TESTS ****************************************
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.geo.GeoServiceArea#add(java.lang.String, java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	public void testAdd() {
-		logger.warn("Not yet implemented");
+		logger.warn("testAdd not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.geo.GeoServiceArea#getAreasMap()}.
-	 */
 	@Test
 	public void testGetAreas() {
-		logger.warn("Not yet implemented");
+		logger.warn("testGetAreas not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.geo.GeoServiceArea#valueOf(java.lang.String)}.
-	 */
 	@Test
 	public void testValueOf() {
 		String input = "<?xml version=\"1.0\" ?><mapService xmlns=\"http://www.etaxonomy.eu/cdm\" type=\"editMapService\"><area><layer>vmap0_as_bnd_political_boundary_a</layer><field>nam</field><value>PULAU BANGKA#SUMATERA SELATAN</value></area></mapService>";
@@ -60,12 +49,8 @@ public class GeoServiceAreaTest {
 		}
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.geo.GeoServiceArea#toXml()}.
-	 */
 	@Test
 	public void testToXml() {
-		logger.warn("Not yet implemented");
+		logger.warn("testToXml not yet implemented");
 	}
-
 }
