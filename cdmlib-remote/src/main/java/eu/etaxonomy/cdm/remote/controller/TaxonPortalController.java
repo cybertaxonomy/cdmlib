@@ -328,6 +328,7 @@ public class TaxonPortalController extends TaxonController{
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
         config.setTaxonUuid(taxonUuid);
         config.setFeatureTree(featureTreeUuid);
+        config.getDistributionInfoConfiguration().setUseTreeDto(true);
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);
         return dto;
     }
