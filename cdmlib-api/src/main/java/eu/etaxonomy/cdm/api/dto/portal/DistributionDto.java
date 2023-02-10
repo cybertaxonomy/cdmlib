@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 
 /**
  * @author a.mueller
@@ -33,8 +34,9 @@ public class DistributionDto extends CdmBaseDto {
             this.area = new NamedAreaDto(distribution.getArea(), false);
         }
         if (distribution.getStatus() != null) {
+            PresenceAbsenceTerm distStatus = distribution.getStatus();
             //TODO i18n
-            this.status = new LabeledEntityDto(status.getUuid(), status.getId(), status.getLabel());
+            this.status = new LabeledEntityDto(distStatus.getUuid(), distStatus.getId(), distStatus.getLabel());
         }
     }
 
