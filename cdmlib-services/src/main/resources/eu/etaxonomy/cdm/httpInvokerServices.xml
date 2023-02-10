@@ -97,7 +97,7 @@
       <ref bean="distributionServiceImpl" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IDistributionService</value>
+      <value>eu.etaxonomy.cdm.api.service.geo.IDistributionService</value>
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
