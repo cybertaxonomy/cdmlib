@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +18,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 @Service
 @Transactional(readOnly = true)
-public class ServiceImpl extends ServiceBase<CdmBase, ICdmEntityDao<CdmBase>> implements IService<CdmBase> {
+public class ServiceImpl
+            extends ServiceBase<CdmBase, ICdmEntityDao<CdmBase>> {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -33,5 +33,4 @@ public class ServiceImpl extends ServiceBase<CdmBase, ICdmEntityDao<CdmBase>> im
     protected void setDao(ICdmEntityDao<CdmBase> dao) {
 		this.dao = dao;
 	}
-
 }

@@ -61,7 +61,6 @@ public interface IDistributionService {
             boolean neverUseFallbackAreaAsParent, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths);
 
-
     /**
     * @param distributions
     * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
