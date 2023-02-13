@@ -55,22 +55,7 @@ public class DistributionTree
         this.termDao = termDao;
     }
 
-    /**
-     * Returns the (first) child node (of type TreeNode) with the given nodeID.
-     * @return the found node or null
-     */
-    public TreeNode<Set<Distribution>,NamedArea> findChildNode(TreeNode<Set<Distribution>, NamedArea> parentNode, NamedArea  nodeID) {
-        if (parentNode.getChildren() == null) {
-            return null;
-        }
 
-        for (TreeNode<Set<Distribution>, NamedArea> node : parentNode.getChildren()) {
-            if (node.getNodeId().equals(nodeID)) {
-                return node;
-            }
-        }
-        return null;
-    }
 
     /**
      * @param fallbackAreaMarkerTypes
@@ -145,8 +130,8 @@ public class DistributionTree
             //nothing => stop condition
             return;
         }else {
-            Collections.sort(treeNode.children, comparator);
-            for (TreeNode<Set<Distribution>, NamedArea> child : treeNode.children) {
+            Collections.sort(treeNode.getChildren(), comparator);
+            for (TreeNode<Set<Distribution>, NamedArea> child : treeNode.getChildren()) {
                 innerRecursiveSortChildren(child, comparator);
             }
         }
@@ -181,11 +166,11 @@ public class DistributionTree
         //getting the highest area and inserting it into the tree
         NamedArea highestArea = namedAreaPath.get(0);
 
-        TreeNode<Set<Distribution>, NamedArea> child = findChildNode(root, highestArea);
+        TreeNode<Set<Distribution>, NamedArea> child = root.findChildNode(highestArea);
         if (child == null) {
             // the highestDistNode is not yet in the set of children, so we add it
             child = new TreeNode<Set<Distribution>, NamedArea>(highestArea);
-            child.setData(new HashSet<Distribution>());
+            child.setData(new HashSet<>());
             root.addChild(child);
         }
 

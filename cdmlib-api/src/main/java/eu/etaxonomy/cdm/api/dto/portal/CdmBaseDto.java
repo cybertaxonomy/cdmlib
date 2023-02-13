@@ -15,7 +15,7 @@ import java.util.UUID;
  * @author a.mueller
  * @date 07.01.2023
  */
-public class CdmBaseDto {
+public class CdmBaseDto implements IPortalDtoBase {
 
 
     //the taxon uuid
@@ -51,11 +51,12 @@ public class CdmBaseDto {
         this.id = id;
     }
 
+    @Override
     public LocalDateTime getLastUpdated() {
         return lastUpdated;
     }
+    @Override
     public void setLastUpdated(LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-
 }

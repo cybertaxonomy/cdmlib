@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
@@ -22,11 +23,17 @@ public class DistributionInfoDto implements IFactDto {
     private CondensedDistribution condensedDistribution = null;
     private IDistributionTree tree = null;
     private String mapUriParams = null;
+    private LocalDateTime lastUpdated;
 
     //TODO remove elements ??
     private Set<Distribution> elements = null;
 
 // ****************** GETTER / SETTER ******************************/
+
+    @Override
+    public String getClazz() {
+        return this.getClass().getSimpleName();
+    }
 
     public CondensedDistribution getCondensedDistribution() {
         return condensedDistribution;
@@ -51,8 +58,18 @@ public class DistributionInfoDto implements IFactDto {
 
     public Set<Distribution> getElements() {
         return elements;
-    }    public void setElements(Set<Distribution> elements) {
+    }
+    public void setElements(Set<Distribution> elements) {
         this.elements = elements;
+    }
+
+    @Override
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+    @Override
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     public enum InfoPart{
@@ -61,4 +78,6 @@ public class DistributionInfoDto implements IFactDto {
         mapUriParams,
         elements,
     }
+
+
 }

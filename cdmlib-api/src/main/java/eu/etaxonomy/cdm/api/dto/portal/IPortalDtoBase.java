@@ -8,14 +8,15 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
-/**
- * Interface for all fact DTOs. To be used in {@link FeatureDto}.
- *
- * @author a.mueller
- * @date 09.02.2023
- */
-public interface IFactDto extends IPortalDtoBase {
+import java.time.LocalDateTime;
 
-    public String getClazz();
+/**
+ * @author a.mueller
+ * @date 13.02.2023
+ */
+public interface IPortalDtoBase {
+
+    public LocalDateTime getLastUpdated();
+    public void setLastUpdated(LocalDateTime lastUpdated);
 
 }

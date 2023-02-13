@@ -156,8 +156,8 @@ public class DistributionTreeDtoLoader {
           //nothing => stop condition
           return;
       }else {
-          Collections.sort(treeNode.children, comparator);
-          for (TreeNode<Set<DistributionDto>, NamedAreaDto> child : treeNode.children) {
+          Collections.sort(treeNode.getChildren(), comparator);
+          for (TreeNode<Set<DistributionDto>, NamedAreaDto> child : treeNode.getChildren()) {
               innerRecursiveSortChildren(child, comparator);
           }
       }

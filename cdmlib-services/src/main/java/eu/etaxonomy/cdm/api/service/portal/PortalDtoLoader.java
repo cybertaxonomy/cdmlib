@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,10 +32,12 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
+import eu.etaxonomy.cdm.api.dto.portal.CommonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
+import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto.MessageType;
@@ -42,6 +45,7 @@ import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
@@ -60,8 +64,11 @@ import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
+import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
+import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -72,15 +79,22 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
+import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -102,6 +116,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
@@ -338,6 +356,8 @@ public class PortalDtoLoader {
 
         //TODO depending on config add/remove accepted name
 
+        //TODO check publish flag
+
         //homotypic synonyms
         List<Synonym> homotypicSynonmys = taxon.getHomotypicSynonymsByHomotypicGroup(comparator);
         TaxonPageDto.HomotypicGroupDTO homotypicGroupDto = new TaxonPageDto.HomotypicGroupDTO();
@@ -465,12 +485,68 @@ public class PortalDtoLoader {
         hgDto.addSynonym(synDto);
     }
 
-    private void loadFacts(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
+    private void loadFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
 
-        //TODO load feature tree
+        //compute the feature that do exist for this taxon
+        Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(taxon);
+
+        //evaluate feature tree if it exists
+        TreeNode<Feature, UUID> filteredRootNode;
+        if (config.getFeatureTree() != null) {
+
+            //TODO class cast
+            TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
+            filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
+        } else {
+            filteredRootNode = createDefaultFeatureNode(taxon);
+        }
 
         //load facts per feature
-        Map<Feature,Set<DescriptionElementBase>> featureMap = new HashMap<>();
+        Map<UUID,Set<DescriptionElementBase>> featureMap = loadfeatureMap(taxon);
+
+        //load final result
+        if (!filteredRootNode.getChildren().isEmpty()) {
+            ContainerDto<FeatureDto> features = new ContainerDto<>();
+            for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
+                handleFeatureNode(taxon, config, featureMap, features, node);
+            }
+            taxonPageDto.setFactualData(features);
+        }
+    }
+
+    private void handleFeatureNode(Taxon taxon, TaxonPageDtoConfiguration config,
+            Map<UUID, Set<DescriptionElementBase>> featureMap, ContainerDto<FeatureDto> features,
+            TreeNode<Feature, UUID> node) {
+
+        Feature feature = node.getData();
+        //TODO locale
+        FeatureDto featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
+        features.addItem(featureDto);
+
+        List<Distribution> distributions = new ArrayList<>();
+        //
+        for (DescriptionElementBase fact : featureMap.get(feature.getUuid())){
+            if (fact.isInstanceOf(Distribution.class)) {
+                distributions.add(CdmBase.deproxy(fact, Distribution.class));
+            }else {
+                handleFact(featureDto, fact);
+            }
+        }
+
+        handleDistributions(config, featureDto, taxon, distributions);
+
+        //children
+        ContainerDto<FeatureDto> childFeatures = new ContainerDto<>();
+        for (TreeNode<Feature,UUID> child : node.getChildren()) {
+            handleFeatureNode(taxon, config, featureMap, childFeatures, child);
+        }
+        if (childFeatures.getCount() > 0) {
+            featureDto.setSubFeatures(childFeatures);
+        }
+    }
+
+    private Map<UUID, Set<DescriptionElementBase>> loadfeatureMap(Taxon taxon) {
+        Map<UUID, Set<DescriptionElementBase>> featureMap = new HashMap<>();
 
         //... load facts
         for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
@@ -479,36 +555,90 @@ public class PortalDtoLoader {
             }
             for (DescriptionElementBase deb : taxonDescription.getElements()) {
                 Feature feature = deb.getFeature();
-                if (featureMap.get(feature) == null) {
-                    featureMap.put(feature, new HashSet<>());
+                if (featureMap.get(feature.getUuid()) == null) {
+                    featureMap.put(feature.getUuid(), new HashSet<>());
                 }
-                featureMap.get(feature).add(deb);
+                featureMap.get(feature.getUuid()).add(deb);
+            }
+        }
+        return featureMap;
+    }
+
+    private TreeNode<Feature, UUID> createDefaultFeatureNode(Taxon taxon) {
+        TreeNode<Feature, UUID> root = new TreeNode<>();
+        Set<Feature> requiredFeatures = new HashSet<>();
+
+        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
+            if (taxonDescription.isImageGallery()) {
+                continue;
+            }
+            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+                Feature feature = deb.getFeature();
+                if (feature != null) {  //null should not happen
+                    requiredFeatures.add(feature);
+                }
+            }
+        }
+        List<Feature> sortedChildren = new ArrayList<>(requiredFeatures);
+        Collections.sort(sortedChildren, (f1,f2) -> f1.getTitleCache().compareTo(f2.getTitleCache()));
+        sortedChildren.stream().forEachOrdered(f->root.addChild(new TreeNode<>(f.getUuid(), f)));
+        return root;
+    }
+
+    /**
+     * Recursive call to a feature tree's feature node in order to creates a tree structure
+     * ordered in the same way as the according feature tree but only containing features
+     * that do really exist for the given taxon. If only a child node is required the parent
+     * node/feature is also considered to be required.<BR>
+     */
+    private TreeNode<Feature, UUID> filterFeatureNode(TermNode<Feature> featureNode,
+            Set<UUID> existingFeatureUuids) {
+
+        //first filter children
+        List<TreeNode<Feature, UUID>> requiredChildNodes = new ArrayList<>();
+        for (TermNode<Feature> childNode : featureNode.getChildNodes()) {
+            TreeNode<Feature, UUID> child = filterFeatureNode(childNode, existingFeatureUuids);
+            if (child != null) {
+                requiredChildNodes.add(child);
             }
         }
 
-        //TODO sort
+        //if any child is required or this node is required ....
+        if (!requiredChildNodes.isEmpty() ||
+                featureNode.getTerm() != null && existingFeatureUuids.contains(featureNode.getTerm().getUuid())) {
+            TreeNode<Feature,UUID> result = new TreeNode<>();
+            //add this nodes data
+            Feature feature = featureNode.getTerm() == null ? null : featureNode.getTerm();
+            if (feature != null) {
+                result.setNodeId(feature.getUuid());
+                result.setData(feature);
+            }
+            //add child data
+            requiredChildNodes.stream().forEachOrdered(c->result.addChild(c));
+            return result;
+        }else {
+            return null;
+        }
+    }
 
-        if (!featureMap.isEmpty()) {
-            ContainerDto<FeatureDto> features = new ContainerDto<>();
-            result.setFactualData(features);
-            for (Feature feature : featureMap.keySet()) {
-                //TODO locale
-                FeatureDto featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
-                features.addItem(featureDto);
-
-                List<Distribution> distributions = new ArrayList<>();
-                //
-                for (DescriptionElementBase fact : featureMap.get(feature)){
-                    if (fact.isInstanceOf(Distribution.class)) {
-                        distributions.add(CdmBase.deproxy(fact, Distribution.class));
-                    }else {
-                        handleFact(featureDto, fact);
-                    }
+    /**
+     * Computes the (unsorted) set of features for  which facts exist
+     * for the given taxon.
+     */
+    private Map<UUID, Feature> getExistingFeatureUuids(Taxon taxon) {
+        Map<UUID, Feature> result = new HashMap<>();
+        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
+            if (taxonDescription.isImageGallery()) {
+                continue;
+            }
+            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+                Feature feature = deb.getFeature();
+                if (feature != null) {  //null should not happen
+                    result.put(feature.getUuid(), feature);
                 }
-
-                handleDistributions(config, featureDto, taxon, distributions);
             }
         }
+        return result;
     }
 
     private void handleDistributions(TaxonPageDtoConfiguration config, FeatureDto featureDto,
@@ -560,23 +690,128 @@ public class PortalDtoLoader {
     }
 
     private void handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
+        //TODO locale
+        Language localeLang = null;
         if (fact.isInstanceOf(TextData.class)) {
             TextData td = CdmBase.deproxy(fact, TextData.class);
-            //TODO locale
-            Language lang = null;
-            LanguageString ls = td.getPreferredLanguageString(lang);
+            LanguageString ls = td.getPreferredLanguageString(localeLang);
             String text = ls == null ? "" : CdmUtils.Nz(ls.getText());
 
             FactDto factDto = new FactDto();
-            featureDto.getFacts().add(factDto);
+            featureDto.addFact(factDto);
             //TODO do we really need type information for textdata here?
             TypedLabel typedLabel = new TypedLabel(text);
             typedLabel.setClassAndId(td);
             factDto.getTypedLabel().add(typedLabel);
+            loadBaseData(td, factDto);
+            //TODO
+        }else if (fact.isInstanceOf(CommonTaxonName.class)) {
+            CommonTaxonName ctn = CdmBase.deproxy(fact, CommonTaxonName.class);
+            CommonNameDto dto = new CommonNameDto();
+            featureDto.addFact(dto);
+
+            Language lang = ctn.getLanguage();
+            if (lang != null) {
+                String langLabel = getTermLabel(lang, localeLang);
+                dto.setLanguage(langLabel);
+                dto.setLanguageUuid(lang.getUuid());
+            }else {
+                //TODO
+                dto.setLanguage("-");
+            }
+            //area
+            NamedArea area = ctn.getArea();
+            if (area != null) {
+                String areaLabel = getTermLabel(area, localeLang);
+                dto.setArea(areaLabel);
+                dto.setAreaUUID(area.getUuid());
+            }
+            dto.setName(ctn.getName());
+            loadBaseData(ctn, dto);
+            //TODO sort all common names
+
+        } else if (fact.isInstanceOf(IndividualsAssociation.class)) {
+            IndividualsAssociation ia = CdmBase.deproxy(fact, IndividualsAssociation.class);
+            IndividualsAssociationDto dto = new IndividualsAssociationDto ();
+
+            LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(ia.getDescription(), Arrays.asList(localeLang));
+            if (description != null) {
+                dto.setDescritpion(description.getText());
+            }
+            SpecimenOrObservationBase<?> specimen = ia.getAssociatedSpecimenOrObservation();
+            if (specimen != null) {
+                //TODO what to use here??
+                dto.setOccurrence(specimen.getTitleCache());
+                dto.setOccurrenceUuid(specimen.getUuid());
+            }
+
+            featureDto.addFact(dto);
+            loadBaseData(ia, dto);
+        } else if (fact.isInstanceOf(TaxonInteraction.class)) {
+            TaxonInteraction ti = CdmBase.deproxy(fact, TaxonInteraction.class);
+            TaxonInteractionDto dto = new TaxonInteractionDto ();
+
+            LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(
+                    ti.getDescription(), Arrays.asList(localeLang));
+            if (description != null) {
+                dto.setDescritpion(description.getText());
+            }
+            Taxon taxon = ti.getTaxon2();
+            if (taxon != null) {
+                //TODO what to use here??
+                dto.setTaxon(taxon.cacheStrategy().getTaggedTitle(taxon));
+                dto.setTaxonUuid(taxon.getUuid());
+            }
+            featureDto.addFact(dto);
+            loadBaseData(ti, dto);
+        }else if (fact.isInstanceOf(CategoricalData.class)) {
+            CategoricalData cd = CdmBase.deproxy(fact, CategoricalData.class);
+            FactDto factDto = new FactDto();
+            featureDto.addFact(factDto);
+            //TODO do we really need type information for textdata here?
+            String label = CategoricalDataFormatter.NewInstance(null).format(cd, localeLang);
+            TypedLabel typedLabel = new TypedLabel(label);
+            typedLabel.setClassAndId(cd);
+            factDto.getTypedLabel().add(typedLabel);
+            //TODO
+            loadBaseData(cd, factDto);
+        }else if (fact.isInstanceOf(QuantitativeData.class)) {
+            QuantitativeData qd = CdmBase.deproxy(fact, QuantitativeData.class);
+            FactDto factDto = new FactDto();
+            featureDto.addFact(factDto);
+            //TODO do we really need type information for textdata here?
+            String label = QuantitativeDataFormatter.NewInstance(null).format(qd, localeLang);
+            TypedLabel typedLabel = new TypedLabel(label);
+            typedLabel.setClassAndId(qd);
+            factDto.getTypedLabel().add(typedLabel);
+            //TODO
+            loadBaseData(qd, factDto);
+        }else if (fact.isInstanceOf(TemporalData.class)) {
+            TemporalData td = CdmBase.deproxy(fact, TemporalData.class);
+            FactDto factDto = new FactDto();
+            featureDto.addFact(factDto);
+            //TODO do we really need type information for textdata here?
+            String label = td.toString();
+            TypedLabel typedLabel = new TypedLabel(label);
+            typedLabel.setClassAndId(td);
+            factDto.getTypedLabel().add(typedLabel);
+            //TODO
+            loadBaseData(td, factDto);
         }else {
 //            TODO
+            logger.warn("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName());
         }
 
+    }
+
+    private String getTermLabel(TermBase term, Language localeLang) {
+        if (term == null) {
+            return null;
+        }
+        Representation rep = term.getPreferredRepresentation(localeLang);
+        String label = rep == null ? null : rep.getLabel();
+        label = label == null ? term.getLabel() : label;
+        return label;
     }
 
     /**

@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,7 +16,9 @@ import java.util.UUID;
  */
 public class FeatureDto extends LabeledEntityDto {
 
-    private List<IFactDto> facts = new ArrayList<>();
+    private ContainerDto<IFactDto> facts;
+
+    private ContainerDto<FeatureDto> subFeatures;
 
     public FeatureDto(UUID uuid, int id, String label) {
         super(uuid, id, label);
@@ -26,10 +26,20 @@ public class FeatureDto extends LabeledEntityDto {
 
 // *********************** GETTER / ADDER ********************************/
 
-    public List<IFactDto> getFacts() {
+    public ContainerDto<IFactDto> getFacts() {
         return facts;
     }
     public void addFact(IFactDto factDto) {
-        facts.add(factDto);
+        if (facts == null) {
+            facts = new ContainerDto<>();
+        }
+        facts.addItem(factDto);
+    }
+
+    public ContainerDto<FeatureDto> getSubFeatures() {
+        return subFeatures;
+    }
+    public void setSubFeatures(ContainerDto<FeatureDto> subFeatures) {
+        this.subFeatures = subFeatures;
     }
 }

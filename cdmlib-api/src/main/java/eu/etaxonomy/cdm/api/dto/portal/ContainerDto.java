@@ -20,7 +20,7 @@ import java.util.Collection;
  * @author a.mueller
  * @date 07.01.2023
  */
-public class ContainerDto<T extends CdmBaseDto> {
+public class ContainerDto<T extends IPortalDtoBase> {
 
     private int count;
 
