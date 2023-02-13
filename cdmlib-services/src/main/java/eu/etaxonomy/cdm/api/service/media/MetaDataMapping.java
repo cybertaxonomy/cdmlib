@@ -17,8 +17,8 @@ import eu.etaxonomy.cdm.model.metadata.IKeyLabel;
  *
  */
 public enum MetaDataMapping implements IKeyLabel{
-
-    Credit("Credit ", "Photographer"),
+    //if Credit and Artist is filled the values would be added comma separated, we need to decide which should be used.
+    //Credit("Credit ", "Photographer"),
     Taxon("Title", "Taxon"),
     Sublocation("Sublocation", "Locality"),
     OriginialTransmissionReference("Original Transmission, Reference", "Original Transmission Reference"),
