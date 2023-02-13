@@ -53,6 +53,7 @@ public abstract class AbstactMediaMetadataReader {
         if(text.startsWith("'") && text.endsWith("'")) {
             text = text.substring(1 , text.length() - 1);
         }
+
         return text;
     }
 
@@ -63,14 +64,16 @@ public abstract class AbstactMediaMetadataReader {
     protected void processPutMetadataEntry(String key, String value) {
 
         String text = text(value);
+
         if ("Keywords".equals(key)){
-            String[] customKeyVal = text.split(":");
-            if (customKeyVal.length == 2){
-                //convention used e.g. for Flora of cyprus (#9137)
-                appendMetadataEntry(customKeyVal[0].trim(), customKeyVal[1].trim());
-            }else{
-                appendMetadataEntry(key, text);
-            }
+            //all keywords should be filled into the concrete meta data fields and should not be displayed anymore
+//            String[] customKeyVal = text.split(":");
+//            if (customKeyVal.length == 2){
+//                //convention used e.g. for Flora of cyprus (#9137)
+//                appendMetadataEntry(customKeyVal[0].trim(), customKeyVal[1].trim());
+//            }else{
+//                appendMetadataEntry(key, text);
+//            }
         }else if (key.contains("/")){
             //TODO: not sure where this syntax is used originally
             //key.replace("/", "");
@@ -83,15 +86,35 @@ public abstract class AbstactMediaMetadataReader {
     }
 
     public void appendMetadataEntry(String key, String text) {
-        String[] splittedKey = StringUtils.splitByCharacterTypeCamelCase(key);
-        
-        key = CdmUtils.concat(" ", splittedKey);
-        key = StringUtils.replace(key, "  ", " ");
+        key = convert(key);
         if(cdmImageInfo.getMetaData().containsKey(key)) {
             cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
         } else {
             cdmImageInfo.getMetaData().put(key, text);
         }
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    private String convert(String text) {
+        MetaDataMapping mapping = null;
+        try {
+            mapping = MetaDataMapping.valueOf(text);
+        }catch(IllegalArgumentException e) {
+            //Do nothing
+        }
+        if (mapping != null) {
+            text = mapping.getLabel();
+        }
+        if (!text.contains(" ")) {
+            String[] splittedKey = StringUtils.splitByCharacterTypeCamelCase(text);
+
+            text = CdmUtils.concat(" ", splittedKey);
+            text = StringUtils.replace(text, "  ", " ");
+        }
+        return text;
     }
 
 
