@@ -66,14 +66,14 @@ public abstract class AbstactMediaMetadataReader {
         String text = text(value);
 
         if ("Keywords".equals(key)){
-            //all keywords should be filled into the concrete meta data fields and should not be displayed anymore
-//            String[] customKeyVal = text.split(":");
-//            if (customKeyVal.length == 2){
-//                //convention used e.g. for Flora of cyprus (#9137)
-//                appendMetadataEntry(customKeyVal[0].trim(), customKeyVal[1].trim());
-//            }else{
-//                appendMetadataEntry(key, text);
-//            }
+            //cyprus keywords should be filled into the concrete meta data fields and should not be displayed anymore
+            String[] customKeyVal = text.split(":");
+            if (customKeyVal.length == 2){
+                //convention used e.g. for Flora of cyprus (#9137)
+               // appendMetadataEntry(customKeyVal[0].trim(), customKeyVal[1].trim());
+            }else{
+                appendMetadataEntry(key, text);
+            }
         }else if (key.contains("/")){
             //TODO: not sure where this syntax is used originally
             //key.replace("/", "");

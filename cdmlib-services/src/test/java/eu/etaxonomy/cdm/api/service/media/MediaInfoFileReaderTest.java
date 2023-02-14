@@ -45,7 +45,7 @@ public class MediaInfoFileReaderTest {
 
     @Before
     public void setUp() throws Exception {
-        URL jpegUrl = MediaInfoFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.jpg");
+        URL jpegUrl = MediaInfoFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small-1.jpg");
         jpegUri = new URI(jpegUrl);
 
         URL tiffUrl = MediaInfoFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.tif");
@@ -249,12 +249,13 @@ public class MediaInfoFileReaderTest {
 
         CdmImageInfo instance = new MediaInfoFileReader(jpegUri).readMetaData().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
-        Assert.assertEquals(52, metaData.size());
+        Assert.assertEquals(54, metaData.size());
 
         Assert.assertEquals("My taxon", metaData.get("Taxon"));
         Assert.assertEquals("on the road", metaData.get("Locality"));
-        Assert.assertEquals("15.02.1955", metaData.get("Date"));
+        Assert.assertEquals("15.02.1955", metaData.get("Date Created"));
         Assert.assertEquals("Any person", metaData.get("Photographer"));
+        //No keywords needed anymore
         Assert.assertEquals("My Keyword; Second Keyword", metaData.get("Keywords"));
     }
 

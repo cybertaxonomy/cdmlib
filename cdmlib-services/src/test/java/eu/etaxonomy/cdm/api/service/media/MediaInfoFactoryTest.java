@@ -52,7 +52,7 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
     public void initUris() throws URISyntaxException {
         transformableURI_ScalerAPI = new URI("https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file");
         transformableURI_IIIF_API = new URI("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cichorieae!Lactuca_serriola_Bc_08.jpg/full/full/0/default.jpg");
-        notTransformableURI = new URI(MediaInfoFactoryTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.jpg"));
+        notTransformableURI = new URI(MediaInfoFactoryTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small-1.jpg"));
         mediahubUri = new URI("https://mediahub.bo.berlin/api/File/Original/1adb62d8-0b67-4128-927b-b713d164f98e/Sisymbrium_aegyptiacum_E1.JPG");
     }
 
@@ -102,15 +102,14 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             assertEquals(3780263, cdmImageInfo.getLength());
             // generic metadata
             assertFalse(cdmImageInfo.getMetaData().isEmpty());
-            assertEquals(56, cdmImageInfo.getMetaData().size());
+            assertEquals(50, cdmImageInfo.getMetaData().size());
             assertTrue(cdmImageInfo.getMetaData().containsKey("Exif Version"));
             assertEquals("48, 50, 50, 49", cdmImageInfo.getMetaData().get("Exif Version"));
-            // custom metadata stored in the "Keywords"
-            assertEquals("Lactuca serriola", cdmImageInfo.getMetaData().get("Taxon"));
-            assertEquals("Germany, Sachsen-Anhalt, am Jersleber See", cdmImageInfo.getMetaData().get("Locality"));
-            assertEquals("Lactuca serriola", cdmImageInfo.getMetaData().get("Taxon"));
-            assertEquals("23.8.2009", cdmImageInfo.getMetaData().get("Date"));
-            assertEquals("N. Kilian", cdmImageInfo.getMetaData().get("Photographer"));
+            // custom metadata stored in the "Keywords" this should not be needed anymore
+//            assertEquals("Germany, Sachsen-Anhalt, am Jersleber See", cdmImageInfo.getMetaData().get("Locality"));
+//            assertEquals("Lactuca serriola", cdmImageInfo.getMetaData().get("Taxon"));
+//            assertEquals("23.8.2009", cdmImageInfo.getMetaData().get("Date"));
+//            assertEquals("N. Kilian", cdmImageInfo.getMetaData().get("Photographer"));
         }
     }
 
