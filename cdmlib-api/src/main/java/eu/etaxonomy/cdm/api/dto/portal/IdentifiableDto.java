@@ -15,8 +15,6 @@ package eu.etaxonomy.cdm.api.dto.portal;
 public class IdentifiableDto extends SourcedDto {
 
     private String label;
-//    private ContainerDto<SourceDto> sources;
-
 
     public String getLabel() {
         return label;
@@ -24,16 +22,4 @@ public class IdentifiableDto extends SourcedDto {
     public void setLabel(String label) {
         this.label = label;
     }
-//    @Override
-//    public ContainerDto<SourceDto> getSources() {
-//        return sources;
-//    }
-//    @Override
-//    public void addSource(SourceDto source) {
-//        if (sources == null) {
-//            sources = new ContainerDto<>();
-//        }
-//        sources.addItem(source);
-//    }
-
 }

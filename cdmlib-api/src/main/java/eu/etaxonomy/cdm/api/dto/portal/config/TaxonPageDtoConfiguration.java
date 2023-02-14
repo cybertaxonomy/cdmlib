@@ -46,7 +46,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
 
 
     //formatting
-    public List<Locale> locales = new ArrayList<>();  //is this data or formatting??
+    private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
     public boolean formatSec = false;  //!!
 
 
@@ -124,5 +124,12 @@ public class TaxonPageDtoConfiguration implements Serializable {
     }
     public void setFeatureTree(UUID featureTree) {
         this.featureTree = featureTree;
+    }
+
+    public List<Locale> getLocales() {
+        return locales;
+    }
+    public void setLocales(List<Locale> locales) {
+        this.locales = locales;
     }
 }

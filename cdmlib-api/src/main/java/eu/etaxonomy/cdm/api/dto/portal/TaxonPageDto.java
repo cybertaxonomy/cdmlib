@@ -166,6 +166,46 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
+    public static class NameRelationDTO extends SingleSourcedDto {
+        private List<TaggedText> nameLabel;
+        private UUID nameUuid;
+        private String relType;
+        private UUID relTypeUuid;
+        private boolean inverse;
+        //TODO relatedTaxon in this classification
+
+        public List<TaggedText> getNameLabel() {
+            return nameLabel;
+        }
+        public void setNameLabel(List<TaggedText> nameLabel) {
+            this.nameLabel = nameLabel;
+        }
+        public UUID getNameUuid() {
+            return nameUuid;
+        }
+        public void setNameUuid(UUID nameUuid) {
+            this.nameUuid = nameUuid;
+        }
+        public String getRelType() {
+            return relType;
+        }
+        public void setRelType(String relType) {
+            this.relType = relType;
+        }
+        public UUID getRelTypeUuid() {
+            return relTypeUuid;
+        }
+        public void setRelTypeUuid(UUID relTypeUuid) {
+            this.relTypeUuid = relTypeUuid;
+        }
+        public boolean isInverse() {
+            return inverse;
+        }
+        public void setInverse(boolean inverse) {
+            this.inverse = inverse;
+        }
+    }
+
     public static class ConceptRelationDTO extends TaxonBaseDto{
 
         //TODO really needed or only in linkedLabel?
@@ -201,10 +241,6 @@ public class TaxonPageDto extends TaxonBaseDto {
     }
 
     public static class SpecimenDTO extends IdentifiableDto {
-
-    }
-
-    public class FactualDataDTO extends CdmBaseDto{
 
     }
 

@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -21,6 +22,8 @@ public class TaxonBaseDto extends IdentifiableDto {
     //TODO should we distinguish data parts (e.g. on general page we do not need last updates from synonymy)
     //lastUpdated
     private String nameLabel;
+
+    private ContainerDto<NameRelationDTO> relatedNames;
 
     //TODO should we keep formatting client side or should we do formatting on server side? Formatting means: filter, italics, order??
 //    private List<TypedLabel> typedTaxonLabel;
@@ -54,6 +57,20 @@ public class TaxonBaseDto extends IdentifiableDto {
     public void setTaggedLabel(List<TaggedText> taggedLabel) {
         this.taggedLabel = taggedLabel;
     }
+    public ContainerDto<NameRelationDTO> getRelatedNames() {
+        return relatedNames;
+    }
+    public void addRelatedName(NameRelationDTO relatedName) {
+        if (this.relatedNames == null) {
+            this.relatedNames = new ContainerDto<>();
+        }
+        this.relatedNames.addItem(relatedName);
+    }
+    //TODO either set or add
+    public void setRelatedNames(ContainerDto<NameRelationDTO> relatedNames) {
+        this.relatedNames = relatedNames;
+    }
+
 
 
     //TaxonBase info
@@ -70,5 +87,7 @@ public class TaxonBaseDto extends IdentifiableDto {
     //relatedNames  //as RelatedDTO?
 
     //types ?? => Teil der homotypischen Gruppe, außer der Fall von Walter (für  name types?)
+
+
 
 }

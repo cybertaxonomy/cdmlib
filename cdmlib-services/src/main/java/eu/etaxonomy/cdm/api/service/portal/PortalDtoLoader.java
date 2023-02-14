@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.KeyDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.SpecimenDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
@@ -109,6 +110,8 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -157,12 +160,14 @@ public class PortalDtoLoader {
         TaxonName name = taxon.getName();
 
         //load 1:1
+        //TODO supplementalData for name
         loadBaseData(taxon, result);
         result.setLastUpdated(getLastUpdated(null, taxon));
         result.setNameLabel(name != null? name.getTitleCache() : "");
         result.setLabel(CdmUtils.Nz(taxon.getTitleCache()));
 //        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
         result.setTaggedLabel(getTaggedTaxon(taxon, config));
+        handleRelatedNames(taxon.getName(), result, config);
 
         loadTaxonNodes(taxon, result, config);
         loadSynonyms(taxon, result, config);
@@ -495,11 +500,67 @@ public class PortalDtoLoader {
     private void loadSynonymsInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn, TaxonPageDtoConfiguration config) {
         TaxonBaseDto synDto = new TaxonBaseDto();
         loadBaseData(syn, synDto);
-        synDto.setNameLabel(syn.getName().getTitleCache());
         synDto.setLabel(syn.getTitleCache());
         synDto.setTaggedLabel(getTaggedTaxon(syn, config));
+        if (syn.getName() != null) {
+            synDto.setNameLabel(syn.getName().getTitleCache());
+            handleRelatedNames(syn.getName(), synDto, config);
+        }
+
         //TODO
         hgDto.addSynonym(synDto);
+    }
+
+    private void handleRelatedNames(TaxonName name, TaxonBaseDto taxonDto, TaxonPageDtoConfiguration config) {
+        //exclusions TODO handle via config
+        Set<UUID> excludedTypes = new HashSet<>();  //both directions
+        excludedTypes.add(NameRelationshipType.uuidBasionym);
+        excludedTypes.add(NameRelationshipType.uuidReplacedSynonym);
+        Set<UUID> excludedFromTypes = new HashSet<>(excludedTypes);
+        Set<UUID> excludedToTypes = new HashSet<>(excludedTypes);
+        //TODO non-types
+
+        //TODO config.getLocales();
+        Language locale = Language.DEFAULT();
+
+        for (NameRelationship rel : name.getRelationsFromThisName()) {
+            TaxonName relatedName = rel.getToName();
+            if (relatedName == null || rel.getType() == null || excludedFromTypes.contains(rel.getType().getUuid())) {
+                continue;
+            }
+            NameRelationDTO dto = new NameRelationDTO();
+            loadBaseData(rel, dto);
+            //name
+            dto.setNameUuid(relatedName.getUuid());
+            dto.setNameLabel(relatedName.getTaggedName());
+            //type
+            dto.setRelTypeUuid(rel.getType().getUuid());
+            Representation rep = rel.getType().getPreferredRepresentation(locale);
+            dto.setRelType(rep == null ? rel.getType().toString() : rep.getLabel());
+            //inverse
+            dto.setInverse(false);
+            taxonDto.addRelatedName(dto);
+        }
+
+        //to relations
+        for (NameRelationship rel : name.getRelationsToThisName()) {
+            TaxonName relatedName = rel.getFromName();
+            if (relatedName == null || rel.getType() == null || excludedFromTypes.contains(rel.getType().getUuid())) {
+                continue;
+            }
+            NameRelationDTO dto = new NameRelationDTO();
+            loadBaseData(rel, dto);
+            //name
+            dto.setNameUuid(relatedName.getUuid());
+            dto.setNameLabel(relatedName.getTaggedName());
+            //type
+            dto.setRelTypeUuid(rel.getType().getUuid());
+            Representation rep = rel.getType().getPreferredInverseRepresentation(Arrays.asList(new Language[] {locale}));
+            dto.setRelType(rep == null ? rel.getType().toString() : rep.getLabel());
+            //inverse
+            dto.setInverse(true);
+            taxonDto.addRelatedName(dto);
+        }
     }
 
     private void loadFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
@@ -952,6 +1013,7 @@ public class PortalDtoLoader {
 
     private void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
 
+        source = CdmBase.deproxy(source);
         //base data
         loadBaseData(source, sourceDto);
 
