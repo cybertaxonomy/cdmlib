@@ -255,7 +255,7 @@ public class MediaInfoFileReaderTest {
         Assert.assertEquals("on the road", metaData.get("Locality"));
         Assert.assertEquals("15.02.1955", metaData.get("Date Created"));
         Assert.assertEquals("Any person", metaData.get("Photographer"));
-        //No keywords needed anymore
+        //only simple keywords needed anymore
         Assert.assertEquals("My Keyword; Second Keyword", metaData.get("Keywords"));
     }
 
