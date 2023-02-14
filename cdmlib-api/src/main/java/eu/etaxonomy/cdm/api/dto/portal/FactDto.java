@@ -34,8 +34,8 @@ public class FactDto extends SourcedDto implements IFactDto {
     public List<TypedLabel> getTypedLabel() {
         return typedLabel;
     }
-    public void setTypedLabel(List<TypedLabel> typedLabel) {
-        this.typedLabel = typedLabel;
+    public void addTypedLabel(TypedLabel typedLabel) {
+        this.typedLabel.add(typedLabel);
     }
 
 

@@ -70,11 +70,13 @@ import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -85,6 +87,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -107,6 +110,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -867,14 +871,56 @@ public class PortalDtoLoader {
     }
 
     private void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
-        loadBaseData(source, sourceDto);
-//        source.getCitation();
-//        source.getLinks();
-//        nameInSource
-        //cdmSource
-        //specimen
-        //..
 
+        //base data
+        loadBaseData(source, sourceDto);
+
+        ICdmBase linkedObject = source.getCitation();
+        if (linkedObject == null) {
+            //cdmsource
+            linkedObject = source.getCdmSource();
+        }
+
+        //citation uuid & doi
+        if (source.getCitation()!= null) {
+            sourceDto.setDoi(source.getCitation().getDoiString());
+        }
+
+        //label
+        //TODO this creates only the short form and probably also does not use
+        //     specimen or cdmSource if necessary
+        String label = OriginalSourceFormatter.INSTANCE.format(source);
+        TypedLabel typedLabel = new TypedLabel(source, label);
+        sourceDto.addLabel(typedLabel);
+        sourceDto.setType(source.getType() != null ? source.getType().toString() : null);
+
+        if (source.isInstanceOf(NamedSourceBase.class)) {
+            NamedSourceBase ns = CdmBase.deproxy(source, NamedSourceBase.class);
+
+            //nameUsedInSource
+            TaxonName name =  ns.getNameUsedInSource();
+            if (name != null) {
+                List<TaggedText> taggedName = name.cacheStrategy().getTaggedTitle(name);
+                //TODO nom status?
+                sourceDto.setNameInSource(taggedName);
+            }
+
+            //specimen uuid
+            if (source.isInstanceOf(DescriptionElementSource.class)) {
+                DescriptionElementSource des = CdmBase.deproxy(source, DescriptionElementSource.class);
+                if (linkedObject == null) {
+                    linkedObject = des.getSpecimen();
+                }
+            }
+        }
+
+        sourceDto.setLinkedUuid(getUuid(linkedObject));
+        String linkedObjectStr = linkedObject == null ? null : CdmBase.deproxy(linkedObject).getClass().getSimpleName();
+        sourceDto.setLinkedClass(linkedObjectStr);
+    }
+
+    private UUID getUuid(ICdmBase cdmBase) {
+        return cdmBase == null ? null : cdmBase.getUuid();
     }
 
     private void loadAnnotatable(CdmBase cdmBase, CdmBaseDto dto) {

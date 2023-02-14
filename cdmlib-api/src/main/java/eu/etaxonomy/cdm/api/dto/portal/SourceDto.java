@@ -8,14 +8,82 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import eu.etaxonomy.cdm.format.common.TypedLabel;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+
 /**
  * @author a.mueller
  * @date 19.01.2023
  */
-public class SourceDto extends CdmBaseDto {
+public class SourceDto extends CdmBaseDto {  //but could be annotatable
 
-    private ReferenceDto reference;
-
+    private List<TypedLabel> label = new ArrayList<>();
+    private UUID linkedUuid;
+    private String linkedClass;
+    private List<TaggedText> nameInSource;
+    private UUID nameInSourceUuid;
+    private String doi;
     private String type;
+    //TODO external links
+
+
+//************* GETTER/SETTER ***********************/
+
+    public List<TypedLabel> getLabel() {
+        return label;
+    }
+    public void addLabel(TypedLabel label) {
+        if (this.label == null) {
+            this.label = new ArrayList<>();
+        }
+        this.label.add(label);
+    }
+
+    public UUID getLinkedUuid() {
+        return linkedUuid;
+    }
+    public void setLinkedUuid(UUID linkedUuid) {
+        this.linkedUuid = linkedUuid;
+    }
+
+    public List<TaggedText> getNameInSource() {
+        return nameInSource;
+    }
+    public void setNameInSource(List<TaggedText> nameInSource) {
+        this.nameInSource = nameInSource;
+    }
+
+    public UUID getNameInSourceUuid() {
+        return nameInSourceUuid;
+    }
+    public void setNameInSourceUuid(UUID nameInSourceUuid) {
+        this.nameInSourceUuid = nameInSourceUuid;
+    }
+
+    public String getDoi() {
+        return doi;
+    }
+    public void setDoi(String doi) {
+        this.doi = doi;
+    }
+
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getLinkedClass() {
+        return linkedClass;
+    }
+    public void setLinkedClass(String linkedClass) {
+        this.linkedClass = linkedClass;
+    }
+
 
 }
