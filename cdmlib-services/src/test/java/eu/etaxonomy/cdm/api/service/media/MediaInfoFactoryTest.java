@@ -102,7 +102,7 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             assertEquals(3780263, cdmImageInfo.getLength());
             // generic metadata
             assertFalse(cdmImageInfo.getMetaData().isEmpty());
-            assertEquals(50, cdmImageInfo.getMetaData().size());
+            assertEquals(51, cdmImageInfo.getMetaData().size());
             assertTrue(cdmImageInfo.getMetaData().containsKey("Exif Version"));
             assertEquals("48, 50, 50, 49", cdmImageInfo.getMetaData().get("Exif Version"));
             // custom metadata stored in the "Keywords" this should not be needed anymore

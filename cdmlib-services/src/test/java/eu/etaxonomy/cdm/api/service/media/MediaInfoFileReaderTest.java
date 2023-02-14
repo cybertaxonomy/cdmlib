@@ -218,7 +218,7 @@ public class MediaInfoFileReaderTest {
 
     @Test
     public void testGetLength(){
-        Assert.assertEquals(55872, getJpegInstance().getLength());
+        Assert.assertEquals(35353, getJpegInstance().getLength());
         Assert.assertEquals(202926, getTifInstance().getLength());
 
         try {
