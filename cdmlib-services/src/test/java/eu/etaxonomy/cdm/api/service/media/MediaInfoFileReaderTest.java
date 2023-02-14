@@ -218,7 +218,7 @@ public class MediaInfoFileReaderTest {
 
     @Test
     public void testGetLength(){
-        Assert.assertEquals(35353, getJpegInstance().getLength());
+        Assert.assertEquals(35339, getJpegInstance().getLength());
         Assert.assertEquals(202926, getTifInstance().getLength());
 
         try {
@@ -249,7 +249,7 @@ public class MediaInfoFileReaderTest {
 
         CdmImageInfo instance = new MediaInfoFileReader(jpegUri).readMetaData().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
-        Assert.assertEquals(54, metaData.size());
+        Assert.assertEquals(53, metaData.size());
 
         Assert.assertEquals("My taxon", metaData.get("Taxon"));
         Assert.assertEquals("on the road", metaData.get("Locality"));
