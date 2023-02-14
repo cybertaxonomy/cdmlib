@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.LabeledEntityDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
-import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -57,13 +56,6 @@ public class DistributionTreeDtoLoader {
         rootElement.setChildren(children);
         dto.setRootElement(rootElement);
         return dto;
-    }
-
-    /**
-     * @return false if the node was not found
-     */
-    public boolean hasChildNode(TreeNode<Set<DistributionDto>, NamedAreaDto> parentNode, NamedAreaDto nodeID) {
-        return findChildNode(parentNode, nodeID) != null;
     }
 
     /**
@@ -221,7 +213,7 @@ public class DistributionTreeDtoLoader {
    *
    * @param area
    * @param distributionAreas the areas for which distribution data exists (after filtering by
-   *  {@link eu.etaxonomy.cdm.api.util.DescriptionUtility#filterDistributions()} )
+   *  {@link eu.etaxonomy.cdm.api.service.geo.DescriptionUtility#filterDistributions()} )
    * @param fallbackAreaMarkerTypes
    *      Areas not associated to a Distribution in the {@code distList} are detected as fallback area
    *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such

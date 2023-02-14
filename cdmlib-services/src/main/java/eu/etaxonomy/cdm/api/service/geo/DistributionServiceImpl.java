@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
-import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -127,7 +126,7 @@ public class DistributionServiceImpl implements IDistributionService {
 
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
         // to all distributions, but KEEP fallback area distributions
-        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hiddenAreaMarkerTypes,
+        Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, hiddenAreaMarkerTypes,
                 !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false, config.isIgnoreDistributionStatusUndefined());
 
         if(parts.contains(InfoPart.elements)) {
@@ -143,11 +142,11 @@ public class DistributionServiceImpl implements IDistributionService {
                     filteredDtoDistributions.add(distDto);
                 }
 
-                tree = DescriptionUtility.buildOrderedTreeDto(omitLevels,
+                tree = DistributionServiceUtilities.buildOrderedTreeDto(omitLevels,
                         filteredDtoDistributions, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
                         distributionOrder, termDao);
             }else {
-                tree = DescriptionUtility.buildOrderedTree(omitLevels,
+                tree = DistributionServiceUtilities.buildOrderedTree(omitLevels,
                         filteredDistributions, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
                         distributionOrder, termDao);
             }
@@ -164,7 +163,7 @@ public class DistributionServiceImpl implements IDistributionService {
             boolean IGNORE_STATUS_ORDER_PREF_ = false;
             Set<MarkerType> hiddenAreaMarkerType = null;
             // only apply the subAreaPreference rule for the maps
-            Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(
+            Set<Distribution> filteredMapDistributions = DistributionServiceUtilities.filterDistributions(
                     filteredDistributions, hiddenAreaMarkerType, !PREFER_AGGREGATED,
                     IGNORE_STATUS_ORDER_PREF_, subAreaPreference, true, config.isIgnoreDistributionStatusUndefined());
 
@@ -184,7 +183,7 @@ public class DistributionServiceImpl implements IDistributionService {
             CondensedDistributionConfiguration config,
             List<Language> langs) {
 
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
+        Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hiddenAreaMarkerTypes, false, statusOrderPreference, false, false, true);
         CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
@@ -207,7 +206,7 @@ public class DistributionServiceImpl implements IDistributionService {
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions,
+        Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
                 hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true, false);
 
         String uriParams = DistributionServiceUtilities.getDistributionServiceRequestParameterString(

@@ -23,7 +23,6 @@ import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
-import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -195,7 +194,7 @@ public class DistributionTree
      *
      * @param area
      * @param distributionAreas the areas for which distribution data exists (after filtering by
-     *  {@link eu.etaxonomy.cdm.api.util.DescriptionUtility#filterDistributions()} )
+     *  {@link eu.etaxonomy.cdm.api.service.geo.DescriptionUtility#filterDistributions()} )
      * @param fallbackAreaMarkerTypes
      *      Areas not associated to a Distribution in the {@code distList} are detected as fallback area
      *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such
@@ -229,7 +228,7 @@ public class DistributionTree
     }
 
     private boolean isFallback(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
-        return DescriptionUtility.isMarkedHidden(area, hiddenAreaMarkerTypes);
+        return DistributionServiceUtilities.isMarkedHidden(area, hiddenAreaMarkerTypes);
     }
 
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {

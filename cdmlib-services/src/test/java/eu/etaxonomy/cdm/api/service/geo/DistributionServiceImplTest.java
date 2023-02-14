@@ -40,7 +40,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -111,7 +110,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
 
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
+        Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, null, false, statusOrderPreference, subAreaPreference, true, false);
 
         String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,

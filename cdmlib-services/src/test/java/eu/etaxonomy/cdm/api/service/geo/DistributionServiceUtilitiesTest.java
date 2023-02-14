@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.util;
+package eu.etaxonomy.cdm.api.service.geo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @author a.kohlbecker
  * @since Jan 27, 2014
  */
-public class DescriptionUtilityTest extends TermTestBase {
+public class DistributionServiceUtilitiesTest extends TermTestBase {
 
     private Collection<Distribution> distributions = null;
     private Collection<Distribution> filteredDistributions = null;
@@ -82,7 +83,7 @@ public class DescriptionUtilityTest extends TermTestBase {
 
         statusOrderPreference= true;
         boolean preferAggregated = true;
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference, false, false);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference, false, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceAbsenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
 
@@ -96,7 +97,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         aggParentDescription.addElement(parentComputedDistribution);
         distributions.add(parentComputedDistribution);
 
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(2, filteredDistributions.size());
     }
@@ -113,7 +114,7 @@ public class DescriptionUtilityTest extends TermTestBase {
          */
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED()));
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(PresenceAbsenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
@@ -143,21 +144,21 @@ public class DescriptionUtilityTest extends TermTestBase {
         // no computed data
         distributions.add(distGermany);
         distributions.add(distBerlin);
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions,
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // mixed situation
         distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions,
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // all computed
         distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions,
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
@@ -187,7 +188,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         hideMarkedAreas.add(MarkerType.IMPORTED());
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, false,
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, hideMarkedAreas, false,
                 statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(germany, filteredDistributions.iterator().next().getArea());
@@ -214,7 +215,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
 
         boolean keepFallBackOnlyIfNoSubareaDataExists = true;
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions,
                 hideMarkedAreas,
                 NO_PREFER_AGGREGATED,
@@ -226,7 +227,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
 
         keepFallBackOnlyIfNoSubareaDataExists = false;
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions,
                 hideMarkedAreas,
                 NO_PREFER_AGGREGATED,
@@ -262,7 +263,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
 
         boolean keepFallBackOnlyIfNoSubareaDataExists = true;
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
                 keepFallBackOnlyIfNoSubareaDataExists, false);
@@ -271,7 +272,7 @@ public class DescriptionUtilityTest extends TermTestBase {
 
 
         keepFallBackOnlyIfNoSubareaDataExists = false;
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
                 keepFallBackOnlyIfNoSubareaDataExists, false);
@@ -281,7 +282,7 @@ public class DescriptionUtilityTest extends TermTestBase {
 
         keepFallBackOnlyIfNoSubareaDataExists = true;
         distributions.add(distSerbia);
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
                 keepFallBackOnlyIfNoSubareaDataExists, false);
@@ -290,7 +291,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
 
         keepFallBackOnlyIfNoSubareaDataExists = false;
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
                 keepFallBackOnlyIfNoSubareaDataExists, false);
@@ -300,7 +301,7 @@ public class DescriptionUtilityTest extends TermTestBase {
 
         distributions.add(distPartOfSerbia);
         keepFallBackOnlyIfNoSubareaDataExists = true;
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
                 keepFallBackOnlyIfNoSubareaDataExists, false);
@@ -309,7 +310,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         Assert.assertEquals(partOfSerbia, filteredDistributions.iterator().next().getArea());
 
         keepFallBackOnlyIfNoSubareaDataExists = false;
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
                 keepFallBackOnlyIfNoSubareaDataExists, false);
@@ -345,7 +346,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         hideMarkedAreas = new HashSet<>();
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
 
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions,
                 hideMarkedAreas,
                 preferAggregated,
@@ -376,7 +377,7 @@ public class DescriptionUtilityTest extends TermTestBase {
         hideMarkedAreas = new HashSet<>();
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
 
-        filteredDistributions = DescriptionUtility.filterDistributions(
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions,
                 hideMarkedAreas,
                 false,

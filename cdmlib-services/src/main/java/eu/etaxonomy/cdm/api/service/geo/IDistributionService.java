@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
-import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.Language;
