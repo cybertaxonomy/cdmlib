@@ -208,8 +208,15 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     }
 
-    public static class KeyDTO extends CdmBaseDto{
+    public static class KeyDTO extends IdentifiableDto{
+        private String keyClass;
 
+        public String getKeyClass() {
+            return keyClass;
+        }
+        public void setKeyClass(String keyClass) {
+            this.keyClass = keyClass;
+        }
     }
 
     public static class MediaDTO extends IdentifiableDto{

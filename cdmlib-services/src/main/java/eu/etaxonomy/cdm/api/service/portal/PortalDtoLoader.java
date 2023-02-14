@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
+import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
@@ -94,6 +96,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -181,8 +184,16 @@ public class PortalDtoLoader {
 
     private void loadKeys(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
         ContainerDto<KeyDTO> container = new ContainerDto<>();
-        //TODO
 
+        //TODO other key types, but type must not be null, otherwise NPE
+        Pager<PolytomousKey> keys = repository.getIdentificationKeyService().findKeysConvering(taxon, PolytomousKey.class, null, null, null);
+        for (PolytomousKey key : keys.getRecords()) {
+            KeyDTO dto = new KeyDTO();
+            loadBaseData(key, dto);
+            dto.setLabel(key.getTitleCache());
+            dto.setKeyClass(key.getClass().getSimpleName());
+            container.addItem(dto);
+        }
         if (container.getCount() > 0) {
             result.setKeys(container);
         }
@@ -290,7 +301,6 @@ public class PortalDtoLoader {
         if (container.getCount() > 0) {
             result.setMedia(container);
         }
-
     }
 
     private void loadTaxonNodes(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
@@ -531,16 +541,24 @@ public class PortalDtoLoader {
         features.addItem(featureDto);
 
         List<Distribution> distributions = new ArrayList<>();
+
         //
         for (DescriptionElementBase fact : featureMap.get(feature.getUuid())){
             if (fact.isInstanceOf(Distribution.class)) {
                 distributions.add(CdmBase.deproxy(fact, Distribution.class));
             }else {
+                //TODO how to handle CommonNames, do we also want to have a data structure
+                //with Language|
+//                             -- Area|
+//                                    --name
+                // a bit like for distribution??
                 handleFact(featureDto, fact);
             }
         }
 
         handleDistributions(config, featureDto, taxon, distributions);
+        //TODO really needed?
+        orderFacts(featureDto);
 
         //children
         ContainerDto<FeatureDto> childFeatures = new ContainerDto<>();
@@ -550,6 +568,34 @@ public class PortalDtoLoader {
         if (childFeatures.getCount() > 0) {
             featureDto.setSubFeatures(childFeatures);
         }
+    }
+
+    //TODO not really used yet, only for distinguishing fact classes,
+    //needs discussion if needed and how to implement.
+    //we could also move compareTo methods to DTO classes but with this
+    //remove from having only data in the DTO, no logic
+    private void orderFacts(FeatureDto featureDto) {
+        List<IFactDto> list = featureDto.getFacts().getItems();
+        Collections.sort(list, (f1,f2)->{
+            if (!f1.getClass().equals(f2.getClass())) {
+                return f1.getClass().getSimpleName().compareTo(f2.getClass().getSimpleName());
+            }else {
+                if (f1 instanceof FactDto) {
+                   FactDto fact1 = (FactDto)f1;
+                   FactDto fact2 = (FactDto)f2;
+
+//                   return fact1.getTypedLabel().toString().compareTo(fact2.getTypedLabel().toString());
+                   return 0; //FIXME;
+                } else if (f1 instanceof CommonNameDto) {
+                    int result = 0;
+                    CommonNameDto fact1 = (CommonNameDto)f1;
+                    CommonNameDto fact2 = (CommonNameDto)f2;
+                    return 0;  //FIXME
+                }
+            }
+            return 0;  //FIXME
+        });
+
     }
 
     private Map<UUID, Set<DescriptionElementBase>> loadfeatureMap(Taxon taxon) {
