@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.geo.DescriptionUtility;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
