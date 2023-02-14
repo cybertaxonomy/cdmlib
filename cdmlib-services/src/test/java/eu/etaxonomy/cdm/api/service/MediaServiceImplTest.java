@@ -59,7 +59,8 @@ public class MediaServiceImplTest extends CdmTransactionalIntegrationTest {
         assertTrue("IPCT data in the positive list of the includes", mediaData.containsKey("Photographer"));
         assertTrue("IPCT data not in includes", !mediaData.containsKey("Writer"));
         assertEquals("Copyright (Notice) 2019.1 IPTC - www.iptc.org  (ref2019.1)", mediaData.get("Copyright"));
-        assertEquals("Creator1 (ref2019.1)", mediaData.get("Photographer"));
+        //This need to be adapted, if we decided which field should be used
+        assertEquals("Creator1 (ref2019.1); Credit Line (ref2019.1)", mediaData.get("Photographer"));
     }
 
     @Override
