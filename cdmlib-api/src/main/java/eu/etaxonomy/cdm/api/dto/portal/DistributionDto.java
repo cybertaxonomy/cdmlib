@@ -17,19 +17,23 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
  * @author a.mueller
  * @date 09.02.2023
  */
-public class DistributionDto extends CdmBaseDto {
+public class DistributionDto extends SourcedDto implements IFactDto {
 
     private NamedAreaDto area;
     private LabeledEntityDto status;
 
     public DistributionDto(UUID uuid, int id, NamedAreaDto area, LabeledEntityDto status) {
-        super(uuid, id, null);
+        this.setUuid(uuid);
+        this.setId(id);
+        this.setLastUpdated(null);   //TODO
         this.area = area;
         this.setStatus(status);
     }
 
     public DistributionDto(Distribution distribution) {
-        super(distribution.getUuid(), distribution.getId(), null);
+        this.setUuid(distribution.getUuid());
+        this.setId(distribution.getId());
+        this.setLastUpdated(null);   //TODO
         if (distribution.getArea() != null) {
             this.area = new NamedAreaDto(distribution.getArea(), false);
         }
@@ -54,5 +58,10 @@ public class DistributionDto extends CdmBaseDto {
     }
     public void setStatus(LabeledEntityDto status) {
         this.status = status;
+    }
+
+    @Override
+    public String getClazz() {
+        return this.getClass().getSimpleName();
     }
 }

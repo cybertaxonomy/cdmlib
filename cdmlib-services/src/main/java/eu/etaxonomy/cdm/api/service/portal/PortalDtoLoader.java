@@ -34,13 +34,16 @@ import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.CommonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto.MessageType;
+import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
@@ -651,12 +654,14 @@ public class PortalDtoLoader {
         if (distributions.isEmpty()) {
             return;
         }
-        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
+        IDistributionService distributionService = repository.getDistributionService();
 
+        //configs
+        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
         CondensedDistributionConfiguration condensedConfig = distributionConfig.getCondensedDistrConfig();
+
         String statusColorsString = distributionConfig.getStatusColorsString();
 
-        IDistributionService distributionService = repository.getDistributionService();
 
         //copied from DescriptionListController
 
@@ -690,12 +695,34 @@ public class PortalDtoLoader {
                 distributionStatusColors, LocaleContext.getLanguages(),
                 initStrategy);
 
+        if (distributionConfig.isUseTreeDto() && dto.getTree() != null) {
+            DistributionTreeDto tree = (DistributionTreeDto)dto.getTree();
+            TreeNode<Set<DistributionDto>, NamedAreaDto> root = tree.getRootElement();
+            //fill uuid->distribution map
+            Map<UUID,Distribution> distributionMap = new HashMap<>();
+            distributions.stream().forEach(d->distributionMap.put(d.getUuid(), d));
+            handleDistributionDtoNode(distributionMap, root);
+        }
+
         featureDto.addFact(dto);
     }
 
-    private void handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
+    private void handleDistributionDtoNode(Map<UUID, Distribution> map,
+            TreeNode<Set<DistributionDto>, NamedAreaDto> root) {
+       if (root.getData() != null) {
+           root.getData().stream().forEach(d->loadBaseData(map.get(d.getUuid()), d));
+       }
+       //handle children
+       if (root.getChildren() != null) {
+           root.getChildren().stream().forEach(c->handleDistributionDtoNode(map, c));
+       }
+    }
+
+    private IFactDto handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
         //TODO locale
         Language localeLang = null;
+
+        IFactDto result;
         if (fact.isInstanceOf(TextData.class)) {
             TextData td = CdmBase.deproxy(fact, TextData.class);
             LanguageString ls = td.getPreferredLanguageString(localeLang);
@@ -709,6 +736,7 @@ public class PortalDtoLoader {
             factDto.getTypedLabel().add(typedLabel);
             loadBaseData(td, factDto);
             //TODO
+            result = factDto;
         }else if (fact.isInstanceOf(CommonTaxonName.class)) {
             CommonTaxonName ctn = CdmBase.deproxy(fact, CommonTaxonName.class);
             CommonNameDto dto = new CommonNameDto();
@@ -733,7 +761,7 @@ public class PortalDtoLoader {
             dto.setName(ctn.getName());
             loadBaseData(ctn, dto);
             //TODO sort all common names
-
+            result = dto;
         } else if (fact.isInstanceOf(IndividualsAssociation.class)) {
             IndividualsAssociation ia = CdmBase.deproxy(fact, IndividualsAssociation.class);
             IndividualsAssociationDto dto = new IndividualsAssociationDto ();
@@ -751,6 +779,7 @@ public class PortalDtoLoader {
 
             featureDto.addFact(dto);
             loadBaseData(ia, dto);
+            result = dto;
         } else if (fact.isInstanceOf(TaxonInteraction.class)) {
             TaxonInteraction ti = CdmBase.deproxy(fact, TaxonInteraction.class);
             TaxonInteractionDto dto = new TaxonInteractionDto ();
@@ -768,6 +797,7 @@ public class PortalDtoLoader {
             }
             featureDto.addFact(dto);
             loadBaseData(ti, dto);
+            result = dto;
         }else if (fact.isInstanceOf(CategoricalData.class)) {
             CategoricalData cd = CdmBase.deproxy(fact, CategoricalData.class);
             FactDto factDto = new FactDto();
@@ -779,6 +809,7 @@ public class PortalDtoLoader {
             factDto.getTypedLabel().add(typedLabel);
             //TODO
             loadBaseData(cd, factDto);
+            result = factDto;
         }else if (fact.isInstanceOf(QuantitativeData.class)) {
             QuantitativeData qd = CdmBase.deproxy(fact, QuantitativeData.class);
             FactDto factDto = new FactDto();
@@ -790,6 +821,7 @@ public class PortalDtoLoader {
             factDto.getTypedLabel().add(typedLabel);
             //TODO
             loadBaseData(qd, factDto);
+            result = factDto;
         }else if (fact.isInstanceOf(TemporalData.class)) {
             TemporalData td = CdmBase.deproxy(fact, TemporalData.class);
             FactDto factDto = new FactDto();
@@ -801,11 +833,13 @@ public class PortalDtoLoader {
             factDto.getTypedLabel().add(typedLabel);
             //TODO
             loadBaseData(td, factDto);
+            result = factDto;
         }else {
 //            TODO
             logger.warn("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName());
+            result = null;
         }
-
+        return result;
     }
 
     private String getTermLabel(TermBase term, Language localeLang) {
@@ -903,6 +937,7 @@ public class PortalDtoLoader {
                 List<TaggedText> taggedName = name.cacheStrategy().getTaggedTitle(name);
                 //TODO nom status?
                 sourceDto.setNameInSource(taggedName);
+                sourceDto.setNameInSourceUuid(name.getUuid());
             }
 
             //specimen uuid

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Container to handle list and sets in a DTO.
@@ -26,7 +26,7 @@ public class ContainerDto<T extends IPortalDtoBase> {
 
     private boolean orderRelevant;
 
-    private Collection<T> items = new ArrayList<>();
+    private List<T> items = new ArrayList<>();
 
     //computed from updated of all relevant data
     //uses java.time.XXX  to have less dependencies
@@ -49,7 +49,7 @@ public class ContainerDto<T extends IPortalDtoBase> {
         this.orderRelevant = orderRelevant;
     }
 
-    public Collection<T> getItems() {
+    public List<T> getItems() {
         return items;
     }
     public void addItem(T item) {
