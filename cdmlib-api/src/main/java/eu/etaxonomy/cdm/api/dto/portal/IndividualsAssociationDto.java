@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author a.mueller
  * @date 13.02.2023
  */
-public class IndividualsAssociationDto extends SourcedDto implements IFactDto {
+public class IndividualsAssociationDto extends FactDtoBase {
 
     private String descritpion;
 
@@ -40,9 +40,5 @@ public class IndividualsAssociationDto extends SourcedDto implements IFactDto {
     }
     public void setOccurrenceUuid(UUID occurrenceUuid) {
         this.occurrenceUuid = occurrenceUuid;
-    }
-    @Override
-    public String getClazz() {
-        return this.getClass().getSimpleName();
     }
 }

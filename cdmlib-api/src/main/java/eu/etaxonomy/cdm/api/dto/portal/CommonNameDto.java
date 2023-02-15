@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author a.mueller
  * @date 13.02.2023
  */
-public class CommonNameDto extends SourcedDto implements IFactDto {
+public class CommonNameDto extends FactDtoBase {
 
     private String language;
     private UUID languageUuid;
@@ -59,10 +59,5 @@ public class CommonNameDto extends SourcedDto implements IFactDto {
     }
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String getClazz() {
-        return this.getClass().getSimpleName();
     }
 }

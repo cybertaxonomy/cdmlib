@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.format.common.TypedLabel;
  * @author a.mueller
  * @date 11.01.2023
  */
-public class FactDto extends SourcedDto implements IFactDto {
+public class FactDto extends FactDtoBase {
 
     private List<TypedLabel> typedLabel = new ArrayList<>();
 
@@ -26,10 +26,7 @@ public class FactDto extends SourcedDto implements IFactDto {
 
 // ****************** GETTER / SETTER ***********************/
 
-    @Override
-    public String getClazz() {
-        return this.getClass().getSimpleName();
-    }
+
 
     public List<TypedLabel> getTypedLabel() {
         return typedLabel;

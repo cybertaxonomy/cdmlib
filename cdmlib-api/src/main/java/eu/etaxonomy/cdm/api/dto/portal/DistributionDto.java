@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
  * @author a.mueller
  * @date 09.02.2023
  */
-public class DistributionDto extends SourcedDto implements IFactDto {
+public class DistributionDto extends FactDtoBase {
 
     private NamedAreaDto area;
     private LabeledEntityDto status;
@@ -58,10 +58,5 @@ public class DistributionDto extends SourcedDto implements IFactDto {
     }
     public void setStatus(LabeledEntityDto status) {
         this.status = status;
-    }
-
-    @Override
-    public String getClazz() {
-        return this.getClass().getSimpleName();
     }
 }

@@ -78,6 +78,4 @@ public class DistributionInfoDto implements IFactDto {
         mapUriParams,
         elements,
     }
-
-
 }

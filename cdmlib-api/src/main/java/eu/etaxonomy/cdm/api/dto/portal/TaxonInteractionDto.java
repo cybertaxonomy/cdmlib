@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author a.mueller
  * @date 13.02.2023
  */
-public class TaxonInteractionDto extends SourcedDto implements IFactDto{
+public class TaxonInteractionDto extends FactDtoBase {
 
     private String descritpion;
 
@@ -46,10 +46,5 @@ public class TaxonInteractionDto extends SourcedDto implements IFactDto{
     }
     public void setTaxonUuid(UUID taxonUuid) {
         this.taxonUuid = taxonUuid;
-    }
-
-    @Override
-    public String getClazz() {
-        return this.getClass().getSimpleName();
     }
 }

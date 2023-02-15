@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
+import eu.etaxonomy.cdm.api.dto.portal.FactDtoBase;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
@@ -565,10 +566,10 @@ public class PortalDtoLoader {
 
     private void loadFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
 
-        //compute the feature that do exist for this taxon
+        //compute the features that do exist for this taxon
         Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(taxon);
 
-        //evaluate feature tree if it exists
+        //filter, sort and structure according to feature tree
         TreeNode<Feature, UUID> filteredRootNode;
         if (config.getFeatureTree() != null) {
 
@@ -580,7 +581,7 @@ public class PortalDtoLoader {
         }
 
         //load facts per feature
-        Map<UUID,Set<DescriptionElementBase>> featureMap = loadfeatureMap(taxon);
+        Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(taxon);
 
         //load final result
         if (!filteredRootNode.getChildren().isEmpty()) {
@@ -659,7 +660,7 @@ public class PortalDtoLoader {
 
     }
 
-    private Map<UUID, Set<DescriptionElementBase>> loadfeatureMap(Taxon taxon) {
+    private Map<UUID, Set<DescriptionElementBase>> loadFeatureMap(Taxon taxon) {
         Map<UUID, Set<DescriptionElementBase>> featureMap = new HashMap<>();
 
         //... load facts
@@ -817,7 +818,12 @@ public class PortalDtoLoader {
     private void handleDistributionDtoNode(Map<UUID, Distribution> map,
             TreeNode<Set<DistributionDto>, NamedAreaDto> root) {
        if (root.getData() != null) {
-           root.getData().stream().forEach(d->loadBaseData(map.get(d.getUuid()), d));
+           root.getData().stream().forEach(d->{
+               Distribution distr  = map.get(d.getUuid());
+               loadBaseData(distr, d);
+               d.setTimeperiod(distr.getTimeperiod() == null ? null : distr.getTimeperiod().toString());
+
+           });
        }
        //handle children
        if (root.getChildren() != null) {
@@ -825,11 +831,11 @@ public class PortalDtoLoader {
        }
     }
 
-    private IFactDto handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
+    private FactDtoBase handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
         //TODO locale
         Language localeLang = null;
 
-        IFactDto result;
+        FactDtoBase result;
         if (fact.isInstanceOf(TextData.class)) {
             TextData td = CdmBase.deproxy(fact, TextData.class);
             LanguageString ls = td.getPreferredLanguageString(localeLang);
@@ -944,8 +950,9 @@ public class PortalDtoLoader {
         }else {
 //            TODO
             logger.warn("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName());
-            result = null;
+            return null;
         }
+        result.setTimeperiod(fact.getTimeperiod() == null ? null : fact.getTimeperiod().toString());
         return result;
     }
 
