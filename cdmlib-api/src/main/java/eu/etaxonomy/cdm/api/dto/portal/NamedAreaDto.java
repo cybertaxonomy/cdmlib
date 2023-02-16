@@ -60,7 +60,7 @@ public class NamedAreaDto extends CdmBaseDto {
             //TODO i18n
             level = new LabeledEntityDto(aLevel.getUuid(), aLevel.getId(), aLevel.getLabel());
         }
-        if (withPartOf) {
+        if (withPartOf && area.getPartOf() != null) {
             this.partOf = new NamedAreaDto(area.getPartOf(), withPartOf);
         }
         this.markers = area.getMarkers();
