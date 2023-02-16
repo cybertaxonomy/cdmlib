@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
-import eu.etaxonomy.cdm.api.dto.portal.MessagesDto.MessageType;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
@@ -158,17 +157,7 @@ public class PortalDtoLoader {
     public TaxonPageDto load(Taxon taxon, TaxonPageDtoConfiguration config) {
         TaxonPageDto result = new TaxonPageDto();
 
-        TaxonName name = taxon.getName();
-
-        //load 1:1
-        //TODO supplementalData for name
-        loadBaseData(taxon, result);
-        result.setLastUpdated(getLastUpdated(null, taxon));
-        result.setNameLabel(name != null? name.getTitleCache() : "");
-        result.setLabel(CdmUtils.Nz(taxon.getTitleCache()));
-//        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
-        result.setTaggedLabel(getTaggedTaxon(taxon, config));
-        handleRelatedNames(taxon.getName(), result, config);
+        loadAcceptedTaxon(taxon, config, result);
 
         loadTaxonNodes(taxon, result, config);
         loadSynonyms(taxon, result, config);
@@ -181,6 +170,25 @@ public class PortalDtoLoader {
         return result;
     }
 
+    private void loadAcceptedTaxon(Taxon taxon, TaxonPageDtoConfiguration config, TaxonPageDto result) {
+        try {
+            TaxonName name = taxon.getName();
+
+            //load 1:1
+            //TODO supplementalData for name
+            loadBaseData(taxon, result);
+            result.setLastUpdated(getLastUpdated(null, taxon));
+            result.setNameLabel(name != null? name.getTitleCache() : "");
+            result.setLabel(CdmUtils.Nz(taxon.getTitleCache()));
+//        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
+            result.setTaggedLabel(getTaggedTaxon(taxon, config));
+            handleRelatedNames(taxon.getName(), result, config);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            result.addMessage(MessagesDto.NewErrorInstance("Error when loading accepted name data.", e));
+        }
+    }
+
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {
 //        List<TypedLabel> result = new ArrayList<>();
         TaxonBaseDefaultCacheStrategy<TaxonBase<?>> formatter = new TaxonBaseDefaultCacheStrategy<>();
@@ -189,55 +197,65 @@ public class PortalDtoLoader {
     }
 
     private void loadKeys(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
-        ContainerDto<KeyDTO> container = new ContainerDto<>();
+        try {
+            ContainerDto<KeyDTO> container = new ContainerDto<>();
 
-        //TODO other key types, but type must not be null, otherwise NPE
-        Pager<PolytomousKey> keys = repository.getIdentificationKeyService().findKeysConvering(taxon, PolytomousKey.class, null, null, null);
-        for (PolytomousKey key : keys.getRecords()) {
-            KeyDTO dto = new KeyDTO();
-            loadBaseData(key, dto);
-            dto.setLabel(key.getTitleCache());
-            dto.setKeyClass(key.getClass().getSimpleName());
-            container.addItem(dto);
-        }
-        if (container.getCount() > 0) {
-            result.setKeys(container);
+            //TODO other key types, but type must not be null, otherwise NPE
+            Pager<PolytomousKey> keys = repository.getIdentificationKeyService().findKeysConvering(taxon, PolytomousKey.class, null, null, null);
+            for (PolytomousKey key : keys.getRecords()) {
+                KeyDTO dto = new KeyDTO();
+                loadBaseData(key, dto);
+                dto.setLabel(key.getTitleCache());
+                dto.setKeyClass(key.getClass().getSimpleName());
+                container.addItem(dto);
+            }
+            if (container.getCount() > 0) {
+                result.setKeys(container);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            result.addMessage(MessagesDto.NewErrorInstance("Error when loading identification key data.", e));
         }
     }
 
     private void loadSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
         //TODO load specimen from multiple places
 
-        ContainerDto<SpecimenDTO> container = new ContainerDto<>();
+        try {
+            ContainerDto<SpecimenDTO> container = new ContainerDto<>();
 
-        List<SpecimenOrObservationBase<?>> specimens = new ArrayList<>();
-        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-            if (taxonDescription.isImageGallery()) {
-                continue;
-            }
-            for (DescriptionElementBase el : taxonDescription.getElements()) {
-                if (el.isInstanceOf(IndividualsAssociation.class)) {
-                    IndividualsAssociation indAss = CdmBase.deproxy(el, IndividualsAssociation.class);
-                    SpecimenOrObservationBase<?> specimen = indAss.getAssociatedSpecimenOrObservation();
-                    specimens.add(specimen);
+            List<SpecimenOrObservationBase<?>> specimens = new ArrayList<>();
+            for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
+                if (taxonDescription.isImageGallery()) {
+                    continue;
+                }
+                for (DescriptionElementBase el : taxonDescription.getElements()) {
+                    if (el.isInstanceOf(IndividualsAssociation.class)) {
+                        IndividualsAssociation indAss = CdmBase.deproxy(el, IndividualsAssociation.class);
+                        SpecimenOrObservationBase<?> specimen = indAss.getAssociatedSpecimenOrObservation();
+                        specimens.add(specimen);
+                    }
                 }
             }
-        }
-        List<SpecimenOrObservationBase<?>> typeSpecimens = loadTypeSpecimen(taxon.getName(), config);
-        specimens.addAll(typeSpecimens);
-        for (TaxonName syn : taxon.getSynonymNames()) {
-            typeSpecimens = loadTypeSpecimen(syn, config);
+            List<SpecimenOrObservationBase<?>> typeSpecimens = loadTypeSpecimen(taxon.getName(), config);
             specimens.addAll(typeSpecimens);
-        }
+            for (TaxonName syn : taxon.getSynonymNames()) {
+                typeSpecimens = loadTypeSpecimen(syn, config);
+                specimens.addAll(typeSpecimens);
+            }
 
-        for (SpecimenOrObservationBase<?> specimen : specimens) {
-            SpecimenDTO dto = new SpecimenDTO();
-            loadBaseData(specimen, dto);
-            dto.setLabel(specimen.getTitleCache());
-            container.addItem(dto);
-        }
-        if (container.getCount() > 0 ) {
-            result.setSpecimens(container);
+            for (SpecimenOrObservationBase<?> specimen : specimens) {
+                SpecimenDTO dto = new SpecimenDTO();
+                loadBaseData(specimen, dto);
+                dto.setLabel(specimen.getTitleCache());
+                container.addItem(dto);
+            }
+            if (container.getCount() > 0 ) {
+                result.setSpecimens(container);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            result.addMessage(MessagesDto.NewErrorInstance("Error when loading specimen data.", e));
         }
     }
 
@@ -254,165 +272,181 @@ public class PortalDtoLoader {
 
     private void loadMedia(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
-        ContainerDto<MediaDTO> container = new ContainerDto<TaxonPageDto.MediaDTO>();
+        try {
+            ContainerDto<MediaDTO> container = new ContainerDto<TaxonPageDto.MediaDTO>();
 
-        List<Media> medias = new ArrayList<>();
-        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-            if (!taxonDescription.isImageGallery()) {
-                continue;
-            }
-
-            List<Media> newMedia = taxonDescription.getElements().stream()
-                .filter(el->el.isInstanceOf(TextData.class))
-                .map(el->CdmBase.deproxy(el, TextData.class))
-                .filter(td->true)
-                .flatMap(td->td.getMedia().stream())
-                .collect(Collectors.toList())
-                ;
-            medias.addAll(newMedia);
-        }
-        //TODO collect media from elsewhere
-        for (Media media : medias) {
-            MediaDTO dto = new TaxonPageDto.MediaDTO();
-            loadBaseData(media, dto);
-            dto.setLabel(media.getTitleCache());
-            ContainerDto<MediaRepresentationDTO> representations = new ContainerDto<>();
-            for (MediaRepresentation rep : media.getRepresentations()) {
-                MediaRepresentationDTO repDto = new MediaRepresentationDTO();
-                loadBaseData(rep, dto);
-                repDto.setMimeType(rep.getMimeType());
-                repDto.setSuffix(rep.getSuffix());
-                if (!rep.getParts().isEmpty()) {
-                    //TODO handle message if n(parts) > 1
-                    MediaRepresentationPart part = rep.getParts().get(0);
-                    repDto.setUri(part.getUri());
-                    repDto.setClazz(part.getClass());
-                    repDto.setSize(part.getSize());
-                    if (part.isInstanceOf(ImageFile.class)) {
-                        ImageFile image = CdmBase.deproxy(part, ImageFile.class);
-                        repDto.setHeight(image.getHeight());
-                        repDto.setWidth(image.getWidth());
-                    }
-                    //TODO AudioFile etc.
+            List<Media> medias = new ArrayList<>();
+            for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
+                if (!taxonDescription.isImageGallery()) {
+                    continue;
                 }
-                representations.addItem(repDto);
-            }
-            if (representations.getCount() > 0) {
-                dto.setRepresentations(representations);
-            }
-            //TODO load representation data
-            container.addItem(dto);
-        }
 
-        if (container.getCount() > 0) {
-            result.setMedia(container);
+                List<Media> newMedia = taxonDescription.getElements().stream()
+                    .filter(el->el.isInstanceOf(TextData.class))
+                    .map(el->CdmBase.deproxy(el, TextData.class))
+                    .filter(td->true)
+                    .flatMap(td->td.getMedia().stream())
+                    .collect(Collectors.toList())
+                    ;
+                medias.addAll(newMedia);
+            }
+            //TODO collect media from elsewhere
+            for (Media media : medias) {
+                MediaDTO dto = new TaxonPageDto.MediaDTO();
+                loadBaseData(media, dto);
+                dto.setLabel(media.getTitleCache());
+                ContainerDto<MediaRepresentationDTO> representations = new ContainerDto<>();
+                for (MediaRepresentation rep : media.getRepresentations()) {
+                    MediaRepresentationDTO repDto = new MediaRepresentationDTO();
+                    loadBaseData(rep, dto);
+                    repDto.setMimeType(rep.getMimeType());
+                    repDto.setSuffix(rep.getSuffix());
+                    if (!rep.getParts().isEmpty()) {
+                        //TODO handle message if n(parts) > 1
+                        MediaRepresentationPart part = rep.getParts().get(0);
+                        repDto.setUri(part.getUri());
+                        repDto.setClazz(part.getClass());
+                        repDto.setSize(part.getSize());
+                        if (part.isInstanceOf(ImageFile.class)) {
+                            ImageFile image = CdmBase.deproxy(part, ImageFile.class);
+                            repDto.setHeight(image.getHeight());
+                            repDto.setWidth(image.getWidth());
+                        }
+                        //TODO AudioFile etc.
+                    }
+                    representations.addItem(repDto);
+                }
+                if (representations.getCount() > 0) {
+                    dto.setRepresentations(representations);
+                }
+                //TODO load representation data
+                container.addItem(dto);
+            }
+
+            if (container.getCount() > 0) {
+                result.setMedia(container);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            result.addMessage(MessagesDto.NewErrorInstance("Error when loading media data.", e));
         }
     }
 
     private void loadTaxonNodes(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
-        ContainerDto<TaxonNodeDTO> container = new ContainerDto<TaxonPageDto.TaxonNodeDTO>();
-        for (TaxonNode node : taxon.getTaxonNodes()) {
-            TaxonNodeDTO dto = new TaxonNodeDTO();
-            loadBaseData(node, dto);
-            //classification
-            Classification classification = node.getClassification();
-            if (classification != null) {
-                dto.setClassificationUuid(node.getClassification().getUuid());
-                dto.setClassificationLabel(classification.getName().getText());
-            }
-            //TODO lang/locale
-            Language language = Language.DEFAULT();
-
-            //status
-            TaxonNodeStatus status = node.getStatus();
-            if (status != null) {
-                dto.setStatus(status.getLabel(language));
-            }
-            //statusNote
-            Map<Language, LanguageString> statusNote = node.getStatusNote();
-            if (statusNote != null) {
-                //TODO handle fallback lang
-                LanguageString statusNoteStr = statusNote.get(language);
-                if (statusNoteStr == null && statusNote.size() > 0) {
-                    statusNoteStr = statusNote.entrySet().iterator().next().getValue();
+        try {
+            ContainerDto<TaxonNodeDTO> container = new ContainerDto<TaxonPageDto.TaxonNodeDTO>();
+            for (TaxonNode node : taxon.getTaxonNodes()) {
+                TaxonNodeDTO dto = new TaxonNodeDTO();
+                loadBaseData(node, dto);
+                //classification
+                Classification classification = node.getClassification();
+                if (classification != null) {
+                    dto.setClassificationUuid(node.getClassification().getUuid());
+                    dto.setClassificationLabel(classification.getName().getText());
                 }
-                if (statusNoteStr != null) {
-                    dto.setStatusNote(statusNoteStr.getText());
-                }
-            }
-            //agent relations
-            Set<TaxonNodeAgentRelation> agents = node.getAgentRelations();
-            if (!agents.isEmpty()) {
-                for (TaxonNodeAgentRelation rel : agents) {
-                    TaxonNodeAgentsRelDTO agentDto = new TaxonNodeAgentsRelDTO();
-                    loadBaseData(rel, agentDto);
+                //TODO lang/locale
+                Language language = Language.DEFAULT();
 
-                    //TODO laod
-                    if (rel.getAgent() != null) {
-                        agentDto.setAgent(rel.getAgent().getFullTitle());
-                        agentDto.setAgentUuid(rel.getAgent().getUuid());
-                        //TODO compute preferred external link
-                        agentDto.setAgentLink(null);
+                //status
+                TaxonNodeStatus status = node.getStatus();
+                if (status != null) {
+                    dto.setStatus(status.getLabel(language));
+                }
+                //statusNote
+                Map<Language, LanguageString> statusNote = node.getStatusNote();
+                if (statusNote != null) {
+                    //TODO handle fallback lang
+                    LanguageString statusNoteStr = statusNote.get(language);
+                    if (statusNoteStr == null && statusNote.size() > 0) {
+                        statusNoteStr = statusNote.entrySet().iterator().next().getValue();
                     }
-                    if (rel.getType() != null) {
-                        agentDto.setType(rel.getType().getTitleCache());
-                        agentDto.setTypeUuid(rel.getType().getUuid());
+                    if (statusNoteStr != null) {
+                        dto.setStatusNote(statusNoteStr.getText());
                     }
-                    dto.addAgent(agentDto);
                 }
-            }
-            container.addItem(dto);
-        }
-        if (container.getCount() > 0) {
-            result.setTaxonNodes(container);
-        }
+                //agent relations
+                Set<TaxonNodeAgentRelation> agents = node.getAgentRelations();
+                if (!agents.isEmpty()) {
+                    for (TaxonNodeAgentRelation rel : agents) {
+                        TaxonNodeAgentsRelDTO agentDto = new TaxonNodeAgentsRelDTO();
+                        loadBaseData(rel, agentDto);
 
+                        //TODO laod
+                        if (rel.getAgent() != null) {
+                            agentDto.setAgent(rel.getAgent().getFullTitle());
+                            agentDto.setAgentUuid(rel.getAgent().getUuid());
+                            //TODO compute preferred external link
+                            agentDto.setAgentLink(null);
+                        }
+                        if (rel.getType() != null) {
+                            agentDto.setType(rel.getType().getTitleCache());
+                            agentDto.setTypeUuid(rel.getType().getUuid());
+                        }
+                        dto.addAgent(agentDto);
+                    }
+                }
+                container.addItem(dto);
+            }
+            if (container.getCount() > 0) {
+                result.setTaxonNodes(container);
+            }
+        } catch (Exception e) {
+//            e.printStackTrace();
+            result.addMessage(MessagesDto.NewErrorInstance("Error when loading taxon node data.", e));
+        }
     }
 
-
     private void loadSynonyms(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
-//        List<HomotypicalGroup> homotypicGroups = taxon.getHomotypicSynonymyGroups();
 
-        TaxonComparator comparator = new TaxonComparator();
 
-        TaxonName name = taxon.getName();
 
-        //TODO depending on config add/remove accepted name
+        try {
+            //        List<HomotypicalGroup> homotypicGroups = taxon.getHomotypicSynonymyGroups();
 
-        //TODO check publish flag
+            TaxonComparator comparator = new TaxonComparator();
 
-        //homotypic synonyms
-        List<Synonym> homotypicSynonmys = taxon.getHomotypicSynonymsByHomotypicGroup(comparator);
-        TaxonPageDto.HomotypicGroupDTO homotypicGroupDto = new TaxonPageDto.HomotypicGroupDTO();
-        if (!homotypicSynonmys.isEmpty()) {
-            loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
+            TaxonName name = taxon.getName();
 
-            for (Synonym syn : homotypicSynonmys) {
-                loadSynonymsInGroup(homotypicGroupDto, syn, config);
+            //TODO depending on config add/remove accepted name
+
+            //TODO check publish flag
+
+            //homotypic synonyms
+            List<Synonym> homotypicSynonmys = taxon.getHomotypicSynonymsByHomotypicGroup(comparator);
+            TaxonPageDto.HomotypicGroupDTO homotypicGroupDto = new TaxonPageDto.HomotypicGroupDTO();
+            if (!homotypicSynonmys.isEmpty()) {
+                loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
+
+                for (Synonym syn : homotypicSynonmys) {
+                    loadSynonymsInGroup(homotypicGroupDto, syn, config);
+                }
             }
-        }
-        //TODO NPE
-        handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, result, config);
-        result.setHomotypicSynonyms(homotypicGroupDto);
+            //TODO NPE
+            handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, result, config);
+            result.setHomotypicSynonyms(homotypicGroupDto);
 
-        //heterotypic synonyms
-        List<HomotypicalGroup> heteroGroups = taxon.getHeterotypicSynonymyGroups();
-        if (heteroGroups.isEmpty()) {
-            return;
-        }
-        ContainerDto<HomotypicGroupDTO> heteroContainer = new ContainerDto<>();
-        result.setHeterotypicSynonymGroups(heteroContainer);
-
-        for (HomotypicalGroup hg : heteroGroups) {
-            TaxonPageDto.HomotypicGroupDTO hgDto = new TaxonPageDto.HomotypicGroupDTO();
-            loadBaseData(taxon.getName().getHomotypicalGroup(), hgDto);
-            heteroContainer.addItem(hgDto);
-
-            List<Synonym> heteroSyns = taxon.getSynonymsInGroup(hg, comparator);
-            for (Synonym syn : heteroSyns) {
-                loadSynonymsInGroup(hgDto, syn, config);
+            //heterotypic synonyms
+            List<HomotypicalGroup> heteroGroups = taxon.getHeterotypicSynonymyGroups();
+            if (heteroGroups.isEmpty()) {
+                return;
             }
-            handleTypification(hg, hgDto, result, config);
+            ContainerDto<HomotypicGroupDTO> heteroContainer = new ContainerDto<>();
+            result.setHeterotypicSynonymGroups(heteroContainer);
+
+            for (HomotypicalGroup hg : heteroGroups) {
+                TaxonPageDto.HomotypicGroupDTO hgDto = new TaxonPageDto.HomotypicGroupDTO();
+                loadBaseData(taxon.getName().getHomotypicalGroup(), hgDto);
+                heteroContainer.addItem(hgDto);
+
+                List<Synonym> heteroSyns = taxon.getSynonymsInGroup(hg, comparator);
+                for (Synonym syn : heteroSyns) {
+                    loadSynonymsInGroup(hgDto, syn, config);
+                }
+                handleTypification(hg, hgDto, result, config);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            result.addMessage(MessagesDto.NewErrorInstance("Error when loading synonym data.", e));
         }
     }
 
@@ -434,52 +468,57 @@ public class PortalDtoLoader {
 //            hgDto.setTypedTypes(null);
 
         } catch (TypeDesignationSetException e) {
-            result.addMessage(new MessagesDto(MessageType.ERROR, "Error when creating type designation information"));
+            result.addMessage(MessagesDto.NewErrorInstance("Error when creating type designation information", e));
         }
     }
 
     private void loadConceptRelations(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
-        //concept relations
-        ContainerDto<ConceptRelationDTO> conceptRelContainer = new ContainerDto<>();
-        TaxonRelationshipFormatter taxRelFormatter = TaxonRelationshipFormatter.INSTANCE();
+        try {
+            //concept relations
+            ContainerDto<ConceptRelationDTO> conceptRelContainer = new ContainerDto<>();
+            TaxonRelationshipFormatter taxRelFormatter = TaxonRelationshipFormatter.INSTANCE();
 
-        //... MAN
-        Set<TaxonRelationship> misappliedRels = taxon.getMisappliedNameRelations();
-        for (TaxonRelationship rel : misappliedRels) {
-            boolean inverse = true;
-            boolean withoutName = false;
-            loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
-        }
+            //... MAN
+            Set<TaxonRelationship> misappliedRels = taxon.getMisappliedNameRelations();
+            for (TaxonRelationship rel : misappliedRels) {
+                boolean inverse = true;
+                boolean withoutName = false;
+                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
+            }
 
-        //... pro parte Synonyms
-        Set<TaxonRelationship> proParteRels = taxon.getProParteAndPartialSynonymRelations();
-        for (TaxonRelationship rel : proParteRels) {
-            boolean inverse = true;
-            boolean withoutName = false;
-            loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
-        }
+            //... pro parte Synonyms
+            Set<TaxonRelationship> proParteRels = taxon.getProParteAndPartialSynonymRelations();
+            for (TaxonRelationship rel : proParteRels) {
+                boolean inverse = true;
+                boolean withoutName = false;
+                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
+            }
 
-        //TODO MAN and pp from this taxon
+            //TODO MAN and pp from this taxon
 
-        //... to-relations
-        Set<TaxonRelationship> toRels = taxon.getRelationsToThisTaxon();
-        for (TaxonRelationship rel : toRels) {
-            boolean inverse = true;
-            boolean withoutName = false;
-            loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
-        }
+            //... to-relations
+            Set<TaxonRelationship> toRels = taxon.getRelationsToThisTaxon();
+            for (TaxonRelationship rel : toRels) {
+                boolean inverse = true;
+                boolean withoutName = false;
+                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
+            }
 
-        //... from-relations
-        Set<TaxonRelationship> fromRels = taxon.getRelationsFromThisTaxon();
-        for (TaxonRelationship rel : fromRels) {
-            boolean inverse = false;
-            boolean withoutName = false;
-            loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
-        }
+            //... from-relations
+            Set<TaxonRelationship> fromRels = taxon.getRelationsFromThisTaxon();
+            for (TaxonRelationship rel : fromRels) {
+                boolean inverse = false;
+                boolean withoutName = false;
+                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
+            }
 
-        if (conceptRelContainer.getCount() > 0) {
-            result.setConceptRelations(conceptRelContainer);
+            if (conceptRelContainer.getCount() > 0) {
+                result.setConceptRelations(conceptRelContainer);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            result.addMessage(MessagesDto.NewErrorInstance("Error when loading concept relation data.", e));
         }
     }
 
@@ -566,30 +605,35 @@ public class PortalDtoLoader {
 
     private void loadFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
 
-        //compute the features that do exist for this taxon
-        Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(taxon);
+        try {
+            //compute the features that do exist for this taxon
+            Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(taxon);
 
-        //filter, sort and structure according to feature tree
-        TreeNode<Feature, UUID> filteredRootNode;
-        if (config.getFeatureTree() != null) {
+            //filter, sort and structure according to feature tree
+            TreeNode<Feature, UUID> filteredRootNode;
+            if (config.getFeatureTree() != null) {
 
-            //TODO class cast
-            TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
-            filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
-        } else {
-            filteredRootNode = createDefaultFeatureNode(taxon);
-        }
-
-        //load facts per feature
-        Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(taxon);
-
-        //load final result
-        if (!filteredRootNode.getChildren().isEmpty()) {
-            ContainerDto<FeatureDto> features = new ContainerDto<>();
-            for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
-                handleFeatureNode(taxon, config, featureMap, features, node);
+                //TODO class cast
+                TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
+                filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
+            } else {
+                filteredRootNode = createDefaultFeatureNode(taxon);
             }
-            taxonPageDto.setFactualData(features);
+
+            //load facts per feature
+            Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(taxon);
+
+            //load final result
+            if (!filteredRootNode.getChildren().isEmpty()) {
+                ContainerDto<FeatureDto> features = new ContainerDto<>();
+                for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
+                    handleFeatureNode(taxon, config, featureMap, features, node);
+                }
+                taxonPageDto.setFactualData(features);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            taxonPageDto.addMessage(MessagesDto.NewErrorInstance("Error when loading factual data.", e));
         }
     }
 

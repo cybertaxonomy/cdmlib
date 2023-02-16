@@ -23,11 +23,23 @@ public class MessagesDto {
         WARN;
     }
 
+    public static MessagesDto NewErrorInstance(String message, Exception exception) {
+        return new MessagesDto(MessageType.ERROR, message, exception);
+    }
+    public static MessagesDto NewErrorInstance() {
+        return new MessagesDto(MessageType.ERROR, null, null);
+    }
+
     private MessageType type;
     private String message;
+    private String exceptionMessage;
+    private String stackTrace;
 
-    public MessagesDto(MessageType type, String message) {
+    private MessagesDto(MessageType type, String message, Exception e) {
+        this.type = type;
         this.message = message;
+        this.setExceptionMessage(e.getMessage());
+        this.setStackTrace(e.getStackTrace().toString());
     }
 
 //************ GETTER / SETTER *****************
@@ -46,6 +58,16 @@ public class MessagesDto {
     public void setMessage(String message) {
         this.message = message;
     }
-
-
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage;
+    }
+    public String getStackTrace() {
+        return stackTrace;
+    }
+    public void setStackTrace(String stackTrace) {
+        this.stackTrace = stackTrace;
+    }
 }
