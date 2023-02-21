@@ -1082,9 +1082,9 @@ public class PortalDtoLoader {
         }
 
         //label
-        //TODO this creates only the short form and probably also does not use
-        //     specimen or cdmSource if necessary
-        String label = OriginalSourceFormatter.INSTANCE.format(source);
+        //TODO this probably does not use specimen or cdmSource if necessary,
+        //     also long citation is still preliminary
+        String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(source);
         TypedLabel typedLabel = new TypedLabel(source, label);
         sourceDto.addLabel(typedLabel);
         sourceDto.setType(source.getType() != null ? source.getType().toString() : null);

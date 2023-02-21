@@ -35,6 +35,7 @@ public class OriginalSourceFormatterTest {
 
     private static OriginalSourceFormatter formatter = OriginalSourceFormatter.INSTANCE;
     private static OriginalSourceFormatter formatterWithBrackets = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS;
+    private static OriginalSourceFormatter formatterLongCitation = OriginalSourceFormatter.INSTANCE_LONG_CITATION;
 
     @Before
     public void setUp() throws Exception {
@@ -127,5 +128,47 @@ public class OriginalSourceFormatterTest {
                 "A beautiful taxon page 2001", formatter.format((Reference)webpage, null, null));
         Assert.assertEquals("Formatting of webpages without author is still undefined",
                 "A beautiful taxon page 2001: detail", formatter.format((Reference)webpage, "detail", null));
+    }
+
+    @Test
+    public void testCreateLongCitation(){
+        //TODO this is still preliminary, formatting may change in future.
+
+        book1.setTitle("My book");
+        book1.setAuthorship(bookTeam1);
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book", book1.getTitleCache());
+
+        book1.setTitleCache(null, false);
+        book1.setEdition("ed. 3");
+
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book, ed. 3", formatterLongCitation.format(book1, null));
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book, ed. 3", formatterLongCitation.format(book1, ""));
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+
+        //1 person
+        Person person1 = Person.NewInstance("Pers.", "Person", "P.", "Percy");
+        Team team = Team.NewInstance(person1);
+        book1.setAuthorship(team);
+        Assert.assertEquals("Unexpected title cache.", "Person, P. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        team.setHasMoreMembers(true);
+        Assert.assertEquals("Unexpected title cache.", "Person, P. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        team.setHasMoreMembers(false);
+
+        //2 persons
+        Person person2 = Person.NewInstance("Lers.", "Lerson", "L.", "Lercy");
+        team.addTeamMember(person2);
+        Assert.assertEquals("Unexpected title cache.", "Person, P. & Lerson, L. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        team.setHasMoreMembers(true);
+        Assert.assertEquals("Unexpected title cache.", "Person, P., Lerson, L. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        team.setHasMoreMembers(false);
+
+        //3 persons
+        Person person3 = Person.NewInstance("Gers.", "Gerson", "G.", "Gercy");
+        team.addTeamMember(person3);
+        Assert.assertEquals("Unexpected title cache.", "Person, P., Lerson, L. & Gerson, G. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        team.setHasMoreMembers(true);
+        Assert.assertEquals("Unexpected title cache.", "Person, P., Lerson, L., Gerson, G. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        team.setHasMoreMembers(false);  //in case we want to continue test
     }
 }

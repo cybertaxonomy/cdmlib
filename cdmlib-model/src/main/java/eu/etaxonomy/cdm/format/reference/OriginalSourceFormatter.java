@@ -21,6 +21,10 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
+ * Formatter for original sources. The default instance formats the source in short form
+ * (primarily author and year) and without brackets around the year.
+ * <BR>
+ *
  * @author a.mueller
  * @since 13.05.2021
  */
@@ -28,16 +32,21 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
 
     private final boolean withYearBrackets;
 
-    public static OriginalSourceFormatter INSTANCE = new OriginalSourceFormatter(false);
+    private final boolean longForm;
+
+    public static OriginalSourceFormatter INSTANCE = new OriginalSourceFormatter(false, false);
 
     //this can be used e.g. for in-text references, like "... following the opinion of Autor (2000: 22) we posit that ..."
-    public static OriginalSourceFormatter INSTANCE_WITH_YEAR_BRACKETS = new OriginalSourceFormatter(true);
+    public static OriginalSourceFormatter INSTANCE_WITH_YEAR_BRACKETS = new OriginalSourceFormatter(true, false);
+
+    public static OriginalSourceFormatter INSTANCE_LONG_CITATION = new OriginalSourceFormatter(false, true);
 
     /**
       * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>false</code>)
       */
-    private OriginalSourceFormatter(boolean withYearBrackets) {
+    private OriginalSourceFormatter(boolean withYearBrackets, boolean longForm) {
         this.withYearBrackets = withYearBrackets;
+        this.longForm = longForm;
     }
 
     @Override
@@ -75,6 +84,10 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         if(reference.isProtectedTitleCache()){
             return handleCitationDetailInTitleCache(reference, microReference, accessed);
         }
+
+        if (longForm) {
+            return handleLongformCitation(reference, microReference, accessed);
+        }
         TeamOrPersonBase<?> authorship = reference.getAuthorship();
         String authorStr = "";
         if (authorship == null) {
@@ -96,6 +109,40 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         String result = CdmUtils.concat(" ", authorStr, getShortCitationDateAndDetail(reference, microReference, accessed));
 
         return result;
+    }
+
+    /**
+     * Implementation is temporarily. May change or be further improved in future.
+     */
+    private String handleLongformCitation(Reference reference, String microReference, TimePeriod accessed) {
+        ReferenceDefaultCacheStrategy referenceFormatter = ReferenceDefaultCacheStrategy.NewInstance();
+
+        String refCitation = referenceFormatter.getTitleCache(reference);
+        if (isPage(microReference)) {
+            microReference = "p " + microReference;
+        }
+
+        String fullRefCitation = CdmUtils.concat(". ", refCitation, microReference);
+        String accessedStr = accessed == null? null : accessed.toString();
+
+        String withDateCitation = CdmUtils.concat(". ", fullRefCitation, accessedStr);
+        if (withDateCitation != null) {
+            withDateCitation = withDateCitation.replace("..", ".");
+        }
+        return withDateCitation;
+    }
+
+    /**
+     * Implementation is temporarily. May change in future.
+     */
+    private boolean isPage(String microReference) {
+        if (microReference == null) {
+            return false;
+        }else if (microReference.matches("\\d{1,5}")) {
+            return true;
+        }else {
+            return false;
+        }
     }
 
     private String getShortCitationDateAndDetail(Reference reference, String microReference, TimePeriod accessed) {
