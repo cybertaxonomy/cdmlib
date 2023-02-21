@@ -40,12 +40,10 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	final private boolean includeRanks;
 
     public TaxonComparator() {
-        super();
         this.includeRanks = false;
     }
 
     public TaxonComparator(boolean includeRanks) {
-        super();
         this.includeRanks = includeRanks;
     }
 
