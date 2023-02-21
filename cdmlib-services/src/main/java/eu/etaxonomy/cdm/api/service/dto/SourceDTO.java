@@ -24,11 +24,11 @@ public class SourceDTO implements Serializable{
     private static final long serialVersionUID = -3314135226037542122L;
 
     private UUID uuid;
-    protected String label;
-    String citationDetail;
+    private String label;
+    private String citationDetail;
     // can not reduce to TypedEntityReference here since the data portal requires
     // doi, uri, etc, see function cdm_reference_markup() in cdm_dataportal
-    ReferenceDTO citation;
+    private ReferenceDTO citation;
 
     public static SourceDTO fromDescriptionElementSource(NamedSourceBase entity) {
         if(entity == null) {
@@ -53,12 +53,11 @@ public class SourceDTO implements Serializable{
         return dto;
     }
 
+//********************* GETTER / SETTER ***************************/
 
     public UUID getUuid() {
         return uuid;
     }
-
-
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
@@ -66,20 +65,14 @@ public class SourceDTO implements Serializable{
     public ReferenceDTO getCitation() {
         return citation;
     }
-
-
     public void setCitation(ReferenceDTO citation) {
         this.citation = citation;
     }
 
-
     public String getCitationDetail() {
         return citationDetail;
     }
-
-
     public void setCitationDetail(String citationDetail) {
         this.citationDetail = citationDetail;
     }
-
 }
