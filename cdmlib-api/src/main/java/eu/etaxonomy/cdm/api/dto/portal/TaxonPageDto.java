@@ -172,6 +172,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         private String relType;
         private UUID relTypeUuid;
         private boolean inverse;
+        private String ruleConsidered;
         //TODO relatedTaxon in this classification
 
         public List<TaggedText> getNameLabel() {
@@ -203,6 +204,12 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setInverse(boolean inverse) {
             this.inverse = inverse;
+        }
+        public String getRuleConsidered() {
+            return ruleConsidered;
+        }
+        public void setRuleConsidered(String ruleConsidered) {
+            this.ruleConsidered = ruleConsidered;
         }
     }
 

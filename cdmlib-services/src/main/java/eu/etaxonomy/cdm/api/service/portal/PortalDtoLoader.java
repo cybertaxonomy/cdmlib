@@ -579,6 +579,8 @@ public class PortalDtoLoader {
             dto.setRelType(rep == null ? rel.getType().toString() : rep.getLabel());
             //inverse
             dto.setInverse(false);
+            //ruleConsidered
+            dto.setRuleConsidered(rel.getRuleConsidered());
             taxonDto.addRelatedName(dto);
         }
 
