@@ -398,8 +398,6 @@ public class PortalDtoLoader {
 
     private void loadSynonyms(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
-
-
         try {
             //        List<HomotypicalGroup> homotypicGroups = taxon.getHomotypicSynonymyGroups();
 
@@ -414,15 +412,16 @@ public class PortalDtoLoader {
             //homotypic synonyms
             List<Synonym> homotypicSynonmys = taxon.getHomotypicSynonymsByHomotypicGroup(comparator);
             TaxonPageDto.HomotypicGroupDTO homotypicGroupDto = new TaxonPageDto.HomotypicGroupDTO();
-            if (!homotypicSynonmys.isEmpty()) {
+            if (homotypicSynonmys != null && !homotypicSynonmys.isEmpty()) {
                 loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
 
                 for (Synonym syn : homotypicSynonmys) {
                     loadSynonymsInGroup(homotypicGroupDto, syn, config);
                 }
             }
-            //TODO NPE
-            handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, result, config);
+            if (name != null) {
+                handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, result, config);
+            }
             result.setHomotypicSynonyms(homotypicGroupDto);
 
             //heterotypic synonyms
