@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 /**
  * DTO to report errors, warnings or other types of messages.
  * This may be errors that occur during DTO creation.
@@ -38,8 +40,10 @@ public class MessagesDto {
     private MessagesDto(MessageType type, String message, Exception e) {
         this.type = type;
         this.message = message;
-        this.setExceptionMessage(e.getMessage());
-        this.setStackTrace(e.getStackTrace().toString());
+        if (e != null) {
+            this.setExceptionMessage(e.getMessage());
+            this.setStackTrace(ExceptionUtils.getStackTrace(e));
+        }
     }
 
 //************ GETTER / SETTER *****************
