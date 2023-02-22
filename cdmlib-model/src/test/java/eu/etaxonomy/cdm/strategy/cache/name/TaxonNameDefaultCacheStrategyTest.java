@@ -399,7 +399,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setCultivarEpithet("Adamii");
         Assert.assertEquals("Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
 
-
         //appended phrase
         speciesName.setRank(Rank.CULTIVAR());
         speciesName.setGenusOrUninomial("Abies");
@@ -407,7 +406,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setCultivarEpithet("Cultus");
         speciesName.setAppendedPhrase("appended");
         Assert.assertEquals("Abies alba 'Cultus' appended", strategy.getTitleCache(speciesName));
-
     }
 
     //3665
@@ -602,6 +600,9 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
         subSpeciesName.setProtectedNameCache(false);
         Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta app phrase (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+        subSpeciesName.setAppendedPhrase("[\"app phrase\"]");
+        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta [\"app phrase\"] (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+
         subSpeciesName.setAppendedPhrase("app2 phrase2");
         subSpeciesName.setProtectedNameCache(true);
         Assert.assertNull("NameCache should be null", subSpeciesName.getNameCache());

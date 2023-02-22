@@ -16,6 +16,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 
 /**
+ * TODO probably not in use anymore after implementation of #10222 (if still
+ * in use "label" is not yet implemented and used as it has not getter)
+ *
  * @author a.kohlbecker
  * @since Aug 31, 2018
  */
