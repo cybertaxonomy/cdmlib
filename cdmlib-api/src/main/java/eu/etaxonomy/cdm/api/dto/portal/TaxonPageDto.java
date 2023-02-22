@@ -394,7 +394,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         return messages;
     }
     public void addMessage(MessagesDto message) {
-        if (this.messages != null) {
+        if (this.messages == null) {
             this.messages = new ArrayList<>();
         }
         this.messages.add(message);
