@@ -1048,9 +1048,11 @@ public class PortalDtoLoader {
             SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
             SingleSourcedDto sourcedDto = (SingleSourcedDto)dto;
             NamedSource source = sourced.getSource();
-            SourceDto sourceDto = new SourceDto();
-            loadSource(source, sourceDto);
-            sourcedDto.setSource(sourceDto);
+            if (source != null) { //TODO  && !source.isEmpty() - does not exist yet
+                SourceDto sourceDto = new SourceDto();
+                loadSource(source, sourceDto);
+                sourcedDto.setSource(sourceDto);
+            }
         } else if (dto instanceof SourcedDto && cdmBase instanceof ISourceable) {
             @SuppressWarnings("unchecked")
             ISourceable<OriginalSourceBase> sourced = (ISourceable<OriginalSourceBase>)cdmBase;
