@@ -302,16 +302,16 @@ public class TypeDesignationSetContainer {
         TaxonName typifiedName = null;
 
         for(TypeDesignationBase<?> typeDesignation : typeDesignations.values()){
-            typeDesignation.getTypifiedNames();
-            if(typeDesignation.getTypifiedNames().isEmpty()){
+            Set<TaxonName> typifiedNames = typeDesignation.getTypifiedNames();
+            if(typifiedNames.isEmpty()){
 
                 //TODO instead throw RegistrationValidationException()
-                problems.add("Missing typifiedName in " + typeDesignation.toString());
+                problems.add("Missing typified name in " + typeDesignation.toString());
                 continue;
             }
-            if(typeDesignation.getTypifiedNames().size() > 1){
+            if(typifiedNames.size() > 1){
                 //TODO instead throw RegistrationValidationException()
-                problems.add("Multiple typifiedName in " + typeDesignation.toString());
+                problems.add("Multiple typified names in type designation '" + typeDesignation.toString() + "'");
                 continue;
             }
             if(typifiedName == null){
@@ -322,7 +322,7 @@ public class TypeDesignationSetContainer {
                 TaxonName otherTypifiedName = typeDesignation.getTypifiedNames().iterator().next();
                 if(!typifiedName.getUuid().equals(otherTypifiedName.getUuid())){
                     //TODO instead throw RegistrationValidationException()
-                    problems.add("Multiple typifiedName in " + typeDesignation.toString());
+                    problems.add("Multiple typified names [" + typifiedName.getTitleCache()+ "/" + typifiedName.getUuid() + " and "  + otherTypifiedName.getTitleCache() + "/" + otherTypifiedName.getUuid()  + "] in type designation set '" + typeDesignations.toString() + "'");
                 }
             }
         }

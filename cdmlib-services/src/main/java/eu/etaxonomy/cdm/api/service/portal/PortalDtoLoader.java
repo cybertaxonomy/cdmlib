@@ -62,7 +62,6 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
-import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
@@ -466,7 +465,8 @@ public class PortalDtoLoader {
             hgDto.setTaggedTypes(tags);
 //            hgDto.setTypedTypes(null);
 
-        } catch (TypeDesignationSetException e) {
+        } catch (Exception e) {
+//          e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when creating type designation information", e));
         }
     }
