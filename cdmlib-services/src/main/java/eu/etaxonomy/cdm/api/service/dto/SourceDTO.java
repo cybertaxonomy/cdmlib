@@ -16,8 +16,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 
 /**
- * TODO probably not in use anymore after implementation of #10222 (if still
- * in use "label" is not yet implemented and used as it has not getter)
+ * TODO probably not in use anymore after implementation of #10222
  *
  * @author a.kohlbecker
  * @since Aug 31, 2018
@@ -39,7 +38,7 @@ public class SourceDTO implements Serializable{
         }
         SourceDTO dto = new SourceDTO();
         dto.uuid = entity.getUuid();
-        dto.label = OriginalSourceFormatter.INSTANCE.format(entity);
+        dto.setLabel(OriginalSourceFormatter.INSTANCE.format(entity));
         dto.citation = ReferenceDTO.fromReference(entity.getCitation());
         dto.citationDetail = entity.getCitationMicroReference();
         return dto;
@@ -77,5 +76,12 @@ public class SourceDTO implements Serializable{
     }
     public void setCitationDetail(String citationDetail) {
         this.citationDetail = citationDetail;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
