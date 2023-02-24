@@ -351,7 +351,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			logger.warn("Deduplication implemented only for classes implementing IMatchable and IMergeable. No deduplication performed!");
 			return 0;
 		}
-		Class matchableClass = clazz;
+		@SuppressWarnings("unchecked")
+        Class<? extends IMatchable> matchableClass = (Class<? extends IMatchable>)clazz;
 		if (matchStrategy == null){
 			matchStrategy = DefaultMatchStrategy.NewInstance(matchableClass);
 		}

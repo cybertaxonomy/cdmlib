@@ -45,9 +45,6 @@ public class CoordinateConverterTest {
 	public static void setUpBeforeClass() throws Exception {
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		coordinateConverter = new CoordinateConverter();

@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * View class which serializes objects as xml
- * 
+ *
  * @author ben
  * @see javax.xml.transform.Source
  * @see com.ibm.lsid.MetadataResponse
@@ -51,7 +51,7 @@ public class XmlView extends AbstractView {
 
         for(Object object : model.values()) {
             if(object instanceof IdentifiableEntity) {
-                IdentifiableEntity identifiableEntity = (IdentifiableEntity)object;
+                IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity<?>)object;
                 if(locationHeader) {
                     response.addHeader("Location", locationPrefix + identifiableEntity.getUuid().toString());
                 }
@@ -62,5 +62,4 @@ public class XmlView extends AbstractView {
             }
         }
     }
-
 }

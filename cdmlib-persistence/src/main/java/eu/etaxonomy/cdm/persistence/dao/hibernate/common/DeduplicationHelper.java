@@ -138,7 +138,6 @@ public class DeduplicationHelper {
 	                logger.debug("Delete " + toBeDeleted);
 	                if (toBeDeleted != cdmBase2){
 	                    session.delete(toBeDeleted);
-
 	                }
 	            }
 			}
