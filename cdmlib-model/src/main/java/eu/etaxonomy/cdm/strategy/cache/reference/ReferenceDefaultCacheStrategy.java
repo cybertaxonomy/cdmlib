@@ -116,18 +116,10 @@ public class ReferenceDefaultCacheStrategy
                 authorAndYear += authorSeparator;
             }
             result = authorAndYear + result;
-			if (isNotBlank(reference.getPlacePublished())) {
+			result = addPublishInformation(reference, result);
 
-				if (result.endsWith(".")) {
-					result = result.substring(0, (result.length() - 1));// deduplicate point if given
-				}
 
-				result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished() + ": ";
 
-			}
-			if (isNotBlank(reference.getPublisher())) {
-				result = result + reference.getPublisher();
-			}
         }else if (type == ReferenceType.Journal){
             result = titleCacheJournal(reference, isNotAbbrev);
         }else{
@@ -141,6 +133,27 @@ public class ReferenceDefaultCacheStrategy
             result = result + getAccessedPart(reference);
         }
         return result == null ? null : result.trim();
+    }
+
+    /**
+     * @param reference
+     * @param result
+     * @return
+     */
+    private String addPublishInformation(Reference reference, String result) {
+        if (isNotBlank(reference.getPlacePublished())) {
+
+        	if (result.endsWith(".")) {
+        		result = result.substring(0, (result.length() - 1));// deduplicate point if given
+        	}
+
+        	result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished() + ": ";
+
+        }
+        if (isNotBlank(reference.getPublisher())) {
+        	result = result + reference.getPublisher();
+        }
+        return result;
     }
 
     private String getAuthorAndYear(Reference reference, boolean isAbbrev, boolean useFullDatePublished) {
@@ -294,6 +307,7 @@ public class ReferenceDefaultCacheStrategy
         String sep = result.startsWith(biblioInSeparator)? "": afterAuthor;
         result = CdmUtils.concat(sep, authorAndYear, result);
 
+        result = addPublishInformation(inRef, result);
         return result;
     }
 

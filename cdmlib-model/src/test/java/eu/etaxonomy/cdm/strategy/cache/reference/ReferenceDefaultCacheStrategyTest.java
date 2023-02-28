@@ -375,6 +375,9 @@ public class ReferenceDefaultCacheStrategyTest {
         bookSection1.setInBook(null);
         Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: - undefined book -", bookSection1.getTitleCache());
 		bookSection1.setTitleCache(null, false);
+
+
+
     }
 
     @Test
@@ -394,7 +397,7 @@ public class ReferenceDefaultCacheStrategyTest {
         bookSection.setInBook(book);
         bookSection.setAuthorship(sectionTeam);
         bookSection.setPages("222-251");
-        Assert.assertEquals("Chaudhary S. A. 2000: 73. Hedypnois - 87. Crepis, pp. 222-251. "+UTF8.EN_DASH+" In: Chaudhary S. A.(ed.), Flora of the Kingdom of Saudi Arabia 2(3)", bookSection.getTitleCache());
+        Assert.assertEquals("Chaudhary S. A. 2000: 73. Hedypnois - 87. Crepis, pp. 222-251. "+UTF8.EN_DASH+" In: Chaudhary S. A.(ed.), Flora of the Kingdom of Saudi Arabia 2(3). " +UTF8.EN_DASH+ " Riyadh: National Herbarium", bookSection.getTitleCache());
     }
 
     @Test
