@@ -127,10 +127,23 @@ public enum VocabularyEnum {
 		return null;
 	}
 
+	public static VocabularyEnum getVocabularyEnumByUuid(UUID uuid){
+
+        for(VocabularyEnum vocabulary : VocabularyEnum.values()){
+            if(vocabulary.getUuid().equals(uuid)){
+                return vocabulary;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return the orderRelevant
      */
     public boolean isOrderRelevant() {
         return orderRelevant;
     }
+
+
 }
