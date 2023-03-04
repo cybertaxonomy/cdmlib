@@ -50,7 +50,7 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
     @Override
     public void setMinLocalId(String min) {
         if (min == null){
-            minLocalId = null;
+            minLocalId = 1;  //default
         }else{
             minLocalId = Integer.valueOf(min);
         }
@@ -59,7 +59,7 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
     @Override
     public void setMaxLocalId(String max) {
         if (max == null){
-            maxLocalId = null;
+            maxLocalId = Integer.MAX_VALUE;  //default
         }else{
             maxLocalId = Integer.valueOf(max);
         }
@@ -127,6 +127,8 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
             identifier.localId = localid.toString();
             if(identifierFormatString != null){
                 identifier.identifier = String.format(identifierFormatString, identifier.localId);
+            }else {
+                identifier.identifier = String.format("Missing_identifier_format_" + identifier.getLocalId());
             }
             return identifier;
         }
