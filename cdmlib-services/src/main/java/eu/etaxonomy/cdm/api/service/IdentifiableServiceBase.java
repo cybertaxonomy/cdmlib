@@ -382,7 +382,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		return result;
 	}
 
-
 	private int handleAllPages(List<? extends T> objectList, DeduplicateState dedupState, List<T> nextGroup, IMatchStrategyEqual matchStrategy, IMergeStrategy mergeStrategy) {
 		int nUnEqual = 0;
 		for (T object : objectList){

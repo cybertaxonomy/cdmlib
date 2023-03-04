@@ -34,20 +34,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
 
-//    /**
-//     *
-//     * @deprecated Use constructor which takes voter list
-//     * This one is for String internal use only
-//     */
-//    @Deprecated
-//    public UnanimousBasedUnrevokable(){
-//
-//    }
-
+    //Constructor, called by Spring (see security_base.xml)
     public UnanimousBasedUnrevokable(List<AccessDecisionVoter<? extends Object>> decisionVoters) {
         super(decisionVoters);
     }
-
 
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> attributes)

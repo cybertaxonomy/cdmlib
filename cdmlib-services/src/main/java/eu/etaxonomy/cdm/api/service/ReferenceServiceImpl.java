@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-
 
 @Service
 @Transactional(readOnly = true)
@@ -127,7 +125,6 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
         return dao.getUuidAndTitleCache(limit, pattern, inReferenceType);
     }
 
-
     @Transactional(readOnly = true)
     @Override
     public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(
@@ -135,7 +132,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
             Integer limit) {
 
         long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
-        List<Object[]> daoResults = new ArrayList<Object[]>();
+        List<Object[]> daoResults = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             daoResults = dao.findByIdentifierAbbrev( identifier, identifierType,
                     matchmode,  limit);
@@ -143,7 +140,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
         List<IdentifiedEntityDTO<Reference>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
-            result.add(new IdentifiedEntityDTO<Reference>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
+            result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
 
         }
         return result;
@@ -158,7 +155,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
         long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
         long numberOfResultsTitle = dao.countByTitle(identifier);
         List<Object[]> daoResults = new ArrayList<>();
-        List<UuidAndTitleCache<Reference>> daoResultsTitle = new ArrayList();
+        List<UuidAndTitleCache<Reference>> daoResultsTitle = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
             daoResults = dao.findByIdentifierAbbrev( identifier, identifierType,
                     matchmode,  limit);

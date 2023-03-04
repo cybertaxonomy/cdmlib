@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
  * by a dot character '.'.
  *
  * <ul>
- * <li><code>permissionClass</code>: an {@link PermissionClass} instance with represents a cdm
+ * <li><code>permissionClass</code>: an {@link PermissionClass} instance which represents a cdm
  * type or a part of the cdm type hierarchy. The className is always represented
  * as an upper case string.</li>
  * <li><code>property</code>: The <code>CdmAuthority</code> only applies to instances

@@ -24,8 +24,7 @@ public class ReferenceVoter extends CdmPermissionVoter {
 
     @Override
     public boolean isOrpahn(CdmBase object) {
-        // References must never be considered orphan. So the must not be deleted without explicit DELETE permission
+        // References must never be considered orphan. So they must not be deleted without explicit DELETE permission
         return false;
     }
-
 }

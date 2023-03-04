@@ -262,7 +262,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
                 // in any case restore the previous authentication
                 getRunAsAutheticator().restoreAuthentication();
             }
-            logger.debug("new authority for " + username + ": " + authority.toString());
+            if (logger.isDebugEnabled()) {logger.debug("new authority for " + username + ": " + authority.toString());}
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             logger.debug("security context refreshed with user " + username);
@@ -299,7 +299,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public CdmAuthority createAuthorityForCurrentUser(CdmBase cdmEntity, EnumSet<CRUD> crud, String property) {
         return createAuthorityFor(userName(), cdmEntity, crud, property);
-
     }
 
     @Override

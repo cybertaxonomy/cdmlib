@@ -123,7 +123,7 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
         }
 
         if(localid != null){
-            Identifier<String> identifier = new Identifier<String>();
+            Identifier<String> identifier = new Identifier<>();
             identifier.localId = localid.toString();
             if(identifierFormatString != null){
                 identifier.identifier = String.format(identifierFormatString, identifier.localId);

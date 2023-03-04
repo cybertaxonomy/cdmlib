@@ -92,7 +92,7 @@ public class Person extends TeamOrPersonBase<Person>{
     @Field(index=Index.YES)
     @NullOrNotEmpty
     @Column(length=255)
-    protected String nomenclaturalTitle;
+    private String nomenclaturalTitle;
 
     @XmlElement(name="CollectorTitle")
     @Field(index=Index.YES)
