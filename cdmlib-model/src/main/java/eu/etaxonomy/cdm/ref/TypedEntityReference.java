@@ -24,29 +24,12 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     private static final long serialVersionUID = -4619590272174606288L;
 
-    public static <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
-        return TypedEntityReference.fromEntity(entity, true);
-    }
-
     private Class<T> type;
 
-    protected TypedEntityReference(Class<T> type, UUID uuid, String label) {
-        super(uuid, label);
-        this.type = type;
-    }
+//**************************** FACTORY ***********************************/
 
-    protected TypedEntityReference(T entity) {
-        this.type = (Class<T>) entity.getClass();
-        this.uuid = entity.getUuid();
-    }
-
-    /**
-     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors (TODO; to be made protected once no longer used publicly)
-     */
-    @Deprecated
-    public TypedEntityReference(Class<T> type, UUID uuid) {
-        super(uuid, null);
-        this.type = type;
+    public static <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
+        return TypedEntityReference.fromEntity(entity, true);
     }
 
     public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity, boolean withLabel) {
@@ -69,6 +52,10 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         return new TypedEntityReference<>((Class<T>)entity.getClass(), entity.getUuid(), explicitLabel);
     }
 
+    public static <T extends CdmBase> TypedEntityReference<T> fromTypeAndId(Class<T> type, UUID uuid) {
+        return new TypedEntityReference(type, uuid, null);
+    }
+
     /**
      * Casts the <code>TypedEntityReference</code> to the <code>subType</code> if possible.
      *
@@ -82,12 +69,37 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         return new TypedEntityReference<>(subType, getUuid());
     }
 
+//********************* CONSTRUCTOR ****************************/
+
+    protected TypedEntityReference(Class<T> type, UUID uuid, String label) {
+        super(uuid, label);
+        this.type = type;
+    }
+
+    protected TypedEntityReference(T entity) {
+        this.type = (Class<T>) entity.getClass();
+        this.uuid = entity.getUuid();
+    }
+
+    /**
+     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors (TODO; to be made protected once no longer used publicly)
+     */
+    @Deprecated
+    public TypedEntityReference(Class<T> type, UUID uuid) {
+        super(uuid, null);
+        this.type = type;
+    }
+
+// ********************** GETTER / SETTER  ************************/
+
     public Class<T> getType() {
         return type;
     }
     public void setType(Class<T> type) {
         this.type = type;
     }
+
+//********************** hash/equal/toString *************************/
 
     @Override
     public int hashCode() {
