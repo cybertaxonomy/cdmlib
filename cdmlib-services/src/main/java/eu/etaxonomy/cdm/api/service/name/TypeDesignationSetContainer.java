@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO.RankedNameReference;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator.ORDER_BY;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
@@ -37,7 +38,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
@@ -350,8 +350,8 @@ public class TypeDesignationSetContainer {
     /**
      * @return the title cache of the typifying name or <code>null</code>
      */
-    public EntityReference getTypifiedNameAsEntityRef() {
-       return new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
+    public RankedNameReference getTypifiedNameAsEntityRef() {
+       return new RankedNameReference(typifiedName.getUuid(), typifiedName.getTitleCache(), typifiedName.isSupraSpecific());
     }
 
     public Collection<TypeDesignationBase<?>> getTypeDesignations() {
