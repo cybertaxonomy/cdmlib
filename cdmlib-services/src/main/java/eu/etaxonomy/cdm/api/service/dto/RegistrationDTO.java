@@ -93,13 +93,13 @@ public class RegistrationDTO {
 
     public RegistrationDTO(Registration reg) {
 
-         this.reg = reg;
+        this.reg = reg;
 
-         registrationType = RegistrationType.from(reg);
+        registrationType = RegistrationType.from(reg);
 
-         if(reg.getSubmitter() != null ){
-             submitterUserName = reg.getSubmitter().getUsername();
-         }
+        if(reg.getSubmitter() != null ){
+            submitterUserName = reg.getSubmitter().getUsername();
+        }
 
         if(hasName(reg)){
             TaxonName taxonName = reg.getName();
@@ -184,8 +184,6 @@ public class RegistrationDTO {
      * Provides access to the Registration entity this DTO has been build from.
      * This method is purposely not a getter to hide the original Registration
      * from generic processes which are exposing, binding bean properties.
-     *IReference
-     * @return
      */
     public Registration registration() {
         return reg;
