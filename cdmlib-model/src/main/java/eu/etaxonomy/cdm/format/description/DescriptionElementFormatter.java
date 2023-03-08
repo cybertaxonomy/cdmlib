@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.format.description;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -53,8 +54,11 @@ public class DescriptionElementFormatter {
         element = CdmBase.deproxy(element);
         String cache = null;
         if (element instanceof TextData) {
-            //cache = ((TextData) element).getText(language);
-            cache = "Text Data";
+//            LanguageString ls = ((TextData) element).getPreferredLanguageString(Language.DEFAULT());
+//            cache = "Text Data" + ((ls == null|| isBlank(ls.getText())) ?
+//                        "" : "("+ls.getText()+")");
+            String feature = element.getFeature() == null? null : element.getFeature().getLabel();
+            cache = "Text Data" + (isBlank(feature)? "" : " ("+ feature +")");
         }else if (element instanceof CommonTaxonName) {
             cache = ((CommonTaxonName) element).getName();
         }else if (element instanceof TaxonInteraction) {
@@ -85,15 +89,11 @@ public class DescriptionElementFormatter {
             cache = formatter.format(element, defaultLanguage);
         }
 
-        String result = (cache == null) ? "" : cache;
-//        if (isNotBlank(mainElementLabel)){
-//            result = CdmUtils.concat(" ", result, "(" + mainElementLabel + ")");
-//        }
+        String result = CdmUtils.Nz(cache);
         return result;
-
     }
 
-    private static boolean isNotBlank(String str) {
-        return StringUtils.isNotBlank(str);
+    private static boolean isBlank(String str) {
+        return StringUtils.isBlank(str);
     }
 }

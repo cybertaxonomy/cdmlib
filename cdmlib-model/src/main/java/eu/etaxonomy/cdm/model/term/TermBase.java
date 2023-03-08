@@ -212,12 +212,11 @@ public abstract class TermBase
 
     @Transient
     public String getLabel() {
-        if(getLabel(Language.DEFAULT())!=null){
-            Representation repr = getRepresentation(Language.DEFAULT());
-            return (repr == null)? null :repr.getLabel();
+        if(isNotBlank(getLabel(Language.DEFAULT()))){
+            return getLabel(Language.DEFAULT());
         }else{
             for (Representation r : representations){
-                if (r.getLabel()!= null){
+                if (isNotBlank(r.getLabel())){
                     return r.getLabel();
                 }
             }
