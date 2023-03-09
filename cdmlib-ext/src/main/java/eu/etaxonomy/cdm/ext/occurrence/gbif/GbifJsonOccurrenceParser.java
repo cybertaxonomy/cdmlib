@@ -221,20 +221,21 @@ public class GbifJsonOccurrenceParser {
                 ObjectNode record = (ObjectNode)o;
 
                 if(record.has(DATASET_PROTOCOL)){
-                    dataSetProtocol = GbifDataSetProtocol.parseProtocol(record.get(DATASET_PROTOCOL).textValue());
+                    string = record.get(DATASET_PROTOCOL).isTextual()? record.get(DATASET_PROTOCOL).textValue():record.get(DATASET_PROTOCOL).asText();
+                    dataSetProtocol = GbifDataSetProtocol.parseProtocol(string);
                 }
                 if(record.has(DATASET_KEY)){
-                    dataSetKey = record.get(DATASET_KEY).textValue();
+                    dataSetKey = record.get(DATASET_KEY).isTextual()? record.get(DATASET_KEY).textValue():record.get(DATASET_KEY).asText();
                 }
                 if(record.has(COUNTRY_CODE)){
-                    string = record.get(COUNTRY_CODE).textValue();
+                    string = record.get(COUNTRY_CODE).isTextual()?record.get(COUNTRY_CODE).textValue():record.get(COUNTRY_CODE).asText();
                     Country country = Country.getCountryByIso3166A2(string);
                     if(country!=null){
                         derivedUnitFacade.setCountry(country);
                     }
                 }
                 if(record.has(LOCALITY)){
-                    string = record.get(LOCALITY).textValue();
+                    string = record.get(LOCALITY).isTextual()? record.get(LOCALITY).textValue():record.get(LOCALITY).asText();
                     derivedUnitFacade.setLocality(string);
                 }
 
@@ -242,7 +243,7 @@ public class GbifJsonOccurrenceParser {
                     Rank rank = null;
 
                     if (record.has(TAXON_RANK)){
-                        string= record.get(TAXON_RANK).textValue();
+                        string= record.get(TAXON_RANK).isTextual()? record.get(TAXON_RANK).textValue():record.get(TAXON_RANK).asText();
                         try {
                             rank = Rank.getRankByLatinName(string);
                         } catch (UnknownCdmTypeException e) {
@@ -252,7 +253,7 @@ public class GbifJsonOccurrenceParser {
                     }
                     if (rank != null){
                         if (record.has(NOMENCLATURALCODE)){
-                            string = record.get(NOMENCLATURALCODE).textValue();
+                            string = record.get(NOMENCLATURALCODE).isTextual()? record.get(NOMENCLATURALCODE).textValue():record.get(NOMENCLATURALCODE).asText();
 
                             if (string.equals(NomenclaturalCode.ICZN.getTitleCache())){
                                 name = TaxonNameFactory.NewZoologicalInstance(rank);
@@ -269,7 +270,7 @@ public class GbifJsonOccurrenceParser {
                             }
                         }else {
                             if (record.has(KINGDOM)){
-                                String kingdom = record.get(KINGDOM).textValue();
+                                String kingdom = record.get(KINGDOM).isTextual()? record.get(KINGDOM).textValue():record.get(KINGDOM).asText();
                                 if (kingdom.equals(PLANTAE)){
                                     name = TaxonNameFactory.NewBotanicalInstance(rank);
                                 } else if (kingdom.equals(ANIMALIA)){
@@ -289,22 +290,27 @@ public class GbifJsonOccurrenceParser {
                             name = TaxonNameFactory.NewNonViralInstance(rank);
                         }
                         if (record.has(GENUS)){
-                            name.setGenusOrUninomial(record.get(GENUS).textValue());
+                            string = record.get(GENUS).isTextual()? record.get(GENUS).textValue():record.get(GENUS).asText();
+                            name.setGenusOrUninomial(string);
                         }
                         if (record.has(SPECIFIC_EPITHET)){
-                            name.setSpecificEpithet(record.get(SPECIFIC_EPITHET).textValue());
+                            string = record.get(SPECIFIC_EPITHET).isTextual()? record.get(SPECIFIC_EPITHET).textValue():record.get(SPECIFIC_EPITHET).asText();
+                            name.setSpecificEpithet(string);
                         }
                         if (record.has(INFRASPECIFIC_EPITHET)){
-                            name.setInfraSpecificEpithet(record.get(INFRASPECIFIC_EPITHET).textValue());
+                            string = record.get(INFRASPECIFIC_EPITHET).isTextual()? record.get(INFRASPECIFIC_EPITHET).textValue():record.get(INFRASPECIFIC_EPITHET).asText();
+                            name.setInfraSpecificEpithet(string);
                         }
                         if (record.has(SCIENTIFIC_NAME)){
-                            name.setTitleCache(record.get(SCIENTIFIC_NAME).textValue(), true);
+                            string = record.get(SCIENTIFIC_NAME).isTextual()? record.get(SCIENTIFIC_NAME).textValue():record.get(SCIENTIFIC_NAME).asText();
+                            name.setTitleCache(string, true);
                         }
                     }
                     DeterminationEvent detEvent = DeterminationEvent.NewInstance();
 
                     if (record.has(IDENTIFIED_BY)){
-                        Person determiner = Person.NewTitledInstance(record.get(IDENTIFIED_BY).textValue());
+                        string = record.get(IDENTIFIED_BY).isTextual()? record.get(IDENTIFIED_BY).textValue():record.get(IDENTIFIED_BY).asText();
+                        Person determiner = Person.NewTitledInstance(string);
                         detEvent.setDeterminer(determiner);
                     }
                     detEvent.setTaxonName(name);
@@ -317,18 +323,18 @@ public class GbifJsonOccurrenceParser {
                 derivedUnitFacade.setExactLocation(location);
                 try {
                     if(record.has(LATITUDE)){
-                        String lat = record.get(LATITUDE).textValue();
+                        String lat = record.get(LATITUDE).isTextual()? record.get(LATITUDE).textValue():record.get(LATITUDE).asText();
                         location.setLatitudeByParsing(lat);
                     }
                     if(record.has(LONGITUDE)){
-                        String lon = record.get(LONGITUDE).textValue();
+                        String lon = record.get(LONGITUDE).isTextual()? record.get(LONGITUDE).textValue():record.get(LONGITUDE).asText();
                         location.setLongitudeByParsing(lon);
                     }
                 } catch (ParseException e) {
                     logger.error("Could not parse GPS coordinates", e);
                 }
                 if(record.has(GEOREFERENCE_PROTOCOL)){
-                    String geo = record.get(GEOREFERENCE_PROTOCOL).textValue();
+                    String geo = record.get(GEOREFERENCE_PROTOCOL).isTextual()? record.get(GEOREFERENCE_PROTOCOL).textValue():record.get(GEOREFERENCE_PROTOCOL).asText();
                     ReferenceSystem referenceSystem = null;
                     //TODO: Is there another way than string comparison
                     //to check which reference system is used?
@@ -378,51 +384,61 @@ public class GbifJsonOccurrenceParser {
                     timePeriod.setStartDay(record.get(DAY).asInt());
                 }
                 if(record.has(RECORDED_BY)){
-                    Person person = Person.NewTitledInstance(record.get(RECORDED_BY).textValue());
+                    string = record.get(RECORDED_BY).isTextual()? record.get(RECORDED_BY).textValue():record.get(RECORDED_BY).asText();
+                    Person person = Person.NewTitledInstance(string);
                     //FIXME check data base if collector already present
                     derivedUnitFacade.setCollector(person);
                 }
 
                 //collector number (fieldNumber OR recordNumber)
                 if(record.has(FIELD_NUMBER)){
-                    derivedUnitFacade.setFieldNumber(record.get(FIELD_NUMBER).textValue());
+                    string = record.get(FIELD_NUMBER).isTextual()? record.get(FIELD_NUMBER).textValue():record.get(FIELD_NUMBER).asText();
+                    derivedUnitFacade.setFieldNumber(string);
                 }
                 //collector number (fieldNumber OR recordNumber)
                 if(record.has(RECORD_NUMBER)){
-                    derivedUnitFacade.setFieldNumber(record.get(RECORD_NUMBER).textValue());
+                    string = record.get(RECORD_NUMBER).isTextual()? record.get(RECORD_NUMBER).textValue():record.get(RECORD_NUMBER).asText();
+                    derivedUnitFacade.setFieldNumber(string);
                 }
 
                 if(record.has(EVENT_REMARKS)){
-                    derivedUnitFacade.setGatheringEventDescription(record.get(EVENT_REMARKS).textValue());
+                    string = record.get(EVENT_REMARKS).isTextual()? record.get(EVENT_REMARKS).textValue():record.get(EVENT_REMARKS).asText();
+                    derivedUnitFacade.setGatheringEventDescription(string);
                 }
                 if(record.has(OCCURRENCE_REMARKS)){
-                    derivedUnitFacade.setEcology(record.get(OCCURRENCE_REMARKS).textValue());
+                    string = record.get(OCCURRENCE_REMARKS).isTextual()? record.get(OCCURRENCE_REMARKS).textValue():record.get(OCCURRENCE_REMARKS).asText();
+                    derivedUnitFacade.setEcology(string);
                 }
                 if(record.has(COLLECTION_CODE)){
-                    String collectionCode = record.get(COLLECTION_CODE).textValue();
+                    String collectionCode = record.get(COLLECTION_CODE).isTextual()? record.get(COLLECTION_CODE).textValue():record.get(COLLECTION_CODE).asText();
                     tripleId[2] = collectionCode;
                     //FIXME: check data base for existing collections
                     eu.etaxonomy.cdm.model.occurrence.Collection collection = eu.etaxonomy.cdm.model.occurrence.Collection.NewInstance();
                     collection.setCode(collectionCode);
                     if(record.has(INSTITUTION_CODE)){
-                        Institution institution = Institution.NewNamedInstance(record.get(INSTITUTION_CODE).textValue());
-                        institution.setCode(record.get(INSTITUTION_CODE).textValue());
+                        string = record.get(INSTITUTION_CODE).isTextual()? record.get(INSTITUTION_CODE).textValue():record.get(INSTITUTION_CODE).asText();
+                        Institution institution = Institution.NewNamedInstance(string);
+                        institution.setCode(string);
                         collection.setInstitute(institution);
                     }
                     derivedUnitFacade.setCollection(collection);
                 }
                 if(record.has(CATALOG_NUMBER)){
-                    derivedUnitFacade.setCatalogNumber(record.get(CATALOG_NUMBER).textValue());
-                    derivedUnitFacade.setAccessionNumber(record.get(CATALOG_NUMBER).textValue());
+                    string = record.get(CATALOG_NUMBER).isTextual()? record.get(CATALOG_NUMBER).textValue():record.get(CATALOG_NUMBER).asText();
+                    derivedUnitFacade.setCatalogNumber(string);
+                    derivedUnitFacade.setAccessionNumber(string);
                     tripleId[0]= record.get(CATALOG_NUMBER).textValue();
                 }
                 if(record.has(INSTITUTION_CODE)){
-                    derivedUnitFacade.setAccessionNumber(record.get(INSTITUTION_CODE).textValue());
-                    tripleId[1]= record.get(INSTITUTION_CODE).textValue();
+                    //Institution Code does not match to Accession number???
+                    //derivedUnitFacade.setAccessionNumber(record.get(INSTITUTION_CODE).textValue());
+                    string = record.get(INSTITUTION_CODE).isTextual()? record.get(INSTITUTION_CODE).textValue():record.get(INSTITUTION_CODE).asText();
+                    tripleId[1]= string;
                 }
 
                 if (record.has(OCCURENCE_ID)){
-                    IdentifiableSource source = IdentifiableSource.NewDataImportInstance((record.get(OCCURENCE_ID).textValue()));
+                    string = record.get(OCCURENCE_ID).isTextual()? record.get(OCCURENCE_ID).textValue():record.get(OCCURENCE_ID).asText();
+                    IdentifiableSource source = IdentifiableSource.NewDataImportInstance(string);
                     derivedUnitFacade.addSource(source);
                 }
 
@@ -443,8 +459,8 @@ public class GbifJsonOccurrenceParser {
 
                             if (mediaRecord.has("identifier")){
                                 try {
-
-                                    uri = new URI(mediaRecord.get("identifier").textValue());
+                                    string = mediaRecord.get("identifier").isTextual()? mediaRecord.get("identifier").textValue():mediaRecord.get("identifier").asText();
+                                    uri = new URI(string);
                                     imageInf = MediaInfoFileReader.legacyFactoryMethod(uri)
                                         .readBaseInfo()
                                         .getCdmImageInfo();
