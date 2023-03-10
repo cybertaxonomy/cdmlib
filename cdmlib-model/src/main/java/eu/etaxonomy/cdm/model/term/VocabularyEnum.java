@@ -116,17 +116,6 @@ public enum VocabularyEnum {
 		return clazz;
 	}
 
-	public static VocabularyEnum getVocabularyEnum(Class<?> clazz){
-
-		for(VocabularyEnum vocabulary : VocabularyEnum.values()){
-			if(vocabulary.getClazz().equals(clazz)){
-				return vocabulary;
-			}
-		}
-
-		return null;
-	}
-
 	public static VocabularyEnum getVocabularyEnumByUuid(UUID uuid){
 
         for(VocabularyEnum vocabulary : VocabularyEnum.values()){
@@ -138,12 +127,7 @@ public enum VocabularyEnum {
         return null;
     }
 
-    /**
-     * @return the orderRelevant
-     */
     public boolean isOrderRelevant() {
         return orderRelevant;
     }
-
-
 }
