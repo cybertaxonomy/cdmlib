@@ -375,9 +375,6 @@ public class ReferenceDefaultCacheStrategyTest {
         bookSection1.setInBook(null);
         Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: - undefined book -", bookSection1.getTitleCache());
 		bookSection1.setTitleCache(null, false);
-
-
-
     }
 
     @Test

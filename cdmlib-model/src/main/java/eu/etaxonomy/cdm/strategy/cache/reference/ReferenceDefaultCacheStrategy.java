@@ -105,6 +105,7 @@ public class ReferenceDefaultCacheStrategy
 
         if (isRealInRef(reference)){
             //Section, Book-Section or Generic with inRef
+
             result = titleCacheRealInRef(reference, isNotAbbrev);
         }else if(isNomRef(type)){
             //all Non-InRef NomRefs
