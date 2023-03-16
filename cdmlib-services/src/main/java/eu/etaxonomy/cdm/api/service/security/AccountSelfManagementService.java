@@ -20,6 +20,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.google.common.util.concurrent.RateLimiter;
 
@@ -102,7 +103,12 @@ public abstract class AccountSelfManagementService implements IRateLimitedServic
         message.setSubject(substitutor.replace(subjectTemplate));
         message.setText(substitutor.replace(bodyTemplate));
 
-        emailSender.send(message);
+        try {
+            emailSender.send(message);
+        }catch(MailException e) {
+            ((JavaMailSenderImpl)emailSender).setHost("host.docker.internal");
+
+        }
     }
 
     @Override
