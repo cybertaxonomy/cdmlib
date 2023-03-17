@@ -892,8 +892,8 @@ public class OccurrenceDaoHibernateImpl
 
     @Override
     public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        String queryString = "FROM SpecimenOrObservationBase sob "
-                + "WHERE sob.gatheringEvent.uuid = :gatheringEventUuid";
+        String queryString = "FROM FieldUnit fu "
+                + "WHERE fu.gatheringEvent.uuid = :gatheringEventUuid";
 
         queryString += orderByClause("sob", orderHints);
 
