@@ -142,7 +142,7 @@ public class ReferenceDefaultCacheStrategy
      * @return
      */
     private String addPublishInformation(Reference reference, String result) {
-        if (isNotBlank(reference.getPlacePublished())) {
+        if (reference != null && isNotBlank(reference.getPlacePublished())) {
 
         	if (result.endsWith(".")) {
         		result = result.substring(0, (result.length() - 1));// deduplicate point if given
@@ -151,7 +151,7 @@ public class ReferenceDefaultCacheStrategy
         	result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished() + ": ";
 
         }
-        if (isNotBlank(reference.getPublisher())) {
+        if (reference != null && isNotBlank(reference.getPublisher())) {
         	result = result + reference.getPublisher();
         }
         return result;
