@@ -67,6 +67,10 @@ public class TitleWithoutYearAndAuthorHelper {
             return getTitleWithoutYearAndAuthorThesis(ref, isAbbrev);
         }else if(type == ReferenceType.BookSection){
             return getTitleWithoutYearAndAuthorBookSection(ref, isAbbrev);
+        }else if(type == ReferenceType.Report){
+            return getTitleWithoutYearAndAuthorBookSection(ref, isAbbrev);
+        }else if(type == ReferenceType.Proceedings){
+            return getTitleWithoutYearAndAuthorBookSection(ref, isAbbrev);
         }else if (type == ReferenceType.Section || type == ReferenceType.BookSection ){
             // not needed in Section
             logger.warn("Questionable procedure call. Procedure not implemented because not needed. ");

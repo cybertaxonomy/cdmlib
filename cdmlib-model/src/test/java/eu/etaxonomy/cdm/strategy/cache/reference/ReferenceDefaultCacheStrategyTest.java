@@ -529,7 +529,7 @@ public class ReferenceDefaultCacheStrategyTest {
 
     @Test
     public void testReportGetTitleCache() {
-        IThesis thesis = ReferenceFactory.newThesis();
+        IThesis thesis = ReferenceFactory.newReport();
         Person author = Person.NewTitledInstance("Miller");
         thesis.setAuthorship(author);
         thesis.setTitle("My nice report");
@@ -538,6 +538,19 @@ public class ReferenceDefaultCacheStrategyTest {
         thesis.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
         String result = defaultStrategy.getTitleCache((Reference)thesis);
         assertEquals("Miller 1984: My nice report. "+UTF8.EN_DASH+" Berlin: FU", result);
+    }
+
+    @Test
+    public void testProceedingsGetTitleCache() {
+        IThesis thesis = ReferenceFactory.newProceedings();
+        Person author = Person.NewTitledInstance("Miller");
+        thesis.setAuthorship(author);
+        thesis.setTitle("Conference Proceedings 2020");
+        thesis.setPublisher("FU");
+        thesis.setPlacePublished("Berlin");
+        thesis.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
+        String result = defaultStrategy.getTitleCache((Reference)thesis);
+        assertEquals("Miller 1984: Conference Proceedings 2020. "+UTF8.EN_DASH+" Berlin: FU", result);
     }
 
 // *************************** GENERIC *****************************************/
