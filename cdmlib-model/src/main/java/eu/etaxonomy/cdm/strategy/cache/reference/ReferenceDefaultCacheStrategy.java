@@ -118,9 +118,6 @@ public class ReferenceDefaultCacheStrategy
             }
             result = authorAndYear + result;
 			result = addPublishInformation(reference, result);
-
-
-
         }else if (type == ReferenceType.Journal){
             result = titleCacheJournal(reference, isNotAbbrev);
         }else{
@@ -424,6 +421,7 @@ public class ReferenceDefaultCacheStrategy
                 result = author + afterAuthor + result;
             }
         }
+        result = addPublishInformation(reference, result);
         return result;
     }
 

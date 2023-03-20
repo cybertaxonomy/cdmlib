@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.IThesis;
 import eu.etaxonomy.cdm.model.reference.IWebPage;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -92,6 +93,9 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setCacheStrategy(defaultStrategy);
 		journal1 = ReferenceFactory.newJournal();
 		journal1.setCacheStrategy(defaultStrategy);
+		journal1.setPublisher("My publisher");
+        journal1.setPlacePublished("Publication Town");
+
         articleTeam1 = Team.NewInstance();
 		articleTeam2 = Team.NewInstance();
 		articleTeam1.setTitleCache("Team1", true);
@@ -111,8 +115,8 @@ public class ReferenceDefaultCacheStrategyTest {
         cdDvd.setCacheStrategy(defaultStrategy);
         cdDvdTitle = "A nice CD title";
         cdDvd.setTitle(cdDvdTitle);
-        String publisher = "An ugly publisher";  //not yet implemented
-        String place = "A beutiful place";  //not yet implemented
+        cdDvd.setPublisher("An ugly publisher");
+        cdDvd.setPlacePublished("A beutiful place");
         VerbatimTimePeriod publicationDate = VerbatimTimePeriod.NewVerbatimInstance(1999, 2001);
         cdDvd.setDatePublished(publicationDate);
 
@@ -476,12 +480,64 @@ public class ReferenceDefaultCacheStrategyTest {
         assertEquals(cdDvdTitle, result);
     }
 
-    //TODO missing publicationPlace and publisher has to be discussed
     @Test
     public void testCdDvdGetTitleCache() {
         String result = defaultStrategy.getTitleCache(cdDvd);
-        //TODO position of year needs to be discussed
-        assertEquals("1999"+SEP+"2001: " + cdDvdTitle, result);
+        //TODO position of year and publisher needs to be discussed
+        assertEquals("1999"+SEP+"2001: " + cdDvdTitle + ". – A beutiful place: An ugly publisher", result);
+    }
+
+    @Test
+    public void testMapGetTitleCache() {
+        Reference map = ReferenceFactory.newMap();
+        Person author = Person.NewTitledInstance("Miller");
+        map.setAuthorship(author);
+        map.setTitle("My nice map");
+        map.setPublisher("Springer");
+        map.setPlacePublished("Berlin");
+        map.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
+        String result = defaultStrategy.getTitleCache(map);
+        assertEquals("Miller: My nice map. 1984. "+UTF8.EN_DASH+" Berlin: Springer", result);
+    }
+
+    @Test
+    public void testDatabaseGetTitleCache() {
+        Reference map = ReferenceFactory.newDatabase();
+        Person author = Person.NewTitledInstance("Miller");
+        map.setAuthorship(author);
+        map.setTitle("My nice database");
+        map.setPublisher("Springer");
+        map.setPlacePublished("Berlin");
+        map.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
+        String result = defaultStrategy.getTitleCache(map);
+        //TODO position of data still needs to be discussed
+        assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer", result);
+    }
+
+    @Test
+    public void testThesisGetTitleCache() {
+        IThesis thesis = ReferenceFactory.newThesis();
+        Person author = Person.NewTitledInstance("Miller");
+        thesis.setAuthorship(author);
+        thesis.setTitle("My nice thesis");
+        thesis.setPublisher("FU");
+        thesis.setPlacePublished("Berlin");
+        thesis.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
+        String result = defaultStrategy.getTitleCache((Reference)thesis);
+        assertEquals("Miller 1984: My nice thesis. "+UTF8.EN_DASH+" Berlin: FU", result);
+    }
+
+    @Test
+    public void testReportGetTitleCache() {
+        IThesis thesis = ReferenceFactory.newThesis();
+        Person author = Person.NewTitledInstance("Miller");
+        thesis.setAuthorship(author);
+        thesis.setTitle("My nice report");
+        thesis.setPublisher("FU");
+        thesis.setPlacePublished("Berlin");
+        thesis.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
+        String result = defaultStrategy.getTitleCache((Reference)thesis);
+        assertEquals("Miller 1984: My nice report. "+UTF8.EN_DASH+" Berlin: FU", result);
     }
 
 // *************************** GENERIC *****************************************/
@@ -498,10 +554,12 @@ public class ReferenceDefaultCacheStrategyTest {
         IBook book1 = ReferenceFactory.newBook();
         book1.setTitle("My book title");
         book1.setAuthorship(genericTeam1);
+        book1.setPublisher("Springer");
+        book1.setPlacePublished("Berlin");
         Reference inRef = (Reference)book1;
         generic1.setInReference(inRef);
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title", generic1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title. "+UTF8.EN_DASH+" Berlin: Springer", generic1.getTitleCache());
     }
 
     @Test
@@ -551,8 +609,10 @@ public class ReferenceDefaultCacheStrategyTest {
     public void testGenericGetTitleCacheWithoutInRef(){
         generic1.setTitle("My generic title");
         generic1.setAuthorship(genericTeam1);
+        generic1.setPublisher("Springer");
+        generic1.setPlacePublished("Berlin");
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "Authorteam: My generic title", generic1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Authorteam: My generic title. "+UTF8.EN_DASH+" Berlin: Springer", generic1.getTitleCache());
     }
 
     @Test
