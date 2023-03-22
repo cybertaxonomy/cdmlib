@@ -102,14 +102,14 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             assertEquals(3780263, cdmImageInfo.getLength());
             // generic metadata
             assertFalse(cdmImageInfo.getMetaData().isEmpty());
-            assertEquals(51, cdmImageInfo.getMetaData().size());
+            assertEquals(56, cdmImageInfo.getMetaData().size());
             assertTrue(cdmImageInfo.getMetaData().containsKey("Exif Version"));
             assertEquals("48, 50, 50, 49", cdmImageInfo.getMetaData().get("Exif Version"));
             // custom metadata stored in the "Keywords" this should not be needed anymore
-//            assertEquals("Germany, Sachsen-Anhalt, am Jersleber See", cdmImageInfo.getMetaData().get("Locality"));
-//            assertEquals("Lactuca serriola", cdmImageInfo.getMetaData().get("Taxon"));
-//            assertEquals("23.8.2009", cdmImageInfo.getMetaData().get("Date"));
-//            assertEquals("N. Kilian", cdmImageInfo.getMetaData().get("Photographer"));
+            assertEquals("Germany, Sachsen-Anhalt, am Jersleber See", cdmImageInfo.getMetaData().get("Locality"));
+            assertEquals("Lactuca serriola", cdmImageInfo.getMetaData().get("Taxon"));
+            assertEquals("23.8.2009", cdmImageInfo.getMetaData().get("Date"));
+            assertEquals("N. Kilian", cdmImageInfo.getMetaData().get("Photographer"));
         }
     }
 

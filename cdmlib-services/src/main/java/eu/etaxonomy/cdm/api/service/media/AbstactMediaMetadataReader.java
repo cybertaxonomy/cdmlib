@@ -70,7 +70,7 @@ public abstract class AbstactMediaMetadataReader {
             String[] customKeyVal = text.split(":");
             if (customKeyVal.length == 2){
                 //convention used e.g. for Flora of cyprus (#9137)
-               // appendMetadataEntry(customKeyVal[0].trim(), customKeyVal[1].trim());
+                appendMetadataEntry(customKeyVal[0].trim(), customKeyVal[1].trim());
             }else{
                 appendMetadataEntry(key, text);
             }
@@ -88,7 +88,9 @@ public abstract class AbstactMediaMetadataReader {
     public void appendMetadataEntry(String key, String text) {
         key = convert(key);
         if(cdmImageInfo.getMetaData().containsKey(key)) {
-            cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
+            if (!cdmImageInfo.getMetaData().get(key).contains(text)) {
+                cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
+            }
         } else {
             cdmImageInfo.getMetaData().put(key, text);
         }
