@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.VocabularyRemover;
-import eu.etaxonomy.cdm.database.update.v500_535.SchemaUpdater_5330_5350;
+import eu.etaxonomy.cdm.database.update.v500_535.SchemaUpdater_5350_5351;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -48,7 +48,7 @@ public class SchemaUpdater_5351_5360 extends SchemaUpdaterBase {
 
     @Override
     public ISchemaUpdater getPreviousUpdater() {
-        return SchemaUpdater_5330_5350.NewInstance();
+        return SchemaUpdater_5350_5351.NewInstance();
     }
 
     @Override

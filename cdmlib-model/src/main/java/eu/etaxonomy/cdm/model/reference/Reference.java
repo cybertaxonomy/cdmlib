@@ -121,6 +121,8 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "seriesPart",
     "datePublished",
     "publisher",
+    "datePublished2",
+    "publisher2",
     "placePublished",
     "institution",
     "school",
@@ -270,13 +272,22 @@ public class Reference
     @Column(length=255)
 	protected String publisher;
 
+    @XmlElement(name = "Publisher2")
+    @Field
+    @Column(length=255)
+    private String publisher2;
 
 	@XmlElement(name = "PlacePublished")
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
     @Column(length=255)
-	protected String placePublished;
+	private String placePublished;
+
+    @XmlElement(name = "PlacePublished2")
+    @Field
+    @Column(length=255)
+    private String placePublished2;
 
 	@XmlElement(name = "Institution")
 	@XmlIDREF
@@ -587,9 +598,23 @@ public class Reference
 
 	@Override
     public void setPublisher(String publisher, String placePublished){
-		this.publisher = publisher;
-		this.placePublished = placePublished;
-	}
+        this.publisher = publisher;
+        this.placePublished = placePublished;
+    }
+
+    @Override
+    public String getPublisher2() {
+        return publisher2;
+    }
+    @Override
+    public void setPublisher2(String publisher2) {
+        this.publisher2 = StringUtils.truncate(isBlank(publisher2)? null : publisher2, 255);
+    }
+    @Override
+    public void setPublisher2(String publisher2, String placePublished2){
+        this.publisher2 = publisher2;
+        this.placePublished2 = placePublished2;
+    }
 
 	@Override
     public String getPlacePublished() {
@@ -600,6 +625,15 @@ public class Reference
     public void setPlacePublished(String placePublished) {
 		this.placePublished = isBlank(placePublished)? null: placePublished;
 	}
+
+    @Override
+    public String getPlacePublished2() {
+        return placePublished2;
+    }
+    @Override
+    public void setPlacePublished2(String placePublished2) {
+        this.placePublished2 = isBlank(placePublished2)? null: placePublished2;
+    }
 
 	@Override
     public Institution getInstitution() {

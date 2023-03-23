@@ -29,6 +29,16 @@ public interface IPublicationBase extends IReference {
 	public void setPublisher(String publisher) ;
 
 	/**
+     * Returns the 2nd publisher string for this reference
+     */
+    public String getPublisher2() ;
+
+    /**
+     * Sets the 2nd publisher string for this reference
+     */
+    public void setPublisher2(String publisher2) ;
+
+	/**
 	 * Returns the string which represents the place where this
 	 * reference was published
 	 */
@@ -39,6 +49,19 @@ public interface IPublicationBase extends IReference {
 	 * reference was published
 	 */
 	public void setPlacePublished(String placePublished) ;
+
+
+    /**
+     * Returns the string which represents the 2nd place where this
+     * reference was published
+     */
+    public String getPlacePublished2() ;
+
+    /**
+     * Sets the string which represents the 2nd place where this
+     * reference was published
+     */
+    public void setPlacePublished2(String placePublished) ;
 
 	/**
 	 * Sets the publisher and the publication place
@@ -51,5 +74,14 @@ public interface IPublicationBase extends IReference {
 	 */
 	public void setPublisher(String publisher, String placePublished);
 
-
+	/**
+     * Sets the 2nd publisher and the 2nd publication place
+     *
+     * @see #setPublisher(String)
+     * @see #setPlacePublished(String)
+     *
+     * @param publisher2 the publisher to set
+     * @param placePublished2 the place where the publication was published
+     */
+    public void setPublisher2(String publisher2, String placePublished2);
 }
