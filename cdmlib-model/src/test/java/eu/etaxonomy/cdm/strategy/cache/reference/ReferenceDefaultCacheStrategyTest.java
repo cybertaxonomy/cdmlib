@@ -295,7 +295,7 @@ public class ReferenceDefaultCacheStrategyTest {
 		book1.setVolume("Fasc. 11");
 		book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
 		book1.setPublisher("Springer");
-//		book1.setPlacePublished("Berlin");
+		book1.setPlacePublished("Berlin");
 		Assert.assertEquals("Unexpected abbrev title cache",
 				"1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin: Springer",
 				book1.getTitleCache());
