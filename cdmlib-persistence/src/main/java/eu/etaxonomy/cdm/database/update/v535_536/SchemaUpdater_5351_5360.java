@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.database.update.v535_536;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +19,6 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.VocabularyRemover;
 import eu.etaxonomy.cdm.database.update.v500_535.SchemaUpdater_5350_5351;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -68,13 +66,6 @@ public class SchemaUpdater_5351_5360 extends SchemaUpdaterBase {
                 + " WHERE DTYPE <> 'Synonym' ";
         tableName = "TaxonBase";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
-
-        //NOTE: only needs to run on test and integration as it was missing there originally
-        //      !!! Still need to check what happens if the vocabulary is already removed  !!!
-        //#10201 remove syntype vocabulary
-        stepName = "remove synonym type vocabulary";
-        UUID vocUuid = UUID.fromString("48917fde-d083-4659-b07d-413db843bd50");
-        VocabularyRemover.NewInstance(stepList, stepName, vocUuid.toString(), null);
 
         //#10260 add urlPattern
         stepName = "add DefinedTermBase.urlPattern";
