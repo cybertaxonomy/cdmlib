@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
 /**
  * @author andreas kohlbecker
  * @since Sep 13, 2012
- *
  */
 @Service
 @Transactional(readOnly = true)
@@ -32,14 +31,8 @@ public class GrantedAuthorityServiceImpl extends ServiceBase<GrantedAuthorityImp
         this.dao = dao;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public GrantedAuthorityImpl findAuthorityString(String authorityString) {
         return dao.findAuthorityString(authorityString);
-
     }
-
-
 }

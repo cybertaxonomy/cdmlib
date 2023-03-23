@@ -322,7 +322,8 @@ public class TypeDesignationSetContainer {
                 TaxonName otherTypifiedName = typeDesignation.getTypifiedNames().iterator().next();
                 if(!typifiedName.getUuid().equals(otherTypifiedName.getUuid())){
                     //TODO instead throw RegistrationValidationException()
-                    problems.add("Multiple typified names [" + typifiedName.getTitleCache()+ "/" + typifiedName.getUuid() + " and "  + otherTypifiedName.getTitleCache() + "/" + otherTypifiedName.getUuid()  + "] in type designation set '" + typeDesignations.toString() + "'");
+                    String message = "Multiple typified names [" + typifiedName.getTitleCache()+ "/" + typifiedName.getUuid() + " and "  + otherTypifiedName.getTitleCache() + "/" + otherTypifiedName.getUuid()  + "] in type designation set '" + typeDesignations.toString() + "'";
+                    problems.add(message);
                 }
             }
         }

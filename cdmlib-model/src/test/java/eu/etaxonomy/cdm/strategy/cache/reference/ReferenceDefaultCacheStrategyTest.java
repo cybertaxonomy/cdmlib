@@ -484,7 +484,7 @@ public class ReferenceDefaultCacheStrategyTest {
     public void testCdDvdGetTitleCache() {
         String result = defaultStrategy.getTitleCache(cdDvd);
         //TODO position of year and publisher needs to be discussed
-        assertEquals("1999"+SEP+"2001: " + cdDvdTitle + ". – A beutiful place: An ugly publisher", result);
+        assertEquals("1999"+SEP+"2001: " + cdDvdTitle + ". "+UTF8.EN_DASH+" A beutiful place: An ugly publisher", result);
     }
 
     @Test

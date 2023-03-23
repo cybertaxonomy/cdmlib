@@ -263,8 +263,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority).getUuid();
     }
 
-
-
     @Override
     @Transactional(readOnly = true)
     public List<User> listByUsername(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -332,5 +330,4 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     public Map<UUID, User> saveOrUpdate(Collection<User> transientInstances) {
         return super.saveOrUpdate(transientInstances);
     }
-
 }
