@@ -53,7 +53,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = CdmVersion.V_05_36_00.versionString;
+	private static final String dbSchemaVersion = CdmVersion.V_05_36_01.versionString;
 
 	public enum CdmVersion {
 	    V_05_12_00("5.12.0.0.20191202"),
@@ -78,7 +78,8 @@ public class CdmMetaData extends CdmBase{
         V_05_33_00("5.33.0.0.20220807"),
         V_05_35_00("5.35.0.0.20221202"),
         V_05_35_01("5.35.1.0.20221218"),
-        V_05_36_00("5.36.0.0.20230106")
+        V_05_36_00("5.36.0.0.20230106"),
+        V_05_36_01("5.36.1.0.20230323")
         ;
 
         private String versionString;
