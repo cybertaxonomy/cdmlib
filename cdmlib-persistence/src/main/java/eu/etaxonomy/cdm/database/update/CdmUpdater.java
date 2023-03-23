@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v500_535.SchemaUpdater_5350_5351;
+import eu.etaxonomy.cdm.database.update.v535_536.SchemaUpdater_5351_5360;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
@@ -67,7 +67,7 @@ public class CdmUpdater {
     private static final Logger logger = LogManager.getLogger();
 
     private static final ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_5350_5351.NewInstance();
+        return SchemaUpdater_5351_5360.NewInstance();
     }
 
     public static CdmUpdater NewInstance(){

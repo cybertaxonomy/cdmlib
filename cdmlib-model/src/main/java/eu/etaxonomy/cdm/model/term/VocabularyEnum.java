@@ -86,7 +86,7 @@ public enum VocabularyEnum {
 	PlantKindOfUnit("5167c47b-7726-4dba-b02f-dafb7629481b", DefinedTerm.class, 0),
 	SpecimenKindOfUnit("b0344ec4-12f7-40d3-82c1-0092e9780bbd", DefinedTerm.class, 0),
 	MediaSpecimenKindOfUnit("56f47c83-8d42-404a-88fc-03c57b560f6d", DefinedTerm.class, 0),
-	IdentifierType("67d91839-484e-4183-8b4c-6a4a80dfc066", DefinedTerm.class, 0),
+	IdentifierType("67d91839-484e-4183-8b4c-6a4a80dfc066", IdentifierType.class, 0),
 	DnaQualityType("55746f7b-78a8-4e5f-8e70-ee9ce047c835", OrderedTerm.class, 0),
 	TaxonNodeAgentRelationType("0aa8e0c6-c7b5-42dd-91b7-0bd273a64b2c", DefinedTerm.class, 0),
 	OccurrenceStatusType("6d06b750-4f48-42de-85b5-220256e4e5ba", DefinedTerm.class, 0),

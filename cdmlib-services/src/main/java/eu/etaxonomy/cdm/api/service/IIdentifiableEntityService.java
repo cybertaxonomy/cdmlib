@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -338,7 +338,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * identifier attached
      */
     public <S extends T> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
-            Class<S> clazz, String identifier, DefinedTerm identifierType,
+            Class<S> clazz, String identifier, IdentifierType identifierType,
             MatchMode matchmode, boolean includeCdmEntity,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
@@ -361,17 +361,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
             boolean includeEntity, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths);
 
-    /**
-     * @param <S>
-     * @param clazz
-     * @param identifier
-     * @param identifierType
-     * @param matchmode
-     * @param includeEntity
-     * @param propertyPaths
-     * @return
-     */
-    public <S extends T>List<IdentifiedEntityDTO<S >> listByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType,
+    public <S extends T>List<IdentifiedEntityDTO<S >> listByIdentifier(Class<S> clazz, String identifier, IdentifierType identifierType,
             MatchMode matchmode, boolean includeEntity, List<String> propertyPaths, Integer limit);
 
     /**

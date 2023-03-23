@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -1506,7 +1506,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testDnaSampleDesignation.xml")
     public void testDnaSampleDesignation(){
-        DefinedTerm sampleDesignationTermType = (DefinedTerm) termService.load(DefinedTerm.uuidSampleDesignation);
+        IdentifierType sampleDesignationTermType = (IdentifierType) termService.load(IdentifierType.uuidSampleDesignation);
 
         UUID dnaSampleUuid = UUID.fromString("4bee91b9-23d8-438b-8569-6d6aaa5b6587");
         DnaSample dnaSample = HibernateProxyHelper.deproxy(occurrenceService.load(dnaSampleUuid), DnaSample.class);

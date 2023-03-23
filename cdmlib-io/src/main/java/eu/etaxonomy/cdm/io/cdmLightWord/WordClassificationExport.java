@@ -99,7 +99,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -1511,9 +1511,9 @@ public class WordClassificationExport
                     List<Identifier> identifiers = name.getIdentifiers();
 
                     //first check which kind of identifiers are available and then sort and create table entries
-                    Map<DefinedTerm, Set<Identifier>> identifierTypes = new HashMap<>();
+                    Map<IdentifierType, Set<Identifier>> identifierTypes = new HashMap<>();
                     for (Identifier identifier: identifiers){
-                        DefinedTerm type = identifier.getType();
+                        IdentifierType type = identifier.getType();
                         if (identifierTypes.containsKey(type)){
                             identifierTypes.get(type).add(identifier);
                         }else{
@@ -1523,7 +1523,7 @@ public class WordClassificationExport
                         }
                     }
 
-                    for (DefinedTerm type:identifierTypes.keySet()){
+                    for (IdentifierType type:identifierTypes.keySet()){
                         Set<Identifier> identifiersByType = identifierTypes.get(type);
                         csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(WordClassificationExportTable.FK)] = getId(state, name);

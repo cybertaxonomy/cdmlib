@@ -81,6 +81,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -249,15 +250,17 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return extensionType;
 	}
 
-	protected DefinedTerm getIdentiferType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+	protected IdentifierType getIdentiferType(STATE state, UUID uuid, String label,
+	        String text, String labelAbbrev, TermVocabulary<IdentifierType> voc){
+
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
-		DefinedTerm identifierType = state.getIdentifierType(uuid);
+		IdentifierType identifierType = state.getIdentifierType(uuid);
 		if (identifierType == null){
-			identifierType = (DefinedTerm)getTermService().find(uuid);
+			identifierType = (IdentifierType)getTermService().find(uuid);
 			if (identifierType == null){
-				identifierType = DefinedTerm .NewIdentifierTypeInstance(text, label, labelAbbrev);
+				identifierType = IdentifierType.NewInstance(text, label, labelAbbrev);
 				identifierType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;

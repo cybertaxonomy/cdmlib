@@ -57,18 +57,6 @@ public class DefinedTerm
 	public static final UUID uuidSpecimenScan = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 	public static final UUID uuidDetailImage = UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34");
 
-
-	//Identifier Type
-	public static final UUID uuidSampleDesignation = UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc");
-	public static final UUID uuidLsid = UUID.fromString("26729412-9df6-4cc3-9e5d-501531ca21f0");
-	public static final UUID uuidAlternativeFieldNumber = UUID.fromString("054fd3d1-1961-42f8-b024-b91184ac9e0c");
-    public static final UUID uuidTropicosNameIdentifier = UUID.fromString("6205e531-75b0-4f2a-9a9c-b1247fb080ab");
-    public static final UUID uuidIpniNameIdentifier = UUID.fromString("009a602f-0ff6-4231-93db-f458e8229aca");
-    public static final UUID uuidWfoNameIdentifier = UUID.fromString("048e0cf9-f59c-42dd-bfeb-3a5cba0191c7");
-    //currently only used in Caryophyllales_spp
-    public static final UUID uuidPlantListIdentifier = UUID.fromString("06e4c3bd-7bf6-447a-b96e-2844b279f276");
-
-
 	//TaxonNode Agent Relation Type
 	public static final UUID uuidLastScrutiny = UUID.fromString("b4495910-28e9-4a49-86cf-a0476c78f460");
     public static final UUID uuidAuthorOfSubtree = UUID.fromString("c2c7e9b7-d6a7-48a0-b13f-a7a2e2a9b8c9");
@@ -148,10 +136,6 @@ public class DefinedTerm
 		return new DefinedTerm(TermType.KindOfUnit, description, label, labelAbbrev);
 	}
 
-	public static DefinedTerm NewIdentifierTypeInstance(String description, String label, String labelAbbrev){
-		return new DefinedTerm(TermType.IdentifierType, description, label, labelAbbrev);
-	}
-
     public static DefinedTerm NewTaxonNodeAgentRelationTypeInstance(String description, String label, String labelAbbrev){
         return new DefinedTerm(TermType.TaxonNodeAgentRelationType, description, label, labelAbbrev);
     }
@@ -204,21 +188,6 @@ public class DefinedTerm
 		return getTermByUuid(uuidIts1);
 	}
 
-    public static DefinedTerm IDENTIFIER_NAME_TROPICOS(){
-        return getTermByUuid(uuidTropicosNameIdentifier);
-    }
-    public static DefinedTerm IDENTIFIER_NAME_IPNI(){
-        return getTermByUuid(uuidIpniNameIdentifier);
-    }
-    public static DefinedTerm IDENTIFIER_NAME_WFO(){
-        return getTermByUuid(uuidWfoNameIdentifier);
-    }
-
-    public static DefinedTerm WFO_NAME_IDENTIFIER(){
-        return getTermByUuid(uuidWfoNameIdentifier);
-    }
-
-
 	@Override
 	public void resetTerms() {
 		termMap = null;
@@ -251,5 +220,4 @@ public class DefinedTerm
 //        }
 //
 //	}
-
 }

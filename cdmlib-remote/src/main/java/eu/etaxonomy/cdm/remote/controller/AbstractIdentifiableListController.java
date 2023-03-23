@@ -33,8 +33,8 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -106,7 +106,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
     @RequestMapping(method = RequestMethod.GET, value={"findByIdentifier"})
     public  Pager<IdentifiedEntityDTO<T>> doFindByIdentifier(
     		@RequestParam(value = "class", required = false) Class<T> type,
-    		@RequestParam(value = "identifierType", required = false) String identifierType,
+    		@RequestParam(value = "identifierType", required = false) String identifierTypeStr,
             @RequestParam(value = "identifier", required = false) String identifier,
             @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -117,11 +117,11 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
             )
              throws IOException {
 
-    	DefinedTerm definedTerm = null;
-    	if(StringUtils.isNotBlank(identifierType)){
-    		identifierType = StringUtils.trim(identifierType);
-    		UUID identifierTypeUUID = UUID.fromString(identifierType);
-    		definedTerm = CdmBase.deproxy(termService.find(identifierTypeUUID), DefinedTerm.class);
+        IdentifierType identifierType = null;
+    	if(StringUtils.isNotBlank(identifierTypeStr)){
+    		identifierTypeStr = StringUtils.trim(identifierTypeStr);
+    		UUID identifierTypeUUID = UUID.fromString(identifierTypeStr);
+    		identifierType = CdmBase.deproxy(termService.find(identifierTypeUUID), IdentifierType.class);
     	}
 
         logger.info("doFindByIdentifier() : " + requestPathAndQuery(request) );
@@ -130,7 +130,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
 
         matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
         boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
-        return service.findByIdentifier(type, identifier, definedTerm , matchMode, includeCdmEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
+        return service.findByIdentifier(type, identifier, identifierType , matchMode, includeCdmEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
     /**

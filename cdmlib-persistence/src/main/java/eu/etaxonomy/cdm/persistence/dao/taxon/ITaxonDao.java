@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
@@ -365,7 +365,7 @@ public interface ITaxonDao
 			MatchMode matchMode, Set<NamedArea> namedAreas);
 
 	public <S extends TaxonBase> List<Object[]> findByIdentifier(Class<S> clazz, String identifier,
-			DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode,
+	        IdentifierType identifierType, TaxonNode subtreeFilter, MatchMode matchmode,
 			boolean includeEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
@@ -380,7 +380,7 @@ public interface ITaxonDao
 	 * @return
 	 */
 	public <S extends TaxonBase> long countByIdentifier(Class<S> clazz,
-			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
+			String identifier, IdentifierType identifierType, TaxonNode subtreeFilter, MatchMode matchmode);
 
 	/**
      * Counts all taxa which have the given marker of type markerType and with value markerValue.

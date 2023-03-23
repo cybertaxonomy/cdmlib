@@ -194,7 +194,6 @@ public class TestingTermInitializer extends DefaultTermInitializer {
             throw new IllegalStateException("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
         }
 
-
         //fill term store
         if (logger.isDebugEnabled()){ logger.debug("Setting defined Terms for class " + clazz.getSimpleName() + ", " + persistedVocabulary.getTerms().size() + " in vocabulary");}
         super.setDefinedTerms(clazz, persistedVocabulary);

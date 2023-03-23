@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
  * @author pplitzner
@@ -133,7 +133,7 @@ public class AbcdDnaParser {
     private void parseSampleDesignations(Element item, DnaSample dnaSample) {
         NodeList sampleDesignationList = item.getElementsByTagName(prefix+"sampleDesignation");
         for(int i=0;i<sampleDesignationList.getLength();i++){
-            dnaSample.addIdentifier(sampleDesignationList.item(i).getTextContent(), (DefinedTerm)cdmAppController.getTermService().find(DefinedTerm.uuidSampleDesignation));
+            dnaSample.addIdentifier(sampleDesignationList.item(i).getTextContent(), (IdentifierType)cdmAppController.getTermService().find(IdentifierType.uuidSampleDesignation));
         }
 
     }

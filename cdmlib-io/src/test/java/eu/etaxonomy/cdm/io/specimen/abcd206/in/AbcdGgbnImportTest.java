@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -241,7 +242,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull(dnaSample.getPreservation());
         assertEquals("DNeasy Plant Mini Spin Kit Qiagen", derivedFrom.getDescription());
         //sample designation
-        Set<String> identifiers = dnaSample.getIdentifierStrings((DefinedTerm) termService.find(DefinedTerm.uuidSampleDesignation));
+        Set<String> identifiers = dnaSample.getIdentifierStrings((IdentifierType) termService.find(IdentifierType.uuidSampleDesignation));
         assertNotNull(identifiers);
         assertEquals(1, identifiers.size());
         assertEquals("CAM010", identifiers.iterator().next());

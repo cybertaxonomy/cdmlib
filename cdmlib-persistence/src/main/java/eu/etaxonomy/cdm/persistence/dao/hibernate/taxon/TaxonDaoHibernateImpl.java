@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -1588,7 +1589,7 @@ public class TaxonDaoHibernateImpl
 
 	@Override
 	public <S extends TaxonBase> long countByIdentifier(Class<S> clazz,
-			String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter, MatchMode matchmode) {
+			String identifier, IdentifierType identifierType, TaxonNode subtreeFilter, MatchMode matchmode) {
 		if (subtreeFilter == null){
 			return countByIdentifier(clazz, identifier, identifierType, matchmode);
 		}
@@ -1635,7 +1636,7 @@ public class TaxonDaoHibernateImpl
 
 	@Override
 	public <S extends TaxonBase> List<Object[]> findByIdentifier(
-			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
+			Class<S> clazz, String identifier, IdentifierType identifierType, TaxonNode subtreeFilter,
 			MatchMode matchmode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 

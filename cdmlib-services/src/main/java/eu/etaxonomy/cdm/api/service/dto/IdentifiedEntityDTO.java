@@ -12,12 +12,11 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
  * @author a.mueller
  * @since 2015-01-19
- *
  */
 public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> implements Serializable{
 
@@ -31,7 +30,7 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
         UUID typeUuid;
 		String typeLabel;
 		String identifier;
-		public AlternativeIdentifier(DefinedTerm identifierType, String identifier) {
+		public AlternativeIdentifier(IdentifierType identifierType, String identifier) {
 
 			if (identifierType != null){
 			    this.typeUuid = identifierType.getUuid();
@@ -48,12 +47,12 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
 	private AlternativeIdentifier identifier;
 
 
-	public IdentifiedEntityDTO(DefinedTerm identifierType, String identifier, T entity){
+	public IdentifiedEntityDTO(IdentifierType identifierType, String identifier, T entity){
 	    super(entity);
 	    this.identifier = new AlternativeIdentifier(identifierType, identifier);
 	}
 
-	public IdentifiedEntityDTO(DefinedTerm identifierType, String identifier,
+	public IdentifiedEntityDTO(IdentifierType identifierType, String identifier,
 	        UUID entityUuid, String titleCache, String abbrevTitleCache){
 	    super(entityUuid, titleCache, abbrevTitleCache);
 	    if (identifier != null){

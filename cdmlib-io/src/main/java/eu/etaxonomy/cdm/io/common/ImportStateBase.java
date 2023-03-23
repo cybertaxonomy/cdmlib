@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -69,7 +70,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<>();
 	private Map<UUID, MarkerType> markerTypeMap = new HashMap<>();
 	private Map<UUID, AnnotationType> annotationTypeMap = new HashMap<>();
-	private Map<UUID, DefinedTerm> identifierTypeMap = new HashMap<>();
+	private Map<UUID, IdentifierType> identifierTypeMap = new HashMap<>();
 
 	private Map<UUID, NamedArea> namedAreaMap = new HashMap<>();
 	private Map<UUID, NamedAreaLevel> namedAreaLevelMap = new HashMap<>();
@@ -200,10 +201,10 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		return classificationKeyUuidMap.get(treeKey);
 	}
 
-	public DefinedTerm getIdentifierType(UUID uuid){
+	public IdentifierType getIdentifierType(UUID uuid){
 		return identifierTypeMap.get(uuid);
 	}
-	public void putIdentifierType(DefinedTerm identifierType){
+	public void putIdentifierType(IdentifierType identifierType){
 		identifierTypeMap.put(identifierType.getUuid(), identifierType);
 	}
 

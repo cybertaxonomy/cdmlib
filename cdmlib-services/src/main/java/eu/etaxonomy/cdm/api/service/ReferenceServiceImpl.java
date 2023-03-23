@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -33,7 +33,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
-public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IReferenceDao> implements IReferenceService {
+public class ReferenceServiceImpl
+        extends IdentifiableServiceBase<Reference,IReferenceDao>
+        implements IReferenceService {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -128,7 +130,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
     @Transactional(readOnly = true)
     @Override
     public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(
-            String identifier, DefinedTerm identifierType, MatchMode matchmode,
+            String identifier, IdentifierType identifierType, MatchMode matchmode,
             Integer limit) {
 
         long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
@@ -140,7 +142,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
         List<IdentifiedEntityDTO<Reference>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
-            result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
+            result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
 
         }
         return result;
@@ -149,7 +151,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
     @Transactional(readOnly = true)
     @Override
     public List<IdentifiedEntityDTO<Reference>> listByIdentifierAndTitleCacheAbbrev(
-            String identifier, DefinedTerm identifierType, MatchMode matchmode,
+            String identifier, IdentifierType identifierType, MatchMode matchmode,
             Integer limit) {
 
         long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
@@ -164,7 +166,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 
         List<IdentifiedEntityDTO<Reference>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
-            result.add(new IdentifiedEntityDTO<Reference>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
+            result.add(new IdentifiedEntityDTO<Reference>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
 
         }
         for (UuidAndTitleCache<Reference> uuidAndTitleCache: daoResultsTitle){

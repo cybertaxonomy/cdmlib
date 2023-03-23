@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
@@ -42,7 +42,7 @@ public class DnaSampleDefaultCacheStrategyTest extends TermTestBase {
         specimen.setAccessionNumber("123");
         Assert.assertEquals("B 123", strategy.getTitleCache(specimen));
 
-        Identifier identifier = Identifier.NewInstance(specimen, "id3", DefinedTerm.IDENTIFIER_NAME_IPNI());
+        Identifier identifier = Identifier.NewInstance(specimen, "id3", IdentifierType.IDENTIFIER_NAME_IPNI());
         Assert.assertEquals("B 123", strategy.getTitleCache(specimen));
         specimen.setCollection(null);
         specimen.setAccessionNumber(null);

@@ -122,7 +122,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -146,7 +146,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly = true)
 public class TaxonServiceImpl
             extends IdentifiableServiceBase<TaxonBase,ITaxonDao>
-            implements ITaxonService{
+            implements ITaxonService {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -3383,7 +3383,7 @@ public class TaxonServiceImpl
 	@Override
 	@Transactional(readOnly = true)
 	public <S extends TaxonBase> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
-			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
+			Class<S> clazz, String identifier, IdentifierType identifierType, TaxonNode subtreeFilter,
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths) {
 		if (subtreeFilter == null){
@@ -3400,9 +3400,9 @@ public class TaxonServiceImpl
         List<IdentifiedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
-        		result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        		result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
+        		result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
         	}
         }
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -61,16 +61,16 @@ public class Identifier
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private DefinedTerm type;
+	private IdentifierType type;
 
 // **************************** FACTORY ******************************/
 
-    public static Identifier NewInstance(String identifier, DefinedTerm type){
+    public static Identifier NewInstance(String identifier, IdentifierType type){
     	return new Identifier(identifier, type);
     }
 
     public static Identifier NewInstance(IdentifiableEntity<?> identifiableEntity,
-            String identifier, DefinedTerm type){
+            String identifier, IdentifierType type){
         Identifier result = new Identifier(identifier, type);
         identifiableEntity.addIdentifier(result);
         return result;
@@ -81,7 +81,7 @@ public class Identifier
     @Deprecated  //for hibernate use only
     protected Identifier(){};
 
-    public Identifier (String identifier, DefinedTerm type){
+    public Identifier (String identifier, IdentifierType type){
     	this.identifier = identifier;
     	this.type = type;
     }
@@ -101,10 +101,10 @@ public class Identifier
 	 * @see TermType#IdentifierType
 	 * @return
 	 */
-	public DefinedTerm getType() {
+	public IdentifierType getType() {
 		return type;
 	}
-	public void setType(DefinedTerm identifierType) {
+	public void setType(IdentifierType identifierType) {
 		this.type = identifierType;
 	}
 

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -191,7 +191,7 @@ public class MarkupDocumentImport
 		return super.getExtensionType(state, uuid, label, text, labelAbbrev);
 	}
 
-	public DefinedTerm getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+	public IdentifierType getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<IdentifierType> voc){
 		return super.getIdentiferType(state, uuid, label, text, labelAbbrev, voc);
 	}
 

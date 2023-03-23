@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
@@ -485,7 +485,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 	@Override
 	public <S extends T> long countByIdentifier(Class<S> clazz,
-			String identifier, DefinedTerm identifierType, MatchMode matchMode) {
+			String identifier, IdentifierType identifierType, MatchMode matchMode) {
 		checkNotInPriorView("IdentifiableDaoBase.countByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode)");
 
 		Class<?> clazzParam = clazz == null ? type : clazz;
@@ -512,7 +512,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 	@Override
 	public <S extends T> List<Object[]> findByIdentifier(
-			Class<S> clazz, String identifier, DefinedTerm identifierType,
+			Class<S> clazz, String identifier, IdentifierType identifierType,
 			MatchMode matchMode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
