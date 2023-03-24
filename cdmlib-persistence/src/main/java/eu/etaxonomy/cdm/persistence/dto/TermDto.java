@@ -124,7 +124,7 @@ public class TermDto extends AbstractTermDto{
 
     @Override
     public void localize(ITermRepresentation_L10n representation_L10n) {
-        if(this.vocabularyDto.getRepresentations()!=null){
+        if(this.vocabularyDto != null && this.vocabularyDto.getRepresentations()!=null){
             this.vocabularyDto.localize(representation_L10n);
         }
         super.localize(representation_L10n);
