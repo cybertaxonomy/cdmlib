@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.35.0</version>
+    <version>5.36.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cdmlib-remote-webapp</artifactId>
@@ -95,7 +95,7 @@
       <properties>
         <integrationTest.jvmArgs.cdm.datasource>h2_cdmTest</integrationTest.jvmArgs.cdm.datasource>
         <integrationTest.jvmArgs.cdm.forceSchemaCreate>false</integrationTest.jvmArgs.cdm.forceSchemaCreate>
-        <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j.properties</integrationTest.log4j.configuration>
+        <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j2.xml</integrationTest.log4j.configuration>
       </properties>
       <build>
         <plugins>

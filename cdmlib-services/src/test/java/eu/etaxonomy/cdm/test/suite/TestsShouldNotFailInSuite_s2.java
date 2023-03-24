@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.test.suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeTest;
 import eu.etaxonomy.cdm.api.service.NameServiceImplTest;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacadeTest;
 
 
 

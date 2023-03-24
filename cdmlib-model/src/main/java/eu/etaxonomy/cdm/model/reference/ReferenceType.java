@@ -325,6 +325,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
             case Section:
             case Thesis:
             case WebPage:
+            case Report:
+            case Proceedings:
                 return true;
 
             case Journal:

@@ -148,6 +148,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicOperation;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicOperationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -971,7 +972,7 @@ public class FullCoverageDataGenerator {
 		Extension.NewInstance(identifiableEntity, "extension", ExtensionType.INFORMAL_CATEGORY());
 
 		//Identifier
-		Identifier identifier = identifiableEntity.addIdentifier("ident23", DefinedTerm.SEX_FEMALE());
+		Identifier identifier = identifiableEntity.addIdentifier("ident23", IdentifierType.WFO_NAME_IDENTIFIER());
 		handleAnnotatableEntity(identifier);
 
 	    //Links

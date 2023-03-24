@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.occurrence.DataResponse;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 
 /**
  * Wrapper class which holds a {@link DerivedUnitFacade} which was parsed from a GBIF JSON response.

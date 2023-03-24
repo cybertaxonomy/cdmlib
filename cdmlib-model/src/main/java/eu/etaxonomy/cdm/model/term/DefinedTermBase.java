@@ -254,7 +254,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
               LazyInitializer li = proxy.getHibernateLazyInitializer();
               return (T)((T)li.getImplementation()).getKindOf();
           } else {
-              return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
+              return DefinedTermBase.deproxy(this.kindOf);
           }
       }
 
@@ -288,7 +288,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
               LazyInitializer li = proxy.getHibernateLazyInitializer();
               return (T)((T)li.getImplementation()).getPartOf();
           } else {
-              return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
+              return DefinedTermBase.deproxy(this.partOf);
           }
       }
 

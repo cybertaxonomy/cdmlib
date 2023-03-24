@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.specimen.gbif.in;
 
 import java.io.IOException;
@@ -18,16 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.occurrence.gbif.GbifQueryServiceWrapper;
 import eu.etaxonomy.cdm.ext.occurrence.gbif.GbifResponse;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
@@ -271,6 +270,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
     @Override
     protected void handleSingleUnit(SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase> state,
             Object itemObject){
+
         GbifResponse item;
         if (itemObject instanceof GbifResponse){
             item = (GbifResponse) itemObject;

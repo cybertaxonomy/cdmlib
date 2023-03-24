@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -106,62 +106,24 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
     */
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type);
 
-    /**
-     * @param identifier
-     * @param identifierType
-     * @param matchmode
-     * @param limit
-     * @return
-     */
-    public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(String identifier, DefinedTerm identifierType,
+    public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(String identifier, IdentifierType identifierType,
         MatchMode matchmode, Integer limit);
 
-    /**
-     * @param limit
-     * @param pattern
-     * @param type
-     * @return
-     */
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
             ReferenceType type);
-    
-    /**
-     * @param limit
-     * @param authorID
-     * @param type
-     * @return
-     */
+
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID,
 			ReferenceType refType);
 
-    /**
-     * @param uuids
-     *
-     * @return
-     */
     List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids);
 
-    /**
-     * @param identifier
-     * @param identifierType
-     * @param matchmode
-     * @param limit
-     * @return
-     */
     List<IdentifiedEntityDTO<Reference>> listByIdentifierAndTitleCacheAbbrev(String identifier,
-            DefinedTerm identifierType, MatchMode matchmode, Integer limit);
+            IdentifierType identifierType, MatchMode matchmode, Integer limit);
 
-    /**
-     * @param uuids
-     * @param refType
-     * @return
-     */
     List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids, ReferenceType refType);
 
-    /**
-     * @param config
-     * @return
-     */
     List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config);
+
+    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForUUIDS(Set<UUID> uuids);
 
 }

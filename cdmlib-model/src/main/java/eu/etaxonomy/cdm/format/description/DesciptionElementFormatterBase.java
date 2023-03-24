@@ -9,13 +9,18 @@
 package eu.etaxonomy.cdm.format.description;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.DefaultCdmFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 
@@ -53,6 +58,11 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
         return format(object, preferredLanguages);
     }
 
+    public String format(Object object, Language preferredLanguage) {
+        List<Language> languages = Arrays.asList(new Language[] {preferredLanguage});
+        return format(object, languages);
+    }
+
     public String format(Object object, List<Language> preferredLanguages) {
         if (! (object instanceof ICdmBase)){
             throw new IllegalArgumentException("object is not of type ICdmBase");
@@ -66,7 +76,36 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
             preferredLanguages = new ArrayList<>();
             preferredLanguages.add(Language.DEFAULT());
         }
-        return doFormat(descEl, preferredLanguages);
+        String result = doFormat(descEl, preferredLanguages);
+
+        result = handleModifiers(descEl, result, preferredLanguages);
+        return result;
+    }
+
+    private String handleModifiers(T descEl, String result, List<Language> preferredLanguages) {
+        for (DefinedTerm modifier : descEl.getModifiers()) {
+            //TODO order modifiers  (see descEl.getModifiers(voc)
+            Representation prefLabel = modifier.getPreferredRepresentation(preferredLanguages);
+            String label = prefLabel!= null ? prefLabel.getLabel() : "";
+            result = CdmUtils.concat(" ", label, result);
+        }
+
+        if (descEl.getModifyingText() != null && !descEl.getModifyingText().isEmpty()) {
+            Map<Language, LanguageString> modifyingText = descEl.getModifyingText();
+            String modText = getPreferredModifyingText(modifyingText, preferredLanguages);
+            result = CdmUtils.concat(" ", modText, result);
+        }
+        return result;
+    }
+
+    private String getPreferredModifyingText(Map<Language, LanguageString> modifyingText,
+            List<Language> preferredLanguages) {
+        for (Language lang : preferredLanguages) {
+            if (modifyingText.get(lang) != null) {
+                return modifyingText.get(lang).getText();
+            }
+        }
+        return null;
     }
 
     /**

@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.common;
 
 import java.util.ArrayList;
@@ -6,13 +14,14 @@ import java.util.List;
 
 /**
  * TODO move this class to another package.
+ *
  * Represents a node of the Tree<T> class. The TreeNode<T,S> is also a container, and
  * can be thought of as instrumentation to determine the location of the type T
  * in the Tree<T>.
  */
 public class TreeNode<T,S> {
 
-    public T data;
+    private T data;
     private S nodeId;
     public List<TreeNode<T,S>> children;
 
@@ -29,25 +38,25 @@ public class TreeNode<T,S> {
         return result;
     }
 
-        public TreeNode<T,S> getChild(TreeNode<T,S> TreeNode) {
-            boolean found = false;
-            TreeNode<T,S> result = null;
-            Iterator<TreeNode<T,S>> it = children.iterator();
-            while (!found && it.hasNext()) {
-                result = it.next();
-                if (result.data.equals(TreeNode.data)){
-                    found = true;
-                }
+    public TreeNode<T,S> getChild(TreeNode<T,S> TreeNode) {
+        boolean found = false;
+        TreeNode<T,S> result = null;
+        Iterator<TreeNode<T,S>> it = children.iterator();
+        while (!found && it.hasNext()) {
+            result = it.next();
+            if (result.data.equals(TreeNode.data)){
+                found = true;
             }
-            if (!found){
-                try {
-                    throw new Exception("The node was not found in among children and that is a precondition of getChild(node) method");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return result;
         }
+        if (!found){
+            try {
+                throw new Exception("The node was not found in among children and that is a precondition of getChild(node) method");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
 
 //    /**
 //     * Convenience ctor to create a Node<T> with an instance of T.
@@ -58,8 +67,12 @@ public class TreeNode<T,S> {
 //    }
 
     public TreeNode(S nodeId) {
-        super();
         this.nodeId = nodeId;
+    }
+
+    public TreeNode(S nodeId, T data) {
+        this.nodeId = nodeId;
+        this.data = data;
     }
 
     public TreeNode() {
@@ -104,12 +117,14 @@ public class TreeNode<T,S> {
      * Adds a child to the list of children for this TreeNode<T,S>. The addition of
      * the first child will create a new List<TreeNode<T,S>>.
      * @param child a TreeNode<T,S> object to set.
+     * @return
      */
-    public void addChild(TreeNode<T,S> child) {
+    public TreeNode<T, S> addChild(TreeNode<T,S> child) {
         if (children == null) {
             children = new ArrayList<>();
         }
         children.add(child);
+        return child;
     }
 
     /**
@@ -160,6 +175,23 @@ public class TreeNode<T,S> {
     }
     public void setNodeId(S nodeId) {
         this.nodeId = nodeId;
+    }
+
+    /**
+     * Returns the (first) child node (of type TreeNode) with the given nodeID.
+     * @return the found node or null
+     */
+    public TreeNode<T,S> findChildNode(S  nodeID) {
+        if (this.getChildren() == null) {
+            return null;
+        }
+
+        for (TreeNode<T, S> node : this.getChildren()) {
+            if (node.getNodeId().equals(nodeID)) {
+                return node;
+            }
+        }
+        return null;
     }
 
 }

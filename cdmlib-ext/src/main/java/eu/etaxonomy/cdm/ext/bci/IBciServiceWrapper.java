@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,15 +15,12 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 
-
 /**
-* Interface for queying the Biodiversity Collection Index  via webservices ({@link http://www.biodiversitycollectionsindex.org}). 
-* @author a.mueller
-* @since Aug 18, 2010
-* @version 1.0
- */
+ * Interface for queying the Biodiversity Collection Index  via webservices ({@link http://www.biodiversitycollectionsindex.org}).
+ * @author a.mueller
+ * @since Aug 18, 2010
+*/
 public interface IBciServiceWrapper {
-
 
 	/**
 	 * UUID for the reference representing the IPNI database:<BR/>
@@ -33,16 +30,11 @@ public interface IBciServiceWrapper {
 
 	public static final String LOOKUP_CODE_REST = "http://www.biocol.org/rest/lookup/code/";
 
-	
 	/**
-	 * Returns a list of collections collection code.
-	 *  
-	 * @param code
-	 * @param appConfig
-	 * @return
+	 * Returns a list of collections by collection code.
 	 */
-	public List<Collection> getCollectionsByCode(String code, ICdmRepository appConfig);
-	
+	public List<Collection> getCollectionsByCode(String code, ICdmRepository repository);
+
 	public URL getServiceUrl(String url);
 
 }

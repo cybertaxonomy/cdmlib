@@ -21,9 +21,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -984,8 +984,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param derivedUnitFacade : the current derivedunitfacade
 	     */
 	    protected void handleIdentifications(STATE state, DerivedUnitFacade derivedUnitFacade) {
-	       SpecimenImportConfiguratorBase config = state.getConfig();
 
+	        SpecimenImportConfiguratorBase config = state.getConfig();
 
 	        String scientificName = "";
 	        boolean preferredFlag = false;

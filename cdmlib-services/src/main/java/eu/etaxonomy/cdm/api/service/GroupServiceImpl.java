@@ -88,7 +88,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 //            it.remove();
 //        }
         dao.delete(group);
-
     }
 
     @Override

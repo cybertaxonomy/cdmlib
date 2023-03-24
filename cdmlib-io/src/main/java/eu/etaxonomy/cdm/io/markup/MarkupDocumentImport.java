@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.markup;
 
 import java.net.MalformedURLException;
@@ -23,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -40,7 +39,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -61,9 +60,8 @@ public class MarkupDocumentImport
 	// second time
 	private UnmatchedLeads unmatchedLeads;
 
-
 	@Autowired
-	private IEditGeoService editGeoService;
+	private IDistributionService editGeoService;
 
 	public MarkupDocumentImport() {
 		super();
@@ -193,7 +191,7 @@ public class MarkupDocumentImport
 		return super.getExtensionType(state, uuid, label, text, labelAbbrev);
 	}
 
-	public DefinedTerm getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+	public IdentifierType getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<IdentifierType> voc){
 		return super.getIdentiferType(state, uuid, label, text, labelAbbrev, voc);
 	}
 
@@ -236,8 +234,7 @@ public class MarkupDocumentImport
 		return super.getImageMedia(uriString, readMediaData);
 	}
 
-	public IEditGeoService getEditGeoService() {
+	public IDistributionService getEditGeoService() {
 		return editGeoService;
 	}
-
 }

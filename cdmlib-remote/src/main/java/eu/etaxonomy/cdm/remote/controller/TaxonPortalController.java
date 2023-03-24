@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
@@ -32,12 +31,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.portal.IPortalDtoService;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -108,6 +111,9 @@ public class TaxonPortalController extends TaxonController{
 
     @Autowired
     private IMediaToolbox mediaToolbox;
+
+    @Autowired
+    private IPortalDtoService portalDtoService;
 
 
     public static final EntityInitStrategy TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -291,6 +297,44 @@ public class TaxonPortalController extends TaxonController{
     }
 
     /**
+     * TODO documentation
+     *
+     * @param taxonUuid the taxon uuid
+     * @param subtreeUuid the taxon node subtree filter
+     * @throws IOException
+     */
+    @RequestMapping(
+            value = {"page"},
+            method = RequestMethod.GET)
+    @ResponseBody
+    public TaxonPageDto doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
+            @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
+            @RequestParam(value = "featureTree", required = false) UUID featureTreeUuid,
+            //TODO configuration data
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        if(request != null){
+            logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
+        }
+
+        //TODO is this current state of art?
+//        ModelAndView mv = new ModelAndView();
+
+        //check taxon exists and not filtered
+        Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
+        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
+        taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+
+        TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+        config.setTaxonUuid(taxonUuid);
+        config.setFeatureTree(featureTreeUuid);
+        config.getDistributionInfoConfiguration().setUseTreeDto(true);
+        TaxonPageDto dto = portalDtoService.taxonPageDto(config);
+        return dto;
+    }
+
+
+    /**
      * Get the synonymy for a taxon identified by the <code>{taxon-uuid}</code>.
      * The synonymy consists
      * of two parts: The group of homotypic synonyms of the taxon and the
@@ -471,8 +515,10 @@ public class TaxonPortalController extends TaxonController{
     @RequestMapping(
             value = {"fromNameRelationships"},
             method = RequestMethod.GET)
-    public List<NameRelationship> doGetFromNameRelations(@PathVariable("uuid") UUID uuid,
-            HttpServletRequest request, HttpServletResponse response)throws IOException {
+    public List<NameRelationship> doGetFromNameRelations(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
         logger.info("doGetNameFromNameRelations()" + requestPathAndQuery(request));
 
         boolean includeUnpublished = NO_UNPUBLISHED;
@@ -574,34 +620,34 @@ public class TaxonPortalController extends TaxonController{
     @RequestMapping(
             value = {"media"},
             method = RequestMethod.GET)
-        public List<Media> doGetMedia(
-                @PathVariable("uuid") UUID uuid,
-                @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
-                @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
-                @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
-                @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
-                @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
-                @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
-                @RequestParam(value = "includeOriginals", required = false) Boolean  includeOriginals,
-                @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
-                @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
-                @RequestParam(value = "height", required = false) Integer height,
-                @RequestParam(value = "size", required = false) Integer size,
-                HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public List<Media> doGetMedia(
+            @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
+            @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
+            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+            @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
+            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+            @RequestParam(value = "includeOriginals", required = false) Boolean  includeOriginals,
+            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
+            @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
+            @RequestParam(value = "height", required = false) Integer height,
+            @RequestParam(value = "size", required = false) Integer size,
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-            logger.info("doGetMedia() " + requestPathAndQuery(request));
+        logger.info("doGetMedia() " + requestPathAndQuery(request));
 
-            List<String> initStrategy = null;
+        List<String> initStrategy = null;
 
-            EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
-                    relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                    response, initStrategy, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
+        EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
+            relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+            response, initStrategy, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
 
-            List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
-                    taxonMediaContext.media);
+        List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(
+            type, mimeTypes, widthOrDuration, height, size, taxonMediaContext.media);
 
-            return mediafilteredForPreferredRepresentations;
-        }
+        return mediafilteredForPreferredRepresentations;
+    }
 
     /**
      * @Deprecated To be replaced by other loadMediaForTaxonAndRelated method

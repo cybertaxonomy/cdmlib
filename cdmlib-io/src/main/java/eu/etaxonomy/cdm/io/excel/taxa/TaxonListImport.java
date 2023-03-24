@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.excel.taxa;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;

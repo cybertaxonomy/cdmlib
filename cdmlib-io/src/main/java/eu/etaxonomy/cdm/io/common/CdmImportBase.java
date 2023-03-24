@@ -81,6 +81,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -249,15 +250,17 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return extensionType;
 	}
 
-	protected DefinedTerm getIdentiferType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+	protected IdentifierType getIdentiferType(STATE state, UUID uuid, String label,
+	        String text, String labelAbbrev, TermVocabulary<IdentifierType> voc){
+
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
-		DefinedTerm identifierType = state.getIdentifierType(uuid);
+		IdentifierType identifierType = state.getIdentifierType(uuid);
 		if (identifierType == null){
-			identifierType = (DefinedTerm)getTermService().find(uuid);
+			identifierType = (IdentifierType)getTermService().find(uuid);
 			if (identifierType == null){
-				identifierType = DefinedTerm .NewIdentifierTypeInstance(text, label, labelAbbrev);
+				identifierType = IdentifierType.NewInstance(text, label, labelAbbrev);
 				identifierType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
@@ -405,8 +408,17 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	}
 
+
+    /**
+     * Retrieves the named area for the given uuid. If language does not exist
+     * <code>null</code> is returned.
+     */
+    protected NamedArea getNamedArea(STATE state, UUID uuid){
+        return getNamedArea(state, uuid, null, null, null, null, null);
+    }
 	/**
-	 * Returns a named area for a given uuid by first . If the named area does not
+	 * Returns a named area for a given uuid by first ... . If a named area with the given
+	 * uuid does not exist and label, text and labelAbbrev is null, null is returned.
 	 */
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level){
 		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, null, null);
@@ -430,6 +442,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (namedArea == null){
 			DefinedTermBase<?> term = getTermService().find(uuid);
 			namedArea = CdmBase.deproxy(term,NamedArea.class);
+            if (namedArea == null && text == null && label == null && labelAbbrev == null){
+                return null;
+            }
 
 			if (vocabularyPreference == null){
 				vocabularyPreference =  new ArrayList<>();
@@ -646,7 +661,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				}
 				voc.addTerm(feature);
 				getTermService().save(feature);
-				state.putFeature(feature);
+			}
+			if (feature != null) {
+			    state.putFeature(feature);
 			}
 		}
 		return feature;
@@ -942,7 +959,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         Class<T> clazz = null;
         if (voc == null){
             if (isOrdered){
-                voc = OrderedTermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
+                voc = OrderedTermVocabulary.NewOrderedInstance(termType, clazz, description, label, abbrev, termSourceUri);
             }else{
                 voc = TermVocabulary.NewInstance(termType, clazz, description, label, abbrev, termSourceUri);
             }

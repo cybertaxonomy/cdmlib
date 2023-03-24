@@ -107,6 +107,24 @@ public class ReferenceDaoHibernateImpl
 	    return getUuidAndTitle(uuids, null);
     }
 
+	@Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitle(Set<UUID> uuids){
+        return getUuidAndAbbrevTitle(uuids, null);
+    }
+
+	@Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitle(Set<UUID> uuids, ReferenceType refType) {
+        List<Reference> result = getReferenceListForUuids(uuids, refType);
+        List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
+
+        for(Reference object : result){
+                list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache(), object.getAbbrevTitleCache()));
+        }
+
+        return list;
+    }
+
+
 
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType) {

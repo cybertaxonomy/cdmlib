@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -355,7 +355,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		}
 
 		if (ipni_id != null){
-		    taxonBase.getName().addIdentifier(Identifier.NewInstance(ipni_id, DefinedTerm.IDENTIFIER_NAME_IPNI()));
+		    taxonBase.getName().addIdentifier(Identifier.NewInstance(ipni_id, IdentifierType.IDENTIFIER_NAME_IPNI()));
 		}
 
 		if (source != null){

@@ -60,7 +60,7 @@ public class RegistrationDTO {
 
     private String submitterUserName = null;
 
-    private EntityReference name = null;
+    private RankedNameReference name = null;
 
     private TypeDesignationSetContainer typeDesignationSetContainer;
 
@@ -78,24 +78,34 @@ public class RegistrationDTO {
 
     private String bibliographicInRefCitationString;
 
-    /**
-     * @param reg
-     * @param typifiedName should be provided for registrations for TypeDesignations
-     * @throws TypeDesignationSetException
-     */
+    public static class RankedNameReference extends EntityReference {
+        private static final long serialVersionUID = -3375257142767682860L;
+        private boolean isSupraSpecific;
+
+        public RankedNameReference(UUID uuid, String label, boolean isSupraSpecific) {
+            super(uuid, label);
+            this.isSupraSpecific = isSupraSpecific;
+        }
+        public boolean isSupraGeneric() {
+            return isSupraSpecific;
+        }
+    }
+
     public RegistrationDTO(Registration reg) {
 
-         this.reg = reg;
+        this.reg = reg;
 
-         registrationType = RegistrationType.from(reg);
+        registrationType = RegistrationType.from(reg);
 
-         if(reg.getSubmitter() != null ){
-             submitterUserName = reg.getSubmitter().getUsername();
-         }
+        if(reg.getSubmitter() != null ){
+            submitterUserName = reg.getSubmitter().getUsername();
+        }
 
-         if(hasName(reg)){
-             name = new EntityReference(reg.getName().getUuid(), reg.getName().getTitleCache());
-         }
+        if(hasName(reg)){
+            TaxonName taxonName = reg.getName();
+            name = new RankedNameReference(taxonName.getUuid(),
+                    taxonName.getTitleCache(), taxonName.isSupraSpecific());
+        }
         NamedSourceBase publishedUnit = findPublishedUnit(reg);
         if(publishedUnit != null) {
             citation = publishedUnit.getCitation();
@@ -174,8 +184,6 @@ public class RegistrationDTO {
      * Provides access to the Registration entity this DTO has been build from.
      * This method is purposely not a getter to hide the original Registration
      * from generic processes which are exposing, binding bean properties.
-     *IReference
-     * @return
      */
     public Registration registration() {
         return reg;
@@ -247,7 +255,7 @@ public class RegistrationDTO {
         return citation == null ? null : citation.getUuid();
     }
 
-    public EntityReference getTypifiedNameRef() {
+    public RankedNameReference getTypifiedNameRef() {
         return typeDesignationSetContainer != null ? typeDesignationSetContainer.getTypifiedNameAsEntityRef() : null;
     }
 
@@ -255,7 +263,7 @@ public class RegistrationDTO {
         return typeDesignationSetContainer != null ? typeDesignationSetContainer.getTypifiedName() : null;
     }
 
-    public EntityReference getNameRef() {
+    public RankedNameReference getNameRef() {
         return name;
     }
 
@@ -390,16 +398,14 @@ public class RegistrationDTO {
         return reg.getBlockedBy() != null && !reg.getBlockedBy().isEmpty();
     }
 
-    /**
-     * @return the blockedBy
-     */
     public Set<TypedEntityReference<Registration>> getBlockedBy() {
 
         if(blockedBy == null){
             blockedBy = new HashSet<>();
             if(reg.getBlockedBy() != null){
                 for(Registration blockReg : reg.getBlockedBy()){
-                    blockedBy.add(new TypedEntityReference<Registration>(Registration.class, blockReg.getUuid(), blockReg.getIdentifier()));
+                    TypedEntityReference<Registration> typedEntityRef = TypedEntityReference.fromEntityWithLabel(blockReg, blockReg.getIdentifier());
+                    blockedBy.add(typedEntityRef);
                 }
             }
         }

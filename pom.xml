@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.35.0</version>
+  <version>5.36.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>https://cybertaxonomy.org/cdmlib/</url>
@@ -1687,7 +1687,7 @@
       <dependency>
          <groupId>org.postgresql</groupId>
          <artifactId>postgresql</artifactId>
-         <version>42.3.6</version>
+         <version>42.5.1</version>
       </dependency>
 	  <dependency>
         <groupId>com.h2database</groupId>

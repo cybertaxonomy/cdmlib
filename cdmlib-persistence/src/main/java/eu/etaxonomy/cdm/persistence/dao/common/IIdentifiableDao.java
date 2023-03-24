@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -246,7 +247,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity>
 	 * @see #findByIdentifier
 	 * @return
 	 */
-	public <S extends T> long countByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode);
+	public <S extends T> long countByIdentifier(Class<S> clazz, String identifier, IdentifierType identifierType, MatchMode matchmode);
 
     /**
      * Returns a tuple including the identifier type, the identifier string,
@@ -263,7 +264,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity>
      * @see #countByIdentifier(Class, String, DefinedTerm, MatchMode)
      * @return
      */
-    public <S extends T> List<Object[]> findByIdentifier(Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, boolean includeCdmEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <S extends T> List<Object[]> findByIdentifier(Class<S> clazz, String identifier, IdentifierType identifierType, MatchMode matchmode, boolean includeCdmEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * @param clazz

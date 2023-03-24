@@ -52,6 +52,8 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -159,6 +161,9 @@ public class ReferencingObjectFormatter {
         }else if (element instanceof KeyStatement) {
             KeyStatement keyStatement = (KeyStatement) element;
             resultString = getCache(keyStatement);
+        }else if (element instanceof Rights) {
+            Rights rights = (Rights) element;
+            resultString = getCache(rights, defaultLanguage);
         }else{
             // TODO write return texts for HomotypicalGroup, etc.
             resultString = element.toString();
@@ -168,6 +173,55 @@ public class ReferencingObjectFormatter {
             resultString = element.toString();
         }
         return resultString;
+    }
+
+    private static String getCache(Rights rights, Language defaultLanguage) {
+        // TODO make it a rights formatter
+        String result = "";
+        if (rights.getType() != null) {
+            RightsType type = rights.getType();
+            String typeStr = getIdInVocOrSymbol(type);
+            if (typeStr == null) {
+                Representation rep = type.getPreferredRepresentation(defaultLanguage);
+                if (rep != null) {
+                    typeStr = rep.getAbbreviatedLabel();
+                    if (isBlank(typeStr)) {
+                        typeStr = rep.getLabel();
+                    }
+                }
+            }
+            if (isBlank(typeStr)) {
+                typeStr = type.getTitleCache();
+            }
+            result = typeStr;
+        }
+        result = CdmUtils.concat(" ", result, rights.getAbbreviatedText());
+        if (rights.getAgent() != null) {
+            result = CdmUtils.concat(" ", result, rights.getAgent().getTitleCache());
+        }
+        //TODO always show but truncate at 10
+        if (isBlank(result)) {
+            result = rights.getText();
+        }
+        if (isBlank(result)) {
+            result = rights.getUri() == null ? null : rights.getUri().toString();
+        }
+        if (isBlank(result)) {
+            result = rights.toString();
+        }
+
+        return result;
+    }
+
+    private static String getIdInVocOrSymbol(DefinedTermBase<?> term) {
+        if (isNotBlank(term.getIdInVocabulary())) {
+            return term.getIdInVocabulary();
+        }else if (isNotBlank(term.getSymbol())) {
+            return term.getSymbol();
+        }else if (isNotBlank(term.getSymbol2())) {
+            return term.getSymbol2();
+        }
+        return null;
     }
 
     private static String getCache(DescriptionElementSource source, Language defaultLanguage) {

@@ -38,23 +38,24 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.description.AggregationMode;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
-import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
-import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
+import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.util.DistributionOrder;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionConfiguration;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
-import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -94,7 +95,7 @@ public class DescriptionListController
     private IVocabularyService vocabularyService ;
 
     @Autowired
-    private IEditGeoService geoService;
+    private IDistributionService distributionService;
 
     @Autowired
     @Qualifier("cdmRepository")
@@ -288,7 +289,7 @@ public class DescriptionListController
             boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
             boolean fallbackAsParent = true;  //may become a service parameter in future
 
-            DistributionInfoDTO dto;
+            DistributionInfoDto dto;
             try {
                 CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
                 //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
@@ -301,14 +302,26 @@ public class DescriptionListController
 
                 EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
-                Map<PresenceAbsenceTerm, Color> distributionStatusColors = EditGeoServiceUtilities.buildStatusColorMap(
+                Map<PresenceAbsenceTerm, Color> distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
                         statusColorsString, termService, vocabularyService);
 
-                dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
-                        subAreaPreference, statusOrderPreference, hiddenAreaMarkerTypes, fallbackAsParent,
-                        omitLevels, distributionStatusColors, LocaleContext.getLanguages(),
-                        getDescriptionInfoInitStrategy(), condensedConfig, distributionOrder,
-                        ignoreDistributionStatusUndefined);
+                DistributionInfoConfiguration config = new DistributionInfoConfiguration();
+                config.setInfoParts(parts);
+                config.setSubAreaPreference(subAreaPreference);
+                config.setStatusOrderPreference(statusOrderPreference);
+                config.setHiddenAreaMarkerTypeList(hiddenAreaMarkerTypes);
+                config.setOmitLevels(omitLevels);
+                config.setDistributionOrder(distributionOrder);
+                config.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
+                config.setCondensedDistrConfig(condensedConfig);
+                //TODO needed?
+                config.setStatusColorsString(statusColorsString);
+
+                // ignoreDistributionStatusUndefined, condensedConfig
+                dto = distributionService.composeDistributionInfoFor(config, taxonUuid,
+                        fallbackAsParent, distributionStatusColors,
+                        LocaleContext.getLanguages(), getDescriptionInfoInitStrategy()
+                      );
                 mv.addObject(dto);
                 return mv;
             } catch (Exception e) {

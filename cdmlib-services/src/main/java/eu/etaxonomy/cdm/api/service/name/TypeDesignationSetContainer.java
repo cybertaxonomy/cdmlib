@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO.RankedNameReference;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator.ORDER_BY;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
@@ -37,7 +38,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
@@ -255,7 +255,7 @@ public class TypeDesignationSetContainer {
         String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
-                new TypedEntityReference<>(baseEntity.getClass(), baseEntity.getUuid(), label);
+                TypedEntityReference.fromEntityWithLabel(baseEntity, label);
 
         return baseEntityReference;
     }
@@ -302,16 +302,16 @@ public class TypeDesignationSetContainer {
         TaxonName typifiedName = null;
 
         for(TypeDesignationBase<?> typeDesignation : typeDesignations.values()){
-            typeDesignation.getTypifiedNames();
-            if(typeDesignation.getTypifiedNames().isEmpty()){
+            Set<TaxonName> typifiedNames = typeDesignation.getTypifiedNames();
+            if(typifiedNames.isEmpty()){
 
                 //TODO instead throw RegistrationValidationException()
-                problems.add("Missing typifiedName in " + typeDesignation.toString());
+                problems.add("Missing typified name in " + typeDesignation.toString());
                 continue;
             }
-            if(typeDesignation.getTypifiedNames().size() > 1){
+            if(typifiedNames.size() > 1){
                 //TODO instead throw RegistrationValidationException()
-                problems.add("Multiple typifiedName in " + typeDesignation.toString());
+                problems.add("Multiple typified names in type designation '" + typeDesignation.toString() + "'");
                 continue;
             }
             if(typifiedName == null){
@@ -322,7 +322,8 @@ public class TypeDesignationSetContainer {
                 TaxonName otherTypifiedName = typeDesignation.getTypifiedNames().iterator().next();
                 if(!typifiedName.getUuid().equals(otherTypifiedName.getUuid())){
                     //TODO instead throw RegistrationValidationException()
-                    problems.add("Multiple typifiedName in " + typeDesignation.toString());
+                    String message = "Multiple typified names [" + typifiedName.getTitleCache()+ "/" + typifiedName.getUuid() + " and "  + otherTypifiedName.getTitleCache() + "/" + otherTypifiedName.getUuid()  + "] in type designation set '" + typeDesignations.toString() + "'";
+                    problems.add(message);
                 }
             }
         }
@@ -350,8 +351,8 @@ public class TypeDesignationSetContainer {
     /**
      * @return the title cache of the typifying name or <code>null</code>
      */
-    public EntityReference getTypifiedNameAsEntityRef() {
-       return new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
+    public RankedNameReference getTypifiedNameAsEntityRef() {
+       return new RankedNameReference(typifiedName.getUuid(), typifiedName.getTitleCache(), typifiedName.isSupraSpecific());
     }
 
     public Collection<TypeDesignationBase<?>> getTypeDesignations() {

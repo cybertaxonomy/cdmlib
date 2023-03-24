@@ -14,7 +14,6 @@ import java.util.Set;
 
 import javax.naming.Reference;
 
-import org.apache.commons.lang.UnhandledException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.MappingException;
@@ -139,7 +138,6 @@ public class DeduplicationHelper {
 	                logger.debug("Delete " + toBeDeleted);
 	                if (toBeDeleted != cdmBase2){
 	                    session.delete(toBeDeleted);
-
 	                }
 	            }
 			}
@@ -557,13 +555,6 @@ public class DeduplicationHelper {
 		}
 	}
 
-	/**
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 *
-	 */
 	private void reallocateSingleItem_Old(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 		List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 		for (CdmBase referencingObject : referencingObjects){
@@ -575,14 +566,6 @@ public class DeduplicationHelper {
 		}
 	}
 
-
-
-
-	/**
-	 * @param <T>
-	 * @param clazz
-	 * @param sessionFactory
-	 */
 	private <T> Set<String> getCollectionRoles(Class<T> clazz,
 			SessionFactoryImpl sessionFactory) {
 		Set<String> collectionRoles = null;
@@ -598,7 +581,7 @@ public class DeduplicationHelper {
 			}
 		}else{
 			logger.warn("Class metadata is not of type AbstractEntityPersister");
-			throw new UnhandledException("Class metadata is not of type AbstractEntityPersister", null);
+			throw new RuntimeException("Class metadata is not of type AbstractEntityPersister", null);
 		}
 		return collectionRoles;
 	}

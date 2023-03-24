@@ -21,13 +21,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser;
 import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
@@ -736,7 +736,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 
 		//for now we do not handle annotation and typeNotes
 		String altFieldNum = getCData(state, reader, parent, false).trim();
-		DefinedTerm type = this.getIdentifierType(state, MarkupTransformer.uuidIdentTypeAlternativeFieldNumber, "Alternative field number", "Alternative field number", "alt. field no.", null);
+		IdentifierType type = this.getIdentifierType(state, MarkupTransformer.uuidIdentTypeAlternativeFieldNumber, "Alternative field number", "Alternative field number", "alt. field no.", null);
 		fieldUnit.addIdentifier(altFieldNum, type);
 		if (doubtful){
 			fireWarningEvent("Marking alternative field numbers as doubtful not yet possible, see #4673", parent,4);

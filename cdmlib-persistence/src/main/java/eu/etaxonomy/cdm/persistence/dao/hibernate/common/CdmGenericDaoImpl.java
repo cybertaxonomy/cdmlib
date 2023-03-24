@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
@@ -22,7 +21,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -538,12 +537,12 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-	public List<CdmBase> getHqlResult(String hqlQuery, Object[] params){
-		Query<CdmBase> query = getSession().createQuery(hqlQuery, CdmBase.class);
+	public <T> List<T> getHqlResult(String hqlQuery, Object[] params, Class<T> clazz){
+		Query<T> query = getSession().createQuery(hqlQuery, clazz);
 		for(int i = 0; i<params.length; i++){
 		    query.setParameter(String.valueOf(i), params[i]);  //for some reason using int, not String, throws exceptions, this seems to be a hibernate bug
 		}
-        List<CdmBase> result = query.list();
+        List<T> result = query.list();
 		return result;
 	}
 
@@ -552,6 +551,12 @@ public class CdmGenericDaoImpl
 		Query<?> query = getSession().createQuery(hqlQuery);
 		return query;
 	}
+
+    @Override
+    public <T> Query<T> getHqlQuery(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException{
+        Query<T> query = getSession().createQuery(hqlQuery, clazz);
+        return query;
+    }
 
 	@Override
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {

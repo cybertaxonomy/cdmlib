@@ -94,9 +94,6 @@ public interface IDatabaseService {
 	 */
 	public CdmPersistentDataSource updateDataSource(String strDataSourceName, CdmPersistentDataSource dataSource) throws DataSourceNotFoundException;
 
-	/**
-	 * @param cdmApplicationController
-	 */
 	public void setApplicationController(CdmApplicationController cdmApplicationController);
 
 	/**
@@ -111,7 +108,7 @@ public interface IDatabaseService {
 	 * Returns a boolean flag to indicate whether the database is empty
 	 *
 	 * @return boolean flag to indicate whether the database is  empty
-	 * @throws CdmSourceException , incase of an underlying SQL error
+	 * @throws CdmSourceException , in case of an underlying SQL error
 	 */
 	public boolean isDbEmpty() throws CdmSourceException;
 

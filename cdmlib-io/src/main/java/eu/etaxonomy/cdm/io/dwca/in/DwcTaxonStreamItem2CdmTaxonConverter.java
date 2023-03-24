@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,8 +59,8 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -447,7 +447,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					String message = "LSID is malformed and can't be handled as LSID: %s";
 					message = String.format(message, identifier);
 					fireWarningEvent(message, csvTaxonRecord, 4);
-					Identifier.NewInstance(taxonBase, identifier, DefinedTermBase.getTermByClassAndUUID(DefinedTerm.class, DefinedTerm.uuidLsid));
+					Identifier.NewInstance(taxonBase, identifier, DefinedTermBase.getTermByClassAndUUID(IdentifierType.class, IdentifierType.uuidLsid));
 				}
 			}else{
 				Identifier.NewInstance(taxonBase, identifier, null);

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -377,7 +377,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
         String ipniId = record.get(SCIENTIFIC_NAME_ID);
         if (isNotBlank(ipniId)){
-            Set<String> ipniIds = name.getIdentifierStrings(DefinedTerm.uuidIpniNameIdentifier);
+            Set<String> ipniIds = name.getIdentifierStrings(IdentifierType.uuidIpniNameIdentifier);
             if (!ipniIds.contains(ipniId)){
                 makeIpniId(state, name);
             }
@@ -385,7 +385,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
         String plantListId = record.get(REFERENCES);
         if (isNotBlank(plantListId)){
-            Set<String> plantListIds = name.getIdentifierStrings(DefinedTerm.uuidPlantListIdentifier);
+            Set<String> plantListIds = name.getIdentifierStrings(IdentifierType.uuidPlantListIdentifier);
             plantListId = makeTplIdPart(plantListId);
             if (!plantListIds.contains(plantListId)){
                 makePlantListIdentifier(state, name);
@@ -393,17 +393,12 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         }
     }
 
-
-/**
-     * @param state
-     * @param name
-     */
     private void makeIpniId(STATE state, TaxonName name) {
         Map<String, String> record = state.getCurrentRecord();
 
         String ipniId = record.get(SCIENTIFIC_NAME_ID);
         if (isNotBlank(ipniId)){
-            DefinedTerm identifierType = DefinedTerm.IDENTIFIER_NAME_IPNI();
+            IdentifierType identifierType = IdentifierType.IDENTIFIER_NAME_IPNI();
             name.addIdentifier(ipniId, identifierType);
         }
     }
@@ -413,7 +408,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
         String wfoId = record.get(TAXON_ID);
         if (isNotBlank(wfoId)){
-            DefinedTerm identifierType = DefinedTerm.IDENTIFIER_NAME_WFO();
+            IdentifierType identifierType = IdentifierType.IDENTIFIER_NAME_WFO();
             name.addIdentifier(wfoId, identifierType);
         }
     }
@@ -467,7 +462,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         String references = record.get(REFERENCES);
         if (isNotBlank(references)){
             String typeLabel = "The Plant List 1.1 Identifier";
-            DefinedTerm identifierType = this.getIdentiferType(state, DefinedTerm.uuidPlantListIdentifier, typeLabel, typeLabel, "TPL1.1", null);
+            IdentifierType identifierType = this.getIdentiferType(state, IdentifierType.uuidPlantListIdentifier, typeLabel, typeLabel, "TPL1.1", null);
             if (references.startsWith(TPL_DOMAIN)){
                 references = makeTplIdPart(references);
                 name.addIdentifier(references, identifierType);
@@ -481,25 +476,14 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         }
     }
 
-
-    /**
-     * @param references
-     * @return
-     */
     protected String makeTplIdPart(String fullUrl) {
         String result = fullUrl
                 .replace(TPL_DOMAIN, "")
 //                .replace(TPL_GENUS_DOMAIN, "")
                 ;
-
         return result;
     }
 
-
-    /**
-     * @param state
-     * @param name
-     */
     private void checkNameParts(STATE state, TaxonName name) {
         Map<String, String> record = state.getCurrentRecord();
         String genusStr = record.get(GENUS);
@@ -573,14 +557,10 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         refreshNameMap(state);
     }
 
-
-    /**
-     * @param state
-     */
     protected void refreshNameMap(STATE state) {
         nameMap = new HashMap<>();
 
-        DefinedTerm wfoType = DefinedTerm.IDENTIFIER_NAME_WFO();
+        IdentifierType wfoType = IdentifierType.IDENTIFIER_NAME_WFO();
         Pager<IdentifiedEntityDTO<TaxonName>> identifiedNamePager = getNameService().findByIdentifier(TaxonName.class,
                 "*", wfoType, MatchMode.EXACT, true, null, null, null);
 
@@ -596,11 +576,6 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         }
     }
 
-
-    /**
-     * @param state
-     * @param name
-     */
     private void makeTaxon(STATE state, TaxonName name) {
         Map<String, String> record = state.getCurrentRecord();
         TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID);

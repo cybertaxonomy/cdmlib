@@ -43,8 +43,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -209,6 +209,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	final String[] tableNames = new String[]{
                 "DefinedTermBase","Representation"};
 
+    	//test State
     	commitAndStartNewTransaction(tableNames);
     	TermVocabulary<State> vocStates = TermVocabulary.NewInstance(TermType.State,
     	        State.class, "Test States", null, null, null);
@@ -220,35 +221,36 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     		assertTrue(result.isOk());
     		commitAndStartNewTransaction(tableNames);
        	}
-    	TermVocabulary<DefinedTerm> vocDna = TermVocabulary.NewInstance(TermType.DnaMarker,
-    	        DefinedTerm.class, "Test DNA marker", null, null, null);
-    	vocDna.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
+
+    	//create identifier type vocabulary
+    	TermVocabulary<IdentifierType> vocDna = TermVocabulary.NewInstance(TermType.IdentifierType,
+    	        IdentifierType.class, "Test identifier type", null, null, null);
+    	vocDna.addTerm(IdentifierType.NewInstance("test", "identifier", "t"));
     	vocabularyService.save(vocDna);
 
     	vocDna = vocabularyService.find(vocDna.getUuid());
-    	Set<DefinedTerm> terms = vocDna.getTerms();
-    	DefinedTerm termBase =terms.iterator().next();
+    	Set<IdentifierType> terms = vocDna.getTerms();
+    	IdentifierType termBase =terms.iterator().next();
     	termService.delete(termBase, null);
     	//commitAndStartNewTransaction(tableNames);
-    	termBase =  (DefinedTerm)termService.load(termBase.getUuid());
+    	termBase =  (IdentifierType)termService.load(termBase.getUuid());
     	assertNull(termBase);
 
-
     	//TermVocabulary<DefinedTerm> voc = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
-        vocDna.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
+        vocDna.addTerm(IdentifierType.NewInstance("test", "identifier", "t"));
         vocabularyService.save(vocDna);
 
         vocDna = vocabularyService.find(vocDna.getUuid());
         terms = vocDna.getTerms();
         termBase =terms.iterator().next();
-        termBase = (DefinedTerm)termService.load(termBase.getUuid());
+        termBase = (IdentifierType)termService.load(termBase.getUuid());
         IBotanicalName testName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         Taxon testTaxon = Taxon.NewInstance(testName,null);
         testTaxon.addIdentifier("Test", termBase);
         taxonService.save(testTaxon);
         termService.delete(termBase, null);
         //commitAndStartNewTransaction(tableNames);
-        termBase =  (DefinedTerm)termService.load(termBase.getUuid());
+        termBase =  (IdentifierType)termService.load(termBase.getUuid());
         assertNotNull(termBase);
     }
 

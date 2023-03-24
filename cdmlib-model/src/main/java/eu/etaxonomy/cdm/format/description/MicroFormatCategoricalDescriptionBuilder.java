@@ -54,11 +54,13 @@ public class MicroFormatCategoricalDescriptionBuilder
 				DefinedTerm modifier = mod.next();
 				categoricalDescription.append(" " + spanClass("modifier") + modifier.getPreferredRepresentation(languages).getLabel() + spanEnd);
 			}
-			categoricalDescription.append(" " + spanClass("state") + s.getPreferredRepresentation(languages).getLabel() + spanEnd);
+			if (s != null) {
+			    categoricalDescription.append(" " + spanClass("state") + s.getPreferredRepresentation(languages).getLabel() + spanEnd);
+			}
 			if (sd.hasNext()) {
                 categoricalDescription.append(',');
             }
-			if (language==null) {
+			if (language==null && s != null) {
 				language = s.getPreferredRepresentation(languages).getLanguage(); // TODO What if there are different languages ?
 			}
 		}

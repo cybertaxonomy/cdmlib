@@ -148,23 +148,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return false;
     }
 
-    /**
-     * @deprecated not performance optimized by using the cache,
-     * use {@link #userHasPermission(Class, UUID, Object...)} instead
-     */
-    @Override
-    @Deprecated
-    public boolean userHasPermission(Class<? extends CdmBase> cdmType, Integer entitiyId, Object ... args){
-        EnumSet<CRUD> crudSet = crudSetFromArgs(args);
-        try {
-            CdmBase entity = repo().getCommonService().find(cdmType, entitiyId);
-            return permissionEvaluator().hasPermission(getAuthentication(), entity, crudSet);
-        } catch (PermissionDeniedException e){
-            //IGNORE
-        }
-        return false;
-    }
-
     @Override
     public boolean userHasPermission(Class<? extends CdmBase> cdmType, UUID entitiyUuid, Object ... args){
         EnumSet<CRUD> crudSet = crudSetFromArgs(args);
@@ -262,7 +245,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
                 // in any case restore the previous authentication
                 getRunAsAutheticator().restoreAuthentication();
             }
-            logger.debug("new authority for " + username + ": " + authority.toString());
+            if (logger.isDebugEnabled()) {logger.debug("new authority for " + username + ": " + authority.toString());}
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             logger.debug("security context refreshed with user " + username);
@@ -270,23 +253,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         repo().commitTransaction(txStatus);
         return newAuthorityAdded ? authority : null;
 
-    }
-
-    /**
-     * @param username
-     * @param cdmType
-     * @param entitiyId
-     * @param crud
-     * @return
-     * @deprecated not performance optimized by using the cache,
-     * use {@link #createAuthorityFor(String, Class, UUID, EnumSet, String)} instead
-     */
-    @Override
-    @Deprecated
-    public CdmAuthority createAuthorityFor(String username, Class<? extends CdmBase> cdmType, Integer entitiyId, EnumSet<CRUD> crud, String property) {
-
-        CdmBase cdmEntity = repo().getCommonService().find(cdmType, entitiyId);
-        return createAuthorityFor(username, cdmEntity, crud, property);
     }
 
     @Override
@@ -299,12 +265,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Override
     public CdmAuthority createAuthorityForCurrentUser(CdmBase cdmEntity, EnumSet<CRUD> crud, String property) {
         return createAuthorityFor(userName(), cdmEntity, crud, property);
-
-    }
-
-    @Override
-    public CdmAuthority createAuthorityForCurrentUser(Class<? extends CdmBase> cdmType, Integer entitiyId, EnumSet<CRUD> crud, String property) {
-        return createAuthorityFor(userName(), cdmType, entitiyId, crud, property);
     }
 
     @Override
@@ -314,12 +274,11 @@ public class CdmUserHelper implements UserHelper, Serializable {
 
     @Override
     public void removeAuthorityForCurrentUser(CdmAuthority cdmAuthority) {
-        removeAuthorityForCurrentUser(userName(), cdmAuthority);
-
+        removeAuthorityForUser(userName(), cdmAuthority);
     }
 
     @Override
-    public void removeAuthorityForCurrentUser(String username, CdmAuthority cdmAuthority) {
+    public void removeAuthorityForUser(String username, CdmAuthority cdmAuthority) {
 
         TransactionStatus txStatus = repo().startTransaction();
         UserDetails userDetails = repo().getUserService().loadUserByUsername(username);

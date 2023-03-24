@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
@@ -251,7 +251,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         } else {
             for(String key : add.keySet()) {
                 if (base.containsKey(key)){
-                    base.put(key, (String[]) ArrayUtils.addAll(base.get(key), add.get(key)));
+                    base.put(key, ArrayUtils.addAll(base.get(key), add.get(key)));
                 } else {
                     base.put(key, add.get(key));
                 }

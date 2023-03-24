@@ -15,8 +15,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
  * by a dot character '.'.
  *
  * <ul>
- * <li><code>permissionClass</code>: an {@link PermissionClass} instance with represents a cdm
+ * <li><code>permissionClass</code>: an {@link PermissionClass} instance which represents a cdm
  * type or a part of the cdm type hierarchy. The className is always represented
  * as an upper case string.</li>
  * <li><code>property</code>: The <code>CdmAuthority</code> only applies to instances

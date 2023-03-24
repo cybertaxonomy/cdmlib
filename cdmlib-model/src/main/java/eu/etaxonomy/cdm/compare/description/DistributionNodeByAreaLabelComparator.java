@@ -17,7 +17,9 @@ import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
-public class DistributionNodeByAreaLabelComparator implements Comparator<TreeNode<Set<Distribution>, NamedArea>>{
+public class DistributionNodeByAreaLabelComparator
+        implements Comparator<TreeNode<Set<Distribution>, NamedArea>>{
+
     @Override
     public int compare(TreeNode<Set<Distribution>, NamedArea> node1, TreeNode<Set<Distribution>, NamedArea> node2) {
         String label1 = node1.getNodeId().getLabel();

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
  * A default cache strategy for {@link DnaSample}.
@@ -53,7 +53,7 @@ public class DnaSampleDefaultCacheStrategy
 		String result = getCollectionAndAccession(dnaSample);
         //sample designation
 		if (isBlank(result)){
-            result = dnaSample.getIdentifierString(DefinedTerm.uuidSampleDesignation);
+            result = dnaSample.getIdentifierString(IdentifierType.uuidSampleDesignation);
         }
 		//any other identifier
 		if (isBlank(result)){
@@ -94,7 +94,7 @@ public class DnaSampleDefaultCacheStrategy
         String result = getCollectionAndAccession(dnaSample);
         //sample designation
         if (isBlank(result)){
-            result = dnaSample.getIdentifierString(DefinedTerm.uuidSampleDesignation);
+            result = dnaSample.getIdentifierString(IdentifierType.uuidSampleDesignation);
         }
         //any other identifier
         if (isBlank(result)){

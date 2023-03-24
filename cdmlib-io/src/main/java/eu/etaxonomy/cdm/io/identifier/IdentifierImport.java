@@ -27,8 +27,8 @@ import eu.etaxonomy.cdm.io.common.SimpleImport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
@@ -75,7 +75,7 @@ public class IdentifierImport
                 csvReader.close();
                 return;
             }
-            DefinedTerm idType = CdmBase.deproxy(identifierType, DefinedTerm.class);
+            IdentifierType idType = CdmBase.deproxy(identifierType, IdentifierType.class);
 
             int i = 0;
             for (String[] strs : lines){
@@ -103,7 +103,7 @@ public class IdentifierImport
      * @return
      */
     private IdentifiableEntity<?> handleSingleLine(IdentifierImportConfigurator config,
-            String[] strs, DefinedTerm idType, int i, Set<UUID> entityUuidsHandled) {
+            String[] strs, IdentifierType idType, int i, Set<UUID> entityUuidsHandled) {
 
         //no data
         if (strs.length < 1){
@@ -226,7 +226,7 @@ public class IdentifierImport
         return entity;
     }
 
-    private void addNewIdentifier(DefinedTerm idType, IdentifiableEntity<?> entity, String value,
+    private void addNewIdentifier(IdentifierType idType, IdentifiableEntity<?> entity, String value,
             Identifier identifier) {
         if (identifier == null){
             identifier = Identifier.NewInstance(value, idType);

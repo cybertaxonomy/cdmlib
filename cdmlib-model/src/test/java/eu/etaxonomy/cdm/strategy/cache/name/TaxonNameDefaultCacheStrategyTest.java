@@ -307,6 +307,17 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Abies alba sublusus beta", strategy.getTitleCache(subSpeciesName));
     }
 
+    @Test
+    public void testWithoutRank() {
+        subSpeciesName.setRank(null);
+        Assert.assertEquals("Abies alba beta", strategy.getTitleCache(subSpeciesName));
+
+        subSpeciesName.setTrinomHybrid(true);
+        //Not sure if selfstanding notho is correct here, for now only to indicate that there is the hybridflag set
+        //TODO still misses for binom, and monom Hybridflag.
+        Assert.assertEquals("Abies alba notho beta", strategy.getTitleCache(subSpeciesName));
+    }
+
     //#9754
     @Test
     public void testCultivar(){
@@ -388,7 +399,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setCultivarEpithet("Adamii");
         Assert.assertEquals("Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
 
-
         //appended phrase
         speciesName.setRank(Rank.CULTIVAR());
         speciesName.setGenusOrUninomial("Abies");
@@ -396,7 +406,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setCultivarEpithet("Cultus");
         speciesName.setAppendedPhrase("appended");
         Assert.assertEquals("Abies alba 'Cultus' appended", strategy.getTitleCache(speciesName));
-
     }
 
     //3665
@@ -591,6 +600,9 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
         subSpeciesName.setProtectedNameCache(false);
         Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta app phrase (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+        subSpeciesName.setAppendedPhrase("[\"app phrase\"]");
+        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta [\"app phrase\"] (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+
         subSpeciesName.setAppendedPhrase("app2 phrase2");
         subSpeciesName.setProtectedNameCache(true);
         Assert.assertNull("NameCache should be null", subSpeciesName.getNameCache());

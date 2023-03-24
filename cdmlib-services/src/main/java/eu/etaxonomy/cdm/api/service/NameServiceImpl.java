@@ -190,8 +190,7 @@ public class NameServiceImpl
             if (homotypicalGroup != null){
                 homotypicalGroup.removeTypifiedName(name, false);
             }
-
-             //all type designation relationships are removed as they belong to the name
+            //all type designation relationships are removed as they belong to the name
             deleteTypeDesignation(name, null);
             //if original spellings should be deleted, remove it from the nomenclatural source
             Set<TaxonName> namesToUpdate = new HashSet<>();

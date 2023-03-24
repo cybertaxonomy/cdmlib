@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -419,7 +419,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /**
      * @return a set of identifier value strings
      */
-    public Set<String> getIdentifierStrings(DefinedTerm type){
+    public Set<String> getIdentifierStrings(IdentifierType type){
        return getIdentifierStrings(type == null? null :type.getUuid());
     }
     /**
@@ -458,8 +458,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public Set<Identifier> getIdentifiers(UUID identifierTypeUuid){
         Set<Identifier> result = new HashSet<>();
         for (Identifier identifier : getIdentifiers()){
-            if ( (identifier.getType()== null && identifierTypeUuid == null)
-                || (identifier.getType().getUuid().equals(identifierTypeUuid))){
+            if ( (identifier.getType() == null && identifierTypeUuid == null)
+                || (identifier.getType() != null && identifier.getType().getUuid().equals(identifierTypeUuid))){
                 result.add(identifier);
             }
         }
@@ -467,7 +467,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
 
     @Override
-    public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
+    public Identifier addIdentifier(String identifier, IdentifierType identifierType){
     	Identifier result = Identifier.NewInstance(identifier, identifierType);
     	addIdentifier(result);
     	return result;

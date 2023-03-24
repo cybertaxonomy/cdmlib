@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -99,7 +99,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		UUID uuidIdentifierType1 = UUID.fromString("02bb62db-a229-4eeb-83e6-a9a093943d5e");
 		UUID uuidIdentifierType2 = UUID.fromString("ef6e960f-5289-456c-b25c-cff7f4de2f63");
 
-		DefinedTerm it1 = (DefinedTerm)termService.find(uuidIdentifierType1);
+		IdentifierType it1 = (IdentifierType)termService.find(uuidIdentifierType1);
 		Assert.assertNotNull("identifier type must not be null", it1);
 
 		boolean includeEntity = true;
@@ -111,7 +111,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), entity.getUuid());
 		Assert.assertEquals("Taxon should have 1 identifier", 1, taxon.getIdentifiers().size());
 		Identifier identifier = taxon.getIdentifiers().get(0);
-		DefinedTerm type = CdmBase.deproxy(identifier.getType(), DefinedTerm.class);
+		IdentifierType type = CdmBase.deproxy(identifier.getType(), IdentifierType.class);
 		Assert.assertEquals(uuidIdentifierType1, type.getUuid());
 
 		Pager<IdentifiedEntityDTO<TaxonName>> names = nameService.findByIdentifier(
@@ -298,12 +298,12 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 //	@Test
     @Override
     public void createTestDataSet() throws FileNotFoundException {
-		TermVocabulary<DefinedTerm> voc = vocService.find(VocabularyEnum.IdentifierType.getUuid());
+		TermVocabulary<IdentifierType> voc = vocService.find(VocabularyEnum.IdentifierType.getUuid());
 
-		DefinedTerm identifierType1 = DefinedTerm.NewIdentifierTypeInstance(null, "identifierType1", null);
+		IdentifierType identifierType1 = IdentifierType.NewInstance(null, "identifierType1", null);
     	voc.addTerm(identifierType1);
 		termService.save(identifierType1);
-    	DefinedTerm identifierType2 = DefinedTerm.NewIdentifierTypeInstance(null, "identifierType2", null);
+		IdentifierType identifierType2 = IdentifierType.NewInstance(null, "identifierType2", null);
     	voc.addTerm(identifierType2);
 		termService.save(identifierType2);
 

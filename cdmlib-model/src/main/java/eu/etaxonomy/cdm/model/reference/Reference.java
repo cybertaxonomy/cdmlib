@@ -121,7 +121,9 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "seriesPart",
     "datePublished",
     "publisher",
+    "publisher2",
     "placePublished",
+    "placePublished2",
     "institution",
     "school",
     "organization",
@@ -162,7 +164,7 @@ public class Reference
     	value = "eu.etaxonomy.cdm.model.reference.ReferenceType")}
     )
 	@Audited
-	protected ReferenceType type;
+	private ReferenceType type;
 
 	//Title of the reference
 	@XmlElement(name ="Title" )
@@ -202,28 +204,28 @@ public class Reference
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
-	protected String editor;
+    private String editor;
 
     @XmlElement(name = "Volume")
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
-	protected String volume;
+    private String volume;
 
     @XmlElement(name = "Pages")
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
-	protected String pages;
+    private String pages;
 
     @XmlElement(name = "Edition")
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
-	protected String edition;
+    private String edition;
 
     @XmlElement(name = "ISBN")
     @Field
@@ -231,15 +233,14 @@ public class Reference
 //    @NullOrNotEmpty
     @Column(length=255)
 	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.isbn.message}")
-	protected String isbn;
+    private String isbn;
 
     @XmlElement(name = "Doi")
     @Field
     @FieldBridge(impl = DoiBridge.class)
     @Type(type="doiUserType")
     @Column(length=DOI.MAX_LENGTH)
-    protected DOI doi;
-
+    private DOI doi;
 
 	@XmlElement(name = "ISSN")
     @Field
@@ -247,36 +248,45 @@ public class Reference
 //	@NullOrNotEmpty
     @Column(length=255)
 	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.issn.message}")
-	protected String issn;
+	private String issn;
 
     @XmlElement(name = "SeriesPart")
     @Field
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
-	protected String seriesPart;
+    private String seriesPart;
 
 	@XmlElement(name = "Organization")
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
     @Column(length=255)
-	protected String organization;
+	private String organization;
 
 	@XmlElement(name = "Publisher")
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
     @Column(length=255)
-	protected String publisher;
+	private String publisher;
 
+    @XmlElement(name = "Publisher2")
+    @Field
+    @Column(length=255)
+    private String publisher2;
 
 	@XmlElement(name = "PlacePublished")
     @Field
     //TODO Val #3379
 //	@NullOrNotEmpty
     @Column(length=255)
-	protected String placePublished;
+	private String placePublished;
+
+    @XmlElement(name = "PlacePublished2")
+    @Field
+    @Column(length=255)
+    private String placePublished2;
 
 	@XmlElement(name = "Institution")
 	@XmlIDREF
@@ -284,7 +294,7 @@ public class Reference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	protected Institution institution;
+	private Institution institution;
 
 	@XmlElement(name = "School")
     @XmlIDREF
@@ -292,7 +302,7 @@ public class Reference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	protected Institution school;
+	private Institution school;
 
     @XmlElement(name = "InReference")
     @XmlIDREF
@@ -300,7 +310,7 @@ public class Reference
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //  @InReference(groups=Level2.class)
-   	protected Reference inReference;
+    private Reference inReference;
 
 //********************************************************/
 
@@ -579,33 +589,52 @@ public class Reference
     public String getPublisher() {
 		return publisher;
 	}
-
 	@Override
     public void setPublisher(String publisher) {
 		this.publisher = StringUtils.truncate(isBlank(publisher)? null : publisher, 255);
 	}
-
-	@Override
+    @Override
     public void setPublisher(String publisher, String placePublished){
-		this.publisher = publisher;
-		this.placePublished = placePublished;
-	}
+        this.publisher = publisher;
+        this.placePublished = placePublished;
+    }
+
+    @Override
+    public String getPublisher2() {
+        return publisher2;
+    }
+    @Override
+    public void setPublisher2(String publisher2) {
+        this.publisher2 = StringUtils.truncate(isBlank(publisher2)? null : publisher2, 255);
+    }
+    @Override
+    public void setPublisher2(String publisher2, String placePublished2){
+        this.publisher2 = publisher2;
+        this.placePublished2 = placePublished2;
+    }
 
 	@Override
     public String getPlacePublished() {
 		return placePublished;
 	}
-
 	@Override
     public void setPlacePublished(String placePublished) {
 		this.placePublished = isBlank(placePublished)? null: placePublished;
 	}
 
+    @Override
+    public String getPlacePublished2() {
+        return placePublished2;
+    }
+    @Override
+    public void setPlacePublished2(String placePublished2) {
+        this.placePublished2 = isBlank(placePublished2)? null: placePublished2;
+    }
+
 	@Override
     public Institution getInstitution() {
 		return institution;
 	}
-
 	@Override
     public void setInstitution(Institution institution) {
 		this.institution = institution;
@@ -615,7 +644,6 @@ public class Reference
     public Institution getSchool() {
 		return school;
 	}
-
 	@Override
     public void setSchool(Institution school) {
 		this.school = school;
@@ -625,7 +653,6 @@ public class Reference
     public Reference getInReference() {
 		return inReference;
 	}
-
 	@Override
     public void setInReference(Reference inReference) {
 		this.inReference = inReference;
@@ -646,9 +673,6 @@ public class Reference
 
 	/**
 	 * Whether this reference is of the given type
-	 *
-	 * @param type
-	 * @return
 	 */
 	@Override
     public boolean isOfType(ReferenceType type){

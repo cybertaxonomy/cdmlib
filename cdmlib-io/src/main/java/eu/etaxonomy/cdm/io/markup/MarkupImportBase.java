@@ -35,16 +35,16 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.geo.GeoServiceArea;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.ext.geo.GeoServiceArea;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
@@ -88,8 +88,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -243,17 +243,18 @@ public abstract class MarkupImportBase  {
 
 	protected MarkupDocumentImport docImport;
 
-	private final IEditGeoService editGeoService;
+	private final IDistributionService distributionService;
+
 	protected MarkupFeatureImport featureImport;
 
 	public MarkupImportBase(MarkupDocumentImport docImport) {
 		super();
 		this.docImport = docImport;
-		this.editGeoService = docImport.getEditGeoService();
+		this.distributionService = docImport.getEditGeoService();
 	}
 
-	private final Stack<QName> unhandledElements = new Stack<QName>();
-	private final Stack<QName> handledElements = new Stack<QName>();
+	private final Stack<QName> unhandledElements = new Stack<>();
+	private final Stack<QName> handledElements = new Stack<>();
 
 
 	protected <T extends CdmBase> void  save(Collection<T> collection, MarkupImportState state) {
@@ -1085,7 +1086,7 @@ public abstract class MarkupImportBase  {
 		return docImport.getExtensionType(state, uuid, label, text, labelAbbrev);
 	}
 
-	protected DefinedTerm getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+	protected IdentifierType getIdentifierType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<IdentifierType> voc){
 		return docImport.getIdentifierType(state, uuid, label, text, labelAbbrev, voc);
 	}
 
@@ -1297,7 +1298,7 @@ public abstract class MarkupImportBase  {
 					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
 					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
-					this.editGeoService.setMapping(area, geoServiceArea);
+					this.distributionService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 				if ("Luzon".equals(areaName)){
@@ -1310,7 +1311,7 @@ public abstract class MarkupImportBase  {
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
 
-					this.editGeoService.setMapping(area, geoServiceArea);
+					this.distributionService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 				if ("Mindanao".equals(areaName)){
@@ -1324,7 +1325,7 @@ public abstract class MarkupImportBase  {
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
 
-					this.editGeoService.setMapping(area, geoServiceArea);
+					this.distributionService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 				if ("Palawan".equals(areaName)){
@@ -1335,7 +1336,7 @@ public abstract class MarkupImportBase  {
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					}
 
-					this.editGeoService.setMapping(area, geoServiceArea);
+					this.distributionService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
 

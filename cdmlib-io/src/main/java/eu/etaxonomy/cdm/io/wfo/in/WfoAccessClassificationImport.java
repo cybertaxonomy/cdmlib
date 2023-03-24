@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -495,7 +495,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
 
     protected void refreshNameMap(STATE state) {
         nameMap = new HashMap<>();
-        DefinedTerm wfoType = DefinedTerm.IDENTIFIER_NAME_WFO();
+        IdentifierType wfoType = IdentifierType.IDENTIFIER_NAME_WFO();
         Pager<IdentifiedEntityDTO<TaxonName>> identifiedNamePager = getNameService().findByIdentifier(TaxonName.class,
                 "*", wfoType, MatchMode.EXACT, true, null, null, null);
         for (IdentifiedEntityDTO<TaxonName> dto : identifiedNamePager.getRecords()){

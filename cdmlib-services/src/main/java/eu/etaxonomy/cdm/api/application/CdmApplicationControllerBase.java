@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
@@ -180,6 +181,11 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
     @Override
     public final IDescriptionService getDescriptionService(){
         return configuration.getDescriptionService();
+    }
+
+    @Override
+    public final IDistributionService getDistributionService(){
+        return configuration.getDistributionService();
     }
 
     @Override

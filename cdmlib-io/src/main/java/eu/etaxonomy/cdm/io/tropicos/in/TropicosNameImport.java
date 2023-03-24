@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -79,15 +79,15 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             return;
         }
         if (checkAndAddIdentifier(state, name, INPUT_SOURCE_ID,
-                state.getConfig().isAllowWfoDuplicates(), DefinedTerm.IDENTIFIER_NAME_WFO())){
+                state.getConfig().isAllowWfoDuplicates(), IdentifierType.IDENTIFIER_NAME_WFO())){
             return;
         }
         if (checkAndAddIdentifier(state, name, IPNI_ID,
-                state.getConfig().isAllowIpniDuplicates(), DefinedTerm.IDENTIFIER_NAME_IPNI())){
+                state.getConfig().isAllowIpniDuplicates(), IdentifierType.IDENTIFIER_NAME_IPNI())){
             return;
         }
         if (checkAndAddIdentifier(state, name, OUTPUT_NAME_ID,
-                state.getConfig().isAllowTropicosDuplicates(), DefinedTerm.IDENTIFIER_NAME_TROPICOS())){
+                state.getConfig().isAllowTropicosDuplicates(), IdentifierType.IDENTIFIER_NAME_TROPICOS())){
             return;
         }
 
@@ -252,7 +252,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
      * @return <code>true</code> if sourceId already exists.
      */
     private boolean checkAndAddIdentifier(STATE state, TaxonName name, String idAttr,
-            boolean allowDuplicate, DefinedTerm identifierType) {
+            boolean allowDuplicate, IdentifierType identifierType) {
         String identifier = state.getCurrentRecord().get(idAttr);
         if (identifier == null){
             return false;

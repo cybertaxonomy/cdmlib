@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -34,6 +34,7 @@ import org.hibernate.query.Query;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -548,11 +549,36 @@ public class DefinedTermDaoImpl
 		return query.uniqueResult();
 	}
 
-	@Override
+	//preliminary until term structure has been finalized
+    @Override
+    public List<NamedAreaDto> getPartOfNamedAreas(Set<UUID> areaUuids) {
+        Query<NamedArea> query = getSession().createQuery("SELECT DISTINCT definedTerm "
+                + " FROM NamedArea definedTerm "
+                + " JOIN definedTerm.includes included "
+                + " WHERE included.uuid in (:areaUuids) ", NamedArea.class);
+        query.setParameterList("areaUuids", areaUuids);
+        List<NamedArea> terms = query.list();
+
+        List<NamedAreaDto> list = new ArrayList<>();
+        for (NamedArea area : terms) {
+            NamedAreaDto partOf = area.getPartOf() != null ? new NamedAreaDto(area.getPartOf(), true) : null;
+            NamedAreaDto dto = new NamedAreaDto(area.getUuid(), area.getId(), area.getLabel(), area.getLevel(), partOf, area.getMarkers());
+            dto.setUuid(area.getUuid());
+            list.add(dto);
+        }
+
+        return list;
+    }
+
+   @Override
     public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		checkNotInPriorView("DefinedTermDaoImpl.getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber)");
+
+	    checkNotInPriorView("DefinedTermDaoImpl.getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber)");
 		@SuppressWarnings("unchecked")
-        Query<T> query = getSession().createQuery("select distinct definedTerm from DefinedTermBase definedTerm join definedTerm.includes included where included in (:definedTerms)");
+        Query<T> query = getSession().createQuery("SELECT DISTINCT definedTerm "
+                + " FROM DefinedTermBase definedTerm "
+                + " JOIN definedTerm.includes included "
+                + " WHERE included in (:definedTerms) ");
 		query.setParameterList("definedTerms", definedTerms);
 
 		addPageSizeAndNumber(query, pageSize, pageNumber);

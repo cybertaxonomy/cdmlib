@@ -398,6 +398,16 @@ public class CdmUtils {
     }
 
     /**
+     * Tests if two objects are equal or both null. Otherwise returns <code>false</code>.
+     */
+    public static String nullSafeTrim(String str) {
+        if (str == null){
+            return str;
+        }
+        return str.trim();
+    }
+
+    /**
      * Computes all fields recursively
      * @param clazz
      * @return

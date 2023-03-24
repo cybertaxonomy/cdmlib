@@ -17,7 +17,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.stream.IReader;
 import eu.etaxonomy.cdm.io.stream.ListReader;

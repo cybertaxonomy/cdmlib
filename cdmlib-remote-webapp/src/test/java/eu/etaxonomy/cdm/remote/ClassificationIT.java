@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author a.kohlbecker
  * @since Mar 3, 2014
  */
-public class ClassificationIT extends WebServiceTestBase  {
+public class ClassificationIT extends WebServiceTestBase {
 
     private static final Logger logger = LogManager.getLogger();
 

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
@@ -351,7 +351,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			logger.warn("Deduplication implemented only for classes implementing IMatchable and IMergeable. No deduplication performed!");
 			return 0;
 		}
-		Class matchableClass = clazz;
+		@SuppressWarnings("unchecked")
+        Class<? extends IMatchable> matchableClass = (Class<? extends IMatchable>)clazz;
 		if (matchStrategy == null){
 			matchStrategy = DefaultMatchStrategy.NewInstance(matchableClass);
 		}
@@ -380,7 +381,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		result += handleLastGroup(nextGroup, matchStrategy, mergeStrategy);
 		return result;
 	}
-
 
 	private int handleAllPages(List<? extends T> objectList, DeduplicateState dedupState, List<T> nextGroup, IMatchStrategyEqual matchStrategy, IMergeStrategy mergeStrategy) {
 		int nUnEqual = 0;
@@ -483,7 +483,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Override
 	@Transactional(readOnly = true)
 	public <S extends T> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
-			Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode,
+			Class<S> clazz, String identifier, IdentifierType identifierType, MatchMode matchmode,
 			boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths) {
 
@@ -497,9 +497,9 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
         List<IdentifiedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
         	if (includeEntity){
-        		result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+        		result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
         	}else{
-        		result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
+        		result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
         	}
         }
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
@@ -508,7 +508,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	@Override
     @Transactional(readOnly = true)
     public <S extends T> List<IdentifiedEntityDTO<S>> listByIdentifier(
-            Class<S> clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode,
+            Class<S> clazz, String identifier, IdentifierType identifierType, MatchMode matchmode,
             boolean includeEntity, List<String> propertyPaths, Integer limit) {
 
         long numberOfResults = dao.countByIdentifier(clazz, identifier, identifierType, matchmode);
@@ -521,9 +521,9 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
         List<IdentifiedEntityDTO<S>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
             if (includeEntity){
-                result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
+                result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (S)daoObj[2]));
             }else{
-                result.add(new IdentifiedEntityDTO<>((DefinedTerm)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
+                result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3], null));
             }
         }
         return result;

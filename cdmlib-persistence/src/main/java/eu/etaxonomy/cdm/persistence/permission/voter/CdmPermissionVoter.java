@@ -76,13 +76,11 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
     public int vote(Authentication authentication, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes) {
 
         if(!isResponsibleFor(targetEntityStates.getEntity())){
-            logger.debug(voterLoggingLabel() + " class missmatch => ACCESS_ABSTAIN");
+            if (logger.isDebugEnabled()) {logger.debug(voterLoggingLabel() + " class missmatch => ACCESS_ABSTAIN");}
             return ACCESS_ABSTAIN;
         }
 
-        if (logger.isDebugEnabled()){
-            logger.debug(voterLoggingLabel() + " voting for authentication: " + authentication.getName() + ", object : " + targetEntityStates.getEntity().toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());
-        }
+        if (logger.isDebugEnabled()){logger.debug(voterLoggingLabel() + " voting for authentication: " + authentication.getName() + ", object : " + targetEntityStates.getEntity().toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());}
 
         int fallThroughVote = ACCESS_DENIED;
         boolean deniedByPreviousFurtherVoting = false;

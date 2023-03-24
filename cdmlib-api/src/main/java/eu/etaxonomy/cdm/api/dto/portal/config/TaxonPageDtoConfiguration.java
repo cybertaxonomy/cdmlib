@@ -1,0 +1,135 @@
+/**
+* Copyright (C) 2023 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+package eu.etaxonomy.cdm.api.dto.portal.config;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+
+/**
+ * @author a.mueller
+ * @date 07.01.2023
+ */
+public class TaxonPageDtoConfiguration implements Serializable {
+
+    private static final long serialVersionUID = -3017154740995350103L;
+
+    //TODO should this be part of the configuration??
+    private UUID taxonUuid;
+
+    //data
+    private boolean withFacts = true;
+    private boolean withSynonyms = true;
+    private boolean withSpecimens = true;
+    private boolean withKeys = true;
+    private boolean withMedia = true;
+    private boolean withTaxonNodes = true;
+
+    //synonymy
+    //TODO taxonrelations
+    //should withSynonyms includeProparte and missapplications
+    // => yes as long as there are no specific parameters in dataportals to handle them differently
+    private boolean withTaxonRelationships = true;
+    private UUID taxonRelationshipTypeTree = null;
+
+    //facts
+    private UUID featureTree = null;
+    private DistributionInfoConfiguration distributionInfoConfiguration = new DistributionInfoConfiguration();
+
+
+    //formatting
+    private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
+    public boolean formatSec = false;  //!!
+
+
+// ******************************* GETTER / SETTER ***********************************/
+
+    public DistributionInfoConfiguration getDistributionInfoConfiguration() {
+        return distributionInfoConfiguration;
+    }
+    public void setDistributionInfoConfiguration(DistributionInfoConfiguration distributionInfoConfiguration) {
+        this.distributionInfoConfiguration = distributionInfoConfiguration;
+    }
+
+    public UUID getTaxonUuid() {
+        return taxonUuid;
+    }
+    public void setTaxonUuid(UUID taxonUuid) {
+        this.taxonUuid = taxonUuid;
+    }
+
+    public boolean isWithFacts() {
+        return withFacts;
+    }
+    public void setWithFacts(boolean withFacts) {
+        this.withFacts = withFacts;
+    }
+
+    public boolean isWithSynonyms() {
+        return withSynonyms;
+    }
+    public void setWithSynonyms(boolean withSynonyms) {
+        this.withSynonyms = withSynonyms;
+    }
+
+    public boolean isWithSpecimens() {
+        return withSpecimens;
+    }
+    public void setWithSpecimens(boolean withSpecimens) {
+        this.withSpecimens = withSpecimens;
+    }
+
+    public boolean isWithKeys() {
+        return withKeys;
+    }
+    public void setWithKeys(boolean withKeys) {
+        this.withKeys = withKeys;
+    }
+
+    public boolean isWithMedia() {
+        return withMedia;
+    }
+    public void setWithMedia(boolean withMedia) {
+        this.withMedia = withMedia;
+    }
+
+    public boolean isWithTaxonNodes() {
+        return withTaxonNodes;
+    }
+    public void setWithTaxonNodes(boolean withTaxonNodes) {
+        this.withTaxonNodes = withTaxonNodes;
+    }
+    public boolean isWithTaxonRelationships() {
+        return withTaxonRelationships;
+    }
+    public void setWithTaxonRelationships(boolean withTaxonRelationships) {
+        this.withTaxonRelationships = withTaxonRelationships;
+    }
+    public UUID getTaxonRelationshipTypeTree() {
+        return taxonRelationshipTypeTree;
+    }
+    public void setTaxonRelationshipTypeTree(UUID taxonRelationshipTypeTree) {
+        this.taxonRelationshipTypeTree = taxonRelationshipTypeTree;
+    }
+    public UUID getFeatureTree() {
+        return featureTree;
+    }
+    public void setFeatureTree(UUID featureTree) {
+        this.featureTree = featureTree;
+    }
+
+    public List<Locale> getLocales() {
+        return locales;
+    }
+    public void setLocales(List<Locale> locales) {
+        this.locales = locales;
+    }
+}

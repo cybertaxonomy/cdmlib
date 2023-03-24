@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.occurrence.DataResponse;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**

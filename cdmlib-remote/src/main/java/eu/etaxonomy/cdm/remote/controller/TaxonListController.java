@@ -20,7 +20,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +58,8 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -517,9 +517,9 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             )
              throws IOException {
 
-        DefinedTerm definedTerm = null;
+        IdentifierType definedTerm = null;
         if(identifierType != null){
-            definedTerm = CdmBase.deproxy(termService.find(identifierType), DefinedTerm.class);
+            definedTerm = CdmBase.deproxy(termService.find(identifierType), IdentifierType.class);
         }
 
         TaxonNode subTree;
@@ -531,7 +531,6 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         logger.info("doFindByIdentifier [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );
-
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex).normalizeAndValidate(response);
 

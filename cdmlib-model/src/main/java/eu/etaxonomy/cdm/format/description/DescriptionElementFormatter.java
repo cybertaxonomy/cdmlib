@@ -10,11 +10,15 @@ package eu.etaxonomy.cdm.format.description;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -47,23 +51,24 @@ public class DescriptionElementFormatter {
 //            }
 //        }
 
+        element = CdmBase.deproxy(element);
         String cache = null;
         if (element instanceof TextData) {
-            //cache = ((TextData) element).getText(language);
-            cache = "Text Data";
-        }
-        if (element instanceof CommonTaxonName) {
+//            LanguageString ls = ((TextData) element).getPreferredLanguageString(Language.DEFAULT());
+//            cache = "Text Data" + ((ls == null|| isBlank(ls.getText())) ?
+//                        "" : "("+ls.getText()+")");
+            String feature = element.getFeature() == null? null : element.getFeature().getLabel();
+            cache = "Text Data" + (isBlank(feature)? "" : " ("+ feature +")");
+        }else if (element instanceof CommonTaxonName) {
             cache = ((CommonTaxonName) element).getName();
-        }
-        if (element instanceof TaxonInteraction) {
+        }else if (element instanceof TaxonInteraction) {
             Taxon taxon2 = ((TaxonInteraction) element).getTaxon2();
             if(taxon2 != null && taxon2.getName() != null){
                 cache = taxon2.getName().getTitleCache();
             }else{
                 cache = "No taxon chosen";
             }
-        }
-        if (element instanceof Distribution) {
+        }else if (element instanceof Distribution) {
             Distribution distribution = (Distribution) element;
             NamedArea area = distribution.getArea();
             if(area != null){
@@ -76,16 +81,19 @@ public class DescriptionElementFormatter {
                     cache += ", " + status.getLabel();
                 }
             }
+        }else if (element instanceof QuantitativeData) {
+            QuantitativeDataFormatter formatter = QuantitativeDataFormatter.NewInstance(null);
+            cache = formatter.format(element, defaultLanguage);
+        }else if (element instanceof CategoricalData) {
+            CategoricalDataFormatter formatter = CategoricalDataFormatter.NewInstance(null);
+            cache = formatter.format(element, defaultLanguage);
         }
-        String result = cache == null ? "" : cache;
-//        if (isNotBlank(mainElementLabel)){
-//            result = CdmUtils.concat(" ", result, "(" + mainElementLabel + ")");
-//        }
-        return result;
 
+        String result = CdmUtils.Nz(cache);
+        return result;
     }
 
-    private static boolean isNotBlank(String str) {
-        return StringUtils.isNotBlank(str);
+    private static boolean isBlank(String str) {
+        return StringUtils.isBlank(str);
     }
 }

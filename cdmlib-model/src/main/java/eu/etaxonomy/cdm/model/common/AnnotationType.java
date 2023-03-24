@@ -49,7 +49,7 @@ public class AnnotationType extends AvailableForIdentifiableBase<AnnotationType>
 	protected static Map<UUID, AnnotationType> termMap = null;
 
 	private static final UUID uuidTechnical = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
-	private static final UUID uuidEditorial = UUID.fromString("e780d5fd-abfc-4025-938a-46deb751d808");
+	public static final UUID uuidEditorial = UUID.fromString("e780d5fd-abfc-4025-938a-46deb751d808");
 
 	public static AnnotationType NewInstance(String term, String label, String labelAbbrev){
 		return new AnnotationType(term, label, labelAbbrev);

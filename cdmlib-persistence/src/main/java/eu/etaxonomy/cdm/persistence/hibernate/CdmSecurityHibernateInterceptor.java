@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
@@ -191,14 +191,9 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
      * checks if the current authentication has the <code>expectedPermission</code> on the supplied <code>entity</code>.
      * Throws an {@link PermissionDeniedException} if the evaluation fails.
      *
-     * @param entity
+     * @param entityStates
      * @param expectedOperation
      */
-    private void checkPermissions(CdmBase entity, EnumSet<CRUD> expectedOperation) {
-        checkPermissions(new TargetEntityStates(entity), expectedOperation);
-    }
-
-    // TargetEntityStates
     private void checkPermissions(TargetEntityStates entityStates, EnumSet<CRUD> expectedOperation) {
 
         if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entityStates, expectedOperation)){
@@ -230,14 +225,14 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         Set<Integer> excludeIds = null;
 
         if(excludes != null && excludes.size() > 0) {
-            excludeIds = new HashSet<Integer>(excludes.size());
+            excludeIds = new HashSet<>(excludes.size());
             int i = 0;
             for(String prop : propertyNames){
                 if(excludes.contains(prop)){
                     excludeIds.add(i);
                 }
                 if(excludeIds.size() == excludes.size()){
-                    // all ids found
+                    // all ids found => just for performance we break
                     break;
                 }
                 i++;

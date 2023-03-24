@@ -26,7 +26,7 @@ public enum MatchMode {
 	EQUAL_OR_FIRST_NULL, //parameters must be equal or first may be null
     EQUAL_OR_SECOND_NULL,
 	IGNORE,			//matches always
-	MATCH_REQUIRED,
+	MATCH_REQUIRED,  //parameter must match and not be null
 	MATCH_OR_ONE_NULL,
 	MATCH_OR_FIRST_NULL,
     MATCH_OR_SECOND_NULL,

@@ -755,8 +755,5 @@ public class Country extends NamedArea {
 			Country country = CdmBase.deproxy(term, Country.class);
 			isoA2Map.put(country.getIso3166_A2(), term.getUuid());
 		}
-
 	}
-
-
 }

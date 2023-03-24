@@ -21,6 +21,12 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
+/**
+ * Comparator to compare 2 homotypic groups.
+ *
+ * @author a.mueller
+ * @date 15.01.2023
+ */
 public class HomotypicalGroupComparator implements
 		Comparator<HomotypicalGroup>, Serializable {
 

@@ -174,7 +174,8 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         return evalPermission;
     }
 
-    private boolean evalPermission(Authentication authentication, CdmAuthority evalPermission, TargetEntityStates targetEntityStates){
+    private boolean evalPermission(Authentication authentication, CdmAuthority evalPermission,
+            TargetEntityStates targetEntityStates){
 
         //if user has administrator rights return true;
         if( hasOneOfRoles(authentication, Role.ROLE_ADMIN)){
@@ -182,7 +183,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         }
 
         // === run voters
-        Collection<ConfigAttribute> attributes = new HashSet<ConfigAttribute>();
+        Collection<ConfigAttribute> attributes = new HashSet<>();
         attributes.add(evalPermission);
 
         logger.debug("AccessDecisionManager will decide ...");

@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -769,7 +770,7 @@ public interface ITaxonService
     public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeTaxonNameDescriptions, List<String> propertyPath);
-    
+
     /**
      * Lists all Media found in an any TaxonDescription, NameDescription,
      * SpecimenOrObservationBase, DnaSample Chromatograms, etc. associated with this taxon.
@@ -920,7 +921,7 @@ public interface ITaxonService
      * @see IIdentifiableEntityService#findByIdentifier(Class, String, DefinedTerm, MatchMode, boolean, Integer, Integer, List)
      */
     public <S extends TaxonBase> Pager<IdentifiedEntityDTO<S>> findByIdentifier(
-			Class<S> clazz, String identifier, DefinedTerm identifierType, TaxonNode subtreeFilter,
+			Class<S> clazz, String identifier, IdentifierType identifierType, TaxonNode subtreeFilter,
 			MatchMode matchmode, boolean includeEntity, Integer pageSize,
 			Integer pageNumber,	List<String> propertyPaths);
 

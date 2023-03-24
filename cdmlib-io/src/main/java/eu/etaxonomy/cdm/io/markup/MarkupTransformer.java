@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
  * @author a.mueller
@@ -128,7 +128,7 @@ public class MarkupTransformer extends InputTransformerBase {
 
 
 	//identifier type uuids
-	public static final UUID uuidIdentTypeAlternativeFieldNumber = DefinedTerm.uuidAlternativeFieldNumber;
+	public static final UUID uuidIdentTypeAlternativeFieldNumber = IdentifierType.uuidAlternativeFieldNumber;
 
 
 	//named ared level uuids

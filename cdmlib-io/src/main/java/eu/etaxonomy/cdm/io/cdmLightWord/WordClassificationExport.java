@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
@@ -33,8 +33,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.cdmLight.OrderHelper;
@@ -99,7 +99,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -118,7 +118,7 @@ public class WordClassificationExport
     private static final long serialVersionUID = 5373475508269756045L;
 
     @Autowired
-    private IEditGeoService geoService;
+    private IDistributionService geoService;
 
     public WordClassificationExport() {
         this.ioName = this.getClass().getSimpleName();
@@ -1511,9 +1511,9 @@ public class WordClassificationExport
                     List<Identifier> identifiers = name.getIdentifiers();
 
                     //first check which kind of identifiers are available and then sort and create table entries
-                    Map<DefinedTerm, Set<Identifier>> identifierTypes = new HashMap<>();
+                    Map<IdentifierType, Set<Identifier>> identifierTypes = new HashMap<>();
                     for (Identifier identifier: identifiers){
-                        DefinedTerm type = identifier.getType();
+                        IdentifierType type = identifier.getType();
                         if (identifierTypes.containsKey(type)){
                             identifierTypes.get(type).add(identifier);
                         }else{
@@ -1523,7 +1523,7 @@ public class WordClassificationExport
                         }
                     }
 
-                    for (DefinedTerm type:identifierTypes.keySet()){
+                    for (IdentifierType type:identifierTypes.keySet()){
                         Set<Identifier> identifiersByType = identifierTypes.get(type);
                         csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(WordClassificationExportTable.FK)] = getId(state, name);

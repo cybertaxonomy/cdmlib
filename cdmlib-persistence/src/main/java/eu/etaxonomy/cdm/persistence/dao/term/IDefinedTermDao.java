@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -146,6 +147,9 @@ public interface IDefinedTermDao
 	 * @return a List of DefinedTerms
 	 */
 	public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+	//see getPartOf above
+	public List<NamedAreaDto> getPartOfNamedAreas(Set<UUID> areaUuids);
 
 	/**
 	 * Return a count of distinct terms which include the terms supplied

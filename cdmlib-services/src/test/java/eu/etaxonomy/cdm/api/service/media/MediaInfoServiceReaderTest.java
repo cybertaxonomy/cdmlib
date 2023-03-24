@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.apache.http.HttpException;
 import org.apache.logging.log4j.LogManager;
@@ -61,6 +62,7 @@ public class MediaInfoServiceReaderTest  {
             assertNotNull(imageInfo);
             assertEquals(937, imageInfo.getHeight());
             assertEquals(1400, imageInfo.getWidth());
+            Map<String, String> metaData = imageInfo.getMetaData();
 
         } else {
             logger.warn("test testNewInstanceRemotePng() skipped, since server is not available");

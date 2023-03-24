@@ -14,7 +14,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IAnnotatableEntity{
 
@@ -143,7 +143,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
      * @param identifierType
      * @return
      */
-    public Identifier addIdentifier(String identifier, DefinedTerm identifierType);
+    public Identifier addIdentifier(String identifier, IdentifierType identifierType);
 
     /**
      * @see #getIdentifiers()

@@ -92,7 +92,7 @@ public class Person extends TeamOrPersonBase<Person>{
     @Field(index=Index.YES)
     @NullOrNotEmpty
     @Column(length=255)
-    protected String nomenclaturalTitle;
+    private String nomenclaturalTitle;
 
     @XmlElement(name="CollectorTitle")
     @Field(index=Index.YES)
@@ -340,6 +340,15 @@ public class Person extends TeamOrPersonBase<Person>{
     public String getCollectorTitle() {
         return collectorTitle;
     }
+    /**
+     * Sets the collector title.
+     * <BR> NOTE: as the collector title is the only parameter for
+     * computing the person's collector titlecache
+     * setting the collector title implicitly sets the
+     * (virtual)collector titlecache. If it is not set
+     * explicitly the collector titlecache is computed
+     * preliminary from family name and initials.
+     */
     public void setCollectorTitle(String collectorTitle) {
         this.collectorTitle = collectorTitle;
     }
@@ -353,6 +362,8 @@ public class Person extends TeamOrPersonBase<Person>{
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
         this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
+    //TODO do we really need this here? We could handle the nomenclatural titlecache similar to
+    //the collector titlecache (we do already but collector title has no such method as here)
     @Override
     public void setNomenclaturalTitleCache(String nomenclaturalTitleCache, boolean protectCache){
         this.nomenclaturalTitleCache = nomenclaturalTitleCache;
@@ -464,24 +475,24 @@ public class Person extends TeamOrPersonBase<Person>{
         return result;
     }
 
+    //updates the nomenclaturalTitleCache if necessary
     private boolean updateNomenclaturalCache() {
-        //updates the nomenclaturalTitleCache if necessary
         String oldCache = this.nomenclaturalTitleCache;
         String newCache = cacheStrategy().getNomenclaturalTitleCache(this);
         if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
-//            this.setNomenclaturalTitleCache(null, false);
+            this.setNomenclaturalTitleCache(null);
             this.getNomenclaturalTitleCache();
             return true;
         }
         return false;
     }
 
+    //updates the collectorTitleCache if necessary
     private boolean updateCollectorCache() {
-        //updates the collectorTitleCache if necessary
         String oldCache = this.collectorTitleCache;
         String newCache = cacheStrategy().getCollectorTitleCache(this);
         if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
-//            this.setNomenclaturalTitleCache(null, false);
+            this.setCollectorTitleCache(null);
             this.getCollectorTitleCache();
             return true;
         }

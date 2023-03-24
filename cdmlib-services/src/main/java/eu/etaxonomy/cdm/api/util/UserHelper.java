@@ -28,9 +28,6 @@ import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
  */
 public interface UserHelper {
 
-    @Deprecated
-    boolean userHasPermission(Class<? extends CdmBase> cdmType, Integer entitiyId, Object ... args);
-
     boolean userHasPermission(Class<? extends CdmBase> cdmType, UUID entitiyUUID, Object ... args);
 
     boolean userHasPermission(Class<? extends CdmBase> cdmType, Object ... args);
@@ -50,61 +47,26 @@ public interface UserHelper {
     boolean userIs(IRoleProber iRoleProbe);
 
     /**
-     * @param username
-     * @param cdmEntity
-     * @param crud
-     * @param property
      * @return the newly created CdmAuthority only if a new CdmAuthority has been added to the user otherwise
      * <code>null</code> in case the operation failed of if the user was already granted with this authority.
      */
     public CdmAuthority createAuthorityFor(String username, CdmBase cdmEntity, EnumSet<CRUD> crud, String property);
 
-    /**
-     * @param username
-     * @param cdmType
-     * @param entitiyId
-     * @param crud
-     * @param property
-     * @return the newly created CdmAuthority only if a new CdmAuthority has been added to the user otherwise
-     * <code>null</code> in case the operation failed of if the user was already granted with this authority.
-     */
-    public CdmAuthority createAuthorityFor(String username, Class<? extends CdmBase> cdmType, Integer entitiyId, EnumSet<CRUD> crud, String property);
-
    /**
-    * @param username
-    * @param cdmType
-    * @param entitiyUuid
-    * @param crud
-    * @param property
     * @return the newly created CdmAuthority only if a new CdmAuthority has been added to the user otherwise
     * <code>null</code> in case the operation failed of if the user was already granted with this authority.
     */
    public CdmAuthority createAuthorityFor(String username, Class<? extends CdmBase> cdmType, UUID entitiyUuid, EnumSet<CRUD> crud, String property);
 
     /**
-     * @param cdmType
-     * @param entitiyId
-     * @param crud
      * @return the newly created CdmAuthority only if a new CdmAuthority has been added to the user otherwise
-     * <code>null</code> in case the operation failed of if the user was already granted with this authority.
-     */
-    public CdmAuthority createAuthorityForCurrentUser(Class<? extends CdmBase> cdmType, Integer entitiyId, EnumSet<CRUD> crud, String property);
-
-    /**
-     * @param cdmType
-     * @param entitiyUuid
-     * @param crud
-     * @return the newly created CdmAuthority only if a new CdmAuthority has been added to the user otherwise
-     * <code>null</code> in case the operation failed of if the user was already granted with this authority.
+     *      <code>null</code> in case the operation failed or if the user was already granted with this authority.
      */
     public CdmAuthority createAuthorityForCurrentUser(Class<? extends CdmBase> cdmType, UUID entitiyUuid, EnumSet<CRUD> crud, String property);
 
     /**
-     * @param cdmType
-     * @param entitiyId
-     * @param crud
      * @return the newly created CdmAuthority only if a new CdmAuthority has been added to the user otherwise
-     * <code>null</code> in case the operation failed of if the user was already granted with this authority.
+     *      <code>null</code> in case the operation failed or if the user was already granted with this authority.
      */
     public CdmAuthority createAuthorityForCurrentUser(CdmBase cdmEntity, EnumSet<CRUD> crud, String property);
 
@@ -120,7 +82,7 @@ public interface UserHelper {
 
     public void removeAuthorityForCurrentUser(CdmAuthority newAuthority);
 
-    public void removeAuthorityForCurrentUser(String username, CdmAuthority newAuthority);
+    public void removeAuthorityForUser(String username, CdmAuthority newAuthority);
 
     public void logout();
 

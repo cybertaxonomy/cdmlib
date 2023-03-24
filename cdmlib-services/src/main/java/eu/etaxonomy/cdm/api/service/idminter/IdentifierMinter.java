@@ -16,23 +16,15 @@ package eu.etaxonomy.cdm.api.service.idminter;
 public interface IdentifierMinter<T> {
 
     public class Identifier<T>{
-        T localId;
-
+        T localId;  //must be package available for RegistrationIdentifierMinter
         String identifier;
-        /**
-         * @return the localId
-         */
+
         public T getLocalId() {
             return localId;
         }
-        /**
-         * @return the identifier
-         */
         public String getIdentifier() {
             return identifier;
         }
-
-
     }
 
     public void setMinLocalId(T min);

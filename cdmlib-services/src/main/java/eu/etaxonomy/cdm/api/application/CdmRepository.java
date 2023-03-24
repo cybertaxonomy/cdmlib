@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
@@ -124,6 +125,9 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 	@Autowired
 	//@Qualifier("descriptionService")
 	private IDescriptionService descriptionService;
+    @Autowired
+    //@Qualifier("distributionService")
+    private IDistributionService distributionService;
 	@Autowired
 	//@Qualifier("descriptionElementService")
 	private IDescriptionElementService descriptionElementService;
@@ -287,6 +291,11 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 	public IDescriptionService getDescriptionService(){
 		return this.descriptionService;
 	}
+
+    @Override
+    public IDistributionService getDistributionService(){
+        return this.distributionService;
+    }
 
     @Override
     public IDescriptionElementService getDescriptionElementService(){

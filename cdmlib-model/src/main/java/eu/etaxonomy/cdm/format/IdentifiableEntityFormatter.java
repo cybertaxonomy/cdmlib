@@ -9,10 +9,11 @@
 package eu.etaxonomy.cdm.format;
 
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
  * @author pplitzner
@@ -31,7 +32,8 @@ public class IdentifiableEntityFormatter extends AbstractCdmFormatter {
         List<Identifier> identifiers = identifiableEntity.getIdentifiers();
         String identifierString = null;
         for (Identifier identifier : identifiers) {
-            if(DefinedTerm.uuidSampleDesignation.equals(identifier.getType())){
+            UUID typeUuid = identifier.getType() == null ? null : identifier.getType().getUuid();
+            if(IdentifierType.uuidSampleDesignation.equals(typeUuid)){
                 identifierString = identifier.getIdentifier();
                 break;
             }
@@ -40,5 +42,4 @@ public class IdentifiableEntityFormatter extends AbstractCdmFormatter {
             formatKeyMap.put(FormatKey.SAMPLE_DESIGNATION, identifierString);
         }
     }
-
 }

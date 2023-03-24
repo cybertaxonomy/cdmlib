@@ -264,7 +264,7 @@ public class MatchStrategyFactory {
                 "pages","publisher","placePublished",
                 "referenceAbstract","school","uri"};
         for(String param : equalOrNullParams){
-            referenceMatchStrategy.setMatchMode(param, MatchMode.EQUAL); //EQUAL !!
+            referenceMatchStrategy.setMatchMode(param, MatchMode.EQUAL); //EQUAL !! //articles have only author information which is too little to match, so requiring EQUAL means no match if any of this information exist. This may change if page matching will be implement
         }
 
         String[] equalParams = new String[]{"datePublished","edition",
