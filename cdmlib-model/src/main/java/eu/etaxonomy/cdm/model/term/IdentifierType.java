@@ -83,6 +83,9 @@ public class IdentifierType
 		return new IdentifierType(description, label, labelAbbrev, null);
 	}
 
+	//#10260
+	//a pattern representing an URL and which includes the placeholde "{@ID}"
+	//which will be replaced by the actual identifier
 	private String urlPattern;
 
 //******************* CONSTRUCTOR ***********************************/
@@ -116,10 +119,20 @@ public class IdentifierType
 
 // ******************** GETTER /SETTER *********
 
+
+    /**
+     * A pattern which represents an URL and which includes the placeholde "{@ID}"
+     * which will be replaced by the actual identifier
+     * @see https://dev.e-taxonomy.eu/redmine/issues/10260
+     */
     public String getUrlPattern() {
         return urlPattern;
     }
 
+    /**
+     * @param urlPattern the url pattern
+     * @see #getUrlPattern()
+     */
     public void setUrlPattern(String urlPattern) {
         this.urlPattern = urlPattern;
     }

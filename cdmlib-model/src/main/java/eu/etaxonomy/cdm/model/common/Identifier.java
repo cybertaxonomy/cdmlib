@@ -79,7 +79,7 @@ public class Identifier
 // ************************* CONSTRUCTOR ************************************
 
     @Deprecated  //for hibernate use only
-    protected Identifier(){};
+    protected Identifier(){}
 
     public Identifier (String identifier, IdentifierType type){
     	this.identifier = identifier;
@@ -106,6 +106,18 @@ public class Identifier
 	}
 	public void setType(IdentifierType identifierType) {
 		this.type = identifierType;
+	}
+
+	public String getUrl() {
+	    try {
+            if (type == null || isBlank(type.getUrlPattern()) || isBlank(this.identifier) ) {
+                return null;
+            }else {
+                return type.getUrlPattern().replace("{@ID}", this.identifier);
+            }
+        } catch (Exception e) {
+            return "error creating url pattern";
+        }
 	}
 
 	//****************** CLONE ************************************************/
