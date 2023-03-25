@@ -70,6 +70,17 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
         quantData.addStatisticalValue(upperBound1);
         text = formatter.format(quantData, formatKey);
         Assert.assertEquals("(0.1-)0.2-1.0(-1.3) m [n=2]", text);
+
+        min1.setValue(null);
+        text = formatter.format(quantData, formatKey);
+        Assert.assertEquals("If only type but no value is given for a StatisticalMeasurementValue"
+                + " it should be handled as if it is null", "0.2-1.0(-1.3) m [n=2]", text);
+
+        //TODO currently not handled correctly as max value is fully neglected
+//        upperBound1.setValue(null);
+//        text = formatter.format(quantData, formatKey);
+//        Assert.assertEquals("If only type but no value is given for a StatisticalMeasurementValue"
+//                + " it should be handled as if it is null", "0.2-1.0(-1.3) m [n=2]", text);
     }
 
     @Test
