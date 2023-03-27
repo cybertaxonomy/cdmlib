@@ -305,7 +305,33 @@ public class ReferenceDefaultCacheStrategyTest {
 		Assert.assertEquals("double dottes should be deduplicated",
                 "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin: Springer",
                 book1.getTitleCache());
-	}
+
+		// when no place published is given
+        book1.setPublisher("Springer");
+        book1.setPlacePublished(null);
+        book1.setTitleCache(null, false);
+        Assert.assertEquals("Unexpected abbrev title cache",
+                "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Springer", book1.getTitleCache());
+
+		// when no publisher is given
+        book1.setPublisher(null);
+        book1.setPlacePublished("Berlin");
+        book1.setTitleCache(null, false);
+        Assert.assertEquals("Unexpected abbrev title cache",
+                "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin", book1.getTitleCache());
+
+        //when a second publisher and a second place published is given
+
+        book1.setPublisher("Springer");
+        book1.setPlacePublished("Berlin");
+        book1.setPlacePublished2("Hamburg");
+        book1.setPublisher2("Müller");
+        book1.setTitleCache(null, false);
+        Assert.assertEquals("Unexpected abbrev title cache",
+                "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin: Springer; Hamburg: Müller", book1.getTitleCache());
+
+    }
+
 
 // ***************************** Book Section ************************/
 

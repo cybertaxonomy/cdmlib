@@ -139,17 +139,34 @@ public class ReferenceDefaultCacheStrategy
      * @return
      */
     private String addPublishInformation(Reference reference, String result) {
-        if (reference != null && isNotBlank(reference.getPlacePublished())) {
-
-        	if (result.endsWith(".")) {
-        		result = result.substring(0, (result.length() - 1));// deduplicate point if given
-        	}
-
-        	result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished() + ": ";
-
+        if (reference == null) {
+            return result;
         }
-        if (reference != null && isNotBlank(reference.getPublisher())) {
-        	result = result + reference.getPublisher();
+
+        if (isNotBlank(reference.getPublisher())) {
+
+            if (result.endsWith(".")) {
+                result = result.substring(0, (result.length() - 1));// deduplicate point if given
+            }
+
+            if (isNotBlank(reference.getPlacePublished())) {
+
+                result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished() + ": "
+                        + reference.getPublisher();
+
+                if (isNotBlank(reference.getPlacePublished2())) {
+                    result = result + "; " + reference.getPlacePublished2()+": " +reference.getPublisher2() ;
+                }
+            } else {
+
+                result = result + ". " + UTF8.EN_DASH + " " + reference.getPublisher();
+            }
+        } else if (isBlank(reference.getPublisher())) {
+
+            if (isNotBlank(reference.getPlacePublished())) {
+
+                result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished();
+            }
         }
         return result;
     }
