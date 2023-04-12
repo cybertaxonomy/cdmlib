@@ -32,8 +32,8 @@ import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -197,17 +197,6 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations);
 
-
-    /**
-     * @param vocs
-     * @param limit
-     * @param pattern
-     * @param lang
-     * @return
-     */
-    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern,
-            Language lang);
-
     /**
      * Returns all terms that are included in the given parent term resp. a part of the given term.
      * @param parentTerm the parent term
@@ -265,15 +254,13 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
 
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<? extends TermCollection> vocs, Integer limit,
+            String pattern, Language lang);
+
     /**
      * Returns a list of {@link UuidAndTitleCache} of named areas with IdInVocabulary matches search parameter
-     * @param vocs
-     * @param limit
-     * @param pattern
-     * @param lang
-     * @return
      */
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit,
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<? extends TermCollection> vocs, Integer limit,
             String pattern, Language lang, TermSearchField type);
 
     /**

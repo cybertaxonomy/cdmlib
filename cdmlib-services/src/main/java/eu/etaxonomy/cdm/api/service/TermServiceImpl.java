@@ -50,6 +50,8 @@ import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
+import eu.etaxonomy.cdm.model.term.TermGraph;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
@@ -469,7 +471,12 @@ public class TermServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang) {
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<? extends TermCollection> termCollections, Integer limit, String pattern, Language lang) {
+        @SuppressWarnings("rawtypes")
+        List<TermVocabulary> vocs = filterCollectionType(TermVocabulary.class, termCollections);
+        List<TermGraph> graphs = filterCollectionType(TermGraph.class, termCollections);
+        //TODO use graphs
+
         List<NamedArea> areas = dao.list(NamedArea.class, vocs, limit, pattern);
 
         List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
@@ -484,7 +491,12 @@ public class TermServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang, TermSearchField type) {
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<? extends TermCollection> termCollections, Integer limit, String pattern, Language lang, TermSearchField type) {
+        @SuppressWarnings("rawtypes")
+        List<TermVocabulary> vocs = filterCollectionType(TermVocabulary.class, termCollections);
+        @SuppressWarnings("rawtypes")
+        List<TermGraph> graphs = filterCollectionType(TermGraph.class, termCollections);
+
         List<NamedArea> areas = dao.listByAbbrev(NamedArea.class, vocs, limit, pattern, type);
 
         List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
@@ -506,6 +518,18 @@ public class TermServiceImpl
             result.add(uuidAndTitleCache);
         }
 
+        return result;
+    }
+
+    private <COLL extends TermCollection> List<COLL> filterCollectionType(Class<COLL> clazz,
+            List<? extends TermCollection> termCollections) {
+
+        List<COLL> result = new ArrayList<>();
+        for (TermCollection<?,?> collection : termCollections) {
+            if (collection.isInstanceOf(clazz)) {
+                result.add((COLL)collection);
+            }
+        }
         return result;
     }
 

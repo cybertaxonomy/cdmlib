@@ -26,9 +26,11 @@ import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IVocabularyFilterDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
@@ -47,6 +49,10 @@ public class VocabularyServiceImpl
 
     @Autowired
     private IVocabularyFilterDao vocabularyFilterDao;
+
+    @Autowired
+    private ITermCollectionDao termCollectionDao;
+
 
 	@Override
     @Autowired
@@ -236,5 +242,10 @@ public class VocabularyServiceImpl
     @Override
     public long count(VocabularyFilter filter) {
         return vocabularyFilterDao.count(filter);
+    }
+
+    @Override
+    public TermCollection<?,?> findCollection(UUID termCollectionUuid){
+        return termCollectionDao.findByUuid(termCollectionUuid);
     }
 }
