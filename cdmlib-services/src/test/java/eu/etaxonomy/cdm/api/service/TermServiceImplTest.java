@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -48,9 +51,12 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -68,6 +74,9 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @SpringBeanByType
     private IVocabularyService vocabularyService;
+
+    @SpringBeanByType
+    private ITermTreeService termTreeService;
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -321,6 +330,30 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	assertTrue("marker2 should be behind marker", marker2.getOrderIndex() == marker.getOrderIndex() + 1);
     }
 
+    @Test
+    public void getUuidAndTitleCacheNamedArea() {
+        List<TermCollection<NamedArea,?>> termCollections = new ArrayList<>();
+        TermVocabulary<NamedArea> countryVoc = vocabularyService.find(Country.uuidCountryVocabulary);
+        termCollections.add(countryVoc);
+
+        TermTree<NamedArea> termTree = TermTree.NewInstance(TermType.NamedArea);
+        termTree.setTitleCache("My term tree", true);
+        termTree.getRoot().addChild(NamedArea.AUSTRALASIA());
+        termTree.getRoot().addChild(NamedArea.BLACKSEA());
+        termTree.getRoot().addChild(Country.AUSTRALIACOMMONWEALTHOF());
+        termTreeService.save(termTree);
+//        TermTree termTree = termTreeService.find(termTreeUuid);
+        termCollections.add(termTree);
+
+        List<UuidAndTitleCache<NamedArea>> result = termService.getUuidAndTitleCacheNamedArea(termCollections, null, "Au", Language.DEFAULT());
+        System.out.println(result);
+        //Andorra, Angola, Anguilla,
+        Assert.assertEquals("There should be 2 countries + Australasia and Australia should not be duplicated", 3, result.size());
+
+        //TODO search on abbrev
+
+    }
+
     /**
      * This test has been implemented to reproduce a potential bug in java runtime.
      * The HashMap used to implement the MultilanguageText failed in jre1.6_11 b03 win32 to
@@ -339,6 +372,8 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         List<Language> languages = termService.getLanguagesByLocale(Collections.enumeration(locales));
         assertNotNull(textData.getPreferredLanguageString(languages));
     }
+
+
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

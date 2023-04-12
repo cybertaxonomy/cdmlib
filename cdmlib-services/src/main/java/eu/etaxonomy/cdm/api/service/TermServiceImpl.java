@@ -52,12 +52,14 @@ import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermGraph;
+import eu.etaxonomy.cdm.model.term.TermGraphBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -76,6 +78,9 @@ public class TermServiceImpl
 
 	@Autowired
 	private IVocabularyService vocabularyService;
+
+	@Autowired
+	private ITermCollectionDao termCollectionDao;
 
 	@Autowired
 	@Qualifier("langStrBaseDao")
@@ -474,10 +479,16 @@ public class TermServiceImpl
     public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<? extends TermCollection> termCollections, Integer limit, String pattern, Language lang) {
         @SuppressWarnings("rawtypes")
         List<TermVocabulary> vocs = filterCollectionType(TermVocabulary.class, termCollections);
-        List<TermGraph> graphs = filterCollectionType(TermGraph.class, termCollections);
+        List<TermGraphBase> graphs = filterCollectionType(TermGraphBase.class, termCollections);
         //TODO use graphs
 
         List<NamedArea> areas = dao.list(NamedArea.class, vocs, limit, pattern);
+        Set<NamedArea> graphAreas = termCollectionDao.listTerms(NamedArea.class, graphs, limit, pattern);
+        for (NamedArea graphArea : graphAreas) {
+            if (!areas.contains(graphArea)) {
+                areas.add(graphArea);
+            }
+        }
 
         List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;
