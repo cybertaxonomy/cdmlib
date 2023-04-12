@@ -81,7 +81,6 @@ public class TermTreeServiceImpl
         return termNodeDao.saveOrUpdateAll(nodeCollection);
     }
 
-
     @Override
     @Transactional(readOnly = false)
     public UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos){

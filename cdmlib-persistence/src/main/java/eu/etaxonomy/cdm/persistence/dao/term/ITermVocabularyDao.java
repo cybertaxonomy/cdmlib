@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.term;
-
 
 import java.util.Collection;
 import java.util.List;
@@ -26,10 +24,8 @@ import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-
 /**
  * @author a.mueller
- *
  */
 public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 
@@ -76,7 +72,6 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @return a List of vocabularies
      */
     public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths);
-
 
 	/**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
@@ -220,5 +215,5 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param availableFor
      * @return
      */
-    List<TermVocabularyDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableFor);
+    public List<TermVocabularyDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableFor);
 }

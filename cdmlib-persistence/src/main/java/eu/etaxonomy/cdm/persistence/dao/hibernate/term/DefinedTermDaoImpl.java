@@ -676,7 +676,7 @@ public class DefinedTermDaoImpl
             crit.setMaxResults(limit);
         }
 
-        if (vocs != null &&!vocs.isEmpty()){
+        if (vocs != null && !vocs.isEmpty()){
             crit.createAlias("term.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
             for (TermVocabulary<?> voc: vocs){
