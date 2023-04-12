@@ -498,7 +498,7 @@ public class TimePeriodParser {
 
     static {
         verbatimStart = "[\"'" + UTF8.QUOT_DBL_LEFT + UTF8.QUOT_SINGLE_HIGH_REV9 + UTF8.QUOT_DBL_LOW9 + "]";
-        verbatimEnd = "[\"'" + UTF8.QUOT_DBL_RIGHT + UTF8.QUOT_SINGLE_RIGHT + UTF8.QUOT_DBL_HIGH_REV9 + "]";
+        verbatimEnd = "[\"'" + UTF8.QUOT_DBL_LEFT + UTF8.QUOT_DBL_RIGHT + UTF8.QUOT_SINGLE_RIGHT + UTF8.QUOT_DBL_HIGH_REV9 + "]";
         String fWs = "\\s*"; //facultative whitespace
         String oWs = "\\s+"; //obligate whitespace
         String anyDate = "([^\"]+)";
