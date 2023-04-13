@@ -59,12 +59,8 @@ public class Representation extends LanguageStringBase {
     @Field(store=Store.YES)
     private String plural;
 
-    /**
-     * @param text
-     * @param label
-     * @param lang
-     * @return
-     */
+//********************************************* FACTORY ************************/
+
     public static Representation NewInstance(String description, String label, String abbreviatedLabel, Language lang){
         return new Representation(description, label, abbreviatedLabel, lang);
     }

@@ -702,7 +702,8 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField abbrevType){
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern,
+            MatchMode matchmode, TermSearchField abbrevType){
 
         if (clazz == null){
             clazz = (Class)type;
