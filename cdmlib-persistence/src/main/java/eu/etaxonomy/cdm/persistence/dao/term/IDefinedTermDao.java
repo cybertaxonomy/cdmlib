@@ -218,8 +218,6 @@ public interface IDefinedTermDao
 
     public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField type);
 
-    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, TermSearchField type);
-
     /**
      * Returns all terms that are included in the given parent term resp. a part of the given term.
      * @param parentTerm the parent term

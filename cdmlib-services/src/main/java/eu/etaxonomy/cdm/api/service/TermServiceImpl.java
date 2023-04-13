@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -488,7 +489,7 @@ public class TermServiceImpl
         @SuppressWarnings("rawtypes")
         List<TermVocabulary> vocs = filterCollectionType(TermVocabulary.class, termCollections);
         if (!vocs.isEmpty() || CdmUtils.isNullSafeEmpty(termCollections)) { //search on all vocabularies if no filter is set
-            terms = dao.list(clazz, vocs, limit, pattern, type);  //TODO lang still missing;
+            terms = dao.list(clazz, vocs, null, limit, pattern, MatchMode.BEGINNING, type);  //TODO lang still missing;
         }
 
         @SuppressWarnings("rawtypes")

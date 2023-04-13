@@ -649,11 +649,6 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, TermSearchField type) {
-        return list(clazz, vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
-    }
-
-    @Override
     public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern,
             MatchMode matchmode, TermSearchField abbrevType){
 
