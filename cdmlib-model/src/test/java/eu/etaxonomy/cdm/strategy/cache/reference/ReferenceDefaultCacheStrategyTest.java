@@ -288,7 +288,7 @@ public class ReferenceDefaultCacheStrategyTest {
         Assert.assertEquals("Unexpected abbrev title cache", "1955: Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11", book1.getTitleCache());
     }
 
-	@Test // ticket #10245 (#9626)
+	@Test // ticket #10245 (#9626) / #10291
 	public void testPublisher() {
 		IBook book1 = ReferenceFactory.newBook();
 		book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
@@ -330,8 +330,39 @@ public class ReferenceDefaultCacheStrategyTest {
         Assert.assertEquals("Unexpected abbrev title cache",
                 "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin: Springer; Hamburg: Müller", book1.getTitleCache());
 
-    }
+//        book1.setPublisher("Springer");
+//        book1.setPlacePublished("Berlin");
+//        book1.setPlacePublished2("Hamburg");
+//        book1.setPublisher2(null);
+//        book1.setTitleCache(null, false);
+//        Assert.assertEquals("Unexpected abbrev title cache",
+//                "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin: Springer; Hamburg", book1.getTitleCache());
+//
+//        book1.setPublisher(null);
+//        book1.setPlacePublished("Berlin");
+//        book1.setPlacePublished2("Hamburg");
+//        book1.setPublisher2("Müller");
+//        book1.setTitleCache(null, false);
+//        Assert.assertEquals("Unexpected abbrev title cache",
+//                "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Berlin; Hamburg: Müller", book1.getTitleCache());
+//
+//        book1.setPublisher("Springer");
+//        book1.setPlacePublished(null);
+//        book1.setPlacePublished2("Hamburg");
+//        book1.setPublisher2("Müller");
+//        book1.setTitleCache(null, false);
+//        Assert.assertEquals("Unexpected abbrev title cache",
+//                "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Springer; Hamburg: Müller", book1.getTitleCache());
+//
+//      book1.setPublisher(null);
+//      book1.setPlacePublished(null);
+//      book1.setPlacePublished2("Hamburg");
+//      book1.setPublisher2("Müller");
+//      book1.setTitleCache(null, false);
+//      Assert.assertEquals("Unexpected abbrev title cache",
+//              "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. " + UTF8.EN_DASH + " Hamburg: Müller", book1.getTitleCache());
 
+	}
 
 // ***************************** Book Section ************************/
 
