@@ -52,13 +52,17 @@ public class TermCollectionDaoImpl
         clazz = clazz == null ? (Class)DefinedTermBase.class : clazz;
         matchMode = matchMode == null ? MatchMode.EXACT : matchMode;
         lang = lang == null ? Language.DEFAULT() : lang;
+        labelType = labelType == null ? TermSearchField.NoAbbrev : labelType;
+        boolean isLabel = labelType == TermSearchField.NoAbbrev;
 
         String op = matchMode.getMatchOperator();
         String hql = "SELECT DISTINCT term FROM TermCollection tc JOIN tc.termRelations rel JOIN rel.term term LEFT JOIN term.representations rep "
                 + " WHERE tc.id IN :collectionIDs ";
         if (StringUtils.isNotBlank(pattern)) {
-            hql += " AND (term."+labelType.getKey()+ " "+ op+" :pattern "
-                   + " OR rep.label "+op+" :pattern AND rep.language = :lang " ;
+            hql += " AND (term."+labelType.getKey()+ " "+ op+" :pattern ";
+            if (isLabel) {
+                hql += " OR rep.label "+op+" :pattern AND rep.language = :lang " ;
+            }
             hql += ")";
         }
         hql += " ORDER BY term."+ labelType.getKey();
@@ -71,7 +75,9 @@ public class TermCollectionDaoImpl
 
         if (StringUtils.isNotBlank(pattern)) {
             query.setParameter("pattern", matchMode.queryStringFrom(pattern));
-            query.setParameter("lang", lang);
+            if (isLabel) {
+                query.setParameter("lang", lang);
+            }
         }
 
         if (limit != null) {

@@ -508,11 +508,11 @@ public class TermServiceImpl
                     NamedArea.labelWithLevel((NamedArea)term, lang): term.getTitleCache();
             if (!type.equals(TermSearchField.NoAbbrev)){
                 if (type.equals(TermSearchField.IDInVocabulary)){
-                    display += " - " + term.getIdInVocabulary();
+                    display = CdmUtils.concat(" - ", display, term.getIdInVocabulary());
                 }else if (type.equals(TermSearchField.Symbol1)){
-                    display += " - " + term.getSymbol();
+                    display = CdmUtils.concat(" - ", display, term.getSymbol());
                 }else if (type.equals(TermSearchField.Symbol2)){
-                    display += " - " + term.getSymbol2();
+                    display = CdmUtils.concat(" - ", display, term.getSymbol2());
                 }
             }
             uuidAndTitleCache = new UuidAndTitleCache<>(term.getUuid(), term.getId(), display);

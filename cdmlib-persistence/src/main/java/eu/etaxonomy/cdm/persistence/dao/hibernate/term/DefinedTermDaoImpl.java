@@ -708,20 +708,29 @@ public class DefinedTermDaoImpl
         if (clazz == null){
             clazz = (Class)type;
         }
-        Criteria crit = getSession().createCriteria(clazz, "type");
+        Criteria crit = getSession().createCriteria(clazz, "term");
         if (!StringUtils.isBlank(pattern)){
+            crit.createAlias("term.representations", "reps");
+            Disjunction or = Restrictions.disjunction();
             if (matchmode == MatchMode.EXACT) {
-                crit.add(Restrictions.eq(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.eq(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
+                if (abbrevType == TermSearchField.NoAbbrev) {
+                    or.add(Restrictions.eq("reps.label", matchmode.queryStringFrom(pattern)));
+                }
             } else {
-                crit.add(Restrictions.like(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.like(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
+                if (abbrevType == TermSearchField.NoAbbrev) {
+                    or.add(Restrictions.like("reps.label", matchmode.queryStringFrom(pattern)));
+                }
             }
+            crit.add(or);
         }
         if (limit != null && limit >= 0) {
             crit.setMaxResults(limit);
         }
 
         if (vocs != null &&!vocs.isEmpty()){
-            crit.createAlias("type.vocabulary", "voc");
+            crit.createAlias("term.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
             for (TermVocabulary<?> voc: vocs){
                 Criterion criterion = Restrictions.eq("voc.id", voc.getId());

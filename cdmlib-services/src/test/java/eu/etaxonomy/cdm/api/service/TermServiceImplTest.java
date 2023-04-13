@@ -333,6 +333,8 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     public void getUuidAndTitleCacheNamedArea() {
+
+        //Test data
         List<TermCollection<NamedArea,?>> termCollections = new ArrayList<>();
         TermVocabulary<NamedArea> countryVoc = vocabularyService.find(Country.uuidCountryVocabulary);
         termCollections.add(countryVoc);
@@ -343,13 +345,11 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         termTree.getRoot().addChild(NamedArea.BLACKSEA());
         termTree.getRoot().addChild(Country.AUSTRALIACOMMONWEALTHOF());
         termTreeService.save(termTree);
-//        TermTree termTree = termTreeService.find(termTreeUuid);
         termCollections.add(termTree);
 
+        //titleCache
         List<UuidAndTitleCache<NamedArea>> result = termService.getUuidAndTitleCache(NamedArea.class,
                 termCollections, null, "Au", Language.DEFAULT(), TermSearchField.NoAbbrev);
-        System.out.println(result);
-        //Andorra, Angola, Anguilla,
         Assert.assertEquals("There should be 2 countries + Australasia and Australia should not be duplicated",
                 3, result.size());
         Assert.assertEquals("AUS - Country", result.get(0).getTitleCache());
@@ -361,8 +361,29 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals("There should be 2 records",
                 2, result.size());
 
-        //TODO search on abbrev
+        //idInVoc - lower case
+        result = termService.getUuidAndTitleCache(NamedArea.class,
+                termCollections, null, "Au", Language.DEFAULT(), TermSearchField.IDInVocabulary);
+        Assert.assertEquals("IdInVoc are upper case and therefore should not be found",
+                0, result.size());
 
+        //idInVoc - upper case
+        result = termService.getUuidAndTitleCache(NamedArea.class,
+                termCollections, null, "AU", Language.DEFAULT(), TermSearchField.IDInVocabulary);
+        Assert.assertEquals("Australasia and Australia should be found as they have and IdInVoc",
+                3, result.size());
+        Assert.assertEquals("AUS - Country - AUS", result.get(0).getTitleCache());
+        Assert.assertEquals("Australasia - AUSA", result.get(1).getTitleCache());
+        Assert.assertEquals("AUT - Country - AUT", result.get(2).getTitleCache());
+
+        //no voc
+        termCollections.remove(countryVoc);
+        result = termService.getUuidAndTitleCache(NamedArea.class,
+                termCollections, null, "AU", Language.DEFAULT(), TermSearchField.IDInVocabulary);
+        Assert.assertEquals("Austria should not be found anymore as it is not in the term tree",
+                2, result.size());
+        Assert.assertEquals("AUS - Country - AUS", result.get(0).getTitleCache());
+        Assert.assertEquals("Australasia - AUSA", result.get(1).getTitleCache());
     }
 
     /**
