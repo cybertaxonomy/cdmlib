@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -397,6 +398,20 @@ public class CdmUtils {
         }
     }
 
+    public static int nullSafeCompareTo(String str1, String str2, boolean ignoreCase) {
+        if (str1 == null){
+            return str2 == null ? 0 : -1;
+        }else if (str2 == null){
+            return 1;
+        }else{
+            if (ignoreCase) {
+                return str1.compareToIgnoreCase(str2);
+            }else {
+                return str1.compareTo(str2);
+            }
+        }
+    }
+
     /**
      * Tests if two objects are equal or both null. Otherwise returns <code>false</code>.
      */
@@ -566,6 +581,13 @@ public class CdmUtils {
 
     public static String userFriendlyClassName(Class<?> clazz){
         return userFriendlyCamelCase(clazz.getSimpleName());
+    }
+
+    /**
+     * Returns <code>true</code> if the collection is <code>null</code> or empty.
+     */
+    public static boolean isNullSafeEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
     }
 
 }

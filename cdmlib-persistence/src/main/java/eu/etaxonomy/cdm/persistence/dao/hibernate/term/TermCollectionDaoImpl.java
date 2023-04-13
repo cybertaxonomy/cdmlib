@@ -8,14 +8,17 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermGraphBase;
@@ -36,37 +39,51 @@ public class TermCollectionDaoImpl
     }
 
     @Override
-    public <TERM extends DefinedTermBase> Set<TERM> listTerms(Class<TERM> type, List<TermGraphBase> graphs,
-            Integer limit, String pattern){
-        return listTerms(type, graphs, limit, limit, pattern, MatchMode.BEGINNING);
+    public <TERM extends DefinedTermBase> List<TERM> listTerms(Class<TERM> type, List<TermGraphBase> graphs,
+            Integer limit, String pattern, TermSearchField labelType, Language lang){
+        return listTerms(type, graphs, null, limit, pattern, MatchMode.BEGINNING, labelType, lang);
     }
 
 //    TODO add to interface once ready
-    public <TERM extends DefinedTermBase> Set<TERM> listTerms(Class<TERM> clazz, List<TermGraphBase> graphs,
-            Integer pageNumber, Integer limit, String pattern, MatchMode matchMode){
+    public <TERM extends DefinedTermBase> List<TERM> listTerms(Class<TERM> clazz, List<TermGraphBase> graphs,
+            Integer pageNumber, Integer limit, String pattern, MatchMode matchMode, TermSearchField labelType,
+            Language lang){
 
-        if (clazz == null){
-            clazz = (Class)DefinedTermBase.class;
-        }
+        clazz = clazz == null ? (Class)DefinedTermBase.class : clazz;
         matchMode = matchMode == null ? MatchMode.EXACT : matchMode;
+        lang = lang == null ? Language.DEFAULT() : lang;
 
         String op = matchMode.getMatchOperator();
         String hql = "SELECT DISTINCT term FROM TermCollection tc JOIN tc.termRelations rel JOIN rel.term term LEFT JOIN term.representations rep "
-                + " WHERE "
-                + "    (term.titleCache "+op+" :pattern OR rep.label "+op+" :pattern ) AND"
-                + "      tc.id IN :collectionIDs ";
+                + " WHERE tc.id IN :collectionIDs ";
+        if (StringUtils.isNotBlank(pattern)) {
+            hql += " AND (term."+labelType.getKey()+ " "+ op+" :pattern "
+                   + " OR rep.label "+op+" :pattern AND rep.language = :lang " ;
+            hql += ")";
+        }
+        hql += " ORDER BY term."+ labelType.getKey();
 
+        //TODO using clazz instead of DefinedTermBase.class for some reason does still throw hql exception
         Query<DefinedTermBase> query = getSession().createQuery(hql, DefinedTermBase.class);
 
-        query.setParameter("pattern", matchMode.queryStringFrom(pattern));
         Set<Integer> collectionIDs = graphs.stream().map(g->g.getId()).collect(Collectors.toSet());
         query.setParameterList("collectionIDs", collectionIDs);
 
-        //TODO limit + pageNumber, but then we need ordering
-        Set result = new HashSet<>();
-        List<DefinedTermBase> list = query.list();
-        result.addAll(query.list());
-//        List<S> results = deduplicateResult(query.list());
+        if (StringUtils.isNotBlank(pattern)) {
+            query.setParameter("pattern", matchMode.queryStringFrom(pattern));
+            query.setParameter("lang", lang);
+        }
+
+        if (limit != null) {
+            query.setMaxResults(limit);
+            if (pageNumber != null) {
+                query.setFirstResult(pageNumber * limit);
+            }
+        }
+
+        //TODO pageNumber
+        List<TERM> result = new ArrayList<>();
+        result.addAll(deduplicateResult((List)query.list()));
         return result;
     }
 

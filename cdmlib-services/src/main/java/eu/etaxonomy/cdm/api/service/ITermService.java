@@ -254,14 +254,13 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
 
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<? extends TermCollection> vocs, Integer limit,
-            String pattern, Language lang);
-
     /**
-     * Returns a list of {@link UuidAndTitleCache} of named areas with IdInVocabulary matches search parameter
+     * Returns a list of {@link UuidAndTitleCache} of named areas with titleCache or specified search field
+     * matches search parameter
      */
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<? extends TermCollection> vocs, Integer limit,
-            String pattern, Language lang, TermSearchField type);
+    public <S extends DefinedTermBase> List<UuidAndTitleCache<S>> getUuidAndTitleCache(
+            Class<S> clazz, List<? extends TermCollection> vocs,
+            Integer limit, String pattern, Language lang, TermSearchField type);
 
     /**
      * Returns a list of {@link TermDto} of terms with uuid matches one of uuids in list

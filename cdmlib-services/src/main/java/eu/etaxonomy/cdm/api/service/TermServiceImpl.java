@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.compare.UuidAndTitleCacheComparator;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
@@ -34,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -51,7 +54,6 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermCollection;
-import eu.etaxonomy.cdm.model.term.TermGraph;
 import eu.etaxonomy.cdm.model.term.TermGraphBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -476,59 +478,51 @@ public class TermServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<? extends TermCollection> termCollections, Integer limit, String pattern, Language lang) {
+    public <S extends DefinedTermBase> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz,
+            List<? extends TermCollection> termCollections,
+            Integer limit, String pattern, Language lang, TermSearchField type) {
+
+        List<S> terms = new ArrayList<>();
+        type = type == null? TermSearchField.NoAbbrev : type;
+        clazz = clazz == null? clazz = (Class)DefinedTermBase.class : clazz;
         @SuppressWarnings("rawtypes")
         List<TermVocabulary> vocs = filterCollectionType(TermVocabulary.class, termCollections);
+        if (!vocs.isEmpty() || CdmUtils.isNullSafeEmpty(termCollections)) { //search on all vocabularies if no filter is set
+            terms = dao.listByAbbrev(clazz, vocs, limit, pattern, type);  //TODO lang still missing;
+        }
+
+        @SuppressWarnings("rawtypes")
         List<TermGraphBase> graphs = filterCollectionType(TermGraphBase.class, termCollections);
-        //TODO use graphs
-
-        List<NamedArea> areas = dao.list(NamedArea.class, vocs, limit, pattern);
-        Set<NamedArea> graphAreas = termCollectionDao.listTerms(NamedArea.class, graphs, limit, pattern);
-        for (NamedArea graphArea : graphAreas) {
-            if (!areas.contains(graphArea)) {
-                areas.add(graphArea);
+        List<S> graphTerms = termCollectionDao.listTerms(clazz, graphs, limit, pattern, type, lang);
+        for (S graphArea : graphTerms) {
+            if (!terms.contains(graphArea)) {
+                terms.add(graphArea);
             }
         }
 
-        List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
-        UuidAndTitleCache<NamedArea> uuidAndTitleCache;
-        for (NamedArea area: areas){
-            uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), NamedArea.labelWithLevel(area, lang));
-            result.add(uuidAndTitleCache);
-        }
-
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<? extends TermCollection> termCollections, Integer limit, String pattern, Language lang, TermSearchField type) {
-        @SuppressWarnings("rawtypes")
-        List<TermVocabulary> vocs = filterCollectionType(TermVocabulary.class, termCollections);
-        @SuppressWarnings("rawtypes")
-        List<TermGraph> graphs = filterCollectionType(TermGraph.class, termCollections);
-
-        List<NamedArea> areas = dao.listByAbbrev(NamedArea.class, vocs, limit, pattern, type);
-
-        List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
-        UuidAndTitleCache<NamedArea> uuidAndTitleCache;
-        for (NamedArea area: areas){
-            if (type.equals(TermSearchField.NoAbbrev)){
-                uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), NamedArea.labelWithLevel(area, lang));
-            }else{
-                String display = NamedArea.labelWithLevel(area, lang);
+        List<UuidAndTitleCache<S>> result = new ArrayList<>();
+        UuidAndTitleCache<S> uuidAndTitleCache;
+        for (S term: terms){
+            term = CdmBase.deproxy(term);
+            String display = term instanceof NamedArea ?
+                    NamedArea.labelWithLevel((NamedArea)term, lang): term.getTitleCache();
+            if (!type.equals(TermSearchField.NoAbbrev)){
                 if (type.equals(TermSearchField.IDInVocabulary)){
-                    display += " - " + area.getIdInVocabulary();
+                    display += " - " + term.getIdInVocabulary();
                 }else if (type.equals(TermSearchField.Symbol1)){
-                    display += " - " + area.getSymbol();
+                    display += " - " + term.getSymbol();
                 }else if (type.equals(TermSearchField.Symbol2)){
-                    display += " - " + area.getSymbol2();
+                    display += " - " + term.getSymbol2();
                 }
-                uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), display);
             }
+            uuidAndTitleCache = new UuidAndTitleCache<>(term.getUuid(), term.getId(), display);
             result.add(uuidAndTitleCache);
         }
+        Collections.sort(result, new UuidAndTitleCacheComparator<>(true));
 
+        if (limit != null && result.size() > limit) {
+            result = result.subList(0, limit);
+        }
         return result;
     }
 

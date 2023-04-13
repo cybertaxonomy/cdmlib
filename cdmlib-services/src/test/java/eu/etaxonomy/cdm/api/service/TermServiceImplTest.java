@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -345,10 +346,20 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
 //        TermTree termTree = termTreeService.find(termTreeUuid);
         termCollections.add(termTree);
 
-        List<UuidAndTitleCache<NamedArea>> result = termService.getUuidAndTitleCacheNamedArea(termCollections, null, "Au", Language.DEFAULT());
+        List<UuidAndTitleCache<NamedArea>> result = termService.getUuidAndTitleCache(NamedArea.class,
+                termCollections, null, "Au", Language.DEFAULT(), TermSearchField.NoAbbrev);
         System.out.println(result);
         //Andorra, Angola, Anguilla,
-        Assert.assertEquals("There should be 2 countries + Australasia and Australia should not be duplicated", 3, result.size());
+        Assert.assertEquals("There should be 2 countries + Australasia and Australia should not be duplicated",
+                3, result.size());
+        Assert.assertEquals("AUS - Country", result.get(0).getTitleCache());
+        Assert.assertEquals("Australasia", result.get(1).getTitleCache());
+        Assert.assertEquals("AUT - Country", result.get(2).getTitleCache());
+
+        result = termService.getUuidAndTitleCache(NamedArea.class,
+                termCollections, 2, "Au", Language.DEFAULT(), TermSearchField.NoAbbrev);
+        Assert.assertEquals("There should be 2 records",
+                2, result.size());
 
         //TODO search on abbrev
 

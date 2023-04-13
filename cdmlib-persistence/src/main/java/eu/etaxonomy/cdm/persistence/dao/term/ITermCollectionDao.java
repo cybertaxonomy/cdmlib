@@ -9,8 +9,9 @@
 package eu.etaxonomy.cdm.persistence.dao.term;
 
 import java.util.List;
-import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermGraphBase;
@@ -25,7 +26,8 @@ public interface ITermCollectionDao extends IIdentifiableDao<TermCollection> {
     /**
      * Returns a set of terms available in the given term graph by a label pattern
      */
-    public <TERM extends DefinedTermBase> Set<TERM> listTerms(Class<TERM> type, List<TermGraphBase> graphs, Integer limit, String pattern);
+    public <TERM extends DefinedTermBase> List<TERM> listTerms(Class<TERM> type, List<TermGraphBase> graphs,
+            Integer limit, String pattern, TermSearchField labelType, Language lang);
 
 
 }
