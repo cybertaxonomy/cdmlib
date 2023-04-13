@@ -488,7 +488,7 @@ public class TermServiceImpl
         @SuppressWarnings("rawtypes")
         List<TermVocabulary> vocs = filterCollectionType(TermVocabulary.class, termCollections);
         if (!vocs.isEmpty() || CdmUtils.isNullSafeEmpty(termCollections)) { //search on all vocabularies if no filter is set
-            terms = dao.listByAbbrev(clazz, vocs, limit, pattern, type);  //TODO lang still missing;
+            terms = dao.list(clazz, vocs, limit, pattern, type);  //TODO lang still missing;
         }
 
         @SuppressWarnings("rawtypes")

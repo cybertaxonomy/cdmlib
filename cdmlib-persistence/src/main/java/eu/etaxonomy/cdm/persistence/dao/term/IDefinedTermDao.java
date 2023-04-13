@@ -216,13 +216,9 @@ public interface IDefinedTermDao
 	 */
 	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
 
-    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern);
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField type);
 
-    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchMode);
-
-    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField type);
-
-    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, TermSearchField type);
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, TermSearchField type);
 
     /**
      * Returns all terms that are included in the given parent term resp. a part of the given term.
