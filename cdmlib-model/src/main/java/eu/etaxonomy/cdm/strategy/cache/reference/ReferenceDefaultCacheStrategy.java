@@ -186,6 +186,13 @@ public class ReferenceDefaultCacheStrategy
             }
 
             result = result + " " + reference.getPlacePublished2();
+        } else if (isNotBlank(reference.getPublisher2()) && isBlank(reference.getPlacePublished2())) {
+            if (isBlank(reference.getPlacePublished()) && isBlank(reference.getPublisher())) {
+                result = result +". " + UTF8.EN_DASH + " ";
+            }else {
+                result = result + "; ";
+            }
+            result = result + reference.getPublisher2();  
         }
         return result;
     }
