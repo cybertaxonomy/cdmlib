@@ -551,7 +551,7 @@ public class DescriptionDaoImpl
 
         Criteria outer = getCriteria(clazz);
 
-        outer.add(Restrictions.in("id", (Object[])resultIds));
+        outer.add(Restrictions.in("id", resultIds));
         addOrder(outer, orderHints);
 
         addPageSizeAndNumber(outer, pageSize, pageNumber);
@@ -610,7 +610,7 @@ public class DescriptionDaoImpl
         }
 
         criteria = getSession().createCriteria(TaxonDescription.class);
-        criteria.add(Restrictions.in("id", (Object[]) resultIds));
+        criteria.add(Restrictions.in("id", resultIds));
         addOrder(criteria,orderHints);
 
         @SuppressWarnings("unchecked")
@@ -733,8 +733,7 @@ public class DescriptionDaoImpl
         if (features != null && features.size() > 0){
             queryString += " and de.feature in (:features) ";
         }
-        Class<R> clazz = null;
-        Query<R> query = getSession().createQuery(queryString,clazz);
+        Query<R> query = getSession().createQuery(queryString);
 
         query.setParameter("taxon_uuid", taxonUuid);
         if(type != null){
