@@ -64,6 +64,7 @@ public class DescriptionDaoImpl
 
     private static final Logger logger = LogManager.getLogger();
 
+    @SuppressWarnings("unchecked")
     public DescriptionDaoImpl() {
         super(DescriptionBase.class);
         indexedClasses = new Class[3];
@@ -550,7 +551,7 @@ public class DescriptionDaoImpl
 
         Criteria outer = getCriteria(clazz);
 
-        outer.add(Restrictions.in("id", resultIds));
+        outer.add(Restrictions.in("id", (Object[])resultIds));
         addOrder(outer, orderHints);
 
         addPageSizeAndNumber(outer, pageSize, pageNumber);
@@ -609,7 +610,7 @@ public class DescriptionDaoImpl
         }
 
         criteria = getSession().createCriteria(TaxonDescription.class);
-        criteria.add(Restrictions.in("id", resultIds));
+        criteria.add(Restrictions.in("id", (Object[]) resultIds));
         addOrder(criteria,orderHints);
 
         @SuppressWarnings("unchecked")
@@ -686,7 +687,6 @@ public class DescriptionDaoImpl
     public List<SortableTaxonNodeQueryResult> getNodeOfIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid){
         String selectString = " new " +SortableTaxonNodeQueryResult.class.getName()+"(n.uuid, n.id, n.treeIndex, t.uuid, t.titleCache, t.name.titleCache, t.name.rank, n.parent.uuid) ";
         Query<SortableTaxonNodeQueryResult> query = prepareGetIndividualAssociationForSpecimen(specimenUuid, classificationUuid, selectString);
-        @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> results = query.list();
         return results;
     }
@@ -733,7 +733,8 @@ public class DescriptionDaoImpl
         if (features != null && features.size() > 0){
             queryString += " and de.feature in (:features) ";
         }
-        Query<R> query = getSession().createQuery(queryString);
+        Class<R> clazz = null;
+        Query<R> query = getSession().createQuery(queryString,clazz);
 
         query.setParameter("taxon_uuid", taxonUuid);
         if(type != null){
@@ -818,7 +819,6 @@ public class DescriptionDaoImpl
         }else{
             throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid)");
         }
-
     }
 
     private void setTaxonDescriptionMediaParameters(Query query, UUID taxonUuid, Boolean limitToGalleries, Set<MarkerType> markerTypes) {
@@ -827,12 +827,6 @@ public class DescriptionDaoImpl
         }
     }
 
-    /**
-     * @param taxonUuid
-     * @param restrictToGalleries
-     * @param markerTypes
-     * @return
-     */
     private String getTaxonDescriptionMediaQueryString(UUID taxonUuid,
             Boolean restrictToGalleries, Set<MarkerType> markerTypes) {
         String fromQueryString =
@@ -859,10 +853,8 @@ public class DescriptionDaoImpl
         }
 
         return fromQueryString + whereQueryString;
-
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<TermDto> listNamedAreasInUse(boolean includeAllParents, Integer pageSize, Integer pageNumber) {
 
@@ -922,9 +914,4 @@ public class DescriptionDaoImpl
 
         return dtoList;
     }
-
-
-
-
-
 }
