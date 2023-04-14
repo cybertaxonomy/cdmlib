@@ -151,22 +151,41 @@ public class ReferenceDefaultCacheStrategy
 
             if (isNotBlank(reference.getPlacePublished())) {
 
-                result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished() + ": "
-                        + reference.getPublisher();
+                result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished();
 
-                if (isNotBlank(reference.getPlacePublished2())) {
-                    result = result + "; " + reference.getPlacePublished2()+": " +reference.getPublisher2() ;
+                if (isNotBlank(reference.getPublisher())) {
+                    result = result + ": "+ reference.getPublisher();
                 }
             } else {
-
                 result = result + ". " + UTF8.EN_DASH + " " + reference.getPublisher();
             }
         } else if (isBlank(reference.getPublisher())) {
 
             if (isNotBlank(reference.getPlacePublished())) {
-
                 result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished();
             }
+        }
+        if (isNotBlank(reference.getPlacePublished2())) {
+
+            if (isBlank(reference.getPlacePublished()) && isBlank(reference.getPublisher())) {
+                result = result +". " + UTF8.EN_DASH + " ";
+            }else {
+                result = result + "; ";
+            }
+
+            result = result + reference.getPlacePublished2();
+
+            if (isNotBlank(reference.getPublisher2())) {
+                result = result +": " +reference.getPublisher2() ;
+            }
+        }else if (isBlank(reference.getPublisher2()) && isNotBlank(reference.getPlacePublished2())) {
+            if (isBlank(reference.getPlacePublished()) && isBlank(reference.getPublisher())) {
+                result = result +". " + UTF8.EN_DASH + " ";
+            }else {
+                result = result + "; ";
+            }
+
+            result = result + " " + reference.getPlacePublished2();
         }
         return result;
     }
