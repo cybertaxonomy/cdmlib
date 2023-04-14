@@ -143,56 +143,18 @@ public class ReferenceDefaultCacheStrategy
             return result;
         }
 
-        if (isNotBlank(reference.getPublisher())) {
+        String firstPublisher = CdmUtils.concat(": ", reference.getPlacePublished(), reference.getPublisher());
+        String secondPublisher = CdmUtils.concat(": ", reference.getPlacePublished2(), reference.getPublisher2());
+        String bothPublishers = CdmUtils.concat("; ", firstPublisher, secondPublisher);
+
+
+        if (isNotBlank(bothPublishers)) {
 
             if (result.endsWith(".")) {
                 result = result.substring(0, (result.length() - 1));// deduplicate point if given
             }
 
-            if (isNotBlank(reference.getPlacePublished())) {
-
-                result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished();
-
-                if (isNotBlank(reference.getPublisher())) {
-                    result = result + ": "+ reference.getPublisher();
-                }
-            } else {
-                result = result + ". " + UTF8.EN_DASH + " " + reference.getPublisher();
-            }
-        } else if (isBlank(reference.getPublisher())) {
-
-            if (isNotBlank(reference.getPlacePublished())) {
-                result = result + ". " + UTF8.EN_DASH + " " + reference.getPlacePublished();
-            }
-        }
-        if (isNotBlank(reference.getPlacePublished2())) {
-
-            if (isBlank(reference.getPlacePublished()) && isBlank(reference.getPublisher())) {
-                result = result +". " + UTF8.EN_DASH + " ";
-            }else {
-                result = result + "; ";
-            }
-
-            result = result + reference.getPlacePublished2();
-
-            if (isNotBlank(reference.getPublisher2())) {
-                result = result +": " +reference.getPublisher2() ;
-            }
-        }else if (isBlank(reference.getPublisher2()) && isNotBlank(reference.getPlacePublished2())) {
-            if (isBlank(reference.getPlacePublished()) && isBlank(reference.getPublisher())) {
-                result = result +". " + UTF8.EN_DASH + " ";
-            }else {
-                result = result + "; ";
-            }
-
-            result = result + " " + reference.getPlacePublished2();
-        } else if (isNotBlank(reference.getPublisher2()) && isBlank(reference.getPlacePublished2())) {
-            if (isBlank(reference.getPlacePublished()) && isBlank(reference.getPublisher())) {
-                result = result +". " + UTF8.EN_DASH + " ";
-            }else {
-                result = result + "; ";
-            }
-            result = result + reference.getPublisher2();  
+            result = result + ". " + UTF8.EN_DASH + " " + bothPublishers;
         }
         return result;
     }
