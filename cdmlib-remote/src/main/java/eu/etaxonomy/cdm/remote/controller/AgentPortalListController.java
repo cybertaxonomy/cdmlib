@@ -23,8 +23,6 @@ import io.swagger.annotations.Api;
 public class AgentPortalListController extends AgentListController {
 
     public AgentPortalListController() {
-        super();
         setInitializationStrategy(AgentPortalController.TEAM_OR_PERSON_BASE_INIT_STRATEGY);
     }
-
 }

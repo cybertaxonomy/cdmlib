@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.parser;
 
 import static org.junit.Assert.assertFalse;
@@ -400,6 +399,15 @@ public class TimePeriodParserTest {
 
         //English quotation
         strDate = "1957 ["+UTF8.QUOT_DBL_LOW9+"1958"+UTF8.QUOT_DBL_RIGHT+"]";
+        tp = TimePeriodParser.parseStringVerbatim(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("1957 [\"1958\"]", tp.toString());
+        Assert.assertEquals("1957", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals("1958", tp.getVerbatimDate());
+
+        //2 left quotations (#10295)
+        strDate = "1957 ["+UTF8.QUOT_DBL_LEFT+"1958"+UTF8.QUOT_DBL_LEFT+"]";
         tp = TimePeriodParser.parseStringVerbatim(strDate);
         assertNotNull(tp);
         Assert.assertEquals("1957 [\"1958\"]", tp.toString());

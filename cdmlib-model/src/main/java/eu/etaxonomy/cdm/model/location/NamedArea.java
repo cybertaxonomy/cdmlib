@@ -780,7 +780,7 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
         if (namedArea == null){
             return null;
         }
-        NamedArea area = CdmBase.deproxy(namedArea, NamedArea.class);
+        NamedArea area = CdmBase.deproxy(namedArea);
 
         StringBuilder title = new StringBuilder();
         Representation representation = area.getPreferredRepresentation(language);

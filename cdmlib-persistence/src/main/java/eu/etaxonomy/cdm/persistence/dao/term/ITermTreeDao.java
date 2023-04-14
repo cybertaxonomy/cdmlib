@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.term;
 
 import java.util.List;
@@ -31,8 +30,6 @@ public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
 
     /**
      * Loads nodes and the nodes child nodes recursively
-     * @param nodes
-     * @param nodePaths
      */
     public void deepLoadNodes(List<TermNode> nodes, List<String> nodePaths);
 
@@ -41,10 +38,6 @@ public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
 
     public <S extends TermTree> List<TermTreeDto> listTermTreeDtosByTermType(TermType termType);
 
-    /**
-     * @param uuid
-     * @return
-     */
-    TermTreeDto getTermTreeDtosByUuid(UUID uuid);
+    public TermTreeDto getTermTreeDtosByUuid(UUID uuid);
 
 }

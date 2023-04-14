@@ -649,78 +649,35 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern) {
-        return list(clazz, vocs, 0, limit, pattern, MatchMode.BEGINNING);
-    }
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern,
+            MatchMode matchmode, TermSearchField abbrevType){
 
-    @Override
-    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
-        if (clazz == null){
-            clazz = (Class)type;
-        }
+        clazz = clazz == null ? (Class)type : clazz;
+        abbrevType = abbrevType == null ? TermSearchField.NoAbbrev : abbrevType;
+
         Criteria crit = getSession().createCriteria(clazz, "term");
         if (!StringUtils.isBlank(pattern)){
             crit.createAlias("term.representations", "reps");
             Disjunction or = Restrictions.disjunction();
             if (matchmode == MatchMode.EXACT) {
-                or.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(pattern)));
-                or.add(Restrictions.eq("reps.label", matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.eq(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
+                if (abbrevType == TermSearchField.NoAbbrev) {
+                    or.add(Restrictions.eq("reps.label", matchmode.queryStringFrom(pattern)));
+                }
             } else {
-                or.add(Restrictions.like("titleCache", matchmode.queryStringFrom(pattern)));
-                or.add(Restrictions.like("reps.label", matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.like(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
+                if (abbrevType == TermSearchField.NoAbbrev) {
+                    or.add(Restrictions.like("reps.label", matchmode.queryStringFrom(pattern)));
+                }
             }
             crit.add(or);
         }
-
         if (limit != null && limit >= 0) {
             crit.setMaxResults(limit);
         }
 
         if (vocs != null &&!vocs.isEmpty()){
             crit.createAlias("term.vocabulary", "voc");
-            Disjunction or = Restrictions.disjunction();
-            for (TermVocabulary<?> voc: vocs){
-                Criterion criterion = Restrictions.eq("voc.id", voc.getId());
-                or.add(criterion);
-            }
-            crit.add(or);
-        }
-
-        crit.addOrder(Order.asc("titleCache"));
-        if (limit == null){
-            limit = 1;
-        }
-        crit.setFirstResult(0);
-        @SuppressWarnings("unchecked")
-        List<S> results = deduplicateResult(crit.list());
-        return results;
-    }
-
-    @Override
-    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, TermSearchField type) {
-        return listByAbbrev(clazz, vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
-    }
-
-    @Override
-    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField abbrevType){
-
-        if (clazz == null){
-            clazz = (Class)type;
-        }
-        Criteria crit = getSession().createCriteria(clazz, "type");
-        if (!StringUtils.isBlank(pattern)){
-            if (matchmode == MatchMode.EXACT) {
-                crit.add(Restrictions.eq(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
-            } else {
-                crit.add(Restrictions.like(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
-            }
-        }
-        if (limit != null && limit >= 0) {
-            crit.setMaxResults(limit);
-        }
-
-        if (vocs != null &&!vocs.isEmpty()){
-            crit.createAlias("type.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
             for (TermVocabulary<?> voc: vocs){
                 Criterion criterion = Restrictions.eq("voc.id", voc.getId());

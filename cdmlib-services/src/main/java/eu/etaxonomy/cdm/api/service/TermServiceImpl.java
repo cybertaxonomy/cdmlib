@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.compare.UuidAndTitleCacheComparator;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
@@ -34,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -50,14 +53,18 @@ import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
+import eu.etaxonomy.cdm.model.term.TermGraphBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -74,6 +81,9 @@ public class TermServiceImpl
 
 	@Autowired
 	private IVocabularyService vocabularyService;
+
+	@Autowired
+	private ITermCollectionDao termCollectionDao;
 
 	@Autowired
 	@Qualifier("langStrBaseDao")
@@ -469,43 +479,63 @@ public class TermServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang) {
-        List<NamedArea> areas = dao.list(NamedArea.class, vocs, limit, pattern);
+    public <S extends DefinedTermBase> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz,
+            List<? extends TermCollection> termCollections,
+            Integer limit, String pattern, Language lang, TermSearchField type) {
 
-        List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
-        UuidAndTitleCache<NamedArea> uuidAndTitleCache;
-        for (NamedArea area: areas){
-            uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), NamedArea.labelWithLevel(area, lang));
-            result.add(uuidAndTitleCache);
+        List<S> terms = new ArrayList<>();
+        type = type == null? TermSearchField.NoAbbrev : type;
+        clazz = clazz == null? clazz = (Class)DefinedTermBase.class : clazz;
+        @SuppressWarnings("rawtypes")
+        List<TermVocabulary> vocs = filterCollectionType(TermVocabulary.class, termCollections);
+        if (!vocs.isEmpty() || CdmUtils.isNullSafeEmpty(termCollections)) { //search on all vocabularies if no filter is set
+            terms = dao.list(clazz, vocs, null, limit, pattern, MatchMode.BEGINNING, type);  //TODO lang still missing;
         }
 
+        @SuppressWarnings("rawtypes")
+        List<TermGraphBase> graphs = filterCollectionType(TermGraphBase.class, termCollections);
+        List<S> graphTerms = termCollectionDao.listTerms(clazz, graphs, limit, pattern, type, lang);
+        for (S graphArea : graphTerms) {
+            if (!terms.contains(graphArea)) {
+                terms.add(graphArea);
+            }
+        }
+
+        List<UuidAndTitleCache<S>> result = new ArrayList<>();
+        UuidAndTitleCache<S> uuidAndTitleCache;
+        for (S term: terms){
+            term = CdmBase.deproxy(term);
+            String display = term instanceof NamedArea ?
+                    NamedArea.labelWithLevel((NamedArea)term, lang): term.getTitleCache();
+            if (!type.equals(TermSearchField.NoAbbrev)){
+                if (type.equals(TermSearchField.IDInVocabulary)){
+                    display = CdmUtils.concat(" - ", display, term.getIdInVocabulary());
+                }else if (type.equals(TermSearchField.Symbol1)){
+                    display = CdmUtils.concat(" - ", display, term.getSymbol());
+                }else if (type.equals(TermSearchField.Symbol2)){
+                    display = CdmUtils.concat(" - ", display, term.getSymbol2());
+                }
+            }
+            uuidAndTitleCache = new UuidAndTitleCache<>(term.getUuid(), term.getId(), display);
+            result.add(uuidAndTitleCache);
+        }
+        Collections.sort(result, new UuidAndTitleCacheComparator<>(true));
+
+        if (limit != null && result.size() > limit) {
+            result = result.subList(0, limit);
+        }
         return result;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang, TermSearchField type) {
-        List<NamedArea> areas = dao.listByAbbrev(NamedArea.class, vocs, limit, pattern, type);
+    private <COLL extends TermCollection> List<COLL> filterCollectionType(Class<COLL> clazz,
+            List<? extends TermCollection> termCollections) {
 
-        List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
-        UuidAndTitleCache<NamedArea> uuidAndTitleCache;
-        for (NamedArea area: areas){
-            if (type.equals(TermSearchField.NoAbbrev)){
-                uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), NamedArea.labelWithLevel(area, lang));
-            }else{
-                String display = NamedArea.labelWithLevel(area, lang);
-                if (type.equals(TermSearchField.IDInVocabulary)){
-                    display += " - " + area.getIdInVocabulary();
-                }else if (type.equals(TermSearchField.Symbol1)){
-                    display += " - " + area.getSymbol();
-                }else if (type.equals(TermSearchField.Symbol2)){
-                    display += " - " + area.getSymbol2();
-                }
-                uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), display);
+        List<COLL> result = new ArrayList<>();
+        for (TermCollection<?,?> collection : termCollections) {
+            if (collection.isInstanceOf(clazz)) {
+                result.add((COLL)collection);
             }
-            result.add(uuidAndTitleCache);
         }
-
         return result;
     }
 

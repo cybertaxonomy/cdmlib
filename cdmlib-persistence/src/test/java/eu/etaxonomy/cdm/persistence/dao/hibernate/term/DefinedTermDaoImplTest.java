@@ -326,18 +326,18 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
     )
 	public void testListByVoc(){
         TermVocabulary<?> voc = this.vocabularyDao.findByUuid(NamedArea.uuidTdwgAreaVocabulary);
-        List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING, null);
         Assert.assertEquals("Expected no area", 0, namedAreas.size());
 
-        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Ger", MatchMode.BEGINNING);
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Ger", MatchMode.BEGINNING, null);
         Assert.assertEquals("Expected GER-OO, GER", 2, namedAreas.size());
         namedAreas.get(0).addRepresentation(Representation.NewInstance("Deutschland", "Deutschland", "DE", Language.GERMAN()));
 
-        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING, null);
         Assert.assertEquals("Expected 1 area for 'Deu'", 1, namedAreas.size());
 
         voc = this.vocabularyDao.findByUuid(NamedArea.uuidContinentVocabulary);
-        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+        namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING, null);
         Assert.assertEquals("Expected no area", 0, namedAreas.size());
 	}
 

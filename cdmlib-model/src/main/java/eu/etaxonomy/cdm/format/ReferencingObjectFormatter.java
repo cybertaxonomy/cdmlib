@@ -124,6 +124,9 @@ public class ReferencingObjectFormatter {
                 sourceObjectTitle = "for " + target;
             }
             resultString = CdmUtils.concat("; ", new String[]{originalSource.getIdNamespace(), originalSource.getIdInSource(), sourceObjectTitle});
+        }else if (element instanceof Rights) {
+            Rights rights = (Rights) element;
+            resultString = getCache(rights, defaultLanguage);
         }else if (element instanceof LanguageStringBase) {
             resultString = ((LanguageStringBase) element).getText();
         }else if (element instanceof DescriptionElementBase) {
@@ -161,9 +164,6 @@ public class ReferencingObjectFormatter {
         }else if (element instanceof KeyStatement) {
             KeyStatement keyStatement = (KeyStatement) element;
             resultString = getCache(keyStatement);
-        }else if (element instanceof Rights) {
-            Rights rights = (Rights) element;
-            resultString = getCache(rights, defaultLanguage);
         }else{
             // TODO write return texts for HomotypicalGroup, etc.
             resultString = element.toString();

@@ -15,7 +15,7 @@ package eu.etaxonomy.cdm.model.metadata;
 public enum TermSearchField implements IKeyLabel{
 
     IDInVocabulary("idInVocabulary", "ID in vocabulary"),
-    Symbol1("symbol1", "First symbol"),
+    Symbol1("symbol", "First symbol"),
     Symbol2("symbol2", "Second symbol"),
     NoAbbrev("titleCache", "Title cache");
 

@@ -67,7 +67,8 @@ public class QuantitativeDataFormatter
             lower = handleModifier(String.valueOf(lowerBD), lowerValue, preferredLanguages);
             if (minValue != null) {
                 BigDecimal minBD = minValue.getValue();
-                String min = handleModifier(String.valueOf(minBD), minValue, preferredLanguages);
+                String minBDStr = minBD == null ? null : String.valueOf(minBD);
+                String min = handleModifier(minBDStr, minValue, preferredLanguages);
                 if (isNotBlank(min)) {
                     lower = "("+min+ minMaxSep + ")" + lower;
                 }
@@ -77,7 +78,8 @@ public class QuantitativeDataFormatter
             upper = handleModifier(String.valueOf(upperBD), upperValue, preferredLanguages);
             if (maxValue != null) {
                 BigDecimal maxBD = maxValue.getValue();
-                String max = handleModifier(String.valueOf(maxBD), maxValue, preferredLanguages);
+                String maxBDStr = (maxBD == null ? null : String.valueOf(maxBD));
+                String max = handleModifier(maxBDStr, maxValue, preferredLanguages);
                 if (isNotBlank(max)) {
                     upper = upper + "("+ minMaxSep + max+")";
                 }

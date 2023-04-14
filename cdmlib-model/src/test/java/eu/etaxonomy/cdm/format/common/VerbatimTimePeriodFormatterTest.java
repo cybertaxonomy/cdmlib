@@ -35,6 +35,9 @@ public class VerbatimTimePeriodFormatterTest {
     @Test
     public void test() {
         VerbatimTimePeriod tp1 = VerbatimTimePeriod.NewVerbatimInstance(1788,1799);
+        tp1.setVerbatimDate("1785");
+        Assert.assertEquals("1788"+endash+"1799 [\"1785\"]", formatter.format(tp1));
+        tp1.setVerbatimDate(null);
         assertNotNull(tp1);
         Assert.assertEquals("1788"+endash+"1799", formatter.format(tp1));
         tp1.setStartDay(3);
