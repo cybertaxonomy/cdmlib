@@ -74,7 +74,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     public static String verbEnd = TimePeriodParser.verbatimEnd;
 
     public static String verbatimYearPhrase = "(" + verbStart + correctYearPhrase + verbEnd + fWs + "\\[" + singleYear + "\\]" +"|"
-            + correctYearPhrase + oWs+  "publ\\.?" + fWs + correctYearPhrase + ")" ;
+            + correctYearPhrase + oWs+  "publ\\.?" + fWs + correctYearPhrase + "|"+ correctYearPhrase + fWs + "\\[" + verbStart + correctYearPhrase + verbEnd + "\\])" ;
     public static String undefinedYearPhrase = correctYearPhrase + fWs + "\\[" + correctYearPhrase + "\\]";
     protected static String yearPhrase = "(" + correctYearPhrase + "|" + verbatimYearPhrase + "|" + undefinedYearPhrase + ")";
 

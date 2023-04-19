@@ -2725,6 +2725,13 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("1978 [\"1977\"]", nomRef.getDatePublished().toString());
 
+        name = parser.parseReferencedName("Calamintha transsilvanica (J\u00e1v.) So\u00f3 in Acta Bot. Acad. Sci. Hung. 23: 382. 1977 [\"1978\"]");
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals("1977 [\"1978\"]", nomRef.getDatePublished().toString());
+        assertEquals("1978", nomRef.getDatePublished().getVerbatimDate());
+
         name = parser.parseReferencedName("Calamintha transsilvanica (J\u00e1v.) So\u00f3 in Acta Bot. Acad. Sci. Hung. 23: 382. 4 Apr 1977");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
