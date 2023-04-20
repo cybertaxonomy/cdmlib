@@ -1099,4 +1099,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
+    
+//    @Test
+//    public void testmodifiedDamerauLevenshteinDistance() {
+//       	NameServiceImpl name = new NameServiceImpl();
+//    	int distance = name.modifiedDamerauLevenshteinDistance("testString", "taxtStr");
+//    	assertEquals(5,distance);    	
+//    }
 }
