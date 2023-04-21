@@ -110,7 +110,7 @@ public abstract class AccountSelfManagementService implements IRateLimitedServic
             ((JavaMailSenderImpl)emailSender).setHost("host.docker.internal");
 
             //only for testing!!!
-            message.setFrom("root@edit-integration.bgbm.fu-berlin.de");
+            //message.setFrom("root@edit-integration.bgbm.fu-berlin.de");
 
             emailSender.send(message);
         }
