@@ -637,5 +637,6 @@ public interface INameService
      * @return
      */
     public DeleteResult isDeletable(UUID nameUuid, DeleteConfiguratorBase config, UUID taxonUuid);
-    //public List<TaxonName> findMatchingNames(String taxonName);
+    public Map<UuidAndTitleCache<TaxonName>,Integer> findMatchingNames(String query, int limit, List<UuidAndTitleCache<TaxonName>> dataBaseList );
+    
 }

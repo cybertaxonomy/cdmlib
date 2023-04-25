@@ -13,8 +13,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,6 +35,8 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
+
+import com.google.protobuf.MapEntry;
 
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactory;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
@@ -65,6 +70,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -1100,10 +1106,52 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
     
-//    @Test
-//    public void testmodifiedDamerauLevenshteinDistance() {
-//       	NameServiceImpl name = new NameServiceImpl();
-//    	int distance = name.modifiedDamerauLevenshteinDistance("testString", "taxtStr");
-//    	assertEquals(5,distance);    	
-//    }
+    @Test
+    public void testmodifiedDamerauLevenshteinDistance() {
+       	NameServiceImpl name = new NameServiceImpl();
+    	int distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxya asrerotciha");
+    	assertEquals(5,distance);    	
+    	distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxsa axrerotciha");
+    	assertEquals(7,distance);
+    	distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxyas asrerotciha");
+    	assertEquals(5,distance);  
+    	distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynoxya asterotricha");
+    	assertEquals(1,distance);  
+    	distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynoxys asterotricha");
+    	assertEquals(0,distance);  
+    }
+    
+    @Test
+    public void testFindingMatchingNames () {
+    	
+    	String query = "Gynoxys asterotricha";
+    	int limit = 3;
+    	
+    	List<UuidAndTitleCache<TaxonName>> dataBaseList = new ArrayList<>();
+    	
+    	UuidAndTitleCache<TaxonName> name1 = new UuidAndTitleCache<>(UUID.fromString("226f6a2e-9d85-4999-b2f1-d93deeb8c06b"), "Gynxya asrerotciha");
+    	UuidAndTitleCache<TaxonName> name2 = new UuidAndTitleCache<>(UUID.fromString("5fa26de8-6d03-4729-8a77-a68a8e01d3d8"), "Gynxsa axrerotciha");
+    	UuidAndTitleCache<TaxonName> name3 = new UuidAndTitleCache<>(UUID.fromString("9d6c2e5f-b887-4d65-a73d-af1425d51fc1"), "Gynxyas asrerotciha");
+    	UuidAndTitleCache<TaxonName> name4 = new UuidAndTitleCache<>(UUID.fromString("42a209c6-c72f-439e-b81b-0bda9a777e8a"), "Gynoxya asterotricha");
+    	UuidAndTitleCache<TaxonName> name5 = new UuidAndTitleCache<>(UUID.fromString("ca6cd5a2-6693-4025-9179-983083ac356c"), "Gynoxys asterotricha");
+    	
+    	dataBaseList.add(name1);
+    	dataBaseList.add(name2);
+    	dataBaseList.add(name3);
+    	dataBaseList.add(name4);
+    	dataBaseList.add(name5);
+    	
+       	NameServiceImpl name = new NameServiceImpl();
+    	Map<UuidAndTitleCache<TaxonName>,Integer> actualResults = name.findMatchingNames(query, limit, dataBaseList);
+    	
+    	assertEquals(3, actualResults.size());
+    	
+    	assertTrue(0 == actualResults.get(name5));
+    	assertTrue(actualResults.keySet().iterator().next().equals(name5));
+    	
+    	for (UuidAndTitleCache<TaxonName> element: actualResults.keySet()) {
+    		System.err.println(element.getTitleCache() + " - " + actualResults.get(element));
+    		
+    	}
+    }
 }
