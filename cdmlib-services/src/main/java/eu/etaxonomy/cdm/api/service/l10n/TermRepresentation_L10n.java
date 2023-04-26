@@ -87,11 +87,46 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
     }
 
     @Override
+    public void localize(TermBase term, boolean useInverseRepresentation, List<Language> languages) {
+
+        if(useInverseRepresentation){
+            RelationshipTermBase<?> relationshipTerm = (RelationshipTermBase<?>)term;
+            if(Hibernate.isInitialized(relationshipTerm.getInverseRepresentations())){
+                Representation representation = relationshipTerm.getPreferredInverseRepresentation(languages);
+                setRepresentation(representation);
+            } else {
+                logger.debug("inverse representations of term not initialized  " + term.getUuid().toString());
+            }
+
+        } else {
+            if(Hibernate.isInitialized(term.getRepresentations())){
+                Representation representation = term.getPreferredRepresentation(languages);
+                if (representation != null) {
+                    setRepresentation(representation);
+                }else {
+                    label = term.getTitleCache();
+                }
+            } else {
+                logger.debug("representations of term not initialized  " + term.getUuid().toString());
+            }
+        }
+    }
+
+    @Override
     public void localize(Set<Representation> representations) {
         DefinedTerm tmpTerm = DefinedTerm.NewInstance(TermType.Unknown, null, null, null);
         tmpTerm.getRepresentations().clear(); // removes the null representation added through the constructor
         tmpTerm.getRepresentations().addAll(representations);
         List<Language> languages = LocaleContext.getLanguages();
+        Representation representation = tmpTerm.getPreferredRepresentation(languages);
+        setRepresentation(representation);
+    }
+
+    @Override
+    public void localize(Set<Representation> representations, List<Language> languages) {
+        DefinedTerm tmpTerm = DefinedTerm.NewInstance(TermType.Unknown, null, null, null);
+        tmpTerm.getRepresentations().clear(); // removes the null representation added through the constructor
+        tmpTerm.getRepresentations().addAll(representations);
         Representation representation = tmpTerm.getPreferredRepresentation(languages);
         setRepresentation(representation);
     }

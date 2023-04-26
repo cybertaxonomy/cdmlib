@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -67,6 +68,20 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
             setRepresentation_L10n_text(representation_L10n.getText());
         }
     }
+    public void localize(ITermRepresentation_L10n representation_L10n, List<Language> lang) {
+
+        representation_L10n.localize(representations, lang);
+        if (representation_L10n.getLabel() != null) {
+            setRepresentation_L10n(representation_L10n.getLabel());
+        }
+        if (representation_L10n.getAbbreviatedLabel() != null) {
+            setRepresentation_L10n_abbreviatedLabel(representation_L10n.getAbbreviatedLabel());
+        }
+        if (representation_L10n.getText() != null) {
+            setRepresentation_L10n_text(representation_L10n.getText());
+        }
+    }
+
 
     public URI getUri() {
         return uri;

@@ -8,8 +8,10 @@
  */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 
@@ -37,7 +39,8 @@ public interface ITermRepresentation_L10n {
      * @param useInverseRepresentation
      */
     public abstract void localize(TermBase term, boolean useInverseRepresentation);
-
+    public abstract void localize(TermBase term, boolean useInverseRepresentation, List<Language> languages);
+    public abstract void localize(Set<Representation> representations, List<Language> languages);
     void localize(Set<Representation> representations);
 
 }
