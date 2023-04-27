@@ -862,15 +862,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	    return getPresenceTerm(state, uuid, label, text, labelAbbrev, isAbsenceTerm, null);
 	}
 
-
 	/**
 	 * Returns a presence term for a given uuid by first ...
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
 	 */
 	protected PresenceAbsenceTerm getPresenceTerm(STATE state, UUID uuid, String label, String text, String labelAbbrev, boolean isAbsenceTerm, TermVocabulary<PresenceAbsenceTerm> voc){
 		if (uuid == null){

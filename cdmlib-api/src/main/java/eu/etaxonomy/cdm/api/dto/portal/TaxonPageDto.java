@@ -85,7 +85,6 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setAgentLink(String agentLink) {
             this.agentLink = agentLink;
         }
-
     }
 
     public static class TaxonNodeDTO extends CdmBaseDto {
@@ -94,7 +93,6 @@ public class TaxonPageDto extends TaxonBaseDto {
         private String status;
         private String statusNote;
         private ContainerDto<TaxonNodeAgentsRelDTO> agents;
-
 
         public UUID getClassificationUuid() {
             return classificationUuid;

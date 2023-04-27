@@ -15,7 +15,6 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
-
 /**
  * @author a.kohlbecker
  * @since Jun 25, 2013

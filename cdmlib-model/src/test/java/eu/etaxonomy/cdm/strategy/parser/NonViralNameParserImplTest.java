@@ -1823,7 +1823,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         Reference nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Book, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "s.p.");
+        assertEquals("s.p.", name.getNomenclaturalMicroReference());
 
         //roman
         parseStr = "Ophrys lutea subsp. pseudospeculum (DC.) Kergu\u00e9len, Collect. Partim. Nat. 8: xv. 1993";
@@ -1831,7 +1831,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Book, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "xv");
+        assertEquals("xv", name.getNomenclaturalMicroReference());
 
         //n. 1
         parseStr = "Olea gallica Mill., Gard. Dict. ed. 8: n. 1. 1768";
@@ -1839,14 +1839,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Book, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "n. 1");
+        assertEquals("n. 1", name.getNomenclaturalMicroReference());
 
         parseStr = "Lavandula canariensis Mill., Gard. Dict. ed. 8: Lavandula no. 4. 1768";
         name = parser.parseReferencedName(parseStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Book, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "Lavandula no. 4");
+        assertEquals("Lavandula no. 4", name.getNomenclaturalMicroReference());
 
         parseStr = "Aceras anthropomorphum (Pers.) Sm. in Rees, Cycl. 39(1): Aceras n. 2. 1818";
         name = parser.parseReferencedName(parseStr);
@@ -1860,28 +1860,28 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "errata");
+        assertEquals("errata", name.getNomenclaturalMicroReference());
 
         parseStr = "Yermoloffia B\u00e9l., Voy. Indes Or.: t. s.n.. 1846";
         name = parser.parseReferencedName(parseStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Book, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "t. s.n.");
+        assertEquals("t. s.n.", name.getNomenclaturalMicroReference());
 
         parseStr = "Gagea mauritanica Durieu, Expl. Sci. Alg\u00e9rie, Atlas: t. 45bis, f. 4. 1850";
         name = parser.parseReferencedName(parseStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Book, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "t. 45bis, f. 4");
+        assertEquals("t. 45bis, f. 4", name.getNomenclaturalMicroReference());
 
         parseStr = "Orchis latifolia f. blyttii Rchb. f. in Reichenbach, Icon. Fl. Germ. Helv. 13-14: 60, t. 59, f. III. 1851";
         name = parser.parseReferencedName(parseStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.BookSection, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "60, t. 59, f. III");
+        assertEquals("60, t. 59, f. III", name.getNomenclaturalMicroReference());
 
         parseStr = "Ephedra alata var. decaisnei Stapf in Denkschr. Kaiserl. Akad. Wiss., Wien. Math.-Naturwiss. Kl. 56(2): t. 1/1. 1889";
         name = parser.parseReferencedName(parseStr);
@@ -2189,6 +2189,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
     @Test
     public final void testSeriesPart(){
+
         Pattern seriesPattern = Pattern.compile(NonViralNameParserImplRegExBase.pSeriesPart);
         Matcher matcher = seriesPattern.matcher(", ser. 2,");
         Assert.assertTrue("", matcher.matches());
@@ -3192,7 +3193,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
         Assert.assertEquals("Sitzungsber. Math.-Phys. Cl. Königl. Bayer. Akad. Wiss. München", ref.getInReference().getAbbrevTitle());
         Assert.assertEquals("14", ref.getVolume());
-
     }
 
     @Test
