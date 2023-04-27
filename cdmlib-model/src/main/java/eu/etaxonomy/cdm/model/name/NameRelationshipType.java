@@ -281,7 +281,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
         return isRelationshipType(REPLACED_SYNONYM());
 	}
 
-
 	/**
 	 * Returns the "orthographic variant" name relationship type. The first
 	 * {@link TaxonName taxon name} involved in such a relationship is an
@@ -295,6 +294,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * This type is symmetric and transitive but usually orthographic
 	 * variant relationships should be organized in a star schema with the (only!)
 	 * correct variant in the middle and other variants pointing to it.
+	 * <BR>
+	 * For discussions on symmetry see also https://dev.e-taxonomy.eu/redmine/issues/9386
 	 * <BR>
 	 * ICNAFP: Art. 61.2. "For the purpose of this Code, orthographical variants are the various spelling,
 	 * compounding, and inflectional forms of a name or its final epithet (including typographical errors)
@@ -317,7 +318,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * must be almost identical (so one usually does not differentiate them).<BR>
 	 * For instance <i>Anhelica silvestris</i> L. is a misspelling of
 	 * <i>Angelica silvestris</i> L.<BR>
-	 * A misspelling is always accicentally (not on purpose). Therefore misspellings are overlapping with
+	 * A misspelling is always accidentally (not on purpose). Therefore misspellings are overlapping with
 	 * {@link #ORTHOGRAPHIC_VARIANT orthographic variants} (in an old version of this documentation they
 	 * were called a subset but it seems doubtful that certain typos are orth. vars. according to Art. 61.2 (ICNAFP).
      * and are complementary to {@link #EMENDATION() emendations}.
