@@ -2222,6 +2222,21 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         matcher = seriesPattern.matcher("nov. Ser.");
         Assert.assertTrue("", matcher.matches());
+
+        //not really series  "Abt. 2"
+        String nameStr = "Hydrogonium consanguineum Hilp. in Beih. Bot. Centralbl., Abt. 2, 50(3): 626. 1933";
+        TaxonName name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference ref = name.getNomenclaturalReference();
+        Assert.assertEquals(ReferenceType.Article, ref.getType());
+        Reference inRef = ref.getInReference();
+        //TODO handling of Abt. not fully correct, should better go into title
+        Assert.assertEquals("Beih. Bot. Centralbl., Abt. 2", inRef.getAbbrevTitle());
+        Assert.assertEquals(null, ref.getSeriesPart());
+        Assert.assertEquals("50(3)", ref.getVolume());
+        Assert.assertEquals(nameStr, name.getFullTitleCache());
+        String detail = name.getNomenclaturalMicroReference();
+        Assert.assertEquals("626", detail);
     }
 
     @Test
@@ -3349,6 +3364,21 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals(ReferenceType.BookSection, nomRef.getType());
         assertEquals( "Strid & Kit Tan", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         assertEquals( "Mount. Fl. Greece", nomRef.getInReference().getAbbrevTitle());
+
+
+        //, Ser. B, Div. 2, Bot.   from E+M mosses import
+        nameStr = "Schistidium subconfertum (Broth.) Deguchi in J. Sci. Hiroshima Univ., Ser. B, Div. 2, Bot. 16: 240. 1979";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference ref = name.getNomenclaturalReference();
+        Assert.assertEquals(ReferenceType.Article, ref.getType());
+        Reference inRef = ref.getInReference();
+        Assert.assertEquals("J. Sci. Hiroshima Univ., Ser. B, Div. 2, Bot.", inRef.getAbbrevTitle());
+        Assert.assertEquals(null, ref.getSeriesPart());
+        Assert.assertEquals("60", ref.getVolume());
+        Assert.assertEquals(nameStr, name.getFullTitleCache());
+        String detail = name.getNomenclaturalMicroReference();
+        Assert.assertEquals("240", detail);
     }
 
     //this is a slot for testing new string, once the Strings tested here work move the according test

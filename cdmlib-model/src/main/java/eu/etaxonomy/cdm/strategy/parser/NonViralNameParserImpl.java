@@ -799,6 +799,10 @@ public class NonViralNameParserImpl
 		Reference result = ReferenceFactory.newArticle();
 		reference = makeVolumeAndSeries(result, reference);
 		Reference inJournal = ReferenceFactory.newJournal();
+		if (isNotBlank(result.getSeriesPart()) && result.getSeriesPart().matches(notReallySeriesPart)) {
+		    reference += ", " + result.getSeriesPart();
+		    result.setSeriesPart(null);
+		}
 		inJournal.setAbbrevTitle(reference);
 		result.setInReference(inJournal);
 		return result;
