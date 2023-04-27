@@ -116,11 +116,11 @@ public class Distribution extends DescriptionElementBase {
     }
 
     /**
-     * @deprecated Deprecated because {@link Feature feature} should always be {@link Feature#DISTRIBUTION() DISTRIBUTION}
-     * for all distribution instances and therefore it should not be changed.
+     * Note: by default the feature for distributions is set to Feature.DISTRIBUTION().
+     * However, in case of e.g. IUCN red list status it needs to be possible to change it
+     * to this feature, too. Therefore this method is not deprecated anymore as previously.
      */
     @Override
-    @Deprecated
     public void setFeature(Feature feature) {
         super.setFeature(feature);
     }
