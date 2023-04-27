@@ -171,7 +171,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     //TODO
     // protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
  // protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
-    protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\.|s.p.?|errata)";
+    protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\.|s.p.?|errata|\\d{1,2}"+fWs+"\\[(verso|recto)\\])";
 
 
 //    "(,\\s*" + pTabFigPl + ")?" +

@@ -1888,7 +1888,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
-        assertEquals(name.getNomenclaturalMicroReference(), "t. 1/1");
+        assertEquals("t. 1/1", name.getNomenclaturalMicroReference());
+
+        parseStr ="Leptodon smithii (Dicks. ex Hedw.) F. Weber & D. Mohr, Index Mus. Pl. Crypt.: 2 [recto]. 1803";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "2 [recto]");
     }
 
     @Test
