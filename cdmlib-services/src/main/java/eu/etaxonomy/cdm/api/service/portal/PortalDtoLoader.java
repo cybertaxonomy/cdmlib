@@ -843,10 +843,9 @@ public class PortalDtoLoader {
             distributionStatusColors = null;
         }
 
-        dto = distributionService.composeDistributionInfoFor(distributionConfig, taxon.getUuid(),
+        dto = distributionService.composeDistributionInfoFor(distributionConfig, distributions,
                 fallbackAsParent,
-                distributionStatusColors, LocaleContext.getLanguages(),
-                initStrategy);
+                distributionStatusColors, LocaleContext.getLanguages());
 
         if (distributionConfig.isUseTreeDto() && dto.getTree() != null) {
             DistributionTreeDto tree = (DistributionTreeDto)dto.getTree();

@@ -274,6 +274,7 @@ public class DescriptionListController
             @RequestParam("part") Set<InfoPart> partSet,
             @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "features", required = false ) Set<UUID> featureUuids,
             @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hiddenAreaMarkerTypeList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
@@ -319,7 +320,7 @@ public class DescriptionListController
 
                 // ignoreDistributionStatusUndefined, condensedConfig
                 dto = distributionService.composeDistributionInfoFor(config, taxonUuid,
-                        fallbackAsParent, distributionStatusColors,
+                        featureUuids, fallbackAsParent, distributionStatusColors,
                         LocaleContext.getLanguages(), getDescriptionInfoInitStrategy()
                       );
                 mv.addObject(dto);

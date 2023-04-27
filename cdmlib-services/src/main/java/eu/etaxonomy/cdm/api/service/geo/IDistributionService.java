@@ -57,8 +57,12 @@ public interface IDistributionService {
      * @return
      */
     public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, UUID taxonUUID,
+            Set<UUID> features, boolean neverUseFallbackAreaAsParent,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors, List<Language> languages, List<String> propertyPaths);
+
+    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, List<Distribution> distributions,
             boolean neverUseFallbackAreaAsParent, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages, List<String> propertyPaths);
+            List<Language> languages);
 
     /**
     * @param distributions

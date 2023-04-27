@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -79,21 +80,12 @@ public class DistributionServiceImpl implements IDistributionService {
 
     @Override
     public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, UUID taxonUUID,
-            boolean neverUseFallbackAreaAsParent, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            Set<UUID> featureUuids, boolean neverUseFallbackAreaAsParent,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths){
 
-        EnumSet<DistributionInfoDto.InfoPart> parts = config.getInfoParts();
-        boolean subAreaPreference = config.isSubAreaPreference();
-        boolean statusOrderPreference = config.isStatusOrderPreference();
-        Set<MarkerType> hiddenAreaMarkerTypes = config.getHiddenAreaMarkerTypeList();
-        Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
-        CondensedDistributionConfiguration condensedDistConfig = config.getCondensedDistrConfig();
-        DistributionOrder distributionOrder = config.getDistributionOrder();
-
-        final boolean PREFER_AGGREGATED = true;
-        final boolean PREFER_SUBAREA = true;
-
-        DistributionInfoDto dto = new DistributionInfoDto();
+        Set<Feature> features = termDao.list(featureUuids, null, null, null, null)
+                .stream().filter(t->t.isInstanceOf(Feature.class)).map(t->(Feature)t).collect(Collectors.toSet());
 
         if (propertyPaths == null){
             propertyPaths = Arrays.asList(new String []{});
@@ -117,12 +109,34 @@ public class DistributionServiceImpl implements IDistributionService {
         if(!initStrategy.contains("markers.markerType")) {
             initStrategy.add("markers.markerType");
         }
+
+        List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, features, Distribution.class, null, null, initStrategy);
+
+        return composeDistributionInfoFor(config, distributions, neverUseFallbackAreaAsParent, presenceAbsenceTermColors, languages);
+    }
+
+    @Override
+    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, List<Distribution> distributions,
+            boolean neverUseFallbackAreaAsParent, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            List<Language> languages){
+
+        EnumSet<DistributionInfoDto.InfoPart> parts = config.getInfoParts();
+        boolean subAreaPreference = config.isSubAreaPreference();
+        boolean statusOrderPreference = config.isStatusOrderPreference();
+        Set<MarkerType> hiddenAreaMarkerTypes = config.getHiddenAreaMarkerTypeList();
+        Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
+        CondensedDistributionConfiguration condensedDistConfig = config.getCondensedDistrConfig();
+        DistributionOrder distributionOrder = config.getDistributionOrder();
+
+        final boolean PREFER_AGGREGATED = true;
+        final boolean PREFER_SUBAREA = true;
+
+        DistributionInfoDto dto = new DistributionInfoDto();
+
         if(omitLevels == null) {
             @SuppressWarnings("unchecked") Set<NamedAreaLevel> emptySet = Collections.EMPTY_SET;
             omitLevels = emptySet;
         }
-
-        List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
 
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
         // to all distributions, but KEEP fallback area distributions
