@@ -538,7 +538,7 @@ public class TermNode <T extends DefinedTermBase>
 		return terms;
 	}
 
-
+    @Transient
 	public String getPath(){
 	    String result = "";
 	    if (parent != null && parent.getTerm() != null){
