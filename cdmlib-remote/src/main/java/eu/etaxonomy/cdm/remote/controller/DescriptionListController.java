@@ -276,6 +276,7 @@ public class DescriptionListController
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
             @RequestParam(value = "features", required = false ) Set<UUID> featureUuids,
             @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hiddenAreaMarkerTypeList,
+            @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
