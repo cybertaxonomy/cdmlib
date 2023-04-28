@@ -30,6 +30,7 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -730,7 +731,8 @@ public class DescriptionDaoImpl
         if(type != null){
             queryString += " and de.class = :type";
         }
-        if (features != null && features.size() > 0){
+        boolean hasFeatureFilter = !CdmUtils.isNullSafeEmpty(features);
+        if (hasFeatureFilter){
             queryString += " and de.feature in (:features) ";
         }
         Query<R> query = getSession().createQuery(queryString);
@@ -739,7 +741,7 @@ public class DescriptionDaoImpl
         if(type != null){
             query.setParameter("type", type.getSimpleName());
         }
-        if(features != null && features.size() > 0){
+        if(hasFeatureFilter){
             query.setParameterList("features", features) ;
         }
 

@@ -523,7 +523,7 @@ public class TermNode <T extends DefinedTermBase>
 	 */
 	//TODO do we need to pass the terms parameter? Maybe a bit more performant
 	// but more difficult to handle. We could use this internally but offer
-	//the method with return value as public
+	// the method with return value as public
 	@Transient
 	public Set<T> getDistinctTermsRecursive(Set<T> terms){
 		T term = this.getTerm();
@@ -545,7 +545,7 @@ public class TermNode <T extends DefinedTermBase>
 	        result = parent.getPath() ;
 	    }
 	    if (getTerm()!= null){
-	        String sep = StringUtils.isBlank(result)?"":"/";
+	        String sep = StringUtils.isBlank(result)? "" : "/";
 	        result += sep+ getTerm().getLabel();
 	    }
 	    return result;

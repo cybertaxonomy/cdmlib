@@ -114,8 +114,8 @@ public class DistributionTreeDtoLoader {
   }
 
   /**
-   * This method will cause all parent areas to be loaded into the session cache to that
-   * all initialization of the NamedArea term instances in necessary. This improves the
+   * This method will cause all parent areas to be loaded into the session cache so that
+   * all initialization of the NamedArea term instances is ready. This improves the
    * performance of the tree building
    */
   private void loadAllParentAreas(Set<NamedAreaDto> areas) {

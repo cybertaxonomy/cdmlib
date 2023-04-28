@@ -60,14 +60,14 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
         /* 1.
          * Aggregated elements are preferred over entered or imported elements
-         * if the according flag ist set to true.
+         * if the according flag is set to true.
          * (Aggregated description elements are identified by belonging to descriptions
          * which have the type DescriptionType#AGGREGATED_DISTRIBUTION).
          * This means if a non-aggregated status information exist for the same
          * area for which aggregated data is available, the aggregated data has to be
          * given preference over other data.
          * Note by AM: be aware that according to #5050 the preference of aggregated
-         * distributions is not valid anymore (for the E+M usecase). However, the functionality
+         * distributions is not valid anymore (for the E+M use-case). However, the functionality
          * might be interesting for future use-cases.
          */
         TaxonDescription aggregatedDescription = TaxonDescription.NewInstance();

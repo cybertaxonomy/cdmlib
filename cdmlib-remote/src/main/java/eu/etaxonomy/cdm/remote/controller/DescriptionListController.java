@@ -253,7 +253,7 @@ public class DescriptionListController
      * @param parts
      *            possible values: condensedStatus, tree, mapUriParams,
      *            elements,
-     * @param subAreaPreference
+     * @param preferSubAreas
      * @param statusOrderPreference
      * @param hideMarkedAreasList
      * @param omitLevels
@@ -272,10 +272,10 @@ public class DescriptionListController
     public ModelAndView doGetDistributionInfo(
             @PathVariable("uuid") UUID taxonUuid,
             @RequestParam("part") Set<InfoPart> partSet,
-            @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
+            @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
-            @RequestParam(value = "features", required = false ) Set<UUID> featureUuids,
             @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hiddenAreaMarkerTypeList,
+            @RequestParam(value = "features", required = false ) Set<UUID> featureUuids,
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
@@ -309,7 +309,7 @@ public class DescriptionListController
 
                 DistributionInfoConfiguration config = new DistributionInfoConfiguration();
                 config.setInfoParts(parts);
-                config.setSubAreaPreference(subAreaPreference);
+                config.setPreferSubAreas(preferSubAreas);
                 config.setStatusOrderPreference(statusOrderPreference);
                 config.setHiddenAreaMarkerTypeList(hiddenAreaMarkerTypes);
                 config.setOmitLevels(omitLevels);

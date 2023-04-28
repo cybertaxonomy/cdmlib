@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * Enumeration that defines the ordering method for distribution trees.
+ * Either by {@link #LABEL} or {@link #AREA_ORDER}
  *
  * @author a.mueller
  * @since 04.04.2016

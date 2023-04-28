@@ -644,16 +644,17 @@ public class DistributionServiceUtilities {
     /**
      * <b>NOTE: To avoid LayzyLoadingExceptions this method must be used in a transactional context.</b>
      *
-     * Filters the given set of {@link Distribution}s for publication purposes
+     * Filters the given set of {@link Distribution}s for publication purposes.
      * The following rules are respected during the filtering:
      * <ol>
      * <li><b>Marked area filter</b>: Skip distributions for areas having a {@code TRUE} {@link Marker}
      * with one of the specified {@link MarkerType}s. Existing sub-areas of a marked area must also be marked
      * with the same marker type, otherwise the marked area acts as a <b>fallback area</b> for the sub areas.
-     * An area is a <b>fallback area</b> if it is marked to be hidden and if it has at least one of
-     * sub area which is not marked to be hidden. The fallback area will be show if there is no {@link Distribution}
+     * An area is a <b>fallback area</b> if it is marked to be hidden and if it has at least one
+     * sub area which is not marked to be hidden. The fallback area will be shown if there is no {@link Distribution}
      * for any of the non hidden sub-areas. For more detailed discussion on fallback areas see
      * https://dev.e-taxonomy.eu/redmine/issues/4408</li>
+     *
      * <li><b>Prefer aggregated rule</b>: if this flag is set to <code>true</code> aggregated
      * distributions are preferred over non-aggregated elements.
      * (Aggregated description elements are identified by the description having type
@@ -661,6 +662,7 @@ public class DistributionServiceUtilities {
      * information exists for the same area for which aggregated data is available,
      * the aggregated data has to be given preference over other data.
      * see parameter <code>preferAggregated</code></li>
+     *
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see

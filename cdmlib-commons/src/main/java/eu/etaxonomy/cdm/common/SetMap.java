@@ -156,4 +156,8 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
         return map.entrySet();
     }
 
+    @Override
+    public String toString() {
+        return map.toString();
+    }
 }

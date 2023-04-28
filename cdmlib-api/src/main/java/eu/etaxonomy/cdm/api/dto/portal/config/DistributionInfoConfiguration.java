@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
  */
 public class DistributionInfoConfiguration {
 
-    private boolean subAreaPreference = false;
+    private boolean preferSubAreas = false;
 
     private boolean statusOrderPreference = false;
 
@@ -46,11 +46,11 @@ public class DistributionInfoConfiguration {
 
 //********************* GETTER / SETTER ***************************/
 
-    public boolean isSubAreaPreference() {
-        return subAreaPreference;
+    public boolean isPreferSubareas() {
+        return preferSubAreas;
     }
-    public void setSubAreaPreference(boolean subAreaPreference) {
-        this.subAreaPreference = subAreaPreference;
+    public void setPreferSubAreas(boolean preferSubAreas) {
+        this.preferSubAreas = preferSubAreas;
     }
 
     public boolean isStatusOrderPreference() {

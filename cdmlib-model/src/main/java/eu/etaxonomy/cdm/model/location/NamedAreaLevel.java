@@ -187,7 +187,7 @@ public class NamedAreaLevel extends DefinedTermBase<NamedAreaLevel> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedAreaLevel> termVocabulary) {
-		termMap = new HashMap<UUID, NamedAreaLevel>();
+		termMap = new HashMap<>();
 		for (NamedAreaLevel term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}

@@ -172,7 +172,7 @@ public class CondensedDistributionComposer {
         removeFallbackAreasWithChildDistributions(areaNodeMap, introducedAreaNodeMap, config);
 
         @SuppressWarnings("unchecked")
-        Map<NamedArea, AreaNode>[] result = new Map[]{areaNodeMap,introducedAreaNodeMap};
+        Map<NamedArea, AreaNode>[] result = new Map[]{areaNodeMap, introducedAreaNodeMap};
         return result;
     }
 

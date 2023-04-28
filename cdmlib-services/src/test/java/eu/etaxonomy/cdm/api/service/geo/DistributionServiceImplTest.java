@@ -346,7 +346,6 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         subTestWithEditMapService(result);
     }
 
-    @SuppressWarnings("deprecation")
 //    @Test
     @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
 //    @DataSets({
@@ -381,7 +380,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 
         String distributions = distributionService.getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference, statusOrderPreference, hideMarkedAreas, presenceAbsenceTermColors, langs);
-        System.out.println(distributions);
+//        System.out.println(distributions);
         Assert.assertTrue("Distribution string should contain the non-persited distribution Germany", distributions.contains("DEU"));
         Assert.assertFalse("Distribution string should contain France as it has a non-distribution feature", distributions.contains("FRA"));
 //        CHE,POL

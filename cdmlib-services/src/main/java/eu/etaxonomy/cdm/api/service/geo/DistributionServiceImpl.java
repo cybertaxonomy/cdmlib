@@ -121,7 +121,7 @@ public class DistributionServiceImpl implements IDistributionService {
             List<Language> languages){
 
         EnumSet<DistributionInfoDto.InfoPart> parts = config.getInfoParts();
-        boolean subAreaPreference = config.isSubAreaPreference();
+        boolean subAreaPreference = config.isPreferSubareas();
         boolean statusOrderPreference = config.isStatusOrderPreference();
         Set<MarkerType> hiddenAreaMarkerTypes = config.getHiddenAreaMarkerTypeList();
         Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
