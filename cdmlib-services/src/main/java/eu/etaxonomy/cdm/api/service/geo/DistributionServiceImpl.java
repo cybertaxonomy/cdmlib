@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -80,12 +81,16 @@ public class DistributionServiceImpl implements IDistributionService {
 
     @Override
     public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, UUID taxonUUID,
-            Set<UUID> featureUuids, boolean neverUseFallbackAreaAsParent,
+            boolean neverUseFallbackAreaAsParent,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths){
 
-        Set<Feature> features = termDao.list(featureUuids, null, null, null, null)
-                .stream().filter(t->t.isInstanceOf(Feature.class)).map(t->(Feature)t).collect(Collectors.toSet());
+        Set<UUID> featureUuids = config.getFeatures();
+        Set<Feature> features = null;
+        if (!CdmUtils.isNullSafeEmpty(featureUuids)) {
+            features = termDao.list(featureUuids, null, null, null, null)
+                    .stream().filter(t->t.isInstanceOf(Feature.class)).map(t->(Feature)t).collect(Collectors.toSet());
+        }
 
         if (propertyPaths == null){
             propertyPaths = Arrays.asList(new String []{});

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.dto.portal.config;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
@@ -34,6 +35,8 @@ public class DistributionInfoConfiguration {
     private String statusColorsString;
 
     private DistributionOrder distributionOrder = DistributionOrder.LABEL;
+
+    private Set<UUID> features = new HashSet<>();
 
     private CondensedDistributionConfiguration condensedDistrConfig = CondensedDistributionConfiguration.NewDefaultInstance();
 
@@ -114,5 +117,12 @@ public class DistributionInfoConfiguration {
     }
     public void setCondensedDistrConfig(CondensedDistributionConfiguration condensedDistrConfig) {
         this.condensedDistrConfig = condensedDistrConfig;
+    }
+
+    public Set<UUID> getFeatures() {
+        return features;
+    }
+    public void setFeatures(Set<UUID> features) {
+        this.features = features;
     }
 }

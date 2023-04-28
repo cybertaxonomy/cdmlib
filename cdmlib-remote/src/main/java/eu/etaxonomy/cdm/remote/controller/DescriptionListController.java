@@ -315,13 +315,14 @@ public class DescriptionListController
                 config.setOmitLevels(omitLevels);
                 config.setDistributionOrder(distributionOrder);
                 config.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
+                config.setFeatures(featureUuids);
                 config.setCondensedDistrConfig(condensedConfig);
                 //TODO needed?
                 config.setStatusColorsString(statusColorsString);
 
                 // ignoreDistributionStatusUndefined, condensedConfig
                 dto = distributionService.composeDistributionInfoFor(config, taxonUuid,
-                        featureUuids, fallbackAsParent, distributionStatusColors,
+                        fallbackAsParent, distributionStatusColors,
                         LocaleContext.getLanguages(), getDescriptionInfoInitStrategy()
                       );
                 mv.addObject(dto);
