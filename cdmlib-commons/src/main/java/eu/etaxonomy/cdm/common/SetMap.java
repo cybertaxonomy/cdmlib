@@ -61,7 +61,7 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
 
     @Override
     public boolean containsValue(Object value) {
-        return map.containsKey(value);
+        return map.containsValue(value); //TODO shouldn't we check for a single value in the set?
     }
 
     /**

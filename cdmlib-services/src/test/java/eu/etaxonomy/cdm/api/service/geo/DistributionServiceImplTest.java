@@ -263,6 +263,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         distributionService.mapShapeFileToNamedAreas(new InputStreamReader(is), idSearchFields, wmsLayerName, uuidCyprusDivisionsVocabulary, null);
 
         divisions.clear();
+        @SuppressWarnings("unchecked")
         Set<DefinedTermBase> terms = vocabService.load(uuidCyprusDivisionsVocabulary).getTerms();
         for(DefinedTermBase<?> dtb : terms){
             divisions.put(dtb.getIdInVocabulary(), (NamedArea) dtb);

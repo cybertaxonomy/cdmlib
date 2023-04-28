@@ -80,7 +80,7 @@ public class TermDto extends AbstractTermDto{
         DefinedTermBase<?> kindOf = term.getKindOf();
         TermVocabulary<?> vocabulary = term.getVocabulary();
         if (representations == null){
-            term = HibernateProxyHelper.deproxy(term, DefinedTermBase.class);
+            term = HibernateProxyHelper.deproxy(term);
             representations = term.getRepresentations();
         }
 

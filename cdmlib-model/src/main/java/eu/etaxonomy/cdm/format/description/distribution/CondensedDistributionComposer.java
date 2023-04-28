@@ -372,27 +372,7 @@ public class CondensedDistributionComposer {
         return config.statusForBoldAreas.contains(status.getUuid());
     }
 
-    /**
-     * Searches for the parent area of the area given as parameter in
-     * the collection of areas.
-     *
-     * @parent area
-     *      The area which parent area is to be searched
-     * @param collection
-     *      The areas to search in.
-     *
-     * @return
-     *      Either the parent if it has been found or null.
-     */
-    protected NamedArea findParentIn(NamedArea area, Collection<NamedArea> areas) {
-        NamedArea parent = area.getPartOf();
-        if(parent != null && areas.contains(parent)){
-            return parent;
-        }
-        return null;
-    }
-
-    protected class AreaNode {
+    private class AreaNode {
 
         protected final NamedArea area;
         protected AreaNode parent = null;
