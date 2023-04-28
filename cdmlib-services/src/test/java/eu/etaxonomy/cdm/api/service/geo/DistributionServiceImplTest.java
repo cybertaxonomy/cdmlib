@@ -33,7 +33,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -66,7 +65,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 08.10.2008
  */
-@Ignore  //FIXME ignore as long as map service is not available
 public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
