@@ -23,6 +23,7 @@ import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -54,9 +55,8 @@ public class DistributionTree
         this.termDao = termDao;
     }
 
-
-
     /**
+     * @param parentAreaMap
      * @param fallbackAreaMarkerTypes
      *      Areas are fallback areas if they have a {@link Marker} with one of the specified
      *      {@link MarkerType marker types}.
@@ -69,7 +69,7 @@ public class DistributionTree
      *      if <code>true</code> a fallback area never has children even if a record exists for the area
      */
     public void orderAsTree(Collection<Distribution> distributions,
-            Set<NamedAreaLevel> omitLevels,
+            SetMap<NamedArea, NamedArea> parentAreaMap, Set<NamedAreaLevel> omitLevels,
             Set<MarkerType> fallbackAreaMarkerTypes,
             boolean neverUseFallbackAreasAsParents){
 
@@ -79,7 +79,7 @@ public class DistributionTree
             areas.add(distribution.getArea());
         }
         // preload all areas which are a parent of another one, this is a performance improvement
-        loadAllParentAreas(areas);
+        loadAllParentAreasIntoSession(areas);
 
         Set<Integer> omitLevelIds = new HashSet<>(omitLevels.size());
         for(NamedAreaLevel level : omitLevels) {
@@ -88,7 +88,7 @@ public class DistributionTree
 
         for (Distribution distribution : distributions) {
             // get path through area hierarchy
-            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevelIds,
+            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), parentAreaMap, omitLevelIds,
                     areas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
             addDistributionToSubTree(distribution, namedAreaPath, this.getRootElement());
         }
@@ -99,7 +99,7 @@ public class DistributionTree
      * all initialization of the NamedArea term instances is ready. This improves the
      * performance of the tree building
      */
-    private void loadAllParentAreas(Set<NamedArea> areas) {
+    private void loadAllParentAreasIntoSession(Set<NamedArea> areas) {
 
         List<NamedArea> parentAreas = null;
         Set<NamedArea> childAreas = new HashSet<>(areas.size());
@@ -192,7 +192,7 @@ public class DistributionTree
      *
      * Areas for which no distribution data is available and which are marked as hidden are omitted, see #5112
      *
-     * @param area
+     * @param area the area to get the path for
      * @param distributionAreas the areas for which distribution data exists (after filtering by
      *  {@link eu.etaxonomy.cdm.api.service.geo.DescriptionUtility#filterDistributions()} )
      * @param fallbackAreaMarkerTypes
@@ -203,7 +203,7 @@ public class DistributionTree
      * @param omitLevels
      * @return the path through the area hierarchy
      */
-    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds,
+    private List<NamedArea> getAreaLevelPath(NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap, Set<Integer> omitLevelIds,
             Set<NamedArea> distributionAreas, Set<MarkerType> fallbackAreaMarkerTypes,
             boolean neverUseFallbackAreasAsParents){
 
@@ -212,8 +212,8 @@ public class DistributionTree
             result.add(area);
         }
 
-        while (area.getPartOf() != null) {
-            area = area.getPartOf();
+        while (parentAreaMap.getFirstValue(area) != null) {  //handle >1 parents
+            area = parentAreaMap.getFirstValue(area);
             if (!matchesLevels(area, omitLevelIds)){
                 if(!isFallback(fallbackAreaMarkerTypes, area) ||
                         (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {

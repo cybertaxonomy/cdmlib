@@ -38,6 +38,8 @@ public class DistributionInfoConfiguration {
 
     private Set<UUID> features = new HashSet<>();
 
+    private UUID areaTree = null;
+
     private CondensedDistributionConfiguration condensedDistrConfig = CondensedDistributionConfiguration.NewDefaultInstance();
 
     private EnumSet<InfoPart> infoParts = EnumSet.of(
@@ -124,5 +126,12 @@ public class DistributionInfoConfiguration {
     }
     public void setFeatures(Set<UUID> features) {
         this.features = features;
+    }
+
+    public UUID getAreaTree() {
+        return areaTree;
+    }
+    public void setAreaTree(UUID areaTree) {
+        this.areaTree = areaTree;
     }
 }

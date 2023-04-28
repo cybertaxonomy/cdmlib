@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -51,9 +52,11 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 
 /**
@@ -72,6 +75,9 @@ public class DistributionServiceImpl implements IDistributionService {
 
     @Autowired
     private IDefinedTermDao termDao;
+
+    @Autowired
+    private ITermTreeDao termTreeDao;
 
     @Autowired
     private ITermVocabularyDao vocabDao;
@@ -143,10 +149,19 @@ public class DistributionServiceImpl implements IDistributionService {
             omitLevels = emptySet;
         }
 
+        TermTree<NamedArea> areaTree = getPersistentAreaTree(distributions, config);
+        if (areaTree == null) {
+            //TODO better use areaTree created within filterDistributions(...) but how to get it easily?
+            areaTree = DistributionServiceUtilities.getAreaTree(distributions, hiddenAreaMarkerTypes);
+        }
+        SetMap<NamedArea, NamedArea> parentAreaMap = areaTree.getParentMap();
+
+
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
         // to all distributions, but KEEP fallback area distributions
-        Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, hiddenAreaMarkerTypes,
-                !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false, config.isIgnoreDistributionStatusUndefined());
+        Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
+                areaTree, hiddenAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false,
+                config.isIgnoreDistributionStatusUndefined());
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
@@ -162,11 +177,12 @@ public class DistributionServiceImpl implements IDistributionService {
                 }
 
                 tree = DistributionServiceUtilities.buildOrderedTreeDto(omitLevels,
-                        filteredDtoDistributions, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                        filteredDtoDistributions, parentAreaMap, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
                         distributionOrder, termDao);
             }else {
+                //version with model entities as used in direct webservice (not taxon page DTO)
                 tree = DistributionServiceUtilities.buildOrderedTree(omitLevels,
-                        filteredDistributions, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                        filteredDistributions, parentAreaMap, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
                         distributionOrder, termDao);
             }
             dto.setTree(tree);
@@ -174,17 +190,19 @@ public class DistributionServiceImpl implements IDistributionService {
 
         if(parts.contains(InfoPart.condensedDistribution)) {
             CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
-                    filteredDistributions, condensedDistConfig, languages);
+                    filteredDistributions, parentAreaMap, condensedDistConfig, languages);
             dto.setCondensedDistribution(condensedDistribution);
         }
 
         if (parts.contains(InfoPart.mapUriParams)) {
-            boolean IGNORE_STATUS_ORDER_PREF_ = false;
+            boolean IGNORE_STATUS_ORDER_PREF = false;
             Set<MarkerType> hiddenAreaMarkerType = null;
             // only apply the subAreaPreference rule for the maps
+            boolean keepFallBackOnlyIfNoSubareaDataExists = true;
             Set<Distribution> filteredMapDistributions = DistributionServiceUtilities.filterDistributions(
-                    filteredDistributions, hiddenAreaMarkerType, !PREFER_AGGREGATED,
-                    IGNORE_STATUS_ORDER_PREF_, subAreaPreference, true, config.isIgnoreDistributionStatusUndefined());
+                    filteredDistributions, areaTree, hiddenAreaMarkerType, !PREFER_AGGREGATED,
+                    IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists,
+                    config.isIgnoreDistributionStatusUndefined());
 
             dto.setMapUriParams(DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,
@@ -195,17 +213,30 @@ public class DistributionServiceImpl implements IDistributionService {
         return dto;
     }
 
+    private TermTree<NamedArea> getPersistentAreaTree(List<Distribution> distributions, DistributionInfoConfiguration config) {
+        UUID areaTreeUuid = config.getAreaTree();
+        //TODO property path
+        String[] propertyPath = new String[] {};
+        @SuppressWarnings("unchecked")
+        TermTree<NamedArea> areaTree = termTreeDao.load(areaTreeUuid, Arrays.asList(propertyPath));
+        return areaTree;
+    }
+
     @Override
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
+            TermTree<NamedArea> areaTree,
             boolean statusOrderPreference,
             Set<MarkerType> hiddenAreaMarkerTypes,
             CondensedDistributionConfiguration config,
             List<Language> langs) {
 
+        areaTree = areaTree == null ? DistributionServiceUtilities.getAreaTree(distributions, hiddenAreaMarkerTypes) : areaTree;
+        SetMap<NamedArea, NamedArea> parentMap = areaTree.getParentMap();
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, hiddenAreaMarkerTypes, false, statusOrderPreference, false, false, true);
+                distributions, null, hiddenAreaMarkerTypes, false, statusOrderPreference, false, false, true);
         CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
+                parentMap,
                 config,
                 langs);
         return condensedDistribution;
@@ -225,7 +256,8 @@ public class DistributionServiceImpl implements IDistributionService {
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
-        Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
+        Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
+                distributions, null,
                 hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true, false);
 
         String uriParams = DistributionServiceUtilities.getDistributionServiceRequestParameterString(

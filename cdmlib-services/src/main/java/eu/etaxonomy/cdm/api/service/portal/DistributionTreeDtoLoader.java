@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.LabeledEntityDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -76,7 +77,8 @@ public class DistributionTreeDtoLoader {
     }
 
   /**
-   * @param fallbackAreaMarkerTypes
+   * @param parentAreaMap
+ * @param fallbackAreaMarkerTypes
    *      Areas are fallback areas if they have a {@link Marker} with one of the specified
    *      {@link MarkerType marker types}.
    *      Areas identified as such are omitted from the hierarchy and the sub areas are moving one level up.
@@ -88,17 +90,17 @@ public class DistributionTreeDtoLoader {
    *      if <code>true</code> a fallback area never has children even if a record exists for the area
    */
   public void orderAsTree(DistributionTreeDto dto, Collection<DistributionDto> distributions,
-          Set<NamedAreaLevel> omitLevels,
+          SetMap<NamedArea, NamedArea> parentAreaMap, Set<NamedAreaLevel> omitLevels,
           Set<MarkerType> fallbackAreaMarkerTypes,
           boolean neverUseFallbackAreasAsParents){
 
       //compute all areas
-      Set<NamedAreaDto> areas = new HashSet<>(distributions.size());
+      Set<NamedAreaDto> relevantAreas = new HashSet<>(distributions.size());
       for (DistributionDto distribution : distributions) {
-          areas.add(distribution.getArea());
+          relevantAreas.add(distribution.getArea());
       }
       // preload all areas which are a parent of another one, this is a performance improvement
-      loadAllParentAreas(areas);
+      loadAllParentAreasIntoSession(relevantAreas, parentAreaMap);
 
       Set<Integer> omitLevelIds = new HashSet<>(omitLevels.size());
       for(NamedAreaLevel level : omitLevels) {
@@ -107,8 +109,8 @@ public class DistributionTreeDtoLoader {
 
       for (DistributionDto distribution : distributions) {
           // get path through area hierarchy
-          List<NamedAreaDto> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevelIds,
-                  areas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
+          List<NamedAreaDto> namedAreaPath = getAreaLevelPath(distribution.getArea(), parentAreaMap,
+                  omitLevelIds, relevantAreas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
           addDistributionToSubTree(distribution, namedAreaPath, dto.getRootElement());
       }
   }
@@ -118,17 +120,16 @@ public class DistributionTreeDtoLoader {
    * all initialization of the NamedArea term instances is ready. This improves the
    * performance of the tree building
    */
-  private void loadAllParentAreas(Set<NamedAreaDto> areas) {
+  private void loadAllParentAreasIntoSession(Set<NamedAreaDto> areas, SetMap<NamedArea, NamedArea> parentAreaMap) {
 
       List<NamedAreaDto> parentAreas = null;
       Set<UUID> childAreas = new HashSet<>(areas.size());
       for(NamedAreaDto area : areas) {
-//          NamedAreaDto deproxied = HibernateProxyHelper.deproxy(areaProxy);
           childAreas.add(area.getUuid());
       }
 
       if(!childAreas.isEmpty()) {
-          parentAreas = termDao.getPartOfNamedAreas(childAreas);
+          parentAreas = termDao.getPartOfNamedAreas(childAreas, parentAreaMap);
           childAreas.clear();
 //          cdhildAreas.addAll(parentAreas);
       }
@@ -212,6 +213,7 @@ public class DistributionTreeDtoLoader {
    * Areas for which no distribution data is available and which are marked as hidden are omitted, see #5112
    *
    * @param area
+ * @param parentAreaMap
    * @param distributionAreas the areas for which distribution data exists (after filtering by
    *  {@link eu.etaxonomy.cdm.api.service.geo.DescriptionUtility#filterDistributions()} )
    * @param fallbackAreaMarkerTypes
@@ -222,7 +224,8 @@ public class DistributionTreeDtoLoader {
    * @param omitLevels
    * @return the path through the area hierarchy
    */
-  private List<NamedAreaDto> getAreaLevelPath(NamedAreaDto area, Set<Integer> omitLevelIds,
+  private List<NamedAreaDto> getAreaLevelPath(NamedAreaDto area, SetMap<NamedArea, NamedArea> parentAreaMap,
+          Set<Integer> omitLevelIds,
           Set<NamedAreaDto> distributionAreas, Set<MarkerType> fallbackAreaMarkerTypes,
           boolean neverUseFallbackAreasAsParents){
 
@@ -231,18 +234,34 @@ public class DistributionTreeDtoLoader {
           result.add(area);
       }
 
-      while (area.getPartOf() != null) {
-          area = area.getPartOf();
-          if (!matchesLevels(area, omitLevelIds)){
-              if(!isFallback(fallbackAreaMarkerTypes, area) ||
-                      (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
-                  result.add(0, area);
-              } else {
-                  if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
+      if (parentAreaMap == null) { //TODO should this happen?
+          while (area.getParent() != null) {
+              area = area.getParent();
+              if (!matchesLevels(area, omitLevelIds)){
+                  if(!isFallback(fallbackAreaMarkerTypes, area) ||
+                          (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
+                      result.add(0, area);
+                  } else {
+                      if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
+                  }
               }
           }
-      }
+      } else {
+          //FIXME same as above case, maybe we do not need to distinguish as parent handling is done
+          // in NamedAreaDTO constructor
+          while (area.getParent() != null) {
+              area = area.getParent();
+              if (!matchesLevels(area, omitLevelIds)){
+                  if(!isFallback(fallbackAreaMarkerTypes, area) ||
+                          (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
+                      result.add(0, area);
+                  } else {
+                      if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
+                  }
+              }
+          }
 
+      }
       return result;
   }
 

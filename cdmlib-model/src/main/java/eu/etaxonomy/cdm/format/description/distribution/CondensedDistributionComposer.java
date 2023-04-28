@@ -24,6 +24,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.TripleResult;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.compare.common.OrderType;
@@ -87,13 +88,14 @@ public class CondensedDistributionComposer {
     }
 
     public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
-            List<Language> languages, CondensedDistributionConfiguration config) {
+            SetMap<NamedArea, NamedArea> parentAreaMap, List<Language> languages, CondensedDistributionConfiguration config) {
 
         CondensedDistribution result = new CondensedDistribution();
 
         Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap = new HashMap<>();
 
-        DoubleResult<List<AreaNode>, List<AreaNode>> step1_3 = createAreaTreesAndStatusMap(filteredDistributions, areaToStatusMap, config);
+        DoubleResult<List<AreaNode>, List<AreaNode>> step1_3 = createAreaTreesAndStatusMap(
+                filteredDistributions, parentAreaMap, areaToStatusMap, config);
         List<AreaNode> topLevelNodes = step1_3.getFirstResult();
         List<AreaNode> introducedTopLevelNodes = step1_3.getSecondResult();
 
@@ -154,7 +156,7 @@ public class CondensedDistributionComposer {
     }
 
     protected Map<NamedArea, AreaNode>[] buildAreaHierarchie(Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap,
-            CondensedDistributionConfiguration config) {
+            SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
 
         Map<NamedArea, AreaNode> areaNodeMap = new HashMap<>();
         Map<NamedArea, AreaNode> introducedAreaNodeMap = new HashMap<>();
@@ -164,7 +166,7 @@ public class CondensedDistributionComposer {
             if (config.splitNativeAndIntroduced && isIntroduced(areaToStatusMap.get(area))){
                 map = introducedAreaNodeMap;
             }
-            mergeIntoHierarchy(areaToStatusMap.keySet(), map, area, config);
+            mergeIntoHierarchy(areaToStatusMap.keySet(), map, area, parentAreaMap, config);
         }
 
         //TODO move this filter further up where native and introduced is still combined,
@@ -223,7 +225,7 @@ public class CondensedDistributionComposer {
     }
 
     private void mergeIntoHierarchy(Collection<NamedArea> areas,  //areas not really needed anymore if we don't use findParentIn
-            Map<NamedArea, AreaNode> areaNodeMap, NamedArea area, CondensedDistributionConfiguration config) {
+            Map<NamedArea, AreaNode> areaNodeMap, NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
 
         AreaNode node = areaNodeMap.get(area);
         if(node == null) {
@@ -232,7 +234,7 @@ public class CondensedDistributionComposer {
             areaNodeMap.put(area, node);
         }
 
-        NamedArea parent = getNonFallbackParent(area, config);   // findParentIn(area, areas);
+        NamedArea parent = getNonFallbackParent(area, parentAreaMap, config);   // findParentIn(area, areas);
 
         if(parent != null) {
             AreaNode parentNode = areaNodeMap.get(parent);
@@ -241,12 +243,13 @@ public class CondensedDistributionComposer {
                 areaNodeMap.put(parent, parentNode);
             }
             parentNode.addSubArea(node);
-            mergeIntoHierarchy(areas, areaNodeMap, parentNode.area, config);  //recursive to top
+            mergeIntoHierarchy(areas, areaNodeMap, parentNode.area, parentAreaMap, config);  //recursive to top
         }
     }
 
-    private NamedArea getNonFallbackParent(NamedArea area, CondensedDistributionConfiguration config) {
-        NamedArea parent = area.getPartOf();
+    private NamedArea getNonFallbackParent(NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
+        NamedArea parent = parentAreaMap.getFirstValue(area);  //TODO handle >1 parents
+
         //if done here the fallback test does not work anymore
 //        while(parent != null && isHiddenOrFallback(parent, config)){
 //            parent = parent.getPartOf();
@@ -466,7 +469,7 @@ public class CondensedDistributionComposer {
     }
 
     protected DoubleResult<List<AreaNode>, List<AreaNode>> createAreaTreesAndStatusMap(Collection<Distribution> filteredDistributions,
-            Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, CondensedDistributionConfiguration config){
+            SetMap<NamedArea, NamedArea> parentAreaMap, Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, CondensedDistributionConfiguration config){
 
         //we expect every area only to have 1 status  (multiple status should have been filtered beforehand)
 
@@ -484,7 +487,7 @@ public class CondensedDistributionComposer {
         }
 
         //2. build the area hierarchy
-        Map<NamedArea, AreaNode>[] areaNodeMaps = buildAreaHierarchie(areaToStatusMap, config);
+        Map<NamedArea, AreaNode>[] areaNodeMaps = buildAreaHierarchie(areaToStatusMap, parentAreaMap, config);
 
         //3. find root nodes
         @SuppressWarnings("unchecked")

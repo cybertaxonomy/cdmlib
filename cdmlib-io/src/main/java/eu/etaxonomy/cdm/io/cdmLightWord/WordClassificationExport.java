@@ -100,6 +100,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -770,9 +771,10 @@ public class WordClassificationExport
              List<Language> langs = new ArrayList<>();
              langs.add(Language.ENGLISH());
 
+             TermTree<NamedArea> areaTree = null; //TODO
              CondensedDistribution conDis = geoService.getCondensedDistribution(
                      //TODO add CondensedDistributionConfiguration to export configuration
-                     distributions, true, null, state.getConfig().getCondensedDistributionConfiguration(), langs);
+                     distributions, areaTree, true, null, state.getConfig().getCondensedDistributionConfiguration(), langs);
              WordClassificationExportTable tableCondensed =
                      WordClassificationExportTable.SIMPLE_FACT;
              String[] csvLine = new String[tableCondensed.getSize()];

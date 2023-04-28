@@ -31,6 +31,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 
@@ -222,6 +223,46 @@ public class TermTree <T extends DefinedTermBase>
     public Set<T> independentTerms() {
         Set<T> terms = root.getIndependentTermsRecursive();
         return terms;
+    }
+
+    /**
+     * Returns the first node having <code>term</code>
+     * as term. Using depth search.
+     */
+    @Transient
+    public TermNode<T> getNodeForTerm(T term){
+        return getRoot().getNodeForTerm(term);
+    }
+
+    /**
+     * Returns all nodes having <code>term</code>
+     * as term. Using depth search.
+     */
+    @Transient
+    public Set<TermNode<T>> getNodesForTerm(T term){
+        return getRoot().getNodesForTerm(term);
+    }
+
+    /**
+     * Returns the parent term for the given
+     * as defined by this tree. If more than 1 node use the
+     * given term an arbitrary first node is used.
+     * If the node has only the invisible root node as parent
+     * <code>null</code> is returned.
+     */
+    @Transient
+    public T getParentTerm(T term){
+        TermNode<T> node = getNodeForTerm(term);
+        return node == null? null : node.getParentTerm();
+    }
+
+    /**
+     * Returns a map for an area and its parents.
+     */
+    public SetMap<T, T> getParentMap() {
+        SetMap<T, T> result = new SetMap<>();
+        getRoot().fillParentMap(result);
+        return result;
     }
 
 //*********************** CLONE ********************************************************/

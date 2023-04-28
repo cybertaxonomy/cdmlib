@@ -40,6 +40,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -537,6 +539,72 @@ public class TermNode <T extends DefinedTermBase>
 		}
 		return terms;
 	}
+
+	/**
+	 * Returns the first node having <code>term</code>
+     * as term. Searches in the subtree defined by this term node.
+     * Using depth search.
+	 */
+	@Transient
+    public TermNode<T> getNodeForTerm(T term){
+        if (CdmUtils.nullSafeEqual(getTerm(), term)){
+            return this;
+        }
+        for (TermNode<T> child : getChildNodes()){
+            TermNode<T> result = child.getNodeForTerm(term);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+	/**
+     * Returns all nodes having <code>term</code>
+     * as term. Searches in the subtree defined by this term node.
+     * Using depth search.
+     */
+    @Transient
+    public Set<TermNode<T>> getNodesForTerm(T term){
+        Set<TermNode<T>> result = new HashSet<>();
+        if (CdmUtils.nullSafeEqual(getTerm(), term)){
+            result.add(this);
+        }
+        for (TermNode<T> child : getChildNodes()){
+            result.addAll(child.getNodesForTerm(term));
+        }
+        return result;
+    }
+
+    /**
+     * Returns the parent term for the given
+     * as defined in this subtree (and its direct parent).
+     * If more than 1 node use the
+     * given term an arbitrary first node is used.
+     * If the node has only the invisible root node as parent
+     * <code>null</code> is returned.
+     */
+    @Transient
+    public T getParentTerm(){
+        if (getParent() != null) {
+            return getParent().getTerm();
+        }else {
+            return null;
+        }
+    }
+
+    /**
+     * Fills the given map with areas mapping to their parents.
+     */
+    public void fillParentMap(SetMap<T, T> map) {
+        if (getTerm() != null) {
+            map.putItem(getTerm(), getParentTerm());
+        }
+        for (TermNode<T> node : getChildNodes()){
+            node.fillParentMap(map);
+        }
+        return;
+    }
 
     @Transient
 	public String getPath(){

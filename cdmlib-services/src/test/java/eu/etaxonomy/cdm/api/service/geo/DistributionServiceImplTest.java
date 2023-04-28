@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -109,9 +110,12 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
+        TermTree<NamedArea> areaTree = null;
+        Set<MarkerType> hiddenAreaMarkerTypes = null;
 
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, null, false, statusOrderPreference, subAreaPreference, true, false);
+                distributions, areaTree, hiddenAreaMarkerTypes, false,
+                statusOrderPreference, subAreaPreference, true, false);
 
         String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                 mapping, null, null, languages );

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * This service has been extracted from cdmlib-ext IEditGeoService
@@ -57,7 +58,7 @@ public interface IDistributionService {
      * @return
      */
     public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, UUID taxonUUID,
-            Set<UUID> features, boolean neverUseFallbackAreaAsParent,
+            boolean neverUseFallbackAreaAsParent,
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors, List<Language> languages, List<String> propertyPaths);
 
     public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, List<Distribution> distributions,
@@ -73,6 +74,7 @@ public interface IDistributionService {
     * @return
     */
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
+            TermTree<NamedArea> areaTree,
             boolean statusOrderPreference,
             Set<MarkerType> hiddenAreaMarkerTypes,
             CondensedDistributionConfiguration config,

@@ -35,7 +35,7 @@ public class DistributionDto extends FactDtoBase {
         this.setId(distribution.getId());
         this.setLastUpdated(null);   //TODO
         if (distribution.getArea() != null) {
-            this.area = new NamedAreaDto(distribution.getArea(), false);
+            this.area = new NamedAreaDto(distribution.getArea(), null);
         }
         if (distribution.getStatus() != null) {
             PresenceAbsenceTerm distStatus = distribution.getStatus();

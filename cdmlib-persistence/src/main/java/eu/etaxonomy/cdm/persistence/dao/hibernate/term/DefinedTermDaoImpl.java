@@ -35,6 +35,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -550,8 +551,9 @@ public class DefinedTermDaoImpl
 	}
 
 	//preliminary until term structure has been finalized
+	//areaTree already added by not in use yet
     @Override
-    public List<NamedAreaDto> getPartOfNamedAreas(Set<UUID> areaUuids) {
+    public List<NamedAreaDto> getPartOfNamedAreas(Set<UUID> areaUuids, SetMap<NamedArea,NamedArea> parentAreaMap) {
         Query<NamedArea> query = getSession().createQuery("SELECT DISTINCT definedTerm "
                 + " FROM NamedArea definedTerm "
                 + " JOIN definedTerm.includes included "
@@ -561,7 +563,7 @@ public class DefinedTermDaoImpl
 
         List<NamedAreaDto> list = new ArrayList<>();
         for (NamedArea area : terms) {
-            NamedAreaDto partOf = area.getPartOf() != null ? new NamedAreaDto(area.getPartOf(), true) : null;
+            NamedAreaDto partOf = area.getPartOf() != null ? new NamedAreaDto(area.getPartOf(), parentAreaMap) : null;
             NamedAreaDto dto = new NamedAreaDto(area.getUuid(), area.getId(), area.getLabel(), area.getLevel(), partOf, area.getMarkers());
             dto.setUuid(area.getUuid());
             list.add(dto);

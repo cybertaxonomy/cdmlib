@@ -316,6 +316,7 @@ public class DescriptionListController
                 config.setDistributionOrder(distributionOrder);
                 config.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
                 config.setFeatures(featureUuids);
+                config.setAreaTree(areaTreeUuid);
                 config.setCondensedDistrConfig(condensedConfig);
                 //TODO needed?
                 config.setStatusColorsString(statusColorsString);
