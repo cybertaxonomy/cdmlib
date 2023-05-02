@@ -61,7 +61,7 @@ public class TermTreePortalController extends TermTreeController {
         if(request != null) {
             logger.info("doGet() " + request.getRequestURI());
         }
-        TermTree termTree = null;
+        TermTree<?> termTree = null;
         try {
             termTree = service.loadWithNodes(uuid, getInitializationStrategy(), termTreeNodeInitStrategy);
         } catch(EntityNotFoundException e){
