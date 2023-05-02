@@ -215,6 +215,9 @@ public class DistributionServiceImpl implements IDistributionService {
 
     private TermTree<NamedArea> getPersistentAreaTree(List<Distribution> distributions, DistributionInfoConfiguration config) {
         UUID areaTreeUuid = config.getAreaTree();
+        if (areaTreeUuid == null) {
+            return null;
+        }
         //TODO property path
         String[] propertyPath = new String[] {};
         @SuppressWarnings("unchecked")
