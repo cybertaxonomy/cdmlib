@@ -259,6 +259,7 @@ public class TermTree <T extends DefinedTermBase>
     /**
      * Returns a map for an area and its parents.
      */
+    @Transient
     public SetMap<T, T> getParentMap() {
         SetMap<T, T> result = new SetMap<>();
         getRoot().fillParentMap(result);
