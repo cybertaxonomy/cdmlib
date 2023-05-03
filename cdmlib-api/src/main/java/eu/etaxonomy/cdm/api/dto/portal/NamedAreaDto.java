@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2023 EDIT
 * European Distributed Institute of Taxonomy
@@ -21,7 +20,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 /**
  * @author a.mueller
  * @date 09.02.2023
- *
  */
 public class NamedAreaDto extends CdmBaseDto {
 
@@ -98,5 +96,12 @@ public class NamedAreaDto extends CdmBaseDto {
     public int compareTo(NamedAreaDto area) {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+//************************ toString() *********************************/
+
+    @Override
+    public String toString() {
+        return "NamedAreaDto [label=" + label + ", level=" + level + "]";
     }
 }

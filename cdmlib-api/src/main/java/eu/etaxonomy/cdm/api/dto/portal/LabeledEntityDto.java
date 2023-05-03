@@ -29,4 +29,13 @@ public class LabeledEntityDto extends CdmBaseDto {
     public void setLabel(String label) {
         this.label = label;
     }
+
+//******************* toString() ***********************/
+
+    @Override
+    public String toString() {
+        return "LabeledEntityDto [label=" + label + "]";
+    }
+
+
 }

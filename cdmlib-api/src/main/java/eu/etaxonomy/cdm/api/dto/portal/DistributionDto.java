@@ -59,4 +59,13 @@ public class DistributionDto extends FactDtoBase {
     public void setStatus(LabeledEntityDto status) {
         this.status = status;
     }
+
+//*************************** toString() ********************************/
+
+    @Override
+    public String toString() {
+        return "DistributionDto [area=" + area + ", status=" + status + "]";
+    }
+
+
 }
