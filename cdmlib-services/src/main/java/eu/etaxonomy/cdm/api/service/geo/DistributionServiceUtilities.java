@@ -815,6 +815,9 @@ public class DistributionServiceUtilities {
         Map<NamedArea, TermNode<NamedArea>> map = new HashMap<>();
 
         for (NamedArea area : relevantAreas) {
+            if (map.get(area)!=null) {
+                continue;
+            }
             NamedArea parent = area.getPartOf();
             TermNode<NamedArea> parentNode;
 
