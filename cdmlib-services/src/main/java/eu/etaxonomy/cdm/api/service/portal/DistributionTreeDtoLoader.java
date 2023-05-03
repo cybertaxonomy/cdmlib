@@ -63,7 +63,7 @@ public class DistributionTreeDtoLoader {
      * Returns the (first) child node (of type TreeNode) with the given nodeID.
      * @return the found node or null
      */
-    public TreeNode<Set<DistributionDto>, NamedAreaDto> findChildNode(TreeNode<Set<DistributionDto>, NamedAreaDto> parentNode, NamedAreaDto  nodeID) {
+    public TreeNode<Set<DistributionDto>, NamedAreaDto> findChildNode(TreeNode<Set<DistributionDto>,NamedAreaDto> parentNode, NamedAreaDto  nodeID) {
         if (parentNode.getChildren() == null) {
             return null;
         }
@@ -188,8 +188,8 @@ public class DistributionTreeDtoLoader {
       TreeNode<Set<DistributionDto>, NamedAreaDto> child = findChildNode(root, highestArea);
       if (child == null) {
           // the highestDistNode is not yet in the set of children, so we add it
-          child = new TreeNode<Set<DistributionDto>, NamedAreaDto>(highestArea);
-          child.setData(new HashSet<DistributionDto>());
+          child = new TreeNode<Set<DistributionDto>,NamedAreaDto>(highestArea);
+          child.setData(new HashSet<>());
           root.addChild(child);
       }
 
