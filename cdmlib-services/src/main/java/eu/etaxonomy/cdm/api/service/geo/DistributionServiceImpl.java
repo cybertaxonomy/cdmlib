@@ -172,7 +172,7 @@ public class DistributionServiceImpl implements IDistributionService {
             if (config.isUseTreeDto()) {
                 Set<DistributionDto> filteredDtoDistributions = new HashSet<>();
                 for (Distribution distribution : filteredDistributions) {
-                    DistributionDto distDto = new DistributionDto(distribution);
+                    DistributionDto distDto = new DistributionDto(distribution, parentAreaMap);
                     filteredDtoDistributions.add(distDto);
                 }
 
