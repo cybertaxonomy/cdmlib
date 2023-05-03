@@ -69,7 +69,7 @@ public class DistributionTreeDtoLoader {
         }
 
         for (TreeNode<Set<DistributionDto>, NamedAreaDto> node : parentNode.getChildren()) {
-            if (node.getNodeId().equals(nodeID)) {
+            if (node.getNodeId().getUuid().equals(nodeID.getUuid())) {
                 return node;
             }
         }
