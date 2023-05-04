@@ -673,7 +673,7 @@ public class PortalDtoLoader {
                 for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
                     handleFeatureNode(config, featureMap, features, node);
                 }
-                taxonPageDto.setFactualData(features);
+                taxonPageDto.setTaxonFacts(features);
             }
         } catch (Exception e) {
             //e.printStackTrace();
