@@ -512,6 +512,8 @@ public class PortalDtoLoader {
 
             //... to-relations
             Set<TaxonRelationship> toRels = taxon.getRelationsToThisTaxon();
+            toRels.removeAll(misappliedRels);
+            toRels.removeAll(proParteRels);
             for (TaxonRelationship rel : toRels) {
                 boolean inverse = true;
                 boolean withoutName = false;
