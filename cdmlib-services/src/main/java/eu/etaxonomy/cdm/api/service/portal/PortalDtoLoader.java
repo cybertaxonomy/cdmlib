@@ -104,6 +104,7 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -111,6 +112,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -182,6 +184,7 @@ public class PortalDtoLoader {
 //        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
             result.setTaggedLabel(getTaggedTaxon(taxon, config));
             handleRelatedNames(taxon.getName(), result, config);
+            loadProtologues(name, result);
         } catch (Exception e) {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading accepted name data.", e));
@@ -541,13 +544,27 @@ public class PortalDtoLoader {
         loadBaseData(syn, synDto);
         synDto.setLabel(syn.getTitleCache());
         synDto.setTaggedLabel(getTaggedTaxon(syn, config));
+
         if (syn.getName() != null) {
             synDto.setNameLabel(syn.getName().getTitleCache());
             handleRelatedNames(syn.getName(), synDto, config);
+            loadProtologues(syn.getName(), synDto);
         }
 
         //TODO
         hgDto.addSynonym(synDto);
+    }
+
+    private void loadProtologues(TaxonName name, TaxonBaseDto taxonBaseDto) {
+        NomenclaturalSource nomSource = name.getNomenclaturalSource();
+        if (nomSource != null) {
+            Set<ExternalLink> links = nomSource.getLinks();
+            for (ExternalLink link : links) {
+                if (link.getUri() != null) {
+                    taxonBaseDto.addProtologue(link.getUri());
+                }
+            }
+        }
     }
 
     private void handleRelatedNames(TaxonName name, TaxonBaseDto taxonDto, TaxonPageDtoConfiguration config) {

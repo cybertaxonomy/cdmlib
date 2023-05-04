@@ -8,9 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -24,6 +26,8 @@ public class TaxonBaseDto extends IdentifiableDto {
     private String nameLabel;
 
     private ContainerDto<NameRelationDTO> relatedNames;
+
+    private List<URI> protologues;
 
     //TODO should we keep formatting client side or should we do formatting on server side? Formatting means: filter, italics, order??
 //    private List<TypedLabel> typedTaxonLabel;
@@ -69,6 +73,18 @@ public class TaxonBaseDto extends IdentifiableDto {
     //TODO either set or add
     public void setRelatedNames(ContainerDto<NameRelationDTO> relatedNames) {
         this.relatedNames = relatedNames;
+    }
+
+    //protologues
+
+    public List<URI> getProtologues() {
+        return protologues;
+    }
+    public void addProtologue(URI uri) {
+        if (protologues == null) {
+            protologues = new ArrayList<>();
+        }
+        protologues.add(uri);
     }
 
 
