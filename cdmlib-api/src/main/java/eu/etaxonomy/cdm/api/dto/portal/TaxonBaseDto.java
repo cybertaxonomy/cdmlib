@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.common.URI;
@@ -24,6 +25,7 @@ public class TaxonBaseDto extends IdentifiableDto {
     //TODO should we distinguish data parts (e.g. on general page we do not need last updates from synonymy)
     //lastUpdated
     private String nameLabel;
+    private UUID nameUuid;
 
     private ContainerDto<NameRelationDTO> relatedNames;
 
@@ -42,7 +44,14 @@ public class TaxonBaseDto extends IdentifiableDto {
         this.nameLabel = nameLabel;
     }
 
-//    public List<TypedLabel> getTypedTaxonLabel() {
+    public UUID getNameUuid() {
+        return nameUuid;
+    }
+    public void setNameUuid(UUID nameUuid) {
+        this.nameUuid = nameUuid;
+    }
+
+    //    public List<TypedLabel> getTypedTaxonLabel() {
 //        return typedTaxonLabel;
 //    }
 //    public void setTypedTaxonLabel(List<TypedLabel> typedTaxonLabel) {
