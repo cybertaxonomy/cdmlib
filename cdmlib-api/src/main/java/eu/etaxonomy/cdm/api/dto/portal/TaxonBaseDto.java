@@ -42,6 +42,9 @@ public class TaxonBaseDto extends IdentifiableDto {
 
     private List<TaggedText> taggedLabel;
 
+    //TODO maybe later this can be combined with taggedLabel (merge taxon and name taggedText)
+    private List<TaggedText> taggedName;
+
     public String getNameLabel() {
         return nameLabel;
     }
@@ -82,6 +85,14 @@ public class TaxonBaseDto extends IdentifiableDto {
     public void setTaggedLabel(List<TaggedText> taggedLabel) {
         this.taggedLabel = taggedLabel;
     }
+
+    public List<TaggedText> getTaggedName() {
+        return taggedName;
+    }
+    public void setTaggedName(List<TaggedText> taggedName) {
+        this.taggedName = taggedName;
+    }
+
     public ContainerDto<NameRelationDTO> getRelatedNames() {
         return relatedNames;
     }

@@ -200,6 +200,7 @@ public class PortalDtoLoader {
         nameDto.setNameUuid(name.getUuid());
         nameDto.setNameType(name.getNameType().toString());
         loadNameFacts(name, nameDto, config, pageDto);
+        nameDto.setTaggedName(name.getTaggedFullTitle());
     }
 
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {
