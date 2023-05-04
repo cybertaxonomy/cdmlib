@@ -104,13 +104,6 @@ public class TaxonRelationshipsDTO {
             this.direction = direction;
         }
 
-
-
-        @Override
-        public String toString(){
-            return taxonUuid == null? super.toString() : taxonUuid.toString();
-        }
-
         public String getCache() {
             return cache;
         }
@@ -146,27 +139,21 @@ public class TaxonRelationshipsDTO {
             this.type = type;
         }
 
-
-        /**
-         * @return the typeUuid
-         */
         public UUID getTypeUuid() {
             return typeUuid;
         }
-
-
-        /**
-         * @param typeUuid the typeUuid to set
-         */
         public void setTypeUuid(UUID typeUuid) {
             this.typeUuid = typeUuid;
         }
-
 
         public Set<UUID> getClassificationsUUIDs() {
             return classificationsUUIDs;
         }
 
+        @Override
+        public String toString(){
+            return taxonUuid == null? super.toString() : taxonUuid.toString();
+        }
     }
 
     private List<TaxonRelationDTO> relations = new ArrayList<>();
