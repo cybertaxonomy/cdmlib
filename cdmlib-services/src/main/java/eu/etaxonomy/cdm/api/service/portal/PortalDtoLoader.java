@@ -179,16 +179,26 @@ public class PortalDtoLoader {
             //TODO supplementalData for name
             loadBaseData(taxon, result);
             result.setLastUpdated(getLastUpdated(null, taxon));
-            result.setNameLabel(name != null? name.getTitleCache() : "");
             result.setLabel(CdmUtils.Nz(taxon.getTitleCache()));
 //        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
             result.setTaggedLabel(getTaggedTaxon(taxon, config));
-            handleRelatedNames(taxon.getName(), result, config);
-            loadProtologues(name, result);
+            if (name != null) {
+                handleName(config, result, name);
+            }
+
+
         } catch (Exception e) {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading accepted name data.", e));
         }
+    }
+
+    private void handleName(TaxonPageDtoConfiguration config, TaxonBaseDto taxonDto, TaxonName name) {
+        taxonDto.setNameLabel(name.getTitleCache());
+        handleRelatedNames(name, taxonDto, config);
+        loadProtologues(name, taxonDto);
+        taxonDto.setNameUuid(name.getUuid());
+        taxonDto.setNameType(name.getNameType().toString());
     }
 
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {
@@ -546,6 +556,7 @@ public class PortalDtoLoader {
         synDto.setTaggedLabel(getTaggedTaxon(syn, config));
 
         if (syn.getName() != null) {
+            handleName(config, synDto, syn.getName());
             synDto.setNameLabel(syn.getName().getTitleCache());
             handleRelatedNames(syn.getName(), synDto, config);
             loadProtologues(syn.getName(), synDto);

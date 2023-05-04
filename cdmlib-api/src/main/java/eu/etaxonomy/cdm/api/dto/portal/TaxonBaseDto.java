@@ -26,10 +26,13 @@ public class TaxonBaseDto extends IdentifiableDto {
     //lastUpdated
     private String nameLabel;
     private UUID nameUuid;
+    //nomenclatural code
+    private String nameType;
 
     private ContainerDto<NameRelationDTO> relatedNames;
 
     private List<URI> protologues;
+
 
     //TODO should we keep formatting client side or should we do formatting on server side? Formatting means: filter, italics, order??
 //    private List<TypedLabel> typedTaxonLabel;
@@ -49,6 +52,13 @@ public class TaxonBaseDto extends IdentifiableDto {
     }
     public void setNameUuid(UUID nameUuid) {
         this.nameUuid = nameUuid;
+    }
+
+    public String getNameType() {
+        return nameType;
+    }
+    public void setNameType(String nameType) {
+        this.nameType = nameType;
     }
 
     //    public List<TypedLabel> getTypedTaxonLabel() {
