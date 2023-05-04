@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -310,6 +311,9 @@ public class TaxonPortalController extends TaxonController{
     public TaxonPageDto doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "featureTree", required = false) UUID featureTreeUuid,
+            @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
+            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+
             //TODO configuration data
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -326,9 +330,13 @@ public class TaxonPortalController extends TaxonController{
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
 
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+
         config.setTaxonUuid(taxonUuid);
         config.setFeatureTree(featureTreeUuid);
-        config.getDistributionInfoConfiguration().setUseTreeDto(true);
+        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
+        distributionConfig.setUseTreeDto(true);
+        distributionConfig.setPreferSubAreas(preferSubAreas);
+        distributionConfig.setStatusOrderPreference(statusOrderPreference);
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);
         return dto;
     }
