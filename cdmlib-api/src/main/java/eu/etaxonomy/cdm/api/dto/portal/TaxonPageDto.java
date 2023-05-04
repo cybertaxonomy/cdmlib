@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -218,6 +220,8 @@ public class TaxonPageDto extends TaxonBaseDto {
         private UUID relTaxonUuid;
         private String relTaxonLabel;
         private List<TypedLabel> typedLabel;
+        private UUID relTypeUuid;
+        private Set<UUID> classificationUuids;
 
         public int getRelTaxonId() {
             return relTaxonId;
@@ -242,6 +246,21 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setTypedLabel(List<TypedLabel> typedLabel) {
             this.typedLabel = typedLabel;
+        }
+        public UUID getRelTypeUuid() {
+            return relTypeUuid;
+        }
+        public void setRelTypeUuid(UUID relTypeUuid) {
+            this.relTypeUuid = relTypeUuid;
+        }
+        public Set<UUID> getClassificationUuids() {
+            return classificationUuids;
+        }
+        public void addClassificationUuids(UUID classificationUuid) {
+            if (this.classificationUuids == null) {
+                this.classificationUuids = new HashSet<>();
+            }
+            this.classificationUuids.add(classificationUuid);
         }
     }
 

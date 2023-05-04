@@ -547,6 +547,15 @@ public class PortalDtoLoader {
         dto.setRelTaxonUuid(relTaxon.getUuid());
         dto.setRelTaxonLabel(relTaxon.getTitleCache());
         dto.setLabel(relLabel);
+        if (rel.getType() != null) {
+            dto.setRelTypeUuid(rel.getType().getUuid());
+        }
+        for (TaxonNode node : relTaxon.getTaxonNodes()) {
+            Classification classification = node.getClassification();
+            if (classification != null) {
+                dto.addClassificationUuids(classification.getUuid());
+            }
+        }
         conceptRelContainer.addItem(dto);
     }
 
