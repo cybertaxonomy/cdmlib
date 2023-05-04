@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -34,8 +35,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -43,12 +46,16 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.portal.IPortalDtoService;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -311,12 +318,21 @@ public class TaxonPortalController extends TaxonController{
     public TaxonPageDto doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "featureTree", required = false) UUID featureTreeUuid,
+            //distributionInfoConfig
+            @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
             @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "fallbackAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
+            @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
+            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            @RequestParam(value = "statusColors", required = false) String statusColorsString,
+            @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
+            @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
 
             //TODO configuration data
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+
         if(request != null){
             logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
         }
@@ -328,15 +344,33 @@ public class TaxonPortalController extends TaxonController{
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+        if (partSet == null) {
+            partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
+        }
 
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
 
         config.setTaxonUuid(taxonUuid);
         config.setFeatureTree(featureTreeUuid);
+        //distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
         distributionConfig.setUseTreeDto(true);
+        distributionConfig.setInfoParts(EnumSet.copyOf(partSet));
         distributionConfig.setPreferSubAreas(preferSubAreas);
         distributionConfig.setStatusOrderPreference(statusOrderPreference);
+        distributionConfig.setAreaTree(areaTreeUuid);
+        distributionConfig.setOmitLevels(omitLevels);
+        distributionConfig.setStatusColorsString(statusColorsString);
+        distributionConfig.setDistributionOrder(distributionOrder);
+        if (recipe != null) {
+            distributionConfig.setCondensedDistrConfig(recipe.toConfiguration());
+        }
+        Set<MarkerType> fallbackAreaMarkerTypes = null;
+        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
+            fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
+            distributionConfig.setHiddenAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+        }
+
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);
         return dto;
     }
