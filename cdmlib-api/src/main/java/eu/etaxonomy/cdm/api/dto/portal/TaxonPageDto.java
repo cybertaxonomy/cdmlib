@@ -43,6 +43,8 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     private ContainerDto<MediaDTO> media;
 
+    private String secTitleCache;
+
     private List<MessagesDto> messages;
 
 //******************** subclasses *********************************/
@@ -415,5 +417,12 @@ public class TaxonPageDto extends TaxonBaseDto {
             this.messages = new ArrayList<>();
         }
         this.messages.add(message);
+    }
+
+    public String getSecTitleCache() {
+        return secTitleCache;
+    }
+    public void setSecTitleCache(String secTitleCache) {
+        this.secTitleCache = secTitleCache;
     }
 }

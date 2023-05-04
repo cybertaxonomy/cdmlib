@@ -187,6 +187,9 @@ public class PortalDtoLoader {
             if (name != null) {
                 handleName(config, result, name, result);
             }
+            if (taxon.getSec() != null) {
+                result.setSecTitleCache(taxon.getSec().getTitleCache());
+            }
         } catch (Exception e) {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading accepted name data.", e));
