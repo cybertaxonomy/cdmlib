@@ -91,10 +91,12 @@ import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -183,22 +185,21 @@ public class PortalDtoLoader {
 //        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
             result.setTaggedLabel(getTaggedTaxon(taxon, config));
             if (name != null) {
-                handleName(config, result, name);
+                handleName(config, result, name, result);
             }
-
-
         } catch (Exception e) {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading accepted name data.", e));
         }
     }
 
-    private void handleName(TaxonPageDtoConfiguration config, TaxonBaseDto taxonDto, TaxonName name) {
-        taxonDto.setNameLabel(name.getTitleCache());
-        handleRelatedNames(name, taxonDto, config);
-        loadProtologues(name, taxonDto);
-        taxonDto.setNameUuid(name.getUuid());
-        taxonDto.setNameType(name.getNameType().toString());
+    private void handleName(TaxonPageDtoConfiguration config, TaxonBaseDto nameDto, TaxonName name, TaxonPageDto pageDto) {
+        nameDto.setNameLabel(name.getTitleCache());
+        handleRelatedNames(name, nameDto, config);
+        loadProtologues(name, nameDto);
+        nameDto.setNameUuid(name.getUuid());
+        nameDto.setNameType(name.getNameType().toString());
+        loadNameFacts(name, nameDto, config, pageDto);
     }
 
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {
@@ -428,7 +429,7 @@ public class PortalDtoLoader {
                 loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
 
                 for (Synonym syn : homotypicSynonmys) {
-                    loadSynonymsInGroup(homotypicGroupDto, syn, config);
+                    loadSynonymsInGroup(homotypicGroupDto, syn, config, result);
                 }
             }
             if (name != null) {
@@ -451,7 +452,7 @@ public class PortalDtoLoader {
 
                 List<Synonym> heteroSyns = taxon.getSynonymsInGroup(hg, comparator);
                 for (Synonym syn : heteroSyns) {
-                    loadSynonymsInGroup(hgDto, syn, config);
+                    loadSynonymsInGroup(hgDto, syn, config, result);
                 }
                 handleTypification(hg, hgDto, result, config);
             }
@@ -549,14 +550,16 @@ public class PortalDtoLoader {
         conceptRelContainer.addItem(dto);
     }
 
-    private void loadSynonymsInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn, TaxonPageDtoConfiguration config) {
+    private void loadSynonymsInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn,
+            TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
+
         TaxonBaseDto synDto = new TaxonBaseDto();
         loadBaseData(syn, synDto);
         synDto.setLabel(syn.getTitleCache());
         synDto.setTaggedLabel(getTaggedTaxon(syn, config));
 
         if (syn.getName() != null) {
-            handleName(config, synDto, syn.getName());
+            handleName(config, synDto, syn.getName(), pageDto);
             synDto.setNameLabel(syn.getName().getTitleCache());
             handleRelatedNames(syn.getName(), synDto, config);
             loadProtologues(syn.getName(), synDto);
@@ -656,7 +659,7 @@ public class PortalDtoLoader {
             if (!filteredRootNode.getChildren().isEmpty()) {
                 ContainerDto<FeatureDto> features = new ContainerDto<>();
                 for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
-                    handleFeatureNode(taxon, config, featureMap, features, node);
+                    handleFeatureNode(config, featureMap, features, node);
                 }
                 taxonPageDto.setFactualData(features);
             }
@@ -666,7 +669,44 @@ public class PortalDtoLoader {
         }
     }
 
-    private void handleFeatureNode(Taxon taxon, TaxonPageDtoConfiguration config,
+    //TODO merge with loadFacts, it is almost the same, see //DIFFERENT
+    private void loadNameFacts(TaxonName name, TaxonBaseDto nameDto, TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
+
+        try {
+            //compute the features that do exist for this taxon
+            Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(name);
+
+            //filter, sort and structure according to feature tree
+            TreeNode<Feature, UUID> filteredRootNode;
+            if (config.getFeatureTree() != null) {
+
+                //TODO class cast
+                TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
+                filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
+            } else {
+                filteredRootNode = createDefaultFeatureNode(name);
+            }
+
+            //load facts per feature
+            Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(name);
+
+            //load final result
+            if (!filteredRootNode.getChildren().isEmpty()) {
+                ContainerDto<FeatureDto> features = new ContainerDto<>();
+                for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
+                    handleFeatureNode(config, featureMap, features, node);
+                }
+                //DIFFERENT
+                nameDto.setNameFacts(features);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            //DIFFERENT
+            pageDto.addMessage(MessagesDto.NewErrorInstance("Error when loading factual data.", e));
+        }
+    }
+
+    private void handleFeatureNode(TaxonPageDtoConfiguration config,
             Map<UUID, Set<DescriptionElementBase>> featureMap, ContainerDto<FeatureDto> features,
             TreeNode<Feature, UUID> node) {
 
@@ -691,14 +731,14 @@ public class PortalDtoLoader {
             }
         }
 
-        handleDistributions(config, featureDto, taxon, distributions);
+        handleDistributions(config, featureDto, distributions);
         //TODO really needed?
         orderFacts(featureDto);
 
         //children
         ContainerDto<FeatureDto> childFeatures = new ContainerDto<>();
         for (TreeNode<Feature,UUID> child : node.getChildren()) {
-            handleFeatureNode(taxon, config, featureMap, childFeatures, child);
+            handleFeatureNode(config, featureMap, childFeatures, child);
         }
         if (childFeatures.getCount() > 0) {
             featureDto.setSubFeatures(childFeatures);
@@ -733,15 +773,15 @@ public class PortalDtoLoader {
 
     }
 
-    private Map<UUID, Set<DescriptionElementBase>> loadFeatureMap(Taxon taxon) {
+    private Map<UUID, Set<DescriptionElementBase>> loadFeatureMap(IDescribable<?> describable) {
         Map<UUID, Set<DescriptionElementBase>> featureMap = new HashMap<>();
 
         //... load facts
-        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-            if (taxonDescription.isImageGallery()) {
+        for (DescriptionBase<?> description : describable.getDescriptions()) {
+            if (description.isImageGallery()) {
                 continue;
             }
-            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+            for (DescriptionElementBase deb : description.getElements()) {
                 Feature feature = deb.getFeature();
                 if (featureMap.get(feature.getUuid()) == null) {
                     featureMap.put(feature.getUuid(), new HashSet<>());
@@ -752,15 +792,15 @@ public class PortalDtoLoader {
         return featureMap;
     }
 
-    private TreeNode<Feature, UUID> createDefaultFeatureNode(Taxon taxon) {
+    private TreeNode<Feature, UUID> createDefaultFeatureNode(IDescribable<?> describable) {
         TreeNode<Feature, UUID> root = new TreeNode<>();
         Set<Feature> requiredFeatures = new HashSet<>();
 
-        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-            if (taxonDescription.isImageGallery()) {
+        for (DescriptionBase<?> description : describable.getDescriptions()) {
+            if (description.isImageGallery()) {
                 continue;
             }
-            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+            for (DescriptionElementBase deb : description.getElements()) {
                 Feature feature = deb.getFeature();
                 if (feature != null) {  //null should not happen
                     requiredFeatures.add(feature);
@@ -813,13 +853,13 @@ public class PortalDtoLoader {
      * Computes the (unsorted) set of features for  which facts exist
      * for the given taxon.
      */
-    private Map<UUID, Feature> getExistingFeatureUuids(Taxon taxon) {
+    private Map<UUID, Feature> getExistingFeatureUuids(IDescribable<?> describable) {
         Map<UUID, Feature> result = new HashMap<>();
-        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-            if (taxonDescription.isImageGallery()) {
+        for (DescriptionBase<?> description : describable.getDescriptions()) {
+            if (description.isImageGallery()) {
                 continue;
             }
-            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+            for (DescriptionElementBase deb : description.getElements()) {
                 Feature feature = deb.getFeature();
                 if (feature != null) {  //null should not happen
                     result.put(feature.getUuid(), feature);
@@ -830,7 +870,7 @@ public class PortalDtoLoader {
     }
 
     private void handleDistributions(TaxonPageDtoConfiguration config, FeatureDto featureDto,
-            Taxon taxon, List<Distribution> distributions) {
+            List<Distribution> distributions) {
 
         if (distributions.isEmpty()) {
             return;

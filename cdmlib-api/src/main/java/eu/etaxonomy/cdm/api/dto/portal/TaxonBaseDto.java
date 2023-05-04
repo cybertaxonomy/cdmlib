@@ -33,6 +33,8 @@ public class TaxonBaseDto extends IdentifiableDto {
 
     private List<URI> protologues;
 
+    private ContainerDto<FeatureDto> nameFacts;
+
 
     //TODO should we keep formatting client side or should we do formatting on server side? Formatting means: filter, italics, order??
 //    private List<TypedLabel> typedTaxonLabel;
@@ -106,6 +108,12 @@ public class TaxonBaseDto extends IdentifiableDto {
         protologues.add(uri);
     }
 
+    public ContainerDto<FeatureDto> getNameFacts() {
+        return nameFacts;
+    }
+    public void setNameFacts(ContainerDto<FeatureDto> nameFacts) {
+        this.nameFacts = nameFacts;
+    }
 
 
     //TaxonBase info
