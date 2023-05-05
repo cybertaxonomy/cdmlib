@@ -124,6 +124,7 @@ import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -1159,9 +1160,17 @@ public class PortalDtoLoader {
             linkedObject = source.getCdmSource();
         }
 
-        //citation uuid & doi
-        if (source.getCitation()!= null) {
-            sourceDto.setDoi(source.getCitation().getDoiString());
+        //citation doi & uri & links
+        Reference ref = source.getCitation();
+        if (ref != null) {
+            sourceDto.setDoi(ref.getDoiString());
+            sourceDto.setUri(ref.getUri());
+            Set<ExternalLink> links = ref.getLinks();
+            for (ExternalLink link : links) {
+                if (link.getUri() != null) {
+                    sourceDto.addLink(link.getUri());
+                }
+            }
         }
 
         //label
