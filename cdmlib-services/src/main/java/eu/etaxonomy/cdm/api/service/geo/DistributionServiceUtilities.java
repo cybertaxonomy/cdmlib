@@ -729,9 +729,9 @@ public class DistributionServiceUtilities {
         //    but keep distributions for fallback areas (areas with hidden marker, but with visible sub-areas)
         //TODO since using area tree this is only relevant if keepFallBackOnlyIfNoSubareaDataExists = true
         //     as the area tree should also exclude real hidden areas
-        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)) {
+//        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)) {
             removeHiddenAndKeepFallbackAreas(areaTree, fallbackAreaMarkerTypes, filteredDistributions, keepFallBackOnlyIfNoSubareaDataExists);
-        }
+//        }
 
         // -------------------------------------------------------------------
         // 2) remove not computed distributions for areas for which computed
