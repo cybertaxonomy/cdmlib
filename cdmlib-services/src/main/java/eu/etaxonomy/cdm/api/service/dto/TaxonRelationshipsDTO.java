@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -34,11 +36,19 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  *
  * @author a.mueller
  * @since 15.08.2018
+ * @deprecated not needed anymore after fully switching to {@link TaxonPageDto}
+ *             and {@link ConceptRelationDTO}
  */
+@Deprecated
 public class TaxonRelationshipsDTO {
 
     private static final String SENSU_SEPARATOR = ", ";
 
+    /**
+     * @deprecated not needed anymore after fully switching to {@link TaxonPageDto}
+     *             and {@link ConceptRelationDTO}
+     */
+    @Deprecated
     public class TaxonRelationDTO{
 
         private boolean doubtful = false;

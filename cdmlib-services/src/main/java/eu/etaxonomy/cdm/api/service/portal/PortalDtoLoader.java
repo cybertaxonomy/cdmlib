@@ -183,7 +183,7 @@ public class PortalDtoLoader {
             loadBaseData(taxon, result);
             result.setLastUpdated(getLastUpdated(null, taxon));
             result.setLabel(CdmUtils.Nz(taxon.getTitleCache()));
-//        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
+//          result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
             result.setTaggedLabel(getTaggedTaxon(taxon, config));
             if (name != null) {
                 handleName(config, result, name, result);
