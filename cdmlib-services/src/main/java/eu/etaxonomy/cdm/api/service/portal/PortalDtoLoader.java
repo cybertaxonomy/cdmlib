@@ -911,7 +911,7 @@ public class PortalDtoLoader {
         //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
         //are hidden markers on areas that have non-hidden subareas (#4408)
         Set<MarkerType> hiddenAreaMarkerTypes = distributionConfig.getHiddenAreaMarkerTypeList();
-        if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()){
+        if(!CdmUtils.isNullSafeEmpty(hiddenAreaMarkerTypes)){
             condensedConfig.hiddenAndFallbackAreaMarkers = hiddenAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         }
 

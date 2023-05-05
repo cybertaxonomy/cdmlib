@@ -684,7 +684,7 @@ public class DistributionServiceUtilities {
      *
      * @param distributions
      *            the distributions to filter
-     * @param hiddenAreaMarkerTypes
+     * @param fallbackAreaMarkerTypes
      *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will
      *            be skipped or acts as fall back area. For more details see <b>Marked area filter</b> above.
      * @param preferAggregated
@@ -701,7 +701,7 @@ public class DistributionServiceUtilities {
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
             TermTree<NamedArea> areaTree,
-            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
+            Set<MarkerType> fallbackAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
             boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists, boolean ignoreDistributionStatusUndefined) {
 
         SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
@@ -721,7 +721,7 @@ public class DistributionServiceUtilities {
         }
 
         if (areaTree == null) {
-            areaTree = getAreaTree(distributions, hiddenAreaMarkerTypes);
+            areaTree = getAreaTree(distributions, fallbackAreaMarkerTypes);
         }
 
         // -------------------------------------------------------------------
@@ -729,8 +729,8 @@ public class DistributionServiceUtilities {
         //    but keep distributions for fallback areas (areas with hidden marker, but with visible sub-areas)
         //TODO since using area tree this is only relevant if keepFallBackOnlyIfNoSubareaDataExists = true
         //     as the area tree should also exclude real hidden areas
-        if(!CdmUtils.isNullSafeEmpty(hiddenAreaMarkerTypes)) {
-            removeHiddenAndKeepFallbackAreas(areaTree, hiddenAreaMarkerTypes, filteredDistributions, keepFallBackOnlyIfNoSubareaDataExists);
+        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)) {
+            removeHiddenAndKeepFallbackAreas(areaTree, fallbackAreaMarkerTypes, filteredDistributions, keepFallBackOnlyIfNoSubareaDataExists);
         }
 
         // -------------------------------------------------------------------
@@ -893,12 +893,12 @@ public class DistributionServiceUtilities {
      * Remove areas not in area tree but keep fallback areas.
      */
     private static void removeHiddenAndKeepFallbackAreas(TermTree<NamedArea> areaTree, Set<MarkerType> hiddenAreaMarkerTypes,
-            SetMap<NamedArea, Distribution> filteredDistributions, boolean keepFallBackOnlyIfNoSubareaDataExists) {
+            SetMap<NamedArea,Distribution> filteredDistributionsPerArea, boolean keepFallBackOnlyIfNoSubareaDataExists) {
 
         Set<NamedArea> areasHiddenByMarker = new HashSet<>();
         Set<NamedArea> availableAreas = areaTree.getDistinctTerms();
 
-        for(NamedArea area : filteredDistributions.keySet()) {
+        for(NamedArea area : filteredDistributionsPerArea.keySet()) {
             if (! availableAreas.contains(area)) {
                 areasHiddenByMarker.add(area);
             }else if(isMarkedHidden(area, hiddenAreaMarkerTypes)) {
@@ -906,7 +906,7 @@ public class DistributionServiceUtilities {
 
                 // if at least one sub area is not hidden by a marker
                 // the given area is a fall-back area for this sub area
-                SetMap<NamedArea, Distribution> distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributions : null;
+                SetMap<NamedArea, Distribution> distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributionsPerArea : null;
                 boolean isFallBackArea = isRemainingFallBackArea(nodes, hiddenAreaMarkerTypes, distributionsForSubareaCheck);
                 if (!isFallBackArea) {
                     // this area does not need to be shown as
@@ -916,7 +916,7 @@ public class DistributionServiceUtilities {
             }
         }
         for(NamedArea area :areasHiddenByMarker) {
-            filteredDistributions.remove(area);
+            filteredDistributionsPerArea.remove(area);
         }
     }
 
