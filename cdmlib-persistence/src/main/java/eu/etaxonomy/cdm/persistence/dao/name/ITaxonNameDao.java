@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
- *
  */
 public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
@@ -414,13 +413,17 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
     public List<HybridRelationship> getHybridRelationships(Set<HybridRelationshipType> types, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     * @param clazz
-     * @param queryString
-     * @param matchmode
-     * @param criteria
-     * @return
-     */
     public long countByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
             List<Criterion> criteria);
+
+    /**
+     * Returns a list of distinct {@link String}s containing all values for TaxonName.genusOrUninomial
+     * in the database. The result may be filtered on {@link String}s that match the given param parameter.
+     * All a maximum and/minimum rank may be given.
+     * @param param
+     * @param maxRank  TODO not yet implemented
+     * @param minRank  TODO not yet implemented
+     * @return
+     */
+    public List<String> distinctGenusOrUninomial(String param, Rank maxRank, Rank minRank);
 }
