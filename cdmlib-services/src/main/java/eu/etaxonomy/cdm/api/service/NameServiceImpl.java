@@ -932,7 +932,8 @@ public class NameServiceImpl
 
     @Override
     public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria,
-            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
+            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
          Long numberOfResults = dao.countByFullTitle(clazz, queryString, matchmode, criteria);
 
          List<TaxonName> results = new ArrayList<>();
@@ -942,7 +943,6 @@ public class NameServiceImpl
 
          return results;
     }
-
 
     @Override
     public HomotypicalGroup findHomotypicalGroup(UUID uuid) {
@@ -1303,11 +1303,11 @@ public class NameServiceImpl
         M bestMatching = matchingList.iterator().next();
         return bestMatching;
     }
-    
+
     public int modifiedDamerauLevenshteinDistance(String str1, String str2) {
-    	
+
     	//str1 is the query
-    	//str2 is the document 
+    	//str2 is the document
 
 		if (str1 == str2) {
 			return 0;

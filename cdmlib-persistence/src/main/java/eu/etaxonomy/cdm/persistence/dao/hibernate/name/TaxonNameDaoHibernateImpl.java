@@ -67,7 +67,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Repository
 @Qualifier("taxonNameDaoHibernateImpl")
-public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> implements ITaxonNameDao {
+public class TaxonNameDaoHibernateImpl
+        extends IdentifiableDaoBase<TaxonName>
+        implements ITaxonNameDao {
 
     private static final Logger logger = LogManager.getLogger();
 
