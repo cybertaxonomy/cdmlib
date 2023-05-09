@@ -161,6 +161,7 @@ public class Feature extends AvailableForTermBase<Feature> {
     public static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
     private static final UUID uuidDistribution = UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6");
     private static final UUID uuidDistributionGeneral = UUID.fromString("fd8c64f0-6ea5-44b0-9f70-e95833d6076e");
+    private static final UUID uuidIucnStatus = UUID.fromString("0b17d701-4159-488e-a6e7-0045992e61af");
     private static final UUID uuidEcology = UUID.fromString("aa923827-d333-4cf5-9a5f-438ae0a4746b");
     public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
     private static final UUID uuidHabitatAndEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
@@ -840,6 +841,19 @@ public class Feature extends AvailableForTermBase<Feature> {
      */
     public static final Feature DISTRIBUTION_GENERAL(){
         return getTermByUuid(uuidDistributionGeneral);
+    }
+
+    /**
+     * Returns the "IUCN Status" feature. By default
+     * this feature supports {@link TextData}, but
+     * it may also support {@link Distribution}
+     * or {@link CategoricalData}.
+     *
+     * @see #isSupportsDistribution()
+     * @see #isSupportsTextData
+     */
+    public static final Feature IUCN_STATUS(){
+        return getTermByUuid(uuidIucnStatus);
     }
 
 	/**
