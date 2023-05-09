@@ -418,12 +418,14 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
     /**
      * Returns a list of distinct {@link String}s containing all values for TaxonName.genusOrUninomial
-     * in the database. The result may be filtered on {@link String}s that match the given param parameter.
+     * in the database. The result may be filtered on {@link String}s that match the given <code>pattern</code>
+     * parameter. The pattern understands * or % for a general wildcard and _ or ? for single character wildcard.
      * Also a maximum and/minimum rank may be given.
+     *
      * @param param the genusOrUninomial pattern to search for
      * @param maxRank the maximum rank of the names checked
      * @param minRank the maximum rank of the names checked
      * @return
      */
-    public List<String> distinctGenusOrUninomial(String param, Rank maxRank, Rank minRank);
+    public List<String> distinctGenusOrUninomial(String pattern, Rank maxRank, Rank minRank);
 }
