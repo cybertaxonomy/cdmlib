@@ -672,7 +672,7 @@ public class PortalDtoLoader {
             Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(taxon);
 
             //load final result
-            if (!filteredRootNode.getChildren().isEmpty()) {
+            if (filteredRootNode != null && !filteredRootNode.getChildren().isEmpty()) {
                 ContainerDto<FeatureDto> features = new ContainerDto<>();
                 for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
                     handleFeatureNode(config, featureMap, features, node);
@@ -694,14 +694,15 @@ public class PortalDtoLoader {
 
             //filter, sort and structure according to feature tree
             TreeNode<Feature, UUID> filteredRootNode;
-            if (config.getFeatureTree() != null) {
-
-                //TODO class cast
-                TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
-                filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
-            } else {
+            //DIFFERENT
+//            if (config.getFeatureTree() != null) {
+//
+//                //TODO class cast
+//                TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
+//                filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
+//            } else {
                 filteredRootNode = createDefaultFeatureNode(name);
-            }
+//            }  //DIFFERENT END
 
             //load facts per feature
             Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(name);
@@ -850,6 +851,7 @@ public class PortalDtoLoader {
         //if any child is required or this node is required ....
         if (!requiredChildNodes.isEmpty() ||
                 featureNode.getTerm() != null && existingFeatureUuids.contains(featureNode.getTerm().getUuid())) {
+
             TreeNode<Feature,UUID> result = new TreeNode<>();
             //add this nodes data
             Feature feature = featureNode.getTerm() == null ? null : featureNode.getTerm();
