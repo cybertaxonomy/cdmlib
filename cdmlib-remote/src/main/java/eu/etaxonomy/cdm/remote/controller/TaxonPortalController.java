@@ -318,6 +318,9 @@ public class TaxonPortalController extends TaxonController{
     public TaxonPageDto doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "featureTree", required = false) UUID featureTreeUuid,
+            @RequestParam(value = "nameRelationsDirect", required = false) Set<UUID> directNameRelations,
+            @RequestParam(value = "nameRelationsInverse", required = false) Set<UUID> inverseNameRelations,
+
             //distributionInfoConfig
             @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
             @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
