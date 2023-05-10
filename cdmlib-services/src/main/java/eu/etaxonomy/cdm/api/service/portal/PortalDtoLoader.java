@@ -576,9 +576,6 @@ public class PortalDtoLoader {
 
         if (syn.getName() != null) {
             handleName(config, synDto, syn.getName(), pageDto);
-            synDto.setNameLabel(syn.getName().getTitleCache());
-            handleRelatedNames(syn.getName(), synDto, config);
-            loadProtologues(syn.getName(), synDto);
         }
 
         //TODO
