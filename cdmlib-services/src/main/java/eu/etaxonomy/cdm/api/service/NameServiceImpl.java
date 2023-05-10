@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -22,7 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -1304,11 +1302,60 @@ public class NameServiceImpl
         return bestMatching;
     }
 
+    /* this is a implementation of the Taxamatch algorithm built by Tony Rees.
+     * it employs a a custom Modified Damerau-Levenshtein Distance algorithm
+    */
+
+
+    @Override
+	public Map<TaxonNameParts,Integer> findMatchingNames(String taxonName, int defDistanceGenus, int defDisEpith, int limit) {
+        defDistanceGenus=3;//the default value in Rees algorithm is 1/3 of the lenght.
+
+        //1. name parsing.
+
+		TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
+		String genusQuery = name.getGenusOrUninomial();
+		String epithetQuery = name.getSpecificEpithet();
+		char[] initial= genusQuery.toCharArray();
+
+		List<String> dataBaseList = dao.distinctGenusOrUninomial(initial[0]+"*", null, null); //list
+		Map <TaxonNameParts,Integer> fullTaxonNamePartsList = new HashMap<>();
+
+		//2. comparison of:
+
+		    //genus
+		for (String genusNameInDB : dataBaseList) {
+		    int distance = modifiedDamerauLevenshteinDistance(genusQuery, genusNameInDB);
+            if (distance < defDistanceGenus) {
+                List<TaxonNameParts> tempParts = dao.findTaxonNameParts(Optional.of(genusNameInDB),null, null, null, null, null, null, null, null);
+                for (TaxonNameParts namePart: tempParts) {
+                    fullTaxonNamePartsList.put(namePart, distance);
+                }
+            }
+		}
+
+		    //epithet
+		List <TaxonNameParts> epithetList = new ArrayList<>();
+		Map<TaxonNameParts,Integer> tempMap = new HashMap<>();
+		for (TaxonNameParts part: fullTaxonNamePartsList.keySet()) {
+		    tempMap.put(part, fullTaxonNamePartsList.get(part));
+		}
+		for (TaxonNameParts part: fullTaxonNamePartsList.keySet()) {
+		    int distance = modifiedDamerauLevenshteinDistance(epithetQuery, part.getSpecificEpithet());
+            if (distance < defDisEpith) {
+                epithetList.add(part);
+                tempMap.put(part, fullTaxonNamePartsList.get(part)+distance); // need to check how the final distance is calculated
+            }else {
+                //tempMap.remove(part);
+            }
+		}
+		Map<TaxonNameParts,Integer> sortedBestMatches = tempMap.entrySet().stream().sorted(Map.Entry.comparingByValue()).limit(limit)
+                   .collect(Collectors.toMap(
+                              Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        return sortedBestMatches;
+	}
+
     public int modifiedDamerauLevenshteinDistance(String str1, String str2) {
-
-    	//str1 is the query
-    	//str2 is the document
-
 		if (str1 == str2) {
 			return 0;
 		} else if (str1.isEmpty()) {
@@ -1344,36 +1391,5 @@ public class NameServiceImpl
 			}
 			return distanceMatrix[str1.length()][str2.length()];
 		}
-	}
-
-    public List<UuidAndTitleCache<TaxonName>> setDatabaseList (){
-    	List<UuidAndTitleCache<TaxonName>> dataBaseList= getUuidAndTitleCache(0, "*");
-    	return dataBaseList;
-    }
-    
-	public Map<UuidAndTitleCache<TaxonName>,Integer> findMatchingNames(String query, int limit, List<UuidAndTitleCache<TaxonName>> dataBaseList ) {
-		
-		Map<UuidAndTitleCache<TaxonName>,Integer> result = new HashMap<>();
-			
-		result.putAll(calculateDistance(query, dataBaseList));
-		
-		Map<UuidAndTitleCache<TaxonName>,Integer> 
-		sorted = result.entrySet().stream().sorted(Map.Entry.comparingByValue()).limit(limit)
-			       .collect(Collectors.toMap(
-			    	          Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-		return sorted;
-		
-	}
-
-	private Map<UuidAndTitleCache<TaxonName>, Integer> calculateDistance(String query, List<UuidAndTitleCache<TaxonName>> dataBaseList) {
-		
-		Map<UuidAndTitleCache<TaxonName>, Integer> distanceMap = new HashMap<>();
-
-		for (UuidAndTitleCache<TaxonName> document : dataBaseList) {
-
-			int distance = modifiedDamerauLevenshteinDistance(query, document.getTitleCache());
-			distanceMap.put(document, distance);
-		}
-		return distanceMap;
 	}
 }
