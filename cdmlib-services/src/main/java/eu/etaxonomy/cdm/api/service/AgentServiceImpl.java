@@ -176,7 +176,7 @@ public class AgentServiceImpl
         UpdateResult result = new UpdateResult();
         Person newPerson = null;
 		team = CdmBase.deproxy(team, Team.class);
-		if (team.getTeamMembers().size() > 1){
+		if (team.getTeamMembers().size() > 1 || team.isHasMoreMembers()){
 			throw new IllegalArgumentException("Team must not have more than 1 member to be convertable into a person");
 		}else if (team.getTeamMembers().size() == 1){
 		    newPerson = team.getTeamMembers().get(0);
