@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -1308,8 +1309,8 @@ public class NameServiceImpl
 
 
     @Override
-	public Map<TaxonNameParts,Integer> findMatchingNames(String taxonName, int defDistanceGenus, int defDisEpith, int limit) {
-        defDistanceGenus=3;//the default value in Rees algorithm is 1/3 of the lenght.
+	public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName, int maxDistanceGenus, int maxDisEpith, int limit) {
+        maxDistanceGenus=3;//the default value in Rees algorithm is 70% of the lenght.
 
         //1. name parsing.
 
@@ -1318,42 +1319,46 @@ public class NameServiceImpl
 		String epithetQuery = name.getSpecificEpithet();
 		char[] initial= genusQuery.toCharArray();
 
-		List<String> dataBaseList = dao.distinctGenusOrUninomial(initial[0]+"*", null, null); //list
-		Map <TaxonNameParts,Integer> fullTaxonNamePartsList = new HashMap<>();
+		List<String> genusList = dao.distinctGenusOrUninomial(initial[0]+"*", null, null); //list
+		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList = new ArrayList<>();
 
 		//2. comparison of:
 
 		    //genus
-		for (String genusNameInDB : dataBaseList) {
+		for (String genusNameInDB : genusList) {
 		    int distance = modifiedDamerauLevenshteinDistance(genusQuery, genusNameInDB);
-            if (distance < defDistanceGenus) {
+            if (distance < maxDistanceGenus) {
                 List<TaxonNameParts> tempParts = dao.findTaxonNameParts(Optional.of(genusNameInDB),null, null, null, null, null, null, null, null);
                 for (TaxonNameParts namePart: tempParts) {
-                    fullTaxonNamePartsList.put(namePart, distance);
+                    fullTaxonNamePartsList.add(new DoubleResult<TaxonNameParts, Integer>(namePart, distance));
                 }
             }
 		}
-
 		    //epithet
-		List <TaxonNameParts> epithetList = new ArrayList<>();
-		Map<TaxonNameParts,Integer> tempMap = new HashMap<>();
-		for (TaxonNameParts part: fullTaxonNamePartsList.keySet()) {
-		    tempMap.put(part, fullTaxonNamePartsList.get(part));
-		}
-		for (TaxonNameParts part: fullTaxonNamePartsList.keySet()) {
-		    int distance = modifiedDamerauLevenshteinDistance(epithetQuery, part.getSpecificEpithet());
-            if (distance < defDisEpith) {
+		   //add epithet distance
+		List <DoubleResult<TaxonNameParts, Integer>> epithetList = new ArrayList<>();
+		for (DoubleResult<TaxonNameParts, Integer> part: fullTaxonNamePartsList) {
+		    int epithetDistance = modifiedDamerauLevenshteinDistance(epithetQuery, part.getFirstResult().getSpecificEpithet());
+            if (epithetDistance < maxDisEpith) {
                 epithetList.add(part);
-                tempMap.put(part, fullTaxonNamePartsList.get(part)+distance); // need to check how the final distance is calculated
+                part.setSecondResult(part.getSecondResult() + epithetDistance)  ;
+//                tempMap.add(part, fullTaxonNamePartsList.get(part) + epithetDistance); // need to check how the final distance is calculated
             }else {
+                //do nothing
+
                 //tempMap.remove(part);
             }
 		}
-		Map<TaxonNameParts,Integer> sortedBestMatches = tempMap.entrySet().stream().sorted(Map.Entry.comparingByValue()).limit(limit)
-                   .collect(Collectors.toMap(
-                              Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-        return sortedBestMatches;
+
+		Collections.sort(epithetList, (o1,o2)->o1.getSecondResult().compareTo(o2.getSecondResult()) );
+//		tempMap.entrySet().stream().forEach(e->result);
+//
+//		Map<TaxonNameParts,Integer> sortedBestMatches = tempMap.entrySet().stream().sorted(Map.Entry.comparingByValue()).limit(limit)
+//                   .collect(Collectors.toMap(
+//                              Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        return epithetList.subList(0, Math.min(limit,epithetList.size()));
 	}
+
 
     public int modifiedDamerauLevenshteinDistance(String str1, String str2) {
 		if (str1 == str2) {
