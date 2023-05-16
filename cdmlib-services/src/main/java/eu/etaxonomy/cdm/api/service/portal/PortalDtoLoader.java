@@ -554,6 +554,9 @@ public class PortalDtoLoader {
         dto.setRelTaxonUuid(relTaxon.getUuid());
         dto.setRelTaxonLabel(relTaxon.getTitleCache());
         dto.setLabel(relLabel);
+        dto.setTaggedLabel(tags);
+        dto.setNameUuid(relTaxon.getName() != null ? relTaxon.getName().getUuid() : null);
+
         if (rel.getType() != null) {
             dto.setRelTypeUuid(rel.getType().getUuid());
         }
