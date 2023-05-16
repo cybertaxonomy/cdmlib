@@ -1303,23 +1303,24 @@ public class NameServiceImpl
         return bestMatching;
     }
 
-    /* this is a implementation of the Taxamatch algorithm built by Tony Rees.
-     * it employs a a custom Modified Damerau-Levenshtein Distance algorithm
-    */
-
-
+    /* This is a implementation of the Taxamatch algorithm built by Tony Rees.
+     * It employs a custom Modified Damerau-Levenshtein Distance algorithm
+     * see also https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0107510
+     */
+    //TODO work in progress
     @Override
 	public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName, int maxDistanceGenus, int maxDisEpith, int limit) {
-        maxDistanceGenus=3;//the default value in Rees algorithm is 70% of the lenght.
+
+//        maxDistanceGenus=3;//the default value in Rees algorithm is 70% of the lenght.
 
         //1. name parsing.
 
 		TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
 		String genusQuery = name.getGenusOrUninomial();
 		String epithetQuery = name.getSpecificEpithet();
-		char[] initial= genusQuery.toCharArray();
+		String initial= genusQuery.substring(0,1) + "*";
 
-		List<String> genusList = dao.distinctGenusOrUninomial(initial[0]+"*", null, null); //list
+		List<String> genusList = dao.distinctGenusOrUninomial(initial, null, null); //list
 		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList = new ArrayList<>();
 
 		//2. comparison of:
@@ -1327,7 +1328,7 @@ public class NameServiceImpl
 		    //genus
 		for (String genusNameInDB : genusList) {
 		    int distance = modifiedDamerauLevenshteinDistance(genusQuery, genusNameInDB);
-            if (distance < maxDistanceGenus) {
+            if (distance <= maxDistanceGenus) {
                 List<TaxonNameParts> tempParts = dao.findTaxonNameParts(Optional.of(genusNameInDB),null, null, null, null, null, null, null, null);
                 for (TaxonNameParts namePart: tempParts) {
                     fullTaxonNamePartsList.add(new DoubleResult<TaxonNameParts, Integer>(namePart, distance));
@@ -1339,7 +1340,7 @@ public class NameServiceImpl
 		List <DoubleResult<TaxonNameParts, Integer>> epithetList = new ArrayList<>();
 		for (DoubleResult<TaxonNameParts, Integer> part: fullTaxonNamePartsList) {
 		    int epithetDistance = modifiedDamerauLevenshteinDistance(epithetQuery, part.getFirstResult().getSpecificEpithet());
-            if (epithetDistance < maxDisEpith) {
+            if (epithetDistance <= maxDisEpith) {
                 epithetList.add(part);
                 part.setSecondResult(part.getSecondResult() + epithetDistance)  ;
 //                tempMap.add(part, fullTaxonNamePartsList.get(part) + epithetDistance); // need to check how the final distance is calculated
