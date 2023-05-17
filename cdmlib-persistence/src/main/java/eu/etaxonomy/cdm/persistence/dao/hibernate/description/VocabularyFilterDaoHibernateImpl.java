@@ -57,7 +57,7 @@ public class VocabularyFilterDaoHibernateImpl
 
     @Override
     public List<UUID> listUuids(VocabularyFilter filter){
-        String queryStr = query(filter, "tn.uuid");
+        String queryStr = query(filter, "voc.uuid");
         Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
         List<UUID> list = query.list();
 
@@ -117,7 +117,7 @@ public class VocabularyFilterDaoHibernateImpl
         for (LogicFilter<TermVocabulary> singleFilter : termVocabularyFilter){
             String uuid = singleFilter.getUuid().toString();
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
-            result = String.format("(%s%s(tn.uuid = '%s'))", result, op, uuid);
+            result = String.format("(%s%s(voc.uuid = '%s'))", result, op, uuid);
             isFirst = false;
         }
         return result;

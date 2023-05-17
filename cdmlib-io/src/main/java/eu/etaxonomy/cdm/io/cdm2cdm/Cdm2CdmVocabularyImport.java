@@ -45,6 +45,7 @@ public class Cdm2CdmVocabularyImport
 
     private void doData(Cdm2CdmImportState state){
 
+        ICdmApplication source = sourceRepo(state);
         //term uuids laden
         //gegen existierende Terme abgleichen
         //fehlende Terme importieren
@@ -56,7 +57,7 @@ public class Cdm2CdmVocabularyImport
         //vocabularies
         VocabularyFilter vocFilter =
                 state.getConfig().getVocabularyFilter();
-        for (UUID vocUuid : getVocabularyService().uuidList(vocFilter)){
+        for (UUID vocUuid : source.getVocabularyService().uuidList(vocFilter)){
             TransactionStatus tx = startTransaction();
             doSingleVocabulary(state, vocUuid);
             commitTransaction(tx);
