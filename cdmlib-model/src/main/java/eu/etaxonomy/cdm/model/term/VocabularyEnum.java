@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -129,5 +131,91 @@ public enum VocabularyEnum {
 
     public boolean isOrderRelevant() {
         return orderRelevant;
+    }
+
+    public static List<UUID> ontologyStructureVocabularyUuids(){
+        List<UUID> result = new ArrayList<>();
+        result.add(UUID.fromString("cb2e5f49-1cc8-4a6e-a476-db9a22de305d"));  //entire plant
+        result.add(UUID.fromString("4c13949e-50f5-461b-83df-21fec53437e8"));  //generic structures
+        result.add(UUID.fromString("01b4d3ab-afbe-44f8-8e1c-30a9b7950f62"));  //generative structures
+        result.add(UUID.fromString("785c325d-b9f8-4972-a4b5-d5ab3bdaa456"));  //veg. structures
+        result.add(UUID.fromString("e48c8fb6-acae-437e-acfa-8186c83216cc"));  //substances
+        result.add(UUID.fromString("b9a3562c-0ecc-48a0-9e44-3ab55eff1633"));  //structures in adj. form
+        result.add(UUID.fromString("004a0b82-feb1-4c96-8542-26f72c740555"));  //temporal modifier
+        result.add(UUID.fromString("70774cb7-2634-4a77-8d80-fe1e76fdb57f"));  //spatial modifier
+        result.add(UUID.fromString("ca9803d5-1ed7-47ec-99e1-9ff2054991c1"));  //struc. modifier
+        result.add(UUID.fromString("f8f8e819-9ec5-41bd-99da-b0247163d5b1"));  //cond. modifier
+        return result;
+    }
+
+    public static List<UUID> ontologyPropertyVocabularyUuids(){
+        List<UUID> result = new ArrayList<>();
+        result.add(UUID.fromString("7e75ab3f-ca7f-428c-bb0d-4c0fd2f6dad0"));   //properties
+        return result;
+    }
+
+    public static List<UUID> ontologyStateVocabularyUuids(){
+        List<UUID> result = new ArrayList<>();
+        result.add(UUID.fromString("1bb9d2ed-0791-438a-a92c-03c746609263"));   //architecture
+        result.add(UUID.fromString("795e9d8b-12a5-4997-b41c-60c63e2ea7c5"));   //architecture ref. to taxa
+        result.add(UUID.fromString("c1af25bb-8eb1-4b63-8d0c-77f7b0a7430d"));   //arrangement
+        result.add(UUID.fromString("4a395830-5a57-44bf-8c84-58550edf1545"));   //behavior
+        result.add(UUID.fromString("ee3c4b99-a25e-42b9-8cf1-93a5364be477"));   //branching
+        result.add(UUID.fromString("1e9b543a-bbc7-4b3a-af1f-e1d669dfc3c3"));   //coaching
+        result.add(UUID.fromString("a62479aa-3327-45ce-8cfd-1ba4befbeac6"));   //coloration
+        result.add(UUID.fromString("5bdfa0ad-ca81-4772-968a-b4cce5c1bcf7"));   //condition
+        result.add(UUID.fromString("7df07c33-82db-4cb0-b5f3-1fca5139357b"));   //course
+        result.add(UUID.fromString("0ba29576-ba6b-43f7-8ecd-0c7a1b5d3041"));   //dehiscence
+        result.add(UUID.fromString("036b15df-b47d-4763-b64e-bcef5a83f187"));   //density
+        result.add(UUID.fromString("7669f2fa-81bb-4e56-bcf2-a2c0b6432a99"));   //depth
+        result.add(UUID.fromString("869ffc64-c317-44b6-b712-70bf6875d6dc"));   //derivation
+        result.add(UUID.fromString("d08d2e34-2a5d-4dfa-b135-bd62129f1c44"));   //development
+        result.add(UUID.fromString("fdd414d7-a8a4-425b-9bc9-e63f68a7525e"));   //duration
+        result.add(UUID.fromString("e817377f-c2ac-413b-9afa-d0524ab334fd"));   //ecological adaptations
+        result.add(UUID.fromString("5b5c056f-92dd-4f56-9c63-37374092f2e3"));   //fixation
+        result.add(UUID.fromString("2e47d48a-0fb1-4279-901e-263784627a1f"));   //fragility
+        result.add(UUID.fromString("03d23015-a4e8-4a18-a3a3-4c73cbb9737f"));   //function
+        result.add(UUID.fromString("0ef84649-c3c5-4937-bb42-484ce0a199d5"));   //fusion
+        result.add(UUID.fromString("31997373-8edf-44e2-b469-7e54a0a1192e"));   //germination
+        result.add(UUID.fromString("5a1c2af5-8fda-405b-a12c-8f18b490ec21"));   //growth form
+        result.add(UUID.fromString("904741dd-193b-405e-9ae6-e9ccf829d8e4"));   //growth order
+        result.add(UUID.fromString("ca386b91-bb91-474f-9cd3-c6e0cc297413"));   //habitat
+        result.add(UUID.fromString("945263ba-492e-4fed-80c0-13491ed1956f"));   //height
+        result.add(UUID.fromString("3512e1c4-b5db-494f-b7eb-ff0536098849"));   //length
+        result.add(UUID.fromString("6c5799a9-1868-4df8-9020-72f3cf197276"));   //life cycle
+        result.add(UUID.fromString("c53e08ed-9ea3-4ea3-87c7-ce1384b19c26"));   //location
+        result.add(UUID.fromString("97c4a87c-cc43-4e98-95b8-63f28e6e3333"));   //maturatin
+        result.add(UUID.fromString("57bed7c3-017d-4d70-b338-04039777ec42"));   //nutrition
+        result.add(UUID.fromString("ac928b99-3724-4c74-b7b8-2a13dcb07e0e"));   //odor
+        result.add(UUID.fromString("64df01b7-c9c3-4018-92a1-f7f002820163"));   //orientation
+        result.add(UUID.fromString("3c17afa1-a7c1-4c98-8eb6-756904ab55da"));   //ploidy
+        result.add(UUID.fromString("5fdd551e-fa18-47dc-b73d-4cf4193dc777"));   //position
+        result.add(UUID.fromString("919a570f-2ce2-4764-b7ff-44b74d1ec0a8"));   //position relational
+        result.add(UUID.fromString("849d147c-2a43-4a30-a56e-b21c5d23a8a8"));   //presence states
+        result.add(UUID.fromString("3d8b076b-9bc5-48d6-af02-a14e7b2f6772"));   //prominence
+        result.add(UUID.fromString("4a44418a-38cb-4ce1-98ff-a93be647cc2f"));   //pubescence
+        result.add(UUID.fromString("96626d35-89ba-46cd-808e-ceb0a1d26e6e"));   //quantity
+        result.add(UUID.fromString("e2907dc8-4e92-41d4-af63-44161b6bb5f5"));   //reflectance
+        result.add(UUID.fromString("542b1879-d8da-4f2c-9898-6de78dca5fd2"));   //relief
+        result.add(UUID.fromString("2aa5945c-9199-46f6-9cdb-746535687232"));   //reproduction
+        result.add(UUID.fromString("33922250-e8ae-49dc-a989-ec0415a02608"));   //season
+        result.add(UUID.fromString("35ddf096-3b0f-4a94-a7ee-b8671ae1dbc1"));   //shape
+        result.add(UUID.fromString("62f637d1-2deb-4d24-97cc-1b857dd6d599"));   //size
+        result.add(UUID.fromString("d2d2405d-7564-4db6-95df-d31b7309adb4"));   //taste
+        result.add(UUID.fromString("4d2702cb-14fa-4c30-ad0e-1b2852631308"));   //texture
+        result.add(UUID.fromString("3962cb0f-1a0e-4de5-a6a9-74539546834b"));   //toxicity
+        result.add(UUID.fromString("52fad05d-ff3e-4536-9212-f5f22f815906"));   //variability
+        result.add(UUID.fromString("a8446e51-0af0-461a-a88b-f9efb322d692"));   //vernation
+        result.add(UUID.fromString("7154207c-64c5-4c55-8b9a-81f0a8fc2a79"));   //width
+        return result;
+    }
+
+    public static List<UUID> ontologyModifierVocabularyUuids(){
+        List<UUID> result = new ArrayList<>();
+        result.add(UUID.fromString("7acb6493-0284-4a0b-a159-1ee42f162fb2"));   //certainty
+        result.add(UUID.fromString("714e407b-c9fc-4ba4-9bd2-de80f5991651"));   //coverage
+        result.add(UUID.fromString("40554224-5b16-42bf-aade-84ea355ee7d5"));   //degree
+        result.add(UUID.fromString("2b2c5f2b-1ca8-4a67-9915-7f56aac8d18f"));   //frequency
+        return result;
     }
 }
