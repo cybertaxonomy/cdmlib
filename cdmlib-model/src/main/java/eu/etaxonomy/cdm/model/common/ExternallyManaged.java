@@ -72,7 +72,7 @@ public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
     @Column(name="externalId", length=255)
     private String externalId;
 
-    //Actionable link on e.g. on a webservice
+    //Actionable link e.g. to a webservice
     @XmlElement(name = "ExternalLink")
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = UriBridge.class)
