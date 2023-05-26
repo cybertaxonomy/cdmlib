@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto.TaxonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
@@ -197,13 +198,17 @@ public class PortalDtoLoader {
         }
     }
 
-    private void handleName(TaxonPageDtoConfiguration config, TaxonBaseDto nameDto, TaxonName name, TaxonPageDto pageDto) {
-        nameDto.setNameLabel(name.getTitleCache());
-        handleRelatedNames(name, nameDto, config);
-        loadProtologues(name, nameDto);
-        nameDto.setNameUuid(name.getUuid());
-        nameDto.setNameType(name.getNameType().toString());
-        loadNameFacts(name, nameDto, config, pageDto);
+    private void handleName(TaxonPageDtoConfiguration config, TaxonBaseDto taxonDto, TaxonName name, TaxonPageDto pageDto) {
+        TaxonNameDto nameDto = taxonDto.new TaxonNameDto();
+        loadBaseData(name, nameDto);
+
+        taxonDto.setName(nameDto);
+        taxonDto.setNameLabel(name.getTitleCache());
+        handleRelatedNames(name, taxonDto, config);
+        loadProtologues(name, taxonDto);
+        taxonDto.setNameUuid(name.getUuid());
+        taxonDto.setNameType(name.getNameType().toString());
+        loadNameFacts(name, taxonDto, config, pageDto);
         nameDto.setTaggedName(name.getTaggedFullTitle());
     }
 

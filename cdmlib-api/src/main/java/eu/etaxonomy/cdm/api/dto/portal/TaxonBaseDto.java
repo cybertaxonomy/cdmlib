@@ -22,18 +22,72 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class TaxonBaseDto extends IdentifiableDto {
 
+    public class TaxonNameDto extends IdentifiableDto {
+        //nomenclatural code
+        private String nameType;
+
+        private ContainerDto<NameRelationDTO> relatedNames;
+
+        private List<URI> protologues;
+
+        private ContainerDto<FeatureDto> nameFacts;
+
+        //TODO maybe later this can be combined with taggedLabel (merge taxon and name taggedText)
+        private List<TaggedText> taggedName;
+
+        //*********** GETTER / SETTER *******************/
+
+        public List<TaggedText> getTaggedName() {
+            return taggedName;
+        }
+        public void setTaggedName(List<TaggedText> taggedName) {
+            this.taggedName = taggedName;
+        }
+
+        public ContainerDto<FeatureDto> getNameFacts() {
+            return nameFacts;
+        }
+        public void setNameFacts(ContainerDto<FeatureDto> nameFacts) {
+            this.nameFacts = nameFacts;
+        }
+
+        public List<URI> getProtologues() {
+            return protologues;
+        }
+        public void addProtologue(URI uri) {
+            if (protologues == null) {
+                protologues = new ArrayList<>();
+            }
+            protologues.add(uri);
+        }
+
+        public ContainerDto<NameRelationDTO> getRelatedNames() {
+            return relatedNames;
+        }
+        public void addRelatedName(NameRelationDTO relatedName) {
+            if (this.relatedNames == null) {
+                this.relatedNames = new ContainerDto<>();
+            }
+            this.relatedNames.addItem(relatedName);
+        }
+        //TODO either set or add
+        public void setRelatedNames(ContainerDto<NameRelationDTO> relatedNames) {
+            this.relatedNames = relatedNames;
+        }
+
+        public String getType() {
+            return nameType;
+        }
+        public void setType(String nameType) {
+            this.nameType = nameType;
+        }
+
+    }
+
+    private TaxonNameDto name;
+
     //TODO should we distinguish data parts (e.g. on general page we do not need last updates from synonymy)
     //lastUpdated
-    private String nameLabel;
-    private UUID nameUuid;
-    //nomenclatural code
-    private String nameType;
-
-    private ContainerDto<NameRelationDTO> relatedNames;
-
-    private List<URI> protologues;
-
-    private ContainerDto<FeatureDto> nameFacts;
 
 
     //TODO should we keep formatting client side or should we do formatting on server side? Formatting means: filter, italics, order??
@@ -42,28 +96,25 @@ public class TaxonBaseDto extends IdentifiableDto {
 
     private List<TaggedText> taggedLabel;
 
-    //TODO maybe later this can be combined with taggedLabel (merge taxon and name taggedText)
-    private List<TaggedText> taggedName;
-
     public String getNameLabel() {
-        return nameLabel;
+        return getName().getLabel();
     }
     public void setNameLabel(String nameLabel) {
-        this.nameLabel = nameLabel;
+        getName().setLabel(nameLabel);
     }
 
     public UUID getNameUuid() {
-        return nameUuid;
+        return getName().getUuid();
     }
     public void setNameUuid(UUID nameUuid) {
-        this.nameUuid = nameUuid;
+        getName().setUuid(nameUuid);
     }
 
     public String getNameType() {
-        return nameType;
+        return getName().getType();
     }
     public void setNameType(String nameType) {
-        this.nameType = nameType;
+        getName().setType(nameType);
     }
 
     //    public List<TypedLabel> getTypedTaxonLabel() {
@@ -87,43 +138,47 @@ public class TaxonBaseDto extends IdentifiableDto {
     }
 
     public List<TaggedText> getTaggedName() {
-        return taggedName;
+        return getName().getTaggedName();
     }
     public void setTaggedName(List<TaggedText> taggedName) {
-        this.taggedName = taggedName;
+        getName().setTaggedName(taggedName);
     }
 
     public ContainerDto<NameRelationDTO> getRelatedNames() {
-        return relatedNames;
+        return getName().getRelatedNames();
     }
     public void addRelatedName(NameRelationDTO relatedName) {
-        if (this.relatedNames == null) {
-            this.relatedNames = new ContainerDto<>();
-        }
-        this.relatedNames.addItem(relatedName);
+        getName().addRelatedName(relatedName);
     }
     //TODO either set or add
     public void setRelatedNames(ContainerDto<NameRelationDTO> relatedNames) {
-        this.relatedNames = relatedNames;
+        getName().setRelatedNames(relatedNames);
+    }
+
+    public ContainerDto<FeatureDto> getNameFacts() {
+        return getName().getNameFacts();
+    }
+    public void setNameFacts(ContainerDto<FeatureDto> nameFacts) {
+        getName().setNameFacts(nameFacts);
     }
 
     //protologues
 
     public List<URI> getProtologues() {
-        return protologues;
+        return getName().getProtologues();
     }
     public void addProtologue(URI uri) {
-        if (protologues == null) {
-            protologues = new ArrayList<>();
-        }
-        protologues.add(uri);
+        getName().addProtologue(uri);
     }
 
-    public ContainerDto<FeatureDto> getNameFacts() {
-        return nameFacts;
+    public TaxonNameDto getName() {
+        if (name == null) {
+            name = new TaxonNameDto();
+        }
+        return name;
     }
-    public void setNameFacts(ContainerDto<FeatureDto> nameFacts) {
-        this.nameFacts = nameFacts;
+    public void setName(TaxonNameDto name) {
+        this.name = name;
     }
 
 
