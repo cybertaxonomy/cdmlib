@@ -796,7 +796,7 @@ public class DistributionServiceUtilities {
         //create area list
         Set<NamedArea> relevantAreas = new HashSet<>();
         for (Distribution distribution : distributions) {
-            NamedArea area = distribution.getArea();
+            NamedArea area = HibernateProxyHelper.deproxy(distribution.getArea(), NamedArea.class) ;
             if (area != null && !relevantAreas.contains(area)) {
                 boolean isHidden = isMarkedHidden(area, hiddenAreaMarkerTypes);
                 if (isHidden) {
