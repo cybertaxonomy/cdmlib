@@ -104,7 +104,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 	"recommendedStatisticalMeasures",
 	"supportedCategoricalEnumerations",
 	"recommendedMeasurementUnits",
-	"inverseRepresentations"
+	"inverseRepresentations",
+	"maxStates",
+	"maxPerDataset"
 })
 @XmlRootElement(name = "Feature")
 @Entity
