@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -37,7 +37,7 @@ public  class Cdm2CdmImportConfigurator
     private TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance();
 
     private VocabularyFilter vocabularyFilter = VocabularyFilter.NewInstance();
-    private Set<UUID> graphFilter = new HashSet<>();
+    private Collection<UUID> graphFilter = new HashSet<>();
     private ITaxonNodeOutStreamPartitioner partitioner;
     private boolean concurrent = false;  //
 
@@ -155,10 +155,10 @@ public  class Cdm2CdmImportConfigurator
         this.vocabularyFilter = vocabularyFilter;
     }
 
-    public Set<UUID> getGraphFilter() {
+    public Collection<UUID> getGraphFilter() {
         return graphFilter;
     }
-    public void setGraphFilter(Set<UUID> graphFilter) {
+    public void setGraphFilter(Collection<UUID> graphFilter) {
         this.graphFilter = graphFilter;
     }
 

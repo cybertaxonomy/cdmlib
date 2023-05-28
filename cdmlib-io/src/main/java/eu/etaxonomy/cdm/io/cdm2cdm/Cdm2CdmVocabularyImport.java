@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -63,7 +63,7 @@ public class Cdm2CdmVocabularyImport
         }
 
         //graphs
-        Set<UUID> graphUuids = state.getConfig().getGraphFilter();
+        Collection<UUID> graphUuids = state.getConfig().getGraphFilter();
         for (UUID graphUuid : graphUuids){
             TransactionStatus tx = startTransaction();
             doSingleGraph(state, graphUuid);

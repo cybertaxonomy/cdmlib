@@ -218,4 +218,12 @@ public enum VocabularyEnum {
         result.add(UUID.fromString("2b2c5f2b-1ca8-4a67-9915-7f56aac8d18f"));   //frequency
         return result;
     }
+
+    public static List<UUID> ontologyTreeUuids(){
+        List<UUID> result = new ArrayList<>();
+        result.add(UUID.fromString("17941710-059e-4e0b-a617-6439d66a39a6"));   //structures
+        result.add(UUID.fromString("a4598d3f-0acf-4ad1-a6c9-0c31485da535"));   //properties
+        result.add(UUID.fromString("fa9e8602-65b8-4f29-89f3-79132df994ca"));   //states
+        return result;
+    }
 }
