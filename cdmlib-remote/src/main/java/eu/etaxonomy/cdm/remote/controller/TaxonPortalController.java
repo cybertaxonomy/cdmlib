@@ -327,6 +327,8 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
             @RequestParam(value = "fallbackAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
+            //TODO still needs to be used
+            @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
