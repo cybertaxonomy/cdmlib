@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -46,13 +47,13 @@ public class FeatureDto extends TermDto {
 
     Set<TermDto> recommendedMeasurementUnits = new HashSet<>();
     Set<TermDto> recommendedStatisticalMeasures = new HashSet<>();
-    Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
-    Set<TermVocabularyDto> recommendedModifierEnumeration = new HashSet<>();
+    Set<TermCollectionDto> supportedCategoricalEnumerations = new HashSet<>();
+    Set<TermCollectionDto> recommendedModifierEnumeration = new HashSet<>();
 
     public FeatureDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,
             boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence, String titleCache, boolean isSupportsCategoricalData, boolean isSupportsQuantitativeData,
-            Set<TermVocabularyDto> supportedCategoricalEnumerations, Set<TermVocabularyDto> recommendedModifierEnumeration,  Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures){
+            Set<TermCollectionDto> supportedCategoricalEnumerations, Set<TermCollectionDto> recommendedModifierEnumeration,  Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures){
         super(uuid, representations, TermType.Feature, partOfUuid, kindOfUuid,
                 vocabularyUuid, orderIndex, idInVocabulary, titleCache);
         this.isAvailableForOccurrence = isAvailableForOccurrence;
@@ -73,14 +74,14 @@ public class FeatureDto extends TermDto {
         UUID kindOfUuid = term.getKindOf() != null? term.getKindOf().getUuid(): null;
         TermVocabulary<?> vocabulary = HibernateProxyHelper.deproxy(term.getVocabulary());
         UUID vocUuid =  vocabulary != null? vocabulary.getUuid(): null;
-        Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
-        for (TermVocabulary<? extends DefinedTermBase> stateVoc:term.getSupportedCategoricalEnumerations()){
-            supportedCategoricalEnumerations.add(TermVocabularyDto.fromVocabulary(stateVoc));
+        Set<TermCollectionDto> supportedCategoricalEnumerations = new HashSet<>();
+        for (TermCollection<? extends DefinedTermBase,?> stateVoc:term.getSupportedCategoricalEnumerations()){
+            supportedCategoricalEnumerations.add(TermCollectionDto.fromCdmBase(stateVoc));
         }
 
-        Set<TermVocabularyDto> recommendedModifiers = new HashSet<>();
-        for (TermVocabulary<DefinedTerm> modifier:term.getRecommendedModifierEnumeration()){
-            recommendedModifiers.add(TermVocabularyDto.fromVocabulary(modifier));
+        Set<TermCollectionDto> recommendedModifiers = new HashSet<>();
+        for (TermCollection<DefinedTerm,?> modifier:term.getRecommendedModifierEnumeration()){
+            recommendedModifiers.add(TermCollectionDto.fromCdmBase(modifier));
         }
 
         Set<TermDto> recommendedMeasurementUnits= new HashSet<>();
@@ -117,14 +118,14 @@ public class FeatureDto extends TermDto {
         if (term.getSupportedCategoricalEnumerations() != null && !term.getSupportedCategoricalEnumerations().isEmpty()){
             result.supportedCategoricalEnumerations = new HashSet<>();
         }
-        for (TermVocabulary<? extends DefinedTermBase> voc: term.getSupportedCategoricalEnumerations()){
+        for (TermCollection<? extends DefinedTermBase,?> voc: term.getSupportedCategoricalEnumerations()){
             result.supportedCategoricalEnumerations.add(new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat()));
         }
 
         if (term.getRecommendedModifierEnumeration() != null && !term.getRecommendedModifierEnumeration().isEmpty()){
             result.recommendedModifierEnumeration = new HashSet<>();
         }
-        for (TermVocabulary<DefinedTerm> voc: term.getRecommendedModifierEnumeration()){
+        for (TermCollection<DefinedTerm,?> voc: term.getRecommendedModifierEnumeration()){
             result.recommendedModifierEnumeration.add(new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat()));
         }
         return result;
@@ -185,17 +186,17 @@ public class FeatureDto extends TermDto {
         this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
     }
 
-    public Set<TermVocabularyDto> getSupportedCategoricalEnumerations() {
+    public Set<TermCollectionDto> getSupportedCategoricalEnumerations() {
         return supportedCategoricalEnumerations;
     }
-    public void setSupportedCategoricalEnumerations(Set<TermVocabularyDto> supportedCategoricalEnumerations) {
+    public void setSupportedCategoricalEnumerations(Set<TermCollectionDto> supportedCategoricalEnumerations) {
         this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
     }
 
-    public Set<TermVocabularyDto> getRecommendedModifierEnumeration() {
+    public Set<TermCollectionDto> getRecommendedModifierEnumeration() {
         return recommendedModifierEnumeration;
     }
-    public void setRecommendedModifierEnumeration(Set<TermVocabularyDto> recommendedModifierEnumeration) {
+    public void setRecommendedModifierEnumeration(Set<TermCollectionDto> recommendedModifierEnumeration) {
         this.recommendedModifierEnumeration = recommendedModifierEnumeration;
     }
 
@@ -310,7 +311,7 @@ public class FeatureDto extends TermDto {
                 }
 
                 Object o = elements[13];
-                Set<TermVocabularyDto> recommendedModifierDtos = new HashSet<>();
+                Set<TermCollectionDto> recommendedModifierDtos = new HashSet<>();
                 if (o instanceof TermVocabulary){
                     recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
                 }else if (o instanceof Set){
@@ -333,7 +334,7 @@ public class FeatureDto extends TermDto {
                     }
                 }
                 o =  elements[15];
-                Set<TermVocabularyDto> supportedCategoricalDtos = new HashSet<>();
+                Set<TermCollectionDto> supportedCategoricalDtos = new HashSet<>();
                 if (o instanceof TermVocabulary){
                     supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
                 }else if (o instanceof Set){

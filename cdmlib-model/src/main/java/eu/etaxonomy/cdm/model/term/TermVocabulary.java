@@ -144,6 +144,12 @@ public class TermVocabulary<T extends DefinedTermBase>
 		return null;
 	}
 
+
+    @Override
+    public Set<T> getDistinctTerms(){
+        return getTerms();
+    }
+
 	public Set<T> getTerms() {
 		return terms;
 	}

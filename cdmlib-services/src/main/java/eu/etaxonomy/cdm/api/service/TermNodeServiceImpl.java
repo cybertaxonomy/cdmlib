@@ -47,9 +47,9 @@ import eu.etaxonomy.cdm.persistence.dto.CharacterDto;
 import eu.etaxonomy.cdm.persistence.dto.CharacterNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.FeatureStateDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -458,7 +458,7 @@ public class TermNodeServiceImpl
 //                  recommended mod. vocabularies
                     character.getRecommendedModifierEnumeration().clear();
                     uuids = new ArrayList<>();
-                    for (TermVocabularyDto termDto: characterDto.getRecommendedModifierEnumeration()){
+                    for (TermCollectionDto termDto: characterDto.getRecommendedModifierEnumeration()){
                         uuids.add(termDto.getUuid());
                     }
                     List<TermVocabulary> termVocs;
@@ -472,7 +472,7 @@ public class TermNodeServiceImpl
 //                  supported state vocabularies
                     character.getSupportedCategoricalEnumerations().clear();
                     uuids = new ArrayList<>();
-                    for (TermVocabularyDto termDto: characterDto.getSupportedCategoricalEnumerations()){
+                    for (TermCollectionDto termDto: characterDto.getSupportedCategoricalEnumerations()){
                         uuids.add(termDto.getUuid());
                     }
                     if (!uuids.isEmpty()){

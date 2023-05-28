@@ -31,7 +31,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     private UUID uuid;
     private URI uri;
     private TermType termType;
-    private Set<Representation> representations = new HashSet<>();
+    protected Set<Representation> representations = new HashSet<>();
     private String representation_L10n = null;
     private String representation_L10n_abbreviatedLabel = null;
     private String representation_L10n_text = null;

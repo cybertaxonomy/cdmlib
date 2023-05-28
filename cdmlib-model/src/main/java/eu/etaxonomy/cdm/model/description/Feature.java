@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.term.AvailableForTermBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -128,7 +129,7 @@ public class Feature extends AvailableForTermBase<Feature> {
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
-	private final Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<>();
+	private final Set<TermCollection<DefinedTerm,?>> recommendedModifierEnumeration = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_StatisticalMeasure")
@@ -138,7 +139,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	@SuppressWarnings("rawtypes")
     @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
-	private final Set<TermVocabulary<? extends DefinedTermBase>> supportedCategoricalEnumerations = new HashSet<>();
+	private final Set<TermCollection<? extends DefinedTermBase,?>> supportedCategoricalEnumerations = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
@@ -483,13 +484,12 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * Returns the set of {@link TermVocabulary term vocabularies} containing the
 	 * {@link Modifier modifiers} recommended to be used for {@link DescriptionElementBase description elements}
 	 * with <i>this</i> feature.
-	 *
 	 */
 	@XmlElementWrapper(name = "RecommendedModifierEnumerations")
 	@XmlElement(name = "RecommendedModifierEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermVocabulary<DefinedTerm>> getRecommendedModifierEnumeration() {
+	public Set<TermCollection<DefinedTerm,?>> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
 
@@ -603,7 +603,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	@XmlElement(name = "SupportedCategoricalEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermVocabulary<? extends DefinedTermBase>> getSupportedCategoricalEnumerations() {
+	public Set<TermCollection<? extends DefinedTermBase,?>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
@@ -616,7 +616,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see    	   								#getSupportedCategoricalEnumerations()
 	 */
 	public void addSupportedCategoricalEnumeration(
-			TermVocabulary<? extends DefinedTermBase> supportedCategoricalEnumeration) {
+	        TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
 	/**

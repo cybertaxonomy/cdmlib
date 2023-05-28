@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
+import java.beans.Transient;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -108,6 +109,10 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
     public void setFlat(boolean isFlat) {
         this.isFlat = isFlat;
     }
+
+    @Transient
+    @javax.persistence.Transient
+    public abstract Set<TERM> getDistinctTerms();
 
     /**
      * @Deprecated for use by defined subclasses only

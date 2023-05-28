@@ -19,15 +19,19 @@ import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 
 /**
  * @author k.luther
  * @since Aug 25, 2021
+ *
+ * @deprecated it looks like this class is not in use. So it will be removed in some of
+ *             the next versions
  */
+@Deprecated
 public class FeatureDto_ extends TermDto {
 
     private static final long serialVersionUID = -5138575401281727741L;
@@ -82,8 +86,8 @@ public class FeatureDto_ extends TermDto {
             dto.supportedDataTypes.remove(CdmClass.TEXT_DATA);
         }
         TermVocabularyDto vocDto;
-        for (TermVocabulary<?> voc: feature.getRecommendedModifierEnumeration()){
-            vocDto = TermVocabularyDto.fromVocabulary(voc);
+        for (TermCollection<?,?> voc: feature.getRecommendedModifierEnumeration()){
+            vocDto = null; //TermVocabularyDto.fromVocabulary(voc);
             dto.recommendedModifierEnumeration.add(vocDto);
         }
         TermDto termDto;
@@ -91,8 +95,8 @@ public class FeatureDto_ extends TermDto {
             termDto = TermDto.fromTerm(term);
             dto.recommendedStatisticalMeasures.add(termDto);
         }
-        for (TermVocabulary<? extends DefinedTermBase> voc: feature.getSupportedCategoricalEnumerations()){
-            vocDto = TermVocabularyDto.fromVocabulary(voc);
+        for (TermCollection<? extends DefinedTermBase,?> termCollection: feature.getSupportedCategoricalEnumerations()){
+            vocDto = null; //TermVocabularyDto.fromVocabulary(termCollection);
             dto.supportedCategoricalEnumerations.add(vocDto);
         }
 

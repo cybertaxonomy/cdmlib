@@ -14,14 +14,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author pplitzner
  * @date 05.11.2018
  */
-public class TermCollectionDto extends AbstractTermDto {
+public abstract class TermCollectionDto extends AbstractTermDto {
 
     private static final long serialVersionUID = 6053392236860675874L;
 
@@ -31,6 +35,17 @@ public class TermCollectionDto extends AbstractTermDto {
     private boolean containsDuplicates = false;
     private boolean isOrderRelevant;
     private boolean isFlat;
+
+    //subclasses should override this method
+    public static TermCollectionDto fromCdmBase(TermCollection<?,?> termCollection) {
+        if (termCollection.isInstanceOf(TermVocabulary.class)) {
+            return TermVocabularyDto.fromVocabulary(CdmBase.deproxy(termCollection, TermVocabulary.class));
+        }else if (termCollection.isInstanceOf(TermTree.class)) {
+            return TermTreeDto.fromTree(CdmBase.deproxy(termCollection, TermTree.class));
+        }else {
+            throw new RuntimeException("TermCollection type not supported: " + termCollection.getClass());
+        }
+    }
 
     public TermCollectionDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, titleCache);

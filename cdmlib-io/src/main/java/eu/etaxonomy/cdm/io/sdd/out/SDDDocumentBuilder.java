@@ -79,9 +79,9 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * Writes the SDD XML file.
@@ -685,11 +685,11 @@ public class SDDDocumentBuilder {
 										.isEmpty()) {
 									ElementImpl elModifiers = new ElementImpl(
 											document, "Modifiers");
-									for (Iterator<TermVocabulary<DefinedTerm>> menum = feature
+									for (Iterator<TermCollection<DefinedTerm,?>> menum = feature
 											.getRecommendedModifierEnumeration()
 											.iterator(); menum.hasNext();) {
-										TermVocabulary<DefinedTerm> termVoc = menum.next();
-										Set<DefinedTerm> sm = termVoc.getTerms();
+									    TermCollection<DefinedTerm,?> termVoc = menum.next();
+										Set<DefinedTerm> sm = termVoc.getDistinctTerms();
 										for (Iterator<DefinedTerm> modif = sm.iterator(); modif.hasNext();) {
 											DefinedTerm modifier = modif.next();
 											ElementImpl elModifier = new ElementImpl(
@@ -745,14 +745,14 @@ public class SDDDocumentBuilder {
 								charactersCount);
 						buildRepresentation(elCategoricalCharacter, character);
 
-						Set<TermVocabulary<? extends DefinedTermBase>> enumerations = character
+						Set<TermCollection<? extends DefinedTermBase,?>> enumerations = character
 								.getSupportedCategoricalEnumerations();
 						if (enumerations != null) {
 							if (enumerations.size() > 0) {
 								ElementImpl elStates = new ElementImpl(
 										document, STATES);
-								TermVocabulary<? extends DefinedTermBase> tv = enumerations.iterator().next();
-								Set<? extends DefinedTermBase> stateList = tv.getTerms();
+								TermCollection<? extends DefinedTermBase,?> tv = enumerations.iterator().next();
+								Set<? extends DefinedTermBase> stateList = tv.getDistinctTerms();
 								for (int j = 0; j < stateList.size(); j++) {
 									ElementImpl elStateDefinition = new ElementImpl(
 											document, STATE_DEFINITION);
