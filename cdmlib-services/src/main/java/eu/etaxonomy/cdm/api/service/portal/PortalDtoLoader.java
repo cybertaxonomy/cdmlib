@@ -434,10 +434,9 @@ public class PortalDtoLoader {
 
             //TODO depending on config add/remove accepted name
 
-            //TODO check publish flag
-
             //homotypic synonyms
-            List<Synonym> homotypicSynonmys = taxon.getHomotypicSynonymsByHomotypicGroup(comparator);
+            List<Synonym> homotypicSynonmys = filterPublished(taxon.getHomotypicSynonymsByHomotypicGroup(comparator));
+
             TaxonPageDto.HomotypicGroupDTO homotypicGroupDto = new TaxonPageDto.HomotypicGroupDTO();
             if (homotypicSynonmys != null && !homotypicSynonmys.isEmpty()) {
                 loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
@@ -464,7 +463,7 @@ public class PortalDtoLoader {
                 loadBaseData(taxon.getName().getHomotypicalGroup(), hgDto);
                 heteroContainer.addItem(hgDto);
 
-                List<Synonym> heteroSyns = taxon.getSynonymsInGroup(hg, comparator);
+                List<Synonym> heteroSyns = filterPublished(taxon.getSynonymsInGroup(hg, comparator));
                 for (Synonym syn : heteroSyns) {
                     loadSynonymsInGroup(hgDto, syn, config, result);
                 }
@@ -473,6 +472,18 @@ public class PortalDtoLoader {
         } catch (Exception e) {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading synonym data.", e));
+        }
+    }
+
+    /**
+     * @param homotypicSynonymsByHomotypicGroup
+     * @return
+     */
+    private List<Synonym> filterPublished(List<Synonym> synonymList) {
+        if (synonymList == null) {
+            return null;
+        }else {
+            return synonymList.stream().filter(s->s.isPublish()).collect(Collectors.toList());
         }
     }
 
