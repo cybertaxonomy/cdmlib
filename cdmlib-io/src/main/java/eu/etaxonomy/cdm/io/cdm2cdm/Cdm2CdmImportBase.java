@@ -949,9 +949,8 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    /**
-     * @param sources
-     */
+    //TODO for some reason the sources are still persisted, though not related to source holder
+    //probably this is related to 1:1 relationship
     private void filterImportSources(Set<? extends OriginalSourceBase> sources) {
         Set<OriginalSourceBase> toDelete = new HashSet<>();
         for (OriginalSourceBase osb: sources){
