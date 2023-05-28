@@ -1089,7 +1089,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
     );
 
     create table PUBLIC.DEFINEDTERMBASE (
-       DTYPE varchar(31) not null,
+        DTYPE varchar(31) not null,
         ID integer not null,
         CREATED timestamp,
         UUID varchar(36),
