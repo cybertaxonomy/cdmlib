@@ -33,6 +33,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private boolean withMedia = true;
     private boolean withTaxonNodes = true;
 
+
     //synonymy
     //TODO taxonrelations
     //should withSynonyms includeProparte and missapplications
@@ -48,6 +49,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
     public boolean formatSec = false;  //!!
+    private Integer etAlPosition;
 
 
 // ******************************* GETTER / SETTER ***********************************/
@@ -131,5 +133,12 @@ public class TaxonPageDtoConfiguration implements Serializable {
     }
     public void setLocales(List<Locale> locales) {
         this.locales = locales;
+    }
+
+    public Integer getEtAlPosition() {
+        return etAlPosition;
+    }
+    public void setEtAlPosition(Integer etAlPosition) {
+        this.etAlPosition = etAlPosition;
     }
 }

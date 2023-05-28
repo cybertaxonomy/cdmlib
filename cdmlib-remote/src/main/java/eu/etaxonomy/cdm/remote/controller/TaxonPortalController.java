@@ -320,6 +320,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "featureTree", required = false) UUID featureTreeUuid,
             @RequestParam(value = "nameRelationsDirect", required = false) Set<UUID> directNameRelations,
             @RequestParam(value = "nameRelationsInverse", required = false) Set<UUID> inverseNameRelations,
+            @RequestParam(value = "etAlPos", required = false) Integer etAlPosition,
 
             //distributionInfoConfig
             @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
@@ -357,6 +358,8 @@ public class TaxonPortalController extends TaxonController{
 
         config.setTaxonUuid(taxonUuid);
         config.setFeatureTree(featureTreeUuid);
+        config.setEtAlPosition(etAlPosition);
+
         //distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
         distributionConfig.setUseTreeDto(true);
