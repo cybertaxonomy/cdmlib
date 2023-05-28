@@ -328,6 +328,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "doMedia", required = false) boolean doMedia,
             @RequestParam(value = "doTaxonNodes", required = false) boolean doTaxonNodes,
             @RequestParam(value = "doTaxonRelations", required = false) boolean doTaxonRelations,
+            //TODO annotation type filter
 
             //distributionInfoConfig
             @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
@@ -357,6 +358,7 @@ public class TaxonPortalController extends TaxonController{
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+
         if (partSet == null) {
             partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
         }
