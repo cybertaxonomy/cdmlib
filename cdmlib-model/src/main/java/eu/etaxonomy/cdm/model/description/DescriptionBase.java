@@ -79,6 +79,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "descriptionElements",
     "imageGallery",
     "isDefault",
+    "publish",
     "types"
 })
 @Entity
@@ -144,6 +145,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     //TODO make it a DescriptionState
     @XmlElement(name = "isDefault")
     private boolean isDefault;
+
+    @XmlElement(name = "publish")
+    private boolean publish;
 
     @XmlAttribute(name ="types")
     @NotNull
@@ -256,6 +260,13 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     }
     public void setImageGallery(boolean imageGallery) {
         this.imageGallery = imageGallery;
+    }
+
+    public boolean isPublish() {
+        return publish;
+    }
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 
     public boolean isDefault() {

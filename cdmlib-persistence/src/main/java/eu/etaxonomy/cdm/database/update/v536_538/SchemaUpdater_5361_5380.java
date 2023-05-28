@@ -76,6 +76,12 @@ public class SchemaUpdater_5361_5380 extends SchemaUpdaterBase {
         columnName = "maxStates";
         ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, null, !NOT_NULL);
 
+        //#10206 add publish flag to description base
+        stepName = "Add publish flag to description base";
+        tableName = "DescriptionBase";
+        columnName = "publish";
+        ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, true);
+
 		return stepList;
     }
 }
