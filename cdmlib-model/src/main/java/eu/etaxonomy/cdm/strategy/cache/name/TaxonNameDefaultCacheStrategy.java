@@ -49,13 +49,14 @@ public class TaxonNameDefaultCacheStrategy
     private static final Logger logger = LogManager.getLogger();
 	private static final long serialVersionUID = -6577757501563212669L;
 
-    final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
+	private static String NOTHO = "notho";
 
-    protected String nameAuthorSeperator = " ";
-    protected String basionymStart = "(";
-    protected String basionymEnd = ")";
-    protected String exAuthorSeperator = " ex ";
-    private static String NOTHO = "notho";
+	final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
+
+    private String nameAuthorSeperator = " ";
+    private String basionymStart = "(";
+    private String basionymEnd = ")";
+    private String exAuthorSeperator = " ex ";
     private CharSequence basionymAuthorCombinationAuthorSeperator = " ";
 
     private String zooAuthorYearSeperator = ", ";
