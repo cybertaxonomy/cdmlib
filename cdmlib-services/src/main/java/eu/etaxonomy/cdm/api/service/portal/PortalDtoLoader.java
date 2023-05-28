@@ -1153,6 +1153,16 @@ public class PortalDtoLoader {
                 sourcedDto.addSource(sourceDto);
             }
         }
+        //load description sources for facts
+        if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
+            DescriptionElementBase deb = CdmBase.deproxy(cdmBase, DescriptionElementBase.class);
+            SourcedDto sourcedDto = (SourcedDto)dto;
+            for (OriginalSourceBase source : deb.getSources()) {
+                SourceDto sourceDto = new SourceDto();
+                loadSource(source, sourceDto);
+                sourcedDto.addSource(sourceDto);
+            }
+        }
     }
 
     private void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
