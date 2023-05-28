@@ -32,12 +32,9 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import eu.etaxonomy.cdm.persistence.hibernate.UpperCasePhysicalNamingStrategyStandardImpl;
 
 /**
- *
  * This class may help to create your DDL file.
- * However, it does not support Auditing table yet as they are (maybe) not supported
- * by Hibernate 4 hbm2dll.
- * It is also unclear if the antrun plugin supports envers in hibernate 4. I wasn't successful with it.
- * http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch15.html#envers-generateschema
+ *
+ * TODO: Not sure if the following notes are still correct:
  *
  * Also the result needs to be changed to uppercase and some _uniquekey statements need to be replaced as they are not
  * unique themselves.
