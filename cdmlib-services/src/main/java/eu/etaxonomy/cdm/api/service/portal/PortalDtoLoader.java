@@ -140,6 +140,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
@@ -202,14 +203,17 @@ public class PortalDtoLoader {
         TaxonNameDto nameDto = taxonDto.new TaxonNameDto();
         loadBaseData(name, nameDto);
 
+        INameCacheStrategy formatter = name.cacheStrategy();
+        formatter.setEtAlPosition(config.getEtAlPosition());
+
         taxonDto.setName(nameDto);
-        taxonDto.setNameLabel(name.getTitleCache());
+        taxonDto.setNameLabel(formatter.getTitleCache(name));
         handleRelatedNames(name, taxonDto, config);
         loadProtologues(name, taxonDto);
         taxonDto.setNameUuid(name.getUuid());
         taxonDto.setNameType(name.getNameType().toString());
         loadNameFacts(name, taxonDto, config, pageDto);
-        nameDto.setTaggedName(name.getTaggedFullTitle());
+        nameDto.setTaggedName(formatter.getTaggedFullTitle(name));
     }
 
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {

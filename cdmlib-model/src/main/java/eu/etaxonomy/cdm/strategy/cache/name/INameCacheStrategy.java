@@ -115,5 +115,15 @@ public interface INameCacheStrategy extends IIdentifiableEntityCacheStrategy<Tax
     public String getAuthorshipCache(TaxonName nonViralName);
 
 
+    /**
+     * If a name has more authors then this position
+     * add "& al." instead at the given author position.
+     */
+    public Integer getEtAlPosition();
+    /**
+     * @see #getEtAlPosition()
+     * @param etAlPosition
+     */
+    public void setEtAlPosition(Integer etAlPosition);
 
 }

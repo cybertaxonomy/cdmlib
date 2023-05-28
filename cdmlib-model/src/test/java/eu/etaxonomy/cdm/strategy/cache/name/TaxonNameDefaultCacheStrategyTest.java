@@ -829,4 +829,33 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID.toString());
         Assert.assertEquals("", expected, name.getTitleCache());
     }
+
+    @Test
+    public void testEtAlAuthors() {
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setGenusOrUninomial("Ophrys");
+        name.setSpecificEpithet("kastelli");
+        Team combTeam = Team.NewInstance();
+        combTeam.addTeamMember(Person.NewInstance("Mill.", "Miller", "A.", null));
+        combTeam.addTeamMember(Person.NewInstance("Ball.", "Baller", "B.", null));
+        combTeam.addTeamMember(Person.NewInstance("Cill.", "Ciller", "C.", null));
+        name.setCombinationAuthorship(combTeam);
+
+        INameCacheStrategy formatter = name.cacheStrategy();
+        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        formatter.setEtAlPosition(3);
+        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        formatter.setEtAlPosition(2);
+        Assert.assertEquals("", "Ophrys kastelli Mill. & al.", formatter.getTitleCache(name));
+        //null and <2 are handled as "no position defined"
+        formatter.setEtAlPosition(1);
+        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        formatter.setEtAlPosition(null);
+        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+
+        name.setBasionymAuthorship(combTeam);
+        formatter.setEtAlPosition(2);
+        Assert.assertEquals("", "Ophrys kastelli (Mill. & al.) Mill. & al.", formatter.getTitleCache(name));
+
+    }
 }
