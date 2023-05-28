@@ -1159,9 +1159,9 @@ public class PortalDtoLoader {
         }
         //load description sources for facts
         if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
-            DescriptionElementBase deb = CdmBase.deproxy(cdmBase, DescriptionElementBase.class);
+            DescriptionBase<?> db = CdmBase.deproxy(cdmBase, DescriptionElementBase.class).getInDescription();
             SourcedDto sourcedDto = (SourcedDto)dto;
-            for (OriginalSourceBase source : deb.getSources()) {
+            for (OriginalSourceBase source : db.getSources()) {
                 SourceDto sourceDto = new SourceDto();
                 loadSource(source, sourceDto);
                 sourcedDto.addSource(sourceDto);
