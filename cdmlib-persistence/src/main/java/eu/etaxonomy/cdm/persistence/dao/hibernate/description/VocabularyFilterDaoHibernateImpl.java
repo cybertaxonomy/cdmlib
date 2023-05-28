@@ -79,10 +79,13 @@ public class VocabularyFilterDaoHibernateImpl
     private String query(VocabularyFilter filter, String selectPart){
         String select = " SELECT " + selectPart;
         String from = getFrom(filter);
-        String vocabularyFilter = getVocabularyFilter(filter);
-        String termTypeFilter = getTermTypeFilter(filter);
+        String fullFilter = " (1=0)";
+        if (!filter.isEmpty()) {
+            String vocabularyFilter = getVocabularyFilter(filter);
+            String termTypeFilter = getTermTypeFilter(filter);
 
-        String fullFilter = getFullFilter(vocabularyFilter, termTypeFilter);
+            fullFilter = getFullFilter(vocabularyFilter, termTypeFilter);
+        }
 //        String groupBy = " GROUP BY tn.uuid ";
         String groupBy = "";
         String orderBy = getOrderBy(filter, selectPart);
