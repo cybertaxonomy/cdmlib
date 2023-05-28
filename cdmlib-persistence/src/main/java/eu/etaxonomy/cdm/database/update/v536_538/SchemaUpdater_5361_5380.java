@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -62,6 +63,18 @@ public class SchemaUpdater_5361_5380 extends SchemaUpdaterBase {
 		stepName = "Make term relation annotatable";
 		tableName = "TermRelationBase";
 		TableCreator.makeMnTables(stepList, tableName, true, false);
+
+		//#10328 add maxPerDataset
+		stepName = "Add maxPerDataset column to Feature";
+		tableName = "DefinedTermBase";
+		columnName = "maxPerDataset";
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, null, !NOT_NULL);
+
+	    //#10328 add maxStates
+        stepName = "Add maxStates column to Feature";
+        tableName = "DefinedTermBase";
+        columnName = "maxStates";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, null, !NOT_NULL);
 
 		return stepList;
     }

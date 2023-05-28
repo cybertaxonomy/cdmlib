@@ -157,6 +157,12 @@ public class Feature extends AvailableForTermBase<Feature> {
 //    @IndexedEmbedded(depth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<>();
 
+	//#10328 the maximum number of entries per dataset, null = unlimited
+	private Integer maxPerDataset;
+
+    //#10328 the maximum number of states in StateData (if this feature supports categorical data), null = unlimited
+	private Integer maxStates;
+
 
     private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
     public static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
@@ -257,12 +263,28 @@ public class Feature extends AvailableForTermBase<Feature> {
         super(TermType.Feature, term, label, labelAbbrev);
     }
 
-/* *************************************************************************************/
+//************************** reset **********************************************/
 
-	@Override
-	public void resetTerms(){
-		termMap = null;
-	}
+    @Override
+    public void resetTerms(){
+        termMap = null;
+    }
+
+//**************************************************************************************/
+
+    public Integer getMaxPerDataset() {
+        return maxPerDataset;
+    }
+    public void setMaxPerDataset(Integer maxPerDataset) {
+        this.maxPerDataset = maxPerDataset;
+    }
+
+    public Integer getMaxStates() {
+        return maxStates;
+    }
+    public void setMaxStates(Integer maxStates) {
+        this.maxStates = maxStates;
+    }
 
 	/**
      * If this feature is available for {@link TaxonDescription taxon descriptions}.
@@ -1200,5 +1222,4 @@ public class Feature extends AvailableForTermBase<Feature> {
         //no changes to: symmetric, transitiv
         return result;
     }
-
 }
