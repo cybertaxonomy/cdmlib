@@ -670,7 +670,7 @@ public class PortalDtoLoader {
             TreeNode<Feature, UUID> filteredRootNode;
             if (config.getFeatureTree() != null) {
 
-                //TODO class cast
+                @SuppressWarnings({ "unchecked"})
                 TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
                 filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
             } else {
@@ -684,7 +684,7 @@ public class PortalDtoLoader {
             if (filteredRootNode != null && !filteredRootNode.getChildren().isEmpty()) {
                 ContainerDto<FeatureDto> features = new ContainerDto<>();
                 for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
-                    handleFeatureNode(config, featureMap, features, node);
+                    handleFeatureNode(config, featureMap, features, node, taxonPageDto);
                 }
                 taxonPageDto.setTaxonFacts(features);
             }
@@ -706,7 +706,7 @@ public class PortalDtoLoader {
             //DIFFERENT
 //            if (config.getFeatureTree() != null) {
 //
-//                //TODO class cast
+//                @SuppressWarnings({ "unchecked"})
 //                TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
 //                filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
 //            } else {
@@ -720,7 +720,7 @@ public class PortalDtoLoader {
             if (!filteredRootNode.getChildren().isEmpty()) {
                 ContainerDto<FeatureDto> features = new ContainerDto<>();
                 for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
-                    handleFeatureNode(config, featureMap, features, node);
+                    handleFeatureNode(config, featureMap, features, node, pageDto);
                 }
                 //DIFFERENT
                 nameDto.setNameFacts(features);
@@ -734,7 +734,7 @@ public class PortalDtoLoader {
 
     private void handleFeatureNode(TaxonPageDtoConfiguration config,
             Map<UUID, Set<DescriptionElementBase>> featureMap, ContainerDto<FeatureDto> features,
-            TreeNode<Feature, UUID> node) {
+            TreeNode<Feature, UUID> node, TaxonPageDto pageDto) {
 
         Feature feature = node.getData();
         //TODO locale
@@ -753,18 +753,18 @@ public class PortalDtoLoader {
 //                             -- Area|
 //                                    --name
                 // a bit like for distribution??
-                handleFact(featureDto, fact);
+                handleFact(featureDto, fact, pageDto);
             }
         }
 
-        handleDistributions(config, featureDto, distributions);
+        handleDistributions(config, featureDto, distributions, pageDto);
         //TODO really needed?
         orderFacts(featureDto);
 
         //children
         ContainerDto<FeatureDto> childFeatures = new ContainerDto<>();
         for (TreeNode<Feature,UUID> child : node.getChildren()) {
-            handleFeatureNode(config, featureMap, childFeatures, child);
+            handleFeatureNode(config, featureMap, childFeatures, child, pageDto);
         }
         if (childFeatures.getCount() > 0) {
             featureDto.setSubFeatures(childFeatures);
@@ -897,7 +897,7 @@ public class PortalDtoLoader {
     }
 
     private void handleDistributions(TaxonPageDtoConfiguration config, FeatureDto featureDto,
-            List<Distribution> distributions) {
+            List<Distribution> distributions, TaxonPageDto pageDto) {
 
         if (distributions.isEmpty()) {
             return;
@@ -933,7 +933,7 @@ public class PortalDtoLoader {
             distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
                     statusColorsString, repository.getTermService(), repository.getVocabularyService());
         } catch (JsonProcessingException e) {
-            logger.error("JsonProcessingException when reading distribution status colors");
+            pageDto.addMessage(MessagesDto.NewErrorInstance("JsonProcessingException when reading distribution status colors", e));
             //TODO is null allowed?
             distributionStatusColors = null;
         }
@@ -970,7 +970,7 @@ public class PortalDtoLoader {
        }
     }
 
-    private FactDtoBase handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
+    private FactDtoBase handleFact(FeatureDto featureDto, DescriptionElementBase fact, TaxonPageDto pageDto) {
         //TODO locale
         Language localeLang = null;
 
@@ -1012,7 +1012,7 @@ public class PortalDtoLoader {
             }
             dto.setName(ctn.getName());
             loadBaseData(ctn, dto);
-            //TODO sort all common names
+            //TODO sort all common names (not urgent as this is done by portal code)
             result = dto;
         } else if (fact.isInstanceOf(IndividualsAssociation.class)) {
             IndividualsAssociation ia = CdmBase.deproxy(fact, IndividualsAssociation.class);
@@ -1087,8 +1087,7 @@ public class PortalDtoLoader {
             loadBaseData(td, factDto);
             result = factDto;
         }else {
-//            TODO
-            logger.warn("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName());
+            pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName()));
             return null;
         }
         result.setTimeperiod(fact.getTimeperiod() == null ? null : fact.getTimeperiod().toString());
