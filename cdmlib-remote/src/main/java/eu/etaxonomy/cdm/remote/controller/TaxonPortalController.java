@@ -321,6 +321,13 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "nameRelationsDirect", required = false) Set<UUID> directNameRelations,
             @RequestParam(value = "nameRelationsInverse", required = false) Set<UUID> inverseNameRelations,
             @RequestParam(value = "etAlPos", required = false, defaultValue = "2") Integer etAlPosition,
+            @RequestParam(value = "doSynonyms", required = false) boolean doSynonyms,
+            @RequestParam(value = "doFacts", required = false) boolean doFacts,
+            @RequestParam(value = "doSpecimens", required = false) boolean doSpecimens,
+            @RequestParam(value = "doKeys", required = false) boolean doKeys,
+            @RequestParam(value = "doMedia", required = false) boolean doMedia,
+            @RequestParam(value = "doTaxonNodes", required = false) boolean doTaxonNodes,
+            @RequestParam(value = "doTaxonRelations", required = false) boolean doTaxonRelations,
 
             //distributionInfoConfig
             @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
@@ -359,6 +366,13 @@ public class TaxonPortalController extends TaxonController{
         config.setTaxonUuid(taxonUuid);
         config.setFeatureTree(featureTreeUuid);
         config.setEtAlPosition(etAlPosition);
+        config.setWithFacts(doFacts);
+        config.setWithKeys(doKeys);
+        config.setWithMedia(doMedia);
+        config.setWithSpecimens(doSpecimens);
+        config.setWithSynonyms(doSynonyms);
+        config.setWithTaxonNodes(doTaxonNodes);
+        config.setWithTaxonRelationships(doTaxonRelations);
 
         //distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();

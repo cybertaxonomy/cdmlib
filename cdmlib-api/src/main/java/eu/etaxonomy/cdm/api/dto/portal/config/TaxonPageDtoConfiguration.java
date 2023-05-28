@@ -36,7 +36,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
 
     //synonymy
     //TODO taxonrelations
-    //should withSynonyms includeProparte and missapplications
+    //should withSynonyms includeProparte and misapplications
     // => yes as long as there are no specific parameters in dataportals to handle them differently
     private boolean withTaxonRelationships = true;
     private UUID taxonRelationshipTypeTree = null;
