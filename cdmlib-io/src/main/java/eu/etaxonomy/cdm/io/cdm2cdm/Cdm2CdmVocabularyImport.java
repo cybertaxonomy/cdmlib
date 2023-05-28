@@ -55,8 +55,7 @@ public class Cdm2CdmVocabularyImport
         int count = 0;
 
         //vocabularies
-        VocabularyFilter vocFilter =
-                state.getConfig().getVocabularyFilter();
+        VocabularyFilter vocFilter = state.getConfig().getVocabularyFilter();
         for (UUID vocUuid : source.getVocabularyService().uuidList(vocFilter)){
             TransactionStatus tx = startTransaction();
             doSingleVocabulary(state, vocUuid);

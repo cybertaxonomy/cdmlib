@@ -230,7 +230,6 @@ public class TaxonNodeFilterDaoHibernateImpl
         return result;
     }
 
-
     private String getSubtreeFilter(TaxonNodeFilter filter) {
         String result = "";
         List<LogicFilter<TaxonNode>> subtreeFilter = filter.getSubtreeFilter();
