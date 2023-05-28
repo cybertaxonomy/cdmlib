@@ -6002,6 +6002,20 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         SORTINDEX integer,
         primary key (ID)
     );
+	
+	create table PUBLIC.TERMRELATION_ANNOTATION (
+        TERMRELATION_ID integer not null,
+        ANNOTATIONS_ID integer not null,
+        primary key (TERMRELATION_ID, ANNOTATIONS_ID)
+    );
+
+    create table PUBLIC.TERMRELATION_ANNOTATION_AUD (
+        REV integer not null,
+        TERMRELATION_ID integer not null,
+        ANNOTATIONS_ID integer not null,
+        REVTYPE tinyint,
+        primary key (REV, TERMRELATION_ID, ANNOTATIONS_ID)
+    );
 
     create table PUBLIC.TERMRELATION_AUD (
        ID integer not null,
@@ -6021,6 +6035,20 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         SORTINDEX integer,
         PARENT_ID integer,
         primary key (ID, REV)
+    );
+	
+    create table PUBLIC.TERMRELATION_MARKER (
+       TERMRELATION_ID integer not null,
+        MARKERS_ID integer not null,
+        primary key (TERMRELATION_ID, MARKERS_ID)
+    );
+
+    create table PUBLIC.TERMRELATION_MARKER_AUD (
+       REV integer not null,
+        TERMRELATION_ID integer not null,
+        MARKERS_ID integer not null,
+        REVTYPE tinyint,
+        primary key (REV, TERMRELATION_ID, MARKERS_ID)
     );
 
     create table PUBLIC.TYPEDESIGNATIONBASE (

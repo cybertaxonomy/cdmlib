@@ -61,7 +61,7 @@ public class SchemaUpdater_5361_5380 extends SchemaUpdaterBase {
 
 		//#10320 make term relation annotatable
 		stepName = "Make term relation annotatable";
-		tableName = "TermRelationBase";
+		tableName = "TermRelation";
 		TableCreator.makeMnTables(stepList, tableName, true, false);
 
 		//#10328 add maxPerDataset
