@@ -514,7 +514,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see     								#addRecommendedModifierEnumeration(TermVocabulary)
 	 */
 	public void removeRecommendedModifierEnumeration(
-			TermVocabulary<DefinedTerm> recommendedModifierEnumeration) {
+			TermCollection<DefinedTerm,?> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
 	}
 
@@ -628,7 +628,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see     								#addSupportedCategoricalEnumeration(TermVocabulary)
 	 */
 	public void removeSupportedCategoricalEnumeration(
-			TermVocabulary<? extends DefinedTermBase> supportedCategoricalEnumeration) {
+			TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 
