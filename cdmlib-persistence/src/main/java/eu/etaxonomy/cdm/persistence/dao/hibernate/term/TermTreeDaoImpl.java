@@ -107,6 +107,7 @@ public class TermTreeDaoImpl
         return featureTree;
     }
 
+    //FIXME unify with e.g. TermCollectionDao.sameMethod as it is exactly the same code except for type S
     @Override
     public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern) {

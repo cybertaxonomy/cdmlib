@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermCollectionService;
 import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
@@ -120,6 +121,8 @@ public interface ICdmRepository extends ICdmImportSource {
 	public ICollectionService getCollectionService();
 
     public ITermTreeService getTermTreeService();
+
+    public ITermCollectionService getTermCollectionService();
 
     public ITermNodeService getTermNodeService();
 

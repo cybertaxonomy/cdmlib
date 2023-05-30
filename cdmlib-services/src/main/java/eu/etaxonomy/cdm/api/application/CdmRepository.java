@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermCollectionService;
 import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
@@ -174,6 +175,8 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 	private ICollectionService collectionService;
 	@Autowired
 	private ITermTreeService termTreeService;
+	@Autowired
+	private ITermCollectionService termCollectionService;
 	@Autowired
 	private ITermNodeService termNodeService;
 	@Autowired
@@ -395,6 +398,11 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 	public ITermTreeService getTermTreeService(){
 	    return termTreeService;
 	}
+
+    @Override
+    public ITermCollectionService getTermCollectionService() {
+        return termCollectionService;
+    }
 
     @Override
     public ITermNodeService getTermNodeService(){
