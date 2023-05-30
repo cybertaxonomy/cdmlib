@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
@@ -46,6 +45,8 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      */
     public List<TermVocabulary> listByTermType(TermType termType, boolean includeSubTypes, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
+    public List<TermVocabulary> listByTermType(Set<TermType> termType, boolean includeSubTypes, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 	/**
 	 * Returns Language Vocabulary
 	 * @return
@@ -75,8 +76,10 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	 * @param termType The term type for which the list of vocabularies is desired
 	 * @return a list of vocabularies
 	 */
+	//FIXME shouldn't this be list(...), can be deduplicated
 	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths);
 
+	//FIXME shouldn't this be list(...), can be deduplicated
 	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(Set<TermType> termTypes, List<String> propertyPaths);
 
 	/**

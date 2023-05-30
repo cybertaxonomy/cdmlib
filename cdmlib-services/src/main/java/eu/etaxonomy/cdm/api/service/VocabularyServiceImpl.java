@@ -76,6 +76,17 @@ public class VocabularyServiceImpl
     }
 
     @Override
+    public List<TermVocabulary> listByTermType(Set<TermType> termTypes, boolean includeSubTypes,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        List<TermVocabulary> result = new ArrayList<>();
+        for (TermType termType : termTypes) {
+            result.addAll(listByTermType(termType, includeSubTypes, limit, start, orderHints, propertyPaths));
+        }
+        return result;
+    }
+
+    @Override
 	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths) {
 		return dao.findByTermType(termType, propertyPaths);
 	}
