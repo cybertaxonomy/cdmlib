@@ -16,6 +16,10 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
+/**
+ * @author a.mueller
+ * @date 30.05.2023
+ */
 public interface ITermCollectionService extends IIdentifiableEntityService<TermCollection> {
 
     public List<TermCollection> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);

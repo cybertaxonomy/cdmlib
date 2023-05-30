@@ -341,9 +341,4 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
     public ICdmPermissionEvaluator getPermissionEvaluator(){
         return configuration.getPermissionEvaluator();
     }
-
-
-
-
-
 }
