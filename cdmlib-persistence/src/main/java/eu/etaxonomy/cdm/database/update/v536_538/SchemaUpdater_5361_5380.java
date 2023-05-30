@@ -17,9 +17,9 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.v535_536.SchemaUpdater_5360_5361;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -61,9 +61,22 @@ public class SchemaUpdater_5361_5380 extends SchemaUpdaterBase {
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 		//#10320 make term relation annotatable
-		stepName = "Make term relation annotatable";
+		stepName = "Make term relation annotatable (Annotation)";
 		tableName = "TermRelation";
-		TableCreator.makeMnTables(stepList, tableName, true, false);
+		columnName = "TermRelationBase";
+		String secondTableName = "Annotation";
+//		TableCreator.makeMnTables(stepList, tableName, true, false);
+		MnTableCreator.NewMnInstance(stepList, stepName, tableName, tableName, columnName,
+		        secondTableName, secondTableName, secondTableName, SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
+
+		//#10320 ... for markers
+        stepName = "Make term relation annotatable (Marker)";
+        tableName = "TermRelation";
+        columnName = "TermRelationBase";
+        secondTableName = "Marker";
+        MnTableCreator.NewMnInstance(stepList, stepName, tableName, tableName, columnName,
+                secondTableName, secondTableName, secondTableName, SchemaUpdaterBase.INCLUDE_AUDIT, !IS_LIST, IS_1_TO_M);
+
 
 		//#10328 add maxPerDataset
 		stepName = "Add maxPerDataset column to Feature";
