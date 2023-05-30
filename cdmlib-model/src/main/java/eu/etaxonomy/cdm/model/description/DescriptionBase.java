@@ -39,10 +39,14 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Store;
+import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
@@ -148,7 +152,8 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     private boolean isDefault;
 
     @XmlElement(name = "publish")
-    private boolean publish;
+    @Field(analyze = Analyze.NO, store = Store.YES, bridge= @FieldBridge(impl=BooleanBridge.class))
+    private boolean publish = true;
 
     @XmlAttribute(name ="types")
     @NotNull
@@ -263,9 +268,11 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         this.imageGallery = imageGallery;
     }
 
+    @Override
     public boolean isPublish() {
         return publish;
     }
+    @Override
     public void setPublish(boolean publish) {
         this.publish = publish;
     }
