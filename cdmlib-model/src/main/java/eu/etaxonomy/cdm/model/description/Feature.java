@@ -505,7 +505,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 
 
     /**
-	 * Returns the set of {@link TermVocabulary term vocabularies} containing the
+	 * Returns the set of {@link TermCollection term collections} containing the
 	 * {@link Modifier modifiers} recommended to be used for {@link DescriptionElementBase description elements}
 	 * with <i>this</i> feature.
 	 */
@@ -518,24 +518,24 @@ public class Feature extends AvailableForTermBase<Feature> {
 	}
 
 	/**
-	 * Adds a {@link TermVocabulary term vocabulary} (with {@link Modifier modifiers}) to the set of
+	 * Adds a {@link TermCollection term collection} (with {@link Modifier modifiers}) to the set of
 	 * {@link #getRecommendedModifierEnumeration() recommended modifier vocabularies} assigned
 	 * to <i>this</i> feature.
 	 *
-	 * @param recommendedModifierEnumeration	the term vocabulary to be added
+	 * @param recommendedModifierEnumeration	the term collection to be added
 	 * @see    	   								#getRecommendedModifierEnumeration()
 	 */
 	public void addRecommendedModifierEnumeration(
-			TermVocabulary<DefinedTerm> recommendedModifierEnumeration) {
+			TermCollection<DefinedTerm,?> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.add(recommendedModifierEnumeration);
 	}
 	/**
 	 * Removes one element from the set of {@link #getRecommendedModifierEnumeration() recommended modifier vocabularies}
 	 * assigned to <i>this</i> feature.
 	 *
-	 * @param  recommendedModifierEnumeration	the term vocabulary which should be removed
+	 * @param  recommendedModifierEnumeration	the term collection which should be removed
 	 * @see     								#getRecommendedModifierEnumeration()
-	 * @see     								#addRecommendedModifierEnumeration(TermVocabulary)
+	 * @see     								#addRecommendedModifierEnumeration(TermCollection)
 	 */
 	public void removeRecommendedModifierEnumeration(
 			TermCollection<DefinedTerm,?> recommendedModifierEnumeration) {
@@ -617,7 +617,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	}
 
 	/**
-	 * Returns the set of {@link TermVocabulary term vocabularies} containing the list of
+	 * Returns the set of {@link TermCollection term collections} containing the list of
 	 * possible {@link State states} to be used in {@link CategoricalData categorical data}
 	 * with <i>this</i> feature.
 	 *
@@ -632,12 +632,12 @@ public class Feature extends AvailableForTermBase<Feature> {
 	}
 
 	/**
-	 * Adds a {@link TermVocabulary term vocabulary} to the set of
+	 * Adds a {@link TermCollection term collection} to the set of
 	 * {@link #getSupportedCategoricalEnumerations() supported state vocabularies} assigned
 	 * to <i>this</i> feature.
 	 *
-	 * @param supportedCategoricalEnumeration	the term vocabulary which should be removed
-	 * @see    	   								#getSupportedCategoricalEnumerations()
+	 * @param supportedCategoricalEnumeration	the term collection which should be removed
+	 * @see #getSupportedCategoricalEnumerations()
 	 */
 	public void addSupportedCategoricalEnumeration(
 	        TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
@@ -647,9 +647,9 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * Removes one element from the set of {@link #getSupportedCategoricalEnumerations() supported state vocabularies}
 	 * assigned to <i>this</i> feature.
 	 *
-	 * @param  supportedCategoricalEnumeration	the term vocabulary which should be removed
-	 * @see     								#getSupportedCategoricalEnumerations()
-	 * @see     								#addSupportedCategoricalEnumeration(TermVocabulary)
+	 * @param  supportedCategoricalEnumeration	the term collection which should be removed
+	 * @see   #getSupportedCategoricalEnumerations()
+	 * @see   #addSupportedCategoricalEnumeration(TermCollection)
 	 */
 	public void removeSupportedCategoricalEnumeration(
 			TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
