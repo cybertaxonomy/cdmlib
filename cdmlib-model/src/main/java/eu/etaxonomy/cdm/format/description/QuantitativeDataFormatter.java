@@ -31,7 +31,7 @@ public class QuantitativeDataFormatter
     static final String sepDash = "-";   //TODO which "-"
     static final String minSep = UTF8.NARROW_NO_BREAK + sepDash;
     static final String maxSep = sepDash + UTF8.NARROW_NO_BREAK;
-    static final String lowerUpperSep = UTF8.NARROW_NO_BREAK + sepDash + UTF8.NARROW_NO_BREAK;
+    public static final String lowerUpperSep = UTF8.NARROW_NO_BREAK + sepDash + UTF8.NARROW_NO_BREAK;
 
     static final String modifierSep = UTF8.NARROW_NO_BREAK.toString();
 

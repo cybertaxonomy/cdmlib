@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
@@ -130,7 +131,8 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         //Quantitative Data
         QuantitativeData quantData = QuantitativeData.NewMinMaxInstance(Feature.DESCRIPTION(), BigDecimal.valueOf(2d), BigDecimal.valueOf(4d));
         taxonDescription1.addElement(quantData);
-        Assert.assertEquals("2.0-4.0 (Abies alba Mill. sec. Linne 1753)", defaultFormat(quantData));
+        String sep = QuantitativeDataFormatter.lowerUpperSep;
+        Assert.assertEquals("2.0"+sep+"4.0 (Abies alba Mill. sec. Linne 1753)", defaultFormat(quantData));
         StatisticalMeasurementValue minValue = quantData.getStatisticalValues().stream().filter(v->v.getType().equals(StatisticalMeasure.MIN())).findFirst().get();
         //TODO
         Assert.assertEquals("Min=2.0 (Abies alba Mill. sec. Linne 1753)", defaultFormat(minValue));
