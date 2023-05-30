@@ -145,6 +145,17 @@
     </property>
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
+  
+  <bean id="httpTermTreeService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+    <property name="service">
+      <ref bean="termCollectionServiceImpl" />
+    </property>
+    <property name="serviceInterface">
+      <value>eu.etaxonomy.cdm.api.service.ITermCollectionService</value>
+    </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
+  </bean>
 
   <bean id="httpGroupService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
