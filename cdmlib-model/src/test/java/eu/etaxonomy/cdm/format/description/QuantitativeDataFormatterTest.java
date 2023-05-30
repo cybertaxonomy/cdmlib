@@ -40,6 +40,12 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
     private StatisticalMeasurementValue upperBound1;
     private StatisticalMeasurementValue n1;
 
+    private static final String minSep = QuantitativeDataFormatter.minSep;
+    private static final String maxSep = QuantitativeDataFormatter.maxSep;
+    private static final String lowerUpperSep = QuantitativeDataFormatter.lowerUpperSep;
+    private static final String modifierSep = QuantitativeDataFormatter.modifierSep;
+
+
     @Before
     public void setUp() throws Exception {
         min1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(), new BigDecimal("0.1"));
@@ -59,22 +65,22 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
 
         QuantitativeDataFormatter formatter = new QuantitativeDataFormatter(quantData, formatKey);
         String text = formatter.format(quantData, formatKey);
-        Assert.assertEquals("0.1-1.3", text);
+        Assert.assertEquals("0.1"+lowerUpperSep+"1.3", text);
         quantData.addStatisticalValue(n1);
         MeasurementUnit unit = MeasurementUnit.METER();
         quantData.setUnit(unit);
         text = formatter.format(quantData, formatKey);
-        Assert.assertEquals("0.1-1.3 m [n=2]", text);
+        Assert.assertEquals("0.1"+lowerUpperSep+"1.3 m [n=2]", text);
 
         quantData.addStatisticalValue(lowerBound1);
         quantData.addStatisticalValue(upperBound1);
         text = formatter.format(quantData, formatKey);
-        Assert.assertEquals("(0.1-)0.2-1.0(-1.3) m [n=2]", text);
+        Assert.assertEquals("(0.1"+minSep+")0.2"+lowerUpperSep+"1.0("+maxSep+"1.3) m [n=2]", text);
 
         min1.setValue(null);
         text = formatter.format(quantData, formatKey);
         Assert.assertEquals("If only type but no value is given for a StatisticalMeasurementValue"
-                + " it should be handled as if it is null", "0.2-1.0(-1.3) m [n=2]", text);
+                + " it should be handled as if it is null", "0.2"+lowerUpperSep+"1.0("+maxSep+"1.3) m [n=2]", text);
 
         //TODO currently not handled correctly as max value is fully neglected
 //        upperBound1.setValue(null);
@@ -96,11 +102,11 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
 
         QuantitativeDataFormatter formatter = new QuantitativeDataFormatter(quantData, formatKey);
         String text = formatter.format(quantData, formatKey);
-        Assert.assertEquals("0.1-1.3 m [n=2]", text);
+        Assert.assertEquals("0.1"+lowerUpperSep+"1.3 m [n=2]", text);
 
         quantData.putModifyingText(Language.DEFAULT(), "about");
         text = formatter.format(quantData, formatKey);
-        Assert.assertEquals("about 0.1-1.3 m [n=2]", text);
+        Assert.assertEquals("about 0.1"+lowerUpperSep+"1.3 m [n=2]", text);
 
         TermVocabulary<DefinedTerm> modifierVoc = TermVocabulary.NewInstance(TermType.Modifier, DefinedTerm.class);
         DefinedTerm modifier = DefinedTerm.NewModifierInstance("My new modifier", "new mod", "n.m.");
@@ -108,7 +114,7 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
 
         quantData.addModifier(modifier);
         text = formatter.format(quantData, formatKey);
-        Assert.assertEquals("about new mod 0.1-1.3 m [n=2]", text);
+        Assert.assertEquals("about new mod 0.1"+lowerUpperSep+"1.3 m [n=2]", text);
 
         DefinedTerm minModifier = DefinedTerm.NewModifierInstance("Min modifier", "min", "m.");
         modifierVoc.addTerm(minModifier);
@@ -120,10 +126,10 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
 
         text = formatter.format(quantData, formatKey);
         //TODO correct formatting still needs to be discussed
-        Assert.assertEquals("about new mod min0.1-max1.3 m [n=2]", text);
+        Assert.assertEquals("about new mod min"+modifierSep+"0.1"+lowerUpperSep+"max"+modifierSep+"1.3 m [n=2]", text);
 
         quantData.addStatisticalValue(lowerBound1);
         text = formatter.format(quantData, formatKey);
-        Assert.assertEquals("about new mod (min0.1-)0.2-max1.3 m [n=2]", text);
+        Assert.assertEquals("about new mod (min"+modifierSep+"0.1"+minSep+")0.2"+lowerUpperSep+"max"+modifierSep+"1.3 m [n=2]", text);
     }
 }

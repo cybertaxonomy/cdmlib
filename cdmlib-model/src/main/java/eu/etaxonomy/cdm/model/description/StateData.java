@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @Audited
 public class StateData
         extends VersionableEntity
-        implements IModifiable, IMultiLanguageTextHolder{
+        implements IModifiable, IHasModifyingText, IMultiLanguageTextHolder{
 
     private static final long serialVersionUID = -4380314126624505415L;
     private static final Logger logger = LogManager.getLogger();

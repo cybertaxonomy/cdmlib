@@ -13,10 +13,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
@@ -65,7 +67,17 @@ public class CategoricalDataFormatterTest extends TermTestBase {
         text = formatter.format(catData, formatKey);
         Assert.assertEquals("state1s, state2, state3", text);
 
-        //TODO test with modifiers and maybe with other basedata like timeperiod etc.
+        //state modifier
+        stateData1.addModifier(DefinedTerm.SEX_FEMALE());  //use female and male here to avoid having to create a new modifier
+        stateData3.addModifier(DefinedTerm.SEX_MALE());
+        stateData3.addModifier(DefinedTerm.SEX_UNKNOWN());
+        stateData2.putModifyingText(Language.DEFAULT(), "textmodi");
+
+        text = formatter.format(catData, formatKey);
+        //TODO do we want a separator between 2 statedata modifiers, here male and unknown?
+        Assert.assertEquals("female state1s, textmodi state2, male unknown state3", text);
+
+        //TODO test with additional basedata like timeperiod etc.
     }
 
 }
