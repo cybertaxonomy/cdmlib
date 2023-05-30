@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -75,6 +76,17 @@ public class TermCollectionServiceImpl
     public List<TermCollection> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths) {
         return dao.list(null, buildTermTypeFilterRestrictions(termType), limit, start, orderHints, propertyPaths);
+    }
+
+    @Override
+    public List<TermCollection> list(Set<TermType> termTypes, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        List<TermCollection> result = new ArrayList<>();
+        for (TermType termType : termTypes) {
+            result.addAll(list(termType, limit, start, orderHints, propertyPaths));
+        }
+        return result;
     }
 
     @Override
