@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.v535_536.SchemaUpdater_5360_5361;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
@@ -81,6 +82,15 @@ public class SchemaUpdater_5361_5380 extends SchemaUpdaterBase {
         tableName = "DescriptionBase";
         columnName = "publish";
         ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, true);
+
+        //#10311 make misspelling and emendation assymetric
+        stepName = "Make misspelling and emendation assymetric";
+        String sql = "UPDATE DefinedTermBase "
+                + " SET symmetrical = 0 "
+                + " WHERE UUID IN ('6e23ad45-3f2a-462b-ad87-d2389cd6e26c', 'c6f9afcb-8287-4a2b-a6f6-4da3a073d5de')";
+        tableName = "DefinedTermBase";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
+
 
 		return stepList;
     }
