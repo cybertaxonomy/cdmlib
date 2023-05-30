@@ -272,7 +272,8 @@ public class PortalDtoLoader {
                 specimens.addAll(typeSpecimens);
             }
 
-            for (SpecimenOrObservationBase<?> specimen : specimens) {
+            //TODO maybe still need to check full derivate path #4484, #8424, #9559
+            for (SpecimenOrObservationBase<?> specimen : filterPublished(specimens)) {
                 SpecimenDTO dto = new SpecimenDTO();
                 loadBaseData(specimen, dto);
                 dto.setLabel(specimen.getTitleCache());
