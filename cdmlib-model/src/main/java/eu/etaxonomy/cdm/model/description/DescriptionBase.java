@@ -47,6 +47,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -91,7 +92,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 })
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
         extends IdentifiableEntity<S>
-        implements ICdmTarget{
+        implements ICdmTarget,IPublishable {
 
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = LogManager.getLogger();
