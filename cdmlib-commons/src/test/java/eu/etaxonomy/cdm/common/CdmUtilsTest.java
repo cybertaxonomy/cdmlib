@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.common;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -130,5 +131,20 @@ public class CdmUtilsTest {
         Assert.assertEquals("Str2;Str3", CdmUtils.concat(";", "", str2, str3));
         Assert.assertEquals("Str1;Str3", CdmUtils.concat(";", str1, "", str3));
         Assert.assertEquals("Str1; ;Str3", CdmUtils.concat(";", str1, " ", str3));
+    }
+    
+    @Test
+    public void testmodifiedDamerauLevenshteinDistance() {
+       	
+    	int distance = CdmUtils.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxya asrerotciha");
+    	assertEquals(5,distance);
+    	distance = CdmUtils.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxsa axrerotciha");
+    	assertEquals(7,distance);
+    	distance = CdmUtils.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxyas asrerotciha");
+    	assertEquals(5,distance);
+    	distance = CdmUtils.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynoxya asterotricha");
+    	assertEquals(1,distance);
+    	distance = CdmUtils.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynoxys asterotricha");
+    	assertEquals(0,distance);
     }
 }

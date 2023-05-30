@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -1311,23 +1312,32 @@ public class NameServiceImpl
     @Override
 	public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName, int maxDistanceGenus, int maxDisEpith, int limit) {
 
-//        maxDistanceGenus=3;//the default value in Rees algorithm is 70% of the lenght.
+    	//0. Normalizing and parsing
 
-        //1. name parsing.
+//    	TODO Remove all qualifiers such as cf., aff., ?, <i>, x, etc.
 
-		TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
+    	TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
 		String genusQuery = name.getGenusOrUninomial();
 		String epithetQuery = name.getSpecificEpithet();
-		String initial= genusQuery.substring(0,1) + "*";
 
-		List<String> genusList = dao.distinctGenusOrUninomial(initial, null, null); //list
+		//1. Genus pre-filter
+
+		String initial= genusQuery.substring(0,1) + "*";
+		List<String> tempGenusList = dao.distinctGenusOrUninomial(initial, null, null); //list of all genera in the database starting with the initial letter of the query
+		List<String> genusList= new ArrayList <>(); // compare the length of query and the length of the database name. When the difference is less than the variable "limit", add the genus into the list
+
+		for (String x:tempGenusList) {
+		    if (Math.abs(x.length()-genusQuery.length())<=limit) {
+		        genusList.add(x);
+		    }
+		}
 		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList = new ArrayList<>();
 
 		//2. comparison of:
 
 		    //genus
 		for (String genusNameInDB : genusList) {
-		    int distance = modifiedDamerauLevenshteinDistance(genusQuery, genusNameInDB);
+		    int distance = CdmUtils.modifiedDamerauLevenshteinDistance(genusQuery, genusNameInDB);
             if (distance <= maxDistanceGenus) {
                 List<TaxonNameParts> tempParts = dao.findTaxonNameParts(Optional.of(genusNameInDB),null, null, null, null, null, null, null, null);
                 for (TaxonNameParts namePart: tempParts) {
@@ -1339,14 +1349,13 @@ public class NameServiceImpl
 		   //add epithet distance
 		List <DoubleResult<TaxonNameParts, Integer>> epithetList = new ArrayList<>();
 		for (DoubleResult<TaxonNameParts, Integer> part: fullTaxonNamePartsList) {
-		    int epithetDistance = modifiedDamerauLevenshteinDistance(epithetQuery, part.getFirstResult().getSpecificEpithet());
+		    int epithetDistance = CdmUtils.modifiedDamerauLevenshteinDistance(epithetQuery, part.getFirstResult().getSpecificEpithet());
             if (epithetDistance <= maxDisEpith) {
                 epithetList.add(part);
                 part.setSecondResult(part.getSecondResult() + epithetDistance)  ;
 //                tempMap.add(part, fullTaxonNamePartsList.get(part) + epithetDistance); // need to check how the final distance is calculated
             }else {
                 //do nothing
-
                 //tempMap.remove(part);
             }
 		}
@@ -1358,44 +1367,5 @@ public class NameServiceImpl
 //                   .collect(Collectors.toMap(
 //                              Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         return epithetList.subList(0, Math.min(limit,epithetList.size()));
-	}
-
-
-    public int modifiedDamerauLevenshteinDistance(String str1, String str2) {
-		if (str1 == str2) {
-			return 0;
-		} else if (str1.isEmpty()) {
-			return str2.length();
-		} else if (str2.isEmpty()) {
-			return str1.length();
-		} else if (str2.length() == 1 && str1.length() == 1 && str1 != str2) {
-			return 1;
-		} else {
-
-			int[][] distanceMatrix = new int[str1.length() + 1][str2.length() + 1];
-
-			for (int i = 0; i <= str1.length(); i++) {
-				distanceMatrix[i][0] = i;
-			}
-
-			for (int j = 0; j <= str2.length(); j++) {
-				distanceMatrix[0][j] = j;
-			}
-
-			for (int i = 1; i <= str1.length(); i++) {
-				for (int j = 1; j <= str2.length(); j++) {
-					int cost = (str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0 : 1;
-					distanceMatrix[i][j] = Math.min(
-							Math.min(distanceMatrix[i - 1][j] + 1, distanceMatrix[i][j - 1] + 1),
-							distanceMatrix[i - 1][j - 1] + cost);
-
-					if (i > 1 && j > 1 && str1.charAt(i - 1) == str2.charAt(j - 2)
-							&& str1.charAt(i - 2) == str2.charAt(j - 1)) {
-						distanceMatrix[i][j] = Math.min(distanceMatrix[i][j], distanceMatrix[i - 2][j - 2] + cost);
-					}
-				}
-			}
-			return distanceMatrix[str1.length()][str2.length()];
-		}
 	}
 }

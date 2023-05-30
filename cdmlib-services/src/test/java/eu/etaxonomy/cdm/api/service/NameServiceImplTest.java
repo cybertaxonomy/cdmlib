@@ -1099,20 +1099,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 
-    @Test
-    public void testmodifiedDamerauLevenshteinDistance() {
-       	NameServiceImpl name = new NameServiceImpl();
-    	int distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxya asrerotciha");
-    	assertEquals(5,distance);
-    	distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxsa axrerotciha");
-    	assertEquals(7,distance);
-    	distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxyas asrerotciha");
-    	assertEquals(5,distance);
-    	distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynoxya asterotricha");
-    	assertEquals(1,distance);
-    	distance = name.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynoxys asterotricha");
-    	assertEquals(0,distance);
-    }
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.testFindMatchingNames.xml")
