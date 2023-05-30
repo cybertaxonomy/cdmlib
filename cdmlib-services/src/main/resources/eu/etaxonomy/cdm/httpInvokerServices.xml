@@ -146,7 +146,7 @@
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
   
-  <bean id="httpTermTreeService"
+  <bean id="httpTermCollectionService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="termCollectionServiceImpl" />
