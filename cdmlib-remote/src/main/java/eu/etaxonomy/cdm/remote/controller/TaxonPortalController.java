@@ -347,6 +347,8 @@ public class TaxonPortalController extends TaxonController{
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
+
+        boolean includeUnpublished = !INCLUDE_UNPUBLISHED;
         if(request != null){
             logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
         }
@@ -375,6 +377,7 @@ public class TaxonPortalController extends TaxonController{
         config.setWithSynonyms(doSynonyms);
         config.setWithTaxonNodes(doTaxonNodes);
         config.setWithTaxonRelationships(doTaxonRelations);
+        config.setIncludeUnpublished(includeUnpublished);
 
         //distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();

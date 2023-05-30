@@ -83,6 +83,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -475,15 +476,18 @@ public class PortalDtoLoader {
         }
     }
 
-    /**
-     * @param homotypicSynonymsByHomotypicGroup
-     * @return
-     */
-    private List<Synonym> filterPublished(List<Synonym> synonymList) {
-        if (synonymList == null) {
+    private <P extends IPublishable> List<P> filterPublished(List<P> listToPublish) {
+        if (listToPublish == null) {
             return null;
         }else {
-            return synonymList.stream().filter(s->s.isPublish()).collect(Collectors.toList());
+            return listToPublish.stream().filter(s->s.isPublish()).collect(Collectors.toList());
+        }
+    }
+    private <P extends IPublishable> Set<P> filterPublished(Set<P> setToPublish) {
+        if (setToPublish == null) {
+            return null;
+        }else {
+            return setToPublish.stream().filter(s->s.isPublish()).collect(Collectors.toSet());
         }
     }
 
@@ -814,7 +818,7 @@ public class PortalDtoLoader {
         Map<UUID, Set<DescriptionElementBase>> featureMap = new HashMap<>();
 
         //... load facts
-        for (DescriptionBase<?> description : describable.getDescriptions()) {
+        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
             if (description.isImageGallery()) {
                 continue;
             }
@@ -893,7 +897,7 @@ public class PortalDtoLoader {
      */
     private Map<UUID, Feature> getExistingFeatureUuids(IDescribable<?> describable) {
         Map<UUID, Feature> result = new HashMap<>();
-        for (DescriptionBase<?> description : describable.getDescriptions()) {
+        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
             if (description.isImageGallery()) {
                 continue;
             }

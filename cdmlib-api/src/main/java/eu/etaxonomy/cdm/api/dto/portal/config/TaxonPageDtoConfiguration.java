@@ -33,6 +33,8 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private boolean withMedia = true;
     private boolean withTaxonNodes = true;
 
+    private boolean includeUnpublished = false;
+
 
     //synonymy
     //TODO taxonrelations
@@ -140,5 +142,12 @@ public class TaxonPageDtoConfiguration implements Serializable {
     }
     public void setEtAlPosition(Integer etAlPosition) {
         this.etAlPosition = etAlPosition;
+    }
+
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
     }
 }
