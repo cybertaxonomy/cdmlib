@@ -364,6 +364,7 @@ public class TaxonPortalController extends TaxonController{
         if (partSet == null) {
             partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
         }
+        partSet.remove(InfoPart.elements); // we do not want to return model instances here at all
 
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
 
