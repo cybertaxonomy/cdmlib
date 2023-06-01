@@ -320,7 +320,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "featureTree", required = false) UUID featureTreeUuid,
             @RequestParam(value = "nameRelationsDirect", required = false) Set<UUID> directNameRelations,
             @RequestParam(value = "nameRelationsInverse", required = false) Set<UUID> inverseNameRelations,
-            @RequestParam(value = "etAlPos", required = false, defaultValue = "2") Integer etAlPosition,
+            @RequestParam(value = "etAlPos", required = false) Integer etAlPosition,
             @RequestParam(value = "doSynonyms", required = false) boolean doSynonyms,
             @RequestParam(value = "doFacts", required = false) boolean doFacts,
             @RequestParam(value = "doSpecimens", required = false) boolean doSpecimens,
