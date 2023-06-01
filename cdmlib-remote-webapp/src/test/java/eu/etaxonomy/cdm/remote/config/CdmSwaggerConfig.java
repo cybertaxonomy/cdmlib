@@ -219,7 +219,7 @@ public class CdmSwaggerConfig {
         boolean includeInterfaces = false;
         Collection<Class<? extends Object>> classes = null;
 
-        CdmTypeScanner<Object> scanner = new CdmTypeScanner<Object>(includeAbstract, includeInterfaces);
+        CdmTypeScanner<Object> scanner = new CdmTypeScanner<>(includeAbstract, includeInterfaces);
         scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
         scanner.addIncludeFilter(new CdmAssignableTypeFilter(CdmBase.class, includeAbstract, includeInterfaces));
         classes = scanner.scanTypesIn("eu/etaxonomy/cdm/model");
