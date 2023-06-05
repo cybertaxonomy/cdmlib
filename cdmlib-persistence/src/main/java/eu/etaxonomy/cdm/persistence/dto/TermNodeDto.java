@@ -17,7 +17,9 @@ import java.util.UUID;
 
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -28,7 +30,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @author k.luther
  * @since Mar 18, 2020
  */
-public class TermNodeDto implements Serializable{
+public class TermNodeDto implements Serializable, IAnnotatableDto{
 
     private static final long serialVersionUID = 7568459208397248126L;
 
@@ -42,6 +44,8 @@ public class TermNodeDto implements Serializable{
     private TermType type;
     private TermTreeDto tree;
     private String path;
+    private Set<MarkerDto> markers;
+    private Set<AnnotationDto> annotations;
 
     public static TermNodeDto fromNode(TermNode node, TermTreeDto treeDto){
         Assert.notNull(node, "Node should not be null");
@@ -65,7 +69,6 @@ public class TermNodeDto implements Serializable{
                     }else{
                         children.add(TermNodeDto.fromNode(child, treeDto));
                     }
-
                 }
             }
         }
@@ -74,6 +77,31 @@ public class TermNodeDto implements Serializable{
         dto.setOnlyApplicableIf(node.getOnlyApplicableIf());
         dto.setInapplicableIf(node.getInapplicableIf());
         dto.setTermType(node.getTermType());
+        if (dto.annotations == null) {
+            dto.annotations = new HashSet<>();
+        }
+        if (dto.markers == null) {
+            dto.markers = new HashSet<>();
+        }
+        for (Annotation an: node.getAnnotations()) {
+            AnnotationDto anDto = new AnnotationDto(an.getUuid(), an.getId());
+            anDto.setText(an.getText());
+            anDto.setTypeUuid(an.getAnnotationType().getUuid());
+            anDto.setTypeLabel(an.getAnnotationType().getLabel());
+            dto.annotations.add(anDto);
+
+        }
+        for (Marker marker: node.getMarkers()) {
+            MarkerDto maDto = new MarkerDto(marker.getUuid(), marker.getId(), marker.getMarkerType().getUuid(), marker.getMarkerType().getLabel(), marker.getFlag());
+//            maDto.setId(marker.getId());
+//            maDto.setType(marker.getMarkerType().getLabel());
+//            maDto.setTypeUuid(marker.getMarkerType().getUuid());
+//            maDto.setUuid(marker.getUuid());
+//            maDto.setValue(marker.getFlag());
+
+            dto.markers.add(maDto);
+
+        }
         return dto;
     }
 
@@ -236,6 +264,41 @@ public class TermNodeDto implements Serializable{
         this.path = path;
     }
 
+    @Override
+    public Set<MarkerDto> getMarkers() {
+        return markers;
+    }
+
+    @Override
+    public void setMarkers(Set<MarkerDto> markers) {
+        this.markers = markers;
+    }
+    @Override
+    public void addMarker(MarkerDto marker) {
+        if (this.markers == null) {
+            this.markers = new HashSet<>();
+        }
+        this.markers.add(marker);
+    }
+
+    @Override
+    public Set<AnnotationDto> getAnnotations() {
+        return annotations;
+    }
+
+    @Override
+    public void setAnnotations(Set<AnnotationDto> annotations) {
+        this.annotations = annotations;
+    }
+
+    @Override
+    public void addAnnotation(AnnotationDto annotation) {
+        if (this.annotations == null) {
+            this.annotations = new HashSet<>();
+        }
+        this.annotations.add(annotation);
+    }
+
     public boolean removeChild(TermNodeDto nodeDto, boolean doRecursive){
        int index = this.getIndex(nodeDto);
        if (index > -1){
@@ -308,4 +371,19 @@ public class TermNodeDto implements Serializable{
        result[2] = sqlJoinString;
        return result;
    }
+
+    @Override
+    public String getLabel() {
+        return this.getTerm().getTitleCache();
+    }
+
+    @Override
+    public void removeMarker(MarkerDto marker) {
+        this.getMarkers().remove(marker);
+    }
+
+    @Override
+    public void removeAnnotation(AnnotationDto annotation) {
+        this.getAnnotations().remove(annotation);
+    }
 }
