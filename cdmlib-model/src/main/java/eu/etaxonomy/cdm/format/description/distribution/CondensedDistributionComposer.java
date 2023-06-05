@@ -118,7 +118,7 @@ public class CondensedDistributionComposer {
             DoubleResult<String, Boolean> areaOfScopeStatusSymbol = statusSymbol(areaOfScopeStatus, config, languages, NOT_HANDLED_BY_PARENT);
             String areaOfScopeLabel = config.showAreaOfScopeLabel? makeAreaLabel(languages, areaOfScopeNode.area, config, null):"";
             result.addStatusAndAreaTaggedText(areaOfScopeStatusSymbol.getFirstResult(),
-                    areaOfScopeLabel, areaOfScopeStatusSymbol.getSecondResult() || config.areasBold);
+                    areaOfScopeLabel, (areaOfScopeStatusSymbol.getSecondResult() || config.areasBold), config);
 
             //subareas
             handleSubAreas(result, areaOfScopeNode, config, areaNodeComparator, languages, areaToStatusMap,
@@ -542,7 +542,8 @@ public class CondensedDistributionComposer {
                 statusSymbolForArea(areaNode, areaToStatusMap, config, languages, isIntroduced);
 
         String areaLabel = makeAreaLabel(languages, area, config, parentAreaLabel);
-        result.addStatusAndAreaTaggedText(statusSymbol.getFirstResult(), areaLabel, statusSymbol.getSecondResult() || config.areasBold);
+        result.addStatusAndAreaTaggedText(statusSymbol.getFirstResult(), areaLabel,
+                (statusSymbol.getSecondResult() || config.areasBold), config);
 
         boolean isBold = statusSymbol.getSecondResult();
         boolean isHandledByParent = statusSymbol.getThirdResult();

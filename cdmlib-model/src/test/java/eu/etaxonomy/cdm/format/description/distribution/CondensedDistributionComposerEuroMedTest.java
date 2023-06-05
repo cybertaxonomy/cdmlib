@@ -9,9 +9,12 @@
 package eu.etaxonomy.cdm.format.description.distribution;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,6 +39,11 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @since 15.06.2016
  */
 public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
+
+    private UUID uuidRegionallyExtinct = UUID.fromString("bb52103b-78de-4a55-9c34-6f9e315d3783");
+    private UUID uuidCriticallyEndangered = UUID.fromString("d37660ac-9848-4008-af30-cf7c71962414");
+    private UUID uuidEndangered = UUID.fromString("be71cfb4-cbc1-4367-b0f7-91d5a38aa2ce");
+    private UUID uuidLeastConcern = UUID.fromString("658580d8-78be-462b-bd03-cd1fc5625676");
 
     private NamedArea europe;
     private NamedArea westEurope;
@@ -136,6 +144,36 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         distributions.add(Distribution.NewInstance(spain, PresenceAbsenceTerm.NATURALISED()));
     }
 
+    private void createIucnDistributions() {
+        Map<UUID,PresenceAbsenceTerm> iucnStatus = createIucnStatus();  //may be removed once iucn status are part of test data
+
+        distributions.add(Distribution.NewInstance(europe, iucnStatus.get(uuidCriticallyEndangered)));
+        distributions.add(Distribution.NewInstance(germany, iucnStatus.get(uuidEndangered)));
+        distributions.add(Distribution.NewInstance(bawue, iucnStatus.get(uuidCriticallyEndangered)));
+        distributions.add(Distribution.NewInstance(berlin, iucnStatus.get(uuidEndangered)));
+        distributions.add(Distribution.NewInstance(italy, iucnStatus.get(uuidLeastConcern)));
+        distributions.add(Distribution.NewInstance(ileDeFrance, iucnStatus.get(uuidCriticallyEndangered)));
+        distributions.add(Distribution.NewInstance(spain, iucnStatus.get(uuidRegionallyExtinct)));
+    }
+
+    private Map<UUID,PresenceAbsenceTerm> createIucnStatus() {
+        Map<UUID,PresenceAbsenceTerm> result = new HashMap<>();
+        addIucnTerm(result, "Regionally Extinct", "RE", uuidRegionallyExtinct);
+        addIucnTerm(result, "Critically Endangered", "CR", uuidCriticallyEndangered);
+        addIucnTerm(result, "Endangered", "RE", uuidEndangered);
+        addIucnTerm(result, "Least Concern", "LC", uuidLeastConcern);
+        return result;
+    }
+
+    private void addIucnTerm(Map<UUID, PresenceAbsenceTerm> result, String label, String symbol, UUID uuid) {
+        PresenceAbsenceTerm iucnTerm = PresenceAbsenceTerm.NewPresenceInstance(label, label, symbol);
+        iucnTerm.setUuid(uuid);
+        iucnTerm.setIdInVocabulary(symbol);
+        iucnTerm.setSymbol(symbol);
+        iucnTerm.setSymbol2(symbol);
+        result.put(iucnTerm.getUuid(), iucnTerm);
+    }
+
     @Test
     public void testEuroMedCondensedDistributionDefault() {
         createDefaultDistributions();
@@ -226,5 +264,20 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
                 distributions, parentAreaMap, languages, config);
 
         Assert.assertEquals(endemic + "<b>EU</b>(<b>GER</b>(<b>GER(B) GER(BW)</b>) a<b>FR</b>(c<b>FR(J)</b>) ?<b>IT</b> n<b>S</b>)", condensedDistribution.toString());
+    }
+
+    @Test
+    public void testEuroMedCondensedIucnDistribution() {
+        createIucnDistributions();
+
+        config = CondensedDistributionConfiguration.NewIucnInstance();
+        config.areaSymbolField = SymbolUsage.AbbrevLabel;
+        config.statusSymbolField = SymbolUsage.Symbol1;
+
+
+        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
+                distributions, parentAreaMap, languages, config);
+
+        Assert.assertEquals("CR FR:CR(J) GER:RE(B:RE BW:CR) IT:LC S:RE", condensedDistribution.toString());
     }
 }

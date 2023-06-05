@@ -68,11 +68,24 @@ public class CondensedDistributionConfiguration implements Serializable {
 
     public Set<UUID> fallbackAreaMarkers = new HashSet<>(Arrays.asList(MarkerType.uuidFallbackArea)); //Note: we do not have hiddenAreaMarkers anymore (use are tree instead)
 
+    //should the status be put behind the area?
+    public boolean statusTrailing = false;
+
+    //seperator between area and status (currently used for trailing status only)
+    public String statusSeparator = "";
+
 //************************** FACTORY ***************************************/
 
     public static CondensedDistributionConfiguration NewDefaultInstance() {
         CondensedDistributionConfiguration result = new CondensedDistributionConfiguration();
         result.fallbackAreaMarkers.add(MarkerType.uuidFallbackArea);
+        return result;
+    }
+
+    public static CondensedDistributionConfiguration NewIucnInstance() {
+        CondensedDistributionConfiguration result = NewDefaultInstance();
+        result.statusTrailing = true;
+        result.statusSeparator = ":";
         return result;
     }
 
