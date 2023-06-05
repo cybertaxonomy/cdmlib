@@ -922,7 +922,7 @@ public class PortalDtoLoader {
         IDistributionService distributionService = repository.getDistributionService();
 
         //configs
-        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
+        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration(featureDto.getUuid());
         CondensedDistributionConfiguration condensedConfig = distributionConfig.getCondensedDistributionConfiguration();
 
         String statusColorsString = distributionConfig.getStatusColorsString();

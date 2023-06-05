@@ -10,8 +10,10 @@ package eu.etaxonomy.cdm.api.dto.portal.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -47,6 +49,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private UUID featureTree = null;
     private DistributionInfoConfiguration distributionInfoConfiguration = new DistributionInfoConfiguration();
 
+    private Map<UUID,DistributionInfoConfiguration> perFeatureDistributionInfoConfiguration = new HashMap<>();
 
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
@@ -61,6 +64,17 @@ public class TaxonPageDtoConfiguration implements Serializable {
     }
     public void setDistributionInfoConfiguration(DistributionInfoConfiguration distributionInfoConfiguration) {
         this.distributionInfoConfiguration = distributionInfoConfiguration;
+    }
+
+    public DistributionInfoConfiguration putDistributionInfoConfiguration(UUID featureUuid, DistributionInfoConfiguration config) {
+        return perFeatureDistributionInfoConfiguration.put(featureUuid, config);
+    }
+    public DistributionInfoConfiguration getDistributionInfoConfiguration(UUID featureUuid) {
+        DistributionInfoConfiguration result = perFeatureDistributionInfoConfiguration.get(featureUuid);
+        if (result == null) {
+            result = distributionInfoConfiguration;
+        }
+        return result;
     }
 
     public UUID getTaxonUuid() {
@@ -150,4 +164,5 @@ public class TaxonPageDtoConfiguration implements Serializable {
     public void setIncludeUnpublished(boolean includeUnpublished) {
         this.includeUnpublished = includeUnpublished;
     }
+
 }

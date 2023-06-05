@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -380,7 +381,7 @@ public class TaxonPortalController extends TaxonController{
         config.setWithTaxonRelationships(doTaxonRelations);
         config.setIncludeUnpublished(includeUnpublished);
 
-        //distribution info config
+        //default distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
         distributionConfig.setUseTreeDto(true);
         distributionConfig.setInfoParts(EnumSet.copyOf(partSet));
@@ -396,6 +397,27 @@ public class TaxonPortalController extends TaxonController{
         if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
             Set<MarkerType> fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
             distributionConfig.setHiddenAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+        }
+
+        //iucn distribution info config
+        DistributionInfoConfiguration iucnDistributionConfig = config.getDistributionInfoConfiguration(Feature.uuidIucnStatus);
+        iucnDistributionConfig.setUseTreeDto(true);
+        EnumSet<InfoPart> iucnPartSet = EnumSet.of(InfoPart.condensedDistribution);
+        iucnDistributionConfig.setInfoParts(iucnPartSet);
+
+        iucnDistributionConfig.setPreferSubAreas(preferSubAreas);
+        iucnDistributionConfig.setStatusOrderPreference(statusOrderPreference);
+        iucnDistributionConfig.setAreaTree(areaTreeUuid);
+        iucnDistributionConfig.setOmitLevels(omitLevels);
+//        distributionConfig.setStatusColorsString(statusColorsString);
+        iucnDistributionConfig.setDistributionOrder(distributionOrder);
+        CondensedDistributionRecipe iucnRecipe = CondensedDistributionRecipe.IUCN;
+        if (iucnRecipe != null) {
+            iucnDistributionConfig.setCondensedDistributionConfiguration(iucnRecipe.toConfiguration());
+        }
+        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
+            Set<MarkerType> fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
+            iucnDistributionConfig.setHiddenAreaMarkerTypeList(fallbackAreaMarkerTypes);
         }
 
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);
