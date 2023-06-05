@@ -136,7 +136,7 @@ public class DistributionServiceImpl implements IDistributionService {
         boolean statusOrderPreference = config.isStatusOrderPreference();
         Set<MarkerType> hiddenAreaMarkerTypes = config.getHiddenAreaMarkerTypeList();
         Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
-        CondensedDistributionConfiguration condensedDistConfig = config.getCondensedDistrConfig();
+        CondensedDistributionConfiguration condensedDistConfig = config.getCondensedDistributionConfiguration();
         DistributionOrder distributionOrder = config.getDistributionOrder();
 
         final boolean PREFER_AGGREGATED = true;

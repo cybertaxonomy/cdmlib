@@ -153,6 +153,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
  */
 public class PortalDtoLoader {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     private ICdmRepository repository;
@@ -922,7 +923,7 @@ public class PortalDtoLoader {
 
         //configs
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
-        CondensedDistributionConfiguration condensedConfig = distributionConfig.getCondensedDistrConfig();
+        CondensedDistributionConfiguration condensedConfig = distributionConfig.getCondensedDistributionConfiguration();
 
         String statusColorsString = distributionConfig.getStatusColorsString();
 

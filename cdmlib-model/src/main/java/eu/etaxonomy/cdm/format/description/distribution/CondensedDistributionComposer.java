@@ -94,10 +94,10 @@ public class CondensedDistributionComposer {
 
         Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap = new HashMap<>();
 
-        DoubleResult<List<AreaNode>, List<AreaNode>> step1_3 = createAreaTreesAndStatusMap(
+        DoubleResult<List<AreaNode>, List<AreaNode>> areaTreesAndStatusMap = createAreaTreesAndStatusMap(
                 filteredDistributions, parentAreaMap, areaToStatusMap, config);
-        List<AreaNode> topLevelNodes = step1_3.getFirstResult();
-        List<AreaNode> introducedTopLevelNodes = step1_3.getSecondResult();
+        List<AreaNode> topLevelNodes = areaTreesAndStatusMap.getFirstResult();
+        List<AreaNode> introducedTopLevelNodes = areaTreesAndStatusMap.getSecondResult();
 
         //4. replace the area by the abbreviated representation and add symbols
         AreaNodeComparator areaNodeComparator = new AreaNodeComparator(config, languages);

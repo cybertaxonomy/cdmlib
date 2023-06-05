@@ -391,11 +391,10 @@ public class TaxonPortalController extends TaxonController{
         distributionConfig.setStatusColorsString(statusColorsString);
         distributionConfig.setDistributionOrder(distributionOrder);
         if (recipe != null) {
-            distributionConfig.setCondensedDistrConfig(recipe.toConfiguration());
+            distributionConfig.setCondensedDistributionConfiguration(recipe.toConfiguration());
         }
-        Set<MarkerType> fallbackAreaMarkerTypes = null;
         if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
-            fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
+            Set<MarkerType> fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
             distributionConfig.setHiddenAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         }
 

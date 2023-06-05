@@ -114,10 +114,10 @@ public class DistributionInfoConfiguration {
         this.ignoreDistributionStatusUndefined = ignoreDistributionStatusUndefined;
     }
 
-    public CondensedDistributionConfiguration getCondensedDistrConfig() {
+    public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {
         return condensedDistrConfig;
     }
-    public void setCondensedDistrConfig(CondensedDistributionConfiguration condensedDistrConfig) {
+    public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistrConfig) {
         this.condensedDistrConfig = condensedDistrConfig;
     }
 
