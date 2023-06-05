@@ -934,8 +934,6 @@ public class PortalDtoLoader {
         distributionConfig.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
         boolean fallbackAsParent = true;  //may become a service parameter in future
 
-        DistributionInfoDto dto;
-
         //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
         //are hidden markers on areas that have non-hidden subareas (#4408)
         Set<MarkerType> hiddenAreaMarkerTypes = distributionConfig.getHiddenAreaMarkerTypeList();
@@ -955,7 +953,7 @@ public class PortalDtoLoader {
             distributionStatusColors = null;
         }
 
-        dto = distributionService.composeDistributionInfoFor(distributionConfig, distributions,
+        DistributionInfoDto dto = distributionService.composeDistributionInfoFor(distributionConfig, distributions,
                 fallbackAsParent,
                 distributionStatusColors, LocaleContext.getLanguages());
 

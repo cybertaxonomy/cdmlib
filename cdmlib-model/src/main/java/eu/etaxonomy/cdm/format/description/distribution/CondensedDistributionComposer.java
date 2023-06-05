@@ -117,8 +117,11 @@ public class CondensedDistributionComposer {
             PresenceAbsenceTerm areaOfScopeStatus = areaToStatusMap.get(areaOfScopeNode.area);
             DoubleResult<String, Boolean> areaOfScopeStatusSymbol = statusSymbol(areaOfScopeStatus, config, languages, NOT_HANDLED_BY_PARENT);
             String areaOfScopeLabel = config.showAreaOfScopeLabel? makeAreaLabel(languages, areaOfScopeNode.area, config, null):"";
-            result.addStatusAndAreaTaggedText(areaOfScopeStatusSymbol.getFirstResult(),
-                    areaOfScopeLabel, (areaOfScopeStatusSymbol.getSecondResult() || config.areasBold), config);
+            String statusStr = areaOfScopeStatusSymbol.getFirstResult();
+            boolean isBold = areaOfScopeStatusSymbol.getSecondResult() || config.areasBold;
+
+            result.addStatusAndAreaTaggedText(statusStr, areaOfScopeLabel,
+                    isBold, config);
 
             //subareas
             handleSubAreas(result, areaOfScopeNode, config, areaNodeComparator, languages, areaToStatusMap,

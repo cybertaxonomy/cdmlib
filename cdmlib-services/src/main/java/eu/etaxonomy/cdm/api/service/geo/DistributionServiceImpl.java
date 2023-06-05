@@ -145,7 +145,8 @@ public class DistributionServiceImpl implements IDistributionService {
         DistributionInfoDto dto = new DistributionInfoDto();
 
         if(omitLevels == null) {
-            @SuppressWarnings("unchecked") Set<NamedAreaLevel> emptySet = Collections.EMPTY_SET;
+            @SuppressWarnings("unchecked")
+            Set<NamedAreaLevel> emptySet = Collections.EMPTY_SET;
             omitLevels = emptySet;
         }
 
