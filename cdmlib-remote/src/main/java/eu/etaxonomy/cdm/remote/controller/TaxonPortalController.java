@@ -400,7 +400,8 @@ public class TaxonPortalController extends TaxonController{
         }
 
         //iucn distribution info config
-        DistributionInfoConfiguration iucnDistributionConfig = config.getDistributionInfoConfiguration(Feature.uuidIucnStatus);
+        DistributionInfoConfiguration iucnDistributionConfig = new DistributionInfoConfiguration();
+        config.putDistributionInfoConfiguration(Feature.uuidIucnStatus, iucnDistributionConfig);
         iucnDistributionConfig.setUseTreeDto(true);
         EnumSet<InfoPart> iucnPartSet = EnumSet.of(InfoPart.condensedDistribution);
         iucnDistributionConfig.setInfoParts(iucnPartSet);
