@@ -706,7 +706,7 @@ public class DistributionServiceUtilities {
 
         SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
 
-        // sort Distributions by the area and filter undefinedStatus
+        // assign distributions to the area and filter undefinedStatus
         for(Distribution distribution : distributions){
             NamedArea area = distribution.getArea();
             if(area == null) {
