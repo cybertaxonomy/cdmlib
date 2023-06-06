@@ -17,14 +17,14 @@ import java.util.UUID;
  * @date 05.06.2023
  *
  */
-public class AnnotationDto implements Serializable, Comparable<AnnotationDto> {
+public class AnnotationDto implements Serializable, Comparable<AnnotationDto>, ICdmBaseDto {
     private static final long serialVersionUID = -5138126315299678336L;
 
     private String text;
     private UUID typeUuid;
     private String typeLabel;
     private UUID uuid;
-    private Integer id;
+    private int id;
     //TODO do we need type label, too?
 
     public AnnotationDto() {
@@ -36,6 +36,7 @@ public class AnnotationDto implements Serializable, Comparable<AnnotationDto> {
         this.id = id;
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
@@ -44,7 +45,8 @@ public class AnnotationDto implements Serializable, Comparable<AnnotationDto> {
         this.uuid = uuid;
     }
 
-    public Integer getId() {
+    @Override
+    public int getId() {
         return id;
     }
 

@@ -17,16 +17,16 @@ import java.util.UUID;
  * @date 05.06.2023
  *
  */
-public class MarkerDto implements Serializable, Comparable<MarkerDto> {
+public class MarkerDto implements Serializable, Comparable<MarkerDto>, ICdmBaseDto {
 
     private Boolean value;
     private UUID typeUuid;
     private String type;
     private UUID uuid;
-    private Integer id;
+    private int id;
 
 
-    public MarkerDto(UUID uuid, Integer id) {
+    public MarkerDto(UUID uuid, int id) {
         this.uuid = uuid;
         this.id = id;
     }
@@ -62,6 +62,7 @@ public class MarkerDto implements Serializable, Comparable<MarkerDto> {
         this.type = type;
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
@@ -70,7 +71,8 @@ public class MarkerDto implements Serializable, Comparable<MarkerDto> {
         this.uuid = uuid;
     }
 
-    public Integer getId() {
+    @Override
+    public int getId() {
         return id;
     }
 

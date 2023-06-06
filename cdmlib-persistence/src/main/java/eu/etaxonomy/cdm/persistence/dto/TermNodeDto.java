@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @author k.luther
  * @since Mar 18, 2020
  */
-public class TermNodeDto implements Serializable, IAnnotatableDto{
+public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
 
     private static final long serialVersionUID = 7568459208397248126L;
 
@@ -40,6 +40,7 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
     private Set<FeatureStateDto> onlyApplicableIf = new HashSet<>();
     private Set<FeatureStateDto> inapplicableIf = new HashSet<>();
     private UUID uuid;
+    private int id;
     private TermDto term;
     private TermType type;
     private TermTreeDto tree;
@@ -54,7 +55,8 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
             treeDto.addTerm(term);
         }
 
-        TermNodeDto dto = new TermNodeDto(term, node.getParent() != null? node.getParent().getIndex(node): 0, treeDto != null? treeDto: TermTreeDto.fromTree((TermTree)node.getGraph()), node.getUuid(), node.treeIndex(), node.getPath());
+        TermNodeDto dto = new TermNodeDto(term, node.getParent() != null? node.getParent().getIndex(node): 0, treeDto != null? treeDto: TermTreeDto.fromTree((TermTree)node.getGraph()), node.getUuid(), node.getId(), node.treeIndex(), node.getPath());
+
         if (node.getParent() != null){
             dto.setParentUuid(node.getParent().getUuid());
         }
@@ -105,11 +107,12 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
         return dto;
     }
 
-    public TermNodeDto(TermDto termDto, TermNodeDto parent, int position, TermTreeDto treeDto, UUID uuid, String treeIndex, String path){
+    public TermNodeDto(TermDto termDto, TermNodeDto parent, int position, TermTreeDto treeDto, UUID uuid, int id, String treeIndex, String path){
         this.uuid = uuid;
         if (parent != null){
             parentUuid = parent.getUuid();
         }
+        this.id = id;
         this.treeIndex = treeIndex;
         term = termDto;
         type = termDto!= null? termDto.getTermType(): null;
@@ -124,10 +127,10 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
         this.path = path;
     }
 
-    public TermNodeDto(TermDto termDto, UUID parentUuid, int position, TermTreeDto treeDto, UUID uuid, String treeIndex, String path){
+    public TermNodeDto(TermDto termDto, UUID parentUuid, int position, TermTreeDto treeDto, UUID uuid, int id, String treeIndex, String path){
         this.uuid = uuid;
         this.parentUuid = parentUuid;
-
+        this.id = id;
         this.treeIndex = treeIndex;
         term = termDto;
         type = termDto!= null? termDto.getTermType(): null;
@@ -138,8 +141,9 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
 
     }
 
-    public TermNodeDto(TermDto termDto, int position, TermTreeDto treeDto, UUID uuid, String treeIndex, String path){
+    public TermNodeDto(TermDto termDto, int position, TermTreeDto treeDto, UUID uuid, int id, String treeIndex, String path){
         this.uuid = uuid;
+        this.id = id;
         this.treeIndex = treeIndex;
         term = termDto;
         type = termDto!= null? termDto.getTermType(): null;
@@ -217,6 +221,7 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
 
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
@@ -326,6 +331,7 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
    private static String[] createSqlParts() {
        String sqlSelectString = ""
                + " SELECT a.uuid, "
+               + " a.id, "
                + " r, "
                + " a.termType,  "
                + " a.uri,  "
@@ -350,6 +356,7 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
    private static String[] createSqlPartsWithTerm() {
        String sqlSelectString = ""
                + " SELECT a.uuid, "
+               + " a.id, "
                + " r, "
                + " a.term"
                + " a.termType,  "
@@ -385,5 +392,10 @@ public class TermNodeDto implements Serializable, IAnnotatableDto{
     @Override
     public void removeAnnotation(AnnotationDto annotation) {
         this.getAnnotations().remove(annotation);
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }
