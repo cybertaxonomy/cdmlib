@@ -24,9 +24,15 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * The class for the nomenclature code edition of the 5 nomenclatural codes (ICNP, ICBN, ICNCP, ICZN and ICVCN)
@@ -273,6 +279,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 
 	private String abbrev;
 
+	private Reference citation;
+
 	private NomenclaturalCodeEdition(UUID uuid, String abbrev, String location, Integer year, NomenclaturalCode code, String wikiDataId, String strDoi ){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, makeTitleCache(location, code, year), code.getKey() + year, null);
 		this.location = location;
@@ -371,6 +379,49 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     }
     public DOI getDoi() {
         return this.doi;
+    }
+
+    private Reference getCitation() {
+        if (this.citation == null) {
+            if (this == NomenclaturalCodeEdition.ICN_2017_SHENZHEN) {
+                citation = ReferenceFactory.newBook();
+                citation.setTitle(" International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017");
+                Team team = Team.NewInstance();
+                team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Wiersema", "J.H.", null));
+                team.addTeamMember(Person.NewInstance(null, "Barrie", "F.R.", null));
+                team.addTeamMember(Person.NewInstance(null, "Greuter", "W.", null));
+                team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
+                team.addTeamMember(Person.NewInstance(null, "Herendeen", "P.S.", null));
+                team.addTeamMember(Person.NewInstance(null, "Knapp", "S.", null));
+                team.addTeamMember(Person.NewInstance(null, "Kusber", "W.-H.", null));
+                team.addTeamMember(Person.NewInstance(null, "Li", "D.-Z.", null));
+                team.addTeamMember(Person.NewInstance(null, "Marhold", "K.", null));
+                team.addTeamMember(Person.NewInstance(null, "May", "T.W.", null));
+                team.addTeamMember(Person.NewInstance(null, "McNeill", "J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Monro", "A.M.", null));
+                team.addTeamMember(Person.NewInstance(null, "Prado", "J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Price", "M.J.", null));
+                //TODO eds.
+                team.addTeamMember(Person.NewInstance(null, "Smith", "G.F. (eds.)", null));
+                citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2018"));
+                citation.setPlacePublished("Glashütten");
+                citation.setPublisher("Koeltz Botanical Books", "Glashütten");
+                citation.setDoi(ICN_2017_SHENZHEN.getDoi());
+                citation.setSeriesPart("Regnum Vegetabile 159");
+            }else {
+                //TODO other nom codes not yet implemented
+            }
+        }
+        return citation;
+    }
+
+    public IdentifiableSource getSource() {
+        if (getCitation() != null) {
+            return IdentifiableSource.NewPrimaryMediaSourceInstance(getCitation(), null);
+        } else {
+            return null;
+        }
     }
 
 // *************************** DELEGATE **************************************/
