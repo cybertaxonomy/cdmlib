@@ -23,6 +23,7 @@ import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
@@ -113,6 +114,40 @@ public class DistributionTree
             childAreas.clear();
             childAreas.addAll(parentAreas);
         }
+    }
+
+    public void handleAlternativeRootArea(Set<MarkerType> alternativeRootAreaMarkerType) {
+        //don't anything if no alternative area markers exist
+        if (CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerType)) {
+            return;
+        }
+        TreeNode<Set<Distribution>, NamedArea> emptyRoot = this.getRootElement();
+        for(TreeNode<Set<Distribution>, NamedArea> realRoot : emptyRoot.getChildren()) {
+            if (CdmUtils.isNullSafeEmpty(realRoot.getData()) && realRoot.getNumberOfChildren() == 1) {
+                TreeNode<Set<Distribution>, NamedArea> child = realRoot.getChildren().get(0);
+                if (DistributionServiceUtilities.isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)
+                        && !CdmUtils.isNullSafeEmpty(child.getData())) {
+                    //change root element
+                    setRootElement(child);
+                    realRoot.getChildren().remove(0);
+                }
+            } else {
+                Set<TreeNode<Set<Distribution>, NamedArea>> children = new HashSet<>(realRoot.getChildren());
+                for(TreeNode<Set<Distribution>, NamedArea> child : children) {
+                    if (DistributionServiceUtilities.isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)) {
+                        replaceByChildren(realRoot, child);
+                    }
+                }
+            }
+        }
+    }
+
+    private void replaceByChildren(TreeNode<Set<Distribution>, NamedArea> parent,
+            TreeNode<Set<Distribution>, NamedArea> toBeReplaced) {
+        for (TreeNode<Set<Distribution>, NamedArea> child : toBeReplaced.getChildren()) {
+            parent.addChild(child);
+        }
+        parent.getChildren().remove(toBeReplaced);
     }
 
     public void recursiveSortChildren(DistributionOrder distributionOrder){
