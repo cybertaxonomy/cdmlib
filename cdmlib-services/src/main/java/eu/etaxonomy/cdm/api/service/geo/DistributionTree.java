@@ -203,8 +203,9 @@ public class DistributionTree
      * @param omitLevels
      * @return the path through the area hierarchy
      */
-    private List<NamedArea> getAreaLevelPath(NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap, Set<Integer> omitLevelIds,
-            Set<NamedArea> distributionAreas, Set<MarkerType> fallbackAreaMarkerTypes,
+    private List<NamedArea> getAreaLevelPath(NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap,
+            Set<Integer> omitLevelIds, Set<NamedArea> distributionAreas,
+            Set<MarkerType> fallbackAreaMarkerTypes,
             boolean neverUseFallbackAreasAsParents){
 
         List<NamedArea> result = new ArrayList<>();
@@ -215,16 +216,35 @@ public class DistributionTree
         while (parentAreaMap.getFirstValue(area) != null) {  //handle >1 parents
             area = parentAreaMap.getFirstValue(area);
             if (!matchesLevels(area, omitLevelIds)){
-                if(!isFallback(fallbackAreaMarkerTypes, area) ||
-                        (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
+                boolean isNoFallback = !isFallback(fallbackAreaMarkerTypes, area);
+                if(isNoFallback) {
                     result.add(0, area);
-                } else {
-                    if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
+                }else {
+                     boolean dataExist = distributionAreas.contains(area);
+                     if (dataExist && !neverUseFallbackAreasAsParents) {
+                         result.add(0, area);
+                     }else if(isAlternativeRoot(distributionAreas, dataExist, area, alternativeRootAreaMarkerTypes)) {
+                         result.add(0, area);
+                     }else {
+                         if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
+                     }
                 }
+
+//                if(isNoFallback ||
+//                        (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
+//                    result.add(0, area);
+//                } else {
+//                }
             }
         }
 
         return result;
+    }
+
+    private boolean isAlternativeRoot(Set<NamedArea> distributionAreas, boolean dataExist, NamedArea area,
+            Set<MarkerType> alternativeRootAreaMarkerTypes) {
+        DistributionServiceUtilities.isMarkedAs(area, alternativeRootAreaMarkerTypes);
+        return false;
     }
 
     private boolean isFallback(Set<MarkerType> fallbackAreaMarkerTypes, NamedArea area) {

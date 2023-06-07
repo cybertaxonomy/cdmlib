@@ -1048,6 +1048,7 @@ public class DistributionServiceUtilities {
         //order by areas
         tree.orderAsTree(distributions, parentAreaMap, omitLevels, fallbackAreaMarkerTypes,
                 alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent);
+
         tree.recursiveSortChildren(distributionOrder); // TODO respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;

@@ -189,7 +189,7 @@ public class DistributionTreeDtoLoader {
       TreeNode<Set<DistributionDto>, NamedAreaDto> child = findChildNode(root, highestArea);
       if (child == null) {
           // the highestDistNode is not yet in the set of children, so we add it
-          child = new TreeNode<Set<DistributionDto>,NamedAreaDto>(highestArea);
+          child = new TreeNode<>(highestArea);
           child.setData(new HashSet<>());
           root.addChild(child);
       }
@@ -252,9 +252,13 @@ public class DistributionTreeDtoLoader {
           // in NamedAreaDTO constructor
           while (area.getParent() != null) {
               area = area.getParent();
+              //omit omit-levels
               if (!matchesLevels(area, omitLevelIds)){
-                  if(!isFallback(fallbackAreaMarkerTypes, area) ||
-                          (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
+                  if(!isFallback(fallbackAreaMarkerTypes, area)
+                          || (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents )
+                          ) {
+                      //add parent if it is not a fallback or if it is a fallback but data for this area exists and
+                      //   the neverUse... parameter allows adding fallback areas in this case
                       result.add(0, area);
                   } else {
                       if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
@@ -269,12 +273,12 @@ public class DistributionTreeDtoLoader {
   private boolean isFallback(Set<MarkerType> fallbackAreaMarkerTypes, NamedAreaDto area) {
 
       //was: DescriptionUtility.isMarkedHidden(area, fallbackAreaMarkerTypes);
-      return isMarkedHidden(area, fallbackAreaMarkerTypes);
+      return isMarkedAs(area, fallbackAreaMarkerTypes);
   }
 
-  private static boolean isMarkedHidden(NamedAreaDto area, Set<MarkerType> fallbackAreaMarkerTypes) {
-      if(fallbackAreaMarkerTypes != null) {
-          for(MarkerType markerType : fallbackAreaMarkerTypes){
+  private static boolean isMarkedAs(NamedAreaDto area, Set<MarkerType> markerTypes) {
+      if(markerTypes != null) {
+          for(MarkerType markerType : markerTypes){
               if(area.hasMarker(markerType, true)){
                   return true;
               }
