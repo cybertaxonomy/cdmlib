@@ -135,6 +135,7 @@ public class DistributionServiceImpl implements IDistributionService {
         boolean subAreaPreference = config.isPreferSubareas();
         boolean statusOrderPreference = config.isStatusOrderPreference();
         Set<MarkerType> fallbackAreaMarkerTypes = config.getFallbackAreaMarkerTypeList();
+        Set<MarkerType> alternativeRootAreaMarkerTypes = config.getAlternativeRootAreaMarkerTypes();
         Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
         CondensedDistributionConfiguration condensedDistConfig = config.getCondensedDistributionConfiguration();
         DistributionOrder distributionOrder = config.getDistributionOrder();
@@ -179,12 +180,14 @@ public class DistributionServiceImpl implements IDistributionService {
                 }
 
                 tree = DistributionServiceUtilities.buildOrderedTreeDto(omitLevels,
-                        filteredDtoDistributions, parentAreaMap, fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                        filteredDtoDistributions, parentAreaMap, fallbackAreaMarkerTypes,
+                        alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent,
                         distributionOrder, termDao);
             }else {
                 //version with model entities as used in direct webservice (not taxon page DTO)
                 tree = DistributionServiceUtilities.buildOrderedTree(omitLevels,
-                        filteredDistributions, parentAreaMap, fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                        filteredDistributions, parentAreaMap, fallbackAreaMarkerTypes,
+                        alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent,
                         distributionOrder, termDao);
             }
             dto.setTree(tree);

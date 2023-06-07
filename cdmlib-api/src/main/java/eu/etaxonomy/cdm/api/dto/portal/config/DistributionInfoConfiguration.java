@@ -28,7 +28,9 @@ public class DistributionInfoConfiguration {
 
     private boolean statusOrderPreference = false;
 
-    private Set<MarkerType> fallbackAreaMarkerTypeList = new HashSet<>();   //was list before
+    private Set<MarkerType> fallbackAreaMarkerTypeList = new HashSet<>();
+
+    private Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
 
     private Set<NamedAreaLevel> omitLevels = new HashSet<>();
 
@@ -70,6 +72,13 @@ public class DistributionInfoConfiguration {
     }
     public void setFallbackAreaMarkerTypeList(Set<MarkerType>fallbackAreaMarkerTypeList) {
         this.fallbackAreaMarkerTypeList = fallbackAreaMarkerTypeList;
+    }
+
+    public Set<MarkerType> getAlternativeRootAreaMarkerTypes() {
+        return alternativeRootAreaMarkerTypes;
+    }
+    public void setAlternativeRootAreaMarkerTypes(Set<MarkerType> alternativeRootAreaMarkerTypes) {
+        this.alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypes;
     }
 
     public Set<NamedAreaLevel> getOmitLevels() {

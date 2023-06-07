@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -336,6 +337,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
             @RequestParam(value = "fallbackAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
+            @RequestParam(value = "alternativeRootAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> alternativeRootAreaMarkerTypeList,
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
             //TODO still needs to be used
             @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
@@ -352,6 +354,15 @@ public class TaxonPortalController extends TaxonController{
         if(request != null){
             logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
         }
+
+        //TODO for now hardcoded
+        alternativeRootAreaMarkerTypeList = new DefinedTermBaseList<MarkerType>();
+        UUID alternativeRootAreaMarkerTypeUuid = UUID.fromString("1bf75861-47a0-42a1-8632-97c0fd15df29");
+        MarkerType alternativeRootAreaMarkerType = (MarkerType)termService.find(alternativeRootAreaMarkerTypeUuid);
+        if (alternativeRootAreaMarkerType != null) {
+            alternativeRootAreaMarkerTypeList.add(alternativeRootAreaMarkerType);
+        }
+
 
         //TODO is this current state of art?
 //        ModelAndView mv = new ModelAndView();
@@ -380,6 +391,15 @@ public class TaxonPortalController extends TaxonController{
         config.setWithTaxonRelationships(doTaxonRelations);
         config.setIncludeUnpublished(includeUnpublished);
 
+        Set<MarkerType> fallbackAreaMarkerTypes = new HashSet<>();
+        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
+            fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
+        }
+        Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
+        if(!CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypeList)){
+            alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypeList.asSet();
+        }
+
         //default distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
         distributionConfig.setUseTreeDto(true);
@@ -393,10 +413,8 @@ public class TaxonPortalController extends TaxonController{
         if (recipe != null) {
             distributionConfig.setCondensedDistributionConfiguration(recipe.toConfiguration());
         }
-        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
-            Set<MarkerType> fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
-            distributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
-        }
+        distributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+        distributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
 
         //iucn distribution info config
         DistributionInfoConfiguration iucnDistributionConfig = new DistributionInfoConfiguration();
@@ -415,10 +433,8 @@ public class TaxonPortalController extends TaxonController{
         if (iucnRecipe != null) {
             iucnDistributionConfig.setCondensedDistributionConfiguration(iucnRecipe.toConfiguration());
         }
-        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
-            Set<MarkerType> fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
-            iucnDistributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
-        }
+        iucnDistributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
+        iucnDistributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
 
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);
         return dto;

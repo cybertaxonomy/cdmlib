@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.LabeledEntityDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -296,4 +297,38 @@ public class DistributionTreeDtoLoader {
       }
       return omitLevelIds.contains(areaLevelId);
   }
+
+    public void handleAlternativeRootArea(DistributionTreeDto dto, Set<MarkerType> alternativeRootAreaMarkerType) {
+        //don't anything if no alternative area markers exist
+        if (CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerType)) {
+            return;
+        }
+        TreeNode<Set<DistributionDto>, NamedAreaDto> emptyRoot = dto.getRootElement();
+        for(TreeNode<Set<DistributionDto>, NamedAreaDto> realRoot : emptyRoot.getChildren()) {
+            if (CdmUtils.isNullSafeEmpty(realRoot.getData()) && realRoot.getNumberOfChildren() == 1) {
+                TreeNode<Set<DistributionDto>, NamedAreaDto> child = realRoot.getChildren().get(0);
+                if (isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)
+                        && !CdmUtils.isNullSafeEmpty(child.getData())) {
+                    //change root element
+                    dto.setRootElement(child);
+                    realRoot.getChildren().remove(0);
+                }
+            } else {
+                Set<TreeNode<Set<DistributionDto>, NamedAreaDto>> children = new HashSet<>(realRoot.getChildren());
+                for(TreeNode<Set<DistributionDto>, NamedAreaDto> child : children) {
+                    if (isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)) {
+                        replaceByChildren(realRoot, child);
+                    }
+                }
+            }
+        }
+    }
+
+    private void replaceByChildren(TreeNode<Set<DistributionDto>, NamedAreaDto> parent,
+            TreeNode<Set<DistributionDto>, NamedAreaDto> toBeReplaced) {
+        for (TreeNode<Set<DistributionDto>, NamedAreaDto> child : toBeReplaced.getChildren()) {
+            parent.addChild(child);
+        }
+        parent.getChildren().remove(toBeReplaced);
+    }
 }
