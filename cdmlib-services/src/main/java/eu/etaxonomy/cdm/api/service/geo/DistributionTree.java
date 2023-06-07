@@ -124,17 +124,20 @@ public class DistributionTree
         TreeNode<Set<Distribution>, NamedArea> emptyRoot = this.getRootElement();
         for(TreeNode<Set<Distribution>, NamedArea> realRoot : emptyRoot.getChildren()) {
             if (CdmUtils.isNullSafeEmpty(realRoot.getData()) && realRoot.getNumberOfChildren() == 1) {
+                //real root has no data and 1 child => potential candidate to be replaced by alternative root
                 TreeNode<Set<Distribution>, NamedArea> child = realRoot.getChildren().get(0);
                 if (DistributionServiceUtilities.isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)
                         && !CdmUtils.isNullSafeEmpty(child.getData())) {
-                    //change root element
-                    setRootElement(child);
-                    realRoot.getChildren().remove(0);
+                    //child is alternative root and has data => replace root by alternative root
+                    emptyRoot.getChildren().remove(realRoot);
+                    emptyRoot.addChild(child);
                 }
             } else {
+                //if root has data or >1 children test if children are alternative roots with no data => remove
                 Set<TreeNode<Set<Distribution>, NamedArea>> children = new HashSet<>(realRoot.getChildren());
                 for(TreeNode<Set<Distribution>, NamedArea> child : children) {
-                    if (DistributionServiceUtilities.isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)) {
+                    if (DistributionServiceUtilities.isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)
+                            && CdmUtils.isNullSafeEmpty(child.getData())) {
                         replaceByChildren(realRoot, child);
                     }
                 }
