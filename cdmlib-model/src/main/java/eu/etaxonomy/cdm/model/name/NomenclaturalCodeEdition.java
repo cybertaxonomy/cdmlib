@@ -410,6 +410,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 citation.setPublisher("Koeltz Botanical Books", "Glashütten");
                 citation.setDoi(ICN_2017_SHENZHEN.getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 159");
+                citation.setUuid(UUID.fromString("34426499-8ffe-48aa-bc61-34e2abdea676"));
             }else {
                 //TODO other nom codes not yet implemented
             }
