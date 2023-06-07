@@ -88,7 +88,8 @@ public class CondensedDistributionComposer {
     }
 
     public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
-            SetMap<NamedArea, NamedArea> parentAreaMap, List<Language> languages, CondensedDistributionConfiguration config) {
+            SetMap<NamedArea, NamedArea> parentAreaMap, List<Language> languages,
+            CondensedDistributionConfiguration config) {
 
         CondensedDistribution result = new CondensedDistribution();
 

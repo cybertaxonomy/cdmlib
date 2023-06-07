@@ -302,17 +302,18 @@ public class DistributionTreeDtoLoader {
       return omitLevelIds.contains(areaLevelId);
   }
 
-    public void handleAlternativeRootArea(DistributionTreeDto dto, Set<MarkerType> alternativeRootAreaMarkerType) {
+    public void handleAlternativeRootArea(DistributionTreeDto dto, Set<MarkerType> alternativeRootAreaMarkerTypes) {
         //don't anything if no alternative area markers exist
-        if (CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerType)) {
+        if (CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypes)) {
             return;
         }
+
         TreeNode<Set<DistributionDto>, NamedAreaDto> emptyRoot = dto.getRootElement();
         for(TreeNode<Set<DistributionDto>, NamedAreaDto> realRoot : emptyRoot.getChildren()) {
             if (CdmUtils.isNullSafeEmpty(realRoot.getData()) && realRoot.getNumberOfChildren() == 1) {
                 //real root has no data and 1 child => potential candidate to be replaced by alternative root
                 TreeNode<Set<DistributionDto>, NamedAreaDto> child = realRoot.getChildren().get(0);
-                if (isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)
+                if (isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerTypes)
                         && !CdmUtils.isNullSafeEmpty(child.getData())) {
                     //child is alternative root and has data => replace root by alternative root
                     emptyRoot.getChildren().remove(realRoot);
@@ -322,7 +323,7 @@ public class DistributionTreeDtoLoader {
                 //if root has data or >1 children test if children are alternative roots with no data => remove
                 Set<TreeNode<Set<DistributionDto>, NamedAreaDto>> children = new HashSet<>(realRoot.getChildren());
                 for(TreeNode<Set<DistributionDto>, NamedAreaDto> child : children) {
-                    if (isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerType)
+                    if (isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerTypes)
                             && CdmUtils.isNullSafeEmpty(child.getData())) {
                         replaceByChildren(realRoot, child);
                     }
