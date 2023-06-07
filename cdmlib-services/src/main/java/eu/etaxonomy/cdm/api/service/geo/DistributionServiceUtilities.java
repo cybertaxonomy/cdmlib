@@ -1047,8 +1047,8 @@ public class DistributionServiceUtilities {
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
         //order by areas
         tree.orderAsTree(distributions, parentAreaMap, omitLevels, fallbackAreaMarkerTypes,
-                alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent);
-
+                neverUseFallbackAreaAsParent);
+        tree.handleAlternativeRootArea(alternativeRootAreaMarkerTypes);
         tree.recursiveSortChildren(distributionOrder); // TODO respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;
