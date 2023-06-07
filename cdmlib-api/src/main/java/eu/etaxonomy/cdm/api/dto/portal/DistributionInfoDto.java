@@ -73,9 +73,9 @@ public class DistributionInfoDto implements IFactDto {
     }
 
     public enum InfoPart{
-        condensedDistribution,
-        tree,
-        mapUriParams,
-        elements,
+        condensedDistribution,  //include condensed distribution string
+        tree,  //include area tree holding distribution information
+        mapUriParams, //include uri params to show map
+        elements,  //include model objects
     }
 }

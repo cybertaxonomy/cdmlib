@@ -661,24 +661,25 @@ public class DistributionServiceUtilities {
      *
      * <li><b>Prefer aggregated rule</b>: if this flag is set to <code>true</code> aggregated
      * distributions are preferred over non-aggregated elements.
-     * (Aggregated description elements are identified by the description having type
-     * {@link DescriptionType.AGGREGATED_DISTRIBUTION}). This means if an non-aggregated status
+     * (Aggregated descriptions are identified by their description having type
+     * {@link DescriptionType.AGGREGATED_DISTRIBUTION}). This means if a non-aggregated status
      * information exists for the same area for which aggregated data is available,
      * the aggregated data has to be given preference over other data.
-     * see parameter <code>preferAggregated</code></li>
+     * See parameter <code>preferAggregated</code></li>
      *
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see
      * {@link DefinedTermBase#compareTo(DefinedTermBase)}. This rule is
      * optional, see parameter <code>statusOrderPreference</code></li>
+     *
      * <li><b>Sub area preference rule</b>: If there is an area with a <i>direct
      * sub area</i> and both areas have the same status only the
      * information on the sub area should be reported, whereas the super area
      * should be ignored. This rule is optional, see parameter
      * <code>subAreaPreference</code>. Can be run separately from the other filters.
      * This rule affects any distribution,
-     * that is to computed and edited equally. For more details see
+     * that is to be computed and edited equally. For more details see
      * {@link https://dev.e-taxonomy.eu/redmine/issues/5050})</li>
      * </ol>
      *
@@ -798,7 +799,7 @@ public class DistributionServiceUtilities {
         for (Distribution distribution : distributions) {
             NamedArea area = HibernateProxyHelper.deproxy(distribution.getArea(), NamedArea.class) ;
             if (area != null && !relevantAreas.contains(area)) {
-                boolean isHidden = isMarkedHidden(area, fallbackAreaMarkerTypes);
+                boolean isHidden = isMarkedAs(area, fallbackAreaMarkerTypes);
                 if (isHidden) {
                     //if is hidden area either ignore (hidden area) or add unhidden children (fallback area)
                     Set<NamedArea> unhiddenChildren = getUnhiddenChildren(area, fallbackAreaMarkerTypes);
@@ -860,7 +861,7 @@ public class DistributionServiceUtilities {
     private static Set<NamedArea> getUnhiddenChildren(NamedArea area, Set<MarkerType> fallbackAreaMarkerTypes) {
         Set<NamedArea> result = new HashSet<>();
         for (NamedArea child : area.getIncludes()) {
-            if (!isMarkedHidden(child, fallbackAreaMarkerTypes)) {
+            if (!isMarkedAs(child, fallbackAreaMarkerTypes)) {
                 result.add(child);
             }
             result.addAll(getUnhiddenChildren(child, fallbackAreaMarkerTypes));
@@ -901,7 +902,7 @@ public class DistributionServiceUtilities {
         for(NamedArea area : filteredDistributionsPerArea.keySet()) {
             if (! availableAreas.contains(area)) {
                 areasHiddenByMarker.add(area);
-            }else if(isMarkedHidden(area, fallbackAreaMarkerTypes)) {
+            }else if(isMarkedAs(area, fallbackAreaMarkerTypes)) {
                 Set<TermNode<NamedArea>> nodes = areaTree.getNodesForTerm(area);
 
                 // if at least one sub area is not hidden by a marker
@@ -933,7 +934,7 @@ public class DistributionServiceUtilities {
             Set<TermNode<NamedArea>> childNodeAsSet = new HashSet<>();
             childNodeAsSet.add(included);
             //if subarea is not hidden and data exists return true
-            if (isMarkedHidden(subArea, fallbackAreaMarkerTypes)){
+            if (isMarkedAs(subArea, fallbackAreaMarkerTypes)){
                 boolean subAreaIsFallback = isRemainingFallBackArea(childNodeAsSet, fallbackAreaMarkerTypes, filteredDistributions);
                 if (subAreaIsFallback && noOrIgnoreData){
                     return true;
@@ -1001,9 +1002,9 @@ public class DistributionServiceUtilities {
         return false;
     }
 
-    public static boolean isMarkedHidden(NamedArea area, Set<MarkerType> fallbackAreaMarkerTypes) {
-        if(fallbackAreaMarkerTypes != null) {
-            for(MarkerType markerType : fallbackAreaMarkerTypes){
+    public static boolean isMarkedAs(NamedArea area, Set<MarkerType> markerTypes) {
+        if(markerTypes != null) {
+            for(MarkerType markerType : markerTypes){
                 if(area.hasMarker(markerType, true)){
                     return true;
                 }

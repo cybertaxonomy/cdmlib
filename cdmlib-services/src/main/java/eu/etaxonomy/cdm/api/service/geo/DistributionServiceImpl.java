@@ -145,7 +145,7 @@ public class DistributionServiceImpl implements IDistributionService {
         DistributionInfoDto dto = new DistributionInfoDto();
 
         if(omitLevels == null) {
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked")  //2 lines to allow unchecked annotation
             Set<NamedAreaLevel> emptySet = Collections.EMPTY_SET;
             omitLevels = emptySet;
         }
@@ -158,8 +158,8 @@ public class DistributionServiceImpl implements IDistributionService {
         SetMap<NamedArea, NamedArea> parentAreaMap = areaTree.getParentMap();
 
 
-        // for all later applications apply the rules statusOrderPreference, hideFallbackArea and ignoreUndefinedStatus
-        // to all distributions, but KEEP fallback area distributions
+        // for all later applications apply the rules statusOrderPreference, hideHiddenArea
+        // and ignoreUndefinedStatus to all distributions, but KEEP fallback area distributions
         Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
                 areaTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false,
                 config.isIgnoreDistributionStatusUndefined());
@@ -171,6 +171,7 @@ public class DistributionServiceImpl implements IDistributionService {
         if(parts.contains(InfoPart.tree)) {
             IDistributionTree tree;
             if (config.isUseTreeDto()) {
+                //transform distributions to distribution DTOs
                 Set<DistributionDto> filteredDtoDistributions = new HashSet<>();
                 for (Distribution distribution : filteredDistributions) {
                     DistributionDto distDto = new DistributionDto(distribution, parentAreaMap);

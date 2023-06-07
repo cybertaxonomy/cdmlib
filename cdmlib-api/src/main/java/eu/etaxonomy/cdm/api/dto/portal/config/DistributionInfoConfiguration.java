@@ -134,4 +134,5 @@ public class DistributionInfoConfiguration {
     public void setAreaTree(UUID areaTree) {
         this.areaTree = areaTree;
     }
+
 }
