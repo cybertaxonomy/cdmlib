@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -157,6 +158,12 @@ public class NomenclaturalStatus
     @Override
     public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
         ruleConsidered().setCodeEdition(codeEdition);
+    }
+
+    @Override
+    public IdentifiableSource getCodeEditionSource() {
+        NomenclaturalCodeEdition codeEdition = ruleConsidered().getCodeEdition();
+        return codeEdition == null ? null : codeEdition.getSource();
     }
 
     private RuleConsidered ruleConsidered(){

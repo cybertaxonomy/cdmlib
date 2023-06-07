@@ -385,8 +385,9 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
         if (this.citation == null) {
             if (this == NomenclaturalCodeEdition.ICN_2017_SHENZHEN) {
                 citation = ReferenceFactory.newBook();
-                citation.setTitle(" International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017");
+                citation.setTitle("International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017.");
                 Team team = Team.NewInstance();
+                citation.setAuthorship(team);
                 team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
                 team.addTeamMember(Person.NewInstance(null, "Wiersema", "J.H.", null));
                 team.addTeamMember(Person.NewInstance(null, "Barrie", "F.R.", null));
