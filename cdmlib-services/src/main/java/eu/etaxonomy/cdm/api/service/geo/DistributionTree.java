@@ -251,35 +251,16 @@ public class DistributionTree
         while (parentAreaMap.getFirstValue(area) != null) {  //handle >1 parents
             area = parentAreaMap.getFirstValue(area);
             if (!matchesLevels(area, omitLevelIds)){
-                boolean isNoFallback = !isFallback(fallbackAreaMarkerTypes, area);
-                if(isNoFallback) {
+                if(!isFallback(fallbackAreaMarkerTypes, area) ||
+                        (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
                     result.add(0, area);
-                }else {
-                     boolean dataExist = distributionAreas.contains(area);
-                     if (dataExist && !neverUseFallbackAreasAsParents) {
-                         result.add(0, area);
-                     }else if(isAlternativeRoot(distributionAreas, dataExist, area, alternativeRootAreaMarkerTypes)) {
-                         result.add(0, area);
-                     }else {
-                         if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
-                     }
+                } else {
+                    if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
                 }
-
-//                if(isNoFallback ||
-//                        (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
-//                    result.add(0, area);
-//                } else {
-//                }
             }
         }
 
         return result;
-    }
-
-    private boolean isAlternativeRoot(Set<NamedArea> distributionAreas, boolean dataExist, NamedArea area,
-            Set<MarkerType> alternativeRootAreaMarkerTypes) {
-        DistributionServiceUtilities.isMarkedAs(area, alternativeRootAreaMarkerTypes);
-        return false;
     }
 
     private boolean isFallback(Set<MarkerType> fallbackAreaMarkerTypes, NamedArea area) {
