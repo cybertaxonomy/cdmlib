@@ -100,6 +100,8 @@ public class CondensedDistributionComposer {
         List<AreaNode> topLevelNodes = areaTreesAndStatusMap.getFirstResult();
         List<AreaNode> introducedTopLevelNodes = areaTreesAndStatusMap.getSecondResult();
 
+        handleAlternativeRootArea(topLevelNodes, areaToStatusMap, config);
+
         //4. replace the area by the abbreviated representation and add symbols
         AreaNodeComparator areaNodeComparator = new AreaNodeComparator(config, languages);
         AreaNodeComparator topLevelAreaOfScopeComparator = config.orderType == OrderType.NATURAL ? areaNodeComparator : new AreaNodeComparator(config, languages, OrderType.NATURAL);
@@ -157,6 +159,54 @@ public class CondensedDistributionComposer {
         }
 
         return result;
+    }
+
+    private void handleAlternativeRootArea(List<AreaNode> topLevelNodes,
+            Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, CondensedDistributionConfiguration config) {
+
+        //don't anything if no alternative area markers exist
+        if (CdmUtils.isNullSafeEmpty(config.alternativeRootAreaMarkers)) {
+            return;
+        }
+
+        List<AreaNode> removeSafeTopLevelNodes = new ArrayList<>(topLevelNodes);
+        int index = -1;
+        for (AreaNode topLevelNode : removeSafeTopLevelNodes) {
+            index++;
+            int nChildren = topLevelNode.getSubareas() == null ? 0 : topLevelNode.getSubareas().size();
+            if (areaToStatusMap.get(topLevelNode.area) == null && nChildren == 1) {
+                //real top level node has no data and 1 child => potential candidate to be replaced by alternative root
+                AreaNode childNode = topLevelNode.subAreas.iterator().next();
+                NamedArea childArea = childNode.area;
+                boolean childHasData = areaToStatusMap.get(childArea) != null;
+                if (isMarkedAs(childArea, config.alternativeRootAreaMarkers)
+                        && childHasData) {
+                    //child is alternative root and has data => replace root by alternative root
+                    topLevelNodes.remove(topLevelNode);
+                    topLevelNodes.add(index, childNode);
+                }
+            }else {
+                //if root has data or >1 children test if children are alternative roots with no data => remove
+                Set<AreaNode> childNodes = new HashSet<>(topLevelNode.subAreas);
+                for(AreaNode childNode : childNodes) {
+                    NamedArea childArea = childNode.area;
+                    boolean childHasNoData = areaToStatusMap.get(childArea) == null;
+                    if (isMarkedAs(childArea, config.alternativeRootAreaMarkers)
+                            && childHasNoData) {
+                        topLevelNodes.set(topLevelNodes.indexOf(topLevelNode), childNode);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isMarkedAs(NamedArea area, Set<UUID> alternativeRootAreaMarkers) {
+        for (UUID uuid : alternativeRootAreaMarkers) {
+            if (area.hasMarker(uuid, true)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected Map<NamedArea, AreaNode>[] buildAreaHierarchie(Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap,

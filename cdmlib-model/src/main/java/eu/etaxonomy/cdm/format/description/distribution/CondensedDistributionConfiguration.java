@@ -68,6 +68,9 @@ public class CondensedDistributionConfiguration implements Serializable {
 
     public Set<UUID> fallbackAreaMarkers = new HashSet<>(Arrays.asList(MarkerType.uuidFallbackArea)); //Note: we do not have hidden area markers anymore (use area tree instead)
 
+    //TODO
+    public Set<UUID> alternativeRootAreaMarkers = new HashSet<>(Arrays.asList());
+
     //should the status be put behind the area?
     public boolean statusTrailing = false;
 

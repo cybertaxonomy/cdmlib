@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.api.service.portal.IPortalDtoService;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -411,7 +413,9 @@ public class TaxonPortalController extends TaxonController{
         distributionConfig.setStatusColorsString(statusColorsString);
         distributionConfig.setDistributionOrder(distributionOrder);
         if (recipe != null) {
-            distributionConfig.setCondensedDistributionConfiguration(recipe.toConfiguration());
+            CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
+            condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
+            distributionConfig.setCondensedDistributionConfiguration(condensedConfig);
         }
         distributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         distributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
@@ -431,7 +435,9 @@ public class TaxonPortalController extends TaxonController{
         iucnDistributionConfig.setDistributionOrder(distributionOrder);
         CondensedDistributionRecipe iucnRecipe = CondensedDistributionRecipe.IUCN;
         if (iucnRecipe != null) {
-            iucnDistributionConfig.setCondensedDistributionConfiguration(iucnRecipe.toConfiguration());
+            CondensedDistributionConfiguration condensedConfig = iucnRecipe.toConfiguration();
+            condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
+            iucnDistributionConfig.setCondensedDistributionConfiguration(condensedConfig);
         }
         iucnDistributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
         iucnDistributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
@@ -440,6 +446,9 @@ public class TaxonPortalController extends TaxonController{
         return dto;
     }
 
+    private Set<UUID> getUuids(Set<? extends CdmBase> entities) {
+        return entities.stream().map(e->e.getUuid()).collect(Collectors.toSet());
+    }
 
     /**
      * Get the synonymy for a taxon identified by the <code>{taxon-uuid}</code>.
