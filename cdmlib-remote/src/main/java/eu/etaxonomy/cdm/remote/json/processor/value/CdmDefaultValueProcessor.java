@@ -18,7 +18,6 @@ import net.sf.json.processors.DefaultDefaultValueProcessor;
  *
  * @author a.kohlbecker
  * @since Jul 23, 2018
- *
  */
 public class CdmDefaultValueProcessor extends DefaultDefaultValueProcessor {
 
@@ -30,5 +29,4 @@ public class CdmDefaultValueProcessor extends DefaultDefaultValueProcessor {
             return super.getDefaultValue(type);
         }
      }
-
 }

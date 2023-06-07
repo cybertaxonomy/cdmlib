@@ -66,7 +66,7 @@ public class CondensedDistributionConfiguration implements Serializable {
     //if true, any non-empty symbol is taken from symbol2, symbol1, idInVoc and abbrevLabel according to the given order
     public boolean showAnyStatusSmbol = false;   //usually does not make sense to mix symbol fields
 
-    public Set<UUID> fallbackAreaMarkers = new HashSet<>(Arrays.asList(MarkerType.uuidFallbackArea)); //Note: we do not have hiddenAreaMarkers anymore (use are tree instead)
+    public Set<UUID> fallbackAreaMarkers = new HashSet<>(Arrays.asList(MarkerType.uuidFallbackArea)); //Note: we do not have hidden area markers anymore (use area tree instead)
 
     //should the status be put behind the area?
     public boolean statusTrailing = false;

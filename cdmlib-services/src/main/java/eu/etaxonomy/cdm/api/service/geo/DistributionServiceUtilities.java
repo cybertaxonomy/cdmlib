@@ -725,7 +725,7 @@ public class DistributionServiceUtilities {
         }
 
         // -------------------------------------------------------------------
-        // 1) skip distributions having an area with markers matching hiddenAreaMarkerTypes
+        // 1) skip distributions having an area with markers matching fallbackAreaMarkerTypes
         //    but keep distributions for fallback areas (areas with hidden marker, but with visible sub-areas)
         //TODO since using area tree this is only relevant if keepFallBackOnlyIfNoSubareaDataExists = true
         //     as the area tree should also exclude real hidden areas
@@ -760,11 +760,11 @@ public class DistributionServiceUtilities {
     }
 
     static TermTree<NamedArea> getAreaTree(Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes) {
+            Set<MarkerType> fallbackAreaMarkerTypes) {
 
         //TODO see comment in below method
 //        List<TermVocabulary<NamedArea>> vocs = getVocabualries(distributions);
-        TermTree<NamedArea> areaTree = createAreaTreeByDistributions(distributions, hiddenAreaMarkerTypes);
+        TermTree<NamedArea> areaTree = createAreaTreeByDistributions(distributions, fallbackAreaMarkerTypes);
         return areaTree;
     }
 
@@ -788,9 +788,9 @@ public class DistributionServiceUtilities {
      * Removes hidden areas marked as such if they have no children.
      */
     private static TermTree<NamedArea> createAreaTreeByDistributions(Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes) {
+            Set<MarkerType> fallbackAreaMarkerTypes) {
 
-        hiddenAreaMarkerTypes = hiddenAreaMarkerTypes == null ? new HashSet<>() : hiddenAreaMarkerTypes;
+        fallbackAreaMarkerTypes = fallbackAreaMarkerTypes == null ? new HashSet<>() : fallbackAreaMarkerTypes;
         TermTree<NamedArea> result = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
 
         //create area list
@@ -798,10 +798,10 @@ public class DistributionServiceUtilities {
         for (Distribution distribution : distributions) {
             NamedArea area = HibernateProxyHelper.deproxy(distribution.getArea(), NamedArea.class) ;
             if (area != null && !relevantAreas.contains(area)) {
-                boolean isHidden = isMarkedHidden(area, hiddenAreaMarkerTypes);
+                boolean isHidden = isMarkedHidden(area, fallbackAreaMarkerTypes);
                 if (isHidden) {
                     //if is hidden area either ignore (hidden area) or add unhidden children (fallback area)
-                    Set<NamedArea> unhiddenChildren = getUnhiddenChildren(area, hiddenAreaMarkerTypes);
+                    Set<NamedArea> unhiddenChildren = getUnhiddenChildren(area, fallbackAreaMarkerTypes);
                     if (!unhiddenChildren.isEmpty()) {
                         relevantAreas.addAll(unhiddenChildren);
                     }
@@ -857,13 +857,13 @@ public class DistributionServiceUtilities {
             return areaNode;
     }
 
-    private static Set<NamedArea> getUnhiddenChildren(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes) {
+    private static Set<NamedArea> getUnhiddenChildren(NamedArea area, Set<MarkerType> fallbackAreaMarkerTypes) {
         Set<NamedArea> result = new HashSet<>();
         for (NamedArea child : area.getIncludes()) {
-            if (!isMarkedHidden(child, hiddenAreaMarkerTypes)) {
+            if (!isMarkedHidden(child, fallbackAreaMarkerTypes)) {
                 result.add(child);
             }
-            result.addAll(getUnhiddenChildren(child, hiddenAreaMarkerTypes));
+            result.addAll(getUnhiddenChildren(child, fallbackAreaMarkerTypes));
         }
         return result;
     }
@@ -892,7 +892,7 @@ public class DistributionServiceUtilities {
     /**
      * Remove areas not in area tree but keep fallback areas.
      */
-    private static void removeHiddenAndKeepFallbackAreas(TermTree<NamedArea> areaTree, Set<MarkerType> hiddenAreaMarkerTypes,
+    private static void removeHiddenAndKeepFallbackAreas(TermTree<NamedArea> areaTree, Set<MarkerType> fallbackAreaMarkerTypes,
             SetMap<NamedArea,Distribution> filteredDistributionsPerArea, boolean keepFallBackOnlyIfNoSubareaDataExists) {
 
         Set<NamedArea> areasHiddenByMarker = new HashSet<>();
@@ -901,13 +901,13 @@ public class DistributionServiceUtilities {
         for(NamedArea area : filteredDistributionsPerArea.keySet()) {
             if (! availableAreas.contains(area)) {
                 areasHiddenByMarker.add(area);
-            }else if(isMarkedHidden(area, hiddenAreaMarkerTypes)) {
+            }else if(isMarkedHidden(area, fallbackAreaMarkerTypes)) {
                 Set<TermNode<NamedArea>> nodes = areaTree.getNodesForTerm(area);
 
                 // if at least one sub area is not hidden by a marker
                 // the given area is a fall-back area for this sub area
                 SetMap<NamedArea, Distribution> distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributionsPerArea : null;
-                boolean isFallBackArea = isRemainingFallBackArea(nodes, hiddenAreaMarkerTypes, distributionsForSubareaCheck);
+                boolean isFallBackArea = isRemainingFallBackArea(nodes, fallbackAreaMarkerTypes, distributionsForSubareaCheck);
                 if (!isFallBackArea) {
                     // this area does not need to be shown as
                     // fall-back for another area so it will be hidden.
@@ -921,7 +921,7 @@ public class DistributionServiceUtilities {
     }
 
     //if filteredDistributions == null it can be ignored if data exists or not
-    private static boolean isRemainingFallBackArea(Set<TermNode<NamedArea>> areaNode, Set<MarkerType> hiddenAreaMarkerTypes,
+    private static boolean isRemainingFallBackArea(Set<TermNode<NamedArea>> areaNode, Set<MarkerType> fallbackAreaMarkerTypes,
             SetMap<NamedArea, Distribution> filteredDistributions) {
 
         Set<TermNode<NamedArea>> childNodes = new HashSet<>();
@@ -933,8 +933,8 @@ public class DistributionServiceUtilities {
             Set<TermNode<NamedArea>> childNodeAsSet = new HashSet<>();
             childNodeAsSet.add(included);
             //if subarea is not hidden and data exists return true
-            if (isMarkedHidden(subArea, hiddenAreaMarkerTypes)){
-                boolean subAreaIsFallback = isRemainingFallBackArea(childNodeAsSet, hiddenAreaMarkerTypes, filteredDistributions);
+            if (isMarkedHidden(subArea, fallbackAreaMarkerTypes)){
+                boolean subAreaIsFallback = isRemainingFallBackArea(childNodeAsSet, fallbackAreaMarkerTypes, filteredDistributions);
                 if (subAreaIsFallback && noOrIgnoreData){
                     return true;
                 }else{
@@ -952,12 +952,12 @@ public class DistributionServiceUtilities {
 //            if (isNotHidden_AndHasNoData_OrDataCanBeIgnored) {
 //                return true;
 //            }
-//            if (!isMarkedHidden(subArea, hiddenAreaMarkerTypes) ){
+//            if (!isMarkedHidden(subArea, fallbackAreaMarkerTypes) ){
 //
 //            }
 //
 //            //do the same recursively
-//            boolean hasVisibleSubSubarea = isRemainingFallBackArea(subArea, hiddenAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
+//            boolean hasVisibleSubSubarea = isRemainingFallBackArea(subArea, fallbackAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
 //            if (hasVisibleSubSubarea){
 //                return true;
 //            }
@@ -1001,9 +1001,9 @@ public class DistributionServiceUtilities {
         return false;
     }
 
-    public static boolean isMarkedHidden(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes) {
-        if(hiddenAreaMarkerTypes != null) {
-            for(MarkerType markerType : hiddenAreaMarkerTypes){
+    public static boolean isMarkedHidden(NamedArea area, Set<MarkerType> fallbackAreaMarkerTypes) {
+        if(fallbackAreaMarkerTypes != null) {
+            for(MarkerType markerType : fallbackAreaMarkerTypes){
                 if(area.hasMarker(markerType, true)){
                     return true;
                 }

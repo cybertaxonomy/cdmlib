@@ -348,7 +348,6 @@ public class TaxonPortalController extends TaxonController{
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-
         boolean includeUnpublished = !INCLUDE_UNPUBLISHED;
         if(request != null){
             logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
@@ -396,7 +395,7 @@ public class TaxonPortalController extends TaxonController{
         }
         if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
             Set<MarkerType> fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
-            distributionConfig.setHiddenAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+            distributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         }
 
         //iucn distribution info config
@@ -418,7 +417,7 @@ public class TaxonPortalController extends TaxonController{
         }
         if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
             Set<MarkerType> fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
-            iucnDistributionConfig.setHiddenAreaMarkerTypeList(fallbackAreaMarkerTypes);
+            iucnDistributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
         }
 
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);

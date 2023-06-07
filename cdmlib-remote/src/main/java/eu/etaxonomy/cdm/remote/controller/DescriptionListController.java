@@ -274,7 +274,7 @@ public class DescriptionListController
             @RequestParam("part") Set<InfoPart> partSet,
             @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
-            @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hiddenAreaMarkerTypeList,
+            @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
             @RequestParam(value = "features", required = false ) Set<UUID> featureUuids,
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
@@ -296,10 +296,10 @@ public class DescriptionListController
                 CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
                 //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
                 //are hidden markers on areas that have non-hidden subareas (#4408)
-                Set<MarkerType> hiddenAreaMarkerTypes = null;
-                if(hiddenAreaMarkerTypeList != null && !hiddenAreaMarkerTypeList.isEmpty()){
-                    hiddenAreaMarkerTypes = hiddenAreaMarkerTypeList.asSet();
-                    condensedConfig.fallbackAreaMarkers = hiddenAreaMarkerTypeList.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+                Set<MarkerType> fallbackAreaMarkerTypes = null;
+                if(fallbackAreaMarkerTypeList != null && !fallbackAreaMarkerTypeList.isEmpty()){
+                    fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
+                    condensedConfig.fallbackAreaMarkers = fallbackAreaMarkerTypeList.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
                 }
 
                 EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
@@ -311,7 +311,7 @@ public class DescriptionListController
                 config.setInfoParts(parts);
                 config.setPreferSubAreas(preferSubAreas);
                 config.setStatusOrderPreference(statusOrderPreference);
-                config.setHiddenAreaMarkerTypeList(hiddenAreaMarkerTypes);
+                config.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
                 config.setOmitLevels(omitLevels);
                 config.setDistributionOrder(distributionOrder);
                 config.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);

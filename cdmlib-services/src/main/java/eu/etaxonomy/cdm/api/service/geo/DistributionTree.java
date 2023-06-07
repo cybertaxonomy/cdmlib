@@ -227,8 +227,8 @@ public class DistributionTree
         return result;
     }
 
-    private boolean isFallback(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
-        return DistributionServiceUtilities.isMarkedHidden(area, hiddenAreaMarkerTypes);
+    private boolean isFallback(Set<MarkerType> fallbackAreaMarkerTypes, NamedArea area) {
+        return DistributionServiceUtilities.isMarkedHidden(area, fallbackAreaMarkerTypes);
     }
 
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {

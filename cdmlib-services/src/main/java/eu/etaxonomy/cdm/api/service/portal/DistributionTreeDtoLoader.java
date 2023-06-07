@@ -265,15 +265,15 @@ public class DistributionTreeDtoLoader {
       return result;
   }
 
-  private boolean isFallback(Set<MarkerType> hiddenAreaMarkerTypes, NamedAreaDto area) {
+  private boolean isFallback(Set<MarkerType> fallbackAreaMarkerTypes, NamedAreaDto area) {
 
-      //was: DescriptionUtility.isMarkedHidden(area, hiddenAreaMarkerTypes);
-      return isMarkedHidden(area, hiddenAreaMarkerTypes);
+      //was: DescriptionUtility.isMarkedHidden(area, fallbackAreaMarkerTypes);
+      return isMarkedHidden(area, fallbackAreaMarkerTypes);
   }
 
-  private static boolean isMarkedHidden(NamedAreaDto area, Set<MarkerType> hiddenAreaMarkerTypes) {
-      if(hiddenAreaMarkerTypes != null) {
-          for(MarkerType markerType : hiddenAreaMarkerTypes){
+  private static boolean isMarkedHidden(NamedAreaDto area, Set<MarkerType> fallbackAreaMarkerTypes) {
+      if(fallbackAreaMarkerTypes != null) {
+          for(MarkerType markerType : fallbackAreaMarkerTypes){
               if(area.hasMarker(markerType, true)){
                   return true;
               }

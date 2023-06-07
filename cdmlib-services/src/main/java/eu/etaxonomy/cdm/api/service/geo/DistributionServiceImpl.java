@@ -134,7 +134,7 @@ public class DistributionServiceImpl implements IDistributionService {
         EnumSet<DistributionInfoDto.InfoPart> parts = config.getInfoParts();
         boolean subAreaPreference = config.isPreferSubareas();
         boolean statusOrderPreference = config.isStatusOrderPreference();
-        Set<MarkerType> hiddenAreaMarkerTypes = config.getHiddenAreaMarkerTypeList();
+        Set<MarkerType> fallbackAreaMarkerTypes = config.getFallbackAreaMarkerTypeList();
         Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
         CondensedDistributionConfiguration condensedDistConfig = config.getCondensedDistributionConfiguration();
         DistributionOrder distributionOrder = config.getDistributionOrder();
@@ -153,15 +153,15 @@ public class DistributionServiceImpl implements IDistributionService {
         TermTree<NamedArea> areaTree = getPersistentAreaTree(distributions, config);
         if (areaTree == null) {
             //TODO better use areaTree created within filterDistributions(...) but how to get it easily?
-            areaTree = DistributionServiceUtilities.getAreaTree(distributions, hiddenAreaMarkerTypes);
+            areaTree = DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes);
         }
         SetMap<NamedArea, NamedArea> parentAreaMap = areaTree.getParentMap();
 
 
-        // for all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
+        // for all later applications apply the rules statusOrderPreference, hideFallbackArea and ignoreUndefinedStatus
         // to all distributions, but KEEP fallback area distributions
         Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, hiddenAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false,
+                areaTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false,
                 config.isIgnoreDistributionStatusUndefined());
 
         if(parts.contains(InfoPart.elements)) {
@@ -178,12 +178,12 @@ public class DistributionServiceImpl implements IDistributionService {
                 }
 
                 tree = DistributionServiceUtilities.buildOrderedTreeDto(omitLevels,
-                        filteredDtoDistributions, parentAreaMap, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                        filteredDtoDistributions, parentAreaMap, fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent,
                         distributionOrder, termDao);
             }else {
                 //version with model entities as used in direct webservice (not taxon page DTO)
                 tree = DistributionServiceUtilities.buildOrderedTree(omitLevels,
-                        filteredDistributions, parentAreaMap, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                        filteredDistributions, parentAreaMap, fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent,
                         distributionOrder, termDao);
             }
             dto.setTree(tree);
@@ -197,11 +197,11 @@ public class DistributionServiceImpl implements IDistributionService {
 
         if (parts.contains(InfoPart.mapUriParams)) {
             boolean IGNORE_STATUS_ORDER_PREF = false;
-            Set<MarkerType> hiddenAreaMarkerType = null;
+            Set<MarkerType> fallbackAreaMarkerType = null;
             // only apply the subAreaPreference rule for the maps
             boolean keepFallBackOnlyIfNoSubareaDataExists = true;
             Set<Distribution> filteredMapDistributions = DistributionServiceUtilities.filterDistributions(
-                    filteredDistributions, areaTree, hiddenAreaMarkerType, !PREFER_AGGREGATED,
+                    filteredDistributions, areaTree, fallbackAreaMarkerType, !PREFER_AGGREGATED,
                     IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists,
                     config.isIgnoreDistributionStatusUndefined());
 
@@ -230,14 +230,14 @@ public class DistributionServiceImpl implements IDistributionService {
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
             TermTree<NamedArea> areaTree,
             boolean statusOrderPreference,
-            Set<MarkerType> hiddenAreaMarkerTypes,
+            Set<MarkerType> fallbackAreaMarkerTypes,
             CondensedDistributionConfiguration config,
             List<Language> langs) {
 
-        areaTree = areaTree == null ? DistributionServiceUtilities.getAreaTree(distributions, hiddenAreaMarkerTypes) : areaTree;
+        areaTree = areaTree == null ? DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes) : areaTree;
         SetMap<NamedArea, NamedArea> parentMap = areaTree.getParentMap();
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, null, hiddenAreaMarkerTypes, false, statusOrderPreference, false, false, true);
+                distributions, null, fallbackAreaMarkerTypes, false, statusOrderPreference, false, false, true);
         CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
                 parentMap,

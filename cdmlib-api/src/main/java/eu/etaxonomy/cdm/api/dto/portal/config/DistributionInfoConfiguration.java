@@ -28,7 +28,7 @@ public class DistributionInfoConfiguration {
 
     private boolean statusOrderPreference = false;
 
-    private Set<MarkerType> hiddenAreaMarkerTypeList = new HashSet<>();   //was list before
+    private Set<MarkerType> fallbackAreaMarkerTypeList = new HashSet<>();   //was list before
 
     private Set<NamedAreaLevel> omitLevels = new HashSet<>();
 
@@ -65,11 +65,11 @@ public class DistributionInfoConfiguration {
         this.statusOrderPreference = statusOrderPreference;
     }
 
-    public Set<MarkerType> getHiddenAreaMarkerTypeList() {
-        return hiddenAreaMarkerTypeList;
+    public Set<MarkerType> getFallbackAreaMarkerTypeList() {
+        return fallbackAreaMarkerTypeList;
     }
-    public void setHiddenAreaMarkerTypeList(Set<MarkerType> hiddenAreaMarkerTypeList) {
-        this.hiddenAreaMarkerTypeList = hiddenAreaMarkerTypeList;
+    public void setFallbackAreaMarkerTypeList(Set<MarkerType>fallbackAreaMarkerTypeList) {
+        this.fallbackAreaMarkerTypeList = fallbackAreaMarkerTypeList;
     }
 
     public Set<NamedAreaLevel> getOmitLevels() {

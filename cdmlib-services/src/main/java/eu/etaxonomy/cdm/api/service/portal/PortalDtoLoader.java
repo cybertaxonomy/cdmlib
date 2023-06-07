@@ -934,11 +934,11 @@ public class PortalDtoLoader {
         distributionConfig.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
         boolean fallbackAsParent = true;  //may become a service parameter in future
 
-        //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
-        //are hidden markers on areas that have non-hidden subareas (#4408)
-        Set<MarkerType> hiddenAreaMarkerTypes = distributionConfig.getHiddenAreaMarkerTypeList();
-        if(!CdmUtils.isNullSafeEmpty(hiddenAreaMarkerTypes)){
-            condensedConfig.fallbackAreaMarkers = hiddenAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+        //fallbackArea markers include markers for fully hidden areas and fallback areas.
+        //The later are hidden markers on areas that have non-hidden subareas (#4408)
+        Set<MarkerType> fallbackAreaMarkerTypes = distributionConfig.getFallbackAreaMarkerTypeList();
+        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)){
+            condensedConfig.fallbackAreaMarkers = fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         }
 
         List<String> initStrategy = null;

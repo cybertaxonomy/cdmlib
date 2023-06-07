@@ -26,7 +26,7 @@ public class HibernateJSONValueProcessorMatcher extends JsonValueProcessorMatche
 	@Override
 	public Object getMatch(Class target, Set matches) {
 		if (HibernateProxy.class.isAssignableFrom(target)) {
-            logger.debug("Found HibernateProxy " + target.getName());
+            if (logger.isDebugEnabled()) {logger.debug("Found HibernateProxy " + target.getName());}
             return HibernateProxy.class;
         }
 		return DEFAULT.getMatch(target, matches);

@@ -111,10 +111,10 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         TermTree<NamedArea> areaTree = null;
-        Set<MarkerType> hiddenAreaMarkerTypes = null;
+        Set<MarkerType> fallbackAreaMarkerTypes = null;
 
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hiddenAreaMarkerTypes, false,
+                distributions, areaTree, fallbackAreaMarkerTypes, false,
                 statusOrderPreference, subAreaPreference, true, false);
 
         String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
