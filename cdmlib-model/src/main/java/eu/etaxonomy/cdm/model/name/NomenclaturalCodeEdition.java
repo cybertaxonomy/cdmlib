@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import java.util.ArrayList;
@@ -38,14 +37,13 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * The class for the nomenclature code edition of the 5 nomenclatural codes (ICNP, ICBN, ICNCP, ICZN and ICVCN)
  * ruling {@link TaxonName taxon names}.
  * <P>
- * See also https://www.wikidata.org/wiki/Q693148
+ * See also https://www.wikidata.org/wiki/Q693148 and https://dev.e-taxonomy.eu/redmine/issues/9640
  * <P>
  * @see NomenclaturalCode
  *
  * @author a.mueller
  * @since 23.07.2019
  */
-
 @XmlType(name = "NomenclaturalCodeEdition")
 @XmlEnum
 public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEdition> {
@@ -57,7 +55,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Turland, N. J., Wiersema, J. H., Barrie, F. R., Greuter, W., Hawksworth, D. L., Herendeen, P. S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T. W., McNeill, J., Monro, A. M., Prado, J., Price, M. J. & Smith, G. F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017. Regnum Vegetabile 159. Glashütten: Koeltz Botanical Books. DOI https://doi.org/10.12705/Code.2018
      */
     @XmlEnumValue("Shenzhen")
-    ICN_2017_SHENZHEN(UUID.fromString("87e8ac37-97c4-43c7-a016-43f1a5c3503f"), "ICN", "Shenzhen", 2017, NomenclaturalCode.ICNAFP, "Q56701992","10.12705/Code.2018" ),
+    ICN_2017_SHENZHEN(UUID.fromString("87e8ac37-97c4-43c7-a016-43f1a5c3503f"), "ICN", "Shenzhen", 2017, 2018, NomenclaturalCode.ICNAFP, "Q56701992","10.12705/Code.2018" ),
 
     //1
     /**
@@ -65,7 +63,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Melbourne 2011
      */
     @XmlEnumValue("Melbourne")
-    ICN_2011_MELBOURNE(UUID.fromString("ea2ebf9e-e3eb-4aaf-8007-c6f9f8877451"), "ICN", "Melbourne", 2011, NomenclaturalCode.ICNAFP, "Q15895076", null),
+    ICN_2011_MELBOURNE(UUID.fromString("ea2ebf9e-e3eb-4aaf-8007-c6f9f8877451"), "ICN", "Melbourne", 2011, 2012, NomenclaturalCode.ICNAFP, "Q15895076", null),
 
     //2
     /**
@@ -73,7 +71,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Vienna 2005
      */
     @XmlEnumValue("Vienna")
-    ICN_2005_VIENNA(UUID.fromString("d8f9f3d6-96af-4d83-a8d5-04ff62ba4d9c"), "ICBN", "Vienna", 2005, NomenclaturalCode.ICNAFP, "Q15895126", null),
+    ICN_2005_VIENNA(UUID.fromString("d8f9f3d6-96af-4d83-a8d5-04ff62ba4d9c"), "ICBN", "Vienna", 2005, 2006, NomenclaturalCode.ICNAFP, "Q15895126", null),
 
     //3
     /**
@@ -81,7 +79,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Saint Louis 1999
      */
     @XmlEnumValue("Saint Louis")
-    ICN_1999_ST_LOUIS(UUID.fromString("2746b72e-43be-4073-90d0-494a7afac271"), "ICBN", "Saint Louis", 1999, NomenclaturalCode.ICNAFP, "Q15895151", null),
+    ICN_1999_ST_LOUIS(UUID.fromString("2746b72e-43be-4073-90d0-494a7afac271"), "ICBN", "Saint Louis", 1999, 2000, NomenclaturalCode.ICNAFP, "Q15895151", null),
 
     //4
     /**
@@ -89,7 +87,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Tokyo 1993
      */
     @XmlEnumValue("Tokyo")
-    ICN_1993_TOKYO(UUID.fromString("5a846761-839f-4f77-b614-7181b9b29355"), "ICBN", "Tokyo", 1993, NomenclaturalCode.ICNAFP, "Q15895201", null),
+    ICN_1993_TOKYO(UUID.fromString("5a846761-839f-4f77-b614-7181b9b29355"), "ICBN", "Tokyo", 1993, 1994, NomenclaturalCode.ICNAFP, "Q15895201", null),
 
     //5
     /**
@@ -97,7 +95,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Berlin 1987
      */
     @XmlEnumValue("Berlin")
-    ICN_1987_BERLIN(UUID.fromString("5702fc16-e194-4ad2-bdaf-4451af523db2"), "ICBN", "Berlin", 1987, NomenclaturalCode.ICNAFP, null, null),
+    ICN_1987_BERLIN(UUID.fromString("5702fc16-e194-4ad2-bdaf-4451af523db2"), "ICBN", "Berlin", 1987, 1988, NomenclaturalCode.ICNAFP, null, null),
 
     //6
     /**
@@ -105,7 +103,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Sydney 1981
      */
     @XmlEnumValue("Sydney")
-    ICN_1981_Sydney(UUID.fromString("f956c556-6d79-4e0f-adeb-ed9d81f2fa24"), "ICBN", "Sydney", 1981, NomenclaturalCode.ICNAFP, null, null),
+    ICN_1981_SYDNEY(UUID.fromString("f956c556-6d79-4e0f-adeb-ed9d81f2fa24"), "ICBN", "Sydney", 1981, 1983, NomenclaturalCode.ICNAFP, null, null),
 
     //7
     /**
@@ -113,7 +111,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Leningrad 1975
      */
     @XmlEnumValue("Leningrad")
-    ICN_1975_TOKYO(UUID.fromString("f52e50b4-4c75-42dd-8efe-39cd966da712"), "ICBN", "Leningrad", 1975, NomenclaturalCode.ICNAFP, null, null),
+    ICN_1975_LENINGRAD(UUID.fromString("f52e50b4-4c75-42dd-8efe-39cd966da712"), "ICBN", "Leningrad", 1975, 1978, NomenclaturalCode.ICNAFP, null, null),
 
     //8
     /**
@@ -121,7 +119,32 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Seattle 1969
      */
     @XmlEnumValue("Seattle")
-    ICN_1969_Seattle(UUID.fromString("2d19b5af-27cc-428e-affb-8a06563ff9cd"), "ICBN", "Seattle", 1969, NomenclaturalCode.ICNAFP, null, null),
+
+    ICN_1969_SEATTLE(UUID.fromString("2d19b5af-27cc-428e-affb-8a06563ff9cd"), "ICBN", "Seattle", 1969, 1972, NomenclaturalCode.ICNAFP, null, null),
+    //9
+    /**
+     * International Code of Botanical Nomenclature.
+     * Edinburgh 1959
+     */
+    @XmlEnumValue("Edinburgh")
+    ICN_1964_EDINBURGH(UUID.fromString("7ca16490-10a4-4991-9d70-2aade1706c76"), "ICBN", "Edinburgh", 1964, 1966, NomenclaturalCode.ICNAFP, null, null),
+
+    //9
+    /**
+     * International Code of Botanical Nomenclature.
+     * Montreal 1959
+     */
+    @XmlEnumValue("Montreal")
+    ICN_1959_EDINBURGH(UUID.fromString("bebcdcf2-b479-43d0-8635-f586334be204"), "ICBN", "Montreal", 1959, 1961, NomenclaturalCode.ICNAFP, null, null),
+
+    //9
+    /**
+     * International Code of Botanical Nomenclature.
+     * Paris 1954
+     */
+    @XmlEnumValue("Paris")
+    ICN_1954_PARIS(UUID.fromString("c57adbf9-890e-4e38-a667-3fdf2328f3c8"), "ICBN", "Paris", 1954, 1956, NomenclaturalCode.ICNAFP, null, null),
+
 
     //9
     /**
@@ -129,7 +152,15 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Stockholm 1952
      */
     @XmlEnumValue("Stockholm")
-    ICN_1952_Stockholm(UUID.fromString("a0c07e5f-9b2b-4cd7-9f14-acd4729f175a"), "ICBN", "Stockholm", 1952, NomenclaturalCode.ICNAFP, null, null),
+    ICN_1950_STOCKHOLM(UUID.fromString("a0c07e5f-9b2b-4cd7-9f14-acd4729f175a"), "ICBN", "Stockholm", 1950, 1952, NomenclaturalCode.ICNAFP, null, null),
+
+    //9a
+    /**
+     * International Code of Botanical Nomenclature.
+     * Stockholm 1952
+     */
+    @XmlEnumValue("Amsterdam")
+    ICN_1935_AMSTERDAM(UUID.fromString("4676654f-41ef-4311-a708-ba9b4b301117"), "ICBN", "Amsterdam", 1935, 1950, NomenclaturalCode.ICNAFP, null, null),
 
     //10
     /**
@@ -138,7 +169,16 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      */
     @XmlEnumValue("Cambridge")
     //TODO abbrev correct?
-    ICN_1935_CAMBRIDGE(UUID.fromString("e6f7e578-2ce5-434d-9904-aaf2a6e06c43"), "ICBN", "Cambrdige", 1935, NomenclaturalCode.ICNAFP, null, null),
+    ICN_1930_CAMBRIDGE(UUID.fromString("e6f7e578-2ce5-434d-9904-aaf2a6e06c43"), "Rules", "Cambrdige", 1935, 1930, NomenclaturalCode.ICNAFP, null, null),
+
+    //10a
+    /**
+     * International Code of Botanical Nomenclature.
+     * Cambridge Rules 1935
+     */
+    @XmlEnumValue("Brussels")
+    //TODO abbrev correct?
+    ICN_1910_BRUSSELS(UUID.fromString("954c4a71-86ec-489d-b7f1-1878e3b31ebb"), "Rules", "Brussels", 1910, 1912, NomenclaturalCode.ICNAFP, null, null),
 
     //11
     /**
@@ -147,7 +187,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      */
     @XmlEnumValue("Vienna 1905")
     //TODO abbrev correct?
-    ICN_1905_VIENNA(UUID.fromString("23781153-540f-4c54-a5ae-5d6b6f490332"), "ICBN", "Vienna", 1905, NomenclaturalCode.ICNAFP, null, null),
+    ICN_1905_VIENNA(UUID.fromString("23781153-540f-4c54-a5ae-5d6b6f490332"), "Rules", "Vienna", 1905, 1906, NomenclaturalCode.ICNAFP, null, null),
 
     //12
     /**
@@ -156,7 +196,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      */
     @XmlEnumValue("Laws")
     //TODO abbrev correct?
-    ICN_1867_LAWS(UUID.fromString("230314c3-0bb0-4488-8597-f4ef63d27781"), "ICBN", "Laws of botanical nomenclature", 1867, NomenclaturalCode.ICNAFP, null, null),
+    ICN_1867_LAWS(UUID.fromString("230314c3-0bb0-4488-8597-f4ef63d27781"), "Rules", "Laws of botanical nomenclature", 1867, 1867, NomenclaturalCode.ICNAFP, null, null),
 
 
     //*** ICZN **/
@@ -166,7 +206,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://en.wikipedia.org/wiki/International_Code_of_Zoological_Nomenclature#Versions
      */
     @XmlEnumValue("ICZN_1999")
-    ICZN_1999(UUID.fromString("98f61693-67c5-40e1-a802-4989cb5ac4eb"), "ICZN", null, 1999, NomenclaturalCode.ICZN, null, "10.5962/bhl.title.50608"),
+    ICZN_1999(UUID.fromString("98f61693-67c5-40e1-a802-4989cb5ac4eb"), "ICZN", null, 1999, 1999, NomenclaturalCode.ICZN, null, "10.5962/bhl.title.50608"),
 
     //z2
     /**
@@ -174,7 +214,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://en.wikipedia.org/wiki/International_Code_of_Zoological_Nomenclature#Versions
      */
     @XmlEnumValue("ICZN_1985")
-    ICZN_1985(UUID.fromString("093110c8-f7e8-4f86-a794-e8e7b17c99d6"), "ICZN", null, 1985, NomenclaturalCode.ICZN, null, "10.5962/bhl.title.50611"),
+    ICZN_1985(UUID.fromString("093110c8-f7e8-4f86-a794-e8e7b17c99d6"), "ICZN", null, 1985, 1985, NomenclaturalCode.ICZN, null, "10.5962/bhl.title.50611"),
 
     //z3
     /**
@@ -182,7 +222,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://en.wikipedia.org/wiki/International_Code_of_Zoological_Nomenclature#Versions
      */
     @XmlEnumValue("ICZN_1964")
-    ICZN_1964(UUID.fromString("2b4a9e59-45dd-444b-bf93-741bc727c38c"), "ICZN", null, 1964, NomenclaturalCode.ICZN, null, "10.5962/bhl.title.50606"),
+    ICZN_1964(UUID.fromString("2b4a9e59-45dd-444b-bf93-741bc727c38c"), "ICZN", null, 1964, 1964, NomenclaturalCode.ICZN, null, "10.5962/bhl.title.50606"),
 
     //z4
     /**
@@ -190,7 +230,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://en.wikipedia.org/wiki/International_Code_of_Zoological_Nomenclature#Versions
      */
     @XmlEnumValue("ICZN_1961")
-    ICZN_1961(UUID.fromString("b9de5507-1171-496c-8a8d-8af47e42724e"), "ICZN", null, 1961, NomenclaturalCode.ICZN, null, "10.5962/bhl.title.50303"),
+    ICZN_1961(UUID.fromString("b9de5507-1171-496c-8a8d-8af47e42724e"), "ICZN", null, 1961, 1961, NomenclaturalCode.ICZN, null, "10.5962/bhl.title.50303"),
 
     //TODO older versions, see wikipedia
 
@@ -200,7 +240,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://en.wikipedia.org/wiki/International_Code_of_Nomenclature_of_Prokaryotes#Versions
      */
     @XmlEnumValue("ICNP_2008")
-    ICNP_2008(UUID.fromString("1297a8e9-dfde-4db7-9f93-672453e8b3e6"), "ICNP", null, 2008, NomenclaturalCode.ICNP, null, "10.1099/ijsem.0.000778"),
+    ICNP_2008(UUID.fromString("1297a8e9-dfde-4db7-9f93-672453e8b3e6"), "ICNP", null, 2008, 2008, NomenclaturalCode.ICNP, null, "10.1099/ijsem.0.000778"),
 
     //bact2
     /**
@@ -208,7 +248,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://en.wikipedia.org/wiki/International_Code_of_Nomenclature_of_Prokaryotes#Versions
      */
     @XmlEnumValue("ICNP_1990")
-    ICNP_1990(UUID.fromString("fd5d6dd3-de58-4244-8290-c8d89323f163"), "ICNB", null, 1990, NomenclaturalCode.ICNP, null, "10.5962/bhl.title.50303"),
+    ICNP_1990(UUID.fromString("fd5d6dd3-de58-4244-8290-c8d89323f163"), "ICNB", null, 1990, 1990, NomenclaturalCode.ICNP, null, "10.5962/bhl.title.50303"),
 
     //bact3
     /**
@@ -216,7 +256,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://en.wikipedia.org/wiki/International_Code_of_Nomenclature_of_Prokaryotes#Versions
      */
     @XmlEnumValue("ICNP_1975")
-    ICNP_1975(UUID.fromString("2dafaf3c-abf6-4baf-82db-3332db25d654"), "ICNB", null, 1975, NomenclaturalCode.ICNP, null, null),
+    ICNP_1975(UUID.fromString("2dafaf3c-abf6-4baf-82db-3332db25d654"), "ICNB", null, 1975, 1975, NomenclaturalCode.ICNP, null, null),
 
     //cult plants 1
     /**
@@ -224,7 +264,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://www.ishs.org/news/icncp-international-code-nomenclature-cultivated-plants-9th-edition
      */
     @XmlEnumValue("ICNCP_2016")
-    ICNCP_2016(UUID.fromString("e395e7be-405f-4214-a3a2-2b19eef6a055"), "ICNCP", null, 2016, NomenclaturalCode.ICNCP, null, null),
+    ICNCP_2016(UUID.fromString("e395e7be-405f-4214-a3a2-2b19eef6a055"), "ICNCP", null, 2016, 2016, NomenclaturalCode.ICNCP, null, null),
 
     //cult plants 2
     /**
@@ -232,7 +272,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://www.ishs.org/news/icncp-international-code-nomenclature-cultivated-plants-9th-edition
      */
     @XmlEnumValue("ICNCP_2009")
-    ICNCP_2009(UUID.fromString("bc66202a-0ffb-4cf3-a1c9-520efd5e76e9"), "ICNCP", null, 2009, NomenclaturalCode.ICNCP, null, null),
+    ICNCP_2009(UUID.fromString("bc66202a-0ffb-4cf3-a1c9-520efd5e76e9"), "ICNCP", null, 2009, 2009, NomenclaturalCode.ICNCP, null, null),
 
     //cult plants 3
     /**
@@ -240,7 +280,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://de.wikipedia.org/wiki/Internationaler_Code_der_Nomenklatur_der_Kulturpflanzen
      */
     @XmlEnumValue("ICNCP_2004")
-    ICNCP_2004(UUID.fromString("a29abcee-1f34-4320-afad-eb7ee23cc473"), "ICNCP", null, 2004, NomenclaturalCode.ICNCP, null, null),
+    ICNCP_2004(UUID.fromString("a29abcee-1f34-4320-afad-eb7ee23cc473"), "ICNCP", null, 2004, 2004, NomenclaturalCode.ICNCP, null, null),
 
     //virus1
     /**
@@ -249,7 +289,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      */
     @XmlEnumValue("ICVCN_2018")
     //TODO abbrev correct?
-    ICVCN_2018(UUID.fromString("6a0debf3-7932-4b0c-b1b1-46641c273f36"), "ICVCN", null, 2019, NomenclaturalCode.ICVCN, null, null),
+    ICVCN_2018(UUID.fromString("6a0debf3-7932-4b0c-b1b1-46641c273f36"), "ICVCN", null, 2019, 2019, NomenclaturalCode.ICVCN, null, null),
 
     //virus2
     /**
@@ -258,7 +298,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      */
     @XmlEnumValue("ICVCN_2011")
     //TODO abbrev correct?
-    ICVCN_2011(UUID.fromString("b55c0209-59e2-4fa2-9d64-63addfb15d6b"), "ICVCN", null, 2011, NomenclaturalCode.ICVCN, null, null),
+    ICVCN_2011(UUID.fromString("b55c0209-59e2-4fa2-9d64-63addfb15d6b"), "ICVCN", null, 2011, 2011, NomenclaturalCode.ICVCN, null, null),
 
     ;
 
@@ -269,7 +309,9 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 
 	private String location;
 
-	private Integer year;
+	private Integer congressYear;
+
+	private Integer publicationYear;
 
 	private NomenclaturalCode code;
 
@@ -282,11 +324,11 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 	private Reference citation;
 
 	@SuppressWarnings("unchecked")
-    private NomenclaturalCodeEdition(UUID uuid, String abbrev, String location, Integer year, NomenclaturalCode code, String wikiDataId, String strDoi ){
-		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, makeTitleCache(location, code, year), code.getKey() + year, null);
+    private NomenclaturalCodeEdition(UUID uuid, String abbrev, String location, Integer congressYear, Integer yearPublished, NomenclaturalCode code, String wikiDataId, String strDoi ){
+		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, makeTitleCache(location, code, congressYear), code.getKey() + congressYear, null);
 		this.location = location;
-		this.year=year;
-		this.code=code;
+		this.congressYear = congressYear;
+		this.code = code;
 		this.wikiDataId = wikiDataId;
 		this.doi = (strDoi==null) ? null:DOI.fromString(strDoi);
 	}
@@ -360,8 +402,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     public String getLocation() {
         return location;
     }
-    public Integer getYear() {
-        return year;
+    public Integer getCongressYear() {
+        return congressYear;
     }
     public NomenclaturalCode getCode() {
         return code;
