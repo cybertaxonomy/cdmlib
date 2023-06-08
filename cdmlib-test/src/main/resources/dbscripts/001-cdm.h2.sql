@@ -1089,7 +1089,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
     );
 
     create table PUBLIC.DEFINEDTERMBASE (
-       DTYPE varchar(31) not null,
+        DTYPE varchar(31) not null,
         ID integer not null,
         CREATED timestamp,
         UUID varchar(36),
@@ -1132,6 +1132,8 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         NOMENCLATURALSTANDINGINVERSE varchar(255),
         RANKCLASS varchar(255),
 		URLPATTERN varchar(255),
+		MAXPERDATASET integer,
+		MAXSTATES integer,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         KINDOF_ID integer,
@@ -1212,6 +1214,8 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         VALIDPERIOD_FREETEXT varchar(255),
         VALIDPERIOD_START varchar(255),
 	    URLPATTERN varchar(255),
+		MAXPERDATASET integer,
+		MAXSTATES integer,
         LEVEL_ID integer,
         POINTAPPROXIMATION_REFERENCESYSTEM_ID integer,
         SHAPE_ID integer,
@@ -1524,6 +1528,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CREATED timestamp,
         UUID varchar(36),
         UPDATED timestamp,
+		PUBLISH boolean not null,
         LSID_AUTHORITY varchar(255),
         LSID_LSID varchar(255),
         LSID_NAMESPACE varchar(255),
@@ -1564,6 +1569,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CREATED timestamp,
         UUID varchar(36),
         UPDATED timestamp,
+		PUBLISH boolean,
         LSID_AUTHORITY varchar(255),
         LSID_LSID varchar(255),
         LSID_NAMESPACE varchar(255),
@@ -5996,6 +6002,20 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         SORTINDEX integer,
         primary key (ID)
     );
+	
+	create table PUBLIC.TERMRELATION_ANNOTATION (
+        TERMRELATIONBASE_ID integer not null,
+        ANNOTATIONS_ID integer not null,
+        primary key (TERMRELATIONBASE_ID, ANNOTATIONS_ID)
+    );
+
+    create table PUBLIC.TERMRELATION_ANNOTATION_AUD (
+        REV integer not null,
+        TERMRELATIONBASE_ID integer not null,
+        ANNOTATIONS_ID integer not null,
+        REVTYPE tinyint,
+        primary key (REV, TERMRELATIONBASE_ID, ANNOTATIONS_ID)
+    );
 
     create table PUBLIC.TERMRELATION_AUD (
        ID integer not null,
@@ -6015,6 +6035,20 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         SORTINDEX integer,
         PARENT_ID integer,
         primary key (ID, REV)
+    );
+	
+    create table PUBLIC.TERMRELATION_MARKER (
+       TERMRELATIONBASE_ID integer not null,
+        MARKERS_ID integer not null,
+        primary key (TERMRELATIONBASE_ID, MARKERS_ID)
+    );
+
+    create table PUBLIC.TERMRELATION_MARKER_AUD (
+       REV integer not null,
+        TERMRELATIONBASE_ID integer not null,
+        MARKERS_ID integer not null,
+        REVTYPE tinyint,
+        primary key (REV, TERMRELATIONBASE_ID, MARKERS_ID)
     );
 
     create table PUBLIC.TYPEDESIGNATIONBASE (

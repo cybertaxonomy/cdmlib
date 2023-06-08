@@ -31,6 +31,9 @@ public class MessagesDto {
     public static MessagesDto NewErrorInstance() {
         return new MessagesDto(MessageType.ERROR, null, null);
     }
+    public static MessagesDto NewWarnInstance(String message) {
+        return new MessagesDto(MessageType.WARN, message, null);
+    }
 
     private MessageType type;
     private String message;

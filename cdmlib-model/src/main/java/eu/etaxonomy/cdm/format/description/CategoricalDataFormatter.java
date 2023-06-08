@@ -24,6 +24,8 @@ import eu.etaxonomy.cdm.model.description.StateData;
 public class CategoricalDataFormatter
         extends DesciptionElementFormatterBase<CategoricalData>{
 
+    private static final String modifierSeparator = " ";
+
     public static final CategoricalDataFormatter NewInstance(FormatKey[] formatKeys) {
         return new CategoricalDataFormatter(null, formatKeys);
     }
@@ -44,14 +46,15 @@ public class CategoricalDataFormatter
         for (StateData stateData : stateDatas){
             result = CdmUtils.concat(", ", result, getStateDataText(stateData, preferredLanguages));
         }
-        //TODO add modifier text
+
         return result;
     }
 
     private String getStateDataText(StateData stateData, List<Language> preferredLanguages) {
-        String result = "";
-        result += getLabel(stateData.getState(), preferredLanguages, stateData.isUsePlural());
-        //TODO modifier
+        String result = handleModifiers(
+                getLabel(stateData.getState(), preferredLanguages, stateData.isUsePlural()),
+                stateData, preferredLanguages, modifierSeparator);
+
         return result;
     }
 }

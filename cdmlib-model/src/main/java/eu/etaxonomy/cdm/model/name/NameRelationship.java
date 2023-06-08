@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -203,27 +204,7 @@ public class NameRelationship
 		this.setRelatedTo(toName);
 	}
 
-
-//	public String getRuleConsidered(){
-//		return this.ruleConsidered;
-//	}
-//
-//	/**
-//	 * @see  #getRuleConsidered()
-//	 */
-//	public void setRuleConsidered(String ruleConsidered){
-//		this.ruleConsidered = ruleConsidered;
-//	}
-//
-//	/**
-//     * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
-//	 */
-//	public NomenclaturalCodeEdition getCodeEdition() {
-//        return codeEdition;
-//    }
-//    public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
-//        this.codeEdition = codeEdition;
-//    }
+	// *********** RULE CONSIDERED **********************/
 
 	/**
      * Returns the nomenclatural code rule considered (that is the
@@ -254,6 +235,11 @@ public class NameRelationship
     @Override
     public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
         ruleConsidered().setCodeEdition(codeEdition);
+    }
+    @Override
+    public IdentifiableSource getCodeEditionSource() {
+        NomenclaturalCodeEdition codeEdition = ruleConsidered().getCodeEdition();
+        return codeEdition == null ? null : codeEdition.getSource();
     }
     private RuleConsidered ruleConsidered(){
         if(this.ruleConsidered==null){

@@ -30,8 +30,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * Common base class for {@link TermNode} and {@link TermRelation}.
@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Table(name="TermRelation", indexes = { @Index(name = "termNodeTreeIndex", columnList = "treeIndex") })  //was feature NodeTreeIndex before
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends TermRelationBase, GRAPH extends TermGraphBase>
-        extends VersionableEntity
+        extends AnnotatableEntity
         implements IHasTermType {
 
     private static final long serialVersionUID = -7832621515891195623L;

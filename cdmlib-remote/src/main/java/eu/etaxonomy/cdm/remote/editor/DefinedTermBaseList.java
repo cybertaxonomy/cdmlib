@@ -15,14 +15,13 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
-
 /**
  * @author a.kohlbecker
  * @since Jun 25, 2013
  */
 public class DefinedTermBaseList<T extends DefinedTermBase> extends ArrayList<T> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6083758936612210892L;
 
     public Set<T> asSet() {
         HashSet<T> tmpSet = new HashSet<>(this.size());

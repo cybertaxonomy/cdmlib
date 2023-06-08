@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.term.AvailableForTermBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -103,7 +104,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 	"recommendedStatisticalMeasures",
 	"supportedCategoricalEnumerations",
 	"recommendedMeasurementUnits",
-	"inverseRepresentations"
+	"inverseRepresentations",
+	"maxStates",
+	"maxPerDataset"
 })
 @XmlRootElement(name = "Feature")
 @Entity
@@ -128,7 +131,7 @@ public class Feature extends AvailableForTermBase<Feature> {
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
-	private final Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<>();
+	private final Set<TermCollection<DefinedTerm,?>> recommendedModifierEnumeration = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_StatisticalMeasure")
@@ -138,7 +141,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	@SuppressWarnings("rawtypes")
     @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
-	private final Set<TermVocabulary<? extends DefinedTermBase>> supportedCategoricalEnumerations = new HashSet<>();
+	private final Set<TermCollection<? extends DefinedTermBase,?>> supportedCategoricalEnumerations = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
@@ -156,11 +159,18 @@ public class Feature extends AvailableForTermBase<Feature> {
 //    @IndexedEmbedded(depth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<>();
 
+	//#10328 the maximum number of entries per dataset, null = unlimited
+	private Integer maxPerDataset;
+
+    //#10328 the maximum number of states in StateData (if this feature supports categorical data), null = unlimited
+	private Integer maxStates;
+
 
     private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
     public static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
     private static final UUID uuidDistribution = UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6");
     private static final UUID uuidDistributionGeneral = UUID.fromString("fd8c64f0-6ea5-44b0-9f70-e95833d6076e");
+    public static final UUID uuidIucnStatus = UUID.fromString("0b17d701-4159-488e-a6e7-0045992e61af");
     private static final UUID uuidEcology = UUID.fromString("aa923827-d333-4cf5-9a5f-438ae0a4746b");
     public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
     private static final UUID uuidHabitatAndEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
@@ -255,12 +265,28 @@ public class Feature extends AvailableForTermBase<Feature> {
         super(TermType.Feature, term, label, labelAbbrev);
     }
 
-/* *************************************************************************************/
+//************************** reset **********************************************/
 
-	@Override
-	public void resetTerms(){
-		termMap = null;
-	}
+    @Override
+    public void resetTerms(){
+        termMap = null;
+    }
+
+//**************************************************************************************/
+
+    public Integer getMaxPerDataset() {
+        return maxPerDataset;
+    }
+    public void setMaxPerDataset(Integer maxPerDataset) {
+        this.maxPerDataset = maxPerDataset;
+    }
+
+    public Integer getMaxStates() {
+        return maxStates;
+    }
+    public void setMaxStates(Integer maxStates) {
+        this.maxStates = maxStates;
+    }
 
 	/**
      * If this feature is available for {@link TaxonDescription taxon descriptions}.
@@ -479,41 +505,40 @@ public class Feature extends AvailableForTermBase<Feature> {
 
 
     /**
-	 * Returns the set of {@link TermVocabulary term vocabularies} containing the
+	 * Returns the set of {@link TermCollection term collections} containing the
 	 * {@link Modifier modifiers} recommended to be used for {@link DescriptionElementBase description elements}
 	 * with <i>this</i> feature.
-	 *
 	 */
 	@XmlElementWrapper(name = "RecommendedModifierEnumerations")
 	@XmlElement(name = "RecommendedModifierEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermVocabulary<DefinedTerm>> getRecommendedModifierEnumeration() {
+	public Set<TermCollection<DefinedTerm,?>> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
 
 	/**
-	 * Adds a {@link TermVocabulary term vocabulary} (with {@link Modifier modifiers}) to the set of
+	 * Adds a {@link TermCollection term collection} (with {@link Modifier modifiers}) to the set of
 	 * {@link #getRecommendedModifierEnumeration() recommended modifier vocabularies} assigned
 	 * to <i>this</i> feature.
 	 *
-	 * @param recommendedModifierEnumeration	the term vocabulary to be added
+	 * @param recommendedModifierEnumeration	the term collection to be added
 	 * @see    	   								#getRecommendedModifierEnumeration()
 	 */
 	public void addRecommendedModifierEnumeration(
-			TermVocabulary<DefinedTerm> recommendedModifierEnumeration) {
+			TermCollection<DefinedTerm,?> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.add(recommendedModifierEnumeration);
 	}
 	/**
 	 * Removes one element from the set of {@link #getRecommendedModifierEnumeration() recommended modifier vocabularies}
 	 * assigned to <i>this</i> feature.
 	 *
-	 * @param  recommendedModifierEnumeration	the term vocabulary which should be removed
+	 * @param  recommendedModifierEnumeration	the term collection which should be removed
 	 * @see     								#getRecommendedModifierEnumeration()
-	 * @see     								#addRecommendedModifierEnumeration(TermVocabulary)
+	 * @see     								#addRecommendedModifierEnumeration(TermCollection)
 	 */
 	public void removeRecommendedModifierEnumeration(
-			TermVocabulary<DefinedTerm> recommendedModifierEnumeration) {
+			TermCollection<DefinedTerm,?> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
 	}
 
@@ -592,7 +617,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	}
 
 	/**
-	 * Returns the set of {@link TermVocabulary term vocabularies} containing the list of
+	 * Returns the set of {@link TermCollection term collections} containing the list of
 	 * possible {@link State states} to be used in {@link CategoricalData categorical data}
 	 * with <i>this</i> feature.
 	 *
@@ -602,32 +627,32 @@ public class Feature extends AvailableForTermBase<Feature> {
 	@XmlElement(name = "SupportedCategoricalEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermVocabulary<? extends DefinedTermBase>> getSupportedCategoricalEnumerations() {
+	public Set<TermCollection<? extends DefinedTermBase,?>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
 	/**
-	 * Adds a {@link TermVocabulary term vocabulary} to the set of
+	 * Adds a {@link TermCollection term collection} to the set of
 	 * {@link #getSupportedCategoricalEnumerations() supported state vocabularies} assigned
 	 * to <i>this</i> feature.
 	 *
-	 * @param supportedCategoricalEnumeration	the term vocabulary which should be removed
-	 * @see    	   								#getSupportedCategoricalEnumerations()
+	 * @param supportedCategoricalEnumeration	the term collection which should be removed
+	 * @see #getSupportedCategoricalEnumerations()
 	 */
 	public void addSupportedCategoricalEnumeration(
-			TermVocabulary<? extends DefinedTermBase> supportedCategoricalEnumeration) {
+	        TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
 	/**
 	 * Removes one element from the set of {@link #getSupportedCategoricalEnumerations() supported state vocabularies}
 	 * assigned to <i>this</i> feature.
 	 *
-	 * @param  supportedCategoricalEnumeration	the term vocabulary which should be removed
-	 * @see     								#getSupportedCategoricalEnumerations()
-	 * @see     								#addSupportedCategoricalEnumeration(TermVocabulary)
+	 * @param  supportedCategoricalEnumeration	the term collection which should be removed
+	 * @see   #getSupportedCategoricalEnumerations()
+	 * @see   #addSupportedCategoricalEnumeration(TermCollection)
 	 */
 	public void removeSupportedCategoricalEnumeration(
-			TermVocabulary<? extends DefinedTermBase> supportedCategoricalEnumeration) {
+			TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 
@@ -840,6 +865,19 @@ public class Feature extends AvailableForTermBase<Feature> {
      */
     public static final Feature DISTRIBUTION_GENERAL(){
         return getTermByUuid(uuidDistributionGeneral);
+    }
+
+    /**
+     * Returns the "IUCN Status" feature. By default
+     * this feature supports {@link TextData}, but
+     * it may also support {@link Distribution}
+     * or {@link CategoricalData}.
+     *
+     * @see #isSupportsDistribution()
+     * @see #isSupportsTextData
+     */
+    public static final Feature IUCN_STATUS(){
+        return getTermByUuid(uuidIucnStatus);
     }
 
 	/**
@@ -1186,5 +1224,4 @@ public class Feature extends AvailableForTermBase<Feature> {
         //no changes to: symmetric, transitiv
         return result;
     }
-
 }

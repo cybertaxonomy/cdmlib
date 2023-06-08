@@ -30,7 +30,8 @@ public enum CondensedDistributionRecipe implements IKeyLabel{
      * </ul>
      */
     EuroPlusMed("EuroPlusMed", "Euro + Med"),
-    FloraCuba("FloraCuba", "Flora Cuba");
+    FloraCuba("FloraCuba", "Flora Cuba"),
+    IUCN("IUCN", "IUCN");
 
     private String label;
     private String key;
@@ -53,6 +54,8 @@ public enum CondensedDistributionRecipe implements IKeyLabel{
     public CondensedDistributionConfiguration toConfiguration(){
         if (this == FloraCuba){
             return CondensedDistributionConfiguration.NewCubaInstance();
+        } else if (this == IUCN) {
+            return CondensedDistributionConfiguration.NewIucnInstance();
         } else {
             return CondensedDistributionConfiguration.NewDefaultInstance();
         }

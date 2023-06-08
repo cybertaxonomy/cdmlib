@@ -36,9 +36,9 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
 /**
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
  */
 public class OwlExportUtil {
 
-    static Resource createVocabularyResource(TermVocabulary<?> vocabulary, ICdmRepository repo, StructureTreeOwlExportState state) {
+    static Resource createVocabularyResource(TermCollection<?,?> vocabulary, ICdmRepository repo, StructureTreeOwlExportState state) {
         String vocabularyResourceUri = getVocabularyResourceUri(vocabulary, state);
         //check if vocabulary exists
         if(state.getModel().containsResource(ResourceFactory.createResource(vocabularyResourceUri))){
@@ -182,8 +182,8 @@ public class OwlExportUtil {
             Resource measurementUnitResource = createTermResource(measurementUnit, true, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasRecommendedMeasurementUnit, measurementUnitResource);
         }
-        Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumerations = feature.getRecommendedModifierEnumeration();
-        for (TermVocabulary<DefinedTerm> modifierVocabulary : recommendedModifierEnumerations) {
+        Set<TermCollection<DefinedTerm,?>> recommendedModifierEnumerations = feature.getRecommendedModifierEnumeration();
+        for (TermCollection<DefinedTerm,?> modifierVocabulary : recommendedModifierEnumerations) {
             Resource modifierEnumerationResource = createVocabularyResource(modifierVocabulary, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasRecommendedModifierEnumeration, modifierEnumerationResource);
         }
@@ -192,8 +192,8 @@ public class OwlExportUtil {
             Resource statisticalMeasureResource = createTermResource(statisticalMeasure, true, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasRecommendedStatisticalMeasure, statisticalMeasureResource);
         }
-        Set<TermVocabulary<? extends DefinedTermBase>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
-        for (TermVocabulary<?> stateVocabulary : supportedCategoricalEnumerations) {
+        Set<TermCollection<? extends DefinedTermBase,?>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
+        for (TermCollection<?,?> stateVocabulary : supportedCategoricalEnumerations) {
             Resource supportedCategoricalEnumerationResource = createVocabularyResource(stateVocabulary, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasSupportedCategoricalEnumeration, supportedCategoricalEnumerationResource);
         }
@@ -347,7 +347,7 @@ public class OwlExportUtil {
         return nodeResource;
     }
 
-    private static String getVocabularyResourceUri(TermVocabulary vocabulary, StructureTreeOwlExportState state) {
+    private static String getVocabularyResourceUri(TermCollection vocabulary, StructureTreeOwlExportState state) {
         return OwlUtil.RESOURCE_TERM_VOCABULARY+vocabulary.getUuid();
     }
 

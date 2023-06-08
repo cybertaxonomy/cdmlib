@@ -66,13 +66,29 @@ public class CondensedDistributionConfiguration implements Serializable {
     //if true, any non-empty symbol is taken from symbol2, symbol1, idInVoc and abbrevLabel according to the given order
     public boolean showAnyStatusSmbol = false;   //usually does not make sense to mix symbol fields
 
-    public Set<UUID> hiddenAndFallbackAreaMarkers = new HashSet<>(Arrays.asList(MarkerType.uuidFallbackArea)); //TODO shouldn't we add the hiddenAreaMarker here, too?
+    public Set<UUID> fallbackAreaMarkers = new HashSet<>(Arrays.asList(MarkerType.uuidFallbackArea)); //Note: we do not have hidden area markers anymore (use area tree instead)
+
+    //TODO
+    public Set<UUID> alternativeRootAreaMarkers = new HashSet<>(Arrays.asList());
+
+    //should the status be put behind the area?
+    public boolean statusTrailing = false;
+
+    //seperator between area and status (currently used for trailing status only)
+    public String statusSeparator = "";
 
 //************************** FACTORY ***************************************/
 
     public static CondensedDistributionConfiguration NewDefaultInstance() {
         CondensedDistributionConfiguration result = new CondensedDistributionConfiguration();
-        result.hiddenAndFallbackAreaMarkers.add(MarkerType.uuidFallbackArea);
+        result.fallbackAreaMarkers.add(MarkerType.uuidFallbackArea);
+        return result;
+    }
+
+    public static CondensedDistributionConfiguration NewIucnInstance() {
+        CondensedDistributionConfiguration result = NewDefaultInstance();
+        result.statusTrailing = true;
+        result.statusSeparator = ":";
         return result;
     }
 

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * This service has been extracted from cdmlib-ext IEditGeoService
@@ -48,7 +49,6 @@ public interface IDistributionService {
      * @param taxonUUID
      * @param subAreaPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
-     * @param hiddenAreaMarkerTypes see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param omitLevels see {@link DescriptionUtility#orderDistributions(Set, Collection)}
      * @param presenceAbsenceTermColors
      * @param languages
@@ -56,21 +56,28 @@ public interface IDistributionService {
      * @param ignoreDistributionStatusUndefined workaround until #9500 is implemented to ignore status "undefined"
      * @return
      */
-    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, UUID taxonUUID,
-            boolean neverUseFallbackAreaAsParent, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config,
+            UUID taxonUUID, boolean neverUseFallbackAreaAsParent,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths);
+
+    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config,
+            List<Distribution> distributions, boolean neverUseFallbackAreaAsParent,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            List<Language> languages);
 
     /**
     * @param distributions
     * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
-    * @param hiddenAreaMarkerTypes marker types to make areas hidden, this includes fallback-areas which are defined to have visible sub-areas
+    * @param fallbackAreaMarkerTypes marker types to make areas hidden, this includes fallback-areas which are defined to have visible sub-areas
     * @param config the {@link CondensedDistributionConfiguration condensed distribution configuration}
     * @param languages
     * @return
     */
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
+            TermTree<NamedArea> areaTree,
             boolean statusOrderPreference,
-            Set<MarkerType> hiddenAreaMarkerTypes,
+            Set<MarkerType> fallbackAreaMarkerTypes,
             CondensedDistributionConfiguration config,
             List<Language> langs);
 

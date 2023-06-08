@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2023 EDIT
 * European Distributed Institute of Taxonomy
@@ -12,6 +11,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -20,13 +20,12 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 /**
  * @author a.mueller
  * @date 09.02.2023
- *
  */
 public class NamedAreaDto extends CdmBaseDto {
 
     private String label;
     private LabeledEntityDto level;
-    private NamedAreaDto partOf;
+    private NamedAreaDto parent;
     private Set<Marker> markers;
 
 //    public class NamedAreaLevelDTO extends CdmBaseDto {
@@ -40,19 +39,19 @@ public class NamedAreaDto extends CdmBaseDto {
 //        }
 //    }
 
-    public NamedAreaDto(UUID uuid, int id, String label, NamedAreaLevel level, NamedAreaDto partOf, Set<Marker> markers) {
+    public NamedAreaDto(UUID uuid, int id, String label, NamedAreaLevel level, NamedAreaDto parent, Set<Marker> markers) {
         super(uuid, id, null);
         setUuid(uuid);
         this.label = label;
         if (level != null) {
             this.level = new LabeledEntityDto(level.getUuid(), level.getId(), level.getLabel());
         }
-        this.partOf = partOf;
+        this.parent = parent;
         this.markers = markers;
     }
 
     //TODO should not exist
-    public NamedAreaDto(NamedArea area, boolean withPartOf) {
+    public NamedAreaDto(NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap) {
         super(area.getUuid(), area.getId(), null);
         this.label = area.getLabel();   //TODO i18n
         if (area.getLevel() != null) {
@@ -60,8 +59,11 @@ public class NamedAreaDto extends CdmBaseDto {
             //TODO i18n
             level = new LabeledEntityDto(aLevel.getUuid(), aLevel.getId(), aLevel.getLabel());
         }
-        if (withPartOf && area.getPartOf() != null) {
-            this.partOf = new NamedAreaDto(area.getPartOf(), withPartOf);
+        if (parentAreaMap != null) {
+            NamedArea parent = parentAreaMap.getFirstValue(area);  //TODO handle >1 parents
+            if (parent != null) {
+                this.parent = new NamedAreaDto(parent, parentAreaMap);
+            }
         }
         this.markers = area.getMarkers();
     }
@@ -77,8 +79,8 @@ public class NamedAreaDto extends CdmBaseDto {
     }
 
 //    @Override
-    public NamedAreaDto getPartOf() {
-        return partOf;
+    public NamedAreaDto getParent() {
+        return parent;
     }
 
     public boolean hasMarker(MarkerType markerType, boolean value) {
@@ -94,5 +96,12 @@ public class NamedAreaDto extends CdmBaseDto {
     public int compareTo(NamedAreaDto area) {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+//************************ toString() *********************************/
+
+    @Override
+    public String toString() {
+        return "NamedAreaDto [label=" + label + ", level=" + level + "]";
     }
 }

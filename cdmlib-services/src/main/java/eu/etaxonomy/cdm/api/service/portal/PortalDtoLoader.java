@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto.TaxonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
@@ -82,6 +83,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -91,10 +93,12 @@ import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -104,6 +108,7 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -111,6 +116,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -120,6 +126,7 @@ import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -134,6 +141,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
@@ -145,6 +153,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
  */
 public class PortalDtoLoader {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     private ICdmRepository repository;
@@ -177,15 +186,36 @@ public class PortalDtoLoader {
             //TODO supplementalData for name
             loadBaseData(taxon, result);
             result.setLastUpdated(getLastUpdated(null, taxon));
-            result.setNameLabel(name != null? name.getTitleCache() : "");
             result.setLabel(CdmUtils.Nz(taxon.getTitleCache()));
-//        result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
+//          result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
             result.setTaggedLabel(getTaggedTaxon(taxon, config));
-            handleRelatedNames(taxon.getName(), result, config);
+            if (name != null) {
+                handleName(config, result, name, result);
+            }
+            if (taxon.getSec() != null) {
+                result.setSecTitleCache(taxon.getSec().getTitleCache());
+            }
         } catch (Exception e) {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading accepted name data.", e));
         }
+    }
+
+    private void handleName(TaxonPageDtoConfiguration config, TaxonBaseDto taxonDto, TaxonName name, TaxonPageDto pageDto) {
+        TaxonNameDto nameDto = taxonDto.new TaxonNameDto();
+        loadBaseData(name, nameDto);
+
+        INameCacheStrategy formatter = name.cacheStrategy();
+        formatter.setEtAlPosition(config.getEtAlPosition());
+
+        taxonDto.setName(nameDto);
+        taxonDto.setNameLabel(formatter.getTitleCache(name));
+        handleRelatedNames(name, taxonDto, config);
+        loadProtologues(name, taxonDto);
+        taxonDto.setNameUuid(name.getUuid());
+        taxonDto.setNameType(name.getNameType().toString());
+        loadNameFacts(name, taxonDto, config, pageDto);
+        nameDto.setTaggedName(formatter.getTaggedFullTitle(name));
     }
 
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {
@@ -243,7 +273,8 @@ public class PortalDtoLoader {
                 specimens.addAll(typeSpecimens);
             }
 
-            for (SpecimenOrObservationBase<?> specimen : specimens) {
+            //TODO maybe still need to check full derivate path #4484, #8424, #9559
+            for (SpecimenOrObservationBase<?> specimen : filterPublished(specimens)) {
                 SpecimenDTO dto = new SpecimenDTO();
                 loadBaseData(specimen, dto);
                 dto.setLabel(specimen.getTitleCache());
@@ -406,16 +437,15 @@ public class PortalDtoLoader {
 
             //TODO depending on config add/remove accepted name
 
-            //TODO check publish flag
-
             //homotypic synonyms
-            List<Synonym> homotypicSynonmys = taxon.getHomotypicSynonymsByHomotypicGroup(comparator);
+            List<Synonym> homotypicSynonmys = filterPublished(taxon.getHomotypicSynonymsByHomotypicGroup(comparator));
+
             TaxonPageDto.HomotypicGroupDTO homotypicGroupDto = new TaxonPageDto.HomotypicGroupDTO();
             if (homotypicSynonmys != null && !homotypicSynonmys.isEmpty()) {
                 loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
 
                 for (Synonym syn : homotypicSynonmys) {
-                    loadSynonymsInGroup(homotypicGroupDto, syn, config);
+                    loadSynonymsInGroup(homotypicGroupDto, syn, config, result);
                 }
             }
             if (name != null) {
@@ -436,15 +466,30 @@ public class PortalDtoLoader {
                 loadBaseData(taxon.getName().getHomotypicalGroup(), hgDto);
                 heteroContainer.addItem(hgDto);
 
-                List<Synonym> heteroSyns = taxon.getSynonymsInGroup(hg, comparator);
+                List<Synonym> heteroSyns = filterPublished(taxon.getSynonymsInGroup(hg, comparator));
                 for (Synonym syn : heteroSyns) {
-                    loadSynonymsInGroup(hgDto, syn, config);
+                    loadSynonymsInGroup(hgDto, syn, config, result);
                 }
                 handleTypification(hg, hgDto, result, config);
             }
         } catch (Exception e) {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading synonym data.", e));
+        }
+    }
+
+    private <P extends IPublishable> List<P> filterPublished(List<P> listToPublish) {
+        if (listToPublish == null) {
+            return null;
+        }else {
+            return listToPublish.stream().filter(s->s.isPublish()).collect(Collectors.toList());
+        }
+    }
+    private <P extends IPublishable> Set<P> filterPublished(Set<P> setToPublish) {
+        if (setToPublish == null) {
+            return null;
+        }else {
+            return setToPublish.stream().filter(s->s.isPublish()).collect(Collectors.toSet());
         }
     }
 
@@ -498,6 +543,8 @@ public class PortalDtoLoader {
 
             //... to-relations
             Set<TaxonRelationship> toRels = taxon.getRelationsToThisTaxon();
+            toRels.removeAll(misappliedRels);
+            toRels.removeAll(proParteRels);
             for (TaxonRelationship rel : toRels) {
                 boolean inverse = true;
                 boolean withoutName = false;
@@ -533,21 +580,47 @@ public class PortalDtoLoader {
         dto.setRelTaxonUuid(relTaxon.getUuid());
         dto.setRelTaxonLabel(relTaxon.getTitleCache());
         dto.setLabel(relLabel);
+        dto.setTaggedLabel(tags);
+        dto.setNameUuid(relTaxon.getName() != null ? relTaxon.getName().getUuid() : null);
+
+        if (rel.getType() != null) {
+            dto.setRelTypeUuid(rel.getType().getUuid());
+        }
+        for (TaxonNode node : relTaxon.getTaxonNodes()) {
+            Classification classification = node.getClassification();
+            if (classification != null) {
+                dto.addClassificationUuids(classification.getUuid());
+            }
+        }
         conceptRelContainer.addItem(dto);
     }
 
-    private void loadSynonymsInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn, TaxonPageDtoConfiguration config) {
+    private void loadSynonymsInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn,
+            TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
+
         TaxonBaseDto synDto = new TaxonBaseDto();
         loadBaseData(syn, synDto);
         synDto.setLabel(syn.getTitleCache());
         synDto.setTaggedLabel(getTaggedTaxon(syn, config));
+
         if (syn.getName() != null) {
-            synDto.setNameLabel(syn.getName().getTitleCache());
-            handleRelatedNames(syn.getName(), synDto, config);
+            handleName(config, synDto, syn.getName(), pageDto);
         }
 
         //TODO
         hgDto.addSynonym(synDto);
+    }
+
+    private void loadProtologues(TaxonName name, TaxonBaseDto taxonBaseDto) {
+        NomenclaturalSource nomSource = name.getNomenclaturalSource();
+        if (nomSource != null) {
+            Set<ExternalLink> links = nomSource.getLinks();
+            for (ExternalLink link : links) {
+                if (link.getUri() != null) {
+                    taxonBaseDto.addProtologue(link.getUri());
+                }
+            }
+        }
     }
 
     private void handleRelatedNames(TaxonName name, TaxonBaseDto taxonDto, TaxonPageDtoConfiguration config) {
@@ -614,7 +687,7 @@ public class PortalDtoLoader {
             TreeNode<Feature, UUID> filteredRootNode;
             if (config.getFeatureTree() != null) {
 
-                //TODO class cast
+                @SuppressWarnings({ "unchecked"})
                 TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
                 filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
             } else {
@@ -625,12 +698,12 @@ public class PortalDtoLoader {
             Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(taxon);
 
             //load final result
-            if (!filteredRootNode.getChildren().isEmpty()) {
+            if (filteredRootNode != null && !filteredRootNode.getChildren().isEmpty()) {
                 ContainerDto<FeatureDto> features = new ContainerDto<>();
                 for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
-                    handleFeatureNode(taxon, config, featureMap, features, node);
+                    handleFeatureNode(config, featureMap, features, node, taxonPageDto);
                 }
-                taxonPageDto.setFactualData(features);
+                taxonPageDto.setTaxonFacts(features);
             }
         } catch (Exception e) {
             //e.printStackTrace();
@@ -638,9 +711,47 @@ public class PortalDtoLoader {
         }
     }
 
-    private void handleFeatureNode(Taxon taxon, TaxonPageDtoConfiguration config,
+    //TODO merge with loadFacts, it is almost the same, see //DIFFERENT
+    private void loadNameFacts(TaxonName name, TaxonBaseDto nameDto, TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
+
+        try {
+            //compute the features that do exist for this taxon
+            Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(name);
+
+            //filter, sort and structure according to feature tree
+            TreeNode<Feature, UUID> filteredRootNode;
+            //DIFFERENT
+//            if (config.getFeatureTree() != null) {
+//
+//                @SuppressWarnings({ "unchecked"})
+//                TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
+//                filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
+//            } else {
+                filteredRootNode = createDefaultFeatureNode(name);
+//            }  //DIFFERENT END
+
+            //load facts per feature
+            Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(name);
+
+            //load final result
+            if (!filteredRootNode.getChildren().isEmpty()) {
+                ContainerDto<FeatureDto> features = new ContainerDto<>();
+                for (TreeNode<Feature,UUID> node : filteredRootNode.getChildren()) {
+                    handleFeatureNode(config, featureMap, features, node, pageDto);
+                }
+                //DIFFERENT
+                nameDto.setNameFacts(features);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            //DIFFERENT
+            pageDto.addMessage(MessagesDto.NewErrorInstance("Error when loading factual data.", e));
+        }
+    }
+
+    private void handleFeatureNode(TaxonPageDtoConfiguration config,
             Map<UUID, Set<DescriptionElementBase>> featureMap, ContainerDto<FeatureDto> features,
-            TreeNode<Feature, UUID> node) {
+            TreeNode<Feature, UUID> node, TaxonPageDto pageDto) {
 
         Feature feature = node.getData();
         //TODO locale
@@ -659,18 +770,18 @@ public class PortalDtoLoader {
 //                             -- Area|
 //                                    --name
                 // a bit like for distribution??
-                handleFact(featureDto, fact);
+                handleFact(featureDto, fact, pageDto);
             }
         }
 
-        handleDistributions(config, featureDto, taxon, distributions);
+        handleDistributions(config, featureDto, distributions, pageDto);
         //TODO really needed?
         orderFacts(featureDto);
 
         //children
         ContainerDto<FeatureDto> childFeatures = new ContainerDto<>();
         for (TreeNode<Feature,UUID> child : node.getChildren()) {
-            handleFeatureNode(taxon, config, featureMap, childFeatures, child);
+            handleFeatureNode(config, featureMap, childFeatures, child, pageDto);
         }
         if (childFeatures.getCount() > 0) {
             featureDto.setSubFeatures(childFeatures);
@@ -705,15 +816,15 @@ public class PortalDtoLoader {
 
     }
 
-    private Map<UUID, Set<DescriptionElementBase>> loadFeatureMap(Taxon taxon) {
+    private Map<UUID, Set<DescriptionElementBase>> loadFeatureMap(IDescribable<?> describable) {
         Map<UUID, Set<DescriptionElementBase>> featureMap = new HashMap<>();
 
         //... load facts
-        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-            if (taxonDescription.isImageGallery()) {
+        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
+            if (description.isImageGallery()) {
                 continue;
             }
-            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+            for (DescriptionElementBase deb : description.getElements()) {
                 Feature feature = deb.getFeature();
                 if (featureMap.get(feature.getUuid()) == null) {
                     featureMap.put(feature.getUuid(), new HashSet<>());
@@ -724,15 +835,15 @@ public class PortalDtoLoader {
         return featureMap;
     }
 
-    private TreeNode<Feature, UUID> createDefaultFeatureNode(Taxon taxon) {
+    private TreeNode<Feature, UUID> createDefaultFeatureNode(IDescribable<?> describable) {
         TreeNode<Feature, UUID> root = new TreeNode<>();
         Set<Feature> requiredFeatures = new HashSet<>();
 
-        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-            if (taxonDescription.isImageGallery()) {
+        for (DescriptionBase<?> description : describable.getDescriptions()) {
+            if (description.isImageGallery()) {
                 continue;
             }
-            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+            for (DescriptionElementBase deb : description.getElements()) {
                 Feature feature = deb.getFeature();
                 if (feature != null) {  //null should not happen
                     requiredFeatures.add(feature);
@@ -766,6 +877,7 @@ public class PortalDtoLoader {
         //if any child is required or this node is required ....
         if (!requiredChildNodes.isEmpty() ||
                 featureNode.getTerm() != null && existingFeatureUuids.contains(featureNode.getTerm().getUuid())) {
+
             TreeNode<Feature,UUID> result = new TreeNode<>();
             //add this nodes data
             Feature feature = featureNode.getTerm() == null ? null : featureNode.getTerm();
@@ -785,13 +897,13 @@ public class PortalDtoLoader {
      * Computes the (unsorted) set of features for  which facts exist
      * for the given taxon.
      */
-    private Map<UUID, Feature> getExistingFeatureUuids(Taxon taxon) {
+    private Map<UUID, Feature> getExistingFeatureUuids(IDescribable<?> describable) {
         Map<UUID, Feature> result = new HashMap<>();
-        for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
-            if (taxonDescription.isImageGallery()) {
+        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
+            if (description.isImageGallery()) {
                 continue;
             }
-            for (DescriptionElementBase deb : taxonDescription.getElements()) {
+            for (DescriptionElementBase deb : description.getElements()) {
                 Feature feature = deb.getFeature();
                 if (feature != null) {  //null should not happen
                     result.put(feature.getUuid(), feature);
@@ -802,7 +914,7 @@ public class PortalDtoLoader {
     }
 
     private void handleDistributions(TaxonPageDtoConfiguration config, FeatureDto featureDto,
-            Taxon taxon, List<Distribution> distributions) {
+            List<Distribution> distributions, TaxonPageDto pageDto) {
 
         if (distributions.isEmpty()) {
             return;
@@ -810,8 +922,8 @@ public class PortalDtoLoader {
         IDistributionService distributionService = repository.getDistributionService();
 
         //configs
-        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
-        CondensedDistributionConfiguration condensedConfig = distributionConfig.getCondensedDistrConfig();
+        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration(featureDto.getUuid());
+        CondensedDistributionConfiguration condensedConfig = distributionConfig.getCondensedDistributionConfiguration();
 
         String statusColorsString = distributionConfig.getStatusColorsString();
 
@@ -822,13 +934,11 @@ public class PortalDtoLoader {
         distributionConfig.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
         boolean fallbackAsParent = true;  //may become a service parameter in future
 
-        DistributionInfoDto dto;
-
-        //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
-        //are hidden markers on areas that have non-hidden subareas (#4408)
-        Set<MarkerType> hiddenAreaMarkerTypes = distributionConfig.getHiddenAreaMarkerTypeList();
-        if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()){
-            condensedConfig.hiddenAndFallbackAreaMarkers = hiddenAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+        //fallbackArea markers include markers for fully hidden areas and fallback areas.
+        //The later are hidden markers on areas that have non-hidden subareas (#4408)
+        Set<MarkerType> fallbackAreaMarkerTypes = distributionConfig.getFallbackAreaMarkerTypeList();
+        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)){
+            condensedConfig.fallbackAreaMarkers = fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         }
 
         List<String> initStrategy = null;
@@ -838,15 +948,14 @@ public class PortalDtoLoader {
             distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
                     statusColorsString, repository.getTermService(), repository.getVocabularyService());
         } catch (JsonProcessingException e) {
-            logger.error("JsonProcessingException when reading distribution status colors");
+            pageDto.addMessage(MessagesDto.NewErrorInstance("JsonProcessingException when reading distribution status colors", e));
             //TODO is null allowed?
             distributionStatusColors = null;
         }
 
-        dto = distributionService.composeDistributionInfoFor(distributionConfig, taxon.getUuid(),
+        DistributionInfoDto dto = distributionService.composeDistributionInfoFor(distributionConfig, distributions,
                 fallbackAsParent,
-                distributionStatusColors, LocaleContext.getLanguages(),
-                initStrategy);
+                distributionStatusColors, LocaleContext.getLanguages());
 
         if (distributionConfig.isUseTreeDto() && dto.getTree() != null) {
             DistributionTreeDto tree = (DistributionTreeDto)dto.getTree();
@@ -876,7 +985,7 @@ public class PortalDtoLoader {
        }
     }
 
-    private FactDtoBase handleFact(FeatureDto featureDto, DescriptionElementBase fact) {
+    private FactDtoBase handleFact(FeatureDto featureDto, DescriptionElementBase fact, TaxonPageDto pageDto) {
         //TODO locale
         Language localeLang = null;
 
@@ -918,7 +1027,7 @@ public class PortalDtoLoader {
             }
             dto.setName(ctn.getName());
             loadBaseData(ctn, dto);
-            //TODO sort all common names
+            //TODO sort all common names (not urgent as this is done by portal code)
             result = dto;
         } else if (fact.isInstanceOf(IndividualsAssociation.class)) {
             IndividualsAssociation ia = CdmBase.deproxy(fact, IndividualsAssociation.class);
@@ -993,8 +1102,7 @@ public class PortalDtoLoader {
             loadBaseData(td, factDto);
             result = factDto;
         }else {
-//            TODO
-            logger.warn("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName());
+            pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName()));
             return null;
         }
         result.setTimeperiod(fact.getTimeperiod() == null ? null : fact.getTimeperiod().toString());
@@ -1063,6 +1171,16 @@ public class PortalDtoLoader {
                 sourcedDto.addSource(sourceDto);
             }
         }
+        //load description sources for facts
+        if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
+            DescriptionBase<?> db = CdmBase.deproxy(cdmBase, DescriptionElementBase.class).getInDescription();
+            SourcedDto sourcedDto = (SourcedDto)dto;
+            for (OriginalSourceBase source : db.getSources()) {
+                SourceDto sourceDto = new SourceDto();
+                loadSource(source, sourceDto);
+                sourcedDto.addSource(sourceDto);
+            }
+        }
     }
 
     private void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
@@ -1077,9 +1195,17 @@ public class PortalDtoLoader {
             linkedObject = source.getCdmSource();
         }
 
-        //citation uuid & doi
-        if (source.getCitation()!= null) {
-            sourceDto.setDoi(source.getCitation().getDoiString());
+        //citation doi & uri & links
+        Reference ref = source.getCitation();
+        if (ref != null) {
+            sourceDto.setDoi(ref.getDoiString());
+            sourceDto.setUri(ref.getUri());
+            Set<ExternalLink> links = ref.getLinks();
+            for (ExternalLink link : links) {
+                if (link.getUri() != null) {
+                    sourceDto.addLink(link.getUri());
+                }
+            }
         }
 
         //label

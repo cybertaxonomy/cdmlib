@@ -44,5 +44,4 @@ public class CdmSpringMVCConfigDefault extends CdmSpringMVCConfig {
         logger.info("  Spring Configuration Profile: Default");
         logger.info(" ==========================================");
     }
-
 }

@@ -74,7 +74,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     public static String verbEnd = TimePeriodParser.verbatimEnd;
 
     public static String verbatimYearPhrase = "(" + verbStart + correctYearPhrase + verbEnd + fWs + "\\[" + singleYear + "\\]" +"|"
-            + correctYearPhrase + oWs+  "publ\\.?" + fWs + correctYearPhrase + ")" ;
+            + correctYearPhrase + oWs+  "publ\\.?" + fWs + correctYearPhrase + "|"+ correctYearPhrase + fWs + "\\[" + verbStart + correctYearPhrase + verbEnd + "\\])" ;
     public static String undefinedYearPhrase = correctYearPhrase + fWs + "\\[" + correctYearPhrase + "\\]";
     protected static String yearPhrase = "(" + correctYearPhrase + "|" + verbatimYearPhrase + "|" + undefinedYearPhrase + ")";
 
@@ -171,7 +171,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     //TODO
     // protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
  // protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
-    protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\.|s.p.?|errata)";
+    protected static String pSpecialDetail = "(in err|in tab|sine pag|add\\.|s.p.?|errata|\\d{1,2}"+fWs+"\\[(verso|recto)\\])";
 
 
 //    "(,\\s*" + pTabFigPl + ")?" +
@@ -192,7 +192,8 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static int authorSeparatorMaxPosition = 3;  //author may have a maximum of 2 words
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013]"+oWs+"|\\.?" + oWs + "&(?!\\s*al\\.)" + oWs + ")";
-    protected static String pSeriesPart = fWs + ",?" + fWs + "(([sS][e\u00E9]r|сер)("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|(Pt|Sect)\\.\\s*\\d{1,2}),?";  //Pt. (Part) and Sect. (Section) currently handled as series part, which is part of title, may be handled different later
+    protected static String notReallySeriesPart = "(Pt|Sect|Abt)\\.\\s*\\d{1,2}";//Pt. (Part) and Sect. (Section) and Abt. currently handled as series part, which is part of title, may be handled different later
+    protected static String pSeriesPart = fWs + ",?" + fWs + "(([sS][e\u00E9]r|сер)("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|" + notReallySeriesPart +"),?";
 
     protected static String authorPrefix = "(Da(lla)?|Van|La|De)" + oWs; //should not include words allowed in first part of reference title
     protected static String firstTitleWord = "(?!"+authorPrefix+")" + word + "('\\p{javaLowerCase}*|\\.?[-\u2013]"+dotWord+")?"; //word with optional apostrophe in between

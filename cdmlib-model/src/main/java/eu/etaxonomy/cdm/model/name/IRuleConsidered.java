@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+
 /**
  * Interface for classes which have a rule considered field.
  *
@@ -26,18 +28,27 @@ public interface IRuleConsidered {
      *
      * @see #getCodeEdition()
      */
-    String getRuleConsidered();
+    public String getRuleConsidered();
 
     /**
      * @see  #getRuleConsidered()
      */
-    void setRuleConsidered(String ruleConsidered);
+    public void setRuleConsidered(String ruleConsidered);
 
     /**
      * The {@link NomenclaturalCodeEdition code edition} for the {@link #getText() rule considered}.
      */
-    NomenclaturalCodeEdition getCodeEdition();
+    public NomenclaturalCodeEdition getCodeEdition();
 
-    void setCodeEdition(NomenclaturalCodeEdition codeEdition);
+    public void setCodeEdition(NomenclaturalCodeEdition codeEdition);
+
+    /**
+     * Getter for code edition source to make it available in webservices.
+     * This is necessary as enums are handled as text only in webservices
+     * (see JSONObject._processValue( Object value, JsonConfig jsonConfig).
+     * However, this could also be handled during webservices processing
+     * in future so the method may be removed one day.
+     */
+    public IdentifiableSource getCodeEditionSource();
 
 }

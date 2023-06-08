@@ -39,14 +39,19 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Store;
+import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -79,6 +84,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "descriptionElements",
     "imageGallery",
     "isDefault",
+    "publish",
     "types"
 })
 @Entity
@@ -90,7 +96,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 })
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
         extends IdentifiableEntity<S>
-        implements ICdmTarget{
+        implements ICdmTarget,IPublishable {
 
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = LogManager.getLogger();
@@ -144,6 +150,10 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     //TODO make it a DescriptionState
     @XmlElement(name = "isDefault")
     private boolean isDefault;
+
+    @XmlElement(name = "publish")
+    @Field(analyze = Analyze.NO, store = Store.YES, bridge= @FieldBridge(impl=BooleanBridge.class))
+    private boolean publish = true;
 
     @XmlAttribute(name ="types")
     @NotNull
@@ -256,6 +266,15 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     }
     public void setImageGallery(boolean imageGallery) {
         this.imageGallery = imageGallery;
+    }
+
+    @Override
+    public boolean isPublish() {
+        return publish;
+    }
+    @Override
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 
     public boolean isDefault() {

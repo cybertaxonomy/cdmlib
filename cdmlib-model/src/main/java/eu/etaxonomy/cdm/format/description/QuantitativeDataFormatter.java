@@ -12,13 +12,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.Representation;
 
 /**
  * Formatter for {@link QuantitativeData}.
@@ -29,8 +28,12 @@ import eu.etaxonomy.cdm.model.term.Representation;
 public class QuantitativeDataFormatter
             extends DesciptionElementFormatterBase<QuantitativeData> {
 
-    private static final String minMaxSep = "-";   //TODO which "-"
-    private static final String lowerUpperSep = "-";   //TODO which "-"
+    static final String sepDash = "-";   //TODO which "-"
+    static final String minSep = UTF8.NARROW_NO_BREAK + sepDash;
+    static final String maxSep = sepDash + UTF8.NARROW_NO_BREAK;
+    public static final String lowerUpperSep = UTF8.NARROW_NO_BREAK + sepDash + UTF8.NARROW_NO_BREAK;
+
+    static final String modifierSep = UTF8.NARROW_NO_BREAK.toString();
 
     public static final QuantitativeDataFormatter NewInstance(FormatKey[] formatKeys) {
         return new QuantitativeDataFormatter(null, formatKeys);
@@ -64,24 +67,24 @@ public class QuantitativeDataFormatter
         String lower = null;
         String upper = null;
         if (lowerBD != null) {
-            lower = handleModifier(String.valueOf(lowerBD), lowerValue, preferredLanguages);
+            lower = handleModifiers(String.valueOf(lowerBD), lowerValue, preferredLanguages, modifierSep);
             if (minValue != null) {
                 BigDecimal minBD = minValue.getValue();
                 String minBDStr = minBD == null ? null : String.valueOf(minBD);
-                String min = handleModifier(minBDStr, minValue, preferredLanguages);
+                String min = handleModifiers(minBDStr, minValue, preferredLanguages, modifierSep);
                 if (isNotBlank(min)) {
-                    lower = "("+min+ minMaxSep + ")" + lower;
+                    lower = "("+min+ minSep + ")" + lower;
                 }
             }
         }
         if (upperBD != null) {
-            upper = handleModifier(String.valueOf(upperBD), upperValue, preferredLanguages);
+            upper = handleModifiers(String.valueOf(upperBD), upperValue, preferredLanguages, modifierSep);
             if (maxValue != null) {
                 BigDecimal maxBD = maxValue.getValue();
                 String maxBDStr = (maxBD == null ? null : String.valueOf(maxBD));
-                String max = handleModifier(maxBDStr, maxValue, preferredLanguages);
+                String max = handleModifiers(maxBDStr, maxValue, preferredLanguages, modifierSep);
                 if (isNotBlank(max)) {
-                    upper = upper + "("+ minMaxSep + max+")";
+                    upper = upper + "("+ maxSep + max+")";
                 }
             }
         }
@@ -124,17 +127,6 @@ public class QuantitativeDataFormatter
         //modif
 
         result = CdmUtils.concat(" ", result, strBracket);
-        return result;
-    }
-
-    private String handleModifier(String result, StatisticalMeasurementValue value, List<Language> preferredLanguages) {
-        for (DefinedTerm modifier : value.getModifiers()) {
-            //TODO order modifiers  (see value.getModifiers(voc)
-            Representation prefLabel = modifier.getPreferredRepresentation(preferredLanguages);
-            String label = prefLabel!= null ? prefLabel.getLabel() : "";
-            //TODO which separator?
-            result = CdmUtils.concat("", label, result);
-        }
         return result;
     }
 }

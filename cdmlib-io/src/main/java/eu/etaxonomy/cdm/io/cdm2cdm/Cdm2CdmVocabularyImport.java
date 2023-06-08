@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +45,7 @@ public class Cdm2CdmVocabularyImport
 
     private void doData(Cdm2CdmImportState state){
 
+        ICdmApplication source = sourceRepo(state);
         //term uuids laden
         //gegen existierende Terme abgleichen
         //fehlende Terme importieren
@@ -54,16 +55,15 @@ public class Cdm2CdmVocabularyImport
         int count = 0;
 
         //vocabularies
-        VocabularyFilter vocFilter =
-                state.getConfig().getVocabularyFilter();
-        for (UUID vocUuid : getVocabularyService().uuidList(vocFilter)){
+        VocabularyFilter vocFilter = state.getConfig().getVocabularyFilter();
+        for (UUID vocUuid : source.getVocabularyService().uuidList(vocFilter)){
             TransactionStatus tx = startTransaction();
             doSingleVocabulary(state, vocUuid);
             commitTransaction(tx);
         }
 
         //graphs
-        Set<UUID> graphUuids = state.getConfig().getGraphFilter();
+        Collection<UUID> graphUuids = state.getConfig().getGraphFilter();
         for (UUID graphUuid : graphUuids){
             TransactionStatus tx = startTransaction();
             doSingleGraph(state, graphUuid);

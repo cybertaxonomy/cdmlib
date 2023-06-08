@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
- *
  */
 public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
@@ -414,13 +413,19 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
     public List<HybridRelationship> getHybridRelationships(Set<HybridRelationshipType> types, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     * @param clazz
-     * @param queryString
-     * @param matchmode
-     * @param criteria
-     * @return
-     */
     public long countByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
             List<Criterion> criteria);
+
+    /**
+     * Returns a list of distinct {@link String}s containing all values for TaxonName.genusOrUninomial
+     * in the database. The result may be filtered on {@link String}s that match the given <code>pattern</code>
+     * parameter. The pattern understands * or % for a general wildcard and _ or ? for single character wildcard.
+     * Also a maximum and/minimum rank may be given.
+     *
+     * @param param the genusOrUninomial pattern to search for
+     * @param maxRank the maximum rank of the names checked
+     * @param minRank the maximum rank of the names checked
+     * @return
+     */
+    public List<String> distinctGenusOrUninomial(String pattern, Rank maxRank, Rank minRank);
 }

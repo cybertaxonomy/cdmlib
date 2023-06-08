@@ -57,7 +57,7 @@ public class VocabularyFilterDaoHibernateImpl
 
     @Override
     public List<UUID> listUuids(VocabularyFilter filter){
-        String queryStr = query(filter, "tn.uuid");
+        String queryStr = query(filter, "voc.uuid");
         Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
         List<UUID> list = query.list();
 
@@ -79,10 +79,13 @@ public class VocabularyFilterDaoHibernateImpl
     private String query(VocabularyFilter filter, String selectPart){
         String select = " SELECT " + selectPart;
         String from = getFrom(filter);
-        String vocabularyFilter = getVocabularyFilter(filter);
-        String termTypeFilter = getTermTypeFilter(filter);
+        String fullFilter = " (1=0)";
+        if (!filter.isEmpty()) {
+            String vocabularyFilter = getVocabularyFilter(filter);
+            String termTypeFilter = getTermTypeFilter(filter);
 
-        String fullFilter = getFullFilter(vocabularyFilter, termTypeFilter);
+            fullFilter = getFullFilter(vocabularyFilter, termTypeFilter);
+        }
 //        String groupBy = " GROUP BY tn.uuid ";
         String groupBy = "";
         String orderBy = getOrderBy(filter, selectPart);
@@ -117,7 +120,7 @@ public class VocabularyFilterDaoHibernateImpl
         for (LogicFilter<TermVocabulary> singleFilter : termVocabularyFilter){
             String uuid = singleFilter.getUuid().toString();
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
-            result = String.format("(%s%s(tn.uuid = '%s'))", result, op, uuid);
+            result = String.format("(%s%s(voc.uuid = '%s'))", result, op, uuid);
             isFirst = false;
         }
         return result;

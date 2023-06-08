@@ -97,7 +97,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DescriptionElementBase
         extends AnnotatableEntity
-        implements ISourceable<DescriptionElementSource>, IModifiable, IMultiLanguageTextHolder{
+        implements ISourceable<DescriptionElementSource>,
+                   IModifiable, IHasModifyingText, IMultiLanguageTextHolder{
 
     private static final long serialVersionUID = 5000910777835755905L;
     @SuppressWarnings("unused")

@@ -331,6 +331,9 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public List<T> loadList(Collection<Integer> ids, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
 
+    /**
+     * Returns the CDM entity with the given UUID without initializing it further.
+     */
     public T findByUuid(UUID Uuid) throws DataAccessException;
 
     /**

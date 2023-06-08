@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.dto.portal.config;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
@@ -23,17 +24,23 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
  */
 public class DistributionInfoConfiguration {
 
-    private boolean subAreaPreference = false;
+    private boolean preferSubAreas = false;
 
     private boolean statusOrderPreference = false;
 
-    private Set<MarkerType> hiddenAreaMarkerTypeList = new HashSet<>();   //was list before
+    private Set<MarkerType> fallbackAreaMarkerTypeList = new HashSet<>();
+
+    private Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
 
     private Set<NamedAreaLevel> omitLevels = new HashSet<>();
 
     private String statusColorsString;
 
     private DistributionOrder distributionOrder = DistributionOrder.LABEL;
+
+    private Set<UUID> features = new HashSet<>();
+
+    private UUID areaTree = null;
 
     private CondensedDistributionConfiguration condensedDistrConfig = CondensedDistributionConfiguration.NewDefaultInstance();
 
@@ -46,11 +53,11 @@ public class DistributionInfoConfiguration {
 
 //********************* GETTER / SETTER ***************************/
 
-    public boolean isSubAreaPreference() {
-        return subAreaPreference;
+    public boolean isPreferSubareas() {
+        return preferSubAreas;
     }
-    public void setSubAreaPreference(boolean subAreaPreference) {
-        this.subAreaPreference = subAreaPreference;
+    public void setPreferSubAreas(boolean preferSubAreas) {
+        this.preferSubAreas = preferSubAreas;
     }
 
     public boolean isStatusOrderPreference() {
@@ -60,11 +67,18 @@ public class DistributionInfoConfiguration {
         this.statusOrderPreference = statusOrderPreference;
     }
 
-    public Set<MarkerType> getHiddenAreaMarkerTypeList() {
-        return hiddenAreaMarkerTypeList;
+    public Set<MarkerType> getFallbackAreaMarkerTypeList() {
+        return fallbackAreaMarkerTypeList;
     }
-    public void setHiddenAreaMarkerTypeList(Set<MarkerType> hiddenAreaMarkerTypeList) {
-        this.hiddenAreaMarkerTypeList = hiddenAreaMarkerTypeList;
+    public void setFallbackAreaMarkerTypeList(Set<MarkerType>fallbackAreaMarkerTypeList) {
+        this.fallbackAreaMarkerTypeList = fallbackAreaMarkerTypeList;
+    }
+
+    public Set<MarkerType> getAlternativeRootAreaMarkerTypes() {
+        return alternativeRootAreaMarkerTypes;
+    }
+    public void setAlternativeRootAreaMarkerTypes(Set<MarkerType> alternativeRootAreaMarkerTypes) {
+        this.alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypes;
     }
 
     public Set<NamedAreaLevel> getOmitLevels() {
@@ -109,10 +123,25 @@ public class DistributionInfoConfiguration {
         this.ignoreDistributionStatusUndefined = ignoreDistributionStatusUndefined;
     }
 
-    public CondensedDistributionConfiguration getCondensedDistrConfig() {
+    public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {
         return condensedDistrConfig;
     }
-    public void setCondensedDistrConfig(CondensedDistributionConfiguration condensedDistrConfig) {
+    public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistrConfig) {
         this.condensedDistrConfig = condensedDistrConfig;
     }
+
+    public Set<UUID> getFeatures() {
+        return features;
+    }
+    public void setFeatures(Set<UUID> features) {
+        this.features = features;
+    }
+
+    public UUID getAreaTree() {
+        return areaTree;
+    }
+    public void setAreaTree(UUID areaTree) {
+        this.areaTree = areaTree;
+    }
+
 }

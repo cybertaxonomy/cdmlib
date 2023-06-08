@@ -27,7 +27,9 @@ public class HibernateProxyBeanProcessorMatcher extends
 	public Object getMatch(Class target, Set set) {
 
 		if (HibernateProxy.class.isAssignableFrom(target)) {
-			logger.debug("Found HibernateProxy object of class " + target.getClass() + " returning " + HibernateProxy.class);
+		    if (logger.isDebugEnabled()) {
+		        logger.debug("Found HibernateProxy object of class " + target.getClass() + " returning " + HibernateProxy.class);
+		    }
 			return HibernateProxy.class;
         }
 

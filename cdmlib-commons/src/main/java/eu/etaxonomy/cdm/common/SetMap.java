@@ -61,7 +61,7 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
 
     @Override
     public boolean containsValue(Object value) {
-        return map.containsKey(value);
+        return map.containsValue(value); //TODO shouldn't we check for a single value in the set?
     }
 
     /**
@@ -125,6 +125,18 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
         return set.add(value);
     }
 
+    /**
+     * Returns any of the values for the given key if there are any values.
+     */
+    public V getFirstValue(K key) {
+        Set<V> set = map.get(key);
+        if (CdmUtils.isNullSafeEmpty(set)) {
+            return null;
+        }else {
+            return set.iterator().next();
+        }
+    }
+
     @Override
     public Set<V> remove(Object key) {
         return map.remove(key);
@@ -156,4 +168,8 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
         return map.entrySet();
     }
 
+    @Override
+    public String toString() {
+        return map.toString();
+    }
 }

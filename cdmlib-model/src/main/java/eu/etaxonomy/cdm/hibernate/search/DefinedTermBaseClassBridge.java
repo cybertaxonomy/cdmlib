@@ -23,14 +23,12 @@ import eu.etaxonomy.cdm.model.term.Representation;
 /**
  * @author Andreas Kohlbecker
  * @since Jun 4, 2012
- *
  */
 public class DefinedTermBaseClassBridge extends AbstractClassBridge implements ParameterizedBridge {
 
     private static final String INCLUDE_PARENT_TERMS_KEY = "includeParentTerms";
 
     private boolean includeParentTerms = false;
-
 
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {

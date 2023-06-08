@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -630,12 +631,9 @@ public interface INameService
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate);
 
     /**
-     * checks whether the name can be deleted if the taxon with taxonUuid will be deleted, too
-     * @param name
-     * @param config
-     * @param taxonUuid
-     * @return
+     * Checks whether the name can be deleted if the taxon with taxonUuid will be deleted, too
      */
     public DeleteResult isDeletable(UUID nameUuid, DeleteConfiguratorBase config, UUID taxonUuid);
 
+    public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName, int maxDistanceGenus, int maxDisEpith, int limit);
 }

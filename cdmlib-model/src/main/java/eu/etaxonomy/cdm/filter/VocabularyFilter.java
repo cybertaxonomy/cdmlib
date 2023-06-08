@@ -100,6 +100,10 @@ public class VocabularyFilter implements Serializable {
         return Collections.unmodifiableList(termTypes);
     }
 
+    public boolean isEmpty() {
+        return termVocabularies.isEmpty() && termTypes.isEmpty();
+    }
+
     public ORDER getOrderBy() {
         return orderBy;
     }

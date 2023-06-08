@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -461,10 +462,11 @@ public class CsvNameExport extends CsvNameExportBase {
         if (state.getConfig().isCondensedDistribution()){
             List<Language> langs = new ArrayList<>();
             langs.add(Language.ENGLISH());
+            TermTree<NamedArea> areaTree = null;  //TODO
 
             //TODO add condensed distribution configuration to export configuration
             CondensedDistribution conDis = distributionService.getCondensedDistribution(
-                    distributions, true, null, CondensedDistributionConfiguration.NewCubaInstance(), langs );
+                    distributions, areaTree, true, null, CondensedDistributionConfiguration.NewCubaInstance(), langs );
 
             nameRecord.put(columnName, conDis.toString());
 

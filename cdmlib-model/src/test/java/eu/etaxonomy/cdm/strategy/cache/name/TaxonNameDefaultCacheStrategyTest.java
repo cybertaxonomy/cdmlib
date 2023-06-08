@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -99,7 +100,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         exBasAuthor.setNomenclaturalTitleCache(exBasAuthorString, true);
 
         citationRef = ReferenceFactory.newGeneric();
-        citationRef.setTitleCache(referenceTitle, true);
+        citationRef.setTitle(referenceTitle);
     }
 
 //**************************** TESTS **************************************************
@@ -406,6 +407,21 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setCultivarEpithet("Cultus");
         speciesName.setAppendedPhrase("appended");
         Assert.assertEquals("Abies alba 'Cultus' appended", strategy.getTitleCache(speciesName));
+    }
+
+    //10299
+    @Test
+    public void testVerbatimDate() {
+
+        subSpeciesName.setNomenclaturalReference(citationRef);
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
+        subSpeciesName.setNomenclaturalMicroReference("25");
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
+        VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim("1988");
+        datePublished.setVerbatimDate("1989");
+        citationRef.setDatePublished(datePublished);
+        subSpeciesName.setFullTitleCache(null, false);
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25. 1988 [\"1989\"]", subSpeciesName.getFullTitleCache());
     }
 
     //3665
@@ -812,5 +828,34 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID.toString());
         Assert.assertEquals("", expected, name.getTitleCache());
+    }
+
+    @Test
+    public void testEtAlAuthors() {
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setGenusOrUninomial("Ophrys");
+        name.setSpecificEpithet("kastelli");
+        Team combTeam = Team.NewInstance();
+        combTeam.addTeamMember(Person.NewInstance("Mill.", "Miller", "A.", null));
+        combTeam.addTeamMember(Person.NewInstance("Ball.", "Baller", "B.", null));
+        combTeam.addTeamMember(Person.NewInstance("Cill.", "Ciller", "C.", null));
+        name.setCombinationAuthorship(combTeam);
+
+        INameCacheStrategy formatter = name.cacheStrategy();
+        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        formatter.setEtAlPosition(3);
+        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        formatter.setEtAlPosition(2);
+        Assert.assertEquals("", "Ophrys kastelli Mill. & al.", formatter.getTitleCache(name));
+        //null and <2 are handled as "no position defined"
+        formatter.setEtAlPosition(1);
+        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        formatter.setEtAlPosition(null);
+        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+
+        name.setBasionymAuthorship(combTeam);
+        formatter.setEtAlPosition(2);
+        Assert.assertEquals("", "Ophrys kastelli (Mill. & al.) Mill. & al.", formatter.getTitleCache(name));
+
     }
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -27,8 +28,12 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     private List<TaggedText> nameInSource;
     private UUID nameInSourceUuid;
     private String doi;
+    //TODO maybe we should merge doi and uri
+    private URI uri;
     private String type;
     //TODO external links
+
+    private List<URI> links;
 
 
 //************* GETTER/SETTER ***********************/
@@ -71,6 +76,22 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
         this.doi = doi;
     }
 
+    public URI getUri() {
+        return uri;
+    }
+    public void setUri(URI uri) {
+        this.uri = uri;
+    }
+    public List<URI> getLinks() {
+        return links;
+    }
+    public void addLink(URI uri) {
+        if (links == null) {
+            links = new ArrayList<>();
+        }
+        links.add(uri);
+    }
+
     public String getType() {
         return type;
     }
@@ -84,6 +105,7 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     public void setLinkedClass(String linkedClass) {
         this.linkedClass = linkedClass;
     }
+
 
 
 }

@@ -19,7 +19,9 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -27,6 +29,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 
@@ -46,16 +49,18 @@ public class TaxonNameDefaultCacheStrategy
     private static final Logger logger = LogManager.getLogger();
 	private static final long serialVersionUID = -6577757501563212669L;
 
-    final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
+	private static String NOTHO = "notho";
 
-    protected String nameAuthorSeperator = " ";
-    protected String basionymStart = "(";
-    protected String basionymEnd = ")";
-    protected String exAuthorSeperator = " ex ";
-    private static String NOTHO = "notho";
+	final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
+
+    private String nameAuthorSeperator = " ";
+    private String basionymStart = "(";
+    private String basionymEnd = ")";
+    private String exAuthorSeperator = " ex ";
     private CharSequence basionymAuthorCombinationAuthorSeperator = " ";
 
     private String zooAuthorYearSeperator = ", ";
+    private Integer etAlPosition;
 
     private String cultivarStart = "'";
     private String cultivarEnd = "'";
@@ -78,6 +83,16 @@ public class TaxonNameDefaultCacheStrategy
     }
 
 /* **************** GETTER / SETTER **************************************/
+
+    @Override
+    public Integer getEtAlPosition() {
+        return etAlPosition;
+    }
+
+    @Override
+    public void setEtAlPosition(Integer etAlPosition) {
+        this.etAlPosition = etAlPosition;
+    }
 
     /**
      * String that separates the NameCache part from the AuthorCache part
@@ -168,10 +183,10 @@ public class TaxonNameDefaultCacheStrategy
             return this.getZoologicalNonCacheAuthorshipCache(nonViralName);
         }else{
             String result = "";
-            INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorship();
-            INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorship();
-            INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorship();
-            INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorship();
+            TeamOrPersonBase<?> combinationAuthor = nonViralName.getCombinationAuthorship();
+            TeamOrPersonBase<?> exCombinationAuthor = nonViralName.getExCombinationAuthorship();
+            TeamOrPersonBase<?> basionymAuthor = nonViralName.getBasionymAuthorship();
+            TeamOrPersonBase<?> exBasionymAuthor = nonViralName.getExBasionymAuthorship();
             if (isCultivar(nonViralName) ){
                 exCombinationAuthor = null;
                 basionymAuthor = null;
@@ -204,10 +219,10 @@ public class TaxonNameDefaultCacheStrategy
             return null;
         }
         String result = "";
-        INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorship();
-        INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorship();
-        INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorship();
-        INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorship();
+        TeamOrPersonBase<?> combinationAuthor = nonViralName.getCombinationAuthorship();
+        TeamOrPersonBase<?> exCombinationAuthor = nonViralName.getExCombinationAuthorship();
+        TeamOrPersonBase<?> basionymAuthor = nonViralName.getBasionymAuthorship();
+        TeamOrPersonBase<?> exBasionymAuthor = nonViralName.getExBasionymAuthorship();
         Integer publicationYear = nonViralName.getPublicationYear();
         Integer originalPublicationYear = nonViralName.getOriginalPublicationYear();
 
@@ -239,7 +254,7 @@ public class TaxonNameDefaultCacheStrategy
      * The correct order is exAuthor ex author though some botanist do not know about and do it the
      * other way round. (see 46.4-46.6 ICBN (Vienna Code, 2006))
      */
-    protected String getAuthorAndExAuthor(INomenclaturalAuthor author, INomenclaturalAuthor exAuthor){
+    protected String getAuthorAndExAuthor(TeamOrPersonBase<?> author, TeamOrPersonBase<?> exAuthor){
         String authorString = "";
         String exAuthorString = "";
         if (author != null){
@@ -253,8 +268,14 @@ public class TaxonNameDefaultCacheStrategy
         return result;
     }
 
-    private String getNomAuthorTitle(INomenclaturalAuthor author) {
-        return CdmUtils.Nz(author.getNomenclaturalTitleCache());
+    private String getNomAuthorTitle(TeamOrPersonBase<?>  author) {
+        if (!author.isInstanceOf(Team.class) || this.getEtAlPosition() == null || this.getEtAlPosition() < 2) {
+            return CdmUtils.Nz(author.getNomenclaturalTitleCache());
+        }else {
+            Team team = CdmBase.deproxy(author, Team.class);
+            TeamDefaultCacheStrategy formatter = TeamDefaultCacheStrategy.NewInstanceNomEtAl(this.getEtAlPosition());
+            return formatter.getNomenclaturalTitleCache(team);
+        }
     }
 
     /**

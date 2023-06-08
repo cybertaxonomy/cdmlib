@@ -30,6 +30,10 @@
              <value>DescriptionElementSource.citation</value>
              <value>SecundumSource.citation</value>
              <value>NamedSource.citation</value>
+             <!-- see #10302 -->
+             <value>NomenclaturalStatus.codeEditionSource</value>
+             <value>HybridRelationship.codeEditionSource</value>
+             <value>NameRelationship.codeEditionSource</value>
 
              <value>TreeNode.data</value>
              <value>TreeNode.data</value>

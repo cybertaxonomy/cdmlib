@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -33,13 +35,15 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     private ContainerDto<ConceptRelationDTO> conceptRelations;
 
-    private ContainerDto<FeatureDto> factualData;
+    private ContainerDto<FeatureDto> taxonFacts;
 
     private ContainerDto<KeyDTO> keys;
 
     private ContainerDto<SpecimenDTO> specimens;
 
     private ContainerDto<MediaDTO> media;
+
+    private String secTitleCache;
 
     private List<MessagesDto> messages;
 
@@ -85,7 +89,6 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setAgentLink(String agentLink) {
             this.agentLink = agentLink;
         }
-
     }
 
     public static class TaxonNodeDTO extends CdmBaseDto {
@@ -94,7 +97,6 @@ public class TaxonPageDto extends TaxonBaseDto {
         private String status;
         private String statusNote;
         private ContainerDto<TaxonNodeAgentsRelDTO> agents;
-
 
         public UUID getClassificationUuid() {
             return classificationUuid;
@@ -220,6 +222,8 @@ public class TaxonPageDto extends TaxonBaseDto {
         private UUID relTaxonUuid;
         private String relTaxonLabel;
         private List<TypedLabel> typedLabel;
+        private UUID relTypeUuid;
+        private Set<UUID> classificationUuids;
 
         public int getRelTaxonId() {
             return relTaxonId;
@@ -244,6 +248,21 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setTypedLabel(List<TypedLabel> typedLabel) {
             this.typedLabel = typedLabel;
+        }
+        public UUID getRelTypeUuid() {
+            return relTypeUuid;
+        }
+        public void setRelTypeUuid(UUID relTypeUuid) {
+            this.relTypeUuid = relTypeUuid;
+        }
+        public Set<UUID> getClassificationUuids() {
+            return classificationUuids;
+        }
+        public void addClassificationUuids(UUID classificationUuid) {
+            if (this.classificationUuids == null) {
+                this.classificationUuids = new HashSet<>();
+            }
+            this.classificationUuids.add(classificationUuid);
         }
     }
 
@@ -356,11 +375,11 @@ public class TaxonPageDto extends TaxonBaseDto {
         this.heterotypicSynonymGroups = heterotypicSynonymGroups;
     }
 
-    public ContainerDto<FeatureDto> getFactualData() {
-        return factualData;
+    public ContainerDto<FeatureDto> getTaxonFacts() {
+        return taxonFacts;
     }
-    public void setFactualData(ContainerDto<FeatureDto> factualData) {
-        this.factualData = factualData;
+    public void setTaxonFacts(ContainerDto<FeatureDto> taxonFacts) {
+        this.taxonFacts = taxonFacts;
     }
 
     public ContainerDto<KeyDTO> getKeys() {
@@ -398,5 +417,12 @@ public class TaxonPageDto extends TaxonBaseDto {
             this.messages = new ArrayList<>();
         }
         this.messages.add(message);
+    }
+
+    public String getSecTitleCache() {
+        return secTitleCache;
+    }
+    public void setSecTitleCache(String secTitleCache) {
+        this.secTitleCache = secTitleCache;
     }
 }

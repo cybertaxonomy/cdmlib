@@ -10,8 +10,10 @@ package eu.etaxonomy.cdm.api.dto.portal;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author a.mueller
@@ -30,12 +32,12 @@ public class DistributionDto extends FactDtoBase {
         this.setStatus(status);
     }
 
-    public DistributionDto(Distribution distribution) {
+    public DistributionDto(Distribution distribution, SetMap<NamedArea, NamedArea> parentAreaMap) {
         this.setUuid(distribution.getUuid());
         this.setId(distribution.getId());
         this.setLastUpdated(null);   //TODO
         if (distribution.getArea() != null) {
-            this.area = new NamedAreaDto(distribution.getArea(), false);
+            this.area = new NamedAreaDto(distribution.getArea(), parentAreaMap);
         }
         if (distribution.getStatus() != null) {
             PresenceAbsenceTerm distStatus = distribution.getStatus();
@@ -59,4 +61,13 @@ public class DistributionDto extends FactDtoBase {
     public void setStatus(LabeledEntityDto status) {
         this.status = status;
     }
+
+//*************************** toString() ********************************/
+
+    @Override
+    public String toString() {
+        return "DistributionDto [area=" + area + ", status=" + status + "]";
+    }
+
+
 }

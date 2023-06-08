@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactor
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -65,6 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -102,9 +104,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByName
     private AuthenticationManager authenticationManager;
 
-    /**
-     * @param token
-     */
+
     private void setAuthentication(AbstractAuthenticationToken token) {
        Authentication authentication = authenticationManager.authenticate(token);
 
@@ -119,7 +119,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         SecurityContextHolder.setContext(secureContext);
         secureContext.setAuthentication(null);
      }
-
 
 /* ******************** TESTS ********************************************/
 
@@ -1099,4 +1098,30 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
+
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.testFindMatchingNames.xml")
+    public void testFindingMatchingNames () {
+
+        List<DoubleResult<TaxonNameParts, Integer>> matchResult = nameService.findMatchingNames("Gynxya asrerotciha", 0, 0, 10);
+        Assert.assertEquals(1, matchResult.size());
+
+        matchResult = nameService.findMatchingNames("Gynxya asrerotciha", 1, 0, 10);
+        Assert.assertEquals(2, matchResult.size());
+
+        DoubleResult<TaxonNameParts, Integer> gynxyaAsrerotciha = matchResult.get(0);
+        Assert.assertNotNull(gynxyaAsrerotciha);
+        Assert.assertEquals(10, (int)gynxyaAsrerotciha.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("Gynxya", matchResult.get(0).getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("asrerotciha", matchResult.get(0).getFirstResult().getSpecificEpithet());
+        Assert.assertEquals("Distance should be 0", 0, (int)gynxyaAsrerotciha.getSecondResult());
+
+        DoubleResult<TaxonNameParts, Integer> gynxyasAsrerotciha = matchResult.get(1);
+        Assert.assertNotNull(gynxyasAsrerotciha);
+        Assert.assertEquals(12, (int)gynxyasAsrerotciha.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("Gynxyas", matchResult.get(1).getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("asrerotciha", matchResult.get(1).getFirstResult().getSpecificEpithet());
+        Assert.assertEquals("Distance should be 1", 1, (int)gynxyasAsrerotciha.getSecondResult());
+    }
 }

@@ -59,6 +59,8 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
@@ -127,6 +129,8 @@ public class DistributionServiceUtilities {
      *            1 status exists, otherwise the behavior is not deterministic.
      *            For filtering see {@link DescriptionUtility#filterDistributions(
      *            Collection, Set, boolean, boolean, boolean, boolean, boolean)}
+     * @param parentAreaMap TODO should we have a separate tree for the condensed distribution string?
+     *            Add the tree to the CondensedDistributionConfiguration?
      * @param config
      *            The configuration for the condensed distribution string creation.
      * @param languages
@@ -138,12 +142,12 @@ public class DistributionServiceUtilities {
      *            and a {@link TaggedText} representation of the condensed distribution string.
      */
     public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
-            CondensedDistributionConfiguration config, List<Language> languages) {
+            SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config, List<Language> languages) {
 
         CondensedDistributionComposer composer = new CondensedDistributionComposer();
 
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions, languages, config);
+                filteredDistributions, parentAreaMap, languages, config);
         return condensedDistribution;
     }
 
@@ -644,41 +648,44 @@ public class DistributionServiceUtilities {
     /**
      * <b>NOTE: To avoid LayzyLoadingExceptions this method must be used in a transactional context.</b>
      *
-     * Filters the given set of {@link Distribution}s for publication purposes
+     * Filters the given set of {@link Distribution}s for publication purposes.
      * The following rules are respected during the filtering:
      * <ol>
      * <li><b>Marked area filter</b>: Skip distributions for areas having a {@code TRUE} {@link Marker}
      * with one of the specified {@link MarkerType}s. Existing sub-areas of a marked area must also be marked
      * with the same marker type, otherwise the marked area acts as a <b>fallback area</b> for the sub areas.
-     * An area is a <b>fallback area</b> if it is marked to be hidden and if it has at least one of
-     * sub area which is not marked to be hidden. The fallback area will be show if there is no {@link Distribution}
+     * An area is a <b>fallback area</b> if it is marked to be hidden and if it has at least one
+     * sub area which is not marked to be hidden. The fallback area will be shown if there is no {@link Distribution}
      * for any of the non hidden sub-areas. For more detailed discussion on fallback areas see
      * https://dev.e-taxonomy.eu/redmine/issues/4408</li>
+     *
      * <li><b>Prefer aggregated rule</b>: if this flag is set to <code>true</code> aggregated
      * distributions are preferred over non-aggregated elements.
-     * (Aggregated description elements are identified by the description having type
-     * {@link DescriptionType.AGGREGATED_DISTRIBUTION}). This means if an non-aggregated status
+     * (Aggregated descriptions are identified by their description having type
+     * {@link DescriptionType.AGGREGATED_DISTRIBUTION}). This means if a non-aggregated status
      * information exists for the same area for which aggregated data is available,
      * the aggregated data has to be given preference over other data.
-     * see parameter <code>preferAggregated</code></li>
+     * See parameter <code>preferAggregated</code></li>
+     *
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see
      * {@link DefinedTermBase#compareTo(DefinedTermBase)}. This rule is
      * optional, see parameter <code>statusOrderPreference</code></li>
+     *
      * <li><b>Sub area preference rule</b>: If there is an area with a <i>direct
      * sub area</i> and both areas have the same status only the
      * information on the sub area should be reported, whereas the super area
      * should be ignored. This rule is optional, see parameter
      * <code>subAreaPreference</code>. Can be run separately from the other filters.
      * This rule affects any distribution,
-     * that is to computed and edited equally. For more details see
+     * that is to be computed and edited equally. For more details see
      * {@link https://dev.e-taxonomy.eu/redmine/issues/5050})</li>
      * </ol>
      *
      * @param distributions
      *            the distributions to filter
-     * @param hiddenAreaMarkerTypes
+     * @param fallbackAreaMarkerTypes
      *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will
      *            be skipped or acts as fall back area. For more details see <b>Marked area filter</b> above.
      * @param preferAggregated
@@ -694,12 +701,14 @@ public class DistributionServiceUtilities {
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
-            boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists, boolean ignoreDistributionStatusUndefined) {
+            TermTree<NamedArea> areaTree, Set<MarkerType> fallbackAreaMarkerTypes,
+            boolean preferAggregated, boolean statusOrderPreference,
+            boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists,
+            boolean ignoreDistributionStatusUndefined) {
 
         SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
 
-        // sort Distributions by the area and filter undefinedStatus
+        // assign distributions to the area and filter undefinedStatus
         for(Distribution distribution : distributions){
             NamedArea area = distribution.getArea();
             if(area == null) {
@@ -711,15 +720,20 @@ public class DistributionServiceUtilities {
             if (!filterUndefined){
                 filteredDistributions.putItem(area, distribution);
             }
+        }
 
+        if (areaTree == null) {
+            areaTree = getAreaTree(distributions, fallbackAreaMarkerTypes);
         }
 
         // -------------------------------------------------------------------
-        // 1) skip distributions having an area with markers matching hiddenAreaMarkerTypes
+        // 1) skip distributions having an area with markers matching fallbackAreaMarkerTypes
         //    but keep distributions for fallback areas (areas with hidden marker, but with visible sub-areas)
-        if( hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
-            removeHiddenAndKeepFallbackAreas(hiddenAreaMarkerTypes, filteredDistributions, keepFallBackOnlyIfNoSubareaDataExists);
-        }
+        //TODO since using area tree this is only relevant if keepFallBackOnlyIfNoSubareaDataExists = true
+        //     as the area tree should also exclude real hidden areas
+//        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)) {
+            removeHiddenAndKeepFallbackAreas(areaTree, fallbackAreaMarkerTypes, filteredDistributions, keepFallBackOnlyIfNoSubareaDataExists);
+//        }
 
         // -------------------------------------------------------------------
         // 2) remove not computed distributions for areas for which computed
@@ -741,20 +755,135 @@ public class DistributionServiceUtilities {
         // -------------------------------------------------------------------
         // 4) Sub area preference rule
         if(subAreaPreference){
-            handleSubAreaPreferenceRule(filteredDistributions);
-         }
+            handleSubAreaPreferenceRule(filteredDistributions, areaTree);
+        }
 
         return valuesOfAllInnerSets(filteredDistributions.values());
     }
 
-    private static void handleSubAreaPreferenceRule(SetMap<NamedArea, Distribution> filteredDistributions) {
-        Set<NamedArea> removeCandidatesArea = new HashSet<>();
-        for(NamedArea key : filteredDistributions.keySet()){
-            if(removeCandidatesArea.contains(key)){
+    static TermTree<NamedArea> getAreaTree(Collection<Distribution> distributions,
+            Set<MarkerType> fallbackAreaMarkerTypes) {
+
+        //TODO see comment in below method
+//        List<TermVocabulary<NamedArea>> vocs = getVocabualries(distributions);
+        TermTree<NamedArea> areaTree = createAreaTreeByDistributions(distributions, fallbackAreaMarkerTypes);
+        return areaTree;
+    }
+
+    /**
+     * Returns a list of all named area vocabularies for named areas used in the given
+     */
+    //TODO maybe needed by above call once vocabularies are term trees
+    private static List<TermVocabulary<NamedArea>> getVocabualries(Collection<Distribution> distributions) {
+        List<TermVocabulary<NamedArea>> result = new ArrayList<>();
+        distributions.stream()
+            .map(d->d.getArea())
+            .filter(a->a != null)
+            .map(a->a.getVocabulary())
+            .filter(v->!result.contains(v))
+            .forEach(v->result.add(v));
+        return result;
+    }
+
+    /**
+     * Creates a term tree from the part-of information of the distribution areas.
+     * Removes hidden areas marked as such if they have no children.
+     */
+    private static TermTree<NamedArea> createAreaTreeByDistributions(Collection<Distribution> distributions,
+            Set<MarkerType> fallbackAreaMarkerTypes) {
+
+        fallbackAreaMarkerTypes = fallbackAreaMarkerTypes == null ? new HashSet<>() : fallbackAreaMarkerTypes;
+        TermTree<NamedArea> result = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
+
+        //create area list
+        Set<NamedArea> relevantAreas = new HashSet<>();
+        for (Distribution distribution : distributions) {
+            NamedArea area = HibernateProxyHelper.deproxy(distribution.getArea(), NamedArea.class) ;
+            if (area != null && !relevantAreas.contains(area)) {
+                boolean isHidden = isMarkedAs(area, fallbackAreaMarkerTypes);
+                if (isHidden) {
+                    //if is hidden area either ignore (hidden area) or add unhidden children (fallback area)
+                    Set<NamedArea> unhiddenChildren = getUnhiddenChildren(area, fallbackAreaMarkerTypes);
+                    if (!unhiddenChildren.isEmpty()) {
+                        relevantAreas.addAll(unhiddenChildren);
+                    }
+                }else {
+                    relevantAreas.add(area);
+                }
+            }
+        }
+
+        //create area tree from area list using part-of info
+        Map<NamedArea, TermNode<NamedArea>> map = new HashMap<>();
+
+        for (NamedArea area : relevantAreas) {
+            if (map.get(area)!=null) {
                 continue;
             }
-            if(key.getPartOf() != null && filteredDistributions.containsKey(key.getPartOf())){
-                removeCandidatesArea.add(key.getPartOf());
+            NamedArea parent = area.getPartOf();
+            TermNode<NamedArea> parentNode;
+
+            if (parent == null) {
+                parentNode = result.getRoot();
+            }else {
+                parentNode = getNodeRecursive(parent, map, result.getRoot());
+            }
+
+            TermNode<NamedArea> node = parentNode.addChild(area);
+            map.put(area, node);
+        }
+        return result;
+    }
+
+    private static TermNode<NamedArea> getNodeRecursive(NamedArea area, Map<NamedArea, TermNode<NamedArea>> map,
+            TermNode<NamedArea> root) {
+
+            TermNode<NamedArea> areaNode = map.get(area);
+            if (areaNode != null) {
+                return areaNode;
+            }
+            //this usage is only needed as long as vocabularies are not term trees yet
+            NamedArea parentArea = area.getPartOf();
+            TermNode<NamedArea> parentNode;
+
+            if (parentArea == null) {
+                parentNode = root;
+            }else {
+                parentNode = map.get(parentArea);
+                if (parentNode == null) {
+                    parentNode = getNodeRecursive(parentArea, map, root);
+                }
+            }
+            areaNode = parentNode.addChild(area);
+            map.put(area, areaNode);
+            return areaNode;
+    }
+
+    private static Set<NamedArea> getUnhiddenChildren(NamedArea area, Set<MarkerType> fallbackAreaMarkerTypes) {
+        Set<NamedArea> result = new HashSet<>();
+        for (NamedArea child : area.getIncludes()) {
+            if (!isMarkedAs(child, fallbackAreaMarkerTypes)) {
+                result.add(child);
+            }
+            result.addAll(getUnhiddenChildren(child, fallbackAreaMarkerTypes));
+        }
+        return result;
+    }
+
+
+    private static void handleSubAreaPreferenceRule(SetMap<NamedArea, Distribution> filteredDistributions,
+            TermTree<NamedArea> areaTree) {
+
+        SetMap<NamedArea, NamedArea> parentMap = areaTree.getParentMap();
+        Set<NamedArea> removeCandidatesArea = new HashSet<>();
+        for(NamedArea area : filteredDistributions.keySet()){
+            if(removeCandidatesArea.contains(area)){
+                continue;
+            }
+            //xx;
+            NamedArea parent = parentMap.getFirstValue(area);
+            if(parent != null && filteredDistributions.containsKey(parent)){
+                removeCandidatesArea.add(parent);
             }
         }
         for(NamedArea removeKey : removeCandidatesArea){
@@ -763,18 +892,24 @@ public class DistributionServiceUtilities {
     }
 
     /**
-     * Remove hidden areas but keep fallback areas.
+     * Remove areas not in area tree but keep fallback areas.
      */
-    private static void removeHiddenAndKeepFallbackAreas(Set<MarkerType> hiddenAreaMarkerTypes,
-            SetMap<NamedArea, Distribution> filteredDistributions, boolean keepFallBackOnlyIfNoSubareaDataExists) {
+    private static void removeHiddenAndKeepFallbackAreas(TermTree<NamedArea> areaTree, Set<MarkerType> fallbackAreaMarkerTypes,
+            SetMap<NamedArea,Distribution> filteredDistributionsPerArea, boolean keepFallBackOnlyIfNoSubareaDataExists) {
 
         Set<NamedArea> areasHiddenByMarker = new HashSet<>();
-        for(NamedArea area : filteredDistributions.keySet()) {
-            if(isMarkedHidden(area, hiddenAreaMarkerTypes)) {
+        Set<NamedArea> availableAreas = areaTree.getDistinctTerms();
+
+        for(NamedArea area : filteredDistributionsPerArea.keySet()) {
+            if (! availableAreas.contains(area)) {
+                areasHiddenByMarker.add(area);
+            }else if(isMarkedAs(area, fallbackAreaMarkerTypes)) {
+                Set<TermNode<NamedArea>> nodes = areaTree.getNodesForTerm(area);
+
                 // if at least one sub area is not hidden by a marker
                 // the given area is a fall-back area for this sub area
-                SetMap<NamedArea, Distribution>  distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributions : null;
-                boolean isFallBackArea = isRemainingFallBackArea(area, hiddenAreaMarkerTypes, distributionsForSubareaCheck);
+                SetMap<NamedArea, Distribution> distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributionsPerArea : null;
+                boolean isFallBackArea = isRemainingFallBackArea(nodes, fallbackAreaMarkerTypes, distributionsForSubareaCheck);
                 if (!isFallBackArea) {
                     // this area does not need to be shown as
                     // fall-back for another area so it will be hidden.
@@ -783,22 +918,25 @@ public class DistributionServiceUtilities {
             }
         }
         for(NamedArea area :areasHiddenByMarker) {
-            filteredDistributions.remove(area);
+            filteredDistributionsPerArea.remove(area);
         }
     }
 
     //if filteredDistributions == null it can be ignored if data exists or not
-    private static boolean isRemainingFallBackArea(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes,
+    private static boolean isRemainingFallBackArea(Set<TermNode<NamedArea>> areaNode, Set<MarkerType> fallbackAreaMarkerTypes,
             SetMap<NamedArea, Distribution> filteredDistributions) {
 
-        boolean result = false;
-        for(DefinedTermBase<NamedArea> included : area.getIncludes()) {
-            NamedArea subArea = CdmBase.deproxy(included,NamedArea.class);
+        Set<TermNode<NamedArea>> childNodes = new HashSet<>();
+        areaNode.stream().forEach(an->childNodes.addAll(an.getChildNodes()));
+        for(TermNode<NamedArea> included : childNodes) {
+            NamedArea subArea = included.getTerm();
             boolean noOrIgnoreData = filteredDistributions == null || !filteredDistributions.containsKey(subArea);
 
+            Set<TermNode<NamedArea>> childNodeAsSet = new HashSet<>();
+            childNodeAsSet.add(included);
             //if subarea is not hidden and data exists return true
-            if (isMarkedHidden(subArea, hiddenAreaMarkerTypes)){
-                boolean subAreaIsFallback = isRemainingFallBackArea(subArea, hiddenAreaMarkerTypes, filteredDistributions);
+            if (isMarkedAs(subArea, fallbackAreaMarkerTypes)){
+                boolean subAreaIsFallback = isRemainingFallBackArea(childNodeAsSet, fallbackAreaMarkerTypes, filteredDistributions);
                 if (subAreaIsFallback && noOrIgnoreData){
                     return true;
                 }else{
@@ -816,12 +954,12 @@ public class DistributionServiceUtilities {
 //            if (isNotHidden_AndHasNoData_OrDataCanBeIgnored) {
 //                return true;
 //            }
-//            if (!isMarkedHidden(subArea, hiddenAreaMarkerTypes) ){
+//            if (!isMarkedHidden(subArea, fallbackAreaMarkerTypes) ){
 //
 //            }
 //
 //            //do the same recursively
-//            boolean hasVisibleSubSubarea = isRemainingFallBackArea(subArea, hiddenAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
+//            boolean hasVisibleSubSubarea = isRemainingFallBackArea(subArea, fallbackAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
 //            if (hasVisibleSubSubarea){
 //                return true;
 //            }
@@ -865,9 +1003,9 @@ public class DistributionServiceUtilities {
         return false;
     }
 
-    public static boolean isMarkedHidden(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes) {
-        if(hiddenAreaMarkerTypes != null) {
-            for(MarkerType markerType : hiddenAreaMarkerTypes){
+    public static boolean isMarkedAs(NamedArea area, Set<MarkerType> markerTypes) {
+        if(markerTypes != null) {
+            for(MarkerType markerType : markerTypes){
                 if(area.hasMarker(markerType, true)){
                     return true;
                 }
@@ -897,7 +1035,9 @@ public class DistributionServiceUtilities {
      */
     public static DistributionTree buildOrderedTree(Set<NamedAreaLevel> omitLevels,
             Collection<Distribution> distributions,
+            SetMap<NamedArea, NamedArea> parentAreaMap,
             Set<MarkerType> fallbackAreaMarkerTypes,
+            Set<MarkerType> alternativeRootAreaMarkerTypes,
             boolean neverUseFallbackAreaAsParent,
             DistributionOrder distributionOrder,
             IDefinedTermDao termDao) {
@@ -906,7 +1046,9 @@ public class DistributionServiceUtilities {
 
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
         //order by areas
-        tree.orderAsTree(distributions, omitLevels, fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
+        tree.orderAsTree(distributions, parentAreaMap, omitLevels, fallbackAreaMarkerTypes,
+                neverUseFallbackAreaAsParent);
+        tree.handleAlternativeRootArea(alternativeRootAreaMarkerTypes);
         tree.recursiveSortChildren(distributionOrder); // TODO respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;
@@ -914,7 +1056,9 @@ public class DistributionServiceUtilities {
 
     public static DistributionTreeDto buildOrderedTreeDto(Set<NamedAreaLevel> omitLevels,
             Collection<DistributionDto> distributions,
+            SetMap<NamedArea, NamedArea> parentAreaMap,
             Set<MarkerType> fallbackAreaMarkerTypes,
+            Set<MarkerType> alternativeRootAreaMarkerType,
             boolean neverUseFallbackAreaAsParent,
             DistributionOrder distributionOrder,
             IDefinedTermDao termDao) {
@@ -925,7 +1069,9 @@ public class DistributionServiceUtilities {
 
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
         //order by areas
-        loader.orderAsTree(dto, distributions, omitLevels, fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
+        loader.orderAsTree(dto, distributions, parentAreaMap, omitLevels,
+                fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
+        loader.handleAlternativeRootArea(dto, alternativeRootAreaMarkerType);
         loader.recursiveSortChildren(dto, distributionOrder); // TODO respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return dto;

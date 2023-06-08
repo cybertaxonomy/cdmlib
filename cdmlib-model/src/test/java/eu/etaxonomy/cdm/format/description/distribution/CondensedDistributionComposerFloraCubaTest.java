@@ -17,14 +17,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer.SymbolUsage;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.TermTestBase;
@@ -40,6 +40,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
 
     private static OrderedTermVocabulary<PresenceAbsenceTerm> statusVoc;
     private static OrderedTermVocabulary<NamedArea> cubaAreasVocabualary;
+    private static SetMap<NamedArea,NamedArea> parentAreaMap;
 
     private static NamedArea cuba;
     private static NamedArea westernCuba;
@@ -133,7 +134,8 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         filteredDistributions.add(Distribution.NewInstance(bahamas, PresenceAbsenceTerm.NATIVE()));
         filteredDistributions.add(Distribution.NewInstance(oldWorld, PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE()));
 
-        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null, config);
+        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
+                filteredDistributions, parentAreaMap, null, config);
         String condensedString = condensedDistribution.toString();
 
         Assert.assertEquals("Condensed string for Cuba differs",
@@ -167,7 +169,8 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         filteredDistributions.add(Distribution.NewInstance(oldWorld, PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE()));
 
         config.areasBold = false;
-        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null, config);
+        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
+                filteredDistributions, parentAreaMap, null, config);
 
         Assert.assertEquals("Condensed string for Cuba differs",
                 "nCu(-dCuW(PR* Art Hab* May Mat IJ) (c)CuE(nHo -cGu))" + config.outOfScopeAreasSeperator + "Bah ?VM",
@@ -179,7 +182,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         //this should better be done CondensedDistributionComposerEuroMedTest but we have the test data here, therefore we keep the test here
         config = CondensedDistributionConfiguration.NewDefaultInstance();
         config.statusSymbolField = SymbolUsage.Symbol1;
-        condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null, config);
+        condensedDistribution = composer.createCondensedDistribution(filteredDistributions, parentAreaMap, null, config);
         Assert.assertEquals("Condensed string for Cuba differs",
                 "n (c)CuE -dCuW(<b>Art Hab* IJ Mat May PR*</b>) [(c)CuE(-cGu nHo)]" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?VM",
                 condensedDistribution.toString());
@@ -188,6 +191,8 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
     }
 
     private static boolean makeAreas(){
+
+        TermTree<NamedArea> areaTree = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
 
         //vocabulary
         UUID cubaAreasVocabularyUuid = UUID.fromString("c81e3c7b-3c01-47d1-87cf-388de4b1908c");
@@ -203,71 +208,71 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         abbrev = "Cu";
         UUID uuid = UUID.fromString("d0144a6e-0e17-4a1d-bce5-d464a2aa7229");
         cuba = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        TermNode<NamedArea> cubaNode = areaTree.getRoot().addChild(cuba);
 
         //Western Cuba
         label = "Western Cuba";
         abbrev = "CuW";
         uuid = UUID.randomUUID();
         westernCuba = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-//        cuba.addIncludes(westernCuba);
 
         //Central Cuba
         label = "Central Cuba";
         abbrev = "CuC";
         uuid = UUID.randomUUID();
         centralCuba = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        cuba.addIncludes(centralCuba);
+        TermNode<NamedArea> centralCubaNode = cubaNode.addChild(centralCuba);
 
         //East Cuba
         label = "East Cuba";
         abbrev = "CuE";
         uuid = UUID.randomUUID();
         eastCuba = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        cuba.addIncludes(eastCuba);
+        TermNode<NamedArea> eastCubaNode = cubaNode.addChild(eastCuba);
 
-        cuba.addIncludes(westernCuba);
+        TermNode<NamedArea> westernCubaNode = cubaNode.addChild(westernCuba);
 
         //Pinar del Río PR
         label = "Pinar del Río";
         abbrev = "PR*";
         uuid = UUID.randomUUID();
         pinarDelRio = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(pinarDelRio);
+        westernCubaNode.addChild(pinarDelRio);
 
         //Artemisa
         label = "Artemisa";
         abbrev = "Art";
         uuid = UUID.randomUUID();
         artemisa = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(artemisa);
+        westernCubaNode.addChild(artemisa);
 
         //Ciudad de la Habana
         label = "Ciudad de la Habana";
         abbrev = "Hab*";
         uuid = UUID.randomUUID();
         habana = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(habana);
+        westernCubaNode.addChild(habana);
 
         //Ciudad de la Habana
         label = "Mayabeque";
         abbrev = "May";
         uuid = UUID.randomUUID();
         mayabeque = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(mayabeque);
+        westernCubaNode.addChild(mayabeque);
 
         //Matanzas Mat
         label = "Matanzas";
         abbrev = "Mat";
         uuid = UUID.randomUUID();
         matanzas = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(matanzas);
+        westernCubaNode.addChild(matanzas);
 
         //Isla de la Juventud IJ
         label = "Isla de la Juventud";
         abbrev = "IJ";
         uuid = UUID.randomUUID();
         isla_juventud = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        westernCuba.addIncludes(isla_juventud);
+        westernCubaNode.addChild(isla_juventud);
 
         //Provinces - Central
         //Villa Clara VC
@@ -275,42 +280,42 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         abbrev = "VC";
         uuid = UUID.randomUUID();
         NamedArea area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        centralCuba.addIncludes(area);
+        centralCubaNode.addChild(area);
 
         //Cienfuegos Ci VC
         label = "Cienfuegos";
         abbrev = "Ci";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        centralCuba.addIncludes(area);
+        centralCubaNode.addChild(area);
 
         //Sancti Spiritus SS
         label = "Sancti Spíritus";
         abbrev = "SS";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        centralCuba.addIncludes(area);
+        centralCubaNode.addChild(area);
 
         //Ciego de Ávila CA
         label = "Ciego de Ávila";
         abbrev = "CA";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        centralCuba.addIncludes(area);
+        centralCubaNode.addChild(area);
 
         //Camagüey Cam
         label = "Camagüey";
         abbrev = "Cam";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        centralCuba.addIncludes(area);
+        centralCubaNode.addChild(area);
 
         //Las Tunas LT
         label = "Las Tunas";
         abbrev = "LT";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        centralCuba.addIncludes(area);
+        centralCubaNode.addChild(area);
 
         //Provinces - East
         //Granma Gr
@@ -318,28 +323,28 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         abbrev = "Gr";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        eastCuba.addIncludes(area);
+        eastCubaNode.addChild(area);
 
         //Holguín Ho
         label = "Holguín";
         abbrev = "Ho";
         uuid = UUID.randomUUID();
         holguin = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        eastCuba.addIncludes(holguin);
+        eastCubaNode.addChild(holguin);
 
         //Santiago de Cuba SC
         label = "Santiago de Cuba";
         abbrev = "SC";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        eastCuba.addIncludes(area);
+        eastCubaNode.addChild(area);
 
         //Guantánamo Gu
         label = "Guantánamo";
         abbrev = "Gu";
         uuid = UUID.randomUUID();
         guantanamo = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-        eastCuba.addIncludes(guantanamo);
+        eastCubaNode.addChild(guantanamo);
 
         //other Greater Antilles (Cuba, Española, Jamaica, Puerto Rico)
         //Española Esp (=Haiti + Dominican Republic)
@@ -347,36 +352,42 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         abbrev = "Esp";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(area);
 
         //Jamaica Ja
         label = "Jamaica";
         abbrev = "Ja";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(area);
 
         //Puerto Rico PR
         label = "Puerto Rico";
         abbrev = "PRc";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(area);
 
         //Lesser Antilles Men
         label = "Lesser Antilles";
         abbrev = "Men";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(area);
 
         //Bahamas
         label = "Bahamas";
         abbrev = "Bah";
         uuid = UUID.randomUUID();
         bahamas = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(bahamas);
 
         //Cayman Islands
         label = "Cayman Islands"; //[Trinidad, Tobago, Curaçao, Margarita, ABC Isl. => S. America];
         abbrev = "Cay";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(area);
 
         //World
         //N America
@@ -384,25 +395,30 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         abbrev = "AmN";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(area);
 
         //Central America
         label = "Central America";
         abbrev = "AmC";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
-
+        areaTree.getRoot().addChild(area);
 
         //S America
         label = "S America";
         abbrev = "AmS";
         uuid = UUID.randomUUID();
         area = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(area);
 
         //Old World
         label = "Old World ";
         abbrev = "VM";
         uuid = UUID.randomUUID();
         oldWorld = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
+        areaTree.getRoot().addChild(oldWorld);
+
+        parentAreaMap = areaTree.getParentMap();
 
         return true;
     }

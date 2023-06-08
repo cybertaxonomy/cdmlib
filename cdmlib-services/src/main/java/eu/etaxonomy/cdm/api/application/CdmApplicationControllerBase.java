@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.IRegistrationService;
 import eu.etaxonomy.cdm.api.service.IRightsService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermCollectionService;
 import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
@@ -272,6 +273,11 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
     }
 
     @Override
+    public ITermCollectionService getTermCollectionService() {
+        return configuration.getTermCollectionService();
+    }
+
+    @Override
     public final IPreferenceService getPreferenceService(){
         return configuration.getPreferenceService();
     }
@@ -335,9 +341,4 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
     public ICdmPermissionEvaluator getPermissionEvaluator(){
         return configuration.getPermissionEvaluator();
     }
-
-
-
-
-
 }

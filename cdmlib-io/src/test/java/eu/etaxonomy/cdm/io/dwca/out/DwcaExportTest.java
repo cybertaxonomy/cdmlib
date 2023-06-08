@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -283,7 +284,8 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         System.out.println(descriptionStr);
 
         //   quantitative data
-        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"0.1-1.3 [n=2]\",\"Chromosome Numbers\"";
+        String sep = QuantitativeDataFormatter.lowerUpperSep;
+        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"0.1"+sep+"1.3 [n=2]\",\"Chromosome Numbers\"";
         Assert.assertTrue(descriptionStr.contains(expected));
         //   textdata
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"My Description\",\"Description\",,\"eng\",,,,,";

@@ -44,7 +44,7 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
 
     @Override
     public List<UuidAndTitleCache<Rights>> getUuidAndTitleCache(Integer limit, String pattern) {
-        List<UuidAndTitleCache<Rights>> list = new ArrayList<UuidAndTitleCache<Rights>>();
+        List<UuidAndTitleCache<Rights>> list = new ArrayList<>();
         Session session = getSession();
 
         String queryString = "SELECT " +"r.uuid, r.id, r.text, r.abbreviatedText, r.uri,  agent.titleCache, type.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.agent AS agent LEFT OUTER JOIN r.type as type";

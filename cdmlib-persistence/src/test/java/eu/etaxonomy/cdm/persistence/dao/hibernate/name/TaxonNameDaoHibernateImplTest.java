@@ -355,6 +355,24 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
                 "Aus aus, Sp. Pl.: 23", ausAus.getFullTitleCache());
     }
 
+    @Test
+    public void testDistinctGenusOrUninomial() {
+        List<String> list = taxonNameDao.distinctGenusOrUninomial(null, null, null);
+        assertEquals(6, list.size());
+        assertTrue(list.contains("Aus") && list.contains("Manduca") && list.contains("Agrius") && list.contains("Acherontia")
+                && list.contains("Atropos") && list.contains("Cryptocoryne"));
+
+        list = taxonNameDao.distinctGenusOrUninomial("A*", null, null);
+        assertEquals(4, list.size());
+        assertTrue(list.contains("Aus") && list.contains("Agrius") && list.contains("Acherontia")
+                && list.contains("Atropos"));
+
+        list = taxonNameDao.distinctGenusOrUninomial(null, Rank.GENUS(), Rank.SPECIESAGGREGATE());
+        assertEquals(4, list.size());
+        assertTrue(list.contains("Manduca") && list.contains("Agrius") && list.contains("Acherontia")
+                && list.contains("Atropos"));
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-}
+    }

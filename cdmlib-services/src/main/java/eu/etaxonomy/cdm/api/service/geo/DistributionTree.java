@@ -23,6 +23,8 @@ import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -54,9 +56,8 @@ public class DistributionTree
         this.termDao = termDao;
     }
 
-
-
     /**
+     * @param parentAreaMap
      * @param fallbackAreaMarkerTypes
      *      Areas are fallback areas if they have a {@link Marker} with one of the specified
      *      {@link MarkerType marker types}.
@@ -69,7 +70,7 @@ public class DistributionTree
      *      if <code>true</code> a fallback area never has children even if a record exists for the area
      */
     public void orderAsTree(Collection<Distribution> distributions,
-            Set<NamedAreaLevel> omitLevels,
+            SetMap<NamedArea, NamedArea> parentAreaMap, Set<NamedAreaLevel> omitLevels,
             Set<MarkerType> fallbackAreaMarkerTypes,
             boolean neverUseFallbackAreasAsParents){
 
@@ -79,7 +80,7 @@ public class DistributionTree
             areas.add(distribution.getArea());
         }
         // preload all areas which are a parent of another one, this is a performance improvement
-        loadAllParentAreas(areas);
+        loadAllParentAreasIntoSession(areas);
 
         Set<Integer> omitLevelIds = new HashSet<>(omitLevels.size());
         for(NamedAreaLevel level : omitLevels) {
@@ -88,18 +89,18 @@ public class DistributionTree
 
         for (Distribution distribution : distributions) {
             // get path through area hierarchy
-            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevelIds,
+            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), parentAreaMap, omitLevelIds,
                     areas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
             addDistributionToSubTree(distribution, namedAreaPath, this.getRootElement());
         }
     }
 
     /**
-     * This method will cause all parent areas to be loaded into the session cache to that
-     * all initialization of the NamedArea term instances in necessary. This improves the
+     * This method will cause all parent areas to be loaded into the session cache so that
+     * all initialization of the NamedArea term instances is ready. This improves the
      * performance of the tree building
      */
-    private void loadAllParentAreas(Set<NamedArea> areas) {
+    private void loadAllParentAreasIntoSession(Set<NamedArea> areas) {
 
         List<NamedArea> parentAreas = null;
         Set<NamedArea> childAreas = new HashSet<>(areas.size());
@@ -113,6 +114,43 @@ public class DistributionTree
             childAreas.clear();
             childAreas.addAll(parentAreas);
         }
+    }
+
+    public void handleAlternativeRootArea(Set<MarkerType> alternativeRootAreaMarkerTypes) {
+        //don't anything if no alternative area markers exist
+        if (CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypes)) {
+            return;
+        }
+        TreeNode<Set<Distribution>, NamedArea> emptyRoot = this.getRootElement();
+        for(TreeNode<Set<Distribution>, NamedArea> realRoot : emptyRoot.getChildren()) {
+            if (CdmUtils.isNullSafeEmpty(realRoot.getData()) && realRoot.getNumberOfChildren() == 1) {
+                //real root has no data and 1 child => potential candidate to be replaced by alternative root
+                TreeNode<Set<Distribution>, NamedArea> child = realRoot.getChildren().get(0);
+                if (DistributionServiceUtilities.isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerTypes)
+                        && !CdmUtils.isNullSafeEmpty(child.getData())) {
+                    //child is alternative root and has data => replace root by alternative root
+                    emptyRoot.getChildren().remove(realRoot);
+                    emptyRoot.addChild(child);
+                }
+            } else {
+                //if root has data or >1 children test if children are alternative roots with no data => remove
+                Set<TreeNode<Set<Distribution>, NamedArea>> children = new HashSet<>(realRoot.getChildren());
+                for(TreeNode<Set<Distribution>, NamedArea> child : children) {
+                    if (DistributionServiceUtilities.isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerTypes)
+                            && CdmUtils.isNullSafeEmpty(child.getData())) {
+                        replaceByChildren(realRoot, child);
+                    }
+                }
+            }
+        }
+    }
+
+    private void replaceByChildren(TreeNode<Set<Distribution>, NamedArea> parent,
+            TreeNode<Set<Distribution>, NamedArea> toBeReplaced) {
+        for (TreeNode<Set<Distribution>, NamedArea> child : toBeReplaced.getChildren()) {
+            parent.addChild(child);
+        }
+        parent.getChildren().remove(toBeReplaced);
     }
 
     public void recursiveSortChildren(DistributionOrder distributionOrder){
@@ -192,7 +230,7 @@ public class DistributionTree
      *
      * Areas for which no distribution data is available and which are marked as hidden are omitted, see #5112
      *
-     * @param area
+     * @param area the area to get the path for
      * @param distributionAreas the areas for which distribution data exists (after filtering by
      *  {@link eu.etaxonomy.cdm.api.service.geo.DescriptionUtility#filterDistributions()} )
      * @param fallbackAreaMarkerTypes
@@ -203,8 +241,9 @@ public class DistributionTree
      * @param omitLevels
      * @return the path through the area hierarchy
      */
-    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds,
-            Set<NamedArea> distributionAreas, Set<MarkerType> fallbackAreaMarkerTypes,
+    private List<NamedArea> getAreaLevelPath(NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap,
+            Set<Integer> omitLevelIds, Set<NamedArea> distributionAreas,
+            Set<MarkerType> fallbackAreaMarkerTypes,
             boolean neverUseFallbackAreasAsParents){
 
         List<NamedArea> result = new ArrayList<>();
@@ -212,8 +251,8 @@ public class DistributionTree
             result.add(area);
         }
 
-        while (area.getPartOf() != null) {
-            area = area.getPartOf();
+        while (parentAreaMap.getFirstValue(area) != null) {  //handle >1 parents
+            area = parentAreaMap.getFirstValue(area);
             if (!matchesLevels(area, omitLevelIds)){
                 if(!isFallback(fallbackAreaMarkerTypes, area) ||
                         (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
@@ -227,8 +266,8 @@ public class DistributionTree
         return result;
     }
 
-    private boolean isFallback(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
-        return DistributionServiceUtilities.isMarkedHidden(area, hiddenAreaMarkerTypes);
+    private boolean isFallback(Set<MarkerType> fallbackAreaMarkerTypes, NamedArea area) {
+        return DistributionServiceUtilities.isMarkedAs(area, fallbackAreaMarkerTypes);
     }
 
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {

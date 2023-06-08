@@ -20,6 +20,8 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.IHasModifyingText;
+import eu.etaxonomy.cdm.model.description.IModifiable;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -78,27 +80,33 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
         }
         String result = doFormat(descEl, preferredLanguages);
 
-        result = handleModifiers(descEl, result, preferredLanguages);
+        result = handleModifiers(result, descEl, preferredLanguages, " ");
         return result;
     }
 
-    private String handleModifiers(T descEl, String result, List<Language> preferredLanguages) {
-        for (DefinedTerm modifier : descEl.getModifiers()) {
-            //TODO order modifiers  (see descEl.getModifiers(voc)
+    protected String handleModifiers(String result, IModifiable modifiable, List<Language> preferredLanguages,
+            String modifierSep) {
+
+        for (DefinedTerm modifier : modifiable.getModifiers()) {
+            //TODO order modifiers  (see value.getModifiers(voc)
             Representation prefLabel = modifier.getPreferredRepresentation(preferredLanguages);
             String label = prefLabel!= null ? prefLabel.getLabel() : "";
-            result = CdmUtils.concat(" ", label, result);
+            //TODO modifier separator between 2 modifiers might be different
+            result = CdmUtils.concat(modifierSep, label, result);
         }
 
-        if (descEl.getModifyingText() != null && !descEl.getModifyingText().isEmpty()) {
-            Map<Language, LanguageString> modifyingText = descEl.getModifyingText();
-            String modText = getPreferredModifyingText(modifyingText, preferredLanguages);
-            result = CdmUtils.concat(" ", modText, result);
+        if ( modifiable instanceof IHasModifyingText){
+            IHasModifyingText hasModifyingText = (IHasModifyingText)modifiable;
+            if (hasModifyingText.getModifyingText() != null && !hasModifyingText.getModifyingText().isEmpty()) {
+                Map<Language, LanguageString> modifyingText = hasModifyingText.getModifyingText();
+                String modText = getPreferredModifyingText(modifyingText, preferredLanguages);
+                result = CdmUtils.concat(" ", modText, result);
+            }
         }
         return result;
     }
 
-    private String getPreferredModifyingText(Map<Language, LanguageString> modifyingText,
+    String getPreferredModifyingText(Map<Language, LanguageString> modifyingText,
             List<Language> preferredLanguages) {
         for (Language lang : preferredLanguages) {
             if (modifyingText.get(lang) != null) {
@@ -136,5 +144,4 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
             return representation.toString();
         }
     }
-
 }

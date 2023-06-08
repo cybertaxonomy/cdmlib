@@ -10,8 +10,10 @@ package eu.etaxonomy.cdm.api.dto.portal.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -33,9 +35,12 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private boolean withMedia = true;
     private boolean withTaxonNodes = true;
 
+    private boolean includeUnpublished = false;
+
+
     //synonymy
     //TODO taxonrelations
-    //should withSynonyms includeProparte and missapplications
+    //should withSynonyms includeProparte and misapplications
     // => yes as long as there are no specific parameters in dataportals to handle them differently
     private boolean withTaxonRelationships = true;
     private UUID taxonRelationshipTypeTree = null;
@@ -44,10 +49,12 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private UUID featureTree = null;
     private DistributionInfoConfiguration distributionInfoConfiguration = new DistributionInfoConfiguration();
 
+    private Map<UUID,DistributionInfoConfiguration> perFeatureDistributionInfoConfiguration = new HashMap<>();
 
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
     public boolean formatSec = false;  //!!
+    private Integer etAlPosition;
 
 
 // ******************************* GETTER / SETTER ***********************************/
@@ -57,6 +64,17 @@ public class TaxonPageDtoConfiguration implements Serializable {
     }
     public void setDistributionInfoConfiguration(DistributionInfoConfiguration distributionInfoConfiguration) {
         this.distributionInfoConfiguration = distributionInfoConfiguration;
+    }
+
+    public DistributionInfoConfiguration putDistributionInfoConfiguration(UUID featureUuid, DistributionInfoConfiguration config) {
+        return perFeatureDistributionInfoConfiguration.put(featureUuid, config);
+    }
+    public DistributionInfoConfiguration getDistributionInfoConfiguration(UUID featureUuid) {
+        DistributionInfoConfiguration result = perFeatureDistributionInfoConfiguration.get(featureUuid);
+        if (result == null) {
+            result = distributionInfoConfiguration;
+        }
+        return result;
     }
 
     public UUID getTaxonUuid() {
@@ -132,4 +150,19 @@ public class TaxonPageDtoConfiguration implements Serializable {
     public void setLocales(List<Locale> locales) {
         this.locales = locales;
     }
+
+    public Integer getEtAlPosition() {
+        return etAlPosition;
+    }
+    public void setEtAlPosition(Integer etAlPosition) {
+        this.etAlPosition = etAlPosition;
+    }
+
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
+    }
+
 }

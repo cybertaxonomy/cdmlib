@@ -33,7 +33,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -58,6 +57,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -66,7 +66,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 08.10.2008
  */
-@Ignore  //FIXME ignore as long as map service is not available
 public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
@@ -111,9 +110,12 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
+        TermTree<NamedArea> areaTree = null;
+        Set<MarkerType> fallbackAreaMarkerTypes = null;
 
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, null, false, statusOrderPreference, subAreaPreference, true, false);
+                distributions, areaTree, fallbackAreaMarkerTypes, false,
+                statusOrderPreference, subAreaPreference, true, false);
 
         String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                 mapping, null, null, languages );
@@ -261,6 +263,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         distributionService.mapShapeFileToNamedAreas(new InputStreamReader(is), idSearchFields, wmsLayerName, uuidCyprusDivisionsVocabulary, null);
 
         divisions.clear();
+        @SuppressWarnings("unchecked")
         Set<DefinedTermBase> terms = vocabService.load(uuidCyprusDivisionsVocabulary).getTerms();
         for(DefinedTermBase<?> dtb : terms){
             divisions.put(dtb.getIdInVocabulary(), (NamedArea) dtb);
@@ -348,7 +351,6 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         subTestWithEditMapService(result);
     }
 
-    @SuppressWarnings("deprecation")
 //    @Test
     @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
 //    @DataSets({
@@ -383,7 +385,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 
         String distributions = distributionService.getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference, statusOrderPreference, hideMarkedAreas, presenceAbsenceTermColors, langs);
-        System.out.println(distributions);
+//        System.out.println(distributions);
         Assert.assertTrue("Distribution string should contain the non-persited distribution Germany", distributions.contains("DEU"));
         Assert.assertFalse("Distribution string should contain France as it has a non-distribution feature", distributions.contains("FRA"));
 //        CHE,POL

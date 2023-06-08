@@ -67,7 +67,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Repository
 @Qualifier("taxonNameDaoHibernateImpl")
-public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> implements ITaxonNameDao {
+public class TaxonNameDaoHibernateImpl
+        extends IdentifiableDaoBase<TaxonName>
+        implements ITaxonNameDao {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -1091,5 +1093,38 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
+    }
+
+    @Override
+    public List<String> distinctGenusOrUninomial(String pattern, Rank maxRank, Rank minRank){
+        String hql = " SELECT DISTINCT n.genusOrUninomial "
+                + " FROM TaxonName n "
+                + " WHERE (1=1) ";
+        if (pattern != null) {
+            hql += " AND genusOrUninomial like :pattern ";
+        }
+        if (maxRank != null) {
+            hql += " AND n.rank.orderIndex >= :maxRankIndex ";
+        }
+        if (minRank != null) {
+            hql += " AND n.rank.orderIndex <= :minRankIndex ";
+        }
+
+        Query<String> query = getSession().createQuery(hql, String.class);
+        if (pattern != null) {
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            query.setParameter("pattern", pattern);
+        }
+        if (maxRank != null) {
+            int maxRankIndex = maxRank.getOrderIndex();
+            query.setParameter("maxRankIndex", maxRankIndex);
+        }
+        if (minRank != null) {
+            int minRankIndex = minRank.getOrderIndex();
+            query.setParameter("minRankIndex", minRankIndex);
+        }
+
+        return query.getResultList();
     }
 }

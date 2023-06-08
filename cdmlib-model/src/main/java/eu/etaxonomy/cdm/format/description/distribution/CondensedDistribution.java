@@ -64,12 +64,20 @@ public class CondensedDistribution {
         }
     }
 
-    public void addStatusAndAreaTaggedText(String status, String area, boolean bold) {
-        addTaggedText(TagEnum.symbol, status, false);
-        if (CdmUtils.isNotBlank(status) && CdmUtils.isNotBlank(area)){
-            addTaggedText(TagEnum.separator,"",false);
+    public void addStatusAndAreaTaggedText(String status, String area, boolean bold, CondensedDistributionConfiguration config) {
+        if (config.statusTrailing) {
+            addTaggedText(TagEnum.label, area, bold);
+            if (CdmUtils.isNotBlank(status) && CdmUtils.isNotBlank(area)){
+                addTaggedText(TagEnum.separator, config.statusSeparator, false);
+            }
+            addTaggedText(TagEnum.symbol, status, false);
+        }else {
+            addTaggedText(TagEnum.symbol, status, false);
+            if (CdmUtils.isNotBlank(status) && CdmUtils.isNotBlank(area)){
+                addTaggedText(TagEnum.separator, config.statusSeparator, false);
+            }
+            addTaggedText(TagEnum.label, area, bold);
         }
-        addTaggedText(TagEnum.label, area, bold);
     }
 
     public void addSeparatorTaggedText(String sep){

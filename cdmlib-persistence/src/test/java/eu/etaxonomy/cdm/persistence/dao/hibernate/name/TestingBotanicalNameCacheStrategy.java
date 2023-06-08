@@ -87,4 +87,15 @@ public class TestingBotanicalNameCacheStrategy implements INonViralNameCacheStra
         return null;
     }
 
+    @Override
+    public Integer getEtAlPosition() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setEtAlPosition(Integer etAlPosition) {
+        // TODO Auto-generated method stub
+    }
+
 }

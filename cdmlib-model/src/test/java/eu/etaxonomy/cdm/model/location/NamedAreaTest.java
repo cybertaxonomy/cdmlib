@@ -63,6 +63,7 @@ public class NamedAreaTest extends EntityTestBase {
 
 	@Test
 	public void getHiearchieListTest(){
+
 		//Create example data
 		List<NamedArea> list = new ArrayList<>();
 		NamedArea germanyL4 = getAreaByTdwgAbbreviation("GER-OO");

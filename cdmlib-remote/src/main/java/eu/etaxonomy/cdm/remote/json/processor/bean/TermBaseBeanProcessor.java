@@ -6,14 +6,11 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
@@ -30,8 +27,6 @@ import net.sf.json.JsonConfig;
  * @author a.kohlbecker
  */
 public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
-
-    private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[] {
             "representations",

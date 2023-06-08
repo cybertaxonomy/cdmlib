@@ -28,7 +28,12 @@ import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
@@ -43,13 +48,15 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.AnnotationDto;
 import eu.etaxonomy.cdm.persistence.dto.CharacterDto;
 import eu.etaxonomy.cdm.persistence.dto.CharacterNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.FeatureStateDto;
+import eu.etaxonomy.cdm.persistence.dto.MarkerDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -246,12 +253,75 @@ public class TermNodeServiceImpl
                     updateFeatureStates(node, dto, true);
                     updateFeatureStates(node, dto, false);
 
+                    updateAnnotationAndMarkers(node, dto);
+
                 }
+
                 MergeResult<TermNode> mergeResult = dao.merge(node, true);
                 result.addUpdatedObject(mergeResult.getMergedEntity());
             }
         }
         return result;
+    }
+
+    /**
+     * @param node
+     * @param dto
+     */
+    private void updateAnnotationAndMarkers(TermNode<?> node, TermNodeDto dto) {
+        // -- Annotations --
+        Set<AnnotationDto> annotationDtos = dto.getAnnotations();
+        Set<Annotation> annotationsToUpdate = node.getAnnotations();
+        Set<Annotation> annotationsToAdd = new HashSet<>();
+        if (annotationDtos != null && !annotationDtos.isEmpty()) {
+            for (AnnotationDto anDto: annotationDtos) {
+                boolean exist = false;
+                for (Annotation annotation: annotationsToUpdate) {
+                    if (anDto.getUuid().equals(annotation.getUuid())) {
+                        exist = true;
+                        annotation.setAnnotationType(AnnotationType.getTermByUUID(anDto.getTypeUuid(),AnnotationType.class));
+                        annotation.setText(anDto.getText());
+                        annotationsToAdd.add(annotation);
+                    }
+                }
+                if (!exist) {
+                    Annotation annotation = Annotation.NewDefaultLanguageInstance(anDto.getText());
+                    annotation.setAnnotationType(AnnotationType.getTermByUUID(anDto.getTypeUuid(), AnnotationType.class));
+                    annotationsToAdd.add(annotation);
+                }
+            }
+        }
+        try {
+            node.setAnnotations(annotationsToAdd);
+        } catch (SetterAdapterException e) {
+            logger.debug("Annotations could not be added");
+        }
+        // -- Marker --
+        Set<MarkerDto> markerDtos = dto.getMarkers();
+        Set<Marker> markersToUpdate = node.getMarkers();
+        Set<Marker> markersToAdd = new HashSet<>();
+        if (markerDtos != null && !markerDtos.isEmpty()) {
+            for (MarkerDto markerDto: markerDtos) {
+                boolean exist = false;
+                for (Marker marker: markersToUpdate) {
+                    if (markerDto.getUuid().equals(marker.getUuid())) {
+                        exist = true;
+                        marker.setMarkerType(MarkerType.getTermByUUID(markerDto.getTypeUuid(),MarkerType.class));
+                        marker.setFlag(markerDto.getValue());
+                        markersToAdd.add(marker);
+                    }
+                }
+                if (!exist) {
+                    Marker marker = Marker.NewInstance(MarkerType.getTermByUUID(markerDto.getTypeUuid(), MarkerType.class),markerDto.getValue());
+                    markersToAdd.add(marker);
+                }
+            }
+        }
+
+        node.getMarkers().clear();
+        for (Marker marker: markersToAdd) {
+            node.addMarker(marker);
+        }
     }
 
     private void updateFeatureStates(TermNode<?> node, TermNodeDto dto, boolean inApplicable) {
@@ -458,7 +528,7 @@ public class TermNodeServiceImpl
 //                  recommended mod. vocabularies
                     character.getRecommendedModifierEnumeration().clear();
                     uuids = new ArrayList<>();
-                    for (TermVocabularyDto termDto: characterDto.getRecommendedModifierEnumeration()){
+                    for (TermCollectionDto termDto: characterDto.getRecommendedModifierEnumeration()){
                         uuids.add(termDto.getUuid());
                     }
                     List<TermVocabulary> termVocs;
@@ -472,7 +542,7 @@ public class TermNodeServiceImpl
 //                  supported state vocabularies
                     character.getSupportedCategoricalEnumerations().clear();
                     uuids = new ArrayList<>();
-                    for (TermVocabularyDto termDto: characterDto.getSupportedCategoricalEnumerations()){
+                    for (TermCollectionDto termDto: characterDto.getSupportedCategoricalEnumerations()){
                         uuids.add(termDto.getUuid());
                     }
                     if (!uuids.isEmpty()){

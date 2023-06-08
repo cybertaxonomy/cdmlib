@@ -69,6 +69,7 @@
         <prop key="/remoting/term.service">httpTermService</prop>
         <prop key="/remoting/termnode.service">httpTermNodeService</prop>
         <prop key="/remoting/termtree.service">httpTermTreeService</prop>
+        <prop key="/remoting/termcollection.service">httpTermCollectionService</prop>
         <prop key="/remoting/vocabulary.service">httpVocabularyService</prop>
         
         <prop key="/remoting/io.service">httpIOService</prop>

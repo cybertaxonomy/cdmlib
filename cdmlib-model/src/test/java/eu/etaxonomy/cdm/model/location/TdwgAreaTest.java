@@ -88,8 +88,8 @@ public class TdwgAreaTest extends EntityTestBase {
 		assert britain != null : "NamedArea must exist";
 		assert northernEurope != null : "NamedArea must exist";
 
-		Assert.assertTrue("Northern Europe should include Britain",northernEurope.getIncludes().contains(britain));
-		assertEquals("Britain should be part of Northern Europe",britain.getPartOf(),northernEurope);
+		Assert.assertTrue("Northern Europe should include Britain", northernEurope.getIncludes().contains(britain));
+		assertEquals("Britain should be part of Northern Europe", britain.getPartOf(),northernEurope);
 	}
 
 	@Test
@@ -241,15 +241,6 @@ public class TdwgAreaTest extends EntityTestBase {
 			result = result + " [" + namedArea.getLabel().toString() + ", " + namedArea.getLevel().getLabel().toString() + "]";
 		}
 		return result;
-	}
-
-	//PRE: in parameter tdwg can not be smaller than the current tdwglevel of the second parameter
-	public static NamedArea getAreaLabelForTDWGLevel(Integer tdwgLevel, NamedArea area){
-		NamedArea aux = area;
-		while (aux.getLevel().getLabel().toString().compareTo("TDWG Level " + tdwgLevel.toString()) != 0) {
-			aux = aux.getPartOf();
-		}
-		return aux;
 	}
 
 	private NamedArea getAreaByTdwgAbbreviation(String tdwgAbbrev){

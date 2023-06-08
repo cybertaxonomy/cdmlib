@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -22,8 +23,10 @@ import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermGraphBase;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -91,6 +94,33 @@ public class TermCollectionDaoImpl
         List<TERM> result = new ArrayList<>();
         result.addAll(deduplicateResult((List)query.list()));
         return result;
+    }
+
+    //FIXME unify with e.g. TermTreeDao.sameMethod as it is exactly the same code except for type S
+    @Override
+    public <S extends TermCollection> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
+            String pattern) {
+        Session session = getSession();
+        Query<Object[]> query = session.createQuery(
+                " SELECT uuid, id, titleCache "
+                    + " FROM " + clazz.getSimpleName()
+                    + (pattern!=null?" WHERE titleCache LIKE :pattern":" WHERE 1 = 1 ")
+                    + (termType!=null?" AND termType = :termType ":""),
+                    Object[].class
+                );
+        if(pattern!=null){
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+        }
+        if(termType!=null){
+            query.setParameter("termType", termType);
+        }
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+        return getUuidAndTitleCache(query);
     }
 
 //   not yet clear if we want TermCollectionDaoImpl also as base class for other dao-s

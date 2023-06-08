@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 
 /**
- * The type of authority for an externally loaded entity.
+ * The import method to use for importing the data.
  *
  * @author a.mueller
  * @since 21.09.2017
@@ -34,8 +34,8 @@ public enum ExternallyManagedImport implements IEnumTerm<ExternallyManagedImport
 	/**
 	 * The entity is managed externally.
 	 */
-	@XmlEnumValue("Extern")
-	CDM_TERMS(UUID.fromString("09a5a700-a057-4de8-b932-86ca241c4ca4"), "CDM_Terms", "CDM_Terms", null),
+	@XmlEnumValue("cdmterms")
+	CDM_TERMS(UUID.fromString("09a5a700-a057-4de8-b932-86ca241c4ca4"), "CDM Terms", "CDM_TERMS", null),
 
 	;
 

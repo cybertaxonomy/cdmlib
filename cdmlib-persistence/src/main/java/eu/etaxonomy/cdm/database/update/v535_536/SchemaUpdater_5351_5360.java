@@ -31,7 +31,7 @@ public class SchemaUpdater_5351_5360 extends SchemaUpdaterBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_35_00;
+	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_35_01;
 	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_36_00;
 
 // ********************** FACTORY METHOD *************************************

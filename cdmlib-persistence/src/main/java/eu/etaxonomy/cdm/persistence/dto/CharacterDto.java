@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -49,7 +50,10 @@ public class CharacterDto extends FeatureDto {
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,
             boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence,
             String titleCache, TermNodeDto structure, TermDto structureModifier, TermNodeDto property,
-            TermDto propertyModifier, TermNodeDto ratioTo, boolean isSupportCategoricalData, boolean isSupportsQuantitativeData, Set<TermVocabularyDto> supportedCategoricalEnumerations, Set<TermVocabularyDto> recommendedModifierEnumeration,  Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures) {
+            TermDto propertyModifier, TermNodeDto ratioTo, boolean isSupportCategoricalData, boolean isSupportsQuantitativeData,
+            Set<TermCollectionDto> supportedCategoricalEnumerations, Set<TermCollectionDto> recommendedModifierEnumeration,
+            Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures) {
+
         super(uuid, representations, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary,
                 isAvailableForTaxon, isAvailableForTaxonName, isAvailableForOccurrence, titleCache, isSupportCategoricalData, isSupportsQuantitativeData, supportedCategoricalEnumerations, recommendedModifierEnumeration, recommendedMeasurementUnits, recommendedStatisticalMeasures);
         this.structure = structure;
@@ -63,9 +67,9 @@ public class CharacterDto extends FeatureDto {
     public static CharacterDto fromCharacter(Character character) {
        TermVocabulary voc = character.getVocabulary();
 
-       Set<TermVocabularyDto> recommendedModifierDtos = new HashSet<>();
-       for (TermVocabulary<DefinedTerm> modVoc: character.getRecommendedModifierEnumeration()){
-           recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary(modVoc));
+       Set<TermCollectionDto> recommendedModifierDtos = new HashSet<>();
+       for (TermCollection<DefinedTerm,?> modVoc: character.getRecommendedModifierEnumeration()){
+           recommendedModifierDtos.add(TermCollectionDto.fromCdmBase(modVoc));
        }
 
        Set<TermDto> recommendedStatisticalMeasuresDtos = new HashSet<>();
@@ -73,20 +77,35 @@ public class CharacterDto extends FeatureDto {
            recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm(term));
        }
 
-       Set<TermVocabularyDto> supportedCategoricalDtos = new HashSet<>();
-       for (TermVocabulary<? extends DefinedTermBase> catVoc: character.getSupportedCategoricalEnumerations()){
-           supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary(catVoc));
+       Set<TermCollectionDto> supportedCategoricalDtos = new HashSet<>();
+       for (TermCollection<? extends DefinedTermBase,?> catVoc: character.getSupportedCategoricalEnumerations()){
+           supportedCategoricalDtos.add(TermCollectionDto.fromCdmBase(catVoc));
        }
 
        Set<TermDto> recommendedMeasurementUnitsDtos = new HashSet<>();
        for (MeasurementUnit term: character.getRecommendedMeasurementUnits()){
            recommendedMeasurementUnitsDtos.add(TermDto.fromTerm(term));
        }
-       CharacterDto dto = new CharacterDto(character.getUuid(), character.getRepresentations(), character.getPartOf() != null? character.getPartOf().getUuid(): null, character.getKindOf() != null? character.getKindOf().getUuid(): null,
-               voc != null? voc.getUuid(): null, null, character.getIdInVocabulary(), character.isAvailableForTaxon(), character.isAvailableForTaxonName(), character.isAvailableForOccurrence(), character.getTitleCache(),
-                       character.getStructure() !=null? TermNodeDto.fromNode(character.getStructure(), null): null, character.getStructureModifier() != null? TermDto.fromTerm(character.getStructureModifier()): null,
-                                       character.getProperty() != null? TermNodeDto.fromNode(character.getProperty(), null): null, character.getPropertyModifier() != null? TermDto.fromTerm(character.getPropertyModifier()): null, character.getRatioToStructure() != null? TermNodeDto.fromNode(character.getRatioToStructure(), null): null,
-                                               character.isSupportsCategoricalData(), character.isSupportsQuantitativeData(),supportedCategoricalDtos, recommendedModifierDtos, recommendedMeasurementUnitsDtos, recommendedStatisticalMeasuresDtos);
+
+       UUID uuid = character.getUuid();
+       Set<Representation> representations = character.getRepresentations();
+       UUID partOfUuid = character.getPartOf() != null? character.getPartOf().getUuid(): null;
+       UUID kindOfUuid = character.getKindOf() != null? character.getKindOf().getUuid(): null;
+       UUID vocUuid = voc != null? voc.getUuid(): null;
+       String idInVoc = character.getIdInVocabulary();
+       boolean forTaxon = character.isAvailableForTaxon();
+       boolean forTaxonName = character.isAvailableForTaxonName();
+       boolean forOccurrence = character.isAvailableForOccurrence();
+       TermNodeDto structure = character.getStructure() !=null? TermNodeDto.fromNode(character.getStructure(), null): null;
+       TermDto modifier = character.getStructureModifier() != null? TermDto.fromTerm(character.getStructureModifier()): null;
+       TermNodeDto property = character.getProperty() != null? TermNodeDto.fromNode(character.getProperty(), null): null;
+       TermDto propModifier =character.getPropertyModifier() != null? TermDto.fromTerm(character.getPropertyModifier()): null;
+       TermNodeDto ratioStructure = character.getRatioToStructure() != null? TermNodeDto.fromNode(character.getRatioToStructure(), null): null;
+       CharacterDto dto = new CharacterDto(uuid, representations, partOfUuid, kindOfUuid,
+               vocUuid, null, idInVoc, forTaxon, forTaxonName, forOccurrence, character.getTitleCache(),
+               structure, modifier, property, propModifier, ratioStructure,
+               character.isSupportsCategoricalData(), character.isSupportsQuantitativeData(),
+               supportedCategoricalDtos, recommendedModifierDtos, recommendedMeasurementUnitsDtos, recommendedStatisticalMeasuresDtos);
 
        return dto;
     }
@@ -245,7 +264,7 @@ public class CharacterDto extends FeatureDto {
                 }
 
                 Object o = elements[12];
-                Set<TermVocabularyDto> recommendedModifierDtos = new HashSet<>();
+                Set<TermCollectionDto> recommendedModifierDtos = new HashSet<>();
                 if (o instanceof TermVocabulary){
                     recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
                 }else if (o instanceof Set){
@@ -272,7 +291,7 @@ public class CharacterDto extends FeatureDto {
                     }
                 }
                 o =  elements[14];
-                Set<TermVocabularyDto> supportedCategoricalDtos = new HashSet<>();
+                Set<TermCollectionDto> supportedCategoricalDtos = new HashSet<>();
                 if (o instanceof TermVocabulary){
                     supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
                 }else if (o instanceof Set){

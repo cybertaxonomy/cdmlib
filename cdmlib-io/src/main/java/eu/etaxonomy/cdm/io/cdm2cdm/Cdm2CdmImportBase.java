@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
@@ -82,6 +83,9 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaMetaData;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -277,6 +281,12 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedUser((User)cdmBase, state);
         }else if(cdmBase instanceof Extension){
             return handlePersistedExtension((Extension)cdmBase, state);
+        }else if(cdmBase instanceof Media){
+            return handlePersistedMedia((Media)cdmBase, state);
+        }else if(cdmBase instanceof MediaRepresentation){
+            return handlePersistedMediaRepresentation((MediaRepresentation)cdmBase, state);
+        }else if(cdmBase instanceof MediaRepresentationPart){
+            return handlePersistedMediaRepresentationPart((MediaRepresentationPart)cdmBase, state);
         }else if(cdmBase instanceof Marker){
             return handlePersistedMarker((Marker)cdmBase, state);
         }else if(cdmBase instanceof Annotation){
@@ -311,6 +321,8 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedDefinedTerm((DefinedTerm)cdmBase, state);
         }else if(cdmBase instanceof Feature){
             return handlePersistedFeature((Feature)cdmBase, state);
+        }else if(cdmBase instanceof State){
+            return handlePersistedState((State)cdmBase, state);
         }else if(cdmBase instanceof DefinedTermBase){
             return handlePersistedTerm((DefinedTermBase<?>)cdmBase, state);
         }else if(cdmBase instanceof ExternalLink){
@@ -543,6 +555,36 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
+    protected Media handlePersistedMedia(Media media, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        Media result = handlePersisted((IdentifiableEntity<?>)media, state);
+
+        result.setArtist(detach(result.getArtist(), state));
+        handleMap(result, Media.class, "description", Language.class, LanguageString.class, state);
+        handleMap(result, Media.class, "title", Language.class, LanguageString.class, state);
+        result.setLink(detach(result.getLink(), state));
+        handleCollection(result, Media.class, "representations", MediaRepresentation.class, state);
+        //complete  (mediaCreated is cloned)
+        return result;
+    }
+
+    protected MediaRepresentation handlePersistedMediaRepresentation(MediaRepresentation mediaRepresentation, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        MediaRepresentation result = handlePersisted((VersionableEntity)mediaRepresentation, state);
+
+        handleCollection(result, MediaRepresentation.class, "mediaRepresentationParts", MediaRepresentationPart.class, state);
+        setInvisible(result, "media", detach(result.getMedia(), state));
+        //complete
+        return result;
+    }
+
+    protected MediaRepresentationPart handlePersistedMediaRepresentationPart(MediaRepresentationPart part, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        MediaRepresentationPart result = handlePersisted((VersionableEntity)part, state);
+        //rep, mediaMetaData
+        handleCollection(result, MediaRepresentationPart.class, "mediaMetaData", MediaMetaData.class, state);
+        setInvisible(result, "mediaRepresentation", detach(result.getMediaRepresentation(), state));
+        //complete
+        return result;
+    }
+
     protected Team handlePersistedTeam(Team team, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Team result = handlePersisted((TeamOrPersonBase)team, state);
         //complete
@@ -707,6 +749,12 @@ public abstract class Cdm2CdmImportBase
         handleCollection(result, Feature.class, "recommendedModifierEnumeration", TermVocabulary.class, state);
         handleCollection(result, Feature.class, "recommendedStatisticalMeasures", StatisticalMeasure.class, state);
         handleCollection(result, Feature.class, "supportedCategoricalEnumerations", TermVocabulary.class, state);
+        return result;
+    }
+
+    protected State handlePersistedState(State term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        State result = handlePersisted((DefinedTermBase<?>)term, state);
+        //complete
         return result;
     }
 
@@ -901,9 +949,8 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    /**
-     * @param sources
-     */
+    //TODO for some reason the sources are still persisted, though not related to source holder
+    //probably this is related to 1:1 relationship
     private void filterImportSources(Set<? extends OriginalSourceBase> sources) {
         Set<OriginalSourceBase> toDelete = new HashSet<>();
         for (OriginalSourceBase osb: sources){

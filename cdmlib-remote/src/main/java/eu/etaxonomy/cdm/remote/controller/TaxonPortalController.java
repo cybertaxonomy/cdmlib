@@ -11,12 +11,15 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +37,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -42,12 +48,18 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.portal.IPortalDtoService;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -310,12 +322,49 @@ public class TaxonPortalController extends TaxonController{
     public TaxonPageDto doGetTaxonPage(@PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "featureTree", required = false) UUID featureTreeUuid,
+            @RequestParam(value = "nameRelationsDirect", required = false) Set<UUID> directNameRelations,
+            @RequestParam(value = "nameRelationsInverse", required = false) Set<UUID> inverseNameRelations,
+            @RequestParam(value = "etAlPos", required = false) Integer etAlPosition,
+            @RequestParam(value = "doSynonyms", required = false) boolean doSynonyms,
+            @RequestParam(value = "doFacts", required = false) boolean doFacts,
+            @RequestParam(value = "doSpecimens", required = false) boolean doSpecimens,
+            @RequestParam(value = "doKeys", required = false) boolean doKeys,
+            @RequestParam(value = "doMedia", required = false) boolean doMedia,
+            @RequestParam(value = "doTaxonNodes", required = false) boolean doTaxonNodes,
+            @RequestParam(value = "doTaxonRelations", required = false) boolean doTaxonRelations,
+            //TODO annotation type filter
+
+            //distributionInfoConfig
+            @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
+            @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
+            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "fallbackAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
+            @RequestParam(value = "alternativeRootAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> alternativeRootAreaMarkerTypeList,
+            @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
+            //TODO still needs to be used
+            @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
+            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            @RequestParam(value = "statusColors", required = false) String statusColorsString,
+            @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
+            @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
+
             //TODO configuration data
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+
+        boolean includeUnpublished = !INCLUDE_UNPUBLISHED;
         if(request != null){
             logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
         }
+
+        //TODO for now hardcoded
+        alternativeRootAreaMarkerTypeList = new DefinedTermBaseList<>();
+        UUID alternativeRootAreaMarkerTypeUuid = UUID.fromString("1bf75861-47a0-42a1-8632-97c0fd15df29");
+        MarkerType defaultAlternativeRootAreaMarkerType = (MarkerType)termService.find(alternativeRootAreaMarkerTypeUuid);
+        if (defaultAlternativeRootAreaMarkerType != null) {
+            alternativeRootAreaMarkerTypeList.add(defaultAlternativeRootAreaMarkerType);
+        }
+
 
         //TODO is this current state of art?
 //        ModelAndView mv = new ModelAndView();
@@ -325,14 +374,81 @@ public class TaxonPortalController extends TaxonController{
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
 
+        if (partSet == null) {
+            partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
+        }
+        partSet.remove(InfoPart.elements); // we do not want to return model instances here at all
+
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+
         config.setTaxonUuid(taxonUuid);
         config.setFeatureTree(featureTreeUuid);
-        config.getDistributionInfoConfiguration().setUseTreeDto(true);
+        config.setEtAlPosition(etAlPosition);
+        config.setWithFacts(doFacts);
+        config.setWithKeys(doKeys);
+        config.setWithMedia(doMedia);
+        config.setWithSpecimens(doSpecimens);
+        config.setWithSynonyms(doSynonyms);
+        config.setWithTaxonNodes(doTaxonNodes);
+        config.setWithTaxonRelationships(doTaxonRelations);
+        config.setIncludeUnpublished(includeUnpublished);
+
+        Set<MarkerType> fallbackAreaMarkerTypes = new HashSet<>();
+        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
+            fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
+        }
+        Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
+        if(!CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypeList)){
+            alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypeList.asSet();
+        }
+
+        //default distribution info config
+        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
+        distributionConfig.setUseTreeDto(true);
+        distributionConfig.setInfoParts(EnumSet.copyOf(partSet));
+        distributionConfig.setPreferSubAreas(preferSubAreas);
+        distributionConfig.setStatusOrderPreference(statusOrderPreference);
+        distributionConfig.setAreaTree(areaTreeUuid);
+        distributionConfig.setOmitLevels(omitLevels);
+        distributionConfig.setStatusColorsString(statusColorsString);
+        distributionConfig.setDistributionOrder(distributionOrder);
+        if (recipe != null) {
+            CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
+            condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
+            distributionConfig.setCondensedDistributionConfiguration(condensedConfig);
+        }
+        distributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+        distributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
+
+        //iucn distribution info config
+        DistributionInfoConfiguration iucnDistributionConfig = new DistributionInfoConfiguration();
+        config.putDistributionInfoConfiguration(Feature.uuidIucnStatus, iucnDistributionConfig);
+        iucnDistributionConfig.setUseTreeDto(true);
+        EnumSet<InfoPart> iucnPartSet = EnumSet.of(InfoPart.condensedDistribution);
+        iucnDistributionConfig.setInfoParts(iucnPartSet);
+
+        iucnDistributionConfig.setPreferSubAreas(preferSubAreas);
+        iucnDistributionConfig.setStatusOrderPreference(statusOrderPreference);
+        iucnDistributionConfig.setAreaTree(areaTreeUuid);
+        iucnDistributionConfig.setOmitLevels(omitLevels);
+//        distributionConfig.setStatusColorsString(statusColorsString);
+        iucnDistributionConfig.setDistributionOrder(distributionOrder);
+        CondensedDistributionRecipe iucnRecipe = CondensedDistributionRecipe.IUCN;
+        if (iucnRecipe != null) {
+            CondensedDistributionConfiguration condensedConfig = iucnRecipe.toConfiguration();
+            condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
+            iucnDistributionConfig.setCondensedDistributionConfiguration(condensedConfig);
+        }
+        iucnDistributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
+        iucnDistributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
+
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);
         return dto;
     }
 
+    private Set<UUID> getUuids(Set<? extends CdmBase> entities) {
+        return entities.stream().map(e->e.getUuid()).collect(Collectors.toSet());
+    }
 
     /**
      * Get the synonymy for a taxon identified by the <code>{taxon-uuid}</code>.

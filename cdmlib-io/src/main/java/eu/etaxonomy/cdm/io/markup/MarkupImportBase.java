@@ -2450,7 +2450,7 @@ public abstract class MarkupImportBase  {
 							if (isNotBlank(innerArea)){
 								NamedArea singleArea = makeArea(state, innerArea.trim(), level);
 								areas.add(singleArea);
-								NamedArea partOf = singleArea.getPartOf();
+//								NamedArea partOf = singleArea.getPartOf();
 //								if (partOf == null){
 //									singleArea.setPartOf(higherArea);
 //								}
