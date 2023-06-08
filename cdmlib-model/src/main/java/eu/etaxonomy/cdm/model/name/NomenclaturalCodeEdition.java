@@ -119,8 +119,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Seattle 1969
      */
     @XmlEnumValue("Seattle")
-
     ICN_1969_SEATTLE(UUID.fromString("2d19b5af-27cc-428e-affb-8a06563ff9cd"), "ICBN", "Seattle", 1969, 1972, NomenclaturalCode.ICNAFP, null, null),
+
     //9
     /**
      * International Code of Botanical Nomenclature.
@@ -129,7 +129,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Edinburgh")
     ICN_1964_EDINBURGH(UUID.fromString("7ca16490-10a4-4991-9d70-2aade1706c76"), "ICBN", "Edinburgh", 1964, 1966, NomenclaturalCode.ICNAFP, null, null),
 
-    //9
+    //10
     /**
      * International Code of Botanical Nomenclature.
      * Montreal 1959
@@ -137,7 +137,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Montreal")
     ICN_1959_EDINBURGH(UUID.fromString("bebcdcf2-b479-43d0-8635-f586334be204"), "ICBN", "Montreal", 1959, 1961, NomenclaturalCode.ICNAFP, null, null),
 
-    //9
+    //11
     /**
      * International Code of Botanical Nomenclature.
      * Paris 1954
@@ -145,8 +145,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Paris")
     ICN_1954_PARIS(UUID.fromString("c57adbf9-890e-4e38-a667-3fdf2328f3c8"), "ICBN", "Paris", 1954, 1956, NomenclaturalCode.ICNAFP, null, null),
 
-
-    //9
+    //12
     /**
      * International Code of Botanical Nomenclature.
      * Stockholm 1952
@@ -154,7 +153,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Stockholm")
     ICN_1950_STOCKHOLM(UUID.fromString("a0c07e5f-9b2b-4cd7-9f14-acd4729f175a"), "ICBN", "Stockholm", 1950, 1952, NomenclaturalCode.ICNAFP, null, null),
 
-    //9a
+    //13
     /**
      * International Code of Botanical Nomenclature.
      * Stockholm 1952
@@ -162,7 +161,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Amsterdam")
     ICN_1935_AMSTERDAM(UUID.fromString("4676654f-41ef-4311-a708-ba9b4b301117"), "ICBN", "Amsterdam", 1935, 1950, NomenclaturalCode.ICNAFP, null, null),
 
-    //10
+    //14
     /**
      * International Code of Botanical Nomenclature.
      * Cambridge Rules 1935
@@ -171,7 +170,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     //TODO abbrev correct?
     ICN_1930_CAMBRIDGE(UUID.fromString("e6f7e578-2ce5-434d-9904-aaf2a6e06c43"), "Rules", "Cambrdige", 1930, 1935, NomenclaturalCode.ICNAFP, null, null),
 
-    //10a
+    //15
     /**
      * International Code of Botanical Nomenclature.
      * Cambridge Rules 1935
@@ -180,7 +179,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     //TODO abbrev correct?
     ICN_1910_BRUSSELS(UUID.fromString("954c4a71-86ec-489d-b7f1-1878e3b31ebb"), "Rules", "Brussels", 1910, 1912, NomenclaturalCode.ICNAFP, null, null),
 
-    //11
+    //16
     /**
      * International Code of Botanical Nomenclature.
      * Vienna Rules 1905
@@ -189,7 +188,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     //TODO abbrev correct?
     ICN_1905_VIENNA(UUID.fromString("23781153-540f-4c54-a5ae-5d6b6f490332"), "Rules", "Vienna", 1905, 1906, NomenclaturalCode.ICNAFP, null, null),
 
-    //12
+    //17
     /**
      * International Code of Botanical Nomenclature.
      * Laws of botanical nomenclature 1867
@@ -198,8 +197,17 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     //TODO abbrev correct?
     ICN_1867_LAWS(UUID.fromString("230314c3-0bb0-4488-8597-f4ef63d27781"), "Rules", "Laws of botanical nomenclature", 1867, 1867, NomenclaturalCode.ICNAFP, null, null),
 
+//****************** FUNGI *******************/
 
-    //*** ICZN **/
+    //f1
+    /**
+     * International Code of Botanical Nomenclature.
+     * Chapter F, San Juan, 2018
+     */
+    @XmlEnumValue("San Juan CF 2018")
+    ICN_2018_CHAP_F(UUID.fromString("c6404676-a925-418f-bbb8-7661dee125dc"), "ICNAFP-F", "Chapter F, San Juan", 2018, 2019, NomenclaturalCode.Fungi, "Q56701992","10.1186/s43008-019-0019-1"),
+
+ //*********** ICZN ******************/
     //z1
     /**
      * International Code of Zoological Nomenclature. Fourth edition. The International Trust for Zoological Nomenclature, London, UK.
@@ -480,7 +488,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 citation.setIsbn("978-3-87429-425-6");
             } else if (this == NomenclaturalCodeEdition.ICN_2005_VIENNA) {
                 citation = ReferenceFactory.newBook();
-                citation.setTitle(" International Code of Botanical Nomenclature (Vienna Code), adopted by the Seventeenth International Botanical Congress, Vienna, Austria, July 2005");
+                citation.setTitle("International Code of Botanical Nomenclature (Vienna Code), adopted by the Seventeenth International Botanical Congress, Vienna, Austria, July 2005");
                 Team team = Team.NewInstance();
                 citation.setAuthorship(team);
                 team.addTeamMember(Person.NewInstance(null, "McNeill", "J.", null));
@@ -507,7 +515,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 citation.setIsbn("3-906166-48-1");
             } else if (this == NomenclaturalCodeEdition.ICN_1999_ST_LOUIS) {
                 citation = ReferenceFactory.newBook();
-                citation.setTitle(" International Code of Botanical Nomenclature (Saint Louis Code), adopted by the Sixteenth International Botanical Congress, St Louis, Missouri, July-August 1999");
+                citation.setTitle("International Code of Botanical Nomenclature (Saint Louis Code), adopted by the Sixteenth International Botanical Congress, St Louis, Missouri, July-August 1999");
                 Team team = Team.NewInstance();
                 citation.setAuthorship(team);
                 team.addTeamMember(Person.NewInstance(null, "Greuter", "W.", null));
@@ -530,7 +538,29 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 citation.setSeriesPart("Regnum Vegetabile 138");
                 //removed as it is not part of the official How to cite https://www.iapt-taxon.org/nomen/pages/intro/citation.html
 //                citation.setPages("xviii + 474 pp.");
-                citation.setUuid(UUID.fromString(""));
+                citation.setUuid(UUID.fromString("f5e152aa-ce36-4e67-91e6-91dda2a7240d")); //any
+                citation.setIsbn("3-904144-22-7");
+            } else if (this == NomenclaturalCodeEdition.ICN_2018_CHAP_F) {
+                citation = ReferenceFactory.newArticle();
+                citation.setTitle("Chapter F of the International Code of Nomenclature for algae, fungi, and plants as approved by the 11th International Mycological Congress, San Juan, Puerto Rico, July 2018");
+                Team team = Team.NewInstance();
+                citation.setAuthorship(team);
+                team.addTeamMember(Person.NewInstance(null, "May", "T.W.", null));
+                team.addTeamMember(Person.NewInstance(null, "Redhead", "S.A.", null));
+                team.addTeamMember(Person.NewInstance(null, "Bensch", "K.", null));
+                team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
+                team.addTeamMember(Person.NewInstance(null, "Lendemer", "J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Lombard", "L.", null));
+                //TODO eds.
+                team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+
+                citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2019"));
+                Reference journal = ReferenceFactory.newJournal();
+                citation.setInJournal(journal);
+                journal.setTitle("IMA Fungus");
+                citation.setVolume("10, 21");
+                citation.setDoi(getDoi());
+                citation.setUuid(UUID.fromString("5da7685b-18bf-4a2a-9b6a-b19f1c8747f7"));
                 citation.setIsbn("3-904144-22-7");
             }else {
                 //TODO other nom codes not yet implemented
