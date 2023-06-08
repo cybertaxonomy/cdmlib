@@ -281,7 +281,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 
 	private Reference citation;
 
-	private NomenclaturalCodeEdition(UUID uuid, String abbrev, String location, Integer year, NomenclaturalCode code, String wikiDataId, String strDoi ){
+	@SuppressWarnings("unchecked")
+    private NomenclaturalCodeEdition(UUID uuid, String abbrev, String location, Integer year, NomenclaturalCode code, String wikiDataId, String strDoi ){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, makeTitleCache(location, code, year), code.getKey() + year, null);
 		this.location = location;
 		this.year=year;
@@ -290,12 +291,6 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 		this.doi = (strDoi==null) ? null:DOI.fromString(strDoi);
 	}
 
-    /**
-     * @param location
-     * @param code
-     * @param year
-     * @return
-     */
     private String makeTitleCache(String location, NomenclaturalCode code, Integer year) {
         return (StringUtils.isNotBlank(location)? location: code.getTitleCache()) + " " + year;
     }
@@ -406,11 +401,67 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 //TODO eds.
                 team.addTeamMember(Person.NewInstance(null, "Smith", "G.F. (eds.)", null));
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2018"));
-                citation.setPlacePublished("Glashütten");
                 citation.setPublisher("Koeltz Botanical Books", "Glashütten");
                 citation.setDoi(ICN_2017_SHENZHEN.getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 159");
+                citation.setPages("xxxviii + 254 pp.");
                 citation.setUuid(UUID.fromString("34426499-8ffe-48aa-bc61-34e2abdea676"));
+            } else if (this == NomenclaturalCodeEdition.ICN_2011_MELBOURNE) {
+                citation = ReferenceFactory.newBook();
+                citation.setTitle("International Code of Nomenclature for algae, fungi, and plants (Melbourne Code), adopted by the Eighteenth International Botanical Congress, Melbourne, Australia, July 2011");
+                Team team = Team.NewInstance();
+                citation.setAuthorship(team);
+                team.addTeamMember(Person.NewInstance(null, "McNeill", "J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Barrie", "F.R.", null));
+                team.addTeamMember(Person.NewInstance(null, "Buck", "W.R.", null));
+                team.addTeamMember(Person.NewInstance(null, "Demoulin", "V.", null));
+                team.addTeamMember(Person.NewInstance(null, "Greuter", "W.", null));
+                team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
+                team.addTeamMember(Person.NewInstance(null, "Herendeen", "P.S.", null));
+                team.addTeamMember(Person.NewInstance(null, "Knapp", "S.", null));
+                team.addTeamMember(Person.NewInstance(null, "Marhold", "K.", null));
+                team.addTeamMember(Person.NewInstance(null, "Prado", "J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Prud’homme van Reine", "W.F.", null));
+                team.addTeamMember(Person.NewInstance(null, "Smith", "G.F.", null));
+                team.addTeamMember(Person.NewInstance(null, "Wiersema", "J.H.", null));
+                //TODO eds.
+                team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+
+                citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2012"));
+//                citation.setPlacePublished("Glashütten");
+                citation.setPublisher("Koeltz Scientific Books", "Königstein");
+                citation.setDoi(ICN_2011_MELBOURNE.getDoi());
+                citation.setSeriesPart("Regnum Vegetabile 154");
+                citation.setPages("xxx + 208 pp.");
+                citation.setUuid(UUID.fromString("14f0c87e-b536-499c-95db-2ceb9cb1f871"));
+                citation.setIsbn("978-3-87429-425-6");
+            } else if (this == NomenclaturalCodeEdition.ICN_2005_VIENNA) {
+                citation = ReferenceFactory.newBook();
+                citation.setTitle(" International Code of Botanical Nomenclature (Vienna Code), adopted by the Seventeenth International Botanical Congress, Vienna, Austria, July 2005");
+                Team team = Team.NewInstance();
+                citation.setAuthorship(team);
+                team.addTeamMember(Person.NewInstance(null, "McNeill", "J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Barrie", "F.R.", null));
+                team.addTeamMember(Person.NewInstance(null, "Burdet", "H.M.", null));
+                team.addTeamMember(Person.NewInstance(null, "Demoulin", "V.", null));
+                team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
+                team.addTeamMember(Person.NewInstance(null, "Marhold", "K.", null));
+                team.addTeamMember(Person.NewInstance(null, "Nicolson", "D.H.", null));
+                team.addTeamMember(Person.NewInstance(null, "Prado", "J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Silva", "P.C.", null));
+                team.addTeamMember(Person.NewInstance(null, "Skog", "J.E.", null));
+                team.addTeamMember(Person.NewInstance(null, "Wiersema", "J.H.", null));
+                //TODO eds.
+                team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+
+                citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2006"));
+                citation.setPublisher("A.R.G. Gantner Verlag KG", null);
+                citation.setDoi(getDoi());
+                citation.setSeriesPart("Regnum Vegetabile 146");
+                citation.setPages("xviii + 568 pp.");
+                citation.setUuid(UUID.fromString("5851fd49-c30d-48c2-8d6f-4f6ee8e4b832"));
+                citation.setIsbn("3-906166-48-1");
+
             }else {
                 //TODO other nom codes not yet implemented
             }
