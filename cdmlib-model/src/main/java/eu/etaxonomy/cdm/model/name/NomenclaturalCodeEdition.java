@@ -404,7 +404,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 citation.setPublisher("Koeltz Botanical Books", "Glashütten");
                 citation.setDoi(ICN_2017_SHENZHEN.getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 159");
-                citation.setPages("xxxviii + 254 pp.");
+                //removed as it is not part of the official How to cite https://www.iapt-taxon.org/nomen/pages/intro/citation.html
+                //citation.setPages("xxxviii + 254 pp.");
                 citation.setUuid(UUID.fromString("34426499-8ffe-48aa-bc61-34e2abdea676"));
             } else if (this == NomenclaturalCodeEdition.ICN_2011_MELBOURNE) {
                 citation = ReferenceFactory.newBook();
@@ -428,11 +429,11 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
 
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2012"));
-//                citation.setPlacePublished("Glashütten");
                 citation.setPublisher("Koeltz Scientific Books", "Königstein");
                 citation.setDoi(ICN_2011_MELBOURNE.getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 154");
-                citation.setPages("xxx + 208 pp.");
+                //removed as it is not part of the official How to cite https://www.iapt-taxon.org/nomen/pages/intro/citation.html
+                //citation.setPages("xxx + 208 pp.");
                 citation.setUuid(UUID.fromString("14f0c87e-b536-499c-95db-2ceb9cb1f871"));
                 citation.setIsbn("978-3-87429-425-6");
             } else if (this == NomenclaturalCodeEdition.ICN_2005_VIENNA) {
@@ -458,7 +459,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 citation.setPublisher("A.R.G. Gantner Verlag KG", null);
                 citation.setDoi(getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 146");
-                citation.setPages("xviii + 568 pp.");
+                //removed as it is not part of the official How to cite https://www.iapt-taxon.org/nomen/pages/intro/citation.html
+                //citation.setPages("xviii + 568 pp.");
                 citation.setUuid(UUID.fromString("5851fd49-c30d-48c2-8d6f-4f6ee8e4b832"));
                 citation.setIsbn("3-906166-48-1");
             } else if (this == NomenclaturalCodeEdition.ICN_1999_ST_LOUIS) {
@@ -484,11 +486,10 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 citation.setPublisher("Koeltz Scientific Books", "Königstein");
                 citation.setDoi(getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 138");
-                citation.setPages("xviii + 474 pp.");
+                //removed as it is not part of the official How to cite https://www.iapt-taxon.org/nomen/pages/intro/citation.html
+//                citation.setPages("xviii + 474 pp.");
                 citation.setUuid(UUID.fromString(""));
                 citation.setIsbn("3-904144-22-7");
-
-
             }else {
                 //TODO other nom codes not yet implemented
             }
