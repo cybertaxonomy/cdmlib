@@ -461,6 +461,33 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 citation.setPages("xviii + 568 pp.");
                 citation.setUuid(UUID.fromString("5851fd49-c30d-48c2-8d6f-4f6ee8e4b832"));
                 citation.setIsbn("3-906166-48-1");
+            } else if (this == NomenclaturalCodeEdition.ICN_1999_ST_LOUIS) {
+                citation = ReferenceFactory.newBook();
+                citation.setTitle(" International Code of Botanical Nomenclature (Saint Louis Code), adopted by the Sixteenth International Botanical Congress, St Louis, Missouri, July-August 1999");
+                Team team = Team.NewInstance();
+                citation.setAuthorship(team);
+                team.addTeamMember(Person.NewInstance(null, "Greuter", "W.", null));
+                team.addTeamMember(Person.NewInstance(null, "McNeill", "J.", null));
+                team.addTeamMember(Person.NewInstance(null, "Barrie", "F.R.", null));
+                team.addTeamMember(Person.NewInstance(null, "Burdet", "H.M.", null));
+                team.addTeamMember(Person.NewInstance(null, "Demoulin", "V.", null));
+                team.addTeamMember(Person.NewInstance(null, "Filguerias", "T.S.", null));
+                team.addTeamMember(Person.NewInstance(null, "Nicolson", "D.H.", null));
+                team.addTeamMember(Person.NewInstance(null, "Silva", "P.C.", null));
+                team.addTeamMember(Person.NewInstance(null, "Skog", "J.E.", null));
+                team.addTeamMember(Person.NewInstance(null, "Trehane", "P.", null));
+                team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+                //TODO eds.
+                team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
+
+                citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2000"));
+                citation.setPublisher("Koeltz Scientific Books", "Königstein");
+                citation.setDoi(getDoi());
+                citation.setSeriesPart("Regnum Vegetabile 138");
+                citation.setPages("xviii + 474 pp.");
+                citation.setUuid(UUID.fromString(""));
+                citation.setIsbn("3-904144-22-7");
+
 
             }else {
                 //TODO other nom codes not yet implemented
