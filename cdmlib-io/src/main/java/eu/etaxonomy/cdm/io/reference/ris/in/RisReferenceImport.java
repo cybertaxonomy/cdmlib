@@ -93,12 +93,12 @@ public class RisReferenceImport
             //TODO handle result counts more generic
             state.getResult().addNewRecords(Reference.class.getSimpleName(), referencesToSave.size());
             for (Reference ref : referencesToSave){
-                if (ref.getAuthorship() != null && !ref.getAuthorship().isPersited()){
+                if (ref.getAuthorship() != null && !ref.getAuthorship().isPersisted()){
                     TeamOrPersonBase<?> newAuthor = ref.getAuthorship();
                     state.getResult().addNewRecord(newAuthor);
                     if (newAuthor instanceof Team){
                         for (Person member : ((Team)newAuthor).getTeamMembers()){
-                            if (!member.isPersited()){
+                            if (!member.isPersisted()){
                                 state.getResult().addNewRecord(member);
                             }
                         }

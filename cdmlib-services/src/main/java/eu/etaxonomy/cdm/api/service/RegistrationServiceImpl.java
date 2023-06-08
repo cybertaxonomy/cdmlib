@@ -260,7 +260,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
     @Transactional(readOnly=false)
     public Registration assureIsPersisted(Registration reg) {
 
-        if(reg.isPersited()){
+        if(reg.isPersisted()){
             return reg;
         }
 
@@ -294,7 +294,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
             registration = newRegistration();
             registration = assureIsPersisted(registration);
         } else {
-            if(registration.isPersited()){
+            if(registration.isPersisted()){
                 // make sure the the typeDesignations are loaded with the registration so that typified names can not be twice in detached sessions
                 // otherwise multiple representation problems might occur
                 registration.getTypeDesignations();
@@ -312,7 +312,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
      */
     private void prepareForSave(Registration reg) {
 
-        if(!reg.isPersited()){
+        if(!reg.isPersisted()){
             if(minter != null){
                 Identifier<String> identifiers = minter.mint();
                 if(identifiers.getIdentifier() == null){

@@ -401,7 +401,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         if (objectToDelete == null) {
             logger.info(type.getName() + " was 'null'");
             return null;
-        } else if (!objectToDelete.isPersited()) {
+        } else if (!objectToDelete.isPersisted()) {
             logger.info(type.getName() + " was not persisted yet");
             return null;
         }

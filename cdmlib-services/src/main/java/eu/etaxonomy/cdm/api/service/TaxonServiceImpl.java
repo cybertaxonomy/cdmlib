@@ -377,7 +377,7 @@ public class TaxonServiceImpl
         result.setCdmEntity(newTaxon);
 
         DeleteResult deleteResult = deleteTaxon(oldAcceptedTaxon.getUuid(), conf, null);
-        if (oldSynonym.isPersited()){
+        if (oldSynonym.isPersisted()){
             oldSynonym.setSecSource(null);
             deleteResult.includeResult(deleteSynonym(oldSynonym.getUuid(), confSyn));
         }

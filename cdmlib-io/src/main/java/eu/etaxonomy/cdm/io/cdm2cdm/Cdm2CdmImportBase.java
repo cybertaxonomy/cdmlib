@@ -203,7 +203,7 @@ public abstract class Cdm2CdmImportBase
                 }
             }
         }
-        if ( !cdmBase.isPersited()){
+        if ( !cdmBase.isPersisted()){
             logger.warn("Non persisted object not in cache and not in target DB. This should not happen: " + cdmBase.getUuid());
             return cdmBase; //should not happen anymore; either in cache or in target or persisted in source
         }else{
@@ -850,7 +850,7 @@ public abstract class Cdm2CdmImportBase
             state.addToSave(result);
             state.removeToSave(user);
         }
-        if (!result.isPersited()){
+        if (!result.isPersisted()){
             result.setAuthorities(new HashSet<>());
             result.setGrantedAuthorities(new HashSet<>());
             setInvisible(result, "groups", new HashSet<>());
@@ -934,7 +934,7 @@ public abstract class Cdm2CdmImportBase
         T result = handlePersisted((AnnotatableEntity)sourcedEntity, state);
         //complete
         handleCollection(result, SourcedEntityBase.class, "sources", OriginalSourceBase.class, state);
-        if (!result.isPersited()){
+        if (!result.isPersisted()){
             if(state.getConfig().isRemoveImportSources()){
                 filterImportSources(result.getSources());
             }

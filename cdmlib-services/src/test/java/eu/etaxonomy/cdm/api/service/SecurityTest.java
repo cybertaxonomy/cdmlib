@@ -609,7 +609,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
         taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertTrue("The change must be persited", taxon.isDoubtful());
+        Assert.assertTrue("The change must be persisted", taxon.isDoubtful());
     }
 
     /**
@@ -644,7 +644,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
         taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertFalse("The change must not be persited", taxon.isDoubtful());
+        Assert.assertFalse("The change must not be persisted", taxon.isDoubtful());
     }
 
     @Test
@@ -1107,7 +1107,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             startNewTransaction();
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
-        Assert.assertNotNull("The new Synonym must be persited", taxonService.find(synUuid));
+        Assert.assertNotNull("The new Synonym must be persisted", taxonService.find(synUuid));
     }
 
     @Test
@@ -1135,7 +1135,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         }
 
         Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
-        Assert.assertNull("The Synonym must not be persited", taxonService.find(synUuid));
+        Assert.assertNull("The Synonym must not be persisted", taxonService.find(synUuid));
     }
 
     @Test

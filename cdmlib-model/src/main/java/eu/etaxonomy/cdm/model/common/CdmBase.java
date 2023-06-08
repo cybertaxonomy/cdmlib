@@ -347,7 +347,7 @@ public abstract class CdmBase
     @Override
     @XmlTransient
     @Transient
-    public boolean isPersited() {
+    public boolean isPersisted() {
         return id != 0;
     }
 

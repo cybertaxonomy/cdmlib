@@ -957,7 +957,7 @@ public class DescriptionServiceImpl
             }
         }
         DescriptionBase newTargetDescription;
-        if (targetDescription.isPersited()){
+        if (targetDescription.isPersisted()){
             newTargetDescription = dao.load(targetDescription.getUuid());
         }else{
             if (targetDescription instanceof TaxonDescription){

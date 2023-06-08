@@ -271,7 +271,7 @@ public class NameServiceImpl
     @Override
     @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
-    	if(typeDesignation != null && typeDesignation .isPersited()){
+    	if(typeDesignation != null && typeDesignation .isPersisted()){
     		typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignation.getUuid()));
     	}
 
@@ -1203,7 +1203,7 @@ public class NameServiceImpl
 //              LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
                 //references
-                if (name.getNomenclaturalReference()!= null && !name.getNomenclaturalReference().isPersited()){
+                if (name.getNomenclaturalReference()!= null && !name.getNomenclaturalReference().isPersisted()){
                     Reference nomRef = name.getNomenclaturalReference();
                     IMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance(nomRef);
                     List<Reference> matchingReferences = commonService.findMatching(nomRef, referenceMatcher);
@@ -1226,7 +1226,7 @@ public class NameServiceImpl
 
                 //authors
                 IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
-                if (name.getCombinationAuthorship()!= null && !name.getCombinationAuthorship().isPersited()){
+                if (name.getCombinationAuthorship()!= null && !name.getCombinationAuthorship().isPersisted()){
                     //use same nom.ref. author if possible (should always be possible if nom.ref. exists)
                     if (nomRef != null && nomRef.getAuthorship() != null){
                         if(authorMatcher.invoke(name.getCombinationAuthorship(), nomRef.getAuthorship()).isSuccessful()){
@@ -1235,18 +1235,18 @@ public class NameServiceImpl
                     }
                     name.setCombinationAuthorship(deduplicateAuthor(name.getCombinationAuthorship()));
                 }
-                if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersited()){
+                if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersisted()){
                     name.setExCombinationAuthorship(deduplicateAuthor(name.getExCombinationAuthorship()));
                 }
-                if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersited()){
+                if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersisted()){
                     name.setBasionymAuthorship(deduplicateAuthor(name.getBasionymAuthorship()));
                 }
-                if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersited()){
+                if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersisted()){
                     name.setExBasionymAuthorship(deduplicateAuthor(name.getExBasionymAuthorship()));
                 }
 
                 //originalSpelling
-                if (name.getOriginalSpelling()!= null && !name.getOriginalSpelling().isPersited()){
+                if (name.getOriginalSpelling()!= null && !name.getOriginalSpelling().isPersisted()){
                     TaxonName origName = name.getOriginalSpelling();
                     IMatchStrategy nameMatcher = MatchStrategyFactory.NewParsedOriginalSpellingInstance();
                     List<TaxonName> matchingNames = commonService.findMatching(origName, nameMatcher);

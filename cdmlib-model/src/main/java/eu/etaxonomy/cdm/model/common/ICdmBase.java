@@ -78,6 +78,6 @@ public interface ICdmBase {
      * For new and un-persisted entities this method returns false.
      */
     @Transient
-    public boolean isPersited();
+    public boolean isPersisted();
 
 }

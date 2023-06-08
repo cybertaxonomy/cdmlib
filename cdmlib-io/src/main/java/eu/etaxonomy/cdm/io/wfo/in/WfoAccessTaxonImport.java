@@ -102,7 +102,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
         state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(name);
 
-        if (!name.isPersited()){
+        if (!name.isPersisted()){
             state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
         }
         getNameService().saveOrUpdate(name);
@@ -118,7 +118,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
     private void saveHybridNames(STATE state, TaxonName name) {
         for (HybridRelationship hybridRel : name.getHybridChildRelations()){
             TaxonName parent = hybridRel.getParentName();
-            if (!parent.isPersited()){
+            if (!parent.isPersisted()){
                 state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
             }
             getNameService().saveOrUpdate(parent);
