@@ -70,9 +70,11 @@ public class NomenclaturalCodeEditionTest {
         Assert.assertEquals("ICNAFP2017", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getKey());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition#getByKey(java.lang.String)}.
-     */
+    @Test
+    public void testGetLabel() {
+        Assert.assertEquals("Shenzhen 2017", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getLabel());
+    }
+
     @Test
     public void testGetByKey() {
         Assert.assertSame(NomenclaturalCodeEdition.ICN_2017_SHENZHEN, NomenclaturalCodeEdition.getByKey("ICNAFP2017"));

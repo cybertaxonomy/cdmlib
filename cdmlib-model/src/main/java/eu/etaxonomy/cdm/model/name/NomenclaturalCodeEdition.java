@@ -301,7 +301,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 
 	@Override
 	public String toString() {
-		return this.name();
+		return this.getLabel();
 	}
 
     public boolean isNonViral() {
