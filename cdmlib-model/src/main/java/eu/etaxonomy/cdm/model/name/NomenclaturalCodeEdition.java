@@ -169,7 +169,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      */
     @XmlEnumValue("Cambridge")
     //TODO abbrev correct?
-    ICN_1930_CAMBRIDGE(UUID.fromString("e6f7e578-2ce5-434d-9904-aaf2a6e06c43"), "Rules", "Cambrdige", 1935, 1930, NomenclaturalCode.ICNAFP, null, null),
+    ICN_1930_CAMBRIDGE(UUID.fromString("e6f7e578-2ce5-434d-9904-aaf2a6e06c43"), "Rules", "Cambrdige", 1930, 1935, NomenclaturalCode.ICNAFP, null, null),
 
     //10a
     /**
@@ -387,7 +387,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 
         for(NomenclaturalCodeEdition edition : NomenclaturalCodeEdition.values()){
             for (NomenclaturalCode nomCode: allCodes){
-                if(edition.getCode().equals(nomCode) && !result.contains(nomCode)) {
+                if(edition.getCode().equals(nomCode) && !result.contains(edition)) {
                     result.add(edition);
                 }
             }
