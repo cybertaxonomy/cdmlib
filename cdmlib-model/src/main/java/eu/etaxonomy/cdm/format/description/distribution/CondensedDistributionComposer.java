@@ -108,7 +108,7 @@ public class CondensedDistributionComposer {
 
         Collections.sort(topLevelNodes, topLevelAreaOfScopeComparator);
 
-        final boolean NOT_BOLED = false;
+        final boolean NOT_BOLD = false;
         final boolean NOT_HANDLED_BY_PARENT = false;
 
         List<AreaNode> outOfScopeNodes = new ArrayList<>();
@@ -128,17 +128,17 @@ public class CondensedDistributionComposer {
 
             //subareas
             handleSubAreas(result, areaOfScopeNode, config, areaNodeComparator, languages, areaToStatusMap,
-                    areaOfScopeLabel, 0, NOT_BOLED, NOT_HANDLED_BY_PARENT, false);
+                    areaOfScopeLabel, 0, NOT_BOLD, NOT_HANDLED_BY_PARENT, false);
         }
 
         //subareas with introduced status (if required by configuration)
         if (config.splitNativeAndIntroduced && !introducedTopLevelNodes.isEmpty()){
             String sep = (result.isEmpty()? "": " ") + config.introducedBracketStart;
-            result.addSeparatorTaggedText(sep, NOT_BOLED);
+            result.addSeparatorTaggedText(sep, NOT_BOLD);
             boolean isIntroduced = true;
             handleSubAreasLoop(result, introducedTopLevelNodes.get(0), config, areaNodeComparator, languages,
-                    areaToStatusMap, "", 0, NOT_BOLED, NOT_HANDLED_BY_PARENT, isIntroduced);
-            result.addSeparatorTaggedText(config.introducedBracketEnd, NOT_BOLED);
+                    areaToStatusMap, "", 0, NOT_BOLD, NOT_HANDLED_BY_PARENT, isIntroduced);
+            result.addSeparatorTaggedText(config.introducedBracketEnd, NOT_BOLD);
         }
 
         //outOfScope areas  (areas outside the endemic area)
@@ -153,7 +153,7 @@ public class CondensedDistributionComposer {
                 String sep = isFirst ? "": " ";
                 result.addSeparatorTaggedText(sep);
                 handleSubAreaNode(languages, result, areaToStatusMap, areaNodeComparator,
-                        outOfScopeNode, config, null, 0, NOT_BOLED, NOT_HANDLED_BY_PARENT, false);
+                        outOfScopeNode, config, null, 0, NOT_BOLD, NOT_HANDLED_BY_PARENT, false);
                 isFirst = false;
             }
         }
