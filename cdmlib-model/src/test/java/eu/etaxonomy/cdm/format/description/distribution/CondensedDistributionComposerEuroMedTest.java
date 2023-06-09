@@ -248,26 +248,87 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         config.alternativeRootAreaMarkers = new HashSet<>();
         config.alternativeRootAreaMarkers.add(MarkerType.uuidAlternativeRootArea);
 
+        //no root
         Distribution nativeDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
         distributions.add(nativeDist);
         Assert.assertEquals("dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
 
+        //only alternative root
         Distribution alternativeRoot = Distribution.NewInstance(westEurope, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA());
         distributions.add(alternativeRoot);
         Assert.assertEquals(endemic + " dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
 
+        //both roots, this behavior may change in future
         Distribution realRoot = Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA());
         distributions.add(realRoot);
-        Assert.assertEquals("For we do not handle a non empty alternative root as alternative root",
+        Assert.assertEquals("For now we do not handle a non empty alternative root as alternative root",
                 endemic +" " + endemic + "WE(dFR(J))", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
 
+        //only real root
         distributions.remove(alternativeRoot);
         Assert.assertEquals(endemic + " dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
 
+        //with introduced distribution
+        //..only real root
         Distribution introducedDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.INTRODUCED());
         distributions.add(introducedDist);
         distributions.remove(nativeDist);
         Assert.assertEquals(endemic + " [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //..with both roots, this may change in future (and does not make sense in reality)
+        distributions.add(alternativeRoot);
+        Assert.assertEquals(endemic +" " + endemic + "WE [iWE(FR(J))]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //..only with alternative root
+        distributions.remove(realRoot);
+        Assert.assertEquals(endemic + " [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //.. with no root
+        distributions.remove(alternativeRoot);
+        Assert.assertEquals("[iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+
+        //add sibbling to alternative root
+        //and do the same again as above
+        distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
+        bawueDistribution = Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE());
+        distributions.add(bawueDistribution);
+        distributions.add(nativeDist);
+        distributions.remove(introducedDist);
+
+        //no root
+        Assert.assertEquals("dFR(J) <b>GER(BW)</b>", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //only alternative root, should not happen, as the alternative should never have data when a sibbling also has data
+        distributions.add(alternativeRoot);
+        Assert.assertEquals("<b>GER(BW)</b> " + endemic + "WE(dFR(J))", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //both roots, this behavior may change in future and should not happen, only root or alt. root should have data
+        distributions.add(realRoot);
+        Assert.assertEquals("For now we do not handle a non empty alternative root as alternative root",
+                endemic +" <b>GER(BW)</b> " + endemic + "WE(dFR(J))", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //only real root
+        distributions.remove(alternativeRoot);
+        Assert.assertEquals(endemic + " dFR(J) <b>GER(BW)</b>", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //with introduced distribution
+        //..only real root
+        distributions.add(introducedDist);
+        distributions.remove(nativeDist);
+        Assert.assertEquals(endemic + " <b>GER(BW)</b> [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //..with both roots, this may change in future (and does not make sense in reality)
+        distributions.add(alternativeRoot);
+        Assert.assertEquals(endemic +" <b>GER(BW)</b> " + endemic + "WE [iWE(FR(J))]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //..only with alternative root, does not make much sense (see above)
+        distributions.remove(realRoot);
+        Assert.assertEquals("<b>GER(BW)</b> " + endemic + "WE [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //.. with no root
+        distributions.remove(alternativeRoot);
+        Assert.assertEquals("<b>GER(BW)</b> [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
 
     }
 
