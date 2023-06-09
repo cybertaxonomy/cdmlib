@@ -122,7 +122,9 @@ public class DistributionTree
             return;
         }
         TreeNode<Set<Distribution>, NamedArea> emptyRoot = this.getRootElement();
+
         for(TreeNode<Set<Distribution>, NamedArea> realRoot : emptyRoot.getChildren()) {
+            boolean switched = false;
             if (CdmUtils.isNullSafeEmpty(realRoot.getData()) && realRoot.getNumberOfChildren() == 1) {
                 //real root has no data and 1 child => potential candidate to be replaced by alternative root
                 TreeNode<Set<Distribution>, NamedArea> child = realRoot.getChildren().get(0);
@@ -131,26 +133,28 @@ public class DistributionTree
                     //child is alternative root and has data => replace root by alternative root
                     emptyRoot.getChildren().remove(realRoot);
                     emptyRoot.addChild(child);
+                    switched = true;
                 }
-            } else {
+            }
+            if (!switched) {
                 //if root has data or >1 children test if children are alternative roots with no data => remove
                 Set<TreeNode<Set<Distribution>, NamedArea>> children = new HashSet<>(realRoot.getChildren());
                 for(TreeNode<Set<Distribution>, NamedArea> child : children) {
                     if (DistributionServiceUtilities.isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerTypes)
                             && CdmUtils.isNullSafeEmpty(child.getData())) {
-                        replaceByChildren(realRoot, child);
+                        replaceInBetweenNode(realRoot, child);
                     }
                 }
             }
         }
     }
 
-    private void replaceByChildren(TreeNode<Set<Distribution>, NamedArea> parent,
-            TreeNode<Set<Distribution>, NamedArea> toBeReplaced) {
-        for (TreeNode<Set<Distribution>, NamedArea> child : toBeReplaced.getChildren()) {
+    private void replaceInBetweenNode(TreeNode<Set<Distribution>, NamedArea> parent,
+            TreeNode<Set<Distribution>, NamedArea> inBetweenNode) {
+        for (TreeNode<Set<Distribution>, NamedArea> child : inBetweenNode.getChildren()) {
             parent.addChild(child);
         }
-        parent.getChildren().remove(toBeReplaced);
+        parent.getChildren().remove(inBetweenNode);
     }
 
     public void recursiveSortChildren(DistributionOrder distributionOrder){

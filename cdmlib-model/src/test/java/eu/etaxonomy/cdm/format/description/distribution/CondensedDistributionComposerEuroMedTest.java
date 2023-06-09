@@ -129,6 +129,13 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         area.addMarker(fallbackMarkerType, true);
     }
 
+    private void setAsAlternativeRootNotFallback(NamedArea area) {
+        area.removeMarker(MarkerType.uuidFallbackArea);
+        MarkerType alternativeRootAreaMarkerType = MarkerType.NewInstance("Alternative root", "Alternative root", "ara");
+        alternativeRootAreaMarkerType.setUuid(MarkerType.uuidAlternativeRootArea);   //as long as it is not an official CDM marker type yet
+        area.addMarker(alternativeRootAreaMarkerType, true);
+    }
+
     private void createDefaultDistributions() {
         distributions.add(Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()));
         distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
@@ -233,6 +240,35 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         distributions.remove(nativeDist);
         distributions.add(introducedDist);
         Assert.assertEquals("[iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+    }
+
+    @Test
+    public void testEuroMedCondensedDistributionAlternativeArea() {
+        setAsAlternativeRootNotFallback(westEurope);
+        config.alternativeRootAreaMarkers = new HashSet<>();
+        config.alternativeRootAreaMarkers.add(MarkerType.uuidAlternativeRootArea);
+
+        Distribution nativeDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
+        distributions.add(nativeDist);
+        Assert.assertEquals("dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        Distribution alternativeRoot = Distribution.NewInstance(westEurope, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA());
+        distributions.add(alternativeRoot);
+        Assert.assertEquals(endemic + " dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        Distribution realRoot = Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA());
+        distributions.add(realRoot);
+        Assert.assertEquals("For we do not handle a non empty alternative root as alternative root",
+                endemic +" " + endemic + "WE(dFR(J))", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        distributions.remove(alternativeRoot);
+        Assert.assertEquals(endemic + " dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        Distribution introducedDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.INTRODUCED());
+        distributions.add(introducedDist);
+        distributions.remove(nativeDist);
+        Assert.assertEquals(endemic + " [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
     }
 
     @Test

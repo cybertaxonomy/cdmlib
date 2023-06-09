@@ -101,6 +101,7 @@ public class CondensedDistributionComposer {
         List<AreaNode> introducedTopLevelNodes = areaTreesAndStatusMap.getSecondResult();
 
         handleAlternativeRootArea(topLevelNodes, areaToStatusMap, config);
+        handleAlternativeRootArea(introducedTopLevelNodes, areaToStatusMap, config);
 
         //4. replace the area by the abbreviated representation and add symbols
         AreaNodeComparator areaNodeComparator = new AreaNodeComparator(config, languages);
@@ -174,6 +175,7 @@ public class CondensedDistributionComposer {
         for (AreaNode topLevelNode : removeSafeTopLevelNodes) {
             index++;
             int nChildren = topLevelNode.getSubareas() == null ? 0 : topLevelNode.getSubareas().size();
+            boolean switched = false;
             if (areaToStatusMap.get(topLevelNode.area) == null && nChildren == 1) {
                 //real top level node has no data and 1 child => potential candidate to be replaced by alternative root
                 AreaNode childNode = topLevelNode.subAreas.iterator().next();
@@ -184,8 +186,10 @@ public class CondensedDistributionComposer {
                     //child is alternative root and has data => replace root by alternative root
                     topLevelNodes.remove(topLevelNode);
                     topLevelNodes.add(index, childNode);
+                    switched = true;
                 }
-            }else {
+            }
+            if (switched == false) {
                 //if root has data or >1 children test if children are alternative roots with no data => remove
                 Set<AreaNode> childNodes = new HashSet<>(topLevelNode.subAreas);
                 for(AreaNode childNode : childNodes) {
@@ -193,11 +197,18 @@ public class CondensedDistributionComposer {
                     boolean childHasNoData = areaToStatusMap.get(childArea) == null;
                     if (isMarkedAs(childArea, config.alternativeRootAreaMarkers)
                             && childHasNoData) {
-                        topLevelNodes.set(topLevelNodes.indexOf(topLevelNode), childNode);
+                        replaceInBetweenNode(topLevelNode,childNode);
                     }
                 }
             }
         }
+    }
+
+    private void replaceInBetweenNode(AreaNode parent, AreaNode inBetweenNode) {
+        for (AreaNode child : inBetweenNode.subAreas) {
+            parent.addSubArea(child);
+        }
+        parent.subAreas.remove(inBetweenNode);
     }
 
     private boolean isMarkedAs(NamedArea area, Set<UUID> alternativeRootAreaMarkers) {
@@ -220,6 +231,7 @@ public class CondensedDistributionComposer {
             if (config.splitNativeAndIntroduced && isIntroduced(areaToStatusMap.get(area))){
                 map = introducedAreaNodeMap;
             }
+            //either merge into areaNodeMap or introducedAreaNodeMap
             mergeIntoHierarchy(areaToStatusMap.keySet(), map, area, parentAreaMap, config);
         }
 

@@ -310,6 +310,7 @@ public class DistributionTreeDtoLoader {
 
         TreeNode<Set<DistributionDto>, NamedAreaDto> emptyRoot = dto.getRootElement();
         for(TreeNode<Set<DistributionDto>, NamedAreaDto> realRoot : emptyRoot.getChildren()) {
+            boolean switched = false;
             if (CdmUtils.isNullSafeEmpty(realRoot.getData()) && realRoot.getNumberOfChildren() == 1) {
                 //real root has no data and 1 child => potential candidate to be replaced by alternative root
                 TreeNode<Set<DistributionDto>, NamedAreaDto> child = realRoot.getChildren().get(0);
@@ -319,24 +320,25 @@ public class DistributionTreeDtoLoader {
                     emptyRoot.getChildren().remove(realRoot);
                     emptyRoot.addChild(child);
                 }
-            } else {
+            }
+            if (!switched) {
                 //if root has data or >1 children test if children are alternative roots with no data => remove
                 Set<TreeNode<Set<DistributionDto>, NamedAreaDto>> children = new HashSet<>(realRoot.getChildren());
                 for(TreeNode<Set<DistributionDto>, NamedAreaDto> child : children) {
                     if (isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerTypes)
                             && CdmUtils.isNullSafeEmpty(child.getData())) {
-                        replaceByChildren(realRoot, child);
+                        replaceInBetweenNode(realRoot, child);
                     }
                 }
             }
         }
     }
 
-    private void replaceByChildren(TreeNode<Set<DistributionDto>, NamedAreaDto> parent,
-            TreeNode<Set<DistributionDto>, NamedAreaDto> toBeReplaced) {
-        for (TreeNode<Set<DistributionDto>, NamedAreaDto> child : toBeReplaced.getChildren()) {
+    private void replaceInBetweenNode(TreeNode<Set<DistributionDto>, NamedAreaDto> parent,
+            TreeNode<Set<DistributionDto>, NamedAreaDto> inBetweenNode) {
+        for (TreeNode<Set<DistributionDto>, NamedAreaDto> child : inBetweenNode.getChildren()) {
             parent.addChild(child);
         }
-        parent.getChildren().remove(toBeReplaced);
+        parent.getChildren().remove(inBetweenNode);
     }
 }
