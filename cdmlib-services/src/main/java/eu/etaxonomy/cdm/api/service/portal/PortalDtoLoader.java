@@ -932,7 +932,7 @@ public class PortalDtoLoader {
 
         boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
         distributionConfig.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
-        boolean fallbackAsParent = true;  //may become a service parameter in future
+        boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future
 
         //fallbackArea markers include markers for fully hidden areas and fallback areas.
         //The later are hidden markers on areas that have non-hidden subareas (#4408)
@@ -954,7 +954,7 @@ public class PortalDtoLoader {
         }
 
         DistributionInfoDto dto = distributionService.composeDistributionInfoFor(distributionConfig, distributions,
-                fallbackAsParent,
+                neverUseFallbackAreaAsParent,
                 distributionStatusColors, LocaleContext.getLanguages());
 
         if (distributionConfig.isUseTreeDto() && dto.getTree() != null) {
