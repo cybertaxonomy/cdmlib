@@ -594,7 +594,7 @@ public class TermNode <T extends DefinedTermBase>
     }
 
     /**
-     * Fills the given map with areas mapping to their parents.
+     * Fills the given map with areas mapping to their parents set.
      */
     public void fillParentMap(SetMap<T, T> map) {
         if (getTerm() != null) {
@@ -736,4 +736,5 @@ public class TermNode <T extends DefinedTermBase>
 			return this.getGraph().getId();
 		}
 	}
+
 }

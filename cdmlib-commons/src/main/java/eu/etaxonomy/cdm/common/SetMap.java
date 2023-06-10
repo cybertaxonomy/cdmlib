@@ -65,7 +65,8 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
     }
 
     /**
-     * True, if any of the value sets contains the given item
+     * True, if any of the value sets contain the given item.
+     *
      * @param item
      * @return <code>true</code> if item exists in one of the {@link Set}s
      */
