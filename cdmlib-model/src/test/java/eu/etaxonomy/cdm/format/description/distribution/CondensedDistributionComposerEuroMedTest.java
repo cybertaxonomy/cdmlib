@@ -224,7 +224,6 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         Assert.assertEquals(endemic + " <b>GER(B BW)</b> ?IT [aFR(cJ) nS]", condensedDistribution.toString());
     }
 
-
     @Test
     public void testEuroMedCondensedDistributionFallback() {
 //      distributions.add(Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()));

@@ -68,6 +68,4 @@ public class DistributionDto extends FactDtoBase {
     public String toString() {
         return "DistributionDto [area=" + area + ", status=" + status + "]";
     }
-
-
 }

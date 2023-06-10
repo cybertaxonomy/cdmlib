@@ -79,7 +79,7 @@ public class DistributionTreeDtoLoader {
 
   /**
    * @param parentAreaMap
- * @param fallbackAreaMarkerTypes
+   * @param fallbackAreaMarkerTypes
    *      Areas are fallback areas if they have a {@link Marker} with one of the specified
    *      {@link MarkerType marker types}.
    *      Areas identified as such are omitted from the hierarchy and the sub areas are moving one level up.
@@ -175,8 +175,7 @@ public class DistributionTreeDtoLoader {
    */
   private void addDistributionToSubTree(DistributionDto distribution,
           List<NamedAreaDto> namedAreaPath,
-          TreeNode<Set<DistributionDto>, NamedAreaDto> root){
-
+          TreeNode<Set<DistributionDto>,NamedAreaDto> root){
 
       //if the list to merge is empty finish the execution
       if (namedAreaPath.isEmpty()) {

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service.pager;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class PagerTest {
 
         @Before
         public void setUp() {
-                taxa = new ArrayList<Taxon>();
+                taxa = new ArrayList<>();
                 for(int i = 0; i < 30; i++) {
                         taxa.add(Taxon.NewInstance(null, null));
                 }
@@ -108,7 +107,5 @@ public class PagerTest {
                 Assert.assertEquals("121 - 150", pager.getPageNumber(4));
                 Assert.assertEquals("151 - 180", pager.getPageNumber(5));
                 Assert.assertEquals("181 - 210", pager.getPageNumber(6));
-
         }
 }
-

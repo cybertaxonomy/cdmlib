@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class DistributionServiceUtilitiesTest extends TermTestBase {
 
     private Collection<Distribution> distributions = null;
+
     private Collection<Distribution> filteredDistributions = null;
     private boolean subAreaPreference = false;
     private boolean statusOrderPreference = false;

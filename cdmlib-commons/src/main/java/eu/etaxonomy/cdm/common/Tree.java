@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.common;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * NOTE: S is the id, T is the data!
+ */
 public class Tree<T,S> {
 
     private TreeNode<T,S> rootElement;
