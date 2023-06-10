@@ -88,10 +88,9 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         for (Annotation an: node.getAnnotations()) {
             AnnotationDto anDto = new AnnotationDto(an.getUuid(), an.getId());
             anDto.setText(an.getText());
-            anDto.setTypeUuid(an.getAnnotationType().getUuid());
-            anDto.setTypeLabel(an.getAnnotationType().getLabel());
+            anDto.setTypeUuid(an.getAnnotationType() == null ? null : an.getAnnotationType().getUuid());
+            anDto.setTypeLabel(an.getAnnotationType() == null ? null : an.getAnnotationType().getLabel());
             dto.annotations.add(anDto);
-
         }
         for (Marker marker: node.getMarkers()) {
             MarkerDto maDto = new MarkerDto(marker.getUuid(), marker.getId(), marker.getMarkerType().getUuid(), marker.getMarkerType().getLabel(), marker.getFlag());
