@@ -65,12 +65,10 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         for (Object o: node.getChildNodes()){
             if (o instanceof TermNode){
                 TermNode<?> child = (TermNode<?>)o;
-                if (child != null){
-                    if(child.getTerm() != null && child.getTerm().getTermType().equals(TermType.Character)){
-                        children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
-                    }else{
-                        children.add(TermNodeDto.fromNode(child, treeDto));
-                    }
+                if(child.getTerm() != null && child.getTerm().getTermType().equals(TermType.Character)){
+                    children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
+                }else{
+                    children.add(TermNodeDto.fromNode(child, treeDto));
                 }
             }
         }
@@ -219,7 +217,6 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         for (FeatureState state: inApplicableIf){
             this.inapplicableIf.add( new FeatureStateDto(state.getUuid(),FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(CdmBase.deproxy(state.getState(), DefinedTermBase.class))));
         }
-
     }
 
     @Override
