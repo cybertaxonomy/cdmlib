@@ -65,10 +65,12 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         for (Object o: node.getChildNodes()){
             if (o instanceof TermNode){
                 TermNode<?> child = (TermNode<?>)o;
-                if(child.getTerm() != null && child.getTerm().getTermType().equals(TermType.Character)){
-                    children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
-                }else{
-                    children.add(TermNodeDto.fromNode(child, treeDto));
+                if (child != null){
+                    if(child.getTerm() != null && child.getTerm().getTermType().equals(TermType.Character)){
+                        children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
+                    }else{
+                        children.add(TermNodeDto.fromNode(child, treeDto));
+                    }
                 }
             }
         }
@@ -77,22 +79,19 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         dto.setOnlyApplicableIf(node.getOnlyApplicableIf());
         dto.setInapplicableIf(node.getInapplicableIf());
         dto.setTermType(node.getTermType());
-
-        //annotations
         if (dto.annotations == null) {
             dto.annotations = new HashSet<>();
+        }
+        if (dto.markers == null) {
+            dto.markers = new HashSet<>();
         }
         for (Annotation an: node.getAnnotations()) {
             AnnotationDto anDto = new AnnotationDto(an.getUuid(), an.getId());
             anDto.setText(an.getText());
-            anDto.setTypeUuid(an.getAnnotationType() == null ? null : an.getAnnotationType().getUuid());
-            anDto.setTypeLabel(an.getAnnotationType() == null ? null : an.getAnnotationType().getLabel());
+            anDto.setTypeUuid(an.getAnnotationType().getUuid());
+            anDto.setTypeLabel(an.getAnnotationType().getLabel());
             dto.annotations.add(anDto);
-        }
 
-        //markers
-        if (dto.markers == null) {
-            dto.markers = new HashSet<>();
         }
         for (Marker marker: node.getMarkers()) {
             MarkerDto maDto = new MarkerDto(marker.getUuid(), marker.getId(), marker.getMarkerType().getUuid(), marker.getMarkerType().getLabel(), marker.getFlag());
@@ -101,7 +100,9 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
 //            maDto.setTypeUuid(marker.getMarkerType().getUuid());
 //            maDto.setUuid(marker.getUuid());
 //            maDto.setValue(marker.getFlag());
+
             dto.markers.add(maDto);
+
         }
         return dto;
     }
@@ -217,6 +218,7 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         for (FeatureState state: inApplicableIf){
             this.inapplicableIf.add( new FeatureStateDto(state.getUuid(),FeatureDto.fromFeature(state.getFeature()), TermDto.fromTerm(CdmBase.deproxy(state.getState(), DefinedTermBase.class))));
         }
+
     }
 
     @Override
@@ -249,8 +251,6 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         for (TermNodeDto child: children){
             if (child != null && child.getUuid() != null && nodeDto.getUuid() != null){
                 if (child.getUuid().equals(nodeDto.getUuid())){
-                    return index;
-                }else if(child != null &&(child.getUuid() == null && nodeDto.getUuid() == null) && child.getTerm().getUuid().equals(nodeDto.getTerm().getUuid())){
                     return index;
                 }
             }
