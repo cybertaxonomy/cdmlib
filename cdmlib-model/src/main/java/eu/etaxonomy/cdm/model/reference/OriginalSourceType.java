@@ -107,7 +107,7 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 	@XmlEnumValue("Primary Media Source")
 	PrimaryMediaSource(UUID.fromString("72be3615-a6da-4728-948a-b3c5797fa4bc"), "Primary Media Source", "PMS", null),
 
-	//8
+	//7
     /**
      * <code>Internal</code> is the type to be used if one stores a source only for internal
      * use, not for publication.

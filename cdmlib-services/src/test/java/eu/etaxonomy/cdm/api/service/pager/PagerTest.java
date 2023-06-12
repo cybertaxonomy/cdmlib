@@ -24,7 +24,7 @@ public class PagerTest {
 
     @Before
     public void setUp() {
-        taxa = new ArrayList<Taxon>();
+                taxa = new ArrayList<>();
         for(int i = 0; i < 30; i++) {
                 taxa.add(Taxon.NewInstance(null, null));
         }

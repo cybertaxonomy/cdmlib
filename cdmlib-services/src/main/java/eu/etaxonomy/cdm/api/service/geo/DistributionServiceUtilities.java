@@ -1065,16 +1065,18 @@ public class DistributionServiceUtilities {
 
         //TODO loader needed?
         DistributionTreeDtoLoader loader = new DistributionTreeDtoLoader(termDao);
-        DistributionTreeDto dto = loader.load();
+        DistributionTreeDto distributionTreeDto = loader.load();
 
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
+
         //order by areas
-        loader.orderAsTree(dto, distributions, parentAreaMap, omitLevels,
+        loader.orderAsTree(distributionTreeDto, distributions, parentAreaMap, omitLevels,
                 fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
-        loader.handleAlternativeRootArea(dto, alternativeRootAreaMarkerType);
-        loader.recursiveSortChildren(dto, distributionOrder); // TODO respect current locale for sorting
+
+        loader.handleAlternativeRootArea(distributionTreeDto, alternativeRootAreaMarkerType);
+        loader.recursiveSortChildren(distributionTreeDto, distributionOrder); // TODO respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
-        return dto;
+        return distributionTreeDto;
     }
 
     /**

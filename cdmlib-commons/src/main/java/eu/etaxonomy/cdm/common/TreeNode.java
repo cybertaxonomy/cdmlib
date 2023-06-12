@@ -153,23 +153,6 @@ public class TreeNode<T,S> {
         this.data = data;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("{").append(getData() == null ? "null" : getData().toString()).append(",[");
-        int i = 0;
-        for (TreeNode<T,S> e : getChildren()) {
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append(e.getData().toString());
-            i++;
-        }
-        sb.append("]").append("}");
-        return sb.toString();
-    }
-
     public S getNodeId() {
         return nodeId;
     }
@@ -194,4 +177,25 @@ public class TreeNode<T,S> {
         return null;
     }
 
+//**************************** TO STRING *************************/
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        if (this.nodeId != null) {
+            sb.append(nodeId.toString());
+        }
+        sb.append("{").append(getData() == null ? "null" : getData().toString()).append(",[");
+        int i = 0;
+        for (TreeNode<T,S> e : getChildren()) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(e.getData().toString());
+            i++;
+        }
+        sb.append("]").append("}");
+        return sb.toString();
+    }
 }

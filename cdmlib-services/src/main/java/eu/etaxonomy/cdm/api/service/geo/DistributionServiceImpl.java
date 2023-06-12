@@ -158,7 +158,6 @@ public class DistributionServiceImpl implements IDistributionService {
         }
         SetMap<NamedArea, NamedArea> parentAreaMap = areaTree.getParentMap();
 
-
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea
         // and ignoreUndefinedStatus to all distributions, but KEEP fallback area distributions
         Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
@@ -172,6 +171,7 @@ public class DistributionServiceImpl implements IDistributionService {
         if(parts.contains(InfoPart.tree)) {
             IDistributionTree tree;
             if (config.isUseTreeDto()) {
+
                 //transform distributions to distribution DTOs
                 Set<DistributionDto> filteredDtoDistributions = new HashSet<>();
                 for (Distribution distribution : filteredDistributions) {
