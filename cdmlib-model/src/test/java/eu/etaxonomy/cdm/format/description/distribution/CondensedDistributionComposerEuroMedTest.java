@@ -66,6 +66,8 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
 
     private static final String endemic = UTF8.BLACK_CIRCLE.toString();
 
+    private Map<UUID,PresenceAbsenceTerm> iucnStatus;
+
     @Before
     public void setUp(){
 
@@ -152,7 +154,7 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
     }
 
     private void createIucnDistributions() {
-        Map<UUID,PresenceAbsenceTerm> iucnStatus = createIucnStatus();  //may be removed once iucn status are part of test data
+        iucnStatus = createIucnStatus();  //may be removed once iucn status are part of test data
 
         distributions.add(Distribution.NewInstance(europe, iucnStatus.get(uuidCriticallyEndangered)));
         distributions.add(Distribution.NewInstance(germany, iucnStatus.get(uuidEndangered)));
@@ -373,7 +375,12 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
 
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
                 distributions, parentAreaMap, languages, config);
+        Assert.assertEquals("CR FR(J:CR) GER:RE(B:RE BW:CR) IT:LC S:RE", condensedDistribution.toString());
 
-        Assert.assertEquals("CR FR:CR(J) GER:RE(B:RE BW:CR) IT:LC S:RE", condensedDistribution.toString());
+        distributions.add(Distribution.NewInstance(france, iucnStatus.get(uuidCriticallyEndangered)));
+        condensedDistribution = composer.createCondensedDistribution(
+                distributions, parentAreaMap, languages, config);
+        Assert.assertEquals("CR FR:CR(J:CR) GER:RE(B:RE BW:CR) IT:LC S:RE", condensedDistribution.toString());
+
     }
 }
