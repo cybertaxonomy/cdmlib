@@ -297,7 +297,7 @@ public class DistributionTreeDtoLoader {
    */
   private void loadAllParentAreasIntoSession(Set<NamedAreaDto> areas, SetMap<NamedArea, NamedArea> parentAreaMap) {
 
-      if (areas == null || parentAreaMap == null) {
+      if (areas == null || parentAreaMap == null || termDao == null) {
           return;
       }
       List<NamedAreaDto> parentAreas = null;
