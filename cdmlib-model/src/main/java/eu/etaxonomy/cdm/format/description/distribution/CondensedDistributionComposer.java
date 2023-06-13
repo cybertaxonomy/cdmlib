@@ -92,11 +92,12 @@ public class CondensedDistributionComposer {
             CondensedDistributionConfiguration config) {
 
         CondensedDistribution result = new CondensedDistribution();
-
         Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap = new HashMap<>();
 
+        //create area tree and status map
         DoubleResult<List<AreaNode>, List<AreaNode>> areaTreesAndStatusMap = createAreaTreesAndStatusMap(
                 filteredDistributions, parentAreaMap, areaToStatusMap, config);
+
         List<AreaNode> topLevelNodes = areaTreesAndStatusMap.getFirstResult();
         List<AreaNode> introducedTopLevelNodes = areaTreesAndStatusMap.getSecondResult();
 
@@ -223,11 +224,11 @@ public class CondensedDistributionComposer {
     protected Map<NamedArea, AreaNode>[] buildAreaHierarchie(Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap,
             SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
 
-        Map<NamedArea, AreaNode> areaNodeMap = new HashMap<>();
+        Map<NamedArea, AreaNode> area2NodeMap = new HashMap<>();
         Map<NamedArea, AreaNode> introducedAreaNodeMap = new HashMap<>();
 
         for(NamedArea area : areaToStatusMap.keySet()) {
-            Map<NamedArea, AreaNode> map = areaNodeMap;
+            Map<NamedArea, AreaNode> map = area2NodeMap;
             if (config.splitNativeAndIntroduced && isIntroduced(areaToStatusMap.get(area))){
                 map = introducedAreaNodeMap;
             }
@@ -237,14 +238,16 @@ public class CondensedDistributionComposer {
 
         //TODO move this filter further up where native and introduced is still combined,
         // this makes it less complicated
-        removeFallbackAreasWithChildDistributions(areaNodeMap, introducedAreaNodeMap, config);
+        removeFallbackAreasWithChildDistributions(area2NodeMap, introducedAreaNodeMap, config);
 
         @SuppressWarnings("unchecked")
-        Map<NamedArea, AreaNode>[] result = new Map[]{areaNodeMap, introducedAreaNodeMap};
+        Map<NamedArea, AreaNode>[] result = new Map[]{area2NodeMap, introducedAreaNodeMap};
         return result;
     }
 
-    private void removeFallbackAreasWithChildDistributions(Map<NamedArea, AreaNode> areaNodeMap, Map<NamedArea, AreaNode> areaNodeMap2, CondensedDistributionConfiguration config) {
+    private void removeFallbackAreasWithChildDistributions(Map<NamedArea, AreaNode> areaNodeMap,
+            Map<NamedArea, AreaNode> areaNodeMap2, CondensedDistributionConfiguration config) {
+
         Set<NamedArea> toBeDeletedAreas = new HashSet<>();
         Set<AreaNode> allNodes = new HashSet<>(areaNodeMap.values());
         allNodes.addAll(areaNodeMap2.values());
@@ -291,13 +294,14 @@ public class CondensedDistributionComposer {
     }
 
     private void mergeIntoHierarchy(Collection<NamedArea> areas,  //areas not really needed anymore if we don't use findParentIn
-            Map<NamedArea, AreaNode> areaNodeMap, NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
+            Map<NamedArea, AreaNode> area2NodeMap, NamedArea area,
+            SetMap<NamedArea,NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
 
-        AreaNode node = areaNodeMap.get(area);
+        AreaNode node = area2NodeMap.get(area);
         if(node == null) {
             // putting area into list of areas as node
             node = new AreaNode(area);
-            areaNodeMap.put(area, node);
+            area2NodeMap.put(area, node);
         }
 
         NamedArea parent = getNonFallbackParent(area, parentAreaMap, config);   // findParentIn(area, areas);

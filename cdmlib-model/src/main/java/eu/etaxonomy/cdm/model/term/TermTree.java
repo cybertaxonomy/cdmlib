@@ -267,9 +267,9 @@ public class TermTree <T extends DefinedTermBase>
     }
 
     @Transient
-    public SetMap<T, TermNode<T>> getTermMap() {
+    public SetMap<T, TermNode<T>> getTermNodesMap() {
         SetMap<T, TermNode<T>> result = new SetMap<>();
-        getRoot().fillTermMap(result);
+        getRoot().fillTermNodeMap(result);
         return result;
     }
 

@@ -607,14 +607,14 @@ public class TermNode <T extends DefinedTermBase>
     }
 
     /**
-     * Fills the given map with areas mapping to nodes in the subtree (in case duplicates are allowed).
+     * Fills the given map with terms mapping to nodes in the subtree (in case duplicates are allowed).
      */
-    public void fillTermMap(SetMap<T, TermNode<T>> map) {
+    public void fillTermNodeMap(SetMap<T, TermNode<T>> map) {
         if (getTerm() != null) {
             map.putItem(getTerm(), this);
         }
         for (TermNode<T> node : getChildNodes()){
-            node.fillTermMap(map);
+            node.fillTermNodeMap(map);
         }
         return;
     }

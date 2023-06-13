@@ -121,7 +121,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 	 */
 	@XmlEnumValue("Other")
 	Other(UUID.fromString("b7c4b7fe-0aef-428a-bb7b-9153a11bf845"), "Other", "OTH", null),
-
 	;
 
 	@SuppressWarnings("unused")
