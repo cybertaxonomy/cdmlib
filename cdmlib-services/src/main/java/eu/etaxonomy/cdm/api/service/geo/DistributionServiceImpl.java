@@ -161,8 +161,10 @@ public class DistributionServiceImpl implements IDistributionService {
 
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea
         // and ignoreUndefinedStatus to all distributions, but KEEP fallback area distributions
+        boolean keepFallBackOnlyIfNoSubareaDataExists = false;
         Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false,
+                areaTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA,
+                keepFallBackOnlyIfNoSubareaDataExists,
                 config.isIgnoreDistributionStatusUndefined());
 
         if(parts.contains(InfoPart.elements)) {
@@ -207,7 +209,7 @@ public class DistributionServiceImpl implements IDistributionService {
             boolean IGNORE_STATUS_ORDER_PREF = false;
             Set<MarkerType> fallbackAreaMarkerType = null;
             // only apply the subAreaPreference rule for the maps
-            boolean keepFallBackOnlyIfNoSubareaDataExists = true;
+            keepFallBackOnlyIfNoSubareaDataExists = true;
             Set<Distribution> filteredMapDistributions = DistributionServiceUtilities.filterDistributions(
                     filteredDistributions, areaTree, fallbackAreaMarkerType, !PREFER_AGGREGATED,
                     IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists,
