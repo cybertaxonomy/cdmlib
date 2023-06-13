@@ -204,6 +204,8 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         ileDeFranceDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.CULTIVATED());
         spainDist = Distribution.NewInstance(spain, PresenceAbsenceTerm.NATURALISED());
         westEuropeDist = null;
+        saarDist = null;
+        addDefaultDistributions();
     }
 
     private void createDefaultDistributionDtos() {
@@ -219,6 +221,27 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         if (westEuropeDist != null) {
             distributionDtos.add(dist2Dto(westEuropeDist, parentAreaMap));
         }
+        if (saarDist != null) {
+            distributionDtos.add(dist2Dto(saarDist, parentAreaMap));
+        }
+    }
+
+    //only needed for testFilterDistributions_multipleParents which uses these data
+    private void addDefaultDistributions() {
+        distributions.clear();
+        distributions.add(europeDist);
+        distributions.add(germanyDist);
+        distributions.add(bawueDist);
+        distributions.add(berlinDist);
+        distributions.add(italyDist);
+        distributions.add(ileDeFranceDist);
+        distributions.add(spainDist);
+        if (westEuropeDist != null) {
+            distributions.add(westEuropeDist);
+        }
+        if (saarDist != null) {
+            distributions.add(saarDist);
+        }
     }
 
     private DistributionDto dist2Dto(Distribution distribution, SetMap<NamedArea, NamedArea> parentAreaMap) {
@@ -229,6 +252,13 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
     private void createWesternEuropeDistribution() {
         westEuropeDist = Distribution.NewInstance(westEurope, PresenceAbsenceTerm.NATURALISED());
+    }
+
+    private void createAndAddSaarAndWestEuropeDistribution() {
+        createWesternEuropeDistribution();
+        saarDist = Distribution.NewInstance(saar, PresenceAbsenceTerm.NATURALISED());
+        distributions.add(westEuropeDist);
+        distributions.add(saarDist);
     }
 
     @Test
@@ -574,6 +604,46 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
+    }
+
+
+    @Test
+    public void testFilterDistributions_multipleParents(){
+        subAreaPreference = true;
+        statusOrderPreference = true;
+        boolean ignoreDistributionStatusUndefined = false;
+        boolean keepFallBackOnlyIfNoSubareaDataExists = true;
+
+        setupTreeTest();  //we use tree test setup here
+        TermTree<NamedArea> areaTree = this.areaTree;
+        createDefaultDistributions();
+
+        //test default (without 2 parents)
+        distributions.remove(bawueDist);
+        distributions.remove(berlinDist);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, ignoreDistributionStatusUndefined);
+        Assert.assertEquals(4, filteredDistributions.size());
+        List<NamedArea> areaList = filteredDistributions.stream().map(fd->fd.getArea()).collect(toList);
+        Assert.assertTrue(areaList.contains(germany));
+        Assert.assertTrue(areaList.contains(ileDeFrance));
+        Assert.assertTrue(areaList.contains(italy));
+        Assert.assertTrue(areaList.contains(spain));
+
+        //add Saar which is child of Germany and West Europe
+        createAndAddSaarAndWestEuropeDistribution();
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, ignoreDistributionStatusUndefined);
+        Assert.assertEquals(4, filteredDistributions.size());
+        List<NamedArea> areaList2 = filteredDistributions.stream().map(fd->fd.getArea()).collect(toList);
+        Assert.assertTrue(areaList2.contains(saar));
+        Assert.assertFalse("Should not contain West Europe as it is Saar parent", areaList2.contains(westEurope));
+        Assert.assertFalse("Should not contain Germany as it is Saar parent", areaList2.contains(germany));
+        Assert.assertTrue(areaList2.contains(ileDeFrance));
+        Assert.assertTrue(areaList.contains(italy));
+        Assert.assertTrue(areaList.contains(spain));
     }
 
     @Test

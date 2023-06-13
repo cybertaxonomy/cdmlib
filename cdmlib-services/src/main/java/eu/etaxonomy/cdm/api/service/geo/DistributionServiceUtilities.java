@@ -870,7 +870,12 @@ public class DistributionServiceUtilities {
         return result;
     }
 
-
+    /**
+     * Removes all distributions that have an area being a parent of
+     * anothers distributions area. E.g. removes distribution for "Europe"
+     * if a distribution for "France" exists in the list, where Europe
+     * is a direct parent for France.
+     */
     private static void handleSubAreaPreferenceRule(SetMap<NamedArea, Distribution> filteredDistributions,
             TermTree<NamedArea> areaTree) {
 
@@ -880,11 +885,11 @@ public class DistributionServiceUtilities {
             if(removeCandidatesArea.contains(area)){
                 continue;
             }
-            //xx;
-            NamedArea parent = parentMap.getFirstValue(area);
-            if(parent != null && filteredDistributions.containsKey(parent)){
-                removeCandidatesArea.add(parent);
-            }
+            parentMap.get(area).forEach(parent->{
+                if(parent != null && filteredDistributions.containsKey(parent)){
+                    removeCandidatesArea.add(parent);
+                }
+            });
         }
         for(NamedArea removeKey : removeCandidatesArea){
             filteredDistributions.remove(removeKey);
