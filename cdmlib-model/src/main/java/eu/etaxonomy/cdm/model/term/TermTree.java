@@ -266,6 +266,13 @@ public class TermTree <T extends DefinedTermBase>
         return result;
     }
 
+    @Transient
+    public SetMap<T, TermNode<T>> getTermMap() {
+        SetMap<T, TermNode<T>> result = new SetMap<>();
+        getRoot().fillTermMap(result);
+        return result;
+    }
+
 //*********************** CLONE ********************************************************/
 
 	/**
