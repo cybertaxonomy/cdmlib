@@ -1057,11 +1057,12 @@ public class DistributionServiceUtilities {
     public static DistributionTreeDto buildOrderedTreeDto(Set<NamedAreaLevel> omitLevels,
             Collection<DistributionDto> distributions,
             SetMap<NamedArea, NamedArea> parentAreaMap,
-            Set<MarkerType> fallbackAreaMarkerTypes,
+            TermTree<NamedArea> areaTree, Set<MarkerType> fallbackAreaMarkerTypes,
             Set<MarkerType> alternativeRootAreaMarkerType,
             boolean neverUseFallbackAreaAsParent,
             DistributionOrder distributionOrder,
-            IDefinedTermDao termDao) {
+            IDefinedTermDao termDao,
+            boolean useSecondMethod) {
 
         //TODO loader needed?
         DistributionTreeDtoLoader loader = new DistributionTreeDtoLoader(termDao);
@@ -1070,11 +1071,16 @@ public class DistributionServiceUtilities {
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
 
         //order by areas
-        loader.orderAsTree(distributionTreeDto, distributions, parentAreaMap, omitLevels,
-                fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
-
+        if (!useSecondMethod) {
+            loader.orderAsTree(distributionTreeDto, distributions, parentAreaMap, omitLevels,
+                    fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
+        }else {
+            loader.orderAsTree2(distributionTreeDto, distributions, areaTree, omitLevels,
+                    fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
+        }
         loader.handleAlternativeRootArea(distributionTreeDto, alternativeRootAreaMarkerType);
         loader.recursiveSortChildren(distributionTreeDto, distributionOrder); // TODO respect current locale for sorting
+
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return distributionTreeDto;
     }

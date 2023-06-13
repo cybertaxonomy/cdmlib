@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.api.service.portal.PortalDtoLoader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
@@ -176,13 +177,16 @@ public class DistributionServiceImpl implements IDistributionService {
                 Set<DistributionDto> filteredDtoDistributions = new HashSet<>();
                 for (Distribution distribution : filteredDistributions) {
                     DistributionDto distDto = new DistributionDto(distribution, parentAreaMap);
+                    PortalDtoLoader.loadBaseData(distribution, distDto);
+                    distDto.setTimeperiod(distribution.getTimeperiod() == null ? null : distribution.getTimeperiod().toString());
                     filteredDtoDistributions.add(distDto);
                 }
 
+                boolean useSecondMethod = false;
                 tree = DistributionServiceUtilities.buildOrderedTreeDto(omitLevels,
-                        filteredDtoDistributions, parentAreaMap, fallbackAreaMarkerTypes,
+                        filteredDtoDistributions, parentAreaMap, areaTree, fallbackAreaMarkerTypes,
                         alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent,
-                        distributionOrder, termDao);
+                        distributionOrder, termDao, useSecondMethod);
             }else {
                 //version with model entities as used in direct webservice (not taxon page DTO)
                 tree = DistributionServiceUtilities.buildOrderedTree(omitLevels,
