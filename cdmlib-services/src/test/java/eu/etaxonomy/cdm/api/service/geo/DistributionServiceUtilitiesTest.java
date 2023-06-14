@@ -340,37 +340,18 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
          * and both areas have the same status only the information on
          * the sub area should be reported, whereas the super area should be
          * ignored.
-         * TODO Note by AM:  to me this test is unclear, there seems to be no difference between
-         * "no", "mixed" and "all". From what I saw in the code the "preferAggregated" rule
-         * works only on the exact same area so as we use Germany versus Berlin here it may not
-         * have any influence and the last 2 tests could be deleted.
-         * NOTE2: From now on the marker computed on distributions has no effect anymore.
-         * Computed (or better Aggregated_Distribution) can only be defined on description
-         * level not on description element level. But this change had no effect on this test
-         * so also from this perspective the 2 "Computed" tests can be deleted.
+         * TODO Note by AM: originally this test distinguished 3 situation "no",
+         * "mixed" and "all" computed. As there was no difference in the results anymore
+         * at a certain time, the 2 later ones were deleted from this test, also
+         * because they were still using the old concept of a "COMPUTED"-Marker.
          */
         Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE());
         Distribution distBerlin = Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE());
 
-        // no computed data
         distributions.add(distGermany);
         distributions.add(distBerlin);
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
-
-        // mixed situation
-        distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
-
-        // all computed
-        distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
     }
