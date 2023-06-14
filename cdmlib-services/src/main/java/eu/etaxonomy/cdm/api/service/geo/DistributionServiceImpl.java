@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -157,7 +158,11 @@ public class DistributionServiceImpl implements IDistributionService {
             //TODO better use areaTree created within filterDistributions(...) but how to get it easily?
             areaTree = DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes);
         }
+        //TODO unify to use only the node map
         SetMap<NamedArea, NamedArea> parentAreaMap = areaTree.getParentMap();
+        SetMap<NamedArea, TermNode<NamedArea>> parentAreaNodeMap = areaTree.getParentNodeMap();
+        SetMap<NamedArea, TermNode<NamedArea>> area2TermNodesMap = areaTree.getTermNodesMap();
+
 
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea
         // and ignoreUndefinedStatus to all distributions, but KEEP fallback area distributions
@@ -201,7 +206,7 @@ public class DistributionServiceImpl implements IDistributionService {
 
         if(parts.contains(InfoPart.condensedDistribution)) {
             CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
-                    filteredDistributions, parentAreaMap, condensedDistConfig, languages);
+                    filteredDistributions, area2TermNodesMap, condensedDistConfig, languages);
             dto.setCondensedDistribution(condensedDistribution);
         }
 
@@ -245,12 +250,12 @@ public class DistributionServiceImpl implements IDistributionService {
             List<Language> langs) {
 
         areaTree = areaTree == null ? DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes) : areaTree;
-        SetMap<NamedArea, NamedArea> parentMap = areaTree.getParentMap();
+        SetMap<NamedArea,TermNode<NamedArea>> parentNodeMap = areaTree.getParentNodeMap();
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, null, fallbackAreaMarkerTypes, false, statusOrderPreference, false, false, true);
         CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
-                parentMap,
+                parentNodeMap,
                 config,
                 langs);
         return condensedDistribution;

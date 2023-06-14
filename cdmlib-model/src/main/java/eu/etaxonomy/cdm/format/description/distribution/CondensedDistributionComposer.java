@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.codehaus.plexus.util.StringUtils;
 
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermNode;
 
 /**
  * Base class for condensed distribution composers
@@ -88,15 +90,16 @@ public class CondensedDistributionComposer {
     }
 
     public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
-            SetMap<NamedArea, NamedArea> parentAreaMap, List<Language> languages,
+            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
+            List<Language> languages,
             CondensedDistributionConfiguration config) {
 
         CondensedDistribution result = new CondensedDistribution();
         Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap = new HashMap<>();
 
-        //create area tree and status map
+        //1.-3. create area tree and status map
         DoubleResult<List<AreaNode>, List<AreaNode>> areaTreesAndStatusMap = createAreaTreesAndStatusMap(
-                filteredDistributions, parentAreaMap, areaToStatusMap, config);
+                filteredDistributions, area2TermNodesMap, areaToStatusMap, config);
 
         List<AreaNode> topLevelNodes = areaTreesAndStatusMap.getFirstResult();
         List<AreaNode> introducedTopLevelNodes = areaTreesAndStatusMap.getSecondResult();
@@ -108,6 +111,7 @@ public class CondensedDistributionComposer {
         AreaNodeComparator areaNodeComparator = new AreaNodeComparator(config, languages);
         AreaNodeComparator topLevelAreaOfScopeComparator = config.orderType == OrderType.NATURAL ? areaNodeComparator : new AreaNodeComparator(config, languages, OrderType.NATURAL);
 
+        //sort
         Collections.sort(topLevelNodes, topLevelAreaOfScopeComparator);
 
         final boolean NOT_BOLD = false;
@@ -221,44 +225,55 @@ public class CondensedDistributionComposer {
         return false;
     }
 
-    protected Map<NamedArea, AreaNode>[] buildAreaHierarchie(Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap,
-            SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
+    protected Map<NamedArea, AreaNode>[] buildAreaHierarchie(
+            Map<NamedArea,PresenceAbsenceTerm> areaToStatusMap,
+            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
+            CondensedDistributionConfiguration config) {
 
-        Map<NamedArea, AreaNode> area2NodeMap = new HashMap<>();
-        Map<NamedArea, AreaNode> introducedAreaNodeMap = new HashMap<>();
+        Map<NamedArea,AreaNode> nativeArea2NodeMap = new HashMap<>();
+        Map<NamedArea,AreaNode> introducedArea2NodeMap = new HashMap<>();
+        Set<NamedArea> additionalHiddenParents = new HashSet<>();
 
+        //1. for each area decide which map (native or introduce), and merge
         for(NamedArea area : areaToStatusMap.keySet()) {
-            Map<NamedArea, AreaNode> map = area2NodeMap;
+            //decide which map
+            Map<NamedArea, AreaNode> map = nativeArea2NodeMap;
             if (config.splitNativeAndIntroduced && isIntroduced(areaToStatusMap.get(area))){
-                map = introducedAreaNodeMap;
+                map = introducedArea2NodeMap;
             }
-            //either merge into areaNodeMap or introducedAreaNodeMap
-            mergeIntoHierarchy(areaToStatusMap.keySet(), map, area, parentAreaMap, config);
+            //merge into map
+//            Set<TermNode<NamedArea>> termNodes = area2TermNodesMap.get(area);
+//            for (TermNode<NamedArea> termNode : termNodes) {
+//            }
+            mergeIntoHierarchy(area, map, area2TermNodesMap, additionalHiddenParents, config);
         }
 
         //TODO move this filter further up where native and introduced is still combined,
         // this makes it less complicated
-        removeFallbackAreasWithChildDistributions(area2NodeMap, introducedAreaNodeMap, config);
+        //2. remove fallback areas
+        removeFallbackAreasWithChildDistributions(nativeArea2NodeMap, introducedArea2NodeMap, additionalHiddenParents, config);
 
         @SuppressWarnings("unchecked")
-        Map<NamedArea, AreaNode>[] result = new Map[]{area2NodeMap, introducedAreaNodeMap};
+        Map<NamedArea, AreaNode>[] result = new Map[]{nativeArea2NodeMap, introducedArea2NodeMap};
         return result;
     }
 
-    private void removeFallbackAreasWithChildDistributions(Map<NamedArea, AreaNode> areaNodeMap,
-            Map<NamedArea, AreaNode> areaNodeMap2, CondensedDistributionConfiguration config) {
+    private void removeFallbackAreasWithChildDistributions(Map<NamedArea,AreaNode> area2NodeMap,
+            Map<NamedArea,AreaNode> area2NodeMap2, Set<NamedArea> additionalHiddenParents, CondensedDistributionConfiguration config) {
 
-        Set<NamedArea> toBeDeletedAreas = new HashSet<>();
-        Set<AreaNode> allNodes = new HashSet<>(areaNodeMap.values());
-        allNodes.addAll(areaNodeMap2.values());
+        //compute areas/areaNodes to be removed
+        Set<NamedArea> toBeDeletedAreas = new HashSet<>(additionalHiddenParents);
+        Set<AreaNode> allNodes = new HashSet<>(area2NodeMap.values());
+        allNodes.addAll(area2NodeMap2.values());
         for (AreaNode areaNode : allNodes){
             if (hasParentToBeRemoved(areaNode, config)){
                 toBeDeletedAreas.add(areaNode.parent.area);
             }
         }
+        //... remove them
         for (NamedArea toBeDeletedArea : toBeDeletedAreas){
-            removeFallbackArea(toBeDeletedArea, areaNodeMap);
-            removeFallbackArea(toBeDeletedArea, areaNodeMap2);
+            removeFallbackArea(toBeDeletedArea, area2NodeMap);
+            removeFallbackArea(toBeDeletedArea, area2NodeMap2);
         }
     }
 
@@ -285,7 +300,8 @@ public class CondensedDistributionComposer {
         if (areaNode.parent == null){
             return false;
         }
-        boolean parentIsHidden = isHiddenOrFallback(areaNode.parent.area, config);
+        //FIXME
+        boolean parentIsHidden = isFallback(areaNode.parent, config);
         return parentIsHidden;
     }
 
@@ -293,46 +309,112 @@ public class CondensedDistributionComposer {
         return status.isAnyIntroduced();
     }
 
-    private void mergeIntoHierarchy(Collection<NamedArea> areas,  //areas not really needed anymore if we don't use findParentIn
-            Map<NamedArea, AreaNode> area2NodeMap, NamedArea area,
-            SetMap<NamedArea,NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
+    private void mergeIntoHierarchy(
+            NamedArea area,
+            Map<NamedArea, AreaNode> area2NodeMap,
+            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
+            Set<NamedArea> additionalHiddenParents,
+            CondensedDistributionConfiguration config) {
 
         AreaNode node = area2NodeMap.get(area);
         if(node == null) {
             // putting area into list of areas as node
-            node = new AreaNode(area);
+            node = new AreaNode(area, area2TermNodesMap);
             area2NodeMap.put(area, node);
         }
+        AreaNode finalNode = node;
 
-        NamedArea parent = getNonFallbackParent(area, parentAreaMap, config);   // findParentIn(area, areas);
+        NamedArea parent = getNonFallbackParent(area, area2TermNodesMap, additionalHiddenParents, config);   // findParentIn(area, areas);
 
         if(parent != null) {
-            AreaNode parentNode = areaNodeMap.get(parent);
-            if(parentNode == null) {
-                parentNode = new AreaNode(parent);
-                areaNodeMap.put(parent, parentNode);
+//            for (TermNode<NamedArea> parent : parents) {
+//                if (parent == null /*|| parent.getTerm() == null*/) {
+//                    continue;
+//                }
+                AreaNode parentNode = area2NodeMap.get(parent);
+                if(parentNode == null) {
+                    parentNode = new AreaNode(parent, area2TermNodesMap);
+                    area2NodeMap.put(parent, parentNode);
+                }
+                parentNode.addSubArea(finalNode);
+                //recursive to top
+                mergeIntoHierarchy(parentNode.area, area2NodeMap, area2TermNodesMap,
+                        additionalHiddenParents, config);
             }
-            parentNode.addSubArea(node);
-            mergeIntoHierarchy(areas, areaNodeMap, parentNode.area, parentAreaMap, config);  //recursive to top
+//        }
+    }
+
+    private NamedArea getNonFallbackParent(NamedArea area,
+            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
+            Set<NamedArea> additionalHiddenParents,
+            CondensedDistributionConfiguration config) {
+
+        Set<TermNode<NamedArea>> termNodes = area2TermNodesMap.get(area);  //TODO handle >1 parents
+        Set<TermNode<NamedArea>> parentTermNodes = termNodes.stream().map(c->c.getParent()).collect(Collectors.toSet());
+        //        return parents;
+        //NOTE: filtering out all fallback areas here leads to failing "fallback" test
+
+        if (parentTermNodes.isEmpty()) {
+            return null;
+        }else if (parentTermNodes.size() == 1) {
+            //TODO no check for fallback?
+            TermNode<NamedArea> tn = parentTermNodes.iterator().next();
+            return tn == null ? null : tn.getTerm();
+        }else{
+                Set<NamedArea> nonFallbackParents = parentTermNodes.stream()
+                        .filter(p->!isFallback(p, config))
+                        .map(tn->tn.getTerm())
+                        .collect(Collectors.toSet());
+                Set<NamedArea> fallbackParents = parentTermNodes.stream()
+                        .filter(p->isFallback(p, config))
+                        .map(tn->tn.getTerm())
+                        .collect(Collectors.toSet());
+
+                additionalHiddenParents.addAll(fallbackParents);
+                if (!nonFallbackParents.isEmpty()) {
+                    //TODO at least use comparator here to have defined behavior
+                    //     or find other rules for decision
+                    return nonFallbackParents.iterator().next();
+                }else {
+                    Set<NamedArea> anyRecursiveNotFallback = fallbackParents.stream()
+                        .map(fp->getNonFallbackParent(fp, area2TermNodesMap, additionalHiddenParents, config))
+                        .collect(Collectors.toSet());
+                    return anyRecursiveNotFallback.isEmpty() ? null : anyRecursiveNotFallback.iterator().next();
+                }
+//                }else {
+//                    //TODO part-of , use parentAreaMap.get(p) but need to handle collection result
+//                    parents = nonFallbackParents.stream().map(p->p.getPartOf()).collect(Collectors.toSet());
+//                }
+//              for (NamedArea parent : parents) {
+//                if (parent == null) {
+//                    return null;
+//                }else
+//                while(parent != null && isHiddenOrFallback(parent, config)){
+//                    parent = parent.getPartOf();
+//                }
+//
+//            }
         }
     }
 
-    private NamedArea getNonFallbackParent(NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config) {
-        NamedArea parent = parentAreaMap.getFirstValue(area);  //TODO handle >1 parents
-
-        //if done here the fallback test does not work anymore
-//        while(parent != null && isHiddenOrFallback(parent, config)){
-//            parent = parent.getPartOf();
-//        }
-        return parent;
-    }
-
-    private boolean isHiddenOrFallback(NamedArea area, CondensedDistributionConfiguration config) {
+    private boolean isFallback(TermNode<NamedArea> termNode, CondensedDistributionConfiguration config) {
         if (config.fallbackAreaMarkers == null){
             return false;
         }
         for (UUID markerUuid : config.fallbackAreaMarkers){
-            if (area.hasMarker(markerUuid, true)){
+            if (termNode.hasMarker(markerUuid, true) || termNode.getTerm().hasMarker(markerUuid, true)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isFallback(AreaNode areaNode, CondensedDistributionConfiguration config) {
+        if (config.fallbackAreaMarkers == null){
+            return false;
+        }
+        for (UUID markerUuid : config.fallbackAreaMarkers){
+            if (areaNode.hasMarker(markerUuid) || areaNode.area.hasMarker(markerUuid, true)){
                 return true;
             }
         }
@@ -447,9 +529,22 @@ public class CondensedDistributionComposer {
         protected final NamedArea area;
         protected AreaNode parent = null;
         protected final Set<AreaNode> subAreas = new HashSet<>();
+        protected final Set<UUID> markers = new HashSet<>();
 
-        public AreaNode(NamedArea area) {
+        public AreaNode(NamedArea area, SetMap<NamedArea,TermNode<NamedArea>> map) {
             this.area = area;
+            //areaNode marker
+            markers.addAll(map.get(area).stream().flatMap(termNode->termNode.getMarkers().stream())
+                .filter(m->m.getValue() && m.getMarkerType() != null)
+                .map(m->m.getMarkerType().getUuid()).collect(Collectors.toSet()));
+            //area marker
+            markers.addAll(area.getMarkers().stream()
+                    .filter(m->m.getValue() && m.getMarkerType() != null)
+                    .map(m->m.getMarkerType().getUuid()).collect(Collectors.toSet()));
+        }
+
+        public boolean hasMarker(UUID uuidMarkerType) {
+            return markers.contains(uuidMarkerType);
         }
 
         public void addSubArea(AreaNode subArea) {
@@ -518,8 +613,14 @@ public class CondensedDistributionComposer {
         }
     }
 
+    /**
+     * Creates the root nodes for the native and the introduces area trees and fills
+     * the area2StatusMap.
+     */
     protected DoubleResult<List<AreaNode>, List<AreaNode>> createAreaTreesAndStatusMap(Collection<Distribution> filteredDistributions,
-            SetMap<NamedArea, NamedArea> parentAreaMap, Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, CondensedDistributionConfiguration config){
+            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
+            Map<NamedArea, PresenceAbsenceTerm> area2StatusMap,
+            CondensedDistributionConfiguration config){
 
         //we expect every area only to have 1 status  (multiple status should have been filtered beforehand)
 
@@ -533,27 +634,26 @@ public class CondensedDistributionComposer {
                 continue;
             }
 
-            areaToStatusMap.put(area, status);
+            area2StatusMap.put(area, status);
         }
 
         //2. build the area hierarchy
-        Map<NamedArea, AreaNode>[] areaNodeMaps = buildAreaHierarchie(areaToStatusMap, parentAreaMap, config);
+        Map<NamedArea,AreaNode>[] areaNodeMaps = buildAreaHierarchie(area2StatusMap, area2TermNodesMap, config);
 
         //3. find root nodes
         @SuppressWarnings("unchecked")
         List<AreaNode>[] topLevelNodes = new ArrayList[]{new ArrayList<>(), new ArrayList<>()};
 
+        //   ... for both maps find the root nodes
         for (int i = 0; i < 2; i++){
             for(AreaNode node : areaNodeMaps[i].values()) {
-                if(!node.hasParent() && ! topLevelNodes[i].contains(node)) {
+                if(!node.hasParent() && !topLevelNodes[i].contains(node)) {
                     topLevelNodes[i].add(node);
                 }
             }
         }
 
-        DoubleResult<List<AreaNode>, List<AreaNode>> result = new DoubleResult<>(topLevelNodes[0], topLevelNodes[1]);
-
-        return result;
+        return new DoubleResult<>(topLevelNodes[0], topLevelNodes[1]);
     }
 
     private void handleSubAreas(CondensedDistribution result, AreaNode areaNode, CondensedDistributionConfiguration config,

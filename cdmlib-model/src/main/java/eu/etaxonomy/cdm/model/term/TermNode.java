@@ -607,6 +607,19 @@ public class TermNode <T extends DefinedTermBase>
     }
 
     /**
+     * Fills the given map with areas mapping to their parents set.
+     */
+    public void fillParentNodeMap(SetMap<T,TermNode<T>> map) {
+        if (getTerm() != null) {
+            map.putItem(getTerm(), getParent());
+        }
+        for (TermNode<T> node : getChildNodes()){
+            node.fillParentNodeMap(map);
+        }
+        return;
+    }
+
+    /**
      * Fills the given map with terms mapping to nodes in the subtree (in case duplicates are allowed).
      */
     public void fillTermNodeMap(SetMap<T, TermNode<T>> map) {

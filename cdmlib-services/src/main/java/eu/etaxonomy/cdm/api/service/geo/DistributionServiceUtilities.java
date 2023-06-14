@@ -142,12 +142,12 @@ public class DistributionServiceUtilities {
      *            and a {@link TaggedText} representation of the condensed distribution string.
      */
     public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
-            SetMap<NamedArea, NamedArea> parentAreaMap, CondensedDistributionConfiguration config, List<Language> languages) {
+            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap, CondensedDistributionConfiguration config, List<Language> languages) {
 
         CondensedDistributionComposer composer = new CondensedDistributionComposer();
 
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions, parentAreaMap, languages, config);
+                filteredDistributions, area2TermNodesMap, languages, config);
         return condensedDistribution;
     }
 

@@ -40,7 +40,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
 
     private static OrderedTermVocabulary<PresenceAbsenceTerm> statusVoc;
     private static OrderedTermVocabulary<NamedArea> cubaAreasVocabualary;
-    private static SetMap<NamedArea,NamedArea> parentAreaMap;
+    private static SetMap<NamedArea, TermNode<NamedArea>> parentAreaMap;
 
     private static NamedArea cuba;
     private static NamedArea westernCuba;
@@ -418,7 +418,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         oldWorld = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
         areaTree.getRoot().addChild(oldWorld);
 
-        parentAreaMap = areaTree.getParentMap();
+        parentAreaMap = areaTree.getParentNodeMap();
 
         return true;
     }
