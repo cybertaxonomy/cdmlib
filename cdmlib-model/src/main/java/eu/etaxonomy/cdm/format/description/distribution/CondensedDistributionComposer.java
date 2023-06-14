@@ -322,26 +322,23 @@ public class CondensedDistributionComposer {
             node = new AreaNode(area, area2TermNodesMap);
             area2NodeMap.put(area, node);
         }
-        AreaNode finalNode = node;
 
         NamedArea parent = getNonFallbackParent(area, area2TermNodesMap, additionalHiddenParents, config);   // findParentIn(area, areas);
 
         if(parent != null) {
-//            for (TermNode<NamedArea> parent : parents) {
-//                if (parent == null /*|| parent.getTerm() == null*/) {
-//                    continue;
-//                }
-                AreaNode parentNode = area2NodeMap.get(parent);
-                if(parentNode == null) {
-                    parentNode = new AreaNode(parent, area2TermNodesMap);
-                    area2NodeMap.put(parent, parentNode);
-                }
-                parentNode.addSubArea(finalNode);
-                //recursive to top
-                mergeIntoHierarchy(parentNode.area, area2NodeMap, area2TermNodesMap,
-                        additionalHiddenParents, config);
+            AreaNode parentNode = area2NodeMap.get(parent);
+            if(parentNode == null) {
+                parentNode = new AreaNode(parent, area2TermNodesMap);
+                area2NodeMap.put(parent, parentNode);
             }
-//        }
+            if (node.parent == null) {
+                node.parent = parentNode;
+            }
+            parentNode.addSubArea(node);
+            //recursive to top
+            mergeIntoHierarchy(parentNode.area, area2NodeMap, area2TermNodesMap,
+                    additionalHiddenParents, config);
+        }
     }
 
     private NamedArea getNonFallbackParent(NamedArea area,
