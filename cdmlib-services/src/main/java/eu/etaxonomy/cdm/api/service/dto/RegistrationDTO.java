@@ -417,6 +417,6 @@ public class RegistrationDTO {
     }
 
     public boolean isPersisted() {
-        return reg.isPersited();
+        return reg.isPersisted();
     }
 }

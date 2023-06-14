@@ -50,13 +50,14 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
     private NamedArea germany;
     private NamedArea berlin;
     private NamedArea bawue;
+    private NamedArea saar;
     private NamedArea france;
     private NamedArea ileDeFrance;
     private NamedArea italy;
     private NamedArea spain;
 
     private Set<Distribution> distributions;
-    private SetMap<NamedArea,NamedArea> parentAreaMap;
+    private SetMap<NamedArea, TermNode<NamedArea>> parentAreaMap;
     private List<Language> languages;
 
     private CondensedDistributionComposer composer;
@@ -65,6 +66,8 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
     private Distribution bawueDistribution;
 
     private static final String endemic = UTF8.BLACK_CIRCLE.toString();
+
+    private Map<UUID,PresenceAbsenceTerm> iucnStatus;
 
     @Before
     public void setUp(){
@@ -77,6 +80,7 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         voc.addTerm(europe);
         TermNode<NamedArea> europeNode = areaTree.getRoot().addChild(europe);
 
+        //fallback
         westEurope = NamedArea.NewInstance("", "West Europe", "WE");
         TermNode<NamedArea> westEuropeNode = europeNode.addChild(westEurope);
         voc.addTerm(westEurope);
@@ -89,9 +93,15 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         germanyNode.addChild(berlin);
         bawue = NamedArea.NewInstance("", "Baden Württemberg", "GER(BW)");
         germanyNode.addChild(bawue);
+        saar = NamedArea.NewInstance("", "Saarland", "GER(S)");
+        germanyNode.addChild(saar);
         voc.addTerm(germany);
         voc.addTerm(berlin);
         voc.addTerm(bawue);
+        voc.addTerm(saar);
+
+        //saar is also child of fallback area West Europe (which here does not include Germany)
+        TermNode<NamedArea> saarWE = westEuropeNode.addChild(saar);
 
         //France
         france = NamedArea.NewInstance("", "France", "FR");
@@ -111,7 +121,7 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         europeNode.addChild(spain);
         voc.addTerm(spain);
 
-        parentAreaMap = areaTree.getParentMap();
+        parentAreaMap = areaTree.getTermNodesMap();
 
         distributions = new HashSet<>();
 
@@ -127,6 +137,17 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         MarkerType fallbackMarkerType = MarkerType.NewInstance("Fallback area", "Fallback area", "fba");
         fallbackMarkerType.setUuid(MarkerType.uuidFallbackArea);   //as long as it is not an official CDM marker type yet
         area.addMarker(fallbackMarkerType, true);
+    }
+
+    private void removeFallback(NamedArea area) {
+        area.removeMarker(MarkerType.uuidFallbackArea);
+    }
+
+    private void setAsAlternativeRootNotFallback(NamedArea area) {
+        area.removeMarker(MarkerType.uuidFallbackArea);
+        MarkerType alternativeRootAreaMarkerType = MarkerType.NewInstance("Alternative root", "Alternative root", "ara");
+        alternativeRootAreaMarkerType.setUuid(MarkerType.uuidAlternativeRootArea);   //as long as it is not an official CDM marker type yet
+        area.addMarker(alternativeRootAreaMarkerType, true);
     }
 
     private void createDefaultDistributions() {
@@ -145,7 +166,7 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
     }
 
     private void createIucnDistributions() {
-        Map<UUID,PresenceAbsenceTerm> iucnStatus = createIucnStatus();  //may be removed once iucn status are part of test data
+        iucnStatus = createIucnStatus();  //may be removed once iucn status are part of test data
 
         distributions.add(Distribution.NewInstance(europe, iucnStatus.get(uuidCriticallyEndangered)));
         distributions.add(Distribution.NewInstance(germany, iucnStatus.get(uuidEndangered)));
@@ -217,7 +238,6 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         Assert.assertEquals(endemic + " <b>GER(B BW)</b> ?IT [aFR(cJ) nS]", condensedDistribution.toString());
     }
 
-
     @Test
     public void testEuroMedCondensedDistributionFallback() {
 //      distributions.add(Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()));
@@ -233,6 +253,140 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         distributions.remove(nativeDist);
         distributions.add(introducedDist);
         Assert.assertEquals("[iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+    }
+
+    @Test
+    public void testEuroMedCondensedDistributionWithDuplicateNodes() {
+
+        distributions.add(Distribution.NewInstance(westEurope, PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE()));
+//        Assert.assertEquals("Fallback WE should show up only if none of the childs has data"
+//                ,"dWE", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        saar.getRepresentations().iterator().next().setAbbreviatedLabel("S");
+        Distribution saarDist = Distribution.NewInstance(saar, PresenceAbsenceTerm.NATIVE());
+        distributions.add(saarDist);
+        Assert.assertEquals("Fallback WE should show up only if none of the children has data",
+                "<b>GER(S)</b>", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+        setAsFallback(germany);
+        Assert.assertEquals("Also GER should not show up anymore",
+                "<b>S</b>", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+        removeFallback(germany);
+
+        Distribution nativeFranceDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
+        distributions.add(nativeFranceDist);
+        Assert.assertEquals("Still the same",
+                "dFR(J) <b>GER(S)</b>", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        saarDist.setStatus(PresenceAbsenceTerm.INTRODUCED());
+        nativeFranceDist.setStatus(PresenceAbsenceTerm.CULTIVATED());
+        Assert.assertEquals("Still WE should not show up though it has native data.",
+                "[cFR(J) iGER(S)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+
+
+//        Distribution introducedDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.INTRODUCED());
+//
+//        distributions.add(nativeDist);
+//        distributions.add(Distribution.NewInstance(westEurope, PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE()));
+//
+//        Assert.assertEquals("dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+//
+//        distributions.remove(nativeDist);
+//        distributions.add(introducedDist);
+//        Assert.assertEquals("[iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+    }
+
+    @Test
+    public void testEuroMedCondensedDistributionAlternativeRootArea() {
+        setAsAlternativeRootNotFallback(westEurope);
+        config.alternativeRootAreaMarkers = new HashSet<>();
+        config.alternativeRootAreaMarkers.add(MarkerType.uuidAlternativeRootArea);
+
+        //no root
+        Distribution nativeDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
+        distributions.add(nativeDist);
+        Assert.assertEquals("dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //only alternative root
+        Distribution alternativeRoot = Distribution.NewInstance(westEurope, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA());
+        distributions.add(alternativeRoot);
+        Assert.assertEquals(endemic + " dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //both roots, this behavior may change in future
+        Distribution realRoot = Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA());
+        distributions.add(realRoot);
+        Assert.assertEquals("For now we do not handle a non empty alternative root as alternative root",
+                endemic +" " + endemic + "WE(dFR(J))", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //only real root
+        distributions.remove(alternativeRoot);
+        Assert.assertEquals(endemic + " dFR(J)", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //with introduced distribution
+        //..only real root
+        Distribution introducedDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.INTRODUCED());
+        distributions.add(introducedDist);
+        distributions.remove(nativeDist);
+        Assert.assertEquals(endemic + " [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //..with both roots, this may change in future (and does not make sense in reality)
+        distributions.add(alternativeRoot);
+        Assert.assertEquals(endemic +" " + endemic + "WE [iWE(FR(J))]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //..only with alternative root
+        distributions.remove(realRoot);
+        Assert.assertEquals(endemic + " [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //.. with no root
+        distributions.remove(alternativeRoot);
+        Assert.assertEquals("[iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+
+        //add sibbling to alternative root
+        //and do the same again as above
+        distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
+        bawueDistribution = Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE());
+        distributions.add(bawueDistribution);
+        distributions.add(nativeDist);
+        distributions.remove(introducedDist);
+
+        //no root
+        Assert.assertEquals("dFR(J) <b>GER(BW)</b>", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //only alternative root, should not happen, as the alternative should never have data when a sibbling also has data
+        distributions.add(alternativeRoot);
+        Assert.assertEquals("<b>GER(BW)</b> " + endemic + "WE(dFR(J))", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //both roots, this behavior may change in future and should not happen, only root or alt. root should have data
+        distributions.add(realRoot);
+        Assert.assertEquals("For now we do not handle a non empty alternative root as alternative root",
+                endemic +" <b>GER(BW)</b> " + endemic + "WE(dFR(J))", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //only real root
+        distributions.remove(alternativeRoot);
+        Assert.assertEquals(endemic + " dFR(J) <b>GER(BW)</b>", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //with introduced distribution
+        //..only real root
+        distributions.add(introducedDist);
+        distributions.remove(nativeDist);
+        Assert.assertEquals(endemic + " <b>GER(BW)</b> [iFR(J)]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //..with both roots, this may change in future (and does not make sense in reality)
+        distributions.add(alternativeRoot);
+        Assert.assertEquals(endemic +" <b>GER(BW)</b> " + endemic + "WE [iWE(FR(J))]", composer.createCondensedDistribution(distributions, parentAreaMap, languages, config).getHtmlString());
+
+        //..only with alternative root, does not make much sense (see above)
+        distributions.remove(realRoot);
+        Assert.assertEquals("<b>GER(BW)</b> " + endemic + "WE [iFR(J)]", composer.createCondensedDistribution(distributions,
+                parentAreaMap, languages, config).getHtmlString());
+
+        //.. with no root
+        distributions.remove(alternativeRoot);
+        Assert.assertEquals("<b>GER(BW)</b> [iFR(J)]", composer.createCondensedDistribution(distributions,
+                parentAreaMap, languages, config).getHtmlString());
+
     }
 
     @Test
@@ -277,7 +431,12 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
 
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
                 distributions, parentAreaMap, languages, config);
+        Assert.assertEquals("CR FR(J:CR) GER:RE(B:RE BW:CR) IT:LC S:RE", condensedDistribution.toString());
 
-        Assert.assertEquals("CR FR:CR(J) GER:RE(B:RE BW:CR) IT:LC S:RE", condensedDistribution.toString());
+        distributions.add(Distribution.NewInstance(france, iucnStatus.get(uuidCriticallyEndangered)));
+        condensedDistribution = composer.createCondensedDistribution(
+                distributions, parentAreaMap, languages, config);
+        Assert.assertEquals("CR FR:CR(J:CR) GER:RE(B:RE BW:CR) IT:LC S:RE", condensedDistribution.toString());
+
     }
 }

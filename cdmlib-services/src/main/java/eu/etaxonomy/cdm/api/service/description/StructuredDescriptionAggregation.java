@@ -190,7 +190,7 @@ public class StructuredDescriptionAggregation
         //remove remaining sources-to-be-removed
         for (IdentifiableSource sourceToRemove : sourcesToRemove) {
             targetDescription.removeSource(sourceToRemove);
-            updated |= sourceToRemove.isPersited();
+            updated |= sourceToRemove.isPersisted();
             ICdmBase target = CdmBase.deproxy(sourceToRemove.getCdmSource());
             if (target != null){
                 sourceToRemove.setCdmSource(null); //workaround for missing orphan removal #9801
@@ -282,7 +282,7 @@ public class StructuredDescriptionAggregation
 
         for (DescriptionElementBase debToRemove : elementsToRemove){
             existingSourceDescription.removeElement(debToRemove);
-            updated |= debToRemove.isPersited();
+            updated |= debToRemove.isPersisted();
         }
         return updated;
     }
@@ -394,7 +394,7 @@ public class StructuredDescriptionAggregation
         }
         for (StateData stateDataToRemove : dataToRemove){
             elementToStay.removeStateData(stateDataToRemove);
-            updated |= stateDataToRemove.isPersited();
+            updated |= stateDataToRemove.isPersisted();
         }
         return updated;
     }
@@ -435,7 +435,7 @@ public class StructuredDescriptionAggregation
         }
         for (StatisticalMeasurementValue valueToRemove : oldValues){
             elementToStay.removeStatisticalValue(valueToRemove);
-            updated |= valueToRemove.isPersited();
+            updated |= valueToRemove.isPersisted();
         }
         return updated;
     }

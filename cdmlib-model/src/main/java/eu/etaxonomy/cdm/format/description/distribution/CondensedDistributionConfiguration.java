@@ -49,7 +49,7 @@ public class CondensedDistributionConfiguration implements Serializable {
     //if true a subarea Az(F) will be shortened to F if it is shown in brackets after the parent area
     public boolean shortenSubAreaLabelsIfPossible = true;  //not relevant for Cuba
 
-    public boolean showStatusOnParentAreaIfAllSame = true;  //false for Cuba
+    public boolean showStatusOnParentAreaIfAllSame = true;  //false for Cuba and IUCN
 
     public List<String> areaOfScopeSubAreaBracketStart = Arrays.asList(new String[]{" ","("});  // "(","(" for Cuba
 
@@ -89,6 +89,7 @@ public class CondensedDistributionConfiguration implements Serializable {
         CondensedDistributionConfiguration result = NewDefaultInstance();
         result.statusTrailing = true;
         result.statusSeparator = ":";
+        result.showStatusOnParentAreaIfAllSame = false;
         return result;
     }
 

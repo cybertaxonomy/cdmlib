@@ -287,7 +287,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         //persist
         boolean updated = mergeAggregationResultIntoTargetDescription(targetDescription, resultHolder);
         if (updated){
-            if (targetDescription.isPersited()){
+            if (targetDescription.isPersisted()){
                 getResult().addUpdatedUuid(targetDescription);
             }else{
                 getResult().addInsertedUuid(targetDescription);
@@ -302,11 +302,11 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
      */
     private void deleteDescriptionsToDelete(DescriptionAggregationBase<T, CONFIG>.ResultHolder resultHolder) {
         for (DescriptionBase<?> descriptionToDelete : resultHolder.descriptionsToDelete){
-            if (descriptionToDelete.isPersited()){
+            if (descriptionToDelete.isPersisted()){
                 getSession().flush(); // move to service method #9801
                 DeleteResult descriptionDeleteResult = repository.getDescriptionService().deleteDescription(descriptionToDelete);
                 //TODO handle result somehow if not OK, but careful, descriptions may be linked >1x and therefore maybe deleted only after last link was removed
-                if (descriptionDeleteResult.getDeletedObjects().contains(descriptionToDelete) && descriptionToDelete.isPersited()){
+                if (descriptionDeleteResult.getDeletedObjects().contains(descriptionToDelete) && descriptionToDelete.isPersisted()){
                     this.getResult().addDeletedObject(descriptionToDelete);
                 }
 //                this.getResult().includeResult(descriptionDeleteResult, true);
@@ -337,7 +337,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             targetDescription.removeElement(elementToRemove);
             //AM: do we really want to add each element to the deleteResult?
             //this.getResult().addDeletedObject(elementToRemove);
-            updated |= elementToRemove.isPersited();
+            updated |= elementToRemove.isPersisted();
         }
         return updated;
     }
@@ -400,7 +400,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             for(DescriptionElementBase descriptionElement : deleteCandidates) {
                 aggregationDescription.removeElement(descriptionElement);
                 getDescriptionElementService().delete(descriptionElement);
-                if (descriptionElement.isPersited()){
+                if (descriptionElement.isPersisted()){
                     getResult().addDeletedObject(descriptionElement);
                 }
             }
@@ -479,7 +479,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
         for (DescriptionElementSource toDeleteSource : toDeleteSources){
             deb.removeSource(toDeleteSource);
-            updated |= toDeleteSource.isPersited();
+            updated |= toDeleteSource.isPersisted();
         }
         return updated;
     }

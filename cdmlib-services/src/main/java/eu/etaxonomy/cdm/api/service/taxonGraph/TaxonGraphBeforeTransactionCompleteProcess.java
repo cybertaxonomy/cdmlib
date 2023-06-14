@@ -388,7 +388,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
      *             {@link #assureSingleTaxon(TaxonName, boolean)}
      */
     public void onNameOrRankChange(TaxonName taxonName) throws TaxonGraphException {
-        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
+        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersisted();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
             try{
@@ -434,7 +434,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         if(oldNomReference == null){
             onNewTaxonName(taxonName);
         }
-        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
+        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersisted();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
             try {
@@ -499,7 +499,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
      */
     public void onNomReferenceRemoved(TaxonName taxonName, Reference oldNomReference) throws TaxonGraphException {
 
-        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
+        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersisted();
         // TODO use audit event to check for deletion?
         if(isNotDeleted){
             try {

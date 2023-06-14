@@ -237,7 +237,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     public void putToCache(CdmBase cdmEntity) {
         if (cdmEntity == null){
             return;
-        }else if (!cdmEntity.isPersited()){
+        }else if (!cdmEntity.isPersisted()){
             putVolatitleEntity(cdmEntity);
         }else{
             CdmBase cachedCdmEntity = permanentCache.load(cdmEntity);
@@ -301,7 +301,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     @Override
     public <T extends CdmBase> T getFromCache(T cdmBase) {
-        if (!cdmBase.isPersited()){
+        if (!cdmBase.isPersisted()){
             return (T)volatileEntitiesMap.get(cdmBase.getUuid());
         }else{
             CdmEntityCacheKey<T> cacheId = generateKey(ProxyUtils.deproxyIfInitialized(cdmBase));

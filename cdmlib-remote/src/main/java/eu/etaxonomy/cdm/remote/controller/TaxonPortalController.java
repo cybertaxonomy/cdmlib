@@ -359,7 +359,7 @@ public class TaxonPortalController extends TaxonController{
 
         //TODO for now hardcoded
         alternativeRootAreaMarkerTypeList = new DefinedTermBaseList<>();
-        UUID alternativeRootAreaMarkerTypeUuid = UUID.fromString("1bf75861-47a0-42a1-8632-97c0fd15df29");
+        UUID alternativeRootAreaMarkerTypeUuid = MarkerType.uuidAlternativeRootArea;
         MarkerType defaultAlternativeRootAreaMarkerType = (MarkerType)termService.find(alternativeRootAreaMarkerTypeUuid);
         if (defaultAlternativeRootAreaMarkerType != null) {
             alternativeRootAreaMarkerTypeList.add(defaultAlternativeRootAreaMarkerType);

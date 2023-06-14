@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.api.service.portal.PortalDtoLoader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -156,13 +158,18 @@ public class DistributionServiceImpl implements IDistributionService {
             //TODO better use areaTree created within filterDistributions(...) but how to get it easily?
             areaTree = DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes);
         }
+        //TODO unify to use only the node map
         SetMap<NamedArea, NamedArea> parentAreaMap = areaTree.getParentMap();
+        SetMap<NamedArea, TermNode<NamedArea>> parentAreaNodeMap = areaTree.getParentNodeMap();
+        SetMap<NamedArea, TermNode<NamedArea>> area2TermNodesMap = areaTree.getTermNodesMap();
 
 
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea
         // and ignoreUndefinedStatus to all distributions, but KEEP fallback area distributions
+        boolean keepFallBackOnlyIfNoSubareaDataExists = false;
         Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false,
+                areaTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA,
+                keepFallBackOnlyIfNoSubareaDataExists,
                 config.isIgnoreDistributionStatusUndefined());
 
         if(parts.contains(InfoPart.elements)) {
@@ -172,17 +179,21 @@ public class DistributionServiceImpl implements IDistributionService {
         if(parts.contains(InfoPart.tree)) {
             IDistributionTree tree;
             if (config.isUseTreeDto()) {
+
                 //transform distributions to distribution DTOs
                 Set<DistributionDto> filteredDtoDistributions = new HashSet<>();
                 for (Distribution distribution : filteredDistributions) {
                     DistributionDto distDto = new DistributionDto(distribution, parentAreaMap);
+                    PortalDtoLoader.loadBaseData(distribution, distDto);
+                    distDto.setTimeperiod(distribution.getTimeperiod() == null ? null : distribution.getTimeperiod().toString());
                     filteredDtoDistributions.add(distDto);
                 }
 
+                boolean useSecondMethod = false;
                 tree = DistributionServiceUtilities.buildOrderedTreeDto(omitLevels,
-                        filteredDtoDistributions, parentAreaMap, fallbackAreaMarkerTypes,
+                        filteredDtoDistributions, parentAreaMap, areaTree, fallbackAreaMarkerTypes,
                         alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent,
-                        distributionOrder, termDao);
+                        distributionOrder, termDao, useSecondMethod);
             }else {
                 //version with model entities as used in direct webservice (not taxon page DTO)
                 tree = DistributionServiceUtilities.buildOrderedTree(omitLevels,
@@ -195,7 +206,7 @@ public class DistributionServiceImpl implements IDistributionService {
 
         if(parts.contains(InfoPart.condensedDistribution)) {
             CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
-                    filteredDistributions, parentAreaMap, condensedDistConfig, languages);
+                    filteredDistributions, area2TermNodesMap, condensedDistConfig, languages);
             dto.setCondensedDistribution(condensedDistribution);
         }
 
@@ -203,7 +214,7 @@ public class DistributionServiceImpl implements IDistributionService {
             boolean IGNORE_STATUS_ORDER_PREF = false;
             Set<MarkerType> fallbackAreaMarkerType = null;
             // only apply the subAreaPreference rule for the maps
-            boolean keepFallBackOnlyIfNoSubareaDataExists = true;
+            keepFallBackOnlyIfNoSubareaDataExists = true;
             Set<Distribution> filteredMapDistributions = DistributionServiceUtilities.filterDistributions(
                     filteredDistributions, areaTree, fallbackAreaMarkerType, !PREFER_AGGREGATED,
                     IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists,
@@ -239,12 +250,12 @@ public class DistributionServiceImpl implements IDistributionService {
             List<Language> langs) {
 
         areaTree = areaTree == null ? DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes) : areaTree;
-        SetMap<NamedArea, NamedArea> parentMap = areaTree.getParentMap();
+        SetMap<NamedArea,TermNode<NamedArea>> parentNodeMap = areaTree.getParentNodeMap();
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, null, fallbackAreaMarkerTypes, false, statusOrderPreference, false, false, true);
         CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
-                parentMap,
+                parentNodeMap,
                 config,
                 langs);
         return condensedDistribution;

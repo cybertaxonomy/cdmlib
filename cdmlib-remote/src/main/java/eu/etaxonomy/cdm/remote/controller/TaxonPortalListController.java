@@ -36,7 +36,6 @@ public class TaxonPortalListController extends TaxonListController {
             false
             );
 
-
     public TaxonPortalListController() {
         super();
         setInitializationStrategy(SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths());
@@ -46,7 +45,4 @@ public class TaxonPortalListController extends TaxonListController {
     protected List<String> getSimpleTaxonInitStrategy() {
         return SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths();
     }
-
-
-
 }

@@ -921,12 +921,12 @@ public class TaxonNodeServiceImpl
                 if (taxonDto.getSecUuid() != null ){
                     sec = referenceDao.load(taxonDto.getSecUuid());
                 }
-                if (name != null && !name.isPersited()){
+                if (name != null && !name.isPersisted()){
                     for (HybridRelationship rel : name.getHybridChildRelations()){
-                        if (!rel.getHybridName().isPersited()) {
+                        if (!rel.getHybridName().isPersisted()) {
                             nameService.save(rel.getHybridName());
                         }
-                        if (!rel.getParentName().isPersited()) {
+                        if (!rel.getParentName().isPersisted()) {
                             nameService.save(rel.getParentName());
                         }
                     }
@@ -937,7 +937,7 @@ public class TaxonNodeServiceImpl
 
             parent = dao.load(parentNodeUuid);
             if (source != null){
-                if (source.isPersited()){
+                if (source.isPersisted()){
                     source = (NamedSource) sourceDao.load(source.getUuid());
                 }
                 if (source.getCitation() != null){

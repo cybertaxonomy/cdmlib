@@ -594,7 +594,7 @@ public class TermNode <T extends DefinedTermBase>
     }
 
     /**
-     * Fills the given map with areas mapping to their parents.
+     * Fills the given map with areas mapping to their parents set.
      */
     public void fillParentMap(SetMap<T, T> map) {
         if (getTerm() != null) {
@@ -602,6 +602,32 @@ public class TermNode <T extends DefinedTermBase>
         }
         for (TermNode<T> node : getChildNodes()){
             node.fillParentMap(map);
+        }
+        return;
+    }
+
+    /**
+     * Fills the given map with areas mapping to their parents set.
+     */
+    public void fillParentNodeMap(SetMap<T,TermNode<T>> map) {
+        if (getTerm() != null) {
+            map.putItem(getTerm(), getParent());
+        }
+        for (TermNode<T> node : getChildNodes()){
+            node.fillParentNodeMap(map);
+        }
+        return;
+    }
+
+    /**
+     * Fills the given map with terms mapping to nodes in the subtree (in case duplicates are allowed).
+     */
+    public void fillTermNodeMap(SetMap<T, TermNode<T>> map) {
+        if (getTerm() != null) {
+            map.putItem(getTerm(), this);
+        }
+        for (TermNode<T> node : getChildNodes()){
+            node.fillTermNodeMap(map);
         }
         return;
     }
@@ -736,4 +762,5 @@ public class TermNode <T extends DefinedTermBase>
 			return this.getGraph().getId();
 		}
 	}
+
 }

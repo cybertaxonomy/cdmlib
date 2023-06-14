@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +36,8 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 
 /**
@@ -78,8 +81,16 @@ public class DistributionTreeDtoLoader {
     }
 
   /**
+   * Loading of distribution tree by minimized loading of areas. This methods loads only those areas
+   * which are referenced by any distributions and from there up to the root area.
+   * This happens by merging all these root paths.
+   * However, this merging becomes more difficult once an area may have more then 1 path (e.g.
+   * areas having >1 parent).
+   * Therefore there is another loading algorithm {@link #orderAsTree2(DistributionTreeDto, Collection, TermTree, Set, Set, boolean)}
+   * which works a bit different.
+   *
    * @param parentAreaMap
- * @param fallbackAreaMarkerTypes
+   * @param fallbackAreaMarkerTypes
    *      Areas are fallback areas if they have a {@link Marker} with one of the specified
    *      {@link MarkerType marker types}.
    *      Areas identified as such are omitted from the hierarchy and the sub areas are moving one level up.
@@ -116,6 +127,169 @@ public class DistributionTreeDtoLoader {
       }
   }
 
+    /**
+     * Alternative distribution tree loading which loads the complete area tree and
+     * then removes those areas with no data or being fallback areas, etc.
+     * This method allows multiple parents for an area.
+     *
+     * NOTE: this method handles fallback and other markers only on tree level,
+     *       and not if attached to the area itself.
+     *
+     * @see #orderAsTree(DistributionTreeDto, Collection, SetMap, Set, Set, boolean)
+     */
+    public void orderAsTree2(DistributionTreeDto dto, Collection<DistributionDto> distributions,
+            TermTree<NamedArea> areaTree, Set<NamedAreaLevel> omitLevels,
+            Set<MarkerType> fallbackAreaMarkerTypes,
+            boolean neverUseFallbackAreasAsParents){
+
+        TreeNode<Set<DistributionDto>,NamedAreaDto> rootAreaNode = transformToDtoTree(areaTree.getRoot());
+        dto.setRootElement(rootAreaNode);
+
+        addDistributions(rootAreaNode, distributions);
+        Set<UUID> omitLevelUuids = omitLevels.stream().map(e->e.getUuid()).collect(Collectors.toSet());
+        removeEmptySubtrees(rootAreaNode);
+        //TODO empty children should not be necessary anymore due to removeEmptySubtrees()
+        removeFallbackAreasAndOmitLevelRecursive(rootAreaNode, fallbackAreaMarkerTypes,
+                omitLevelUuids, neverUseFallbackAreasAsParents);
+        //TODO deduplicate
+        //TODO alternativeRootArea
+        //TODO ...,
+        System.out.println();
+    }
+
+    private void addDistributions(TreeNode<Set<DistributionDto>,NamedAreaDto> rootNode, Collection<DistributionDto> distributions) {
+
+        //fill area2DistMap from distributions
+        SetMap<UUID,DistributionDto> area2DistMap = new SetMap<>();
+        for (DistributionDto distDto : distributions) {
+            if (distDto.getArea() != null) {
+                area2DistMap.putItem(distDto.getArea().getUuid(), distDto);
+            }
+        }
+
+        //fill areaTree recursive
+        addDistributionsRecursive(rootNode, area2DistMap);
+    }
+
+    private void addDistributionsRecursive(TreeNode<Set<DistributionDto>,NamedAreaDto> node, SetMap<UUID, DistributionDto> area2DistMap) {
+        NamedAreaDto nodeId = node.getNodeId();
+        if (nodeId != null && nodeId.getUuid() != null) {
+            Set<DistributionDto> distDto = area2DistMap.get(nodeId.getUuid());
+            node.setData(distDto);
+        }
+        for (TreeNode<Set<DistributionDto>,NamedAreaDto> child : node.getChildren()) {
+            addDistributionsRecursive(child, area2DistMap);
+        }
+    }
+
+    private void removeEmptySubtrees(TreeNode<Set<DistributionDto>, NamedAreaDto> rootNode) {
+        List<TreeNode<Set<DistributionDto>, NamedAreaDto>> children = new ArrayList<>(rootNode.getChildren());
+        for (TreeNode<Set<DistributionDto>,NamedAreaDto> child : children) {
+
+            if (isEmptySubtree(child)) {
+                rootNode.getChildren().remove(child);
+            }else {
+                if (logger.isDebugEnabled()) {logger.debug("Keep non-empty node: " + (child.getNodeId() == null ? "-" : child.getNodeId().toString()));}
+                removeEmptySubtrees(child);
+            }
+        }
+    }
+
+    private boolean isEmptySubtree(TreeNode<Set<DistributionDto>, NamedAreaDto> node) {
+        return (CdmUtils.isNullSafeEmpty(node.getData()) && !childrenHaveData(node));
+    }
+
+    private void removeFallbackAreasAndOmitLevelRecursive(TreeNode<Set<DistributionDto>,NamedAreaDto> rootNode,
+            Set<MarkerType> fallbackAreaMarkerTypes,
+            Set<UUID> omitLevelUuids, boolean neverUseFallbackAreasAsParents) {
+
+        List<TreeNode<Set<DistributionDto>,NamedAreaDto>> children = new ArrayList<>(rootNode.getChildren());
+        for (TreeNode<Set<DistributionDto>,NamedAreaDto> child : children) {
+            List<TreeNode<Set<DistributionDto>,NamedAreaDto>> movedChildren = new ArrayList<>();
+            if (isOmitLevel(child, omitLevelUuids)) {
+                movedChildren = replaceInBetweenNode(rootNode, child, false);
+            }else if (isFallback(child, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents)) {
+                boolean isEmpty = CdmUtils.isNullSafeEmpty(child.getData()); //TODO only false with sources
+
+                movedChildren = replaceInBetweenNode(rootNode, child, !isEmpty);
+                movedChildren.stream().forEach(c->removeFallbackAreasAndOmitLevelRecursive(c, fallbackAreaMarkerTypes, omitLevelUuids, neverUseFallbackAreasAsParents));
+            }else {
+                if (logger.isDebugEnabled()) {logger.debug("Not to replace: " + (child.getNodeId() == null ? "-" : child.getNodeId().toString()));}
+                removeFallbackAreasAndOmitLevelRecursive(child, fallbackAreaMarkerTypes, omitLevelUuids, neverUseFallbackAreasAsParents);
+            }
+            movedChildren.stream().forEach(c->removeFallbackAreasAndOmitLevelRecursive(c, fallbackAreaMarkerTypes, omitLevelUuids, neverUseFallbackAreasAsParents));
+        }
+    }
+
+    private boolean isOmitLevel(TreeNode<Set<DistributionDto>,NamedAreaDto> treeNode,
+            Set<UUID> omitLevelUuids) {
+        //omit level
+        NamedAreaDto areaNode = treeNode.getNodeId();
+        UUID uuidLevel = areaNode.getLevel() == null ? null : areaNode.getLevel().getUuid();
+        return omitLevelUuids.contains(uuidLevel);
+    }
+
+    private boolean isFallback(TreeNode<Set<DistributionDto>,NamedAreaDto> treeNode,
+            Set<MarkerType> fallbackAreaMarkerTypes,
+            boolean neverUseFallbackAreasAsParents) {
+
+        NamedAreaDto areaNode = treeNode.getNodeId();
+
+        //fall back and empty
+        boolean isFallback = false;
+        for (MarkerType mt : fallbackAreaMarkerTypes) {
+            if (areaNode.hasMarker(mt, true)) {
+                isFallback = true;
+                break;
+            }
+        }
+
+        //empty
+        boolean isEmpty = CdmUtils.isNullSafeEmpty(treeNode.getData()); //TODO only false with sources
+
+        if (isFallback){
+            return neverUseFallbackAreasAsParents || childrenHaveData(treeNode);
+        } else {
+            //should not happen since empty subtrees are removed before
+            return isEmpty && !childrenHaveData(treeNode);
+        }
+    }
+
+    private boolean childrenHaveData(TreeNode<Set<DistributionDto>,NamedAreaDto> areaNode) {
+        //TODO omit levels here?
+        for (TreeNode<Set<DistributionDto>,NamedAreaDto> child : areaNode.getChildren()) {
+            if (!CdmUtils.isNullSafeEmpty(child.getData())) {
+                return true;
+            }
+            if (childrenHaveData(child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private TreeNode<Set<DistributionDto>, NamedAreaDto> transformToDtoTree(TermNode<NamedArea> areaNode) {
+
+        NamedArea area = areaNode.getTerm();
+        NamedAreaDto nodeId = area == null ? null : new NamedAreaDto(
+                //TODO areaNode uuid
+                area.getUuid(),
+                areaNode.getId(),
+                area.getLabel(),
+                area.getLevel(),
+                null,  //TODO parent
+                areaNode.getMarkers()
+           );
+        Set<DistributionDto> data = new HashSet<>();
+        TreeNode<Set<DistributionDto>, NamedAreaDto> treeNode = new TreeNode<Set<DistributionDto>, NamedAreaDto>(nodeId, data);
+
+        for (TermNode<NamedArea> childNode : areaNode.getChildNodes()) {
+            TreeNode<Set<DistributionDto>, NamedAreaDto> child = transformToDtoTree(childNode);
+            treeNode.addChild(child);
+        }
+        return treeNode;
+    }
+
   /**
    * This method will cause all parent areas to be loaded into the session cache so that
    * all initialization of the NamedArea term instances is ready. This improves the
@@ -123,6 +297,9 @@ public class DistributionTreeDtoLoader {
    */
   private void loadAllParentAreasIntoSession(Set<NamedAreaDto> areas, SetMap<NamedArea, NamedArea> parentAreaMap) {
 
+      if (areas == null || parentAreaMap == null || termDao == null) {
+          return;
+      }
       List<NamedAreaDto> parentAreas = null;
       Set<UUID> childAreas = new HashSet<>(areas.size());
       for(NamedAreaDto area : areas) {
@@ -175,8 +352,7 @@ public class DistributionTreeDtoLoader {
    */
   private void addDistributionToSubTree(DistributionDto distribution,
           List<NamedAreaDto> namedAreaPath,
-          TreeNode<Set<DistributionDto>, NamedAreaDto> root){
-
+          TreeNode<Set<DistributionDto>,NamedAreaDto> root){
 
       //if the list to merge is empty finish the execution
       if (namedAreaPath.isEmpty()) {
@@ -310,6 +486,7 @@ public class DistributionTreeDtoLoader {
 
         TreeNode<Set<DistributionDto>, NamedAreaDto> emptyRoot = dto.getRootElement();
         for(TreeNode<Set<DistributionDto>, NamedAreaDto> realRoot : emptyRoot.getChildren()) {
+            boolean switched = false;
             if (CdmUtils.isNullSafeEmpty(realRoot.getData()) && realRoot.getNumberOfChildren() == 1) {
                 //real root has no data and 1 child => potential candidate to be replaced by alternative root
                 TreeNode<Set<DistributionDto>, NamedAreaDto> child = realRoot.getChildren().get(0);
@@ -319,24 +496,32 @@ public class DistributionTreeDtoLoader {
                     emptyRoot.getChildren().remove(realRoot);
                     emptyRoot.addChild(child);
                 }
-            } else {
+            }
+            if (!switched) {
                 //if root has data or >1 children test if children are alternative roots with no data => remove
                 Set<TreeNode<Set<DistributionDto>, NamedAreaDto>> children = new HashSet<>(realRoot.getChildren());
                 for(TreeNode<Set<DistributionDto>, NamedAreaDto> child : children) {
                     if (isMarkedAs(child.getNodeId(), alternativeRootAreaMarkerTypes)
                             && CdmUtils.isNullSafeEmpty(child.getData())) {
-                        replaceByChildren(realRoot, child);
+                        replaceInBetweenNode(realRoot, child, false);
                     }
                 }
             }
         }
     }
 
-    private void replaceByChildren(TreeNode<Set<DistributionDto>, NamedAreaDto> parent,
-            TreeNode<Set<DistributionDto>, NamedAreaDto> toBeReplaced) {
-        for (TreeNode<Set<DistributionDto>, NamedAreaDto> child : toBeReplaced.getChildren()) {
+    private List<TreeNode<Set<DistributionDto>, NamedAreaDto>> replaceInBetweenNode(TreeNode<Set<DistributionDto>, NamedAreaDto> parent,
+            TreeNode<Set<DistributionDto>, NamedAreaDto> inBetweenNode, boolean moveChildrenOnly) {
+
+        List<TreeNode<Set<DistributionDto>, NamedAreaDto>> movedChildren = new ArrayList<>();
+        for (TreeNode<Set<DistributionDto>, NamedAreaDto> child : inBetweenNode.getChildren()) {
             parent.addChild(child);
+            movedChildren.add(child);
         }
-        parent.getChildren().remove(toBeReplaced);
+        if (!moveChildrenOnly) {
+            parent.getChildren().remove(inBetweenNode);
+        }
+        movedChildren.stream().forEach(c->inBetweenNode.children.remove(c));
+        return movedChildren;
     }
 }

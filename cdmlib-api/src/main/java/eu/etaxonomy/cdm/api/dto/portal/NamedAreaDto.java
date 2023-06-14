@@ -68,17 +68,14 @@ public class NamedAreaDto extends CdmBaseDto {
         this.markers = area.getMarkers();
     }
 
-//    @Override
     public String getLabel() {
         return label;
     }
 
-//    @Override
     public LabeledEntityDto getLevel() {
         return level;
     }
 
-//    @Override
     public NamedAreaDto getParent() {
         return parent;
     }

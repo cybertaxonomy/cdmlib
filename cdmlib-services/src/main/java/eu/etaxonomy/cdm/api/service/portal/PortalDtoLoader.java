@@ -34,9 +34,7 @@ import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.CommonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
-import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
-import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDtoBase;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
@@ -44,7 +42,6 @@ import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
-import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
@@ -932,7 +929,7 @@ public class PortalDtoLoader {
 
         boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
         distributionConfig.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
-        boolean fallbackAsParent = true;  //may become a service parameter in future
+        boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future
 
         //fallbackArea markers include markers for fully hidden areas and fallback areas.
         //The later are hidden markers on areas that have non-hidden subareas (#4408)
@@ -940,8 +937,6 @@ public class PortalDtoLoader {
         if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)){
             condensedConfig.fallbackAreaMarkers = fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         }
-
-        List<String> initStrategy = null;
 
         Map<PresenceAbsenceTerm, Color> distributionStatusColors;
         try {
@@ -954,36 +949,40 @@ public class PortalDtoLoader {
         }
 
         DistributionInfoDto dto = distributionService.composeDistributionInfoFor(distributionConfig, distributions,
-                fallbackAsParent,
+                neverUseFallbackAreaAsParent,
                 distributionStatusColors, LocaleContext.getLanguages());
 
-        if (distributionConfig.isUseTreeDto() && dto.getTree() != null) {
-            DistributionTreeDto tree = (DistributionTreeDto)dto.getTree();
-            TreeNode<Set<DistributionDto>, NamedAreaDto> root = tree.getRootElement();
-            //fill uuid->distribution map
-            Map<UUID,Distribution> distributionMap = new HashMap<>();
-            distributions.stream().forEach(d->distributionMap.put(d.getUuid(), d));
-            handleDistributionDtoNode(distributionMap, root);
-        }
+        //should not be necessary anymore as distribution data is now loaded directly in DIstributionServiceImpl
+        //by calling PortalDtoLoader.loadBaseData() directly
+//        if (distributionConfig.isUseTreeDto() && dto.getTree() != null) {
+//            DistributionTreeDto tree = (DistributionTreeDto)dto.getTree();
+//            TreeNode<Set<DistributionDto>, NamedAreaDto> root = tree.getRootElement();
+//            //fill uuid->distribution map
+//            Map<UUID,Distribution> distributionMap = new HashMap<>();
+//            distributions.stream().forEach(d->distributionMap.put(d.getUuid(), d));
+//            handleDistributionDtoNode(distributionMap, root);
+//        }
 
         featureDto.addFact(dto);
     }
 
-    private void handleDistributionDtoNode(Map<UUID, Distribution> map,
-            TreeNode<Set<DistributionDto>, NamedAreaDto> root) {
-       if (root.getData() != null) {
-           root.getData().stream().forEach(d->{
-               Distribution distr  = map.get(d.getUuid());
-               loadBaseData(distr, d);
-               d.setTimeperiod(distr.getTimeperiod() == null ? null : distr.getTimeperiod().toString());
-
-           });
-       }
-       //handle children
-       if (root.getChildren() != null) {
-           root.getChildren().stream().forEach(c->handleDistributionDtoNode(map, c));
-       }
-    }
+    //should not be necessary anymore as distribution data is now loaded directly in DIstributionServiceImpl
+    //by calling PortalDtoLoader.loadBaseData() directly
+//    private static void handleDistributionDtoNode(Map<UUID, Distribution> map,
+//            TreeNode<Set<DistributionDto>, NamedAreaDto> root) {
+//       if (root.getData() != null) {
+//           root.getData().stream().forEach(dto->{
+//               Distribution distr  = map.get(dto.getUuid());
+//               loadBaseData(distr, dto);
+//               dto.setTimeperiod(distr.getTimeperiod() == null ? null : distr.getTimeperiod().toString());
+//           });
+//       }
+//
+//       //handle children
+//       if (root.getChildren() != null) {
+//           root.getChildren().stream().forEach(c->handleDistributionDtoNode(map, c));
+//       }
+//    }
 
     private FactDtoBase handleFact(FeatureDto featureDto, DescriptionElementBase fact, TaxonPageDto pageDto) {
         //TODO locale
@@ -1141,7 +1140,7 @@ public class PortalDtoLoader {
        }
     }
 
-    private void loadBaseData(CdmBase cdmBase, CdmBaseDto dto) {
+    public static void loadBaseData(CdmBase cdmBase, CdmBaseDto dto) {
         dto.setId(cdmBase.getId());
         dto.setUuid(cdmBase.getUuid());
 
@@ -1150,7 +1149,7 @@ public class PortalDtoLoader {
         //loadIdentifiable(cdmBase, dto);
     }
 
-    private void loadSources(CdmBase cdmBase, CdmBaseDto dto) {
+    private static void loadSources(CdmBase cdmBase, CdmBaseDto dto) {
         if (dto instanceof SingleSourcedDto && cdmBase.isInstanceOf(SingleSourcedEntityBase.class)) {
             //TODO other sourced
             SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
@@ -1174,16 +1173,18 @@ public class PortalDtoLoader {
         //load description sources for facts
         if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
             DescriptionBase<?> db = CdmBase.deproxy(cdmBase, DescriptionElementBase.class).getInDescription();
-            SourcedDto sourcedDto = (SourcedDto)dto;
-            for (OriginalSourceBase source : db.getSources()) {
-                SourceDto sourceDto = new SourceDto();
-                loadSource(source, sourceDto);
-                sourcedDto.addSource(sourceDto);
+            if (db != null) {  //test sometime do not have a description for facts
+                SourcedDto sourcedDto = (SourcedDto)dto;
+                for (OriginalSourceBase source : db.getSources()) {
+                    SourceDto sourceDto = new SourceDto();
+                    loadSource(source, sourceDto);
+                    sourcedDto.addSource(sourceDto);
+                }
             }
         }
     }
 
-    private void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
+    private static void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
 
         source = CdmBase.deproxy(source);
         //base data
@@ -1242,11 +1243,11 @@ public class PortalDtoLoader {
         sourceDto.setLinkedClass(linkedObjectStr);
     }
 
-    private UUID getUuid(ICdmBase cdmBase) {
+    private static UUID getUuid(ICdmBase cdmBase) {
         return cdmBase == null ? null : cdmBase.getUuid();
     }
 
-    private void loadAnnotatable(CdmBase cdmBase, CdmBaseDto dto) {
+    private static void loadAnnotatable(CdmBase cdmBase, CdmBaseDto dto) {
         if (dto instanceof AnnotatableDto && cdmBase.isInstanceOf(AnnotatableEntity.class)) {
             AnnotatableEntity annotatable = CdmBase.deproxy(cdmBase, AnnotatableEntity.class);
             AnnotatableDto annotatableDto = (AnnotatableDto)dto;

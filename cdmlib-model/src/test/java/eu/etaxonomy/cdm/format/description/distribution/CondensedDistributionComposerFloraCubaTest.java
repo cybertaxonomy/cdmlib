@@ -40,7 +40,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
 
     private static OrderedTermVocabulary<PresenceAbsenceTerm> statusVoc;
     private static OrderedTermVocabulary<NamedArea> cubaAreasVocabualary;
-    private static SetMap<NamedArea,NamedArea> parentAreaMap;
+    private static SetMap<NamedArea, TermNode<NamedArea>> area2TermNodesMap;
 
     private static NamedArea cuba;
     private static NamedArea westernCuba;
@@ -135,7 +135,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         filteredDistributions.add(Distribution.NewInstance(oldWorld, PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE()));
 
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions, parentAreaMap, null, config);
+                filteredDistributions, area2TermNodesMap, null, config);
         String condensedString = condensedDistribution.toString();
 
         Assert.assertEquals("Condensed string for Cuba differs",
@@ -170,7 +170,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
 
         config.areasBold = false;
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions, parentAreaMap, null, config);
+                filteredDistributions, area2TermNodesMap, null, config);
 
         Assert.assertEquals("Condensed string for Cuba differs",
                 "nCu(-dCuW(PR* Art Hab* May Mat IJ) (c)CuE(nHo -cGu))" + config.outOfScopeAreasSeperator + "Bah ?VM",
@@ -182,7 +182,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         //this should better be done CondensedDistributionComposerEuroMedTest but we have the test data here, therefore we keep the test here
         config = CondensedDistributionConfiguration.NewDefaultInstance();
         config.statusSymbolField = SymbolUsage.Symbol1;
-        condensedDistribution = composer.createCondensedDistribution(filteredDistributions, parentAreaMap, null, config);
+        condensedDistribution = composer.createCondensedDistribution(filteredDistributions, area2TermNodesMap, null, config);
         Assert.assertEquals("Condensed string for Cuba differs",
                 "n (c)CuE -dCuW(<b>Art Hab* IJ Mat May PR*</b>) [(c)CuE(-cGu nHo)]" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?VM",
                 condensedDistribution.toString());
@@ -418,7 +418,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         oldWorld = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
         areaTree.getRoot().addChild(oldWorld);
 
-        parentAreaMap = areaTree.getParentMap();
+        area2TermNodesMap = areaTree.getTermNodesMap();
 
         return true;
     }

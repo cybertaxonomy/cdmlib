@@ -20,6 +20,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
+import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.api.service.portal.PortalDtoLoader;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.SetMap;
+import eu.etaxonomy.cdm.common.TreeNode;
+import eu.etaxonomy.cdm.format.common.TypedLabel;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -28,7 +39,13 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
@@ -38,6 +55,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class DistributionServiceUtilitiesTest extends TermTestBase {
 
     private Collection<Distribution> distributions = null;
+
     private Collection<Distribution> filteredDistributions = null;
     private boolean subAreaPreference = false;
     private boolean statusOrderPreference = false;
@@ -47,12 +65,200 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
     private Collector<NamedArea, ?, List<NamedArea>> toList = Collectors.toList();
     private static final boolean NO_PREFER_AGGREGATED = false;
 
+    //for distribution tree tests
+    private List<DistributionDto> distributionDtos;
+    private NamedArea euroMed;
+    private NamedArea europe;
+    private NamedArea westEurope;
+    private NamedArea germany;
+    private NamedArea bawue;
+    private NamedArea saar;
+    private NamedArea france;
+    private NamedArea ileDeFrance;
+    private NamedArea italy;
+    private NamedArea spain;
+
+    private Distribution euroMedDist;
+    private Distribution europeDist;
+    private Distribution westEuropeDist;
+    private Distribution germanyDist;
+    private Distribution bawueDist;
+    private Distribution berlinDist;
+    private Distribution saarDist;
+    private Distribution franceDist;
+    private Distribution ileDeFranceDist;
+    private Distribution italyDist;
+    private Distribution spainDist;
+
+    private MarkerType fallbackMarkerType;
+    private Reference ref1;
+
+    private Set<NamedAreaLevel> omitLevels;
+    private Set<MarkerType> fallBackAreaMarkerTypes;
+    private boolean fallbackWithSourceOnly;
+    private boolean neverUseFallbackAreasAsParents;
+    private Set<MarkerType> alternativeRootAreaMarkerTypes = null;
+    private DistributionOrder distributionOrder;
+
+    private SetMap<NamedArea,NamedArea> parentAreaMap;
+    private List<Language> languages;
+
+    private DistributionDto bawueDistribution;
+
+    private TermTree<NamedArea> areaTree;
+
     @Before
-    public void setup(){
+    public void setup(){  //for testFilterXXX
         distributions = new ArrayList<>();
 
         berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
         berlin.setPartOf(Country.GERMANY());
+    }
+
+    //copied from CondensedDistributionComposerEuroMedTest
+    public void setupTreeTest(){
+        omitLevels = new HashSet<>();
+        fallBackAreaMarkerTypes = new HashSet<>();
+        neverUseFallbackAreasAsParents = false;
+        alternativeRootAreaMarkerTypes = new HashSet<>();
+        distributionOrder = DistributionOrder.LABEL;
+
+        distributionDtos = new ArrayList<>();
+        areaTree = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
+
+        @SuppressWarnings("unchecked")
+        OrderedTermVocabulary<NamedArea>  voc = OrderedTermVocabulary.NewInstance(TermType.NamedArea);
+        europe = NamedArea.NewInstance("", "Europe", "EU");
+        voc.addTerm(europe);
+        TermNode<NamedArea> europeNode = areaTree.getRoot().addChild(europe);
+
+        //fallback
+        westEurope = NamedArea.NewInstance("", "West Europe", "WE");
+        TermNode<NamedArea> westEuropeNode = europeNode.addChild(westEurope);
+        voc.addTerm(westEurope);
+        setAsFallback(westEuropeNode, westEurope);
+
+        //Germany
+        germany = NamedArea.NewInstance("", "Germany", "GER");
+        TermNode<NamedArea> germanyNode = europeNode.addChild(germany);
+        berlin = NamedArea.NewInstance("", "Berlin", "GER(B)");
+        germanyNode.addChild(berlin);
+        bawue = NamedArea.NewInstance("", "Baden Wuerttemberg", "GER(BW)");
+        germanyNode.addChild(bawue);
+        saar = NamedArea.NewInstance("", "Saarland", "GER(S)");
+        germanyNode.addChild(saar);
+        voc.addTerm(germany);
+        voc.addTerm(berlin);
+        voc.addTerm(bawue);
+        voc.addTerm(saar);
+
+        //saar is also child of fallback area west europe (which here does not include Germany)
+        TermNode<NamedArea> saarWE = westEuropeNode.addChild(saar);
+
+        //France
+        france = NamedArea.NewInstance("", "France", "FR");
+        TermNode<NamedArea> franceNode = westEuropeNode.addChild(france);
+        ileDeFrance = NamedArea.NewInstance("", "Ile-de-France", "FR(J)");
+        franceNode.addChild(ileDeFrance);
+        voc.addTerm(france);
+        voc.addTerm(ileDeFrance);
+
+        //Italy
+        italy = NamedArea.NewInstance("", "Italy", "IT");
+        europeNode.addChild(italy);
+        voc.addTerm(italy);
+
+        //Spain
+        spain = NamedArea.NewInstance("", "Spain", "S");
+        europeNode.addChild(spain);
+        voc.addTerm(spain);
+
+        ref1 = ReferenceFactory.newGeneric();
+        ref1.setTitleCache("Test Ref1", true);
+
+        parentAreaMap = areaTree.getParentMap();
+
+        distributions = new HashSet<>();
+
+        languages = new ArrayList<>();
+
+//        IDefinedTermDao termDao = null; //TODO
+//        loader = new DistributionTreeDtoLoader(termDao);
+    }
+
+    private void setAsFallback(TermNode<NamedArea> westEuropeNode, NamedArea westEurope) {
+        fallbackMarkerType = MarkerType.NewInstance("Fallback area", "Fallback area", "fba");
+        fallbackMarkerType.setUuid(MarkerType.uuidFallbackArea);   //as long as it is not an official CDM marker type yet
+        westEuropeNode.addMarker(fallbackMarkerType, true);
+        if (westEurope != null) {
+            westEurope.addMarker(fallbackMarkerType, true);
+        }
+    }
+
+    private void createDefaultDistributions() {
+        europeDist = Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA());
+        germanyDist = Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE());
+        bawueDist = Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE());
+        berlinDist = Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE());
+        italyDist = Distribution.NewInstance(italy, PresenceAbsenceTerm.PRESENT_DOUBTFULLY());
+        ileDeFranceDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.CULTIVATED());
+        spainDist = Distribution.NewInstance(spain, PresenceAbsenceTerm.NATURALISED());
+        westEuropeDist = null;
+        saarDist = null;
+        addDefaultDistributions();
+    }
+
+    private void createDefaultDistributionDtos() {
+        distributionDtos.clear();
+        distributionDtos.add(dist2Dto(europeDist, parentAreaMap));
+        distributionDtos.add(dist2Dto(germanyDist, parentAreaMap));
+        bawueDistribution = dist2Dto(bawueDist, parentAreaMap);
+        distributionDtos.add(bawueDistribution);  //TODO needed?
+        distributionDtos.add(dist2Dto(berlinDist, parentAreaMap));
+        distributionDtos.add(dist2Dto(italyDist, parentAreaMap));
+        distributionDtos.add(dist2Dto(ileDeFranceDist, parentAreaMap));
+        distributionDtos.add(dist2Dto(spainDist, parentAreaMap));
+        if (westEuropeDist != null) {
+            distributionDtos.add(dist2Dto(westEuropeDist, parentAreaMap));
+        }
+        if (saarDist != null) {
+            distributionDtos.add(dist2Dto(saarDist, parentAreaMap));
+        }
+    }
+
+    //only needed for testFilterDistributions_multipleParents which uses these data
+    private void addDefaultDistributions() {
+        distributions.clear();
+        distributions.add(europeDist);
+        distributions.add(germanyDist);
+        distributions.add(bawueDist);
+        distributions.add(berlinDist);
+        distributions.add(italyDist);
+        distributions.add(ileDeFranceDist);
+        distributions.add(spainDist);
+        if (westEuropeDist != null) {
+            distributions.add(westEuropeDist);
+        }
+        if (saarDist != null) {
+            distributions.add(saarDist);
+        }
+    }
+
+    private DistributionDto dist2Dto(Distribution distribution, SetMap<NamedArea, NamedArea> parentAreaMap) {
+        DistributionDto dto = new DistributionDto(distribution, parentAreaMap);
+        PortalDtoLoader.loadBaseData(distribution, dto);
+        return dto;
+    }
+
+    private void createWesternEuropeDistribution() {
+        westEuropeDist = Distribution.NewInstance(westEurope, PresenceAbsenceTerm.NATURALISED());
+    }
+
+    private void createAndAddSaarAndWestEuropeDistribution() {
+        createWesternEuropeDistribution();
+        saarDist = Distribution.NewInstance(saar, PresenceAbsenceTerm.NATURALISED());
+        distributions.add(westEuropeDist);
+        distributions.add(saarDist);
     }
 
     @Test
@@ -134,37 +340,18 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
          * and both areas have the same status only the information on
          * the sub area should be reported, whereas the super area should be
          * ignored.
-         * TODO Note by AM:  to me this test is unclear, there seems to be no difference between
-         * "no", "mixed" and "all". From what I saw in the code the "preferAggregated" rule
-         * works only on the exact same area so as we use Germany versus Berlin here it may not
-         * have any influence and the last 2 tests could be deleted.
-         * NOTE2: From now on the marker computed on distributions has no effect anymore.
-         * Computed (or better Aggregated_Distribution) can only be defined on description
-         * level not on description element level. But this change had no effect on this test
-         * so also from this perspective the 2 "Computed" tests can be deleted.
+         * TODO Note by AM: originally this test distinguished 3 situation "no",
+         * "mixed" and "all" computed. As there was no difference in the results anymore
+         * at a certain time, the 2 later ones were deleted from this test, also
+         * because they were still using the old concept of a "COMPUTED"-Marker.
          */
         Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE());
         Distribution distBerlin = Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE());
 
-        // no computed data
         distributions.add(distGermany);
         distributions.add(distBerlin);
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
-
-        // mixed situation
-        distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
-
-        // all computed
-        distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
-        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
     }
@@ -398,5 +585,175 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
+    }
+
+
+    @Test
+    public void testFilterDistributions_multipleParents(){
+        subAreaPreference = true;
+        statusOrderPreference = true;
+        boolean ignoreDistributionStatusUndefined = false;
+        boolean keepFallBackOnlyIfNoSubareaDataExists = true;
+
+        setupTreeTest();  //we use tree test setup here
+        TermTree<NamedArea> areaTree = this.areaTree;
+        createDefaultDistributions();
+
+        //test default (without 2 parents)
+        distributions.remove(bawueDist);
+        distributions.remove(berlinDist);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, ignoreDistributionStatusUndefined);
+        Assert.assertEquals(4, filteredDistributions.size());
+        List<NamedArea> areaList = filteredDistributions.stream().map(fd->fd.getArea()).collect(toList);
+        Assert.assertTrue(areaList.contains(germany));
+        Assert.assertTrue(areaList.contains(ileDeFrance));
+        Assert.assertTrue(areaList.contains(italy));
+        Assert.assertTrue(areaList.contains(spain));
+
+        //add Saar which is child of Germany and West Europe
+        createAndAddSaarAndWestEuropeDistribution();
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, ignoreDistributionStatusUndefined);
+        Assert.assertEquals(4, filteredDistributions.size());
+        List<NamedArea> areaList2 = filteredDistributions.stream().map(fd->fd.getArea()).collect(toList);
+        Assert.assertTrue(areaList2.contains(saar));
+        Assert.assertFalse("Should not contain West Europe as it is Saar parent", areaList2.contains(westEurope));
+        Assert.assertFalse("Should not contain Germany as it is Saar parent", areaList2.contains(germany));
+        Assert.assertTrue(areaList2.contains(ileDeFrance));
+        Assert.assertTrue(areaList.contains(italy));
+        Assert.assertTrue(areaList.contains(spain));
+    }
+
+    @Test
+    public <TN extends TreeNode<Set<DistributionDto>,NamedAreaDto>> void testBuildOrderedTreeDto() {
+        testBuildOrderedTreeDto(false);
+        testBuildOrderedTreeDto(true);
+    }
+
+    private <TN extends TreeNode<Set<DistributionDto>,NamedAreaDto>> void testBuildOrderedTreeDto(boolean withSecondMethod) {
+        setupTreeTest();
+
+//        IDefinedTermDao termDao = null; //TODO
+//        DistributionTreeDtoLoader loader = new DistributionTreeDtoLoader(termDao);
+
+        createDefaultDistributions();
+        createDefaultDistributionDtos();
+        Assert.assertEquals("Tree:1<Europe:endemic{}:4"
+                + "<Germany:native{}:2"
+                +     "<Baden Wuerttemberg:native{}:0>"
+                +     "<Berlin:native{}:0>>"
+                + "<Italy:doubtfully present{}:0>"
+                + "<Spain:naturalised{}:0>"
+                + "<West Europe:-:1<France:-:1<Ile-de-France:cultivated{}:0>>>"
+                + ">",
+                tree2String(buildTree(withSecondMethod)));
+
+        //with fallback
+        fallBackAreaMarkerTypes.add(fallbackMarkerType);
+        Assert.assertEquals("Tree:1<Europe:endemic{}:4"
+                + "<France:-:1<Ile-de-France:cultivated{}:0>>"
+                + "<Germany:native{}:2"
+                +     "<Baden Wuerttemberg:native{}:0>"
+                +     "<Berlin:native{}:0>>"
+                + "<Italy:doubtfully present{}:0>"
+                + "<Spain:naturalised{}:0>>",
+                tree2String(buildTree(withSecondMethod)));
+
+        //change status
+        bawueDist.setStatus(PresenceAbsenceTerm.CASUAL());
+        createDefaultDistributionDtos();
+        Assert.assertEquals("Tree:1<Europe:endemic{}:4"
+                + "<France:-:1<Ile-de-France:cultivated{}:0>>"
+                + "<Germany:native{}:2"
+                +     "<Baden Wuerttemberg:casual{}:0>"
+                +     "<Berlin:native{}:0>>"
+                + "<Italy:doubtfully present{}:0>"
+                + "<Spain:naturalised{}:0>>",
+                tree2String(buildTree(withSecondMethod)));
+
+        //add fallback status
+        createWesternEuropeDistribution();
+        createDefaultDistributionDtos();
+        Assert.assertEquals("Tree:1<Europe:endemic{}:5"
+                + "<France:-:1<Ile-de-France:cultivated{}:0>>"
+                + "<Germany:native{}:2"
+                +     "<Baden Wuerttemberg:casual{}:0>"
+                +     "<Berlin:native{}:0>>"
+                + "<Italy:doubtfully present{}:0>"
+                + "<Spain:naturalised{}:0>"
+                + "<West Europe:naturalised{}:0>"  //TODO discuss if it should appear already
+                + ">",
+                tree2String(buildTree(withSecondMethod)));
+
+        //add fallback reference
+        Reference ref1 = ReferenceFactory.newGeneric();
+        ref1.setTitleCache("Test Ref1", true);
+        westEuropeDist.addPrimaryTaxonomicSource(ref1, "55");
+        createDefaultDistributionDtos();
+        Assert.assertEquals("Tree:1<Europe:endemic{}:5"
+                + "<France:-:1<Ile-de-France:cultivated{}:0>>"
+                + "<Germany:native{}:2"
+                +     "<Baden Wuerttemberg:casual{}:0>"
+                +     "<Berlin:native{}:0>>"
+                + "<Italy:doubtfully present{}:0>"
+                + "<Spain:naturalised{}:0>"
+                + "<West Europe:naturalised{Test Ref1: 55}:0>"
+                + ">",
+                tree2String(buildTree(withSecondMethod)));
+    }
+
+    private DistributionTreeDto buildTree(boolean withSecondMethod) {
+        return DistributionServiceUtilities.buildOrderedTreeDto(omitLevels,
+                distributionDtos, parentAreaMap, areaTree,
+                fallBackAreaMarkerTypes, alternativeRootAreaMarkerTypes,
+                neverUseFallbackAreasAsParents, distributionOrder, null, withSecondMethod);
+    }
+
+    private String tree2String(DistributionTreeDto tree) {
+        StringBuilder sb = new StringBuilder();
+        TreeNode<Set<DistributionDto>, NamedAreaDto> root = tree.getRootElement();
+        Assert.assertNotNull("root should exist", root);
+        Assert.assertNull("root nodeId is null as it does not represent an area", root.getNodeId());
+        sb.append("Tree:" + root.getNumberOfChildren());
+        for (TreeNode<Set<DistributionDto>,NamedAreaDto> node : root.getChildren()) {
+            node2String(node, sb);
+        }
+        return sb.toString();
+    }
+
+    private void node2String(TreeNode<Set<DistributionDto>,NamedAreaDto> node, StringBuilder sb) {
+
+        sb.append("<")
+          .append(node.getNodeId().getLabel()+":");
+        if (CdmUtils.isNullSafeEmpty(node.getData())) {
+            sb.append("-");
+        }else {
+            Set<DistributionDto> data = node.getData();
+            boolean isFirst = true;
+            for (DistributionDto date : data) {
+                if (!isFirst) {
+                    sb.append("|");
+                }
+                sb.append(date.getStatus().getLabel());
+                sb.append("{");
+                if (date.getSources() != null) {
+                    for (SourceDto source : date.getSources().getItems()) {
+                        List<TypedLabel> typedLabel = source.getLabel();
+                        String label = typedLabel.get(0).getLabel();
+                        sb.append(label);
+                    }
+                }
+                sb.append("}");
+                isFirst = false;
+            }
+        }
+        sb.append(":" + node.getNumberOfChildren());
+        for (TreeNode<Set<DistributionDto>,NamedAreaDto> child : node.getChildren()) {
+            node2String(child, sb);
+        }
+        sb.append(">");
     }
 }

@@ -182,7 +182,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         if (taxonName != null){
             state.names.put(taxonName.getNameCache(), taxonName);
         }
-        if(!taxonName.isPersited()) {
+        if(!taxonName.isPersisted()) {
             save(taxonName, state);
         }
         return taxonName;

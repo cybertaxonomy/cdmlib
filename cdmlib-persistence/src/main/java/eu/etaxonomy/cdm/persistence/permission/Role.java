@@ -53,7 +53,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
      * {@link #asNewGrantedAuthority()}
      *
      *
-     * @return either an instance which already is persited to the database or a
+     * @return either an instance which already is persisted to the database or a
      *         fresh not persisted instance of {@link GrantedAuthorityImpl} for
      *         the Role.
      */

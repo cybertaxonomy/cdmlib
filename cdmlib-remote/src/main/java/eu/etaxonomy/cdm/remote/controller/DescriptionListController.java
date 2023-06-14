@@ -289,7 +289,7 @@ public class DescriptionListController
             ModelAndView mv = new ModelAndView();
 
             boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
-            boolean fallbackAsParent = true;  //may become a service parameter in future
+            boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future
 
             DistributionInfoDto dto;
             try {
@@ -323,7 +323,7 @@ public class DescriptionListController
 
                 // ignoreDistributionStatusUndefined, condensedConfig
                 dto = distributionService.composeDistributionInfoFor(config, taxonUuid,
-                        fallbackAsParent, distributionStatusColors,
+                        neverUseFallbackAreaAsParent, distributionStatusColors,
                         LocaleContext.getLanguages(), getDescriptionInfoInitStrategy()
                       );
                 mv.addObject(dto);
