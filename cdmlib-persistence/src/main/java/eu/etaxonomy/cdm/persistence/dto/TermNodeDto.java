@@ -250,8 +250,6 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
             if (child != null && child.getUuid() != null && nodeDto.getUuid() != null){
                 if (child.getUuid().equals(nodeDto.getUuid())){
                     return index;
-                }else if(child != null &&(child.getUuid() == null && nodeDto.getUuid() == null) && child.getTerm().getUuid().equals(nodeDto.getTerm().getUuid())){
-                    return index;
                 }
             }
             index++;
