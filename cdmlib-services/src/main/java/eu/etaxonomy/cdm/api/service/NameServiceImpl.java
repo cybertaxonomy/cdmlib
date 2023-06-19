@@ -1430,7 +1430,7 @@ public class NameServiceImpl
 		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList2 = new ArrayList<>();
 
 		for (DoubleResult<TaxonNameParts, Integer> nameX: fullTaxonNamePartsList) {
-		    if (nameX.getFirstResult().getSpecificEpithet().length()-tempEpith.length()>4) {
+		    if (nameX.getFirstResult().getSpecificEpithet().length()-tempEpith.length()<=4) {
 		        fullTaxonNamePartsList2.add(nameX);
 		        fullTaxonNamePartsList=fullTaxonNamePartsList2;
 		    }

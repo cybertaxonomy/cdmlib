@@ -1137,7 +1137,22 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
         // if the query does not have an exact match on the DB, return the best matches
-        //TODO
 
+        inputName = "Nectendra nigre";
+        matchResult = nameService.findMatchingNames(inputName, null, null);
+        Assert.assertEquals(2, matchResult.size());
+        matchRes= matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("nigra", matchRes.getFirstResult().getSpecificEpithet());
+        Assert.assertEquals(21, (int)matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("cae90b7a-5deb-4838-940f-f85bb685286e", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(2,(int) matchRes.getSecondResult());
+
+        matchRes= matchResult.get(1);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("nigrita", matchRes.getFirstResult().getSpecificEpithet());
+        Assert.assertEquals(22, (int)matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("8ad82243-b902-4eb6-990d-59774454b6e7", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(4,(int) matchRes.getSecondResult());
     }
 }
