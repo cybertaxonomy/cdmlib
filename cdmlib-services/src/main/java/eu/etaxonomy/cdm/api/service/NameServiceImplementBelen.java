@@ -3,17 +3,17 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.etaxonomy.cdm.common.DoubleResult;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
+
 public class NameServiceImplementBelen {
-	private String tempInputName;
-	private String tempDatabaseName;
-	private String shortenedInputName;
-	private String shortenedDatabaseName;
+
 
 // Phonetic changes performed ONLY on the initial characters of each String
 
-	public String replaceInitialCharacter(String inp) {
+	public static String replaceInitialCharacter(String inp) {
 	    String input=inp.toLowerCase();
-		String output="";
+		String output=input;
 		String[][] phoneticChange = {
 				{"ae","e"},{"cn","n"},{"ct","t"},{"cz","c"},
 				{"dj","d"},{"ea","e"},{"eu","u"},{"gn","n"},
@@ -33,8 +33,13 @@ public class NameServiceImplementBelen {
 
 // trim common characters between query and document
 
-	public List <String> trimCommonChar(String inputName, String databaseName) {
+	public static String trimCommonChar(String inputName, String databaseName) {
 
+	    String result;
+	    String shortenedInputName="";
+	    String shortenedDatabaseName="";
+	    String tempInputName;
+	    String tempDatabaseName;
         // trim common leading characters of query and document
 
         int inputNameLength = inputName.length();
@@ -53,24 +58,43 @@ public class NameServiceImplementBelen {
         tempInputName = inputName.substring(i);
         tempDatabaseName = databaseName.substring(i);
 
-        List <String> list= new ArrayList<>();
-
         // trim common tailing characters between query and document
 
         int restantInputNameLenght = tempInputName.length();
         int restantDatabaseNameLenght = tempDatabaseName.length();
         int shortestString = Math.min(restantInputNameLenght, restantDatabaseNameLenght);
-
-        for (int x = 0; x < shortestString; x++) {
+        int x;
+        for (x = 0; x < shortestString; x++) {
             if (tempInputName.charAt(restantInputNameLenght - x - 1) != tempDatabaseName
                     .charAt(restantDatabaseNameLenght - x - 1)) {
                 break;
             }
-            shortenedInputName = tempInputName.substring(0, restantInputNameLenght - x - 1);
-            shortenedDatabaseName = tempDatabaseName.substring(0, restantDatabaseNameLenght - x - 1);
 
         }
-        list.add(shortenedInputName +" "+ shortenedDatabaseName);
-        return list;
+        shortenedInputName = tempInputName.substring(0, restantInputNameLenght - x);
+        shortenedDatabaseName = tempDatabaseName.substring(0, restantDatabaseNameLenght - x);
+
+        result = shortenedInputName +" "+ shortenedDatabaseName;
+        return result;
     }
+
+	public static List <DoubleResult<TaxonNameParts, Integer>> exactResults (List <DoubleResult<TaxonNameParts, Integer>> list){
+	    List <DoubleResult<TaxonNameParts, Integer>> exactResults = new ArrayList<>();
+	    for (DoubleResult<TaxonNameParts, Integer> best:list) {
+            if (best.getSecondResult()==0){
+                exactResults.add(best);
+            }
+        }
+	    return exactResults;
+	}
+
+	public static List <DoubleResult<TaxonNameParts, Integer>> bestResults (List <DoubleResult<TaxonNameParts, Integer>> list){
+	    List <DoubleResult<TaxonNameParts, Integer>> bestResults = new ArrayList<>();
+	    for (DoubleResult<TaxonNameParts, Integer> best:list) {
+	        if (best.getSecondResult()==1||best.getSecondResult()==2||best.getSecondResult()==3||best.getSecondResult()==4){
+	            bestResults.add(best);
+	        }
+	    }
+	    return bestResults;
+	}
 }

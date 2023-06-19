@@ -22,26 +22,26 @@ public class NameServiceImplementBelenTest {
         NameServiceImplementBelen test=new NameServiceImplementBelen();
 
         String name = "euphorbia";
-        Assert.assertEquals("uphorbia", test.replaceInitialCharacter(name));
+        Assert.assertEquals("uphorbia", NameServiceImplementBelen.replaceInitialCharacter(name));
         name = "Cnemidia";
-        Assert.assertEquals("nemidia", test.replaceInitialCharacter(name));
+        Assert.assertEquals("nemidia", NameServiceImplementBelen.replaceInitialCharacter(name));
         name = "Gnaphalium";
-        Assert.assertEquals("naphalium", test.replaceInitialCharacter(name));
+        Assert.assertEquals("naphalium", NameServiceImplementBelen.replaceInitialCharacter(name));
         name = "Philodendron";
-        Assert.assertEquals("filodendron", test.replaceInitialCharacter(name));
+        Assert.assertEquals("filodendron", NameServiceImplementBelen.replaceInitialCharacter(name));
         name = "Tsuga";
-        Assert.assertEquals("suga", test.replaceInitialCharacter(name));
+        Assert.assertEquals("suga", NameServiceImplementBelen.replaceInitialCharacter(name));
         name = "Czerniaevia";
-        Assert.assertEquals("cerniaevia", test.replaceInitialCharacter(name));
+        Assert.assertEquals("cerniaevia", NameServiceImplementBelen.replaceInitialCharacter(name));
     }
 
     @Test
     public void testTrimCommonChar() {
         NameServiceImplementBelen test=new NameServiceImplementBelen();
-        String query ="this is a query string";
-        String document = "this is a database string";
+        String query ="Nectandra";
+        String document = "Nectalisma";
 
-        Assert.assertEquals("query", test.trimCommonChar(query, document).get(0).toString().split(" ")[0]);
-        Assert.assertEquals("database", test.trimCommonChar(query, document).get(0).toString().split(" ")[1]);
+        Assert.assertEquals("ndr", NameServiceImplementBelen.trimCommonChar(query, document).split(" ")[0]);
+        Assert.assertEquals("lism", NameServiceImplementBelen.trimCommonChar(query, document).split(" ")[1]);
     }
 }

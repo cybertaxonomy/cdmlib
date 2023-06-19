@@ -89,4 +89,16 @@ public class CdmUtilsBelen {
 		String output = firstPart + lastTwoChar;
 		return output;
 	}
+
+	public static String normalized(String x) {
+	    String result;
+
+	    result=CdmUtilsBelen.replaceSpecialCharacters(x);
+	    result=CdmUtilsBelen.soundalike(result);
+	    result=CdmUtilsBelen.replacerGenderEnding(result);
+//      tempGenus =NameServiceImplementBelen.replaceInitialCharacter(tempGenus);
+	    result=CdmUtilsBelen.removeDuplicate(result);
+
+        return result;
+	}
 }

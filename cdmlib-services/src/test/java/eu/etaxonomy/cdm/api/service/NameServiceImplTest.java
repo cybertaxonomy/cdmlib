@@ -1103,25 +1103,41 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingNames () {
+        String inputName;
+        List<DoubleResult<TaxonNameParts, Integer>> matchResult;
+        DoubleResult<TaxonNameParts, Integer> matchRes;
 
-        List<DoubleResult<TaxonNameParts, Integer>> matchResult = nameService.findMatchingNames("Gynxya asrerotciha", 0, 0, 10);
+        // if the query has an exact match on the DB, return the exact match
+        inputName = "Nectandra magnoliifolia";
+        matchResult = nameService.findMatchingNames(inputName, null, null);
         Assert.assertEquals(1, matchResult.size());
+        matchRes= matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("magnoliifolia", matchRes.getFirstResult().getSpecificEpithet());
+        Assert.assertEquals(20, (int)matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("10989f63-c52f-4704-9574-2cc0676afe01", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(0,(int) matchRes.getSecondResult());
 
-        matchResult = nameService.findMatchingNames("Gynxya asrerotciha", 1, 0, 10);
+        inputName = "Nectandra surinamensis";
+        matchResult = nameService.findMatchingNames(inputName, null, null);
         Assert.assertEquals(2, matchResult.size());
+        matchRes= matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("surinamensis", matchRes.getFirstResult().getSpecificEpithet());
+        Assert.assertEquals(27, (int) matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("b184664e-798b-4b50-8807-2163a4de796c", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(0,(int) matchRes.getSecondResult());
 
-        DoubleResult<TaxonNameParts, Integer> gynxyaAsrerotciha = matchResult.get(0);
-        Assert.assertNotNull(gynxyaAsrerotciha);
-        Assert.assertEquals(10, (int)gynxyaAsrerotciha.getFirstResult().getTaxonNameId());
-        Assert.assertEquals("Gynxya", matchResult.get(0).getFirstResult().getGenusOrUninomial());
-        Assert.assertEquals("asrerotciha", matchResult.get(0).getFirstResult().getSpecificEpithet());
-        Assert.assertEquals("Distance should be 0", 0, (int)gynxyaAsrerotciha.getSecondResult());
+        matchRes= matchResult.get(1);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("surinamensis", matchRes.getFirstResult().getSpecificEpithet());
+        Assert.assertEquals(28, (int) matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("b9c8c3ba-bc78-4229-ae7d-b3f7bf23ec85", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(0,(int) matchRes.getSecondResult());
 
-        DoubleResult<TaxonNameParts, Integer> gynxyasAsrerotciha = matchResult.get(1);
-        Assert.assertNotNull(gynxyasAsrerotciha);
-        Assert.assertEquals(12, (int)gynxyasAsrerotciha.getFirstResult().getTaxonNameId());
-        Assert.assertEquals("Gynxyas", matchResult.get(1).getFirstResult().getGenusOrUninomial());
-        Assert.assertEquals("asrerotciha", matchResult.get(1).getFirstResult().getSpecificEpithet());
-        Assert.assertEquals("Distance should be 1", 1, (int)gynxyasAsrerotciha.getSecondResult());
+
+        // if the query does not have an exact match on the DB, return the best matches
+        //TODO
+
     }
 }
