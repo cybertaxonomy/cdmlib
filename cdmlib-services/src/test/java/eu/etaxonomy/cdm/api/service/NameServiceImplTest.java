@@ -1154,5 +1154,29 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(22, (int)matchRes.getFirstResult().getTaxonNameId());
         Assert.assertEquals("8ad82243-b902-4eb6-990d-59774454b6e7", matchRes.getFirstResult().getTaxonNameUuid().toString());
         Assert.assertEquals(4,(int) matchRes.getSecondResult());
+
+        // if the query does not include an epithet
+
+        inputName = "Nectandra";
+        matchResult = nameService.findMatchingNames(inputName, null, null);
+        Assert.assertEquals(20, matchResult.size());
+        matchRes= matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("abortiens", matchRes.getFirstResult().getSpecificEpithet());
+        Assert.assertEquals(10, (int)matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("6dbd41d1-fe13-4d9c-bb58-31f051c2c384", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(0,(int) matchRes.getSecondResult());
+
+        inputName = "Nectondra";
+        matchResult = nameService.findMatchingNames(inputName, null, null);
+        Assert.assertEquals(20, matchResult.size());
+        matchRes= matchResult.get(1);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("acuminata", matchRes.getFirstResult().getSpecificEpithet());
+        Assert.assertEquals(11, (int)matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("f9e9c13f-5fa5-48d3-88cf-712c921a099e", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(1,(int) matchRes.getSecondResult());
+
+
     }
 }
