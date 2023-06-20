@@ -156,18 +156,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             }
             resultMap.put(uuid, cdmObj);
             i++;
-            if ((i % flushAfterNo) == 0) {
-                try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("flush");
-                    }
-                    flush();
-                } catch (Exception e) {
-                    logger.error("An exception occurred when trying to flush data");
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }
+            //Note AM: the following creates more problems than it solves due to unsaved transient instance exceptions, therefore I removed it for now.
+//            if ((i % flushAfterNo) == 0) {
+//                try {
+//                    if (logger.isDebugEnabled()) {
+//                        logger.debug("flush");
+//                    }
+//                    flush();
+//                } catch (Exception e) {
+//                    logger.error("An exception occurred when trying to flush data");
+//                    e.printStackTrace();
+//                    throw new RuntimeException(e);
+//                }
+//            }
         }
 
         if (logger.isInfoEnabled()) {
@@ -204,18 +205,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             }
             resultMap.put(uuid, cdmObj);
             i++;
-            if ((i % flushAfterNo) == 0) {
-                try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("flush");
-                    }
-                    flush();
-                } catch (Exception e) {
-                    logger.error("An exception occurred when trying to flush data");
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }
+            //Note AM: the following creates more problems than it solves due to unsaved transient instance exceptions, therefore I removed it for now.
+//            if ((i % flushAfterNo) == 0) {
+//                try {
+//                    if (logger.isDebugEnabled()) {
+//                        logger.debug("flush");
+//                    }
+//                    flush();
+//                } catch (Exception e) {
+//                    logger.error("An exception occurred when trying to flush data");
+//                    e.printStackTrace();
+//                    throw new RuntimeException(e);
+//                }
+//            }
         }
 
         if (logger.isInfoEnabled()) {
