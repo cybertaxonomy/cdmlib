@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -319,6 +320,8 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedRights((Rights)cdmBase, state);
         }else if(cdmBase instanceof DefinedTerm){
             return handlePersistedDefinedTerm((DefinedTerm)cdmBase, state);
+        }else if(cdmBase instanceof Character){
+            return handlePersistedCharacter((Character)cdmBase, state);
         }else if(cdmBase instanceof Feature){
             return handlePersistedFeature((Feature)cdmBase, state);
         }else if(cdmBase instanceof State){
@@ -741,6 +744,17 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
+    protected Character handlePersistedCharacter(Character term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        Character result = (Character)handlePersistedFeature(term, state);
+        result.setStructure(detach(term.getStructure(), state));
+        result.setPropertyModifier(detach(term.getPropertyModifier(), state));
+        result.setProperty(detach(term.getStructure(), state));
+        result.setStructureModifier(detach(term.getStructureModifier(), state));
+        result.setRatioToStructure(detach(term.getStructure(), state));
+
+        return result;
+    }
+
     protected Feature handlePersistedFeature(Feature term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Feature result = handlePersisted((DefinedTermBase)term, state);
         //complete
@@ -791,7 +805,9 @@ public abstract class Cdm2CdmImportBase
 
     protected TermVocabulary<?> handlePersistedVocabulary(TermVocabulary voc, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         TermVocabulary<?> result = (TermVocabulary<?>)handlePersisted((TermCollection)voc, state);
-        handleCollection(result, TermVocabulary.class, "terms", DefinedTermBase.class, state);
+        if (!state.getConfig().isPartialVocabulariesForGraphs() || !state.isGraph()) {
+            handleCollection(result, TermVocabulary.class, "terms", DefinedTermBase.class, state);
+        }
         return result;
     }
 
@@ -899,7 +915,6 @@ public abstract class Cdm2CdmImportBase
         setInvisible(nameDescription, "taxonName", detach(nameDescription.getTaxonName(), state));
         return result;
     }
-
 
 // ***************************** BASE CLASSES ********************************************/
 
