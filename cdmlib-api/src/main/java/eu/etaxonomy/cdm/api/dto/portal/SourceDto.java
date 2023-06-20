@@ -27,6 +27,7 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     private String linkedClass;
     private List<TaggedText> nameInSource;
     private UUID nameInSourceUuid;
+    private UUID referenceUuid;
     private String doi;
     //TODO maybe we should merge doi and uri
     private URI uri;
@@ -106,6 +107,10 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
         this.linkedClass = linkedClass;
     }
 
-
-
+    public UUID getReferenceUuid() {
+        return referenceUuid;
+    }
+    public void setReferenceUuid(UUID referenceUuid) {
+        this.referenceUuid = referenceUuid;
+    }
 }
