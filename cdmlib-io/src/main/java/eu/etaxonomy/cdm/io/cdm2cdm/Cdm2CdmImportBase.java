@@ -580,7 +580,7 @@ public abstract class Cdm2CdmImportBase
         MediaRepresentationPart result = handlePersisted((VersionableEntity)part, state);
         //rep, mediaMetaData
         handleCollection(result, MediaRepresentationPart.class, "mediaMetaData", MediaMetaData.class, state);
-        setInvisible(result, "mediaRepresentation", detach(result.getMediaRepresentation(), state));
+        setInvisible(result, MediaRepresentationPart.class, "mediaRepresentation", detach(result.getMediaRepresentation(), state));
         //complete
         return result;
     }
@@ -834,7 +834,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected <T extends TermRelationBase> T  handlePersisted(TermRelationBase termRelationBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        T result = handlePersisted((VersionableEntity)termRelationBase, state);
+        T result = handlePersisted((AnnotatableEntity)termRelationBase, state);
         result.setTerm(detach(result.getTerm(), state));
         setInvisible(result, TermRelationBase.class, "graph", detach(result.getGraph(), state));
         return result;
