@@ -65,7 +65,7 @@ public class CharacterDto extends FeatureDto {
     }
 
     public static CharacterDto fromCharacter(Character character) {
-       TermVocabulary voc = character.getVocabulary();
+       TermVocabulary<?> voc = character.getVocabulary();
 
        Set<TermCollectionDto> recommendedModifierDtos = new HashSet<>();
        for (TermCollection<DefinedTerm,?> modVoc: character.getRecommendedModifierEnumeration()){
@@ -96,11 +96,11 @@ public class CharacterDto extends FeatureDto {
        boolean forTaxon = character.isAvailableForTaxon();
        boolean forTaxonName = character.isAvailableForTaxonName();
        boolean forOccurrence = character.isAvailableForOccurrence();
-       TermNodeDto structure = character.getStructure() !=null? TermNodeDto.fromNode(character.getStructure(), null): null;
-       TermDto modifier = character.getStructureModifier() != null? TermDto.fromTerm(character.getStructureModifier()): null;
-       TermNodeDto property = character.getProperty() != null? TermNodeDto.fromNode(character.getProperty(), null): null;
+       TermNodeDto structure = character.getStructure() !=null ? TermNodeDto.fromNode(character.getStructure(), null): null;
+       TermDto modifier = character.getStructureModifier() != null ? TermDto.fromTerm(character.getStructureModifier()): null;
+       TermNodeDto property = character.getProperty() != null ? TermNodeDto.fromNode(character.getProperty(), null): null;
        TermDto propModifier =character.getPropertyModifier() != null? TermDto.fromTerm(character.getPropertyModifier()): null;
-       TermNodeDto ratioStructure = character.getRatioToStructure() != null? TermNodeDto.fromNode(character.getRatioToStructure(), null): null;
+       TermNodeDto ratioStructure = character.getRatioToStructure() != null ? TermNodeDto.fromNode(character.getRatioToStructure(), null): null;
        CharacterDto dto = new CharacterDto(uuid, representations, partOfUuid, kindOfUuid,
                vocUuid, null, idInVoc, forTaxon, forTaxonName, forOccurrence, character.getTitleCache(),
                structure, modifier, property, propModifier, ratioStructure,
@@ -266,13 +266,12 @@ public class CharacterDto extends FeatureDto {
                 Object o = elements[12];
                 Set<TermCollectionDto> recommendedModifierDtos = new HashSet<>();
                 if (o instanceof TermVocabulary){
-                    recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
+                    recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary<?>)o));
                 }else if (o instanceof Set){
+                    @SuppressWarnings("unchecked")
                     Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = (Set<TermVocabulary<DefinedTerm>>) o;
-                    if (recommendedModifierEnumeration != null){
-                        for (TermVocabulary<DefinedTerm> voc: recommendedModifierEnumeration){
-                            recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary(voc));
-                        }
+                    for (TermVocabulary<DefinedTerm> voc: recommendedModifierEnumeration){
+                        recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary(voc));
                     }
                 }
 
