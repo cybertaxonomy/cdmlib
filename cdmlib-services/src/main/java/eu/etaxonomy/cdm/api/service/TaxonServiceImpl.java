@@ -472,7 +472,6 @@ public class TaxonServiceImpl
         Reference newSecRef = null;
         switch (secHandling){
             case AlwaysDelete:
-                newSecRef = null;
                 break;
             case UseNewParentSec:
                 newSecRef = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
