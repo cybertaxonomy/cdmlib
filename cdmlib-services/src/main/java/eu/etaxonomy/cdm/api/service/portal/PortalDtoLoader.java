@@ -1202,6 +1202,7 @@ public class PortalDtoLoader {
             sourceDto.setDoi(ref.getDoiString());
             sourceDto.setUri(ref.getUri());
             sourceDto.setUuid(ref.getUuid());
+            sourceDto.setOriginalInfo(source.getOriginalInfo());
             Set<ExternalLink> links = ref.getLinks();
             for (ExternalLink link : links) {
                 if (link.getUri() != null) {

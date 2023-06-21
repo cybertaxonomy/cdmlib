@@ -25,6 +25,7 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     private List<TypedLabel> label = new ArrayList<>();
     private UUID linkedUuid;
     private String linkedClass;
+    private String originalInfo;
     private List<TaggedText> nameInSource;
     private UUID nameInSourceUuid;
     private UUID referenceUuid;
@@ -112,5 +113,12 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     }
     public void setReferenceUuid(UUID referenceUuid) {
         this.referenceUuid = referenceUuid;
+    }
+
+    public String getOriginalInfo() {
+        return originalInfo;
+    }
+    public void setOriginalInfo(String originalInfo) {
+        this.originalInfo = originalInfo;
     }
 }
