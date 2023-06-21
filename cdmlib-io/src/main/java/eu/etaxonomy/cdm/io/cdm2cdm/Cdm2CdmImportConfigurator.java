@@ -38,6 +38,8 @@ public  class Cdm2CdmImportConfigurator
 
     private VocabularyFilter vocabularyFilter = VocabularyFilter.NewInstance();
     private Collection<UUID> graphFilter = new HashSet<>();
+    private boolean partialVocabulariesForGraphs = true;
+
     private ITaxonNodeOutStreamPartitioner partitioner;
     private boolean concurrent = false;  //
 
@@ -174,5 +176,13 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setUpdatedByMode(UserImportMode updatedByMode) {
         this.updatedByMode = updatedByMode;
+    }
+
+    public boolean isPartialVocabulariesForGraphs() {
+        return partialVocabulariesForGraphs;
+    }
+
+    public void setPartialVocabulariesForGraphs(boolean partialVocabulariesForGraphs) {
+        this.partialVocabulariesForGraphs = partialVocabulariesForGraphs;
     }
 }

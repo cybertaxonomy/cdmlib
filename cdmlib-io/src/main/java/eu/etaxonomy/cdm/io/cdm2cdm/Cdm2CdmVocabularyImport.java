@@ -64,11 +64,13 @@ public class Cdm2CdmVocabularyImport
 
         //graphs
         Collection<UUID> graphUuids = state.getConfig().getGraphFilter();
+        state.setGraph(true);
         for (UUID graphUuid : graphUuids){
             TransactionStatus tx = startTransaction();
             doSingleGraph(state, graphUuid);
             commitTransaction(tx);
         }
+        state.setGraph(false);
     }
 
     private int getTotalCount() {
