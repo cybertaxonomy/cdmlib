@@ -54,6 +54,8 @@ public  class Cdm2CdmImportConfigurator
 
     private UserImportMode createdByMode = UserImportMode.NONE;
     private UserImportMode updatedByMode = UserImportMode.NONE;
+    private CreatedUpdatedMode createdMode = CreatedUpdatedMode.NONE;
+    private CreatedUpdatedMode updatedMode = CreatedUpdatedMode.NONE;
 
 //***************************** NewInstance ************************/
 
@@ -164,6 +166,20 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setGraphFilter(Collection<UUID> graphFilter) {
         this.graphFilter = graphFilter;
+    }
+
+    public CreatedUpdatedMode getCreatedMode() {
+        return createdMode;
+    }
+    public void setCreatedMode(CreatedUpdatedMode createdMode) {
+        this.createdMode = createdMode;
+    }
+
+    public CreatedUpdatedMode getUpdatedMode() {
+        return updatedMode;
+    }
+    public void setUpdatedMode(CreatedUpdatedMode updatedMode) {
+        this.updatedMode = updatedMode;
     }
 
     public UserImportMode getCreatedByMode() {

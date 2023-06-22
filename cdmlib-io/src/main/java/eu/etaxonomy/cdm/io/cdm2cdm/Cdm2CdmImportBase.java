@@ -928,7 +928,8 @@ public abstract class Cdm2CdmImportBase
         @SuppressWarnings("unchecked")
         T result = (T)getTarget(cdmBase, state);
         //complete
-        cdmBase.setCreatedBy(makeCreatedUpdatedBy(cdmBase.getCreatedBy(), state, false));
+        result.setCreatedBy(makeCreatedUpdatedBy(cdmBase.getCreatedBy(), state, false));
+        result.setCreated(makeCreatedUpdatedWhen(cdmBase.getCreated(), state, false));
         return result;
     }
 
@@ -936,7 +937,9 @@ public abstract class Cdm2CdmImportBase
         @SuppressWarnings("unchecked")
         T result = (T)handlePersistedCdmBase((CdmBase)entity, state);
         //complete
-        entity.setUpdatedBy(makeCreatedUpdatedBy(entity.getUpdatedBy(), state, true));
+        result.setUpdatedBy(makeCreatedUpdatedBy(entity.getUpdatedBy(), state, true));
+        result.setUpdated(makeCreatedUpdatedWhen(entity.getUpdated(), state, false));
+
         return result;
     }
 
@@ -1204,6 +1207,20 @@ public abstract class Cdm2CdmImportBase
             return null;
         case ORIGINAL:
             return detach(createdByOriginal, state);
+        default:
+            logger.warn("Mode not yet supported: " + mode);
+            return null;
+        }
+    }
+
+    private DateTime makeCreatedUpdatedWhen(DateTime createdOriginal, Cdm2CdmImportState state, boolean isUpdatedBy) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        CreatedUpdatedMode mode = isUpdatedBy? state.getConfig().getUpdatedMode() : state.getConfig().getCreatedMode();
+
+        switch (mode) {
+        case NONE:
+            return null;
+        case ORIGINAL:
+            return createdOriginal;
         default:
             logger.warn("Mode not yet supported: " + mode);
             return null;
