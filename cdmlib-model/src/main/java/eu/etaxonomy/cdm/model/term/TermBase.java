@@ -40,6 +40,7 @@ import org.hibernate.search.annotations.FieldBridge;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -50,7 +51,8 @@ import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 @XmlType(name = "TermBase", propOrder = {
     "uri",
     "termType",
-    "representations"
+    "representations",
+    "externallyManaged"
 })
 @XmlSeeAlso({
     DefinedTermBase.class,
@@ -91,6 +93,8 @@ public abstract class TermBase
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<>();
+
+    private ExternallyManaged externallyManaged;
 
 //******************* CONSTRUCTOR *************************************/
 
@@ -264,6 +268,15 @@ public abstract class TermBase
         return (repr == null) ? null :repr.getDescription();
     }
 
+    @Transient
+    public ExternallyManaged getExternallyManaged() {
+        return externallyManaged;
+    }
+    public void setExternallyManaged(ExternallyManaged externallyManaged) {
+        this.externallyManaged = externallyManaged;
+    }
+
+//********************** TO STRING *****************************************************/
 
     @Override
     public String toString() {

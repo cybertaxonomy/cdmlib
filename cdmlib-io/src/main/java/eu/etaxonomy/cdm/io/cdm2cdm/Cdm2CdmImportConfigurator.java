@@ -40,6 +40,8 @@ public  class Cdm2CdmImportConfigurator
     private Collection<UUID> graphFilter = new HashSet<>();
     private boolean partialVocabulariesForGraphs = true;
 
+    private boolean isExternallyManaged = false;
+
     private ITaxonNodeOutStreamPartitioner partitioner;
     private boolean concurrent = false;  //
 
@@ -184,5 +186,12 @@ public  class Cdm2CdmImportConfigurator
 
     public void setPartialVocabulariesForGraphs(boolean partialVocabulariesForGraphs) {
         this.partialVocabulariesForGraphs = partialVocabulariesForGraphs;
+    }
+
+    public boolean isExternallyManaged() {
+        return isExternallyManaged;
+    }
+    public void setExternallyManaged(boolean isExternallyManaged) {
+        this.isExternallyManaged = isExternallyManaged;
     }
 }

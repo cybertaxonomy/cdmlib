@@ -22,10 +22,12 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -43,10 +45,13 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
+import eu.etaxonomy.cdm.model.common.ExternallyManagedImport;
 import eu.etaxonomy.cdm.model.common.IIntextReferencable;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -839,6 +844,7 @@ public abstract class Cdm2CdmImportBase
         T result = handlePersisted((IdentifiableEntity)termBase, state);
         //complete
         handleCollection(result, TermBase.class, "representations", Representation.class, state);
+        handleExternallyManaged(result, state);
         return result;
     }
 
@@ -962,6 +968,22 @@ public abstract class Cdm2CdmImportBase
             }
         }
         return result;
+    }
+
+    private void handleExternallyManaged(TermBase result, Cdm2CdmImportState state) {
+        if (state.getConfig().isExternallyManaged()) {
+            ExternallyManaged externallyManaged = new ExternallyManaged();
+            externallyManaged.setAuthorityType(AuthorityType.EXTERN);
+            externallyManaged.setExternalId(result.getUuid().toString());
+            String subdomain = result.isInstanceOf(DefinedTermBase.class )? "term/":
+                    result.isInstanceOf(TermVocabulary.class) ? "voc/" :
+                        "list/";
+            externallyManaged.setExternalLink(URI.create("https://terms.cybertaxonomy.org/"+ subdomain + result.getUuid() ));  //TODO
+            externallyManaged.setImportMethod(ExternallyManagedImport.CDM_TERMS);
+            externallyManaged.setLastRetrieved(DateTime.now());
+            result.setExternallyManaged(externallyManaged);
+        }
+
     }
 
     //TODO for some reason the sources are still persisted, though not related to source holder
