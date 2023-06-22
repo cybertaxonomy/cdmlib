@@ -2105,7 +2105,10 @@ public class CdmLightClassificationExport
                         }else{
                             doubtful = "";
                         }
-                        if (tb instanceof Synonym){
+                        if (tb instanceof Synonym ){
+                            if (!((Synonym)tb).getAcceptedTaxon().equals(acceptedTaxon)) {
+                                continue;
+                            }
                             if (StringUtils.isNotBlank(sec)){
                                 sec = " syn. sec. " + sec + " ";
                             }else {
