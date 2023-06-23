@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -32,7 +31,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @author k.luther
  * @since Mar 18, 2020
  */
-public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
+public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatableDto{
 
     private static final long serialVersionUID = 7568459208397248126L;
 
@@ -41,16 +40,14 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
     private List<TermNodeDto> children;
     private Set<FeatureStateDto> onlyApplicableIf = new HashSet<>();
     private Set<FeatureStateDto> inapplicableIf = new HashSet<>();
-    private UUID uuid;
-    private int id;
+
     private TermDto term;
     private TermType type;
     private TermTreeDto tree;
     private String path;
     private Set<MarkerDto> markers;
     private Set<AnnotationDto> annotations;
-    private DateTime created;
-    private String createdBy;
+
 
     public static TermNodeDto fromNode(TermNode node, TermTreeDto treeDto){
         Assert.notNull(node, "Node should not be null");
@@ -78,6 +75,7 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         }
 
         dto.setChildren(children);
+
         dto.setOnlyApplicableIf(node.getOnlyApplicableIf());
         dto.setInapplicableIf(node.getInapplicableIf());
         dto.setTermType(node.getTermType());
@@ -87,39 +85,42 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
             dto.annotations = new HashSet<>();
         }
         for (Annotation an: node.getAnnotations()) {
-            AnnotationDto anDto = new AnnotationDto(an.getUuid(), an.getId());
-            anDto.setText(an.getText());
-            anDto.setTypeUuid(an.getAnnotationType() == null ? null : an.getAnnotationType().getUuid());
-            anDto.setTypeLabel(an.getAnnotationType() == null ? null : an.getAnnotationType().getLabel());
+            AnnotationDto anDto = new AnnotationDto(an.getUuid(), an.getId(), an.getAnnotationType() == null ? null : an.getAnnotationType().getUuid(),
+                    an.getAnnotationType() == null ? null : an.getAnnotationType().getLabel(),
+                            an.getText(), an.getCreated(), an.getCreatedBy() != null? CdmUtils.Nz(an.getCreatedBy().getUsername()):null,
+                                    an.getUpdated(), an.getUpdatedBy() != null? CdmUtils.Nz(an.getUpdatedBy().getUsername()):null);
+
             dto.annotations.add(anDto);
-            dto.created = an.getCreated();
-            dto.createdBy = CdmUtils.Nz(an.getCreatedBy().getUsername());
+
         }
+
 
         //markers
         if (dto.markers == null) {
             dto.markers = new HashSet<>();
         }
         for (Marker marker: node.getMarkers()) {
-            MarkerDto maDto = new MarkerDto(marker.getUuid(), marker.getId(), marker.getMarkerType().getUuid(), marker.getMarkerType().getLabel(), marker.getFlag(), marker.getCreated(), CdmUtils.Nz(marker.getCreatedBy().getUsername()));
-//            maDto.setId(marker.getId());
-//            maDto.setType(marker.getMarkerType().getLabel());
-//            maDto.setTypeUuid(marker.getMarkerType().getUuid());
-//            maDto.setUuid(marker.getUuid());
-//            maDto.setValue(marker.getFlag());
+
+
+            MarkerDto maDto = new MarkerDto(marker.getUuid(), marker.getId(),
+                    marker.getMarkerType().getUuid(), marker.getMarkerType().getLabel(),
+                    marker.getFlag(), marker.getCreated(), marker.getCreatedBy()!= null?CdmUtils.Nz(marker.getCreatedBy().getUsername()):null,
+                            marker.getUpdated(), marker.getUpdatedBy()!= null? CdmUtils.Nz(marker.getUpdatedBy().getUsername()):null);
+
             dto.markers.add(maDto);
         }
-        dto.created = node.getCreated();
-        dto.createdBy = node.getCreatedBy()!= null? CdmUtils.Nz(node.getCreatedBy().getUsername()): null;
+        dto.setCreated(node.getCreated());
+        dto.setCreatedBy(node.getCreatedBy()!= null? CdmUtils.Nz(node.getCreatedBy().getUsername()): null);
         return dto;
     }
 
     public TermNodeDto(TermDto termDto, TermNodeDto parent, int position, TermTreeDto treeDto, UUID uuid, int id, String treeIndex, String path){
-        this.uuid = uuid;
+        super(uuid, id);
+
         if (parent != null){
             parentUuid = parent.getUuid();
         }
-        this.id = id;
+
         this.treeIndex = treeIndex;
         term = termDto;
         type = termDto!= null? termDto.getTermType(): null;
@@ -135,9 +136,10 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
     }
 
     public TermNodeDto(TermDto termDto, UUID parentUuid, int position, TermTreeDto treeDto, UUID uuid, int id, String treeIndex, String path){
-        this.uuid = uuid;
+        super(uuid, id);
+
         this.parentUuid = parentUuid;
-        this.id = id;
+
         this.treeIndex = treeIndex;
         term = termDto;
         type = termDto!= null? termDto.getTermType(): null;
@@ -149,8 +151,8 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
     }
 
     public TermNodeDto(TermDto termDto, int position, TermTreeDto treeDto, UUID uuid, int id, String treeIndex, String path){
-        this.uuid = uuid;
-        this.id = id;
+        super(uuid, id);
+
         this.treeIndex = treeIndex;
         term = termDto;
         type = termDto!= null? termDto.getTermType(): null;
@@ -227,14 +229,7 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
         }
     }
 
-    @Override
-    public UUID getUuid() {
-        return uuid;
-    }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
 
     public TermDto getTerm(){
         return term;
@@ -396,21 +391,5 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
     @Override
     public void removeAnnotation(AnnotationDto annotation) {
         this.getAnnotations().remove(annotation);
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public DateTime getCreated() {
-
-        return created;
-    }
-
-    @Override
-    public String getCreatedBy() {
-        return createdBy;
     }
 }

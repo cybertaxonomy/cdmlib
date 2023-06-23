@@ -23,4 +23,6 @@ public interface ICdmBaseDto {
     public int getId();
     public DateTime getCreated();
     public String getCreatedBy();
+    public DateTime getUpdated();
+    public String getUpdatedBy();
 }

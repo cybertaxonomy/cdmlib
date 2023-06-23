@@ -85,4 +85,6 @@ public class CharacterNodeDto extends TermNodeDto {
 
         return dto;
     }
+
+
 }

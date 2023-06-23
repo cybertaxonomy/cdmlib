@@ -288,6 +288,7 @@ public class TermNodeServiceImpl
                     Annotation annotation = Annotation.NewDefaultLanguageInstance(anDto.getText());
                     annotation.setAnnotationType(AnnotationType.getTermByUUID(anDto.getTypeUuid(), AnnotationType.class));
                     annotationsToAdd.add(annotation);
+
                 }
             }
         }
