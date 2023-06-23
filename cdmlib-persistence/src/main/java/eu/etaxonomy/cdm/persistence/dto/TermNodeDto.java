@@ -15,8 +15,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -47,6 +49,8 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
     private String path;
     private Set<MarkerDto> markers;
     private Set<AnnotationDto> annotations;
+    private DateTime created;
+    private String createdBy;
 
     public static TermNodeDto fromNode(TermNode node, TermTreeDto treeDto){
         Assert.notNull(node, "Node should not be null");
@@ -88,6 +92,8 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
             anDto.setTypeUuid(an.getAnnotationType() == null ? null : an.getAnnotationType().getUuid());
             anDto.setTypeLabel(an.getAnnotationType() == null ? null : an.getAnnotationType().getLabel());
             dto.annotations.add(anDto);
+            dto.created = an.getCreated();
+            dto.createdBy = CdmUtils.Nz(an.getCreatedBy().getUsername());
         }
 
         //markers
@@ -95,7 +101,7 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
             dto.markers = new HashSet<>();
         }
         for (Marker marker: node.getMarkers()) {
-            MarkerDto maDto = new MarkerDto(marker.getUuid(), marker.getId(), marker.getMarkerType().getUuid(), marker.getMarkerType().getLabel(), marker.getFlag());
+            MarkerDto maDto = new MarkerDto(marker.getUuid(), marker.getId(), marker.getMarkerType().getUuid(), marker.getMarkerType().getLabel(), marker.getFlag(), marker.getCreated(), CdmUtils.Nz(marker.getCreatedBy().getUsername()));
 //            maDto.setId(marker.getId());
 //            maDto.setType(marker.getMarkerType().getLabel());
 //            maDto.setTypeUuid(marker.getMarkerType().getUuid());
@@ -103,6 +109,8 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
 //            maDto.setValue(marker.getFlag());
             dto.markers.add(maDto);
         }
+        dto.created = node.getCreated();
+        dto.createdBy = node.getCreatedBy()!= null? CdmUtils.Nz(node.getCreatedBy().getUsername()): null;
         return dto;
     }
 
@@ -393,5 +401,16 @@ public class TermNodeDto implements Serializable, IAnnotatableDto, ICdmBaseDto{
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public DateTime getCreated() {
+
+        return created;
+    }
+
+    @Override
+    public String getCreatedBy() {
+        return createdBy;
     }
 }

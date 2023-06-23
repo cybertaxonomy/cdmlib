@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+
 /**
  * @author K.Luther
  * @date 05.06.2023
@@ -25,6 +27,8 @@ public class AnnotationDto implements Serializable, Comparable<AnnotationDto>, I
     private String typeLabel;
     private UUID uuid;
     private int id;
+    private DateTime created;
+    private String createdBy;
     //TODO do we need type label, too?
 
     public AnnotationDto() {
@@ -75,6 +79,13 @@ public class AnnotationDto implements Serializable, Comparable<AnnotationDto>, I
         this.typeLabel = typeLabel;
     }
 
+    public void setCreated(DateTime created) {
+        this.created = created;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
     @Override
     public int compareTo(AnnotationDto o) {
         if (this.getUuid().equals(o.getUuid())) {
@@ -90,5 +101,15 @@ public class AnnotationDto implements Serializable, Comparable<AnnotationDto>, I
             return 1;
         }
         return this.getText().compareTo(o.getText());
+    }
+
+    @Override
+    public DateTime getCreated() {
+        return created;
+    }
+
+    @Override
+    public String getCreatedBy() {
+        return createdBy;
     }
 }

@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+
 /**
  * @author K.Luther
  * @date 06.06.2023
@@ -19,4 +21,6 @@ import java.util.UUID;
 public interface ICdmBaseDto {
     public UUID getUuid();
     public int getId();
+    public DateTime getCreated();
+    public String getCreatedBy();
 }

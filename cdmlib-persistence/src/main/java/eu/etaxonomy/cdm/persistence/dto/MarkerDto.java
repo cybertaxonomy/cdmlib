@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+
 /**
  * @author K.Luther
  * @date 05.06.2023
@@ -24,18 +26,21 @@ public class MarkerDto implements Serializable, Comparable<MarkerDto>, ICdmBaseD
     private String type;
     private UUID uuid;
     private int id;
-
+    private DateTime created;
+    private String createdBy;
 
     public MarkerDto(UUID uuid, int id) {
         this.uuid = uuid;
         this.id = id;
     }
 
-    public MarkerDto(UUID uuid, Integer id, UUID typeUuid, String type, Boolean value) {
+    public MarkerDto(UUID uuid, Integer id, UUID typeUuid, String type, Boolean value, DateTime created, String createdBy) {
         this(uuid, id);
         this.typeUuid = typeUuid;
         this.type = type;
         this.value = value;
+        this.created = created;
+        this.createdBy = createdBy;
     }
 
     public Boolean getValue() {
@@ -105,5 +110,15 @@ public class MarkerDto implements Serializable, Comparable<MarkerDto>, ICdmBaseD
         }
 
         return this.getType().compareTo(o.getType());
+    }
+
+    @Override
+    public DateTime getCreated() {
+        return created;
+    }
+
+    @Override
+    public String getCreatedBy() {
+        return createdBy;
     }
 }
