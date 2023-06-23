@@ -152,6 +152,7 @@ public class Character extends Feature {
     protected Character() {
         super();
         this.setTermType(TermType.Character);
+        this.setSupportsTextData(false);
     }
 
 
@@ -178,6 +179,7 @@ public class Character extends Feature {
         this.setTermType(TermType.Character);
         this.structure = structure;
         this.property = property;
+        this.setSupportsTextData(false);
     }
 
  // ****************** GETTER / SETTER *********************************************/
