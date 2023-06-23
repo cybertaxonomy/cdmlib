@@ -111,6 +111,9 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
         }
         dto.setCreated(node.getCreated());
         dto.setCreatedBy(node.getCreatedBy()!= null? CdmUtils.Nz(node.getCreatedBy().getUsername()): null);
+        dto.setUpdated(node.getUpdated());
+        dto.setUpdatedBy(node.getUpdatedBy()!= null? CdmUtils.Nz(node.getUpdatedBy().getUsername()): null);
+
         return dto;
     }
 
