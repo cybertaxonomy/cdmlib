@@ -194,17 +194,6 @@ public class TaxonNodeFilterDaoHibernateImpl
         return result;
     }
 
-
-    /**
-     * @param subtreeFilter
-     * @param taxonNodeFilter
-     * @param classificationFilter
-     * @param taxonFilter
-     * @param rankMinFilter
-     * @param rankMaxFilter
-     * @param rootNodeFilter
-     * @return
-     */
     private String getFullFilter(String subtreeFilter, String taxonNodeFilter, String classificationFilter,
             String taxonFilter, String rankMaxFilter, String rankMinFilter, String areaFilter, String rootNodeFilter,
             String unpublishFilter) {

@@ -36,7 +36,8 @@ import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
- * Embedabble class to embed attributes to use externally managed data
+ * Embedabble class to embed attributes to use externally managed data.
+ *
  * @author a.mueller
  * @since 12.08.2019
  */
@@ -53,7 +54,6 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
 
     private static final long serialVersionUID = -2254347420863435872L;
-
 
     //attributes for externally managed
 

@@ -133,6 +133,7 @@ public class Cdm2CdmVocabularyImport
             thisGraph = detach(otherGraph, state);
             if (thisGraph != otherGraph){ //voc already existed
                 for (TermNode<DefinedTermBase> node: otherGraph.getRootChildren()){
+                    //TODO this is not implemented yet!!
                     doSingleNode(state, node, thisGraph.getRoot());
                 }
             }
