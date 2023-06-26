@@ -752,10 +752,10 @@ public abstract class Cdm2CdmImportBase
     protected Character handlePersistedCharacter(Character term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Character result = (Character)handlePersistedFeature(term, state);
         result.setStructure(detach(term.getStructure(), state));
-        result.setPropertyModifier(detach(term.getPropertyModifier(), state));
-        result.setProperty(detach(term.getStructure(), state));
+        result.setProperty(detach(term.getProperty(), state));
+        result.setRatioToStructure(detach(term.getRatioToStructure(), state));
         result.setStructureModifier(detach(term.getStructureModifier(), state));
-        result.setRatioToStructure(detach(term.getStructure(), state));
+        result.setPropertyModifier(detach(term.getPropertyModifier(), state));
 
         return result;
     }
