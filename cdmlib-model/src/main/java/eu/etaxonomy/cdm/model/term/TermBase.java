@@ -40,7 +40,9 @@ import org.hibernate.search.annotations.FieldBridge;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
+import eu.etaxonomy.cdm.model.common.IExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -62,7 +64,7 @@ import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 @Audited
 public abstract class TermBase
             extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
-            implements IHasTermType {
+            implements IHasTermType, IExternallyManaged {
 
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
@@ -273,6 +275,12 @@ public abstract class TermBase
     }
     public void setExternallyManaged(ExternallyManaged externallyManaged) {
         this.externallyManaged = externallyManaged;
+    }
+
+    @Transient
+    @Override
+    public boolean isManaged() {
+        return this.externallyManaged == null ? false : this.externallyManaged.getAuthorityType() == AuthorityType.EXTERN;
     }
 
 //********************** TO STRING *****************************************************/
