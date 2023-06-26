@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -83,7 +85,8 @@ public class TermTreeDto extends TermCollectionDto {
                 + "a.titleCache, "
                 + "a.allowDuplicates, "
                 + "a.orderRelevant, "
-                + "a.isFlat ";
+                + "a.isFlat, "
+                + "a.externallyManaged ";
         String sqlFromString =   "from TermTree as a ";
 
         String sqlJoinString =  "LEFT JOIN a.root as root "
@@ -108,7 +111,8 @@ public class TermTreeDto extends TermCollectionDto {
                 + "a.titleCache, "
                 + "a.allowDuplicates, "
                 + "a.orderRelevant, "
-                + "a.isFlat ";
+                + "a.isFlat, "
+                + "a.externallyManaged ";
         String sqlFromString =   "from DescriptiveDataSet as d ";
 
         String sqlJoinString =  "JOIN d.descriptiveSystem as a "
@@ -156,6 +160,10 @@ public class TermTreeDto extends TermCollectionDto {
                     termTreeDto.setRoot(CharacterNodeDto.fromTermNode((TermNode<Character>) elements[4], termTreeDto));
                 }else {
                     termTreeDto.setRoot(TermNodeDto.fromNode((TermNode)elements[4], termTreeDto));
+                }
+                ExternallyManaged extManaged = (ExternallyManaged) elements[9];
+                if (extManaged != null) {
+                    termTreeDto.setManaged(extManaged.getAuthorityType() == AuthorityType.EXTERN);
                 }
 
                 dtoMap.put(uuid, termTreeDto);

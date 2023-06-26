@@ -19,6 +19,8 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -119,6 +121,7 @@ public class TermDto extends AbstractTermDto{
         if (term instanceof NamedArea && ((NamedArea)term).getLevel() != null){
             dto.setLevel(((NamedArea)term).getLevel());
         }
+        dto.setManaged(term.isManaged());
         return dto;
     }
 
@@ -253,7 +256,8 @@ public class TermDto extends AbstractTermDto{
                 + "a.termType,  "
                 + "a.uri,  "
                 + "m,  "
-                + "a.titleCache ";
+                + "a.titleCache, "
+                + "a.externallyManaged ";
 
         String sqlFromString =   " FROM "+fromTable+" as a ";
 
@@ -317,10 +321,13 @@ public class TermDto extends AbstractTermDto{
                         (String)elements[10]);
                 termDto.setUri((URI)elements[8]);
                 termDto.setMedia(mediaUuids);
-                if (elements.length>11 && elements[11] != null){
-                    termDto.setLevel((NamedAreaLevel)elements[11]);
+                if (elements.length>12 && elements[12] != null){
+                    termDto.setLevel((NamedAreaLevel)elements[12]);
                 }
-
+                if (elements[11] != null) {
+                    ExternallyManaged extManaged = (ExternallyManaged)elements[11];
+                    termDto.setManaged(extManaged.getAuthorityType()!= null? extManaged.getAuthorityType().equals(AuthorityType.EXTERN):false);
+                }
                 dtoMap.put(uuid, termDto);
                 dtos.add(termDto);
             }

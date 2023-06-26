@@ -126,7 +126,8 @@ public abstract class TermCollectionDto extends AbstractTermDto {
                 + "a.titleCache,"
                 + "a.allowDuplicates,"
                 + "a.orderRelevant,"
-                + "a.isFlat "
+                + "a.isFlat, "
+                + "a.externallyManaged "
 
                 + "FROM "+fromTable+" as a "
                 + "LEFT JOIN a.representations AS r ";

@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -66,6 +68,12 @@ public class TermVocabularyDto extends TermCollectionDto {
                         (boolean)elements[5],
                         (boolean)elements[6]);
 
+                if (elements[7] != null) {
+                    ExternallyManaged ext = (ExternallyManaged)elements[7];
+                    if (ext.getAuthorityType().equals(AuthorityType.EXTERN)) {
+                        termVocDto.setManaged(true);
+                    }
+                }
                 dtoMap.put(uuid, termVocDto);
                 dtos.add(termVocDto);
             }
