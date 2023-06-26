@@ -257,8 +257,8 @@ public class TermNodeServiceImpl
 
                 }
 
-                MergeResult<TermNode> mergeResult = dao.merge(node, true);
-                result.addUpdatedObject(mergeResult.getMergedEntity());
+                UUID mergeResult = dao.saveOrUpdate(node);
+                result.addUpdatedObject(dao.findByUuid(mergeResult));
             }
         }
         return result;
