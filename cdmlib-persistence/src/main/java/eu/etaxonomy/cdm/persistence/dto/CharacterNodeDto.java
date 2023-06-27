@@ -15,6 +15,9 @@ import java.util.UUID;
 
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -82,6 +85,42 @@ public class CharacterNodeDto extends TermNodeDto {
 
 
         dto.setTermType(child.getTermType());
+
+      //annotations
+        if (dto.getAnnotations() == null) {
+            dto.setAnnotations(new HashSet<>());
+        }
+        for (Annotation an: child.getAnnotations()) {
+            AnnotationDto anDto = new AnnotationDto(an.getUuid(), an.getId(), an.getAnnotationType() == null ? null : an.getAnnotationType().getUuid(),
+                    an.getAnnotationType() == null ? null : an.getAnnotationType().getLabel(),
+                            an.getText(), an.getCreated(), an.getCreatedBy() != null? CdmUtils.Nz(an.getCreatedBy().getUsername()):null,
+                                    an.getUpdated(), an.getUpdatedBy() != null? CdmUtils.Nz(an.getUpdatedBy().getUsername()):null);
+
+            dto.getAnnotations().add(anDto);
+
+        }
+
+
+        //markers
+        if (dto.getMarkers() == null) {
+            dto.setMarkers(new HashSet<>());
+        }
+        for (Marker marker: child.getMarkers()) {
+
+
+            MarkerDto maDto = new MarkerDto(marker.getUuid(), marker.getId(),
+                    marker.getMarkerType().getUuid(), marker.getMarkerType().getLabel(),
+                    marker.getFlag(), marker.getCreated(), marker.getCreatedBy()!= null?CdmUtils.Nz(marker.getCreatedBy().getUsername()):null,
+                            marker.getUpdated(), marker.getUpdatedBy()!= null? CdmUtils.Nz(marker.getUpdatedBy().getUsername()):null);
+
+            dto.getMarkers().add(maDto);
+        }
+        dto.setCreated(child.getCreated());
+        dto.setCreatedBy(child.getCreatedBy()!= null? CdmUtils.Nz(child.getCreatedBy().getUsername()): null);
+        dto.setUpdated(child.getUpdated());
+        dto.setUpdatedBy(child.getUpdatedBy()!= null? CdmUtils.Nz(child.getUpdatedBy().getUsername()): null);
+
+
 
         return dto;
     }
