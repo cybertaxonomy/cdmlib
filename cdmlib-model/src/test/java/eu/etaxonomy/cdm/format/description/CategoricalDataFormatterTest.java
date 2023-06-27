@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -78,6 +79,29 @@ public class CategoricalDataFormatterTest extends TermTestBase {
         Assert.assertEquals("female state1s, textmodi state2, male unknown state3", text);
 
         //TODO test with additional basedata like timeperiod etc.
+
+
     }
 
+    @Test
+    public void testFormatNoData() {
+        //no data status
+        CategoricalData catData = CategoricalData.NewInstance(Feature.HABITAT());
+        FormatKey[] formatKey = null;
+        CategoricalDataFormatter formatter = new CategoricalDataFormatter(catData, formatKey);
+
+        //fully empty
+        String text = formatter.format(catData, formatKey);
+        Assert.assertEquals("", text);  //behavior may change in future
+
+        //data unavailable
+        catData.setNoDataStatus(NoDescriptiveDataStatus.DataUnavailable);
+        text = formatter.format(catData, formatKey);
+        Assert.assertEquals("data unavailable", text);
+
+        //data unavailable, but still data exists
+        catData.addStateData(stateData2);
+        text = formatter.format(catData, formatKey);
+        Assert.assertEquals("data unavailable (state2)", text);
+    }
 }

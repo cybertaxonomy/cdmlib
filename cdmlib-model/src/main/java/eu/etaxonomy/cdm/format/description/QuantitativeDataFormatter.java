@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.format.description;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -123,10 +125,14 @@ public class QuantitativeDataFormatter
         BigDecimal n = quantData.getSampleSize();
         String size = (n == null) ? "" : "n="+String.valueOf(n);
         String strBracket = isNotBlank(size) ? "[" + size + "]" : "";
-
-        //modif
-
         result = CdmUtils.concat(" ", result, strBracket);
+
+        //no data status
+        if (quantData.getNoDataStatus() != null) {
+            String noDataStatus = quantData.getNoDataStatus().getLabel();
+            result = StringUtils.isEmpty(result) ? noDataStatus : noDataStatus +" (" + result + ")";
+        }
+
         return result;
     }
 }

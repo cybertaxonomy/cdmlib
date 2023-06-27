@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
@@ -93,6 +94,7 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
     public void testFormatWithModifier() {
         QuantitativeData quantData = QuantitativeData.NewInstance(Feature.CHROMOSOME_NUMBER());
         FormatKey[] formatKey = null;
+        QuantitativeDataFormatter formatter = new QuantitativeDataFormatter(quantData, formatKey);
 
         quantData.addStatisticalValue(min1);
         quantData.addStatisticalValue(max1);
@@ -100,7 +102,6 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
         MeasurementUnit unit = MeasurementUnit.METER();
         quantData.setUnit(unit);
 
-        QuantitativeDataFormatter formatter = new QuantitativeDataFormatter(quantData, formatKey);
         String text = formatter.format(quantData, formatKey);
         Assert.assertEquals("0.1"+lowerUpperSep+"1.3 m [n=2]", text);
 
@@ -131,5 +132,31 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
         quantData.addStatisticalValue(lowerBound1);
         text = formatter.format(quantData, formatKey);
         Assert.assertEquals("about new mod (min"+modifierSep+"0.1"+minSep+")0.2"+lowerUpperSep+"max"+modifierSep+"1.3 m [n=2]", text);
+    }
+
+    @Test
+    public void testFormatNoData() {
+        //no data status
+        QuantitativeData quantData = QuantitativeData.NewInstance(Feature.CHROMOSOME_NUMBER());
+        FormatKey[] formatKey = null;
+        QuantitativeDataFormatter formatter = new QuantitativeDataFormatter(quantData, formatKey);
+
+        //fully empty
+        String text = formatter.format(quantData, formatKey);
+        Assert.assertEquals("", text);  //behavior may change in future
+
+        //data unavailable
+        quantData.setNoDataStatus(NoDescriptiveDataStatus.DataUnavailable);
+        text = formatter.format(quantData, formatKey);
+        Assert.assertEquals("data unavailable", text);
+
+        //data unavailable, but still data exists
+        quantData.addStatisticalValue(min1);
+        quantData.addStatisticalValue(max1);
+        quantData.addStatisticalValue(n1);
+        MeasurementUnit unit = MeasurementUnit.METER();
+        quantData.setUnit(unit);
+        text = formatter.format(quantData, formatKey);
+        Assert.assertEquals("data unavailable (0.1"+lowerUpperSep+"1.3 m [n=2])", text);
     }
 }
