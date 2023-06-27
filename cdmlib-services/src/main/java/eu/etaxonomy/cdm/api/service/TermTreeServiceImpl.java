@@ -100,8 +100,8 @@ public class TermTreeServiceImpl
                     tree.setOrderRelevant(dto.isOrderRelevant());
                 }
 
-                mergeResult = dao.merge(tree, true);
-                result.addUpdatedObject(mergeResult.getMergedEntity());
+                UUID uuid = dao.saveOrUpdate(tree);
+                result.addUpdatedObject(dao.findByUuid(uuid));
             }
         }
         return result;

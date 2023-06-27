@@ -163,7 +163,7 @@ public class TermTreeDto extends TermCollectionDto {
                 }
                 ExternallyManaged extManaged = (ExternallyManaged) elements[9];
                 if (extManaged != null) {
-                    termTreeDto.setManaged(extManaged.getAuthorityType() == AuthorityType.EXTERN);
+                    termTreeDto.setManaged(extManaged != null && extManaged.getAuthorityType() == AuthorityType.EXTERN);
                 }
 
                 dtoMap.put(uuid, termTreeDto);

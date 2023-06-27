@@ -70,7 +70,7 @@ public class TermVocabularyDto extends TermCollectionDto {
 
                 if (elements[7] != null) {
                     ExternallyManaged ext = (ExternallyManaged)elements[7];
-                    if (ext.getAuthorityType().equals(AuthorityType.EXTERN)) {
+                    if (ext != null && ext.getAuthorityType().equals(AuthorityType.EXTERN)) {
                         termVocDto.setManaged(true);
                     }
                 }

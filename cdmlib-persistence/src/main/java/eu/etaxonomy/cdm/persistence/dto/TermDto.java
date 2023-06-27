@@ -326,7 +326,7 @@ public class TermDto extends AbstractTermDto{
                 }
                 if (elements[11] != null) {
                     ExternallyManaged extManaged = (ExternallyManaged)elements[11];
-                    termDto.setManaged(extManaged.getAuthorityType()!= null? extManaged.getAuthorityType().equals(AuthorityType.EXTERN):false);
+                    termDto.setManaged(extManaged!= null && extManaged.getAuthorityType()!= null? extManaged.getAuthorityType().equals(AuthorityType.EXTERN):false);
                 }
                 dtoMap.put(uuid, termDto);
                 dtos.add(termDto);
