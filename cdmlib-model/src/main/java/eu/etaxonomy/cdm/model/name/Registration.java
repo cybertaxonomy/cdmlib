@@ -95,7 +95,7 @@ public class Registration extends AnnotatableEntity {
     @XmlAttribute(name ="Status")
     @Column(name="status", length=10)
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.name.RegistrationStatus")}
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.RegistrationStatus")}
     )
     @NotNull
     private RegistrationStatus status = RegistrationStatus.PREPARATION;

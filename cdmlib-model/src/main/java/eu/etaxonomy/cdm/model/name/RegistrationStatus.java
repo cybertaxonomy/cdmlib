@@ -14,9 +14,6 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
@@ -62,12 +59,8 @@ public enum RegistrationStatus implements IEnumTerm<RegistrationStatus>{
     REJECTED(UUID.fromString("0960e14a-a6b1-41b4-92a9-0d6d1b9e0159"), "Unknown unit type","REJ"),
     ;
 
-    private final Logger logger = LogManager.getLogger();
-
-
     private RegistrationStatus(UUID uuid, String defaultString, String key){
         this(uuid, defaultString, key, null);
-        logger.debug("SpecimenOrObservationType hierarchie not yet fully implemented");
     }
 
     @SuppressWarnings("unchecked")
