@@ -83,8 +83,8 @@ import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
@@ -696,7 +696,7 @@ public class DescriptiveDataSetService
         DescriptiveDataSetBaseDto dataSet = this.getDescriptiveDataSetDtoByUuid(descriptiveDataSetUuid);
 //        SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
 
-        TermTreeDto datasetFeatures = dataSet.getDescriptiveSystem();
+        TermCollectionDto datasetFeatures = dataSet.getDescriptiveSystem();
         List<DescriptionElementBase> matchingDescriptionElements = new ArrayList<>();
 
         for (SpecimenDescription specimenDescription : (Set<SpecimenDescription>) specimen.getDescriptions()) {

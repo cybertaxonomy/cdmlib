@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -39,45 +40,54 @@ public class TermVocabularyDto extends TermCollectionDto {
         return dto;
     }
 
-    public static List<TermVocabularyDto> termVocabularyDtoListFrom(List<Object[]> queryResult) {
-        List<TermVocabularyDto> dtos = new ArrayList<>(); // list to ensure order
+    public static List<TermCollectionDto> termVocabularyDtoListFrom(List<Object[]> queryResult) {
+        List<TermCollectionDto> dtos = new ArrayList<>(); // list to ensure order
         // map to handle multiple representations because of LEFT JOIN
         Map<UUID, TermCollectionDto> dtoMap = new HashMap<>(queryResult.size());
         for (Object[] elements : queryResult) {
-            UUID uuid = (UUID)elements[0];
-            if(dtoMap.containsKey(uuid)){
-                // multiple results for one voc -> multiple (voc) representation
-                if(elements[1]!=null){
-                    dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
-                }
-
-            } else {
-                // voc representation
-                Set<Representation> representations = new HashSet<>();
-                if(elements[1] instanceof Representation) {
-                    representations = new HashSet<>(1);
-                    representations.add((Representation)elements[1]);
-                }
-
-                TermVocabularyDto termVocDto = new TermVocabularyDto(
-                        uuid,
-                        representations,
-                        (TermType)elements[2],
-                        (String)elements[3],
-                        (boolean)elements[4],
-                        (boolean)elements[5],
-                        (boolean)elements[6]);
-
-                if (elements[7] != null) {
-                    ExternallyManaged ext = (ExternallyManaged)elements[7];
-                    if (ext != null && ext.getAuthorityType().equals(AuthorityType.EXTERN)) {
-                        termVocDto.setManaged(true);
-                    }
-                }
-                dtoMap.put(uuid, termVocDto);
-                dtos.add(termVocDto);
-            }
+            extractedVocabularies(dtos, dtoMap, elements);
         }
         return dtos;
+    }
+
+    /**
+     * @param dtos
+     * @param dtoMap
+     * @param elements
+     * @param uuid
+     */
+    protected static void extractedVocabularies(List<TermCollectionDto> dtos, Map<UUID, TermCollectionDto> dtoMap, Object[] elements) {
+        UUID uuid = (UUID)elements[0];
+        if(dtoMap.containsKey(uuid)){
+            // multiple results for one voc -> multiple (voc) representation
+            if(elements[1]!=null){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+            }
+        } else {
+            // voc representation
+            Set<Representation> representations = new HashSet<>();
+            if(elements[1] instanceof Representation) {
+                representations = new HashSet<>(1);
+                representations.add((Representation)elements[1]);
+            }
+            TermVocabularyDto termVocDto = new TermVocabularyDto(
+                    uuid,
+                    representations,
+                    (TermType)elements[2],
+                    (String)elements[3],
+                    (boolean)elements[4],
+                    (boolean)elements[5],
+                    (boolean)elements[6]);
+
+            if (elements[7] != null) {
+                ExternallyManaged ext = (ExternallyManaged)elements[7];
+                if (ext != null && ext.getAuthorityType().equals(AuthorityType.EXTERN)) {
+                    termVocDto.setManaged(true);
+                }
+            }
+            termVocDto.setUri((URI)elements[8]);
+            dtoMap.put(uuid, termVocDto);
+            dtos.add(termVocDto);
+        }
     }
 }

@@ -42,7 +42,7 @@ public class TermDto extends AbstractTermDto{
     private UUID vocabularyUuid = null;
     private TermDto kindOfDto = null;
     private TermDto partOfDto = null;
-    private TermVocabularyDto vocabularyDto = null;
+    private TermCollectionDto vocabularyDto = null;
     private Integer orderIndex = null;
     private String idInVocabulary = null;
     private Collection<TermDto> includes;
@@ -158,11 +158,11 @@ public class TermDto extends AbstractTermDto{
         return kindOfDto;
     }
 
-    public void setVocabularyDto(TermVocabularyDto vocabularyDto) {
+    public void setVocabularyDto(TermCollectionDto vocabularyDto) {
         this.vocabularyDto = vocabularyDto;
     }
 
-    public TermVocabularyDto getVocabularyDto() {
+    public TermCollectionDto getVocabularyDto() {
         return vocabularyDto;
     }
 

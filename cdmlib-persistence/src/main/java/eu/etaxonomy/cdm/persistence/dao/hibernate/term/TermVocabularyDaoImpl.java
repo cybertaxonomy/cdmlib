@@ -339,17 +339,17 @@ public class TermVocabularyDaoImpl
     }
 
     @Override
-    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
+    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
         return findVocabularyDtoByTermTypes(termTypes, true);
     }
 
     @Override
-    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
+    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
         return findVocabularyDtoByTermTypes(termTypes, null, includeSubtypes);
     }
 
     @Override
-    public List<TermVocabularyDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableForSet) {
+    public List<TermCollectionDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableForSet) {
 
         String queryVocWithFittingTerms = "SELECT DISTINCT(v.uuid) FROM DefinedTermBase term JOIN term.vocabulary as v WHERE " ;
         for (CdmClass availableFor: availableForSet){
@@ -364,12 +364,12 @@ public class TermVocabularyDaoImpl
         query.setParameter("feature", TermType.Feature);
 
         List<Object[]> result = query.list();
-        List<TermVocabularyDto>  dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        List<TermCollectionDto>  dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return dtos;
     }
 
     @Override
-    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes) {
+    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes) {
         Set<TermType> termTypeWithSubType = new HashSet<>();
         if (! (termTypes.isEmpty() || (termTypes.size() == 1 && termTypes.iterator().next() == null))){
             termTypeWithSubType = new HashSet<>(termTypes);
@@ -384,7 +384,7 @@ public class TermVocabularyDaoImpl
                 }
             }
         }
-        String queryString = TermCollectionDto.getTermCollectionDtoSelect();
+        String queryString = TermVocabularyDto.getTermCollectionDtoSelect("TermVocabulary");
 
         if (!termTypeWithSubType.isEmpty()){
             queryString += " WHERE a.termType in (:termTypes) ";
@@ -408,12 +408,12 @@ public class TermVocabularyDaoImpl
         }
 
         List<Object[]> result = query.list();
-        List<TermVocabularyDto> dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        List<TermCollectionDto> dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return dtos;
     }
 
     @Override
-    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
+    public List<TermCollectionDto> findVocabularyDtoByTermType(TermType termType) {
         return findVocabularyDtoByTermTypes(Collections.singleton(termType));
     }
 
@@ -451,7 +451,7 @@ public class TermVocabularyDaoImpl
     }
 
     @Override
-    public TermVocabularyDto findVocabularyDtoByUuid(UUID vocUuid) {
+    public TermCollectionDto findVocabularyDtoByUuid(UUID vocUuid) {
         if (vocUuid == null ){
             return null;
         }
@@ -470,12 +470,12 @@ public class TermVocabularyDaoImpl
     }
 
     @Override
-    public List<TermVocabularyDto> findVocabularyDtoByUuids(List<UUID> vocUuids) {
+    public List<TermCollectionDto> findVocabularyDtoByUuids(List<UUID> vocUuids) {
 
         if (vocUuids == null || vocUuids.isEmpty()){
             return null;
         }
-        List<TermVocabularyDto> list = new ArrayList<>();
+        List<TermCollectionDto> list = new ArrayList<>();
 
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + " WHERE a.uuid IN :uuidList ";
@@ -484,7 +484,7 @@ public class TermVocabularyDaoImpl
         query.setParameterList("uuidList", vocUuids);
 
         List<Object[]> result = query.list();
-        list = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        list = TermCollectionDto.termCollectionDtoListFrom(result);
         return list;
     }
 

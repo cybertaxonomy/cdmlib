@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -103,6 +105,37 @@ public class TermCollectionServiceImpl
            filterRestrictions = Arrays.asList(new Restriction<>("termType", null, termTypes.toArray()));
         }
         return filterRestrictions;
+    }
+
+
+    @Override
+    public List<TermCollectionDto> findCollectionDtoByTermType(TermType termType) {
+        return findCollectionDtoByTermTypes(Collections.singleton(termType), true);
+    }
+
+    @Override
+    public List<TermCollectionDto> findCollectionDtoByTermTypeAndPattern(String pattern, TermType termType) {
+        return dao.findCollectionDtoByTermTypes(Collections.singleton(termType), pattern, true);
+    }
+
+    @Override
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes) {
+        return findCollectionDtoByTermTypes(termTypes, true);
+    }
+
+    @Override
+    public List<TermCollectionDto> findCollectionDtoByTermType(TermType termType, boolean includeSubtypes) {
+        return findCollectionDtoByTermTypes(Collections.singleton(termType), includeSubtypes);
+    }
+
+    @Override
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
+        return dao.findCollectionDtoByTermTypes(termTypes, includeSubtypes);
+    }
+
+    @Override
+    public List<TermCollectionDto> findTermCollectionDtoByUuids(List<UUID> vocUuids) {
+        return dao.findCollectionDtoByUuids(vocUuids);
     }
 
 }

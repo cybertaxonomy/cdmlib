@@ -19,8 +19,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -144,7 +144,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
      * @return a list of term vocabularies
      */
-    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType);
+    public List<TermCollectionDto> findVocabularyDtoByTermType(TermType termType);
 
     /**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State. containing pattern
@@ -154,7 +154,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param includeSubTypes
      * @return a list of term vocabularies
      */
-    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes);
+    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes);
 
     /**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
@@ -162,7 +162,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
      * @return a list of term vocabularies
      */
-    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termType);
+    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termType);
 
     /**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
@@ -172,7 +172,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * will be considered
      * @return a list of term vocabularies
      */
-    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termType, boolean includeSubtypes);
+    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termType, boolean includeSubtypes);
 
     /**
      * Returns term vocabulary for UUID
@@ -180,7 +180,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param UUID the {@link UUID} of the vocabulary
      * @return term vocabularies
      */
-    public TermVocabularyDto findVocabularyDtoByUuid(UUID vocUuid);
+    public TermCollectionDto findVocabularyDtoByUuid(UUID vocUuid);
 
     /**
      * Returns list of term vocabularies for list of UUIDs
@@ -188,7 +188,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param vocUuids the {@link UUID} of the vocabularies
      * @return term vocabularies
      */
-    public List<TermVocabularyDto> findVocabularyDtoByUuids(List<UUID> vocUuids);
+    public List<TermCollectionDto> findVocabularyDtoByUuids(List<UUID> vocUuids);
 
     /**
      *
@@ -215,5 +215,5 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param availableFor
      * @return
      */
-    public List<TermVocabularyDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableFor);
+    public List<TermCollectionDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableFor);
 }

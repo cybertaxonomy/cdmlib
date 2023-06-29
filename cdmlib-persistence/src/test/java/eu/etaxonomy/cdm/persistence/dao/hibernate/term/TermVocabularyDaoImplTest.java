@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -174,7 +174,7 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalIntegrationTest {
 	public void testFindVocabularyDtoByTermTypes(){
 	    Set<TermType> termTypes = new HashSet<>();
 	    termTypes.add(TermType.NamedArea);
-	    List<TermVocabularyDto> vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
+	    List<TermCollectionDto> vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
 	    Assert.assertEquals(4, vocDtos.size());
 
 	    //#9825 test deduplication

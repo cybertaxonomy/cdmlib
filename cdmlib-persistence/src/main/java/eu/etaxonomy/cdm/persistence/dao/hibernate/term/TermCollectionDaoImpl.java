@@ -9,8 +9,10 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +28,9 @@ import eu.etaxonomy.cdm.model.term.TermGraphBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
@@ -122,6 +127,101 @@ public class TermCollectionDaoImpl
         }
         return getUuidAndTitleCache(query);
     }
+
+    @Override
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes) {
+        Set<TermType> termTypeWithSubType = new HashSet<>();
+        if (! (termTypes.isEmpty() || (termTypes.size() == 1 && termTypes.iterator().next() == null))){
+            termTypeWithSubType = new HashSet<>(termTypes);
+        }
+
+        if(includeSubtypes){
+            if (!termTypes.isEmpty()){
+                for (TermType termType : termTypes) {
+                    if (termType != null){
+                        termTypeWithSubType.addAll(termType.getGeneralizationOf(true));
+                    }
+                }
+            }
+        }
+        String queryString = TermVocabularyDto.getTermCollectionDtoSelect("TermCollection");
+
+        if (!termTypeWithSubType.isEmpty()){
+            queryString += " WHERE a.termType in (:termTypes) ";
+            if (pattern != null){
+                queryString += " AND a.titleCache LIKE :pattern";
+            }
+        }else{
+            if (pattern != null){
+                queryString += " WHERE a.titleCache LIKE :pattern";
+            }
+        }
+
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        if (!termTypeWithSubType.isEmpty()){
+            query.setParameterList("termTypes", termTypeWithSubType);
+        }
+        if (pattern != null){
+            pattern = pattern.replace("*", "%");
+            pattern = "%"+pattern+"%";
+            query.setParameter("pattern", pattern);
+        }
+
+        List<Object[]> result = query.list();
+        List<TermCollectionDto> dtos = TermCollectionDto.termCollectionDtoListFrom(result);
+        addTerms(dtos);
+        return dtos;
+    }
+
+    @Override
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
+        return findCollectionDtoByTermTypes(termTypes, null, includeSubtypes);
+    }
+
+    @Override
+    public List<TermCollectionDto> findCollectionDtoByUuids(List<UUID> collUuids) {
+
+        if (collUuids == null || collUuids.isEmpty()){
+            return null;
+        }
+        List<TermCollectionDto> list = new ArrayList<>();
+
+        String queryString = TermCollectionDto.getTermCollectionDtoSelect()
+                + " WHERE a.uuid IN :uuidList ";
+//                + "order by a.titleCache";
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        query.setParameterList("uuidList", collUuids);
+
+        List<Object[]> result = query.list();
+        list = TermCollectionDto.termCollectionDtoListFrom(result);
+
+        addTerms(list);
+        return list;
+    }
+
+    /**
+     * @param list
+     */
+    protected void addTerms(List<TermCollectionDto> list) {
+        Query<Object[]> query;
+        List<Object[]> result;
+        String queryStringTerms = TermDto.getTermDtoSelect();
+        queryStringTerms += "WHERE v.uuid like :uuid" ;
+        List<TermDto> termList = new ArrayList<>();
+        //where vocabulary uuid like dto.uuid
+        for (TermCollectionDto dto: list) {
+            //get terms
+            if (dto instanceof TermVocabularyDto) {
+                query =  getSession().createQuery(queryStringTerms, Object[].class);
+                query.setParameter("uuid", dto.getUuid());
+
+                result = query.list();
+                termList = TermDto.termDtoListFrom(result);
+                dto.setTerms(termList);
+            }
+        }
+    }
+
 
 //   not yet clear if we want TermCollectionDaoImpl also as base class for other dao-s
 //    protected TermCollectionDaoImpl(Class<TermCollection> type) {

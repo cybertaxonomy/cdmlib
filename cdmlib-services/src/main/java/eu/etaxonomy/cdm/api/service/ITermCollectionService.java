@@ -10,10 +10,12 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -31,5 +33,44 @@ public interface ITermCollectionService extends IIdentifiableEntityService<TermC
 
 	public <S extends TermCollection> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(
 	        Class<S> clazz, TermType termType, Integer limit, String pattern);
+
+    /**
+     * @param pattern
+     * @param termType
+     * @return
+     */
+    List<TermCollectionDto> findCollectionDtoByTermTypeAndPattern(String pattern, TermType termType);
+
+    /**
+     * @param termTypes
+     * @return
+     */
+    List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes);
+
+    /**
+     * @param termType
+     * @param includeSubtypes
+     * @return
+     */
+    List<TermCollectionDto> findCollectionDtoByTermType(TermType termType, boolean includeSubtypes);
+
+    /**
+     * @param termTypes
+     * @param includeSubtypes
+     * @return
+     */
+    List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes);
+
+    /**
+     * @param termType
+     * @return
+     */
+    List<TermCollectionDto> findCollectionDtoByTermType(TermType termType);
+
+    /**
+     * @param vocUuids
+     * @return
+     */
+    List<TermCollectionDto> findTermCollectionDtoByUuids(List<UUID> vocUuids);
 
 }

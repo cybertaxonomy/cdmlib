@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
@@ -135,7 +136,21 @@ public class TermTreeDaoImpl
     }
 
     @Override
-    public List<TermTreeDto> listTermTreeDtosByTermType(TermType termType) {
+    public List<TermCollectionDto> listTermTreeDtosByTermType(TermType termType) {
+        String queryString = TermCollectionDto.getTermCollectionDtoSelect("TermTree")
+                + " WHERE a.termType = :termType"
+                + " ORDER BY a.titleCache";
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        query.setParameter("termType", termType);
+
+        List<Object[]> result = query.list();
+
+        List<TermCollectionDto> list = TermTreeDto.termTreeDtoListFrom(result);
+        return list;
+    }
+
+    @Override
+    public List<TermCollectionDto> findVocabularyDtoByUuids(List<UUID> termType) {
         String queryString = TermTreeDto.getTermTreeDtoSelect()
                 + " WHERE a.termType = :termType"
                 + " ORDER BY a.titleCache";
@@ -144,12 +159,12 @@ public class TermTreeDaoImpl
 
         List<Object[]> result = query.list();
 
-        List<TermTreeDto> list = TermTreeDto.termTreeDtoListFrom(result);
+        List<TermCollectionDto> list = TermTreeDto.termTreeDtoListFrom(result);
         return list;
     }
 
     @Override
-    public TermTreeDto getTermTreeDtosByUuid(UUID uuid) {
+    public TermCollectionDto getTermTreeDtosByUuid(UUID uuid) {
         String queryString = TermTreeDto.getTermTreeDtoSelect()
                 + " WHERE a.uuid = :uuid"
                 + " ORDER BY a.titleCache";
@@ -157,7 +172,7 @@ public class TermTreeDaoImpl
         query.setParameter("uuid", uuid);
 
         List<Object[]> result = query.list();
-        List<TermTreeDto> list = TermTreeDto.termTreeDtoListFrom(result);
+        List<TermCollectionDto> list = TermTreeDto.termTreeDtoListFrom(result);
         return !list.isEmpty()? list.get(0): null;
     }
 }
