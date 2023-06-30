@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.State;
@@ -20,13 +22,18 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
  */
 public class StateDataDto implements Serializable {
 
+    private static final long serialVersionUID = 2674431130208817554L;
     private TermDto state;
     private Integer count;
     private UUID uuid;
+    private List<TermDto> modifiers;
+    private String modifyingText;
 
-    public StateDataDto(TermDto state, Integer count, UUID uuid){
+    public StateDataDto(TermDto state, Integer count, List<TermDto> modifiers, String modifyingText, UUID uuid){
         this.state = state;
         this.count = count;
+        this.modifiers = modifiers;
+        this.modifyingText = modifyingText;
         setUuid(uuid);
     }
 
@@ -63,6 +70,29 @@ public class StateDataDto implements Serializable {
         this.uuid = uuid;
     }
 
+    public List<TermDto> getModifiers() {
+        return modifiers;
+    }
+    public void setModifiers(List<TermDto> modifiers) {
+        this.modifiers = modifiers;
+    }
+
+    public void addModifier(TermDto modifier) {
+        if (modifiers == null) {
+            modifiers = new ArrayList<>();
+        }
+        this.modifiers.add(modifier);
+    }
+
+    public String getModifyingText() {
+        return modifyingText;
+    }
+
+    public void setModifyingText(String modifyingText) {
+        this.modifyingText = modifyingText;
+    }
+
+
     public static String getStateDataDtoSelect(String fromTable){
         String[] result = createSqlParts(fromTable);
 
@@ -90,7 +120,7 @@ public class StateDataDto implements Serializable {
                 + "LEFT JOIN a.media as m "
                 + "LEFT JOIN a.representations AS r "
                 + "LEFT JOIN a.vocabulary as v "
-//                + "LEFT JOIN v.representations as voc_rep "
+//              + "LEFT JOIN v.representations as voc_rep "
                 ;
 
         String[] result = new String[3];
