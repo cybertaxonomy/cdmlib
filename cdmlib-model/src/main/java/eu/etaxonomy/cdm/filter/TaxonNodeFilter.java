@@ -232,6 +232,10 @@ public class TaxonNodeFilter implements Serializable{
         subtrees.add( new LogicFilter<>(taxonNode, Op.NOT));
         return this;
     }
+    public TaxonNodeFilter notSubtree(UUID taxonNodeUuid){
+        subtrees.add( new LogicFilter<>(TaxonNode.class, taxonNodeUuid, Op.NOT));
+        return this;
+    }
 
     public TaxonNodeFilter orSubtree(UUID taxonNodeUuid){
         subtrees.add( new LogicFilter<>(TaxonNode.class, taxonNodeUuid, Op.OR));

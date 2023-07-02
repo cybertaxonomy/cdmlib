@@ -235,6 +235,40 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         filter = new TaxonNodeFilter(africa);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 0, listUuid.size());
+    }
+
+    @Test
+    public void testListUuidsByAreasWithAncestor() {
+        String message = "wrong number of nodes filtered";
+//        System.out.println("start:" + new DateTime().toString());
+
+        NamedArea europe = HibernateProxyHelper.deproxy(termDao.load(europeUuid), NamedArea.class);
+        NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
+        NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(africaUuid), NamedArea.class);
+        NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
+
+        TaxonNodeFilter filter = new TaxonNodeFilter(europe);
+        List<String> listTreeIndex = filterDao.listTreeIndex(filter);
+
+        assertEquals(message, 3, listTreeIndex.size());
+        Assert.assertTrue(listTreeIndex.contains(node1.getUuid()));
+        Assert.assertTrue(listTreeIndex.contains(node2.getUuid()));
+        Assert.assertTrue(listTreeIndex.contains(node3.getUuid()));
+        Assert.assertFalse(listTreeIndex.contains(node4.getUuid())); //status is absent
+
+        filter = new TaxonNodeFilter(germany);
+        List<UUID> listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 1, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+
+        filter = new TaxonNodeFilter(middleEurope);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 1, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+
+        filter = new TaxonNodeFilter(africa);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 0, listUuid.size());
 
     }
 

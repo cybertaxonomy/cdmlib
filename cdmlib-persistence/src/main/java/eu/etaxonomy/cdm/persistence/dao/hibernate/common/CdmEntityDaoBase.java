@@ -454,13 +454,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException {
+        return findByUuidWithoutFlush(type, uuid);
+    }
+
+    protected T findByUuidWithoutFlush(Class<T> clazz, UUID uuid) throws DataAccessException {
         Session session = getSession();
         FlushMode currentFlushMode = session.getHibernateFlushMode();
         try {
             // set flush mode to manual so that the session does not flush
             // when before performing the query
             session.setHibernateFlushMode(FlushMode.MANUAL);
-            Criteria crit = session.createCriteria(type);
+            Criteria crit = session.createCriteria(clazz);
             crit.add(Restrictions.eq("uuid", uuid));
             crit.addOrder(Order.desc("created"));
             @SuppressWarnings("unchecked")

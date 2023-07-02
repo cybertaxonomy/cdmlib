@@ -161,6 +161,17 @@ public interface ICdmGenericDao {
      */
     public <T extends CdmBase> T find(Class<T> clazz, UUID uuid);
 
+    /**
+     * Method to find CDM Entity by Uuid, by making sure that the underlying
+     * hibernate session is not flushed (Session.FLUSH_MODE set to MANUAL temporarily)
+     * when performing the read query.
+     *
+     * @param Uuid
+     * @return
+     * @throws DataAccessException
+     */
+    public <T extends CdmBase> T findWithoutFlush(Class<T> clazz, UUID uuid);
+
 	/**
      * Does the same as {@link #find(Class, int)} but also initializes the returned
      * object according to the property path.

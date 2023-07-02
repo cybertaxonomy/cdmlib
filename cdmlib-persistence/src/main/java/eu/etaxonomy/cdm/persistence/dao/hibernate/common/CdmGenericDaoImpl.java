@@ -624,6 +624,12 @@ public class CdmGenericDaoImpl
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends CdmBase> T findWithoutFlush(Class<T> clazz, UUID uuid) throws DataAccessException {
+        return (T)this.findByUuidWithoutFlush((Class<CdmBase>)clazz, uuid);
+    }
+
     @Override
     public <T extends IMatchable> List<T> findMatching(
             T objectToMatch, IMatchStrategy matchStrategy) throws MatchException{

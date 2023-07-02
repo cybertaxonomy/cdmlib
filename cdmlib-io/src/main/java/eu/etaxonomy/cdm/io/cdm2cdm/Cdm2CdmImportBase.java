@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,11 +29,13 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmImportSource;
+import eu.etaxonomy.cdm.filter.LogicFilter;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ITaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
@@ -45,6 +49,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -72,10 +77,12 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
+import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
@@ -86,6 +93,8 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -100,6 +109,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -123,9 +133,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.term.AvailableForIdentifiableBase;
 import eu.etaxonomy.cdm.model.term.AvailableForTermBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermCollection;
@@ -200,7 +212,8 @@ public abstract class Cdm2CdmImportBase
             boolean exists = state.getExistingObjects(cdmBase.getClass()).contains(cdmBase.getUuid());
             if (exists){
                 Class<T> clazz = (Class<T>)cdmBase.getClass();
-                T existingObj = getCommonService().find(clazz, cdmBase.getUuid());
+                if (logger.isDebugEnabled()) {logger.debug("Load existing entity: " + clazz + ";" + cdmBase.getUuid());}
+                T existingObj = getCommonService().findWithoutFlush(clazz, cdmBase.getUuid());
                 if (existingObj != null){
                     cache(existingObj, state);
                     return existingObj;
@@ -225,6 +238,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected <A extends CdmBase> CdmBase handlePersisted(A cdmBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+//        System.out.println("handle persisted: " + cdmBase.getClass().getName() + ";id=" + cdmBase.getId());
         if(cdmBase instanceof TaxonNode){
             return handlePersistedTaxonNode((TaxonNode)cdmBase, state);
         }else if(cdmBase instanceof Taxon){
@@ -305,6 +319,10 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedTermTree((TermTree<?>)cdmBase, state);
         }else if(cdmBase instanceof NamedArea){
             return handlePersistedNamedArea((NamedArea)cdmBase, state);
+        }else if(cdmBase instanceof NamedAreaLevel){
+            return handlePersistedNamedAreaLevel((NamedAreaLevel)cdmBase, state);
+        }else if(cdmBase instanceof NamedAreaType){
+            return handlePersistedNamedAreaType((NamedAreaType)cdmBase, state);
         }else if(cdmBase instanceof TermNode){
             return handlePersistedTermNode((TermNode)cdmBase, state);
         }else if(cdmBase instanceof Representation){
@@ -321,6 +339,14 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedNomenclaturalStatusType((NomenclaturalStatusType)cdmBase, state);
         }else if(cdmBase instanceof MarkerType){
             return handlePersistedMarkerType((MarkerType)cdmBase, state);
+        }else if(cdmBase instanceof AnnotationType){
+            return handlePersistedAnnotationType((AnnotationType)cdmBase, state);
+        }else if(cdmBase instanceof IdentifierType){
+            return handlePersistedIdentifierType((IdentifierType)cdmBase, state);
+        }else if(cdmBase instanceof Language){
+            return handlePersistedLanguage((Language)cdmBase, state);
+        }else if(cdmBase instanceof Rank){
+            return handlePersistedRank((Rank)cdmBase, state);
         }else if(cdmBase instanceof Rights){
             return handlePersistedRights((Rights)cdmBase, state);
         }else if(cdmBase instanceof DefinedTerm){
@@ -335,6 +361,10 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedTerm((DefinedTermBase<?>)cdmBase, state);
         }else if(cdmBase instanceof ExternalLink){
             return handlePersistedExternalLink((ExternalLink)cdmBase, state);
+        }else if(cdmBase instanceof Identifier){
+            return handlePersistedIdentifier((Identifier)cdmBase, state);
+        }else if(cdmBase instanceof Credit){
+            return handlePersistedCredit((Credit)cdmBase, state);
         }else {
             throw new RuntimeException("Type not yet supported: " + cdmBase.getClass().getCanonicalName());
         }
@@ -361,7 +391,8 @@ public abstract class Cdm2CdmImportBase
     }
 
     private void handleParentTaxonNode(TaxonNode childNode, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        TaxonNode parent = detach(childNode.getParent(), true, state);
+        boolean notFromSource = state.getConfig().isAddAncestors() ? false : true;
+        TaxonNode parent = detach(childNode.getParent(), notFromSource, state);
         //TODO
         String microReference = null;
         Reference reference = null;
@@ -375,22 +406,37 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected Taxon handlePersistedTaxon(Taxon taxon, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Taxon result = handlePersisted((TaxonBase)taxon, state);
+        Taxon result = handlePersisted((TaxonBase<?>)taxon, state);
         //complete
         handleCollection(result, Taxon.class, "synonyms", Synonym.class, state);
+        //do not cascade to taxon nodes
 //        handleCollection(result, Taxon.class, "taxonNodes", TaxonNode.class);
         setNewCollection(result, Taxon.class, "taxonNodes", TaxonNode.class);
         handleCollection(result, Taxon.class, "relationsFromThisTaxon", TaxonRelationship.class, state);
         handleCollection(result, Taxon.class, "relationsToThisTaxon", TaxonRelationship.class, state);
+        //descriptions
         if (this.doDescriptions(state)){
-            handleCollection(result, Taxon.class, "descriptions", TaxonDescription.class, state);
+            handleTaxonDescriptions(result, state);
         }else{
             setNewCollection(result, Taxon.class, "descriptions", TaxonDescription.class);
         }
         return result;
     }
 
-    protected boolean doDescriptions(Cdm2CdmImportState state) {
+    protected Set<TaxonDescription> handleTaxonDescriptions(Taxon taxon, Cdm2CdmImportState state)
+            throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+        taxon = CdmBase.deproxy(taxon);
+        Function<TaxonDescription,Boolean> filterFunction = null;
+        if (state.getConfig().isIgnoreComputedDescriptions()) {
+            filterFunction = td->td.getTypes().stream().anyMatch(t->t.isKindOf(DescriptionType.COMPUTED));
+        }
+        handleCollection(taxon, Taxon.class, "descriptions", TaxonDescription.class, filterFunction, state);
+        filterEmptyDescriptions(taxon, state);
+        return taxon.getDescriptions();
+    }
+
+    protected boolean doDescriptions(@SuppressWarnings("unused") Cdm2CdmImportState state) {
         return false;
     }
 
@@ -636,6 +682,42 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
+    protected NamedAreaLevel handlePersistedNamedAreaLevel(NamedAreaLevel areaLevel, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        NamedAreaLevel result = handlePersisted((DefinedTermBase)areaLevel, state);
+        //complete
+        return result;
+    }
+
+    protected NamedAreaType handlePersistedNamedAreaType(NamedAreaType areaType, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        NamedAreaType result = handlePersisted((DefinedTermBase)areaType, state);
+        //complete
+        return result;
+    }
+
+    protected IdentifierType handlePersistedIdentifierType(IdentifierType identifierType, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        IdentifierType result = handlePersisted((DefinedTermBase)identifierType, state);
+        //complete
+        return result;
+    }
+
+    protected AnnotationType handlePersistedAnnotationType(AnnotationType annotationType, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        AnnotationType result = handlePersisted((AvailableForIdentifiableBase<?>)annotationType, state);
+        //complete
+        return result;
+    }
+
+    protected Language handlePersistedLanguage(Language language, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        Language result = handlePersisted((DefinedTermBase)language, state);
+        //complete
+        return result;
+    }
+
+    protected Rank handlePersistedRank(Rank language, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        Rank result = handlePersisted((DefinedTermBase)language, state);
+        //complete
+        return result;
+    }
+
     protected Classification handlePersistedClassification(Classification classification, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Classification result = handlePersisted((IdentifiableEntity)classification, state);
         //complete
@@ -706,7 +788,8 @@ public abstract class Cdm2CdmImportBase
     protected DescriptionElementSource handlePersistedDescriptionElementSource(DescriptionElementSource source, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         DescriptionElementSource result = handlePersisted((NamedSourceBase)source, state);
         //complete
-        detach(result.getSourcedElement(), state).addSource(result);
+        DescriptionElementBase deb = detach(result.getSourcedElement(), state);
+        deb.addSource(result);
         return result;
     }
 
@@ -749,6 +832,13 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
+    protected Identifier handlePersistedIdentifier(Identifier identifier, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        Identifier result = handlePersisted((AnnotatableEntity)identifier, state);
+        //complete
+        result.setType(detach(result.getType(), state));
+        return result;
+    }
+
     protected Character handlePersistedCharacter(Character term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Character result = (Character)handlePersistedFeature(term, state);
         result.setStructure(detach(term.getStructure(), state));
@@ -761,7 +851,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected Feature handlePersistedFeature(Feature term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Feature result = handlePersisted((DefinedTermBase)term, state);
+        Feature result = handlePersisted((AvailableForTermBase<?>)term, state);
         //complete
         handleCollection(result, Feature.class, "inverseRepresentations", Representation.class, state);
         handleCollection(result, Feature.class, "recommendedMeasurementUnits", MeasurementUnit.class, state);
@@ -881,13 +971,20 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-
     protected LanguageString handlePersistedLanguageString(LanguageString languageString, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         LanguageString result = handlePersisted((LanguageStringBase)languageString, state);
         //complete
         handleCollection(result, LanguageString.class, "intextReferences", IntextReference.class, state);
         return result;
     }
+
+    protected Credit handlePersistedCredit(Credit credit, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        Credit result = handlePersisted((LanguageStringBase)credit, state);
+        //complete
+        result.setAgent(detach(credit.getAgent(), state));
+        return result;
+    }
+
 
     protected Rights handlePersistedRights(Rights rights, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Rights result = handlePersisted((LanguageStringBase)rights, state);
@@ -907,7 +1004,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected <T extends TaxonDescription> T  handlePersistedTaxonDescription(TaxonDescription taxDescription, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        T result = handlePersisted((DescriptionBase)taxDescription, state);
+        T result = handlePersisted((DescriptionBase<?>)taxDescription, state);
         //complete
         setInvisible(taxDescription, "taxon", detach(taxDescription.getTaxon(), state));
         handleCollection(taxDescription, TaxonDescription.class, "geoScopes", NamedArea.class, state);
@@ -915,7 +1012,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends TaxonDescription> T  handlePersistedTaxonNameDescription(TaxonNameDescription nameDescription, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TaxonNameDescription> T  handlePersistedTaxonNameDescription(TaxonNameDescription nameDescription, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DescriptionBase)nameDescription, state);
         //complete
         setInvisible(nameDescription, "taxonName", detach(nameDescription.getTaxonName(), state));
@@ -951,17 +1048,23 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends SourcedEntityBase<?>> T  handlePersisted(SourcedEntityBase sourcedEntity,
+    private <SOURCE extends OriginalSourceBase> Function<SOURCE,Boolean> getImportSourceFilter(){
+        return (s)->s.getType() == OriginalSourceType.Import;
+    };
+
+    protected <T extends SourcedEntityBase<?>> T  handlePersisted(SourcedEntityBase<?> sourcedEntity,
             Cdm2CdmImportState state)
             throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+
         int originalId = sourcedEntity.getId();
         T result = handlePersisted((AnnotatableEntity)sourcedEntity, state);
         //complete
-        handleCollection(result, SourcedEntityBase.class, "sources", OriginalSourceBase.class, state);
+        //sources
+        Function<OriginalSourceBase,Boolean> filterFunction = state.getConfig().isRemoveImportSources()? getImportSourceFilter() : null;
+
+        handleCollection(result, SourcedEntityBase.class, "sources", OriginalSourceBase.class, filterFunction, state);
         if (!result.isPersisted()){
-            if(state.getConfig().isRemoveImportSources()){
-                filterImportSources(result.getSources());
-            }
+            //add current import source
             if (state.getConfig().isAddSources()){
                 Reference sourceRef = getSourceReference(state);
                 OriginalSourceBase newSource = result.addImportSource(String.valueOf(originalId), sourcedEntity.getClass().getSimpleName(),
@@ -986,25 +1089,10 @@ public abstract class Cdm2CdmImportBase
             externallyManaged.setLastRetrieved(DateTime.now());
             result.setExternallyManaged(externallyManaged);
         }
-
     }
 
-    //TODO for some reason the sources are still persisted, though not related to source holder
-    //probably this is related to 1:1 relationship
-    private void filterImportSources(Set<? extends OriginalSourceBase> sources) {
-        Set<OriginalSourceBase> toDelete = new HashSet<>();
-        for (OriginalSourceBase osb: sources){
-            if (osb.getType() == OriginalSourceType.Import){
-                toDelete.add(osb);
-            }
-        }
-        for (OriginalSourceBase osb: toDelete){
-            sources.remove(osb);
-        }
-    }
-
-    protected <T extends IdentifiableEntity> T  handlePersisted(IdentifiableEntity identifiableEntity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        T result = handlePersisted((SourcedEntityBase)identifiableEntity, state);
+    protected <T extends IdentifiableEntity> T  handlePersisted(IdentifiableEntity<?> identifiableEntity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        T result = handlePersisted((SourcedEntityBase<?>)identifiableEntity, state);
         //complete
         handleCollection(result, IdentifiableEntity.class, "credits", Credit.class, state);
         handleCollection(result, IdentifiableEntity.class, "extensions", Extension.class, state);
@@ -1030,6 +1118,12 @@ public abstract class Cdm2CdmImportBase
 
     protected <T extends AvailableForTermBase> T  handlePersisted(AvailableForTermBase availableForTermBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DefinedTermBase)availableForTermBase, state);
+        //complete
+        return result;
+    }
+
+    protected <T extends AvailableForIdentifiableBase<?>> T  handlePersisted(AvailableForIdentifiableBase<?> availableForTermBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        T result = handlePersisted((AvailableForTermBase<?>)availableForTermBase, state);
         //complete
         return result;
     }
@@ -1084,14 +1178,63 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends DescriptionBase> T  handlePersisted(DescriptionBase descriptionBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        T result = handlePersisted((IdentifiableEntity)descriptionBase, state);
+    protected <T extends DescriptionBase> T  handlePersisted(DescriptionBase<?> descriptionBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        T result = handlePersisted((IdentifiableEntity<?>)descriptionBase, state);
         //complete
-        handleCollection(result, DescriptionBase.class, "descriptionElements", DescriptionElementBase.class, state);
+        //elements
+        Function<DescriptionElementBase,Boolean> filterFunction = null;
+        if (state.getConfig().hasCommonNameLanguageFilter() || state.getConfig().hasDistributionFilterFromAreaFilter()) {
+            //TODO move to state as computed set
+            List<LogicFilter<NamedArea>> areaFilter = state.getConfig().getTaxonNodeFilter().getAreaFilter();
+            Set<UUID> areaUuids = areaFilter == null ? new HashSet<>() : areaFilter.stream().map(af->af.getUuid()).collect(Collectors.toSet());
+            filterFunction = deb->this.toBeFilteredFact(deb, areaUuids, state);
+        }
+        handleCollection(result, DescriptionBase.class, "descriptionElements", DescriptionElementBase.class, filterFunction, state);
+        //others
         handleCollection(result, DescriptionBase.class, "descriptiveDataSets", DescriptiveDataSet.class, state);
         handleCollection(result, DescriptionBase.class, "descriptionSources", Reference.class, state);
         result.setDescribedSpecimenOrObservation(detach(descriptionBase.getDescribedSpecimenOrObservation(), state));
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void filterEmptyDescriptions(@SuppressWarnings("rawtypes") IDescribable describable, Cdm2CdmImportState state) {
+
+        Set<DescriptionBase<?>> toRemove = new HashSet<>();
+        //select candidates to remove
+        for (DescriptionBase<?> db : ((IDescribable<?>)describable).getDescriptions()) {
+            if (db.getElements().isEmpty()) {
+                toRemove.add(db);
+            }
+        }
+        //remove
+        for (DescriptionBase<?> db : toRemove) {
+            describable.removeDescription(db);
+        }
+    }
+
+    private boolean toBeFilteredFact(DescriptionElementBase deb, Set<UUID> distrAreaUuids,
+            Cdm2CdmImportState state) {
+
+        //distributions
+        if (state.getConfig().isDistributionFilterFromAreaFilter()
+                && deb.isInstanceOf(Distribution.class)) {
+            //TODO do also by feature
+            Distribution distribution = CdmBase.deproxy(deb, Distribution.class);
+            if (distribution.getArea() == null || !distrAreaUuids.contains(distribution.getArea().getUuid())){
+                return true;
+            }
+        }
+
+        //common names
+        if (!CdmUtils.isNullSafeEmpty(state.getConfig().getCommonNameLanguageFilter())
+                && deb.isInstanceOf(CommonTaxonName.class)){
+            CommonTaxonName ctn = CdmBase.deproxy(deb, CommonTaxonName.class);
+            if (ctn.getLanguage()== null || !state.getConfig().getCommonNameLanguageFilter().contains(ctn.getLanguage().getUuid()) ){
+                return true;
+            }
+        }
+        return false;
     }
 
     protected <T extends DescriptionElementBase> T  handlePersisted(DescriptionElementBase element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
@@ -1099,7 +1242,8 @@ public abstract class Cdm2CdmImportBase
         //complete
         result.setFeature(detach(result.getFeature(), state));
         setInvisible(result, DescriptionElementBase.class, "inDescription", detach(result.getInDescription(), state));
-        handleCollection(result, DescriptionElementBase.class, "sources", DescriptionElementSource.class, state);
+        Function<DescriptionElementSource,Boolean> filterFunction = state.getConfig().isRemoveImportSources()? getImportSourceFilter() : null;
+        handleCollection(result, DescriptionElementBase.class, "sources", DescriptionElementSource.class, filterFunction, state);
         handleCollection(result, DescriptionElementBase.class, "media", Media.class, state);
         handleCollection(result, DescriptionElementBase.class, "modifiers", DefinedTerm.class, state);
         handleMap(result, DescriptionElementBase.class, "modifyingText", Language.class, LanguageString.class, state);
@@ -1119,9 +1263,17 @@ public abstract class Cdm2CdmImportBase
             HOLDER holder, Class<? super HOLDER> declaringClass, String parameter, Class<ITEM> itemClass,
             Cdm2CdmImportState state)
             throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        Function<ITEM, Boolean> filterFunction = null;
+        handleCollection(holder, declaringClass, parameter, itemClass, filterFunction, state);
+    }
+
+    protected <HOLDER extends CdmBase, ITEM extends CdmBase> void handleCollection(
+            HOLDER holder, Class<? super HOLDER> declaringClass, String parameter, Class<ITEM> itemClass,
+            Function<ITEM,Boolean> filterFunction, Cdm2CdmImportState state)
+            throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         Collection<ITEM> oldCollection = setNewCollection(holder, declaringClass, parameter, itemClass);
-        Collection<ITEM> newCollection = getTargetCollection(itemClass, oldCollection, state);
+        Collection<ITEM> newCollection = getTargetCollection(oldCollection, filterFunction, state);
         Field field = declaringClass.getDeclaredField(parameter);
         field.setAccessible(true);
         field.set(holder, newCollection);
@@ -1143,6 +1295,7 @@ public abstract class Cdm2CdmImportBase
 
     protected <T extends CdmBase> Collection<T> setNewCollection(CdmBase obj, Class<?> holderClass,
             String parameter, Class<T> entityClass) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+
         Field field = holderClass.getDeclaredField(parameter);
         field.setAccessible(true);
         Collection<T> oldValue = (Collection<T>)field.get(obj);
@@ -1175,14 +1328,22 @@ public abstract class Cdm2CdmImportBase
 
 
     private <T extends Collection<S>, S extends CdmBase> Collection<S> getTargetCollection(
-            Class<S> clazz, T sourceCollection, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Collection<S> result =  new ArrayList<>();
+            T sourceCollection, Function<S,Boolean> filterFunction, Cdm2CdmImportState state
+            ) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+
+        Collection<S> result;
         if (Set.class.isAssignableFrom(sourceCollection.getClass())){
             result = new HashSet<>();
+        }else {
+            result = new ArrayList<>();
         }
         for (S entity : sourceCollection){
-            S target = detach(entity, state);
-            result.add(target);
+            if (filterFunction != null && filterFunction.apply(entity)) {
+                continue;
+            }else {
+                S target = detach(entity, state);
+                result.add(target);
+            }
         }
         return result;
     }
@@ -1312,6 +1473,9 @@ public abstract class Cdm2CdmImportBase
         }
         if (result == null){
             result = getReferenceService().find(uuid);
+            if (result != null) {
+                state.putToSessionCache(result);
+            }
         }
 
         if (result == null){

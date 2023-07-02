@@ -200,6 +200,33 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
     public <T extends CdmBase> T find(Class<T> clazz, UUID uuid);
 
     /**
+     * Return a persisted entity that matches the unique identifier
+     * supplied as an argument, or null if the entity does not exist.
+     * <p>
+     * The difference between this method and {@link #find(UUID) find} is
+     * that this method makes the hibernate read query with the
+     * {@link org.hibernate.FlushMode FlushMode} for the session set to 'MANUAL'
+     * <p>
+     * <b>WARNING:</b>This method should <em>ONLY</em> be used when it is absolutely
+     * necessary and safe to ensure that the hibernate session is not flushed before a read
+     * query. A use case for this is the {@link eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase CdmCacher},
+     * (ticket #4276) where a call to {@link eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase#load(UUID) load}
+     * the CDM Entity using the standard {@link #find(UUID) find} method results in recursion
+     * due to the fact that the {@link #find(UUID) find} method triggers a hibernate session
+     * flush which eventually could call {@link eu.etaxonomy.cdm.model.name.NonViralName#getNameCache getNameCache},
+     * which in turn (in the event that name cache is null) eventually calls the
+     * {@link eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase#load(UUID uuid) load} again.
+     * Apart from these kind of exceptional circumstances, the standard {@link #find(UUID) find}
+     * method should always be used to ensure that the persistence layer is always in sync with the
+     * underlying database.
+     *
+     * @param uuid the uuid o the entity to search for
+     * @param clazz the clazz of the entity to search for
+     * @return an entity of type <T>, or null if the entity does not exist or uuid is <code>null</code>
+     */
+    public <T extends CdmBase> T findWithoutFlush(Class<T> clazz, UUID uuid);
+
+    /**
      * A generic method to retrieve any CdmBase object by its UUID and class,
      * including initialization via property path.<BR>
      * @param clazz the Class of the obejct to find

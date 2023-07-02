@@ -92,6 +92,7 @@ public class Cdm2CdmImportState
     }
     public void clearToSave() {
         this.toSave.clear();
+        this.toSave = new HashSet<>();
     }
 
     public boolean isGraph() {

@@ -10,8 +10,10 @@ package eu.etaxonomy.cdm.io.cdm2cdm;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -48,6 +50,16 @@ public  class Cdm2CdmImportConfigurator
     private boolean doTaxa = false;
     private boolean doDescriptions = false;
     private boolean doVocabularies = false;
+
+    private boolean distributionFilterFromAreaFilter = false;
+    private Set<UUID> commonNameLanguageFilter;
+    private boolean ignoreComputedDescriptions = true;
+    private boolean addAncestors = false;
+
+    /**
+     * If descriptions are empty, e.g. as all elements were filtered, remove them.
+     */
+    private boolean removeEmptyDescriptions = false;
 
     private boolean addSources = true;
     private boolean removeImportSources = false;
@@ -209,5 +221,53 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setExternallyManaged(boolean isExternallyManaged) {
         this.isExternallyManaged = isExternallyManaged;
+    }
+
+    //area filter
+    public boolean isDistributionFilterFromAreaFilter() {
+        return distributionFilterFromAreaFilter;
+    }
+    public void setDistributionFilterFromAreaFilter(boolean distributionFilterFromAreaFilter) {
+        this.distributionFilterFromAreaFilter = distributionFilterFromAreaFilter;
+    }
+    public boolean hasDistributionFilterFromAreaFilter() {
+        return !CdmUtils.isNullSafeEmpty(this.getTaxonNodeFilter().getAreaFilter());
+    }
+
+    //common name filter
+    public Set<UUID> getCommonNameLanguageFilter() {
+        return commonNameLanguageFilter;
+    }
+    public void setCommonNameLanguageFilter(Set<UUID> commonNameLanguageFilter) {
+        this.commonNameLanguageFilter = commonNameLanguageFilter;
+    }
+    public boolean hasCommonNameLanguageFilter() {
+        return !CdmUtils.isNullSafeEmpty(commonNameLanguageFilter);
+    }
+
+    //computed description filter
+    public boolean isIgnoreComputedDescriptions() {
+        return ignoreComputedDescriptions;
+    }
+    public void setIgnoreComputedDescriptions(boolean ignoreComputedDescriptions) {
+        this.ignoreComputedDescriptions = ignoreComputedDescriptions;
+    }
+
+    /**
+     * If descriptions are empty, e.g. as all elements were filtered, remove them.
+     */
+    public boolean isRemoveEmptyDescriptions() {
+        return removeEmptyDescriptions;
+    }
+
+    public void setRemoveEmptyDescriptions(boolean removeEmptyDescriptions) {
+        this.removeEmptyDescriptions = removeEmptyDescriptions;
+    }
+
+    public boolean isAddAncestors() {
+        return addAncestors;
+    }
+    public void setAddAncestors(boolean addAncestors) {
+        this.addAncestors = addAncestors;
     }
 }
