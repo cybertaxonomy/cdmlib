@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
-import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -198,18 +197,18 @@ public class TermTreeServiceImpl
     }
 
     @Override
-    public List<TermCollectionDto> listTermTreeDtosByTermType(TermType termType) {
+    public List<TermTreeDto> listTermTreeDtosByTermType(TermType termType) {
         return dao.listTermTreeDtosByTermType(termType);
     }
 
     @Override
-    public TermCollectionDto getTermTreeDtoByUuid(UUID uuid) {
+    public TermTreeDto getTermTreeDtoByUuid(UUID uuid) {
         return dao.getTermTreeDtosByUuid(uuid);
     }
 
     @Override
-    public List<TermCollectionDto> getTermTreeDtosByUuids(List<UUID> uuid) {
-        return dao.findVocabularyDtoByUuids(uuid);
+    public List<TermTreeDto> getTermTreeDtosByUuids(List<UUID> uuid) {
+        return dao.findTermTreeDtoByUuids(uuid);
     }
 
 }

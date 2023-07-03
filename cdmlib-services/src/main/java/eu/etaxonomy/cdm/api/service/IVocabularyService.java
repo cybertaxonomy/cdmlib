@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -122,7 +123,7 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @param termType the {@link TermType} of the terms in the vocabulary and of the vocabulary
      * @return a list of term vocabulary DTOs
      */
-    public List<TermCollectionDto> findVocabularyDtoByTermType(TermType termType);
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType);
 
     /**
      * Returns term vocabularies that contain terms of the given types {@link TermType} e.g. Feature, Modifier, State.
@@ -130,7 +131,7 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @param termTypes a set of {@link TermType}s of the terms in the vocabulary and of the vocabulary
      * @return a list of term vocabulary DTOs
      */
-    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes);
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes);
 
     /**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
@@ -140,7 +141,7 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * will be returned
      * @return a list of term vocabulary DTOs
      */
-    public List<TermCollectionDto> findVocabularyDtoByTermType(TermType termType, boolean includeSubtypes);
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType, boolean includeSubtypes);
 
     /**
      * Returns term vocabularies that contain terms of the given types {@link TermType} e.g. Feature, Modifier, State.
@@ -150,7 +151,7 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * will be returned
      * @return a list of term vocabulary DTOs
      */
-    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes);
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes);
 
     /**
      * Creates a new term as a direct child of the given vocabulary.
@@ -192,16 +193,16 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @param vocUuid
      * @return
      */
-    public List<TermCollectionDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuid);
+    public List<TermVocabularyDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuid);
 
-    public List<TermCollectionDto> findVocabularyDtoByTermTypeAndPattern(String pattern, TermType termType);
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypeAndPattern(String pattern, TermType termType);
 
     /**
      * @param termTypes
      * @param includeSubtypes
      * @return
      */
-    public List<TermCollectionDto> findFeatureVocabularyDtoByTermTypes(Set<CdmClass> availableFor);
+    public List<TermVocabularyDto> findFeatureVocabularyDtoByTermTypes(Set<CdmClass> availableFor);
 
     /**
      * Returns a list of vocabulary {@link UUID uuids} according to the given filter.

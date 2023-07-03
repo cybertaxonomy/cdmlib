@@ -41,7 +41,7 @@ public class TermVocabularyDto extends TermCollectionDto {
     }
 
     public static List<TermCollectionDto> termVocabularyDtoListFrom(List<Object[]> queryResult) {
-        List<TermCollectionDto> dtos = new ArrayList<>(); // list to ensure order
+        List<TermCollectionDto> dtos = new ArrayList<>();// list to ensure order
         // map to handle multiple representations because of LEFT JOIN
         Map<UUID, TermCollectionDto> dtoMap = new HashMap<>(queryResult.size());
         for (Object[] elements : queryResult) {
@@ -58,6 +58,7 @@ public class TermVocabularyDto extends TermCollectionDto {
      */
     protected static void extractedVocabularies(List<TermCollectionDto> dtos, Map<UUID, TermCollectionDto> dtoMap, Object[] elements) {
         UUID uuid = (UUID)elements[0];
+
         if(dtoMap.containsKey(uuid)){
             // multiple results for one voc -> multiple (voc) representation
             if(elements[1]!=null){

@@ -204,7 +204,8 @@ public abstract class TermCollectionDto extends AbstractTermDto {
 
         } else {
             if (elements[9]== null) {
-                TermVocabularyDto.extractedVocabularies(dtos, dtoMap, elements);
+               TermVocabularyDto.extractedVocabularies(dtos, dtoMap, elements);
+
             }else {
                 TermTreeDto.extracted(dtos, dtoMap, elements);
             }

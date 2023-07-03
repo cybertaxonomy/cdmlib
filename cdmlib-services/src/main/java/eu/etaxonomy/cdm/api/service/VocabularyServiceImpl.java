@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -183,32 +184,32 @@ public class VocabularyServiceImpl
     }
 
     @Override
-    public List<TermCollectionDto> findVocabularyDtoByTermType(TermType termType) {
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType) {
         return findVocabularyDtoByTermTypes(Collections.singleton(termType), true);
     }
 
     @Override
-    public List<TermCollectionDto> findVocabularyDtoByTermTypeAndPattern(String pattern, TermType termType) {
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypeAndPattern(String pattern, TermType termType) {
         return dao.findVocabularyDtoByTermTypes(Collections.singleton(termType), pattern, true);
     }
 
     @Override
-    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
         return findVocabularyDtoByTermTypes(termTypes, true);
     }
 
     @Override
-    public List<TermCollectionDto> findVocabularyDtoByTermType(TermType termType, boolean includeSubtypes) {
+    public List<TermVocabularyDto> findVocabularyDtoByTermType(TermType termType, boolean includeSubtypes) {
         return findVocabularyDtoByTermTypes(Collections.singleton(termType), includeSubtypes);
     }
 
     @Override
-    public List<TermCollectionDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
         return dao.findVocabularyDtoByTermTypes(termTypes, includeSubtypes);
     }
 
     @Override
-    public List<TermCollectionDto> findFeatureVocabularyDtoByTermTypes(Set<CdmClass> availableFor) {
+    public List<TermVocabularyDto> findFeatureVocabularyDtoByTermTypes(Set<CdmClass> availableFor) {
         return dao.findVocabularyDtoByAvailableFor(availableFor);
     }
 
@@ -235,7 +236,7 @@ public class VocabularyServiceImpl
     }
 
     @Override
-    public List<TermCollectionDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuids) {
+    public List<TermVocabularyDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuids) {
         return dao.findVocabularyDtoByUuids(vocUuids);
     }
 

@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
+import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
@@ -36,9 +36,9 @@ public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
     public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern);
 
-    public <S extends TermTree> List<TermCollectionDto> listTermTreeDtosByTermType(TermType termType);
+    public <S extends TermTree> List<TermTreeDto> listTermTreeDtosByTermType(TermType termType);
 
-    public TermCollectionDto getTermTreeDtosByUuid(UUID uuid);
+    public TermTreeDto getTermTreeDtosByUuid(UUID uuid);
 
     /**
      * Returns list of term trees for list of UUIDs
@@ -46,6 +46,6 @@ public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
      * @param vocUuids the {@link UUID} of the trees
      * @return term trees
      */
-    public List<TermCollectionDto> findVocabularyDtoByUuids(List<UUID> vocUuids);
+    public List<TermTreeDto> findTermTreeDtoByUuids(List<UUID> vocUuids);
 
 }

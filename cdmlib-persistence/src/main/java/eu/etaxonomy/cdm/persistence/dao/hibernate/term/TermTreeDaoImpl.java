@@ -136,7 +136,7 @@ public class TermTreeDaoImpl
     }
 
     @Override
-    public List<TermCollectionDto> listTermTreeDtosByTermType(TermType termType) {
+    public List<TermTreeDto> listTermTreeDtosByTermType(TermType termType) {
         String queryString = TermCollectionDto.getTermCollectionDtoSelect("TermTree")
                 + " WHERE a.termType = :termType"
                 + " ORDER BY a.titleCache";
@@ -146,11 +146,15 @@ public class TermTreeDaoImpl
         List<Object[]> result = query.list();
 
         List<TermCollectionDto> list = TermTreeDto.termTreeDtoListFrom(result);
-        return list;
+        List<TermTreeDto> treeList = new ArrayList<>();
+        for (TermCollectionDto coll: list) {
+            treeList.add((TermTreeDto)coll);
+        }
+        return treeList;
     }
 
     @Override
-    public List<TermCollectionDto> findVocabularyDtoByUuids(List<UUID> termType) {
+    public List<TermTreeDto> findTermTreeDtoByUuids(List<UUID> termType) {
         String queryString = TermTreeDto.getTermTreeDtoSelect()
                 + " WHERE a.termType = :termType"
                 + " ORDER BY a.titleCache";
@@ -158,14 +162,17 @@ public class TermTreeDaoImpl
         query.setParameter("termType", termType);
 
         List<Object[]> result = query.list();
-
-        List<TermCollectionDto> list = TermTreeDto.termTreeDtoListFrom(result);
+        List<TermCollectionDto> collDtos = TermTreeDto.termTreeDtoListFrom(result);
+        List<TermTreeDto> list = new ArrayList<>();
+        for (TermCollectionDto coll: collDtos) {
+            list.add((TermTreeDto)coll);
+        }
         return list;
     }
 
     @Override
-    public TermCollectionDto getTermTreeDtosByUuid(UUID uuid) {
-        String queryString = TermTreeDto.getTermCollectionDtoSelect()
+    public TermTreeDto getTermTreeDtosByUuid(UUID uuid) {
+        String queryString = TermTreeDto.getTermTreeDtoSelect()
                 + " WHERE a.uuid = :uuid"
                 + " ORDER BY a.titleCache";
         Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
@@ -173,6 +180,7 @@ public class TermTreeDaoImpl
 
         List<Object[]> result = query.list();
         List<TermCollectionDto> list = TermTreeDto.termTreeDtoListFrom(result);
-        return !list.isEmpty()? list.get(0): null;
+
+        return !list.isEmpty()? (TermTreeDto)list.get(0): null;
     }
 }
