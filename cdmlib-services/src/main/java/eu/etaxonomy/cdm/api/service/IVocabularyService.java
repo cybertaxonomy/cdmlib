@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
@@ -218,12 +217,4 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * Returns the total count of vocabularies according to the given filter.
      */
     public long count(VocabularyFilter filter);
-
-    /**
-     * TODO move to a term collection service as soon as it exists.
-     *
-     * @return the {@link TermCollection} searched for
-     */
-    public TermCollection<?,?> findCollection(UUID termCollectionUuid);
-
 }

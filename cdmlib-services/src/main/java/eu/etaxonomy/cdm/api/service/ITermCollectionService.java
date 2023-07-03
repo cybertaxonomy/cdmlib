@@ -34,43 +34,15 @@ public interface ITermCollectionService extends IIdentifiableEntityService<TermC
 	public <S extends TermCollection> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(
 	        Class<S> clazz, TermType termType, Integer limit, String pattern);
 
-    /**
-     * @param pattern
-     * @param termType
-     * @return
-     */
-    List<TermCollectionDto> findCollectionDtoByTermTypeAndPattern(String pattern, TermType termType);
+    public List<TermCollectionDto> findCollectionDtoByTermTypeAndPattern(String pattern, TermType termType);
 
-    /**
-     * @param termTypes
-     * @return
-     */
-    List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes);
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes);
 
-    /**
-     * @param termType
-     * @param includeSubtypes
-     * @return
-     */
-    List<TermCollectionDto> findCollectionDtoByTermType(TermType termType, boolean includeSubtypes);
+    public List<TermCollectionDto> findCollectionDtoByTermType(TermType termType, boolean includeSubtypes);
 
-    /**
-     * @param termTypes
-     * @param includeSubtypes
-     * @return
-     */
-    List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes);
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes);
 
-    /**
-     * @param termType
-     * @return
-     */
-    List<TermCollectionDto> findCollectionDtoByTermType(TermType termType);
+    public List<TermCollectionDto> findCollectionDtoByTermType(TermType termType);
 
-    /**
-     * @param vocUuids
-     * @return
-     */
-    List<TermCollectionDto> findTermCollectionDtoByUuids(List<UUID> vocUuids);
-
+    public List<TermCollectionDto> findTermCollectionDtoByUuids(List<UUID> collectionUuids);
 }
