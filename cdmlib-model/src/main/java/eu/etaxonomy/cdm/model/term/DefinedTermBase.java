@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.lang.reflect.Constructor;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -298,19 +299,20 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
 	@Override
     public Set<T> getIncludes(){
-        Set<T> result = new HashSet<>();
-        for (T term : this.includes) {
+	    Set<T> toAdd = new HashSet<>();
+	    Iterator<T> it = this.includes.iterator();
+        while (it.hasNext()) {
+            T term = it.next();
             if (term instanceof HibernateProxy) {
                 HibernateProxy proxy = (HibernateProxy) term;
                 LazyInitializer li = proxy.getHibernateLazyInitializer();
                 T t = (T)li.getImplementation();
-                result.add(t);
-            } else {
-                result.add(term);
+                it.remove();
+                toAdd.add(t);
             }
-
         }
-        return result;
+        this.includes.addAll(toAdd);
+        return this.includes;
     }
 
     /**
