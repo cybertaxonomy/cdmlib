@@ -546,19 +546,19 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 //******************************* METHODS ******************************************************/
 
     @Override
-      public boolean isKindOf(T ancestor) {
-          if (kindOf == null || ancestor == null){
-              return false;
-          }else if (kindOf.equals(ancestor)){
-              return true;
-          }else{
-              return kindOf.isKindOf(ancestor);
-          }
-      }
+    public boolean isKindOf(T ancestor) {
+        if (kindOf == null || ancestor == null){
+            return false;
+        }else if (kindOf.equals(ancestor)){
+            return true;
+        }else{
+            return kindOf.isKindOf(ancestor);
+        }
+    }
 
-      @Override
-      public Set<T> getGeneralizationOf(boolean recursive) {
-          Set<T> result = new HashSet<>();
+    @Override
+    public Set<T> getGeneralizationOf(boolean recursive) {
+        Set<T> result = new HashSet<>();
         result.addAll(this.generalizationOf);
         if (recursive){
             for (T child : this.generalizationOf){
@@ -566,7 +566,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
             }
         }
         return result;
-      }
+    }
 
     public abstract void resetTerms();
 
