@@ -298,7 +298,19 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
 	@Override
     public Set<T> getIncludes(){
-        return this.includes;
+        Set<T> result = new HashSet<>();
+        for (T term : this.includes) {
+            if (term instanceof HibernateProxy) {
+                HibernateProxy proxy = (HibernateProxy) term;
+                LazyInitializer li = proxy.getHibernateLazyInitializer();
+                T t = (T)li.getImplementation();
+                result.add(t);
+            } else {
+                result.add(term);
+            }
+
+        }
+        return result;
     }
 
     /**
