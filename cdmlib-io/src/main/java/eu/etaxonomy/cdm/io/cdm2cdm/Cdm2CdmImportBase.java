@@ -793,7 +793,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends CommonTaxonName> T  handlePersistedCommonTaxonName(CommonTaxonName element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends CommonTaxonName> T handlePersistedCommonTaxonName(CommonTaxonName element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DescriptionElementBase)element, state);
         //complete
         result.setLanguage(detach(result.getLanguage(), state));
@@ -801,7 +801,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends TextData> T  handlePersistedTextData(TextData element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TextData> T handlePersistedTextData(TextData element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DescriptionElementBase)element, state);
         //complete
         result.setFormat(detach(result.getFormat(), state));
@@ -809,7 +809,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends Distribution> T  handlePersistedDistribution(Distribution element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends Distribution> T handlePersistedDistribution(Distribution element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DescriptionElementBase)element, state);
         //complete
         result.setArea(detach(result.getArea(), state));
@@ -817,7 +817,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends TaxonInteraction> T  handlePersistedTaxonInteraction(TaxonInteraction element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TaxonInteraction> T handlePersistedTaxonInteraction(TaxonInteraction element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DescriptionElementBase)element, state);
         //complete
         handleMap(result, TaxonInteraction.class, "description", Language.class, LanguageString.class, state);
@@ -930,7 +930,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends TermBase> T  handlePersisted(TermBase termBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TermBase> T handlePersisted(TermBase termBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((IdentifiableEntity)termBase, state);
         //complete
         handleCollection(result, TermBase.class, "representations", Representation.class, state);
@@ -938,14 +938,14 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends TermCollection> T  handlePersisted(TermCollection termCollection, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TermCollection> T handlePersisted(TermCollection termCollection, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((TermBase)termCollection, state);
         //complete
         handleCollection(result, TermCollection.class, "termRelations", TermRelationBase.class, state);
         return result;
     }
 
-    protected <T extends TermRelationBase> T  handlePersisted(TermRelationBase termRelationBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TermRelationBase> T handlePersisted(TermRelationBase termRelationBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AnnotatableEntity)termRelationBase, state);
         result.setTerm(detach(result.getTerm(), state));
         setInvisible(result, TermRelationBase.class, "graph", detach(result.getGraph(), state));
@@ -1003,7 +1003,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends TaxonDescription> T  handlePersistedTaxonDescription(TaxonDescription taxDescription, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TaxonDescription> T handlePersistedTaxonDescription(TaxonDescription taxDescription, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DescriptionBase<?>)taxDescription, state);
         //complete
         setInvisible(taxDescription, "taxon", detach(taxDescription.getTaxon(), state));
@@ -1012,7 +1012,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends TaxonNameDescription> T  handlePersistedTaxonNameDescription(TaxonNameDescription nameDescription, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TaxonNameDescription> T handlePersistedTaxonNameDescription(TaxonNameDescription nameDescription, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DescriptionBase)nameDescription, state);
         //complete
         setInvisible(nameDescription, "taxonName", detach(nameDescription.getTaxonName(), state));
@@ -1052,7 +1052,8 @@ public abstract class Cdm2CdmImportBase
         return (s)->s.getType() == OriginalSourceType.Import;
     };
 
-    protected <T extends SourcedEntityBase<?>> T  handlePersisted(SourcedEntityBase<?> sourcedEntity,
+    protected <T extends SourcedEntityBase<?>> T handlePersisted(
+            @SuppressWarnings("rawtypes") SourcedEntityBase sourcedEntity,
             Cdm2CdmImportState state)
             throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
 
@@ -1091,7 +1092,10 @@ public abstract class Cdm2CdmImportBase
         }
     }
 
-    protected <T extends IdentifiableEntity> T  handlePersisted(IdentifiableEntity<?> identifiableEntity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends IdentifiableEntity> T handlePersisted(
+            @SuppressWarnings("rawtypes") IdentifiableEntity identifiableEntity,
+            Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+
         T result = handlePersisted((SourcedEntityBase<?>)identifiableEntity, state);
         //complete
         handleCollection(result, IdentifiableEntity.class, "credits", Credit.class, state);
@@ -1103,7 +1107,10 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends DefinedTermBase> T  handlePersisted(DefinedTermBase definedTermBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends DefinedTermBase> T handlePersisted(
+            @SuppressWarnings("rawtypes") DefinedTermBase definedTermBase,
+            Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+
         T result = handlePersisted((TermBase)definedTermBase, state);
         //complete
         handleCollection(result, DefinedTermBase.class, "media", Media.class, state);
@@ -1116,19 +1123,20 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends AvailableForTermBase> T  handlePersisted(AvailableForTermBase availableForTermBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends AvailableForTermBase> T handlePersisted(
+            @SuppressWarnings("rawtypes") AvailableForTermBase availableForTermBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((DefinedTermBase)availableForTermBase, state);
         //complete
         return result;
     }
 
-    protected <T extends AvailableForIdentifiableBase<?>> T  handlePersisted(AvailableForIdentifiableBase<?> availableForTermBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends AvailableForIdentifiableBase<?>> T handlePersisted(AvailableForIdentifiableBase availableForTermBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AvailableForTermBase<?>)availableForTermBase, state);
         //complete
         return result;
     }
 
-    protected <T extends OriginalSourceBase> T  handlePersisted(OriginalSourceBase source, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends OriginalSourceBase> T handlePersisted(OriginalSourceBase source, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AnnotatableEntity)source, state);
         //complete
         result.setCitation(detach(result.getCitation(), state));
@@ -1136,27 +1144,27 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends LanguageStringBase> T  handlePersisted(LanguageStringBase lsBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends LanguageStringBase> T handlePersisted(LanguageStringBase lsBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AnnotatableEntity)lsBase, state);
         //complete
         result.setLanguage(detach(lsBase.getLanguage(), state));
         return result;
     }
 
-    protected <T extends TeamOrPersonBase> T  handlePersisted(TeamOrPersonBase teamOrPerson, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TeamOrPersonBase> T handlePersisted(TeamOrPersonBase teamOrPerson, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AgentBase)teamOrPerson, state);
         //complete
         return result;
     }
 
-    protected <T extends AgentBase> T  handlePersisted(AgentBase agent, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends AgentBase> T handlePersisted(AgentBase agent, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((IdentifiableMediaEntity)agent, state);
         result.setContact(detach(result.getContact(), state));
         //complete
         return result;
     }
 
-    protected <T extends TaxonBase> T  handlePersisted(TaxonBase taxonBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends TaxonBase> T handlePersisted(TaxonBase taxonBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((IdentifiableEntity)taxonBase, state);
         //complete
         result.setName(detach(taxonBase.getName(), state));
@@ -1164,21 +1172,21 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends IdentifiableMediaEntity> T  handlePersisted(IdentifiableMediaEntity mediaEntity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends IdentifiableMediaEntity> T handlePersisted(IdentifiableMediaEntity mediaEntity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((IdentifiableEntity)mediaEntity, state);
         //complete
         handleCollection(result, IdentifiableMediaEntity.class, "media", Media.class, state);
         return result;
     }
 
-    protected <T extends SingleSourcedEntityBase> T  handlePersisted(SingleSourcedEntityBase referencedEntity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends SingleSourcedEntityBase> T handlePersisted(SingleSourcedEntityBase referencedEntity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AnnotatableEntity)referencedEntity, state);
         //complete
         result.setSource(detach(result.getSource(), state));
         return result;
     }
 
-    protected <T extends DescriptionBase> T  handlePersisted(DescriptionBase<?> descriptionBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends DescriptionBase> T handlePersisted(DescriptionBase descriptionBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((IdentifiableEntity<?>)descriptionBase, state);
         //complete
         //elements
@@ -1237,7 +1245,7 @@ public abstract class Cdm2CdmImportBase
         return false;
     }
 
-    protected <T extends DescriptionElementBase> T  handlePersisted(DescriptionElementBase element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends DescriptionElementBase> T handlePersisted(DescriptionElementBase element, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AnnotatableEntity)element, state);
         //complete
         result.setFeature(detach(result.getFeature(), state));
@@ -1251,11 +1259,10 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends RelationshipBase> T  handlePersisted(RelationshipBase relBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends RelationshipBase> T handlePersisted(RelationshipBase relBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((SingleSourcedEntityBase)relBase, state);
         return result;
     }
-
 
 //************************** COLLECTIONS / MAPS ****************************************/
 
