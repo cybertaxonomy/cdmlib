@@ -172,7 +172,7 @@ public class TermTreeDaoImpl
 
     @Override
     public TermTreeDto getTermTreeDtosByUuid(UUID uuid) {
-        String queryString = TermTreeDto.getTermTreeDtoSelect()
+        String queryString = TermTreeDto.getTermCollectionDtoSelect()
                 + " WHERE a.uuid = :uuid"
                 + " ORDER BY a.titleCache";
         Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);

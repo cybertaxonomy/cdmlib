@@ -108,12 +108,12 @@ public class TermTreeDto extends TermCollectionDto {
                 + "r, "
                 + "a.termType,  "
                 + "a.uri,  "
-                + "root,  "
                 + "a.titleCache, "
                 + "a.allowDuplicates, "
                 + "a.orderRelevant, "
                 + "a.isFlat, "
-                + "a.externallyManaged ";
+                + "a.externallyManaged,"
+                + "root ";
         String sqlFromString =   "from DescriptiveDataSet as d ";
 
         String sqlJoinString =  "JOIN d.descriptiveSystem as a "
