@@ -19,7 +19,7 @@ public class NameServiceImplementBelenTest {
 
     @Test
     public void testReplaceInitialCharacter() {
-        NameServiceImplementBelen test=new NameServiceImplementBelen();
+
 
         String name = "euphorbia";
         Assert.assertEquals("uphorbia", NameServiceImplementBelen.replaceInitialCharacter(name));
@@ -37,11 +37,14 @@ public class NameServiceImplementBelenTest {
 
     @Test
     public void testTrimCommonChar() {
-        NameServiceImplementBelen test=new NameServiceImplementBelen();
+
         String query ="Nectandra";
         String document = "Nectalisma";
 
         Assert.assertEquals("ndr", NameServiceImplementBelen.trimCommonChar(query, document).split(" ")[0]);
         Assert.assertEquals("lism", NameServiceImplementBelen.trimCommonChar(query, document).split(" ")[1]);
+
+        Assert.assertEquals("Equal input should return empty result",
+                "", NameServiceImplementBelen.trimCommonChar(query, query) );
     }
 }

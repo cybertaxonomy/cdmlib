@@ -30,12 +30,14 @@ public class NameServiceImplementBelen {
 		return output;
 	}
 
-
-// trim common characters between query and document
-
+	/**
+	 * Deletes common characters at the beginning and end of both parameters.
+	 * Returns the space separated concatenation of the remaining strings.
+	 *<BR>
+	 * Returns empty string if input strings are equal.
+	 */
 	public static String trimCommonChar(String inputName, String databaseName) {
 
-	    String result;
 	    String shortenedInputName="";
 	    String shortenedDatabaseName="";
 	    String tempInputName;
@@ -74,8 +76,11 @@ public class NameServiceImplementBelen {
         shortenedInputName = tempInputName.substring(0, restantInputNameLenght - x);
         shortenedDatabaseName = tempDatabaseName.substring(0, restantDatabaseNameLenght - x);
 
-        result = shortenedInputName +" "+ shortenedDatabaseName;
-        return result;
+        if (shortenedInputName.equals(shortenedDatabaseName)) {
+            return "";
+        }else {
+            return shortenedInputName +" "+ shortenedDatabaseName;
+        }
     }
 
 	public static List <DoubleResult<TaxonNameParts, Integer>> exactResults (List <DoubleResult<TaxonNameParts, Integer>> list){

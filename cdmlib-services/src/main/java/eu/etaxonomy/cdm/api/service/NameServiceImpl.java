@@ -1311,7 +1311,12 @@ public class NameServiceImpl
      */
     //TODO work in progress
     @Override
-	public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName, Integer maxDistanceGenus, Integer maxDisEpith) {
+	public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName,
+	        Integer maxDistanceGenus, Integer maxDisEpith) {
+
+        if (maxDistanceGenus == null) {
+            maxDistanceGenus = 4;
+        }
 
     	//0. Normalizing and parsing
 
@@ -1327,32 +1332,188 @@ public class NameServiceImpl
 		// phonetic normalization of query (genus)
 
 		String tempGenusPhon= NameServiceImplementBelen.replaceInitialCharacter(genusQuery);
-		String tempGenus = CdmUtilsBelen.normalized(tempGenusPhon);
+		String normalizedGenusQuery = CdmUtilsBelen.normalized(tempGenusPhon);
 
 
 		//1. Genus pre-filter
 
-		// set a list with all names in DB starting with the first character of query
+		List<String> preFilteredGenusList = nameMatchingGenusPrefilter(genusQuery, tempGenusPhon, normalizedGenusQuery);
 
+
+		//create result list
+		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList = new ArrayList<>();
+
+		for (String preFilteredGenus : preFilteredGenusList) {
+
+		    //2. comparison of genus
+
+		    String genusNameInitCharReplaced = NameServiceImplementBelen.replaceInitialCharacter(preFilteredGenus);
+		    String genusNameInDBNormalized = CdmUtilsBelen.normalized(genusNameInitCharReplaced);
+
+		    distance = nameMatchingComputeDistance(normalizedGenusQuery, genusNameInDBNormalized);
+
+	        //3. genus post-filter
+
+		    nameMatchingPostGenusFilter(maxDistanceGenus, genusQuery, distance, normalizedGenusQuery,
+                    fullTaxonNamePartsList, preFilteredGenus, genusNameInDBNormalized);
+		}
+
+		//if only genus is given
+
+		if (epithetQuery==null) {
+		    Collections.sort(fullTaxonNamePartsList, (o1,o2)->o1.getSecondResult().compareTo(o2.getSecondResult()));
+
+	        List <DoubleResult<TaxonNameParts, Integer>> exactResults = NameServiceImplementBelen.exactResults(fullTaxonNamePartsList);
+	        List <DoubleResult<TaxonNameParts, Integer>> bestResults = NameServiceImplementBelen.bestResults(fullTaxonNamePartsList);
+
+	        if(!exactResults.isEmpty()) {
+	            return exactResults;
+	        } else {
+	            return bestResults;
+	        }
+
+		} else {
+
+		    String tempEpithPhon = NameServiceImplementBelen.replaceInitialCharacter(epithetQuery);
+		    String tempEpith = CdmUtilsBelen.normalized(tempEpithPhon);
+
+    		// 4. epithet pre-filter
+    		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList2 = new ArrayList<>();
+
+    		for (DoubleResult<TaxonNameParts, Integer> nameX: fullTaxonNamePartsList) {
+    		    if (nameX.getFirstResult().getSpecificEpithet().length()-tempEpith.length()<=4) {
+    		        fullTaxonNamePartsList2.add(nameX);
+    		        fullTaxonNamePartsList=fullTaxonNamePartsList2;
+    		    }
+    		}
+
+    		// 5. comparison of epithet
+    		if (maxDisEpith==null) {
+    		    maxDisEpith=4;
+    		}
+
+    		List <DoubleResult<TaxonNameParts, Integer>> epithetList = new ArrayList<>();
+    		String queryDocu2;
+    		for (DoubleResult<TaxonNameParts, Integer> part: fullTaxonNamePartsList) {
+
+    		    String epithetInDB = part.getFirstResult().getSpecificEpithet();
+    		    int lengthEpithetInDB=epithetInDB.length();
+    		    int lengthEpithetQuery=epithetQuery.length();
+    		    int half=Math.max(lengthEpithetInDB,lengthEpithetQuery)/2;
+
+    		    String epithetinDBNorm=NameServiceImplementBelen.replaceInitialCharacter(epithetInDB);
+
+    		    ///aqui hay error cuando la base solo tiene genero sin epiteto
+
+    		    epithetinDBNorm=CdmUtilsBelen.normalized(epithetinDBNorm);
+    		    if (NameServiceImplementBelen.trimCommonChar(tempEpith, epithetinDBNorm).trim().isEmpty()) {
+    		        queryDocu2="";
+    		    } else {
+    		        queryDocu2=NameServiceImplementBelen.trimCommonChar(tempEpith, epithetinDBNorm);
+    		    }
+
+                if (queryDocu2=="") {
+                    epithetDistance=0;
+    		    } else {
+    		        String inputShort= queryDocu2.split(" ")[0];
+                    String DbShort=queryDocu2.split(" ")[1];
+                    epithetDistance= CdmUtils.modifiedDamerauLevenshteinDistance(inputShort,DbShort);
+    		    }
+
+                int totalDist = part.getSecondResult() + epithetDistance;
+                part.setSecondResult(totalDist)  ;
+
+    		// 6. species post-filter
+
+    		    if (totalDist <= maxDisEpith) {
+                    epithetList.add(part);
+    		    }else if (half<maxDisEpith) {
+    		        if ((tempEpith.substring(0,1).equals(epithetInDB.substring(0,1))
+    		                && epithetDistance==2||epithetDistance==3)||
+    		                (tempEpith.substring(0,3).equals(epithetInDB.substring(0,3))
+    		                        && epithetDistance==4)) {
+    		            epithetList.add(part);
+    		        }
+    		    }
+    		}
+
+    		// 6b Infraspecific comparison (pre-filter, comparison, post-filter)
+    		//TODO
+
+    		// 7. Result shaping
+
+
+    		Collections.sort(epithetList, (o1,o2)->o1.getSecondResult().compareTo(o2.getSecondResult()) );
+
+    		List <DoubleResult<TaxonNameParts, Integer>> exactResults = NameServiceImplementBelen.exactResults(epithetList);
+    		List <DoubleResult<TaxonNameParts, Integer>> bestResults = NameServiceImplementBelen.bestResults(epithetList);
+
+    		if(!exactResults.isEmpty()) {
+    		    return exactResults;
+    		} else {
+    		    return bestResults;
+    		}
+		}
+	}
+
+    private void nameMatchingPostGenusFilter(Integer maxDistanceGenus, String genusQuery, int distance,
+            String normalizedGenusQuery, List<DoubleResult<TaxonNameParts, Integer>> fullTaxonNamePartsList,
+            String preFilteredGenus, String genusNameInDBNormalized) {
+
+        int genusQueryLength = genusQuery.length();
+        int genusDBLength = preFilteredGenus.length();
+        int halfLength = Math.max(genusQueryLength, genusDBLength)/2;
+
+        //Genera that match in at least 50% are kept. i.e., if genus length = 6(or7) then at least 3 characters must match AND the initial character must match in all cases where ED >1
+        if (distance <= maxDistanceGenus) {
+            List<TaxonNameParts> tempParts1 = dao.findTaxonNameParts(Optional.of(preFilteredGenus), null, null, null, null, null, null, null, null);
+            for (TaxonNameParts namePart1: tempParts1) {
+                fullTaxonNamePartsList.add(new DoubleResult<TaxonNameParts, Integer>(namePart1, distance));
+            }
+        } else if(halfLength < maxDistanceGenus && normalizedGenusQuery.substring(0,1).equals(genusNameInDBNormalized.substring(0,1))) {
+            List<TaxonNameParts> tempParts2 = dao.findTaxonNameParts(Optional.of(preFilteredGenus),null, null, null, null, null, null, null, null);
+            for (TaxonNameParts namePart2: tempParts2) {
+                fullTaxonNamePartsList.add(new DoubleResult<TaxonNameParts, Integer>(namePart2, distance));
+            }
+        }
+    }
+
+    private int nameMatchingComputeDistance(String tempGenus, String genusNameInDBNormalized) {
+        int distance;
+        String queryDocu = NameServiceImplementBelen.trimCommonChar(tempGenus, genusNameInDBNormalized);
+
+        if ("".equals(queryDocu)) {
+            distance = 0;
+        } else {
+            String inputShort= queryDocu.split(" ")[0];
+            String DbShort=queryDocu.split(" ")[1];
+            distance = CdmUtils.modifiedDamerauLevenshteinDistance(inputShort,DbShort);
+        }
+        return distance;
+    }
+
+    private List<String> nameMatchingGenusPrefilter(String genusQuery, String tempGenusPhon, String tempGenus) {
+        // set a list with all names in DB starting with the first character of query
 		String initial= tempGenus.substring(0,1).toUpperCase() + "*";
 		List<String> tempGenusListNormal = dao.distinctGenusOrUninomial(initial, null, null);
 
-		//set a list with all genera in the database starting with the initial letter of the PHONETIC TRANSFORMATION query
-	    String initialPho = tempGenusPhon.substring(0,1).toUpperCase()+"*";
-	    List <String> tempGenusListPhon=new ArrayList<>();
+		//set a list with all genera in the database starting with the initial letter
+		//of the PHONETIC TRANSFORMATION query
+	    String initialPho = tempGenusPhon.substring(0,1).toUpperCase() + "*";
+	    List <String> tempGenusListPhon = new ArrayList<>();
 	    if (!initial.equals(initialPho)) {
 	        tempGenusListPhon = dao.distinctGenusOrUninomial(initialPho, null, null);
 	    }
 
 	    //add genera that have a phonetic match
-	    List<String> genusList= new ArrayList <>();
+	    List<String> genusList = new ArrayList <>();
 		genusList.addAll(tempGenusListPhon);
 
 		// see word file Step 1. Rule 3.
 
 		for (String x:tempGenusListNormal) {
 
-		    if (Math.abs(x.length()-genusQuery.length())<=2) {
+		    if (Math.abs(x.length()-genusQuery.length()) <= 2) {
 
 		        if(genusQuery.length()<5) {
 
@@ -1373,140 +1534,6 @@ public class NameServiceImpl
 		        }
 		    }
 		}
-
-		//2. comparison of genus
-
-		if (maxDistanceGenus==null) {
-		    maxDistanceGenus=4;
-		}
-
-		String queryDocu;
-		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList = new ArrayList<>();
-
-		for (String genusNameInDB:genusList) {
-		    String genusNameInDBNor=NameServiceImplementBelen.replaceInitialCharacter(genusNameInDB);
-		    genusNameInDBNor=CdmUtilsBelen.normalized(genusNameInDBNor);
-		    if (NameServiceImplementBelen.trimCommonChar(tempGenus, genusNameInDBNor).trim().isEmpty()) {
-		        queryDocu="";
-		    } else {
-		        queryDocu=NameServiceImplementBelen.trimCommonChar(tempGenus, genusNameInDBNor);
-		    }
-
-		    if (queryDocu=="") {
-		        distance = 0;
-		    } else {
-		        String inputShort= queryDocu.split(" ")[0];
-		        String DbShort=queryDocu.split(" ")[1];
-		        distance = CdmUtils.modifiedDamerauLevenshteinDistance(inputShort,DbShort);
-		    }
-
-	    //3. genus post-filter
-		    int lengthTemp = genusQuery.length();
-		    int lengthDB=genusNameInDB.length();
-		    int half=Math.max(lengthTemp,lengthDB)/2;
-
-	    //Genera that match in at least 50% are kept. i.e., if genus length = 6(or7) then at least 3 characters must match AND the initial character must match in all cases where ED >1
-		    if (distance <=maxDistanceGenus) {
-		        List<TaxonNameParts> tempParts1 = dao.findTaxonNameParts(Optional.of(genusNameInDB),null, null, null, null, null, null, null, null);
-                for (TaxonNameParts namePart1: tempParts1) {
-                    fullTaxonNamePartsList.add(new DoubleResult<TaxonNameParts, Integer>(namePart1, distance));
-                }
-		    } else if(half<maxDistanceGenus && tempGenus.substring(0,1).equals(genusNameInDBNor.substring(0,1))) {
-		        List<TaxonNameParts> tempParts2 = dao.findTaxonNameParts(Optional.of(genusNameInDB),null, null, null, null, null, null, null, null);
-                for (TaxonNameParts namePart2: tempParts2) {
-                    fullTaxonNamePartsList.add(new DoubleResult<TaxonNameParts, Integer>(namePart2, distance));
-                }
-		    }
-		}
-
-		//if only genus is given
-
-		if (epithetQuery==null) {
-		    Collections.sort(fullTaxonNamePartsList, (o1,o2)->o1.getSecondResult().compareTo(o2.getSecondResult()));
-
-	        List <DoubleResult<TaxonNameParts, Integer>> exactResults = NameServiceImplementBelen.exactResults(fullTaxonNamePartsList);
-	        List <DoubleResult<TaxonNameParts, Integer>> bestResults = NameServiceImplementBelen.bestResults(fullTaxonNamePartsList);
-
-	        if(!exactResults.isEmpty()) {
-	            return exactResults;
-	        } else {
-	            return bestResults;
-	        }
-
-		} else {
-
-		    String tempEpithPhon= NameServiceImplementBelen.replaceInitialCharacter(epithetQuery);
-		    String tempEpith= CdmUtilsBelen.normalized(tempEpithPhon);
-
-		// 4. epithet pre-filter
-		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList2 = new ArrayList<>();
-
-		for (DoubleResult<TaxonNameParts, Integer> nameX: fullTaxonNamePartsList) {
-		    if (nameX.getFirstResult().getSpecificEpithet().length()-tempEpith.length()<=4) {
-		        fullTaxonNamePartsList2.add(nameX);
-		        fullTaxonNamePartsList=fullTaxonNamePartsList2;
-		    }
-		}
-		// 5. comparison of epithet
-		if (maxDisEpith==null) {
-		    maxDisEpith=4;
-		}
-
-		List <DoubleResult<TaxonNameParts, Integer>> epithetList = new ArrayList<>();
-		String queryDocu2;
-		for (DoubleResult<TaxonNameParts, Integer> part: fullTaxonNamePartsList) {
-
-		    String epithetInDB = part.getFirstResult().getSpecificEpithet();
-		    int lengthEpithetInDB=epithetInDB.length();
-		    int lengthEpithetQuery=epithetQuery.length();
-		    int half=Math.max(lengthEpithetInDB,lengthEpithetQuery)/2;
-
-		    String epithetinDBNorm=NameServiceImplementBelen.replaceInitialCharacter(epithetInDB);
-
-		    ///aqui hay error cuando la base solo tiene genero sin epiteto
-
-		    epithetinDBNorm=CdmUtilsBelen.normalized(epithetinDBNorm);
-		    if (NameServiceImplementBelen.trimCommonChar(tempEpith, epithetinDBNorm).trim().isEmpty()) {
-		        queryDocu2="";
-		    } else {
-		        queryDocu2=NameServiceImplementBelen.trimCommonChar(tempEpith, epithetinDBNorm);
-		    }
-
-            if (queryDocu2=="") {
-                epithetDistance=0;
-		    } else {
-		        String inputShort= queryDocu2.split(" ")[0];
-                String DbShort=queryDocu2.split(" ")[1];
-                epithetDistance= CdmUtils.modifiedDamerauLevenshteinDistance(inputShort,DbShort);
-		    }
-
-            int totalDist = part.getSecondResult() + epithetDistance;
-            part.setSecondResult(totalDist)  ;
-
-		// 6. species post-filter
-
-		    if (totalDist <= maxDisEpith) {
-                epithetList.add(part);
-		    }else if (half<maxDisEpith) {
-		        if ((tempEpith.substring(0,1).equals(epithetInDB.substring(0,1))
-		                && epithetDistance==2||epithetDistance==3)||
-		                (tempEpith.substring(0,3).equals(epithetInDB.substring(0,3))
-		                        && epithetDistance==4)) {
-		            epithetList.add(part);
-		        }
-		    }
-		}
-
-		Collections.sort(epithetList, (o1,o2)->o1.getSecondResult().compareTo(o2.getSecondResult()) );
-
-		List <DoubleResult<TaxonNameParts, Integer>> exactResults = NameServiceImplementBelen.exactResults(epithetList);
-		List <DoubleResult<TaxonNameParts, Integer>> bestResults = NameServiceImplementBelen.bestResults(epithetList);
-
-		if(!exactResults.isEmpty()) {
-		    return exactResults;
-		} else {
-		    return bestResults;
-		}
-		}
-	}
+        return genusList;
+    }
 }
