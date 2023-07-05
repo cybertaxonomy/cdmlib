@@ -581,15 +581,6 @@ public class QuantitativeData
 //        return result;
 //    }
 
-    @Deprecated   //will be replaced by #noDataStatus
-	public Boolean getUnknownData() {
-		return unknownData;
-	}
-    @Deprecated   //will be replaced by #noDataStatus
-	public void setUnknownData(Boolean unknownData) {
-		this.unknownData = unknownData;
-	}
-
     //no data status, #2975
     public NoDescriptiveDataStatus getNoDataStatus() {
         return noDataStatus;
