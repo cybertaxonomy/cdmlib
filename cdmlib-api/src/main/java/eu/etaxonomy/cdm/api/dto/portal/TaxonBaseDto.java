@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 public class TaxonBaseDto extends IdentifiableDto {
 
     public class TaxonNameDto extends IdentifiableDto {
+
         //nomenclatural code
         private String nameType;
 
@@ -81,7 +82,6 @@ public class TaxonBaseDto extends IdentifiableDto {
         public void setType(String nameType) {
             this.nameType = nameType;
         }
-
     }
 
     private TaxonNameDto name;
