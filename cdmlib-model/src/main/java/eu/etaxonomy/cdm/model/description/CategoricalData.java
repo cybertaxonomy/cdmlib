@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlType(name = "CategoricalData", propOrder = {
     "orderRelevant",
     "stateData",
-    "unknownData"
+    "noDataStatus"
 })
 @XmlRootElement(name = "CategoricalData")
 @Entity
@@ -86,10 +86,6 @@ public class CategoricalData extends DescriptionElementBase {
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
     private List<StateData> stateData = new ArrayList<>();
-
-    @XmlElement(name = "UnknownData")
-    @Deprecated   //will be replaced by #noDataStatus
-    private final Boolean unknownData = false;
 
     @XmlAttribute(name ="NoDataStatus")
     @Column(name="noDataStatus", length=10)

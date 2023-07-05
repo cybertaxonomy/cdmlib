@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
 
 import java.math.BigDecimal;
@@ -72,7 +71,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlType(name = "QuantitativeData", propOrder = {
     "unit",
     "statisticalValues",
-    "unknownData"
+    "noDataStatus"
 })
 @XmlRootElement(name = "QuantitativeData")
 @Entity
@@ -118,10 +117,6 @@ public class QuantitativeData
 //	private BigDecimal singleValue;
 //
 //	private Integer sampleSize;
-
-	@XmlElement(name = "UnknownData")
-    @Deprecated   //will be replaced by #noDataStatus
-	private Boolean unknownData = false;
 
     @XmlAttribute(name ="NoDataStatus")
     @Column(name="noDataStatus", length=10)
