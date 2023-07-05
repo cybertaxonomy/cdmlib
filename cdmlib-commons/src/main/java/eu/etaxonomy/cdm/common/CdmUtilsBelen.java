@@ -90,10 +90,10 @@ public class CdmUtilsBelen {
 		return output;
 	}
 
-	public static String normalized(String x) {
+	public static String normalize(String str) {
 	    String result;
 
-	    result=CdmUtilsBelen.replaceSpecialCharacters(x);
+	    result=CdmUtilsBelen.replaceSpecialCharacters(str);
 	    result=CdmUtilsBelen.soundalike(result);
 	    result=CdmUtilsBelen.replacerGenderEnding(result);
 //      tempGenus =NameServiceImplementBelen.replaceInitialCharacter(tempGenus);

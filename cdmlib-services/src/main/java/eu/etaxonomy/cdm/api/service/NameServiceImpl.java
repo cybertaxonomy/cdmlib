@@ -186,7 +186,7 @@ public class NameServiceImpl
             return result;
         }
         if (result.isOk()){
-        //remove references to this name
+            //remove references to this name
             removeNameRelationshipsByDeleteConfig(name, config);
 
            //remove name from homotypical group
@@ -1331,13 +1331,13 @@ public class NameServiceImpl
 
 		// phonetic normalization of query (genus)
 
-		String tempGenusPhon= NameServiceImplementBelen.replaceInitialCharacter(genusQuery);
-		String normalizedGenusQuery = CdmUtilsBelen.normalized(tempGenusPhon);
+		String initCharReplacedQuery = NameServiceImplementBelen.replaceInitialCharacter(genusQuery);
+		String normalizedGenusQuery = CdmUtilsBelen.normalize(initCharReplacedQuery);
 
 
 		//1. Genus pre-filter
 
-		List<String> preFilteredGenusList = nameMatchingGenusPrefilter(genusQuery, tempGenusPhon, normalizedGenusQuery);
+		List<String> preFilteredGenusList = nameMatchingGenusPrefilter(genusQuery, initCharReplacedQuery, normalizedGenusQuery);
 
 
 		//create result list
@@ -1348,7 +1348,7 @@ public class NameServiceImpl
 		    //2. comparison of genus
 
 		    String genusNameInitCharReplaced = NameServiceImplementBelen.replaceInitialCharacter(preFilteredGenus);
-		    String genusNameInDBNormalized = CdmUtilsBelen.normalized(genusNameInitCharReplaced);
+		    String genusNameInDBNormalized = CdmUtilsBelen.normalize(genusNameInitCharReplaced);
 
 		    distance = nameMatchingComputeDistance(normalizedGenusQuery, genusNameInDBNormalized);
 
@@ -1375,7 +1375,7 @@ public class NameServiceImpl
 		} else {
 
 		    String tempEpithPhon = NameServiceImplementBelen.replaceInitialCharacter(epithetQuery);
-		    String tempEpith = CdmUtilsBelen.normalized(tempEpithPhon);
+		    String tempEpith = CdmUtilsBelen.normalize(tempEpithPhon);
 
     		// 4. epithet pre-filter
     		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList2 = new ArrayList<>();
@@ -1405,7 +1405,7 @@ public class NameServiceImpl
 
     		    ///aqui hay error cuando la base solo tiene genero sin epiteto
 
-    		    epithetinDBNorm=CdmUtilsBelen.normalized(epithetinDBNorm);
+    		    epithetinDBNorm=CdmUtilsBelen.normalize(epithetinDBNorm);
     		    if (NameServiceImplementBelen.trimCommonChar(tempEpith, epithetinDBNorm).trim().isEmpty()) {
     		        queryDocu2="";
     		    } else {
@@ -1492,48 +1492,67 @@ public class NameServiceImpl
         return distance;
     }
 
-    private List<String> nameMatchingGenusPrefilter(String genusQuery, String tempGenusPhon, String tempGenus) {
-        // set a list with all names in DB starting with the first character of query
-		String initial= tempGenus.substring(0,1).toUpperCase() + "*";
-		List<String> tempGenusListNormal = dao.distinctGenusOrUninomial(initial, null, null);
+    private List<String> nameMatchingGenusPrefilter(String genusQuery, String initCharReplacedQuery, String normalizedGenusQuery) {
 
-		//set a list with all genera in the database starting with the initial letter
-		//of the PHONETIC TRANSFORMATION query
-	    String initialPho = tempGenusPhon.substring(0,1).toUpperCase() + "*";
-	    List <String> tempGenusListPhon = new ArrayList<>();
-	    if (!initial.equals(initialPho)) {
-	        tempGenusListPhon = dao.distinctGenusOrUninomial(initialPho, null, null);
-	    }
+        List<String> genusResultList = new ArrayList <>();
 
-	    //add genera that have a phonetic match
-	    List<String> genusList = new ArrayList <>();
-		genusList.addAll(tempGenusListPhon);
+        // get a list with all genus/uninomial in the DB
+		String initial= "*";
+		List<String> genusListDB = dao.distinctGenusOrUninomial(initial, null, null);
 
-		// see word file Step 1. Rule 3.
+		// TODO implement rule 1a
+		for (String genusDB: genusListDB) {
+		    //TODO
+		    //if phonetic match add to result
+		}
 
-		for (String x:tempGenusListNormal) {
+        //TODO rule 1b requires fetching of species epithets. We need further discussion if we
+        //     want to do this in the same way or how the semantics of this rule can be implemented
+        //     in the best way.
 
-		    if (Math.abs(x.length()-genusQuery.length()) <= 2) {
+	    // see Rees algorithm rule 1c
+		for (String genusDB: genusListDB) {
+		    //check if already in result list
+		    if (genusResultList.contains(genusDB)) {
+		        continue;
+		    }
+		    if (Math.abs(genusDB.length()-genusQuery.length()) <= 2) {
 
 		        if(genusQuery.length()<5) {
-
-		            if (genusQuery.substring(0,1).equals(x.substring(0,1)) ||
-		                    genusQuery.substring((genusQuery.length()-1),genusQuery.length()).equals(x.substring((x.length()-1),x.length()))) {
-		                genusList.add(x);
+		            // rule 1c.1
+		            if ( characterMatches(genusQuery, genusDB, 1, false) ||
+		                    characterMatches(genusQuery, genusDB, 1, true)) {
+		                genusResultList.add(genusDB);
 		            }
 		        } else if (genusQuery.length()==5) {
-		            if (genusQuery.substring(0,2).equals(x.substring(0,2)) ||
-		                    genusQuery.substring((genusQuery.length()-3),genusQuery.length()).equals(x.substring((x.length()-3),x.length()))){
-		                genusList.add(x);
+		            // rule 1c.2
+		            if (characterMatches(genusQuery, genusDB, 2, false) ||
+		                    characterMatches(genusQuery, genusDB, 3, true)){
+		                genusResultList.add(genusDB);
 		            }
 		        } else if (genusQuery.length()>5){
-		            if (genusQuery.substring(0,3).equals(x.substring(0,3)) ||
-		                    genusQuery.substring((genusQuery.length()-3),genusQuery.length()).equals(x.substring((x.length()-3),x.length()))){
-		                genusList.add(x);
+		            // rule 1c.3
+		            if (characterMatches(genusQuery, genusDB, 3, false) ||
+		                    characterMatches(genusQuery, genusDB, 3, true)){
+		                genusResultList.add(genusDB);
 		            }
 		        }
 		    }
 		}
-        return genusList;
+        return genusResultList;
+    }
+
+    /**
+     * Compares the first (or last if backwards = true) number of characters
+     * of the 2 strings.
+     * @param count count of characters to compare
+     * @param backwards if true comparison starts from the end of the words
+     */
+    private boolean characterMatches(String str1, String str2, int count, boolean backwards) {
+        if (!backwards) {
+            return str1.substring(0,count).equals(str2.substring(0,count)) ;
+        }else {
+            return str1.substring((str1.length()-count),str1.length()).equals(str2.substring((str2.length()-count),str2.length()));
+        }
     }
 }
