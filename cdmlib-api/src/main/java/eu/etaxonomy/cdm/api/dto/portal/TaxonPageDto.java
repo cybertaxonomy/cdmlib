@@ -224,6 +224,8 @@ public class TaxonPageDto extends TaxonBaseDto {
         private List<TypedLabel> typedLabel;
         private UUID relTypeUuid;
         private Set<UUID> classificationUuids;
+        private SourceDto secSource;
+        private SourceDto relSource;
 
         public int getRelTaxonId() {
             return relTaxonId;
@@ -263,6 +265,18 @@ public class TaxonPageDto extends TaxonBaseDto {
                 this.classificationUuids = new HashSet<>();
             }
             this.classificationUuids.add(classificationUuid);
+        }
+        public SourceDto getSecSource() {
+            return secSource;
+        }
+        public void setSecSource(SourceDto secSource) {
+            this.secSource = secSource;
+        }
+        public SourceDto getRelSource() {
+            return relSource;
+        }
+        public void setRelSource(SourceDto relSource) {
+            this.relSource = relSource;
         }
     }
 
