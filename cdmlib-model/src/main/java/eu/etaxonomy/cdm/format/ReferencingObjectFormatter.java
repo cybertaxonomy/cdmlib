@@ -123,7 +123,7 @@ public class ReferencingObjectFormatter {
             }else if (originalSource instanceof NamedSource && isNotBlank(target) ){
                 sourceObjectTitle = "for " + target;
             }
-            resultString = CdmUtils.concat("; ", new String[]{originalSource.getIdNamespace(), originalSource.getIdInSource(), sourceObjectTitle});
+            resultString = CdmUtils.concat("; ", new String[]{originalSource.getIdNamespace(), originalSource.getIdInSource(), sourceObjectTitle, originalSource.getCitationMicroReference()});
         }else if (element instanceof Rights) {
             Rights rights = (Rights) element;
             resultString = getCache(rights, defaultLanguage);
