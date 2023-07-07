@@ -42,7 +42,6 @@ public class CdmLightExportConfigurator
     private boolean isFilterIntextReferences = true;
     private boolean isCreateCondensedDistributionString = true;
     private CondensedDistributionConfiguration condensedDistributionConfiguration = CondensedDistributionConfiguration.NewDefaultInstance();
-    private boolean isExcludeImportSources = true;
     private boolean isShowAllNameRelationsInHomotypicGroup = false;
 
     private boolean isShowInverseNameRelationsInHomotypicGroup = false;
@@ -50,6 +49,10 @@ public class CdmLightExportConfigurator
     private boolean isAddHTML = true;
 
     private Comparator<TaxonNodeDto> taxonNodeComparator;
+
+    //filter
+    private boolean isExcludeImportSources = true;
+    private boolean doFactualData = true;
 
     //metadata /gfbio
     private String description;
@@ -295,5 +298,12 @@ public class CdmLightExportConfigurator
     }
     public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistributionConfiguration) {
         this.condensedDistributionConfiguration = condensedDistributionConfiguration;
+    }
+
+    public boolean isDoFactualData() {
+        return doFactualData;
+    }
+    public void setDoFactualData(boolean doFactualData) {
+        this.doFactualData = doFactualData;
     }
 }

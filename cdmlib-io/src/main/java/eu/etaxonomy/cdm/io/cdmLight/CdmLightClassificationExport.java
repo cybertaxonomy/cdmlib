@@ -429,6 +429,9 @@ public class CdmLightClassificationExport
     }
 
     private void handleDescriptions(CdmLightExportState state, CdmBase cdmBase) {
+        if (!state.getConfig().isDoFactualData()) {
+            return;
+        }
         String titleCache = null;
         try {
 
