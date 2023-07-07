@@ -44,38 +44,12 @@ public class CdmLightExportConfigurator
     private CondensedDistributionConfiguration condensedDistributionConfiguration = CondensedDistributionConfiguration.NewDefaultInstance();
     private boolean isExcludeImportSources = true;
     private boolean isShowAllNameRelationsInHomotypicGroup = false;
-    /**
-     * @return the isShowAllNameRelationsInHomotypicGroup
-     */
-    public boolean isShowAllNameRelationsInHomotypicGroup() {
-        return isShowAllNameRelationsInHomotypicGroup;
-    }
 
-    /**
-     * @param isShowAllNameRelationsInHomotypicGroup the isShowAllNameRelationsInHomotypicGroup to set
-     */
-    public void setShowAllNameRelationsInHomotypicGroup(boolean isShowAllNameRelationsInHomotypicGroup) {
-        this.isShowAllNameRelationsInHomotypicGroup = isShowAllNameRelationsInHomotypicGroup;
-    }
-
-    /**
-     * @return the isShowInverseNameRelationsInHomotypicGroup
-     */
-    public boolean isShowInverseNameRelationsInHomotypicGroup() {
-        return isShowInverseNameRelationsInHomotypicGroup;
-    }
-
-    /**
-     * @param isShowInverseNameRelationsInHomotypicGroup the isShowInverseNameRelationsInHomotypicGroup to set
-     */
-    public void setShowInverseNameRelationsInHomotypicGroup(boolean isShowInverseNameRelationsInHomotypicGroup) {
-        this.isShowInverseNameRelationsInHomotypicGroup = isShowInverseNameRelationsInHomotypicGroup;
-    }
     private boolean isShowInverseNameRelationsInHomotypicGroup = false;
 
     private boolean isAddHTML = true;
 
-    private Comparator<TaxonNodeDto> comparator;
+    private Comparator<TaxonNodeDto> taxonNodeComparator;
 
     //metadata /gfbio
     private String description;
@@ -91,6 +65,7 @@ public class CdmLightExportConfigurator
     private String keywords;
     private String licence;
 
+//************************* FACTORY ******************************/
 
     public static CdmLightExportConfigurator NewInstance(){
         CdmLightExportConfigurator result = new CdmLightExportConfigurator(null);
@@ -104,6 +79,8 @@ public class CdmLightExportConfigurator
         return result;
     }
 
+//************************ CONSTRUCTOR *******************************/
+
     //TODO AM: do we need the transformer parameter here?
     private CdmLightExportConfigurator(IExportTransformer transformer) {
         super(transformer);
@@ -111,6 +88,7 @@ public class CdmLightExportConfigurator
         this.setTarget(TARGET.EXPORT_DATA);
         setUserFriendlyIOName("Cdm Light Export");
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -123,6 +101,28 @@ public class CdmLightExportConfigurator
     @Override
     public CdmLightExportState getNewState() {
         return new CdmLightExportState(this);
+    }
+
+    @Override
+    public String getDestinationNameString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+//******************** GETTER / SETTER *******************************/
+
+    public boolean isShowAllNameRelationsInHomotypicGroup() {
+        return isShowAllNameRelationsInHomotypicGroup;
+    }
+    public void setShowAllNameRelationsInHomotypicGroup(boolean isShowAllNameRelationsInHomotypicGroup) {
+        this.isShowAllNameRelationsInHomotypicGroup = isShowAllNameRelationsInHomotypicGroup;
+    }
+
+    public boolean isShowInverseNameRelationsInHomotypicGroup() {
+        return isShowInverseNameRelationsInHomotypicGroup;
+    }
+    public void setShowInverseNameRelationsInHomotypicGroup(boolean isShowInverseNameRelationsInHomotypicGroup) {
+        this.isShowInverseNameRelationsInHomotypicGroup = isShowInverseNameRelationsInHomotypicGroup;
     }
 
     public String getEncoding() {
@@ -158,12 +158,6 @@ public class CdmLightExportConfigurator
     }
     public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
         this.csvIOConfig.setFieldsTerminatedBy(fieldsTerminatedBy);
-    }
-
-    @Override
-    public String getDestinationNameString() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public String getDescription() {
@@ -250,7 +244,6 @@ public class CdmLightExportConfigurator
         this.licence = licence;
     }
 
-
     public boolean isHighLightPrimaryCollector() {
         return isHighlightPrimaryCollector;
     }
@@ -269,11 +262,11 @@ public class CdmLightExportConfigurator
         this.isFilterIntextReferences = isRemoveIntextReferences;
     }
 
-    public Comparator<TaxonNodeDto> getComparator() {
-        return comparator;
+    public Comparator<TaxonNodeDto> getTaxonNodeComparator() {
+        return taxonNodeComparator;
     }
-    public void setComparator(Comparator<TaxonNodeDto> comparator) {
-        this.comparator = comparator;
+    public void setTaxonNodeComparator(Comparator<TaxonNodeDto> taxonNodeComparator) {
+        this.taxonNodeComparator = taxonNodeComparator;
     }
 
     public boolean isExcludeImportSources() {

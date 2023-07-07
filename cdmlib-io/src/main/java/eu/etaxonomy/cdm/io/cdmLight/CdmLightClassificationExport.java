@@ -164,7 +164,7 @@ public class CdmLightClassificationExport
             if (state.getRootId() != null) {
                 List<TaxonNodeDto> childrenOfRoot = state.getNodeChildrenMap().get(state.getRootId());
 
-                Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
+                Comparator<TaxonNodeDto> comp = state.getConfig().getTaxonNodeComparator();
                 if (comp == null) {
                     comp = new TaxonNodeDtoByRankAndNameComparator();
                 }
@@ -221,7 +221,7 @@ public class CdmLightClassificationExport
         if (children == null) {
             return null;
         }
-        Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
+        Comparator<TaxonNodeDto> comp = state.getConfig().getTaxonNodeComparator();
         if (comp == null) {
             comp = new TaxonNodeDtoByRankAndNameComparator();
         }

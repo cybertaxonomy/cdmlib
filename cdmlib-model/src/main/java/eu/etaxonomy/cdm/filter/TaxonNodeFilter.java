@@ -41,7 +41,6 @@ public class TaxonNodeFilter implements Serializable{
     private LogicFilter<Rank> rankMax = null;
 
     private List<LogicFilter<NamedArea>> areaFilter = new ArrayList<>();
-
     private List<LogicFilter<PresenceAbsenceTerm>> distributionStatusFilter = new ArrayList<>();
 
     private boolean includeRootNodes = false;
@@ -389,5 +388,4 @@ public class TaxonNodeFilter implements Serializable{
                 + areaFilter + ", distributionStatusFilter=" + distributionStatusFilter + ", includeRootNodes="
                 + includeRootNodes + ", includeUnpublished=" + includeUnpublished + ", orderBy=" + orderBy + "]";
     }
-
 }

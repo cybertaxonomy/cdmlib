@@ -30,6 +30,7 @@ public class TaggedText implements Serializable{
 	private TagEnum type;
 	private TypedEntityReference<?> entityReference;
 
+//******************** FACTORY ******************************/
 
 	public static TaggedText NewWhitespaceInstance(){
 		return new TaggedText(TagEnum.separator, " ");
@@ -53,6 +54,7 @@ public class TaggedText implements Serializable{
 	    return new TaggedText(type, text);
 	}
 
+//************************** CONSTRUCTOR ********************************/
 
     public TaggedText() {
 		super();
@@ -68,6 +70,8 @@ public class TaggedText implements Serializable{
 	public TaggedText(TagEnum type, String text) {
 		this(type, text, null);
 	}
+
+//*************** GETTER / SETTER ***************************/
 
     public String getText() {
         return text;
@@ -145,7 +149,4 @@ public class TaggedText implements Serializable{
 			return result;
 		}
 	}
-
-
-
 }
