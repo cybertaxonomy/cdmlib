@@ -1186,6 +1186,9 @@ public class PortalDtoLoader {
     }
 
     private static SourceDto makeSource(OriginalSourceBase source) {
+        if (source == null) {
+            return null;
+        }
         SourceDto sourceDto = new SourceDto();
         loadSource(source, sourceDto);
         return sourceDto;
