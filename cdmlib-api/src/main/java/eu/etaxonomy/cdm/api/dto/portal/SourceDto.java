@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -22,7 +21,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class SourceDto extends CdmBaseDto {  //but could be annotatable
 
-    private List<TypedLabel> label = new ArrayList<>();
+    private String label;
     private UUID linkedUuid;
     private String linkedClass;
     private String originalInfo;
@@ -40,14 +39,11 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
 
 //************* GETTER/SETTER ***********************/
 
-    public List<TypedLabel> getLabel() {
+    public String getLabel() {
         return label;
     }
-    public void addLabel(TypedLabel label) {
-        if (this.label == null) {
-            this.label = new ArrayList<>();
-        }
-        this.label.add(label);
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public UUID getLinkedUuid() {

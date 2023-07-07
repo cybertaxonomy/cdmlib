@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.api.service.portal.PortalDtoLoader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.TreeNode;
-import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -741,8 +740,7 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
                 sb.append("{");
                 if (date.getSources() != null) {
                     for (SourceDto source : date.getSources().getItems()) {
-                        List<TypedLabel> typedLabel = source.getLabel();
-                        String label = typedLabel.get(0).getLabel();
+                        String label = source.getLabel();
                         sb.append(label);
                     }
                 }
