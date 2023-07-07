@@ -1225,8 +1225,8 @@ public class PortalDtoLoader {
         //TODO this probably does not use specimen or cdmSource if necessary,
         //     also long citation is still preliminary
         String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(source);
-//        TaggedText taggedLabel = TaggedText.NewInstance(TagEnum., label);
-        sourceDto.setLabel(label);
+        TypedLabel typedLabel = new TypedLabel(source, label);
+        sourceDto.addLabel(typedLabel);
         sourceDto.setType(source.getType() != null ? source.getType().toString() : null);
 
         if (source.isInstanceOf(NamedSourceBase.class)) {
