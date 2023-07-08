@@ -441,18 +441,20 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		NamedArea namedArea = state.getNamedArea(uuid);
 		if (namedArea == null){
 			DefinedTermBase<?> term = getTermService().find(uuid);
-			namedArea = CdmBase.deproxy(term,NamedArea.class);
+			namedArea = CdmBase.deproxy(term, NamedArea.class);
             if (namedArea == null && text == null && label == null && labelAbbrev == null){
                 return null;
             }
 
-			if (vocabularyPreference == null){
-				vocabularyPreference =  new ArrayList<>();
-			}
-			if (vocabularyPreference.isEmpty()){  //add TDWG vocabulary if preferences are empty
-				vocabularyPreference.add(Country.GERMANY().getVocabulary());
-				vocabularyPreference.add(TdwgAreaProvider.getAreaByTdwgAbbreviation("GER").getVocabulary());
-			}
+            if (namedArea == null) {
+    			if (vocabularyPreference == null){
+    				vocabularyPreference =  new ArrayList<>();
+    			}
+    			if (vocabularyPreference.isEmpty()){  //add TDWG vocabulary if preferences are empty
+    				vocabularyPreference.add(Country.GERMANY().getVocabulary());
+    				vocabularyPreference.add(TdwgAreaProvider.getAreaByTdwgAbbreviation("GER").getVocabulary());
+    			}
+            }
 
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
