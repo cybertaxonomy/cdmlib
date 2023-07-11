@@ -503,6 +503,7 @@ public class DescriptionServiceImpl
                                 elementBase.addStateData(newStateData);
                             }
                             desc.addElement(elementBase);
+                            elementBase.setNoDataStatus(((CategoricalDataDto)descElement).getNoDataStatus());
                         }
                         if (descElement instanceof QuantitativeDataDto){
 
@@ -526,6 +527,7 @@ public class DescriptionServiceImpl
                             data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
                                     MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
                             desc.addElement(data);
+                            data.setNoDataStatus(((QuantitativeDataDto)descElement).getNoDataStatus());
                         }
 
                         //create new element
@@ -537,7 +539,7 @@ public class DescriptionServiceImpl
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
 
                             data.getStateData().clear();
-                            if (stateDtos.isEmpty()){
+                            if (stateDtos.isEmpty() && ((CategoricalDataDto)descElement).getNoDataStatus() == null){
                                 desc.removeElement(data);
                             }else{
                                 for (StateDataDto dataDto: stateDtos){
@@ -545,6 +547,8 @@ public class DescriptionServiceImpl
                                     StateData newStateData = StateData.NewInstance(newState);
                                     data.addStateData(newStateData);
                                 }
+
+                                data.setNoDataStatus(((CategoricalDataDto)descElement).getNoDataStatus());
                             }
                         }else if (elementBase.isInstanceOf(QuantitativeData.class)){
                             QuantitativeData data = HibernateProxyHelper.deproxy(elementBase, QuantitativeData.class);
@@ -558,7 +562,7 @@ public class DescriptionServiceImpl
                             }
                             Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
                             data.getStatisticalValues().clear();
-                            if (valueDtos.isEmpty()){
+                            if (valueDtos.isEmpty() && ((QuantitativeDataDto)descElement).getNoDataStatus() == null){
                                 desc.removeElement(data);
                             }else{
                                 for (StatisticalMeasurementValueDto dataDto: valueDtos){
@@ -573,6 +577,7 @@ public class DescriptionServiceImpl
     //                            data.getStatisticalValues().addAll(statisticalValues);
                                 data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
                                         MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
+                                data.setNoDataStatus(((QuantitativeDataDto)descElement).getNoDataStatus());
                             }
 
                         }
