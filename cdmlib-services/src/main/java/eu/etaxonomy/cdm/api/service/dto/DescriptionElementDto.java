@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 
 /**
@@ -25,6 +26,7 @@ public class DescriptionElementDto implements Serializable {
 
     private FeatureDto featureDto;
     private UUID elementUuid;
+    private NoDescriptiveDataStatus noDataStatus;
 
     public DescriptionElementDto(FeatureDto feature){
         this.setFeatureDto(feature);
@@ -34,10 +36,11 @@ public class DescriptionElementDto implements Serializable {
         this.setFeatureDto(feature);
     }
 
-    public DescriptionElementDto(UUID elementUuid, FeatureDto feature){
+    public DescriptionElementDto(UUID elementUuid, FeatureDto feature, NoDescriptiveDataStatus noDataStatus){
 
         this.setFeatureDto(feature);
         setElementUuid(elementUuid);
+        this.noDataStatus = noDataStatus;
     }
 
     public FeatureDto getFeatureDto() {
@@ -64,6 +67,18 @@ public class DescriptionElementDto implements Serializable {
     public void setElementUuid(UUID elementUuid) {
         this.elementUuid = elementUuid;
     }
+    /**
+     * @return the noDataStatus
+     */
+    public NoDescriptiveDataStatus getNoDataStatus() {
+        return noDataStatus;
+    }
 
+    /**
+     * @param noDataStatus the noDataStatus to set
+     */
+    public void setNoDataStatus(NoDescriptiveDataStatus noDataStatus) {
+        this.noDataStatus = noDataStatus;
+    }
 
 }
