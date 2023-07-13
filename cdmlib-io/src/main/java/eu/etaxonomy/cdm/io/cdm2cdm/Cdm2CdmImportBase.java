@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -84,6 +85,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -110,6 +112,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -427,13 +430,58 @@ public abstract class Cdm2CdmImportBase
             throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         taxon = CdmBase.deproxy(taxon);
+        Distribution endemismDistribution = getEndemism(taxon, state);
+
         Function<TaxonDescription,Boolean> filterFunction = null;
         if (state.getConfig().isIgnoreComputedDescriptions()) {
             filterFunction = td->td.getTypes().stream().anyMatch(t->t.isKindOf(DescriptionType.COMPUTED));
         }
         handleCollection(taxon, Taxon.class, "descriptions", TaxonDescription.class, filterFunction, state);
         filterEmptyDescriptions(taxon, state);
+        handleEndemism(taxon, endemismDistribution);
+
         return taxon.getDescriptions();
+    }
+
+    private Distribution getEndemism(Taxon taxon, Cdm2CdmImportState state) {
+        Distribution endemismDistribution = null;
+        if (state.getConfig().getEndemismHandler() != null){
+            UUID uuidEndemicArea = state.getConfig().getUuidEndemicRelevantArea();
+            NamedArea endemicArea = this.getNamedArea(state, uuidEndemicArea);
+            PresenceAbsenceTerm endemic = this.getPresenceTerm(state, PresenceAbsenceTerm.uuidEndemic);
+            PresenceAbsenceTerm notEndemic = this.getPresenceTerm(state, PresenceAbsenceTerm.uuidNotEndemic);
+            PresenceAbsenceTerm unknownEndemic = this.getPresenceTerm(state, PresenceAbsenceTerm.uuidUnknownEndemism);
+            DefinedTermBase<?>[] params = new DefinedTermBase[5];
+            params[0] = endemicArea;
+            params[1] = endemic;
+            params[2] = notEndemic;
+            params[3] = unknownEndemic;
+            params[4] = this.getFeature(state, Feature.DISTRIBUTION().getUuid());
+
+            DoubleResult<Taxon,DefinedTermBase<?>[]> input = new DoubleResult<>(taxon, params);
+            endemismDistribution = state.getConfig().getEndemismHandler().apply(input);
+        }
+        return endemismDistribution;
+    }
+
+    //#10324
+    private void handleEndemism(Taxon taxon, Distribution endemismDistribution) {
+        if (endemismDistribution != null) {
+            Taxon newTaxon = taxon.getDescriptions().isEmpty()? null: taxon.getDescriptions().iterator().next().getTaxon();
+            if (newTaxon == null) {
+                newTaxon = CdmBase.deproxy(getTaxonService().find(taxon.getUuid()), Taxon.class);
+                if (newTaxon == null) {
+                    logger.error("Taxon for endemism does not exist yet at all: " + taxon.getTitleCache());
+                }else if (!newTaxon.getName().getRank().isHigherOrEqualTo(RankClass.Genus)) {
+                    logger.warn("Taxon has no description yet: " + newTaxon.getName().getTitleCache());
+                }
+            }else {
+                TaxonDescription td = TaxonDescription.NewInstance(newTaxon);
+                td.addElement(endemismDistribution);
+                td.setTitleCache("Endemism computed from Euro+Med", true);
+                taxon.getDescriptions().add(td);
+            }
+        }
     }
 
     protected boolean doDescriptions(@SuppressWarnings("unused") Cdm2CdmImportState state) {

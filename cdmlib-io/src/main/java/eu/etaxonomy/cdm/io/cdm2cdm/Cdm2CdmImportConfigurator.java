@@ -12,8 +12,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -21,7 +23,10 @@ import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.io.common.ITaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * Configuration base class for Cdm2Cdm migration.
@@ -55,6 +60,9 @@ public  class Cdm2CdmImportConfigurator
     private Set<UUID> commonNameLanguageFilter;
     private boolean ignoreComputedDescriptions = true;
     private boolean addAncestors = false;
+
+    private Function<DoubleResult<Taxon,DefinedTermBase<?>[]>,Distribution> endemismHandler;
+    private UUID uuidEndemicRelevantArea;
 
     /**
      * If descriptions are empty, e.g. as all elements were filtered, remove them.
@@ -269,5 +277,20 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setAddAncestors(boolean addAncestors) {
         this.addAncestors = addAncestors;
+    }
+
+    public Function<DoubleResult<Taxon,DefinedTermBase<?>[]>,Distribution> getEndemismHandler() {
+        return endemismHandler;
+    }
+    public void setEndemismHandler(Function<DoubleResult<Taxon,DefinedTermBase<?>[]>,Distribution> endemismHandler) {
+        this.endemismHandler = endemismHandler;
+    }
+
+
+    public UUID getUuidEndemicRelevantArea() {
+        return uuidEndemicRelevantArea;
+    }
+    public void setUuidEndemicRelevantArea(UUID uuidEndemicRelevantArea) {
+        this.uuidEndemicRelevantArea = uuidEndemicRelevantArea;
     }
 }

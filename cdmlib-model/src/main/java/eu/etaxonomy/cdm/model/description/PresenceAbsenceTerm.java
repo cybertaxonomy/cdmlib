@@ -95,10 +95,10 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 	public static final UUID uuidIntroducedAdventitious = UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
 	public static final UUID uuidNaturalised = UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
 	private static final UUID uuidIntroducedCultiated = UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
-	private static final UUID uuidEndemic = UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
+	public static final UUID uuidEndemic = UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 
-	private static final UUID uuidNotEndemic = UUID.fromString("2fda5393-7423-4076-814c-1fa7678d7d33");
-	private static final UUID uuidUnknownEndemism = UUID.fromString("094aa2e4-8048-4086-aca1-2d671a05a86e");
+	public static final UUID uuidNotEndemic = UUID.fromString("2fda5393-7423-4076-814c-1fa7678d7d33");
+	public static final UUID uuidUnknownEndemism = UUID.fromString("094aa2e4-8048-4086-aca1-2d671a05a86e");
 
 	//	private static final UUID uuidNa=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
 	//invasive
