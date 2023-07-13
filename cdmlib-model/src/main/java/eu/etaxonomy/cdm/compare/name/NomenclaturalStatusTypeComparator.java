@@ -55,6 +55,7 @@ public class NomenclaturalStatusTypeComparator implements
                 return 1;
             }
         } catch (LazyInitializationException e) {
+//            e.printStackTrace();
             logger.warn("LazyInitializationException during compare of nomenclatural status types");
         }
         //no natural order exist, use uuid to have a defined order at least
