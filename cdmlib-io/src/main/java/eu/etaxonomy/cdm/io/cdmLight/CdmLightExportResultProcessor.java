@@ -95,7 +95,7 @@ public class CdmLightExportResultProcessor {
             state.setNodeChildrenMap(new HashMap<>());
             //Replace quotes by double quotes
             for (CdmLightExportTable table: result.keySet()){
-                //schreibe jede Tabelle in einen Stream...
+                //write each table in an explicite stream ...
                 Map<String, String[]> tableData = result.get(table);
                 CdmLightExportConfigurator config = state.getConfig();
                 ByteArrayOutputStream exportStream = new ByteArrayOutputStream();
@@ -114,12 +114,12 @@ public class CdmLightExportResultProcessor {
                             data.add(lineString);
                         }
                     }
-                    if (data.size() == 1){
+                    if (data.size() == 1){      //header only
                         String[] csvLine = new String[table.getSize()];
-                        csvLine[0] = "DUMMY1";
+                        csvLine[0] = "DUMMY1,Table is empty – dummy records present for technical reasons";
                         data.add(createCsvLine(config, csvLine));
 
-                        csvLine[0] = "DUMMY2";
+                        csvLine[0] = "DUMMY2,Table is empty – dummy records present for technical reasons";
                         data.add(createCsvLine(config, csvLine));
                     }
                     IOUtils.writeLines(data,
