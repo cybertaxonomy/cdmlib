@@ -43,6 +43,8 @@ public class TaxonNodeFilter implements Serializable{
     private List<LogicFilter<NamedArea>> areaFilter = new ArrayList<>();
     private List<LogicFilter<PresenceAbsenceTerm>> distributionStatusFilter = new ArrayList<>();
 
+    private boolean includeAbsentDistributions = false;
+
     private boolean includeRootNodes = false;
 
     private boolean includeUnpublished = false;
@@ -377,6 +379,14 @@ public class TaxonNodeFilter implements Serializable{
     }
     public void setOrder(ORDER orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public boolean isIncludeAbsentDistributions() {
+        return includeAbsentDistributions;
+    }
+
+    public void setIncludeAbsentDistributions(boolean includeAbsentDistributions) {
+        this.includeAbsentDistributions = includeAbsentDistributions;
     }
 
 // ************************** toString *********************************/

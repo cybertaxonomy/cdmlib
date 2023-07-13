@@ -149,10 +149,13 @@ public class TaxonNodeFilterDaoHibernateImpl
             areaIds = getChildAreasRecursively(singleFilter.getUuid());
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
             result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
-                    + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s)))"
-                    + " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = %s " ,
-                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds),
-                    HQL_FALSE);
+                    + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s))",
+                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds)
+                    );
+            if (!filter.isIncludeAbsentDistributions()) {
+                result +=  " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = " + HQL_FALSE;
+            }
+            result += ")";
             isFirst = false;
         }
         return result;
