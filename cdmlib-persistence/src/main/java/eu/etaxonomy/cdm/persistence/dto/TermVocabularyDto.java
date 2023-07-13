@@ -50,12 +50,6 @@ public class TermVocabularyDto extends TermCollectionDto {
         return dtos;
     }
 
-    /**
-     * @param dtos
-     * @param dtoMap
-     * @param elements
-     * @param uuid
-     */
     protected static void extractedVocabularies(List<TermCollectionDto> dtos, Map<UUID, TermCollectionDto> dtoMap, Object[] elements) {
         UUID uuid = (UUID)elements[0];
 
@@ -82,7 +76,7 @@ public class TermVocabularyDto extends TermCollectionDto {
 
             if (elements[7] != null) {
                 ExternallyManaged ext = (ExternallyManaged)elements[7];
-                if (ext != null && ext.getAuthorityType() != null && ext.getAuthorityType().equals(AuthorityType.EXTERN)) {
+                if (ext != null && AuthorityType.EXTERN.equals(ext.getAuthorityType())) {
                     termVocDto.setManaged(true);
                 }
             }
