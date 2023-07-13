@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -35,17 +36,22 @@ public class NonReferencedObjectsDeleter extends CdmImportBase<NonReferencedObje
     @Override
 	protected void doInvoke(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state) {
 
+        doTaxonNames(state);
         doReferences(state);
         doTeams(state);
         doPersons(state);
 	}
 
     private void doPersons(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state) {
-        doAgents(state, Person.class, "Peson");
+        if (state.getConfig().isDoAuthors()){
+            doAgents(state, Person.class, "Person");
+        }
     }
 
     private void doTeams(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state) {
-        doAgents(state, Team.class, "Team");
+        if (state.getConfig().isDoAuthors()){
+            doAgents(state, Team.class, "Team");
+        }
     }
 
     private void doAgents(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state, Class<? extends TeamOrPersonBase<?>> clazz, String label) {
@@ -67,11 +73,12 @@ public class NonReferencedObjectsDeleter extends CdmImportBase<NonReferencedObje
                         System.out.println("Deleted: " + author.getTitleCache() + "; id = " + author.getId());
                     }
                 }else{
+                    deleted++;
                     System.out.println(label + " to delete: " + author.getTitleCache() + "; id = " + author.getId());
                 }
             }
         }
-        System.out.println(deleted + " authors are deleted.");
+        System.out.println(deleted + " " + label + "s are deleted.");
     }
 
 
@@ -101,9 +108,10 @@ public class NonReferencedObjectsDeleter extends CdmImportBase<NonReferencedObje
                                 result = null;
                             }else{
                                 deleted++;
-                                //System.out.println("Deleted: " + ref.getTitleCache() + "; id = " + ref.getId());
+                                System.out.println("Deleted: " + ref.getTitleCache() + "; id = " + ref.getId());
                             }
                         }else{
+                            deleted++;
                             System.out.println(label + " to delete: " + ref.getTitleCache() + "; id = " + ref.getId());
                         }
                     }
@@ -144,6 +152,46 @@ public class NonReferencedObjectsDeleter extends CdmImportBase<NonReferencedObje
         List<OrderHint> orderHint = new ArrayList<>();
         orderHint.add(OrderHint.ORDER_BY_ID);
         return orderHint;
+    }
+
+
+    private void doTaxonNames(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state) {
+        String label = "taxon names";
+        if (state.getConfig().isDoTaxonNames()){
+            List<String> propertyPath = new ArrayList<>();
+//            propertyPath.add("sources.citation");
+//            propertyPath.add("createdBy");
+
+            List<TaxonName> taxonNames =getNameService().list(TaxonName.class, null, null, getOrderHint(), propertyPath);
+
+            int deleted = 0;
+            System.out.println("There are " + taxonNames.size() + " " + label + "s");
+            for (TaxonName name: taxonNames){
+                long refObjects = getCommonService().getReferencingObjectsCount(name);
+                if (refObjects == 0) {
+//                    if (isIgnore(state, name)){
+//                        System.out.println("Ignore: " + ref.getId() + "\t" + ref.getType() + "\t" +ref.getTitleCache() + "\t" + ref.getCreated()+ "\t" +
+//                                (ref.getCreatedBy() == null? "" : ref.getCreatedBy().getUsername()) + "\t" +
+//                                ref.getUpdated() + "\t" +  getSources(ref));
+//                    }else{
+                        if (!state.getConfig().isDoOnlyReport()){
+                            DeleteResult result = getNameService().delete(name);
+                            if (!result.isOk()){
+                                System.out.println(label + " " + name.getTitleCache() + " with id " + name.getId() + " could not be deleted.");
+                                result = null;
+                            }else{
+                                deleted++;
+                                //System.out.println("Deleted: " + ref.getTitleCache() + "; id = " + ref.getId());
+                            }
+                        }else{
+                            deleted++;
+                            System.out.println(label + " to delete: " + name.getTitleCache() + "; id = " + name.getId());
+                        }
+//                    }
+                }
+            }
+            System.out.println(deleted + " " + label + "s are deleted.");
+        }
     }
 
     @Override
