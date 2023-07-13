@@ -622,7 +622,10 @@ public abstract class Cdm2CdmImportBase
         handleCollection(result, TaxonName.class, "registrations", Registration.class, state);
         handleCollection(result, TaxonName.class, "typeDesignations", TypeDesignationBase.class, state);
 
-        handleCollection(result, TaxonName.class, "taxonBases", TaxonBase.class, state);
+        //do not propagate taxa from names
+        @SuppressWarnings("rawtypes")
+        Function<TaxonBase,Boolean> keepEmpty = tn->{return true;};
+        handleCollection(result, TaxonName.class, "taxonBases", TaxonBase.class, keepEmpty, state);
 
         return result;
     }
