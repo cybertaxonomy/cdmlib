@@ -634,6 +634,4 @@ public interface INameService
      * Checks whether the name can be deleted if the taxon with taxonUuid will be deleted, too
      */
     public DeleteResult isDeletable(UUID nameUuid, DeleteConfiguratorBase config, UUID taxonUuid);
-
-    public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName, Integer maxDistanceGenus, Integer maxDisEpith);
 }

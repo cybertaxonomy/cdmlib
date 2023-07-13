@@ -589,43 +589,5 @@ public class CdmUtils {
     public static boolean isNullSafeEmpty(Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }
-    
-    public static int modifiedDamerauLevenshteinDistance(String str1, String str2) {
-		if (str1 == str2) {
-			return 0;
-		} else if (str1.isEmpty()) {
-			return str2.length();
-		} else if (str2.isEmpty()) {
-			return str1.length();
-		} else if (str2.length() == 1 && str1.length() == 1 && str1 != str2) {
-			return 1;
-		} else {
-
-			int[][] distanceMatrix = new int[str1.length() + 1][str2.length() + 1];
-
-			for (int i = 0; i <= str1.length(); i++) {
-				distanceMatrix[i][0] = i;
-			}
-
-			for (int j = 0; j <= str2.length(); j++) {
-				distanceMatrix[0][j] = j;
-			}
-
-			for (int i = 1; i <= str1.length(); i++) {
-				for (int j = 1; j <= str2.length(); j++) {
-					int cost = (str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0 : 1;
-					distanceMatrix[i][j] = Math.min(
-							Math.min(distanceMatrix[i - 1][j] + 1, distanceMatrix[i][j - 1] + 1),
-							distanceMatrix[i - 1][j - 1] + cost);
-
-					if (i > 1 && j > 1 && str1.charAt(i - 1) == str2.charAt(j - 2)
-							&& str1.charAt(i - 2) == str2.charAt(j - 1)) {
-						distanceMatrix[i][j] = Math.min(distanceMatrix[i][j], distanceMatrix[i - 2][j - 2] + cost);
-					}
-				}
-			}
-			return distanceMatrix[str1.length()][str2.length()];
-		}
-	}
 
 }
