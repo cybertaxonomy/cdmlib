@@ -3,7 +3,6 @@
 LSID SOAP Binding Standard for the LSIDDataServicePortType, 
 and the LSIDMetadataServicePortType, 
 
-
 Jordi Albornoz and Ben Szekely
 16 October 2003 - Initial Draft
 17 October 2003 - Added metadata subset binding
@@ -96,5 +95,4 @@ Jordi Albornoz and Ben Szekely
 			</output>
 		</operation>
 	</binding>
-		
 </definitions>
