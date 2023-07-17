@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.common.NameMatchingUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
+import eu.etaxonomy.cdm.common.NameMatchingUtils;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -31,14 +31,14 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 @Service
 @Transactional(readOnly = true)
-public class NameMatchingServiceImpl 
-//			extends IdentifiableServiceBase<TaxonName,ITaxonNameDao> 
+public class NameMatchingServiceImpl
+//			extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
 			implements INameMatchingService {
 
     @Autowired
     // @Qualifier("defaultBeanInitializer")
     protected IBeanInitializer defaultBeanInitializer;
-    
+
     @Autowired
     private ITaxonNameDao nameDao;
 
@@ -53,11 +53,12 @@ public class NameMatchingServiceImpl
      * see also https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0107510
      */
     //TODO work in progress
+    @Override
     public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName,
             Integer maxDisGenus, Integer maxDisEpith) {
-    	
-    	// only one (total) distance should be used. 
-    	
+
+    	// only one (total) distance should be used.
+
         if (maxDisGenus == null) {
             maxDisGenus = 4;
         }
@@ -70,7 +71,7 @@ public class NameMatchingServiceImpl
         //0. Parsing and Normalizing
 
 //      TODO? Remove all qualifiers such as cf., aff., ?, <i>, x, etc. from the whole input string
-//        taxonName=CdmUtilsBelen.removeExtraElements(taxonName); 
+//        taxonName=CdmUtilsBelen.removeExtraElements(taxonName);
 //        taxonName=CdmUtilsBelen.removeHTMLAmpersand(taxonName);
 
         TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
@@ -84,13 +85,12 @@ public class NameMatchingServiceImpl
 
         String normalizedGenusQuery = NameMatchingUtils.normalize(genusQuery);
 
-        //* phonetic normalization of query (genus)
-        /* this method corresponds to the near match function of Rees 2007
+       /* phonetic normalization of query (genus)
+        * this method corresponds to the near match function of Rees 2007
         * it includes phonetic matches (replace initial characters, soundalike changes, gender endings)
         */
 
         String phoneticNormalizedGenusQuery = NameMatchingUtils.nearMatch(normalizedGenusQuery);
-
 
         //1. Genus pre-filter
 
@@ -134,7 +134,7 @@ public class NameMatchingServiceImpl
             String phoneticNormalizedEpithetQuery = NameMatchingUtils.nearMatch(normalizedEphitetQuery);
 
             // 4. epithet pre-filter
-            
+
             fullTaxonNamePartsList = prefilterEpithet(fullTaxonNamePartsList, normalizedEphitetQuery);
 
             List <DoubleResult<TaxonNameParts, Integer>> epithetList = new ArrayList<>();
@@ -204,7 +204,7 @@ public class NameMatchingServiceImpl
         }
 
         // Create temp names with common leading characters removed.
-        
+
         tempQueryName = queryName.substring(i);
         tempDBName = dbName.substring(i);
 
@@ -229,7 +229,7 @@ public class NameMatchingServiceImpl
             return shortenedQueryName +" "+ shortenedDBName;
         }
     }
-    
+
     private int nameMatchingComputeDistance(String strQuery, String strDB) {
         int computedDistanceTemp;
         String trimmedStrings = trimCommonChar(strQuery, strDB);
@@ -243,7 +243,7 @@ public class NameMatchingServiceImpl
         }
         return computedDistanceTemp;
     }
-    
+
     /**
      * Compares the first (or last if backwards = true) number of characters
      * of the 2 strings.
@@ -257,7 +257,7 @@ public class NameMatchingServiceImpl
             return str1.substring((str1.length()-count),str1.length()).equals(str2.substring((str2.length()-count),str2.length()));
         }
     }
-    
+
     private List<String> prefilterGenus(String genusQuery) {
 
         List<String> genusResultList = new ArrayList <>();
@@ -266,7 +266,10 @@ public class NameMatchingServiceImpl
         String initial= "*";
         List<String> genusListDB = nameDao.distinctGenusOrUninomial(initial, null, null);
 
-        // TODO implement rule 1a
+       /* The genus portion of the input name and the genus portion of the target name are
+        * a phonetic match, as indicated by the ‘Rees 2007 near match’ algorithm
+        */
+
         for (String genusDB: genusListDB) {
             //TODO
             //if phonetic match add to result
@@ -329,7 +332,7 @@ public class NameMatchingServiceImpl
             }
         }
     }
-    
+
 	private List<DoubleResult<TaxonNameParts, Integer>> prefilterEpithet(
 			List<DoubleResult<TaxonNameParts, Integer>> fullTaxonNamePartsList, String normalizedEphitetQuery) {
 		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsListTemp = new ArrayList<>();
@@ -348,7 +351,7 @@ public class NameMatchingServiceImpl
 		int epithetQueryLength=epithetQuery.length();
 		int epithetDBLength=epithetInDB.length();
 		int halfLength=Math.max(epithetDBLength,epithetQueryLength)/2;
-		
+
 		if (totalDist <= maxDisEpith) {
 			epithetList.add(part);
 		}else if (halfLength<maxDisEpith) {
@@ -360,9 +363,9 @@ public class NameMatchingServiceImpl
 			}
 		}
 	}
-	
-	//checken!!! 
-    
+
+	//checken!!!
+
     public static List <DoubleResult<TaxonNameParts, Integer>> exactResults (List <DoubleResult<TaxonNameParts, Integer>> list){
         List <DoubleResult<TaxonNameParts, Integer>> exactResults = new ArrayList<>();
         for (DoubleResult<TaxonNameParts, Integer> best:list) {
@@ -381,5 +384,5 @@ public class NameMatchingServiceImpl
             }
         }
         return bestResults;
-    } 
+    }
 }
