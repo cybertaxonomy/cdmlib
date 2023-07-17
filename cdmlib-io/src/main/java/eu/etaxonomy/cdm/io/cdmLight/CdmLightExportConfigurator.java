@@ -21,9 +21,10 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
+ * The configurator for the CDM light export.
+ *
  * @author k.luther
  * @since 15.03.2017
- *
  */
 public class CdmLightExportConfigurator
         extends ExportConfiguratorBase<CdmLightExportState, IExportTransformer, File>{

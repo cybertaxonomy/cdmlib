@@ -112,6 +112,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
+ * The export exporting a classification or a taxonomic subtree into CDM light.
+ *
  * @author k.luther
  * @since 15.03.2017
  */

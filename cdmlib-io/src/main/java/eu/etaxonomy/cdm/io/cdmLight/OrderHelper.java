@@ -18,14 +18,17 @@ import java.util.UUID;
  */
 public class OrderHelper {
 
-    int orderIndex;
-    UUID taxonUuid;
-    List<OrderHelper> children;
+    private int orderIndex;
+    private UUID taxonUuid;
+    private List<OrderHelper> children;
+
+//*********************** CONSTRUCTOR ***********************/
 
     public OrderHelper(UUID uuid){
-
         this.taxonUuid = uuid;
     }
+
+//********************** GETTER / SETTER **************************/
 
     public int getOrderIndex() {
         return orderIndex;

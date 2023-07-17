@@ -28,6 +28,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
+ * The state for the CDM light export.
+ *
  * @author k.luther
  * @since 15.03.2017
  */
