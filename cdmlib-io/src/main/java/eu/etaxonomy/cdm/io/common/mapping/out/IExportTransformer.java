@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -18,7 +19,10 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
 
 /**
- * Interface for import and export transformer classes. Mainly to transform defined terms.
+ * Interface for export transformer classes. Mainly to transform defined terms and enumerations.
+ *
+ * @see IInputTransformer
+ *
  * @author a.mueller
  * @since 15.03.2010
  */
@@ -53,6 +57,4 @@ public interface IExportTransformer {
 
 	//Taxon status only needed for PESI export -> TODO refactor
 	public String getTaxonStatusCacheByKey(Integer taxonStatusId) throws UndefinedTransformerMethodException;
-
-
 }

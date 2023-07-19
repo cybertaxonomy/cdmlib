@@ -109,7 +109,7 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 	public static final UUID uuidNativePresenceQuestionable = UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
 	private static final UUID uuidCultivatedPresenceQuestionable = UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
 	private static final UUID uuidIntroducedPresenceQuestionable = UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
-	private static final UUID uuidEndedmicPresenceQuestionable = UUID.fromString("5f954f08-267a-4928-b073-12328f74c187");
+	private static final UUID uuidEndemicPresenceQuestionable = UUID.fromString("5f954f08-267a-4928-b073-12328f74c187");
 	//intr. naturalized questionable
 	private static final UUID uuidNaturalisedPresenceQuestionable = UUID.fromString("9e0b413b-5a68-4e5b-91f2-227b4f832466");
 	//natur. invasive questionable
@@ -294,7 +294,7 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
      * @see #NATIVE_PRESENCE_QUESTIONABLE()
      */
     public static final PresenceAbsenceTerm ENDEMIC_DOUBTFULLY_PRESENT(){
-        return getTermByUuid(uuidEndedmicPresenceQuestionable);
+        return getTermByUuid(uuidEndemicPresenceQuestionable);
     }
 
     /**

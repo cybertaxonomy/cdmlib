@@ -1193,7 +1193,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.PUBLICATION_TYPE)] = nomRef.getType().name();
                 if (nomRef.getVolume() != null) {
                     csvLine[table.getIndex(CdmLightExportTable.VOLUME_ISSUE)] = nomRef.getVolume();
-                    csvLine[table.getIndex(CdmLightExportTable.COLLATION)] = createCollatation(name);
+                    csvLine[table.getIndex(CdmLightExportTable.COLLATION)] = createCollation(name);
                 }
                 if (nomRef.getDatePublished() != null) {
                     csvLine[table.getIndex(CdmLightExportTable.DATE_PUBLISHED)] = nomRef.getTimePeriodPublishedString();
@@ -1215,7 +1215,7 @@ public class CdmLightClassificationExport
                     }
                     if (nomRef.getVolume() == null && inReference.getVolume() != null) {
                         csvLine[table.getIndex(CdmLightExportTable.VOLUME_ISSUE)] = inReference.getVolume();
-                        csvLine[table.getIndex(CdmLightExportTable.COLLATION)] = createCollatation(name);
+                        csvLine[table.getIndex(CdmLightExportTable.COLLATION)] = createCollation(name);
                     }
                     if (inReference.getInReference() != null) {
                         inReference = inReference.getInReference();
@@ -1572,7 +1572,7 @@ public class CdmLightClassificationExport
         }
     }
 
-    private String createCollatation(TaxonName name) {
+    private String createCollation(TaxonName name) {
         String collation = "";
         if (name.getNomenclaturalReference() != null) {
             Reference ref = name.getNomenclaturalReference();

@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.cdmLight.out;
+package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -36,8 +36,6 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.io.cdmLight.CdmLightExportConfigurator;
-import eu.etaxonomy.cdm.io.cdmLight.CdmLightExportTable;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -312,6 +310,8 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             }
         }
 
+        //this test only test the CDM-light export runs without throwing exception
+        //on the full sample data
         @Test
         @DataSets({
             @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -319,14 +319,16 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         })
         public void testFullSampleData(){
 
+            //create data
             commonService.createFullSampleData();
             commitAndStartNewTransaction();
 
-
+            //config+invoke
             CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
             config.setTarget(TARGET.EXPORT_DATA);
-
             ExportResult result = defaultExport.invoke(config);
+
+            //test exceptions
             testExceptionsErrorsWarnings(result);
         }
 

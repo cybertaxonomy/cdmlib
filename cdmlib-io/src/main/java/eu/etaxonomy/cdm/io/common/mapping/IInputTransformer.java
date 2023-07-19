@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -33,7 +34,10 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 
 /**
- * Interface for import and export transformer classes. Mainly to transform defined terms.
+ * Interface for import transformer classes. Mainly to transform defined terms.
+ *
+ * @see IExportTransformer
+ *
  * @author a.mueller
  * @since 15.03.2010
  */

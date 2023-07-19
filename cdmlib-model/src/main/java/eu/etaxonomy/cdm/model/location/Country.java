@@ -638,6 +638,7 @@ public class Country extends NamedArea {
 			newInstance.setUuid(UUID.fromString(csvLine.get(0)));
 			String uriStr = CdmUtils.Ne(csvLine.get(1));
 	        newInstance.setUri(uriStr == null? null: URI.create(uriStr));
+	        //TODO what is about Alpha-3 code in column 2, it is fully missing here
 			String label = csvLine.get(3).trim();
 			String text = csvLine.get(4).trim();
 			String abbreviatedLabel = csvLine.get(5);

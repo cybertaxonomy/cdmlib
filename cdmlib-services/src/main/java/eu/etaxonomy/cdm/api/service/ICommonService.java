@@ -329,7 +329,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 
 	/**
 	 * Fills more or less all tables of a database with some data.
-	 * Preliminary, may be moved to test later
+	 * Preliminary, may be moved to test later.
 	 *
 	 * @deprecated for internal use only
 	 */

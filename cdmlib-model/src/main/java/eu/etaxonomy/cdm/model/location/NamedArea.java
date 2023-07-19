@@ -134,12 +134,10 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
 	public static final NamedArea REDSEA () { return waterbodyMap.get(uuidRedSea );}
 	public static final NamedArea PERSIANGULF () { return waterbodyMap.get(uuidPersianGulf );}
 
-
 //************************* FACTORY METHODS ****************************************/
 
     /**
      * Factory method
-     * @return
      */
     public static NamedArea NewInstance(){
         return new NamedArea();

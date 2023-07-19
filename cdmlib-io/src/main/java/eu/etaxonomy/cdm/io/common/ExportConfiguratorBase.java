@@ -61,38 +61,27 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 
 	abstract protected void makeIoClassList();
 
-
 	@Override
     public TRANSFORM getTransformer() {
 		return transformer;
 	}
-
 	@Override
     public void setTransformer(TRANSFORM transformer) {
 		this.transformer = transformer;
 	}
 
-
 	@Override
     public ICdmDataSource getSource() {
 		return source;
 	}
-
 	@Override
     public void setSource(ICdmDataSource source) {
 		this.source = source;
 	}
 
-	/**
-	 * @param source the source to get
-	 */
 	public DEST getDestination() {
 		return destination;
 	}
-
-	/**
-	 * @param source the source to set
-	 */
 	public void setDestination(DEST destination) {
 		this.destination = destination;
 	}
@@ -118,7 +107,6 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
     public CHECK getCheck() {
 		return this.check;
 	}
-
 	public void setCheck(CHECK check) {
 		this.check = check;
 	}
@@ -127,16 +115,14 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	public TARGET getTarget() {
 	    return this.target;
 	}
-
 	@Override
 	public void setTarget(TARGET target) {
 	    this.target = target;
 	}
 
-
 	/**
-	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.
-	 * @return
+	 * Returns a new instance of <code>CdmApplicationController</code>
+	 * created by the values of this configuration.
 	 */
 	public ICdmRepository getNewCdmAppController(){
 		return getCdmAppController(true, false);
@@ -146,18 +132,15 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
 	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
 	 * been created before a new controller is returned.
-	 * @return
 	 */
 	public ICdmRepository getCdmAppController(boolean createNew){
 		return getCdmAppController(createNew, false);
 	}
 
-
 	/**
 	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
 	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
 	 * been created before a new controller is returned.
-	 * @return
 	 */
 	public ICdmRepository getCdmAppController(boolean createNew, boolean omitTermLoading){
 		if (cdmApp == null || createNew == true){
@@ -166,10 +149,6 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 		return cdmApp;
 	}
 
-
-	/**
-	 * @return
-	 */
 	@Override
     public boolean isValid(){
 		boolean result = true;
@@ -203,5 +182,4 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
     public void setTaxonNodeFilter(TaxonNodeFilter taxonNodeFilter) {
         this.taxonNodeFilter = taxonNodeFilter;
     }
-
 }
