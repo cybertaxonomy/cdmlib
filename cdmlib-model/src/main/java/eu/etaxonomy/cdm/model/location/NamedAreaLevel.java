@@ -148,6 +148,15 @@ public class NamedAreaLevel extends DefinedTermBase<NamedAreaLevel> {
 		return getTermByUuid(uuidCountry);
 	}
 
+	public static final boolean isTdwgLevel(NamedAreaLevel areaLevel) {
+	    if (areaLevel == null) {
+	        return false;
+	    }
+	    UUID uuid = areaLevel.getUuid();
+	    return uuidTdwgLevel1.equals(uuid) || uuidTdwgLevel2.equals(uuid)
+	            || uuidTdwgLevel3.equals(uuid) || uuidTdwgLevel4.equals(uuid);
+	}
+
 	public static final boolean isTDWG_LEVEL1(String str){
 		boolean result = false;
 		if (uuidTdwgLevel1.compareTo(UUID.fromString(str)) == 0){

@@ -17,7 +17,10 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -111,5 +114,22 @@ public abstract class ExportTransformerBase implements IExportTransformer {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
+	@Override
+    public String getCacheByReferenceType(Reference refType) throws UndefinedTransformerMethodException {
+        String warning = "getCacheByReferenceType is not yet implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
+
+    @Override
+    public String getCacheByNomenclaturalCode(NomenclaturalCode nomenclaturalCode) throws UndefinedTransformerMethodException {
+        String warning = "getCacheByNomenclaturalCode is not yet implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
+
+    @Override
+    public String getCacheByRank(Rank rank) throws UndefinedTransformerMethodException {
+        String warning = "getCacheByRank is not yet implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
 
 }

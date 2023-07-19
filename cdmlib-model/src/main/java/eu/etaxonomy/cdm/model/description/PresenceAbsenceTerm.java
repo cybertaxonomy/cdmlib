@@ -721,4 +721,17 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
         }
         return isAnyIntroduced.contains(uuid);
     }
+
+    @Transient
+    private Set<UUID> isAnyNative;
+    public boolean isAnyNative() {
+        if (isAnyNative == null){
+            isAnyNative = new HashSet<>(Arrays.asList(new UUID[]{
+                   uuidNative, uuidNativeDoubtfullyNative,
+                   uuidNativeFormerlyNative, uuidNativePresenceQuestionable,
+                   uuidEndemic, uuidEndemicPresenceQuestionable, //unknownEndemism?
+            }));
+        }
+        return isAnyNative.contains(uuid);
+    }
 }

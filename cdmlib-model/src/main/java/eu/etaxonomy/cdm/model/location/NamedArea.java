@@ -446,6 +446,10 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
         }
     }
 
+    public static final boolean isTdwgArea(NamedArea area) {
+        return NamedAreaLevel.isTdwgLevel(area.getLevel());
+    }
+
 	public static final NamedArea EUROPE(){
 		return getContinentByUuid(uuidEurope);
 	}

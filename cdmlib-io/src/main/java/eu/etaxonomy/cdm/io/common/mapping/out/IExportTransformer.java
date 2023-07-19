@@ -15,7 +15,10 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
@@ -51,6 +54,16 @@ public interface IExportTransformer {
 	//Nomenclatural status
 	public Object getKeyByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException;
 	public String getCacheByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException;
+
+    //Reference type
+    //we use the full reference as parameter as it may contain required information
+    public String getCacheByReferenceType(Reference ref) throws UndefinedTransformerMethodException;
+
+    //Nomenclatural code
+    public String getCacheByNomenclaturalCode(NomenclaturalCode nomenclaturalCode) throws UndefinedTransformerMethodException;
+
+    //Rank
+    public String getCacheByRank(Rank rank) throws UndefinedTransformerMethodException;
 
 	//Quality status,only needed for PESI export -> TODO refactor
 	public String getQualityStatusCacheByKey(Integer qualityStatusFk) throws UndefinedTransformerMethodException;
