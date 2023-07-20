@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.io.coldp;
 
+import eu.etaxonomy.cdm.io.out.ITaxonTreeExportTable;
+
 /**
  * An enumeration with each instance representing a table type in the Output Model.
  *
  * @author a.mueller
  * @since 2023-07-17
  */
-public enum ColDpExportTable {
+public enum ColDpExportTable implements ITaxonTreeExportTable {
 
     NAME_RELATION("NameRelation",nameRelationColumns()),
     NAME("Name", nameColumns()),
@@ -300,6 +302,7 @@ public enum ColDpExportTable {
 
 // ****************** GETTER / SETTER *************/
 
+    @Override
     public String getTableName() {return tableName;}
 
     public int getSize(){ return columnNames.length;}

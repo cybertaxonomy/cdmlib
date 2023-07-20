@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.coldp;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +17,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.io.cdmLight.OrderHelper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
-import eu.etaxonomy.cdm.io.common.ExportStateBase;
-import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -33,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
  * @since 2023-07-17
  */
 public class ColDpExportState
-        extends ExportStateBase<ColDpExportConfigurator, IExportTransformer, File>{
+        extends TaxonTreeExportStateBase<ColDpExportConfigurator,ColDpExportState>{
 
     private ExportResult result;
 

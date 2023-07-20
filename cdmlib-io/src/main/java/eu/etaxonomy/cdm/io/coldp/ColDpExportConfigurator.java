@@ -14,9 +14,9 @@ import java.util.Comparator;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
-import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
  * @since 2023-07-17
  */
 public class ColDpExportConfigurator
-        extends ExportConfiguratorBase<ColDpExportState, IExportTransformer, File>{
+        extends TaxonTreeExportConfiguratorBase<ColDpExportState,ColDpExportConfigurator> {
 
     private static final long serialVersionUID = -1562074221435082060L;
 

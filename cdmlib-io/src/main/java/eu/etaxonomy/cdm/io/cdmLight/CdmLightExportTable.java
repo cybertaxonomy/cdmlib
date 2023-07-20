@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.io.cdmLight;
 
+import eu.etaxonomy.cdm.io.out.ITaxonTreeExportTable;
+
 /**
  * An enumeration with each instance representing a table type in CDM light.
  *
  * @author a.mueller
  * @since 15.03.2017
  */
-public enum CdmLightExportTable {
+public enum CdmLightExportTable implements ITaxonTreeExportTable {
     METADATA("Metadata", metaDataColumns()),
     SCIENTIFIC_NAME("ScientificName", nameColumns()),
     NAME_RELATIONSHIP("NameRelationship",nameRelationColumns()),
@@ -392,6 +394,7 @@ public enum CdmLightExportTable {
 
 // ****************** GETTER / SETTER *************/
 
+    @Override
     public String getTableName() {return tableName;}
 
     public int getSize(){ return columnNames.length;}
