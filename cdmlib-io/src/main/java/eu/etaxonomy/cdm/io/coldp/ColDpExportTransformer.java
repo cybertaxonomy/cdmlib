@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.common.mapping.out.ExportTransformerBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -128,5 +129,41 @@ public class ColDpExportTransformer extends ExportTransformerBase {
             return rank.getTitleCache().toLowerCase();
         }
         //TODO maybe we still need to adapt some ranks
+    }
+
+    @Override
+    public String getCacheByNameRelationType(NameRelationshipType nameRelType) throws UndefinedTransformerMethodException {
+        if (nameRelType == null) {
+            return null;
+        }
+        if (nameRelType.getUuid().equals(NameRelationshipType.uuidBasionym)){
+            return "basionym";
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidOrthographicVariant)
+                || nameRelType.getUuid().equals(NameRelationshipType.uuidEmendation)){
+                return "spelling correction";
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidValidatedByName)
+                || nameRelType.getUuid().equals(NameRelationshipType.uuidLaterValidatedByName)) {
+            return "based on";
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidReplacedSynonym)) {
+            return "replacement name";
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidConservedAgainst)) {
+            return "conserved";
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidLaterHomonym)
+                || nameRelType.getUuid().equals(NameRelationshipType.uuidTreatedAsLaterHomonym)) {
+            return "later homonym";
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidLaterIsonym)) {
+            //TODO other superfluous cases
+            return "superfluous";
+        } else {
+            //TODO misspelling, alternative name, blocking name for, avoids homonym of, unspecific "non"
+            String warning = "Name relationship type not yet handled by COL-DP: " + nameRelType.getTitleCache();
+            //TODO handle warning
+            Representation preferredRep = nameRelType.getPreferredRepresentation(Language.ENGLISH());
+            if (preferredRep != null) {
+               return preferredRep.getLabel() == null ? null :preferredRep.getLabel().toLowerCase();
+            }else {
+              return nameRelType.getTitleCache().toLowerCase();
+            }
+        }
     }
 }

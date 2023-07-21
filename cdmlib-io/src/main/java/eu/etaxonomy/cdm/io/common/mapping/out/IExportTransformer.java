@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -61,6 +62,10 @@ public interface IExportTransformer {
 
     //Nomenclatural code
     public String getCacheByNomenclaturalCode(NomenclaturalCode nomenclaturalCode) throws UndefinedTransformerMethodException;
+
+    //Name relationship type
+    public String getCacheByNameRelationType(NameRelationshipType nameRelType) throws UndefinedTransformerMethodException;
+
 
     //Rank
     public String getCacheByRank(Rank rank) throws UndefinedTransformerMethodException;

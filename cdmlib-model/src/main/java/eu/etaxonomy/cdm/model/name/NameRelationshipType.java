@@ -70,20 +70,20 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 
     private static final long serialVersionUID = 8504916205254159334L;
 
-	private static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
+	public static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
 	private static final UUID uuidMisspelling = UUID.fromString("c6f9afcb-8287-4a2b-a6f6-4da3a073d5de");
-	private static final UUID uuidEmendation = UUID.fromString("6e23ad45-3f2a-462b-ad87-d2389cd6e26c");
-	private static final UUID uuidLaterHomonym = UUID.fromString("80f06f65-58e0-4209-b811-cb40ad7220a6");
-	private static final UUID uuidTreatedAsLaterHomonym = UUID.fromString("2990a884-3302-4c8b-90b2-dfd31aaa2778");
+	public static final UUID uuidEmendation = UUID.fromString("6e23ad45-3f2a-462b-ad87-d2389cd6e26c");
+	public static final UUID uuidLaterHomonym = UUID.fromString("80f06f65-58e0-4209-b811-cb40ad7220a6");
+	public static final UUID uuidTreatedAsLaterHomonym = UUID.fromString("2990a884-3302-4c8b-90b2-dfd31aaa2778");
 	private static final UUID uuidAlternativeName = UUID.fromString("049c6358-1094-4765-9fae-c9972a0e7780");
 	public static final UUID uuidBasionym = UUID.fromString("25792738-98de-4762-bac1-8c156faded4a");
 	public static final UUID uuidReplacedSynonym = UUID.fromString("71c67c38-d162-445b-b0c2-7aba56106696");
-	private static final UUID uuidConservedAgainst = UUID.fromString("e6439f95-bcac-4ebb-a8b5-69fa5ce79e6a");
-	private static final UUID uuidValidatedByName = UUID.fromString("a176c9ad-b4c2-4c57-addd-90373f8270eb");
-	private static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
+	public static final UUID uuidConservedAgainst = UUID.fromString("e6439f95-bcac-4ebb-a8b5-69fa5ce79e6a");
+	public static final UUID uuidValidatedByName = UUID.fromString("a176c9ad-b4c2-4c57-addd-90373f8270eb");
+	public static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
 	private static final UUID uuidAvoidsHomonymOf = UUID.fromString("c7d59ab9-a8c6-4645-a990-04c698f2c123");
-	private static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
+	public static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
 	private static final UUID uuidNonUnspecific = UUID.fromString("78360e2a-159d-4e2f-893e-8666805840fa");
 
 

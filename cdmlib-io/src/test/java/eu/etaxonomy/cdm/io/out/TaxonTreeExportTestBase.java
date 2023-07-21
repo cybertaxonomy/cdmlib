@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,18 +33,31 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
+import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -52,6 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -80,8 +95,11 @@ public abstract class TaxonTreeExportTestBase
     protected static final String TRUE  = "\"1\","; //true
     protected static final String BOOL_NULL = NONE;  //boolean null
 
+    protected static final int COUNT_HEADER = 1;
+
     protected static final UUID classificationUuid = UUID.fromString("4096df99-7274-421e-8843-211b603d832e");
 
+    //taxon node uuid
     protected static final UUID rootNodeUuid = UUID.fromString("a67b4efd-6148-46a9-a377-1efd14768cfa");
     protected static final UUID node1Uuid = UUID.fromString("0fae5ad5-ffa2-4100-bcd7-8aa9dda0aebc");
     protected static final UUID node2Uuid = UUID.fromString("43ca733b-fe3a-42ce-8a92-000e27badf44");
@@ -89,23 +107,34 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID node4Uuid = UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac");
     protected static final UUID node5Uuid = UUID.fromString("81d9c9b2-c8fd-4d4f-a0b4-e7e656dcdc20");
 
+    //taxon uuid
     protected static final UUID familyTaxonUuid = UUID.fromString("3162e136-f2e2-4f9a-9010-3f35908fbae1");
     protected static final UUID genusTaxonUuid = UUID.fromString("3f52e136-f2e1-4f9a-9010-2f35908fbd39");
     protected static final UUID speciesTaxonUuid = UUID.fromString("9182e136-f2e2-4f9a-9010-3f35908fb5e0");
     protected static final UUID subspeciesTaxonUuid = UUID.fromString("b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
     protected static final UUID subspeciesUnpublishedTaxonUuid = UUID.fromString("290e295a-9089-4616-a30c-15ded79e064f");
 
+    //name uuid
     protected static final UUID familyNameUuid = UUID.fromString("e983cc5e-4c77-4c80-8cb0-73d43df31ef7");
+    protected static final UUID genusNameUuid = UUID.fromString("5e83cc5e-4c77-4d80-8cb0-73d63df35ee3");
     protected static final UUID speciesNameUuid = UUID.fromString("f983cc5e-4c77-4c80-8cb0-73d43df31ee9");
     protected static final UUID subspeciesNameUuid = UUID.fromString("3483cc5e-4c77-4c80-8cb0-73d43df31ee3");
     protected static final UUID subspeciesUnpublishedNameUUID = UUID.fromString("b6da7ab2-6c67-44b7-9719-2557542f5a23");
+    protected static final UUID basionymNameUuid = UUID.fromString("c7962b1f-950e-4e28-a3d1-aa0583dfdc92");
 
+    //reference uuid
     protected static final UUID familyNomRefUuid = UUID.fromString("b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
+    protected static final UUID genusNomRefUuid = UUID.fromString("5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
+    protected static final UUID speciesNomRefUuid = UUID.fromString("a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
     protected static final UUID subspeciesNomRefUuid = UUID.fromString("b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
     protected static final UUID ref1UUID = UUID.fromString("4b6acca1-959b-4790-b76e-e474a0882990");
 
+    //facts uuid
     protected static final UUID distributionArmeniaUuid = UUID.fromString("674e9e27-9102-4166-8626-8cb871a9a89b");
+    protected static final UUID commonNameTanneUuid = UUID.fromString("81c7b7db-e12b-45fe-96ed-dab940043232");
 
+    //specimen uuid
+    protected static final UUID specimenUuid = UUID.fromString("cafca31a-e0ab-489c-8add-602fd26a408f");
 
     @SpringBeanByName
     protected CdmApplicationAwareDefaultExport<CONFIG> defaultExport;
@@ -162,7 +191,12 @@ public abstract class TaxonTreeExportTestBase
     }
 
     protected String getLine(List<String> list, UUID uuid) {
-        return list.stream().filter(line->line.startsWith("\""+ uuid.toString())).findFirst().get();
+        for (String line : list) {
+            if (line.startsWith("\""+ uuid.toString())) {
+                return line;
+            }
+        }
+        return null;
     }
 
     protected List<String> getStringList(Map<String, byte[]> data, ITaxonTreeExportTable table) {
@@ -184,6 +218,25 @@ public abstract class TaxonTreeExportTestBase
         byte[] tableByte = data.get(table.getTableName());
         Assert.assertNotNull(table.getTableName() + " table must not be null", tableByte);
         return new String(tableByte);
+    }
+
+    protected Map<String, byte[]> checkAndGetData(ExportResult result) {
+
+        //test exceptions
+        testExceptionsErrorsWarnings(result);
+
+        //transform to data map
+        ExportDataWrapper<?> exportData = result.getExportData();
+        Assert.assertNotNull("Export data must not be null", exportData);
+
+        @SuppressWarnings("unchecked")
+        Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
+
+        return data;
+    }
+
+    protected void print(List<String> resultsToPrint) {
+        System.out.println(resultsToPrint);
     }
 
     protected void createFullTestDataSet() {
@@ -215,8 +268,8 @@ public abstract class TaxonTreeExportTestBase
         //genus
         TaxonName genusName = parser.parseReferencedName("Genus Humb., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.GENUS());
-        setUuid(genusName,"5e83cc5e-4c77-4d80-8cb0-73d63df35ee3");
-        setUuid(genusName.getNomenclaturalReference(), "5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
+        setUuid(genusName, genusNameUuid);
+        setUuid(genusName.getNomenclaturalReference(), genusNomRefUuid);
         Taxon genus = Taxon.NewInstance(genusName, sec1);
         setUuid(genus, genusTaxonUuid);
 
@@ -225,23 +278,28 @@ public abstract class TaxonTreeExportTestBase
         nodesToSave.add(node2);
 
         //species
-        TaxonName speciesName = parser.parseReferencedName("Genus species Mill., The book of botany 3: 22. 1804",
+        TaxonName speciesName = parser.parseReferencedName("Genus species (Mill.) Hook in J. Appl. Synon. 5: 33. 1824",
                 NomenclaturalCode.ICNAFP, Rank.SPECIES());
         setUuid(speciesName, speciesNameUuid);
-        setUuid(speciesName.getNomenclaturalReference(), "a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
+        setUuid(speciesName.getNomenclaturalReference(), speciesNomRefUuid);
         Taxon species = Taxon.NewInstance(speciesName, sec1);
         setUuid(species, speciesTaxonUuid);
-        TaxonName synonymName = parser.parseReferencedName("Genus synonym Mill., The book of botany 3: 22. 1804", NomenclaturalCode.ICNAFP, Rank.SPECIES());
-
-        //species synonym
-        setUuid(synonymName, "1584157b-5c43-4150-b271-95b2c99377b2");
-        Synonym  synonymUnpublished = Synonym.NewInstance(synonymName, sec1);
-        setUuid(synonymName, "a87c16b7-8299-4d56-a682-ce20973428ea");
-        synonymUnpublished.setPublish(false);
-        species.addHomotypicSynonym(synonymUnpublished);
         TaxonNode node3 = node2.addChildTaxon(species, sec1, "33");
         setUuid(node3, node3Uuid.toString());
         nodesToSave.add(node3);
+
+        //species basionym
+        TaxonName basionymName = parser.parseReferencedName("Sus basionus Mill., The book of botany 3: 22. 1804", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        basionymName.setUuid(basionymNameUuid);
+        species.addBasionymSynonym(basionymName, species.getSec(), "67");
+
+        //unpublished species synonym
+        TaxonName synonymName = parser.parseReferencedName("Genus synonym Mill., The book of botany 4: 23. 1805", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        setUuid(synonymName, "1584157b-5c43-4150-b271-95b2c99377b2");
+        Synonym synonymUnpublished = Synonym.NewInstance(synonymName, sec1);
+        setUuid(synonymUnpublished, "a87c16b7-8299-4d56-a682-ce20973428ea");
+        synonymUnpublished.setPublish(false);
+        species.addHomotypicSynonym(synonymUnpublished);
 
         //subspecies
         TaxonName subspeciesName = parser.parseReferencedName("Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
@@ -256,7 +314,7 @@ public abstract class TaxonTreeExportTestBase
         setUuid(node4, node4Uuid);
         nodesToSave.add(node4);
 
-        //subspecies unpublished
+        //unpublished subspecies
         TaxonName subspeciesNameUnpublished = parser.parseReferencedName("Genus species subsp. unpublished Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
         setUuid(subspeciesNameUnpublished, subspeciesUnpublishedNameUUID);
@@ -273,16 +331,58 @@ public abstract class TaxonTreeExportTestBase
         node5.putStatusNote(Language.ENGLISH(), "My status note");
         nodesToSave.add(node5);
 
+        //save
         classificationService.save(classification);
         taxonNodeService.save(nodesToSave);
 
-        TaxonDescription description = TaxonDescription.NewInstance(species);
-
+        //add Armenia distribution to subspecies //TODO why after save?
+        TaxonDescription description = TaxonDescription.NewInstance(subspecies);
         Distribution distribution = Distribution.NewInstance(Country.ARMENIA(), PresenceAbsenceTerm.PRESENT());
         setUuid(distribution, distributionArmeniaUuid);
         description.addElement(distribution);
 
-        subspecies.addDescription(description);
+        //add common name to species
+        TaxonDescription description2 = TaxonDescription.NewInstance(species);
+        CommonTaxonName commonName = CommonTaxonName.NewInstance("Tanne", Language.GERMAN());
+        setUuid(commonName, commonNameTanneUuid);
+        description2.addElement(commonName);
+
+        //add media
+        TaxonDescription subspeciesImageGallery = TaxonDescription.NewInstance(subspecies, true);
+        TextData mediaHolder = TextData.NewInstance(Feature.IMAGE());
+        subspeciesImageGallery.addElement(mediaHolder);
+        Media media = Media.NewInstance(URI.create("https://www.abc.de/fghi.jpg"), 10034, "image/jpg", "jpg");
+        media.setMediaCreated(TimePeriodParser.parseString("2023-07-20"));  //TODO period or freetext
+        media.setTitleCache("My nice image", true);
+        mediaHolder.addMedia(media);
+
+        //add specimen type to species name
+        DerivedUnitFacade facade = DerivedUnitFacade.NewPreservedSpecimenInstance();
+        facade.setCountry(Country.ARMENIA());
+        facade.setLocality("Somewhere in the forest");
+        try {
+            facade.setExactLocationByParsing("15°13'12''W", "55°33'22''N", ReferenceSystem.WGS84(), 5);
+        } catch (ParseException e) {
+            Assert.fail();
+        }
+        Team collector = Team.NewTitledInstance("Collector team", "Coll. team");
+        facade.setCollector(collector);
+        facade.setFieldNumber("CT222");
+        facade.setAccessionNumber("A555");
+        Collection berlinCollection = Collection.NewInstance("B", "Berlin Collection");
+        facade.setCollection(berlinCollection);
+        DerivedUnit specimen = facade.innerDerivedUnit();
+        specimen.setUuid(specimenUuid);
+        speciesName.addSpecimenTypeDesignation(specimen, SpecimenTypeDesignationStatus.HOLOTYPE(),
+                null, null, null, false, false);
+
+        //add name type
+        genusName.addNameTypeDesignation(basionymName, null, null, null, NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), false);
+
+        //TODO textual type
+
+
+        //commit
         commitAndStartNewTransaction(null);
     }
 }

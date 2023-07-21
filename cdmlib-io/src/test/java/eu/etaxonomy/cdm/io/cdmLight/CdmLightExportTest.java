@@ -8,12 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.cdmLight;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,9 +22,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
+import eu.etaxonomy.cdm.io.coldp.ColDpExportTable;
 import eu.etaxonomy.cdm.io.common.ExportResult;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -54,19 +48,13 @@ public class CdmLightExportTest
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
-    public void testSubTree(){
+    public void testSubTree() {
 
         //config + invoke
-        CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
+        CdmLightExportConfigurator config = newConfigurator();
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
-        config.setTarget(TARGET.EXPORT_DATA);
         ExportResult result = defaultExport.invoke(config);
-        ExportDataWrapper<?> exportData = result.getExportData();
-        @SuppressWarnings("unchecked")
-        Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
-
-        //test exception
-        testExceptionsErrorsWarnings(result);
+        Map<String, byte[]> data = checkAndGetData(result);
 
         //taxon table
         byte[] taxonByte = data.get(CdmLightExportTable.TAXON.getTableName());
@@ -77,12 +65,29 @@ public class CdmLightExportTest
         String expected = uuid(subspeciesTaxonUuid) + uuid(classificationUuid) + "\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\"," + uuid(speciesTaxonUuid) + "\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
         Assert.assertTrue(taxonStr.contains(expected));
 
+        //synonyms
+        List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
+        int countDummyLine = 0;
+        int countHeader = 0;
+        int count = 0;
+        for (String line : synonymResult) {
+            if (line.startsWith("\"DUMMY")){   // || line.startsWith("\"Synonym_ID")
+                countDummyLine++;
+            }else if (line.startsWith("\"Synonym_ID")) {
+                countHeader++;
+            }else {
+                count++;
+            }
+        }
+        Assert.assertEquals("There should be 1 synonym header", 1, countHeader);
+        Assert.assertEquals("There should be 2 dummy entries", 2, countDummyLine);
+        Assert.assertEquals("There should be 0 real synomyms", 0, count);
+
         //reference table
-        byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
-        String referenceString = new String(reference);
-        Assert.assertNotNull("Reference table must not be null", reference);
-        expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
-        Assert.assertTrue(referenceString.contains(expected));
+        List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
+        String subspeciesNomRefLine = getLine(referenceResult, subspeciesNomRefUuid);
+        expected = uuid(subspeciesNomRefUuid) +"\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\"," + NONE10 + "\"3\",\"1804\",\"Mill.\"";
+        Assert.assertTrue(subspeciesNomRefLine.contains(expected));
 
         //geographic fact
         byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
@@ -132,26 +137,21 @@ public class CdmLightExportTest
     public void testFullTreeWithUnpublished(){
 
         //config + invoke
-        CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
-        config.setTarget(TARGET.EXPORT_DATA);
+        CdmLightExportConfigurator config = newConfigurator();
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
         ExportResult result = defaultExport.invoke(config);
-        ExportDataWrapper<?> exportData = result.getExportData();
-        @SuppressWarnings("unchecked")
-        Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
-
-        //test exceptions
-        testExceptionsErrorsWarnings(result);
+        Map<String, byte[]> data = checkAndGetData(result);
 
         //test counts
         List<String> taxonResult = getStringList(data, CdmLightExportTable.TAXON);
-        Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size()-1);// 1 header line
+        Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 7 references (6 nomenclatural references and 1 sec reference)", 7, referenceResult.size()-1);// 1 header line
+        Assert.assertEquals("There should be 9 references (8 nomenclatural references including an in-reference"
+                + " and 1 sec reference)", 9, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 1 synonym", 1, synonymResult.size()-1);// 1 header line
+        Assert.assertEquals("There should be 2 synonym", 2, synonymResult.size() - COUNT_HEADER);
 
         //test single data
         Assert.assertEquals("Result must not contain root taxon",
@@ -178,7 +178,6 @@ public class CdmLightExportTest
         String geographicAreaFactString = new String(geographicAreaFact);
         Assert.assertNotNull("Geographical fact table must not be null", geographicAreaFact);
         expected ="\"674e9e27-9102-4166-8626-8cb871a9a89b\"," + uuid(subspeciesTaxonUuid) + "\"Armenia\",\"present\"";
-        System.out.println(geographicAreaFactString);
         Assert.assertTrue(geographicAreaFactString.contains(expected));
 
         byte[] nomenclaturalAuthor = data.get(CdmLightExportTable.NOMENCLATURAL_AUTHOR.getTableName());
@@ -211,56 +210,25 @@ public class CdmLightExportTest
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
-    public void testFullData(){
+    public void testFullDataPublished(){
 
-        CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
-        config.setTarget(TARGET.EXPORT_DATA);
-
+        //config + invoke
+        CdmLightExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
-        testExceptionsErrorsWarnings(result);
+        Map<String, byte[]> data = checkAndGetData(result);
 
-        ExportDataWrapper<?> exportData = result.getExportData();
-        @SuppressWarnings("unchecked")
-        Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
+        //test ...
+        //taxon
+        List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);
+        Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
 
-        ByteArrayInputStream stream = new ByteArrayInputStream( data.get(CdmLightExportTable.TAXON.getTableName()));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
-        String line;
-        int count = 0;
-        try {
-            while ((line = reader.readLine()) != null) {
-                count ++;
-            }
-            Assert.assertTrue("There should be 4 taxa", count == 5);// 5 because of the header line
+        //reference
+        List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
+        Assert.assertEquals("There should be 7 references (6 nomenclatural references and 1 sec reference)", 7, referenceResult.size() - COUNT_HEADER);
 
-            stream = new ByteArrayInputStream(data.get(CdmLightExportTable.REFERENCE.getTableName()));
-            reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
-            count = 0;
-            while ((line = reader.readLine()) != null) {
-                count ++;
-            }
-            Assert.assertTrue("There should be 5 references", count == 6);
-            try{
-                stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
-                // now there are always all tables also if empty
-                reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
-
-                boolean dummyLine = true;
-                count = 0;
-                while ((line = reader.readLine()) != null) {
-                    if (!(line.startsWith("\"DUMMY") || line.startsWith("\"Synonym_ID"))){
-                        dummyLine = dummyLine && false;
-                    }
-                    count++;
-                }
-                Assert.assertTrue("There should be 0 synomyms", dummyLine && count == 3);
-//                    Assert.fail("There should not be a synonym table, because the only synonym is not public.");
-            }catch(NullPointerException e){
-                //OK, should be thrown
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        //synonyms
+        List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
+        Assert.assertEquals("There should be 1 synonym", 1, synonymResult.size() - COUNT_HEADER);
     }
 
     @Override
@@ -270,5 +238,4 @@ public class CdmLightExportTest
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

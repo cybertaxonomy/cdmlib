@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -47,6 +48,7 @@ public class ColDpExportState
     private List<UUID> referenceStore = new ArrayList<>();
     private Map<Integer, UUID> nameStore = new HashMap<>();
     private Map<UUID,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
+    private List<UUID> mediaStore = new ArrayList<>();
     private Map<UUID, OrderHelper> orderHelperMap = new HashMap<>();
     private UUID classificationUUID = null;
 
@@ -172,8 +174,18 @@ public class ColDpExportState
     protected Map<Integer, UUID> getNameStore() {
         return nameStore;
     }
-
     protected void setNameStore(Map<Integer, UUID> nameStore) {
         this.nameStore = nameStore;
+    }
+
+    protected List<UUID> getMediaStore() {
+        return mediaStore;
+    }
+    protected void setMediaStore(List<UUID> mediaStore) {
+        this.mediaStore = mediaStore;
+    }
+    //TODO for now we use mediaRepPart, but in future it may become Media
+    protected void addMediaToStore(MediaRepresentationPart media) {
+        this.mediaStore.add(media.getUuid());
     }
 }

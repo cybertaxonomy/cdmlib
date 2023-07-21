@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -131,5 +132,12 @@ public abstract class ExportTransformerBase implements IExportTransformer {
         String warning = "getCacheByRank is not yet implemented in implementing transformer class";
         throw new UndefinedTransformerMethodException(warning);
     }
+
+    @Override
+    public String getCacheByNameRelationType(NameRelationshipType nameRelType) throws UndefinedTransformerMethodException {
+        String warning = "getCacheByNameRelationType is not yet implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
+
 
 }

@@ -21,6 +21,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.Partial;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
@@ -49,6 +54,7 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -382,6 +388,10 @@ public class ColDpClassificationExport
 
                 //descriptions
                 handleDescriptions(state, taxon);
+
+                //media
+                handleMedia(state, taxon);
+
             } catch (Exception e) {
                 state.getResult().addException(e,
                         "An unexpected problem occurred when trying to export taxon with id " + taxon.getId() + " " + taxon.getTitleCache());
@@ -391,6 +401,112 @@ public class ColDpClassificationExport
             state.getResult().addException(e, "An unexpected error occurred when handling the taxon node of "
                     + cdmBaseStr(taxonNode.getTaxon()) + ", titleCache:"+ taxonNode.getTaxon().getTitleCache()+": " + e.getMessage());
         }
+    }
+
+    private void handleMedia(ColDpExportState state, Taxon taxon) {
+        Set<Media> mediaSet = new HashSet<>();
+
+        //TODO collect media form other places
+
+        //collect from taxon image gallery
+        Set<? extends DescriptionBase<?>> descriptions = taxon.getDescriptions();
+        for (DescriptionBase<?> description : descriptions){
+            for (DescriptionElementBase o : description.getElements()){
+                DescriptionElementBase el = CdmBase.deproxy(o);
+                if (el.getMedia().size() > 0){
+                    for (Media media: el.getMedia()){
+                        mediaSet.add(media);
+                    }
+                }
+            }
+        }
+
+        //handle single media
+        for (Media media : mediaSet) {
+            for (MediaRepresentation repr : media.getRepresentations()){
+                for (MediaRepresentationPart part : repr.getParts()){
+                        handleMediaRepresentation(state, taxon, part);
+                }
+            }
+        }
+    }
+
+    private void handleMediaRepresentation(ColDpExportState state, Taxon taxon, MediaRepresentationPart part) {
+        if (part == null || state.getMediaStore().contains(part.getUuid())) {
+            return;
+        }
+
+        state.addMediaToStore(part);
+        ColDpExportTable table = ColDpExportTable.MEDIA;
+        String[] csvLine = new String[table.getSize()];
+        part = HibernateProxyHelper.deproxy(part);
+
+        csvLine[table.getIndex(ColDpExportTable.TAXON_ID)] = getId(state, taxon);
+
+        //TODO sourceID for media
+        csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
+
+        //url
+        if (part.getUri() != null) {
+            csvLine[table.getIndex(ColDpExportTable.MEDIA_URL)] = part.getUri().toString();
+        }
+
+        //TODO media type
+        csvLine[table.getIndex(ColDpExportTable.TYPE)] = part.getMediaRepresentation().getMimeType();
+
+        //TODO media format
+        csvLine[table.getIndex(ColDpExportTable.MEDIA_FORMAT)] = null;
+
+        Media media = part.getMediaRepresentation().getMedia();
+
+        //title
+        csvLine[table.getIndex(ColDpExportTable.MEDIA_TITLE)] = getTitleCache(media);
+
+        //created
+        csvLine[table.getIndex(ColDpExportTable.MEDIA_CREATED)] = toIsoDate(media.getMediaCreated());
+
+        //creator  //TODO format creator
+        csvLine[table.getIndex(ColDpExportTable.MEDIA_CREATOR)] = getTitleCache(media.getArtist());
+
+        //TODO media license
+        csvLine[table.getIndex(ColDpExportTable.MEDIA_LICENSE)] = null;
+
+        //TODO media link
+        csvLine[table.getIndex(ColDpExportTable.LINK)] = null;
+
+        state.getProcessor().put(table, part, csvLine);
+    }
+
+    private String toIsoDate(TimePeriod mediaCreated) {
+        //TODO what if end or freetext exist?
+        Partial partial = mediaCreated.getStart();
+        if (partial == null || !partial.isSupported(DateTimeFieldType.year())
+                || !partial.isSupported(DateTimeFieldType.monthOfYear()) && partial.isSupported(DateTimeFieldType.dayOfMonth())) {
+            //TODO log warning, also if mediaCreated.getEnd() != null or so
+            return null;
+        } else {
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                    .appendYear(4, 4).appendLiteral('-')
+                    .appendMonthOfYear(2).appendLiteral('-')
+                    .appendDayOfMonth(2)
+                    .toFormatter();
+            return partial.toString(formatter);
+        }
+    }
+
+    /**
+     * transforms the given date to an iso date
+     */
+    protected String toIsoDate(DateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendYear(4, 4).appendLiteral('-')
+                .appendMonthOfYear(2).appendLiteral('-')
+                .appendDayOfMonth(2)
+                .toFormatter();
+        return formatter.print(dateTime);
     }
 
     private void handleDescriptions(ColDpExportState state, Taxon taxon) {
@@ -1003,7 +1119,7 @@ public class ColDpClassificationExport
                     handleSpecimenType(state, specimenType, csvLine, table, name);
                 }else if (typeDesignation instanceof NameTypeDesignation){
                     //ignore
-//                specimenTypeDesignations.add(HibernateProxyHelper.deproxy(typeDesignation, NameTypeDesignation.class));
+//                  specimenTypeDesignations.add(HibernateProxyHelper.deproxy(typeDesignation, NameTypeDesignation.class));
                 }
             }
 
@@ -1089,146 +1205,164 @@ public class ColDpClassificationExport
 //    }
 
     private void handleSpecimenType(ColDpExportState state, SpecimenTypeDesignation specimenType, String[] csvLine, ColDpExportTable table, TaxonName name) {
-        DerivedUnit specimen = specimenType.getTypeSpecimen();
-        if (specimenType.getTypeSpecimen() == null){
-            return;
-            //handleSpecimen(state, specimen);
-        }
 
-        //ID - TODO best use dwc:occurrenceID
-        csvLine[table.getIndex(ColDpExportTable.ID)] = getId(state, specimen);
+        try {
 
-        //TODO sourceID
-
-        //nameID
-        Set<TaxonName> typifiedNames = specimenType.getTypifiedNames();
-        if (typifiedNames.size() > 1){
-            //TODO we should
-            state.getResult().addWarning("Please check the specimen type  "
-                    + cdmBaseStr(specimenType) + " there are more then one typified name.");
-        }
-//        if (typifiedNames.iterator().hasNext()){
-//            TaxonName name = typifiedNames.iterator().next();
-            csvLine[table.getIndex(ColDpExportTable.TYPE_NAMEID)] = getId(state, name);
-//        }
-
-        //TODO citation - also done in calling method
-        csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = specimen.getTitleCache();
-
-
-        //TODO type status transformation
-        csvLine[table.getIndex(ColDpExportTable.TYPE_STATUS)] = specimenType.getTypeStatus() != null? specimenType.getTypeStatus().getDescription(): "";
-
-        //TODO referenceID -  see description, should be designation ref id or original name refid
-        if (specimenType.getDesignationSource() != null && specimenType.getDesignationSource().getCitation() != null && !state.getReferenceStore().contains(specimenType.getDesignationSource().getCitation().getUuid())){
-            //TODO should be source, not reference
-            handleReference(state, specimenType.getDesignationSource().getCitation());
-            csvLine[table.getIndex(ColDpExportTable.REFERENCE_ID)] = specimenType.getDesignationSource() != null ? getId(state, specimenType.getDesignationSource().getCitation()): "";
-        }
-
-        //field unit
-        //TODO performance due to service call
-        Collection<FieldUnit> fieldUnits = this.getOccurrenceService().findFieldUnits(specimen.getUuid(), null);
-        if (!fieldUnits.isEmpty()) {
-            if (fieldUnits.size() > 1) {
-                state.getResult().addWarning("There are >1 field units for specimen  "
-                        + cdmBaseStr(specimen) + ".");
+            DerivedUnit specimen = specimenType.getTypeSpecimen();
+            if (specimenType.getTypeSpecimen() == null){
+                return;
+                //handleSpecimen(state, specimen);
             }
 
-            FieldUnit fieldUnit = fieldUnits.iterator().next();
+            //ID - TODO best use dwc:occurrenceID
+            csvLine[table.getIndex(ColDpExportTable.ID)] = getId(state, specimen);
 
-            GatheringEvent gathering = fieldUnit.getGatheringEvent();
-            if (gathering != null) {
-                //locality
-                if (gathering.getLocality() != null) {
-                    csvLine[table.getIndex(ColDpExportTable.TYPE_LOCALITY)]
-                            = gathering.getLocality().getText();
+            //TODO sourceID
+
+            //nameID
+            Set<TaxonName> typifiedNames = specimenType.getTypifiedNames();
+            if (typifiedNames.size() > 1){
+                //TODO we should
+                state.getResult().addWarning("Please check the specimen type  "
+                        + cdmBaseStr(specimenType) + " there are more then one typified name.");
+            }
+    //        if (typifiedNames.iterator().hasNext()){
+    //            TaxonName name = typifiedNames.iterator().next();
+                csvLine[table.getIndex(ColDpExportTable.TYPE_NAMEID)] = getId(state, name);
+    //        }
+
+            //TODO citation - also done in calling method
+            csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = specimen.getTitleCache();
+
+
+            //TODO type status transformation
+            csvLine[table.getIndex(ColDpExportTable.TYPE_STATUS)] = specimenType.getTypeStatus() != null? specimenType.getTypeStatus().getDescription(): "";
+
+            //TODO referenceID -  see description, should be designation ref id or original name refid
+            if (specimenType.getDesignationSource() != null && specimenType.getDesignationSource().getCitation() != null && !state.getReferenceStore().contains(specimenType.getDesignationSource().getCitation().getUuid())){
+                //TODO should be source, not reference
+                handleReference(state, specimenType.getDesignationSource().getCitation());
+                csvLine[table.getIndex(ColDpExportTable.REFERENCE_ID)] = specimenType.getDesignationSource() != null ? getId(state, specimenType.getDesignationSource().getCitation()): "";
+            }
+
+            //institution code
+            if (specimen.getCollection() != null) {
+                //TODO institution code not available handling
+                csvLine[table.getIndex(ColDpExportTable.TYPE_INSTITUTION_CODE)] = specimen.getCollection().getCode();
+            }
+
+            //catalog number
+            if (specimen.isInstanceOf(DerivedUnit.class)){
+                DerivedUnit derivedUnit = specimen;
+                String catalogNumber = null;
+                if (!StringUtils.isBlank(derivedUnit.getBarcode())){
+                    catalogNumber = derivedUnit.getBarcode();
+                } else if (!StringUtils.isBlank(derivedUnit.getAccessionNumber())){
+                    catalogNumber = derivedUnit.getAccessionNumber();
+                } else if (!StringUtils.isBlank(derivedUnit.getCatalogNumber())){
+                    catalogNumber = derivedUnit.getCatalogNumber();
                 }
-                //TODO include areas, see CDM-light implementation and COL-DP description
+                csvLine[table.getIndex(ColDpExportTable.TYPE_CATALOG_NUMBER)] = catalogNumber;
+            }
 
-                //country
-                if (gathering.getCountry() != null) {
-                    csvLine[table.getIndex(ColDpExportTable.TYPE_COUNTRY)]
-                            = gathering.getCountry().getLabel();
-                }
+            //TODO associatedSequences - not yet implemented
+            csvLine[table.getIndex(ColDpExportTable.TYPE_ASSOC_SEQ)] = null;
 
-                //exact location
-                Point point = gathering.getExactLocation();
-                if (point != null) {
-                    //latitude
-                    if (point.getLatitude() != null) {
-                        //TODO rounding
-                        csvLine[table.getIndex(ColDpExportTable.TYPE_LATITUDE)]
-                                = point.getLatitude().toString();
-                    }
-                    //longitude
-                    if (point.getLongitude() != null) {
-                        //TODO rounding
-                        csvLine[table.getIndex(ColDpExportTable.TYPE_LONGITUDE)]
-                                = point.getLongitude().toString();
-                    }
-                }
+            //sex
+            if (specimen.getSex() != null) {
+                //TODO transform sex
+                csvLine[table.getIndex(ColDpExportTable.TYPE_SEX)] = specimen.getSex().getLabel();
+            }
 
-                //altitude
-                if (gathering.getAbsoluteElevation() != null) {
-                    //TODO include max/text/depth
-                    csvLine[table.getIndex(ColDpExportTable.TYPE_ALTITUDE)]
-                            = gathering.getAbsoluteElevation().toString();
-                }
+            //link
+            if (specimen.getPreferredStableUri() != null) {
+                csvLine[table.getIndex(ColDpExportTable.LINK)] = specimen.getPreferredStableUri().toString();
+            }
 
-                //host - does more or less not exist in CDM
-                csvLine[table.getIndex(ColDpExportTable.TYPE_ALTITUDE)] = null;
+            //remarks
+            //TODO gather remarks on type designation, field unit(s) and specimen
+            csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(specimen);
 
-                //date
-                if (gathering.getGatheringDate() != null) {
-                    //TODO ISO 8601
-                    csvLine[table.getIndex(ColDpExportTable.TYPE_DATE)] = gathering
-                            .getGatheringDate().toString();
-                }
-
-
-                csvLine[table.getIndex(ColDpExportTable.TYPE_COLLECTOR)]
-                        = createCollectorString(state, gathering, fieldUnit);
-                //field number not yet in COL-DP
-                //csvLine[table.getIndex(ColDpExportTable.COLLECTOR_NUMBER)] = fieldUnit.getFieldNumber();
-
-                //institution code
-
-                //catalog number
-                if (specimen.isInstanceOf(DerivedUnit.class)){
-                    DerivedUnit derivedUnit = specimen;
-                    String catalogNumber = null;
-                    if (!StringUtils.isBlank(derivedUnit.getBarcode())){
-                        catalogNumber = derivedUnit.getBarcode();
-                    } else if (!StringUtils.isBlank(derivedUnit.getAccessionNumber())){
-                        catalogNumber = derivedUnit.getAccessionNumber();
-                    } else if (!StringUtils.isBlank(derivedUnit.getCatalogNumber())){
-                        catalogNumber = derivedUnit.getCatalogNumber();
-                    }
-                    csvLine[table.getIndex(ColDpExportTable.TYPE_CATALOG_NUMBER)] = catalogNumber;
-                }
-
-                //TODO associatedSequences - not yet implemented
-                csvLine[table.getIndex(ColDpExportTable.TYPE_ASSOC_SEQ)] = null;
-
-                //sex
-                if (specimen.getSex() != null) {
-                    //TODO transform sex
-                    csvLine[table.getIndex(ColDpExportTable.TYPE_SEX)] = specimen.getSex().getLabel();
+            //field unit
+            //TODO performance due to service call
+            Collection<FieldUnit> fieldUnits = this.getOccurrenceService().findFieldUnits(specimen.getUuid(), null);
+            if (!fieldUnits.isEmpty()) {
+                if (fieldUnits.size() > 1) {
+                    state.getResult().addWarning("There are >1 field units for specimen  "
+                            + cdmBaseStr(specimen) + ".");
                 }
 
-                //link
-                if (specimen.getPreferredStableUri() != null) {
-                    csvLine[table.getIndex(ColDpExportTable.LINK)] = specimen.getPreferredStableUri().toString();
-                }
+                FieldUnit fieldUnit = fieldUnits.iterator().next();
 
-                //remarks
-                //TODO gather remarks on type designation, field unit(s) and specimen
-                csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(specimen);
+                GatheringEvent gathering = fieldUnit.getGatheringEvent();
+                if (gathering != null) {
+
+                    handleGatheringEvent(state, csvLine, table, fieldUnit, gathering);
+                }
+            }
+
+            state.getProcessor().put(table, specimenType, csvLine);
+        }catch (Exception e) {
+            state.getResult().addException(e,
+                    "An unexpected error occurred when handling type material for name " + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void handleGatheringEvent(ColDpExportState state, String[] csvLine, ColDpExportTable table,
+            FieldUnit fieldUnit, GatheringEvent gathering) {
+        //locality
+        if (gathering.getLocality() != null) {
+            csvLine[table.getIndex(ColDpExportTable.TYPE_LOCALITY)]
+                    = gathering.getLocality().getText();
+        }
+        //TODO include areas, see CDM-light implementation and COL-DP description
+
+        //country
+        if (gathering.getCountry() != null) {
+            csvLine[table.getIndex(ColDpExportTable.TYPE_COUNTRY)]
+                    = gathering.getCountry().getLabel();
+        }
+
+        //exact location
+        Point point = gathering.getExactLocation();
+        if (point != null) {
+            //latitude
+            if (point.getLatitude() != null) {
+                //TODO rounding
+                csvLine[table.getIndex(ColDpExportTable.TYPE_LATITUDE)]
+                        = point.getLatitude().toString();
+            }
+            //longitude
+            if (point.getLongitude() != null) {
+                //TODO rounding
+                csvLine[table.getIndex(ColDpExportTable.TYPE_LONGITUDE)]
+                        = point.getLongitude().toString();
             }
         }
 
-        state.getProcessor().put(table, specimenType, csvLine);
+        //altitude
+        if (gathering.getAbsoluteElevation() != null) {
+            //TODO include max/text/depth
+            csvLine[table.getIndex(ColDpExportTable.TYPE_ALTITUDE)]
+                    = gathering.getAbsoluteElevation().toString();
+        }
+
+        //host - does more or less not exist in CDM
+        csvLine[table.getIndex(ColDpExportTable.TYPE_HOST)] = null;
+
+        //date
+        if (gathering.getGatheringDate() != null) {
+            //TODO ISO 8601
+            csvLine[table.getIndex(ColDpExportTable.TYPE_DATE)] = gathering
+                    .getGatheringDate().toString();
+        }
+
+
+        csvLine[table.getIndex(ColDpExportTable.TYPE_COLLECTOR)]
+                = createCollectorString(state, gathering, fieldUnit);
+        //field number not yet in COL-DP
+        //csvLine[table.getIndex(ColDpExportTable.COLLECTOR_NUMBER)] = fieldUnit.getFieldNumber();
     }
 
     private String createNameWithItalics(List<TaggedText> taggedName) {
@@ -1247,37 +1381,42 @@ public class ColDpClassificationExport
     }
 
     private void handleNameRelationships(ColDpExportState state, TaxonName name) {
+        try {
+            Set<NameRelationship> rels = name.getRelationsFromThisName();
+            ColDpExportTable table = ColDpExportTable.NAME_RELATION;
+            String[] csvLine = new String[table.getSize()];
 
-        Set<NameRelationship> rels = name.getRelationsFromThisName();
-        ColDpExportTable table = ColDpExportTable.NAME_RELATION;
-        String[] csvLine = new String[table.getSize()];
-
-        for (NameRelationship rel : rels) {
-            NameRelationshipType type = rel.getType();
-            TaxonName name2 = rel.getToName();
-            name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
-            if (!state.getNameStore().containsKey(name2.getId())) {
-                handleName(state, name2, null);
+            for (NameRelationship rel : rels) {
+                NameRelationshipType type = rel.getType();
+                TaxonName name2 = rel.getToName();
+                name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
+                if (!state.getNameStore().containsKey(name2.getId())) {
+                    handleName(state, name2, null);
+                }
+                csvLine = new String[table.getSize()];
+                csvLine[table.getIndex(ColDpExportTable.REL_NAME_NAMEID)] = getId(state, name);
+                csvLine[table.getIndex(ColDpExportTable.REL_NAME_REL_NAMEID)] = getId(state, name2);
+                csvLine[table.getIndex(ColDpExportTable.TYPE)] = state.getTransformer().getCacheByNameRelationType(type);
+                csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(rel);
+                state.getProcessor().put(table, rel.getUuid().toString(), csvLine);
             }
+
+            rels = name.getRelationsToThisName();
+
             csvLine = new String[table.getSize()];
-            csvLine[table.getIndex(ColDpExportTable.REL_NAME_NAMEID)] = getId(state, name);
-            csvLine[table.getIndex(ColDpExportTable.REL_NAME_REL_NAMEID)] = getId(state, name2);
-            //TODO name rel type transformation
-            csvLine[table.getIndex(ColDpExportTable.TYPE)] = type.getLabel();
-            csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(rel);
-            state.getProcessor().put(table, rel.getUuid().toString(), csvLine);
-        }
 
-        rels = name.getRelationsToThisName();
-
-        csvLine = new String[table.getSize()];
-
-        for (NameRelationship rel : rels) {
-            TaxonName name2 = rel.getFromName();
-            name2 = HibernateProxyHelper.deproxy(name2);
-            if (!state.getNameStore().containsKey(name2.getId())) {
-                handleName(state, name2, null);
+            for (NameRelationship rel : rels) {
+                TaxonName name2 = rel.getFromName();
+                name2 = HibernateProxyHelper.deproxy(name2);
+                if (!state.getNameStore().containsKey(name2.getId())) {
+                    handleName(state, name2, null);
+                }
             }
+        } catch (Exception e) {
+            state.getResult().addException(e,
+                    "An unexpected error occurred when handling name relationships for name "
+                            + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -1791,8 +1930,6 @@ public class ColDpClassificationExport
 //          String shortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null); // Should be Author(year) like in Taxon.sec
 //          csvLine[table.getIndex(ColDpExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
 
-
-
             csvLine[table.getIndex(ColDpExportTable.ID)] = getId(state, reference);
 
 //          //TODO alternativeID
@@ -2015,6 +2152,7 @@ public class ColDpClassificationExport
             return "";
         }
     }
+
 
     /**
      * Returns a string representation of the {@link CdmBase cdmBase} object for
