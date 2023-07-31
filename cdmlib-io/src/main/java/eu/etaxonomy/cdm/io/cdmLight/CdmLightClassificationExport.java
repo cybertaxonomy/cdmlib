@@ -2556,7 +2556,10 @@ public class CdmLightClassificationExport
 
                 }
 
-                if (derivedUnit.getDerivedFrom() != null) {
+                if (derivedUnit.getDerivedFrom() == null) {
+                    state.getResult().addWarning("The specimen with uuid " + specimen.getUuid()
+                        + " does not have a field unit.");
+                } else {
                     for (SpecimenOrObservationBase<?> original : derivedUnit.getDerivedFrom().getOriginals()) {
                         // TODO: What to do if there are more then one
                         // FieldUnit??
@@ -2610,9 +2613,6 @@ public class CdmLightClassificationExport
                             }
                         }
                     }
-                } else {
-                    state.getResult().addWarning("The specimen with uuid " + specimen.getUuid()
-                            + " is not an DerivedUnit.");
                 }
             }
 
@@ -2723,5 +2723,4 @@ public class CdmLightClassificationExport
     protected boolean isIgnore(CdmLightExportState state) {
         return false;
     }
-
 }

@@ -2434,10 +2434,12 @@ public class WordClassificationExport
                     Iterator<MediaRepresentation> it = mediaSpecimen.getMediaSpecimen().getRepresentations().iterator();
                     String mediaUris = extractMediaUris(it);
                     csvLine[table.getIndex(WordClassificationExportTable.MEDIA_SPECIMEN_URL)] = mediaUris;
-
                 }
 
-                if (derivedUnit.getDerivedFrom() != null) {
+                if (derivedUnit.getDerivedFrom() == null) {
+                    state.getResult().addWarning("The specimen with uuid " + specimen.getUuid()
+                        + " does not have a field unit.");
+                } else {
                     for (SpecimenOrObservationBase<?> original : derivedUnit.getDerivedFrom().getOriginals()) {
                         // TODO: What to do if there are more then one
                         // FieldUnit??
@@ -2491,9 +2493,6 @@ public class WordClassificationExport
                             }
                         }
                     }
-                } else {
-                    state.getResult().addWarning("The specimen with uuid " + specimen.getUuid()
-                            + " is not an DerivedUnit.");
                 }
             }
 
@@ -2604,5 +2603,4 @@ public class WordClassificationExport
     protected boolean isIgnore(WordClassificationExportState state) {
         return false;
     }
-
 }
