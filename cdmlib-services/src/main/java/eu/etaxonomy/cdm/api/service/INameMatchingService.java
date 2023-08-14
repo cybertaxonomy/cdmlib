@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 
 import eu.etaxonomy.cdm.common.DoubleResult;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
+import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
 
 /**
  * @author andreabee90
@@ -19,6 +19,6 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
  */
 public interface INameMatchingService  {
 
-    public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName,
+    public List<DoubleResult<NameMatchingParts, Integer>> findMatchingNames(String taxonName,
             Integer maxDistanceGenus, Integer maxDisEpith);
 }

@@ -33,8 +33,8 @@ public class NameMatchingUtilsTest {
 		name = "Quercus (cf.) robur";
 		Assert.assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
 	}
-	
-	
+
+
     @Test
     public void testDeleteEmptySpaces() {
         String name = "  Quercus  robur ";
@@ -51,9 +51,9 @@ public class NameMatchingUtilsTest {
     @Test
     public void testListToUpperCase() {
         List <String> testList = new ArrayList<>();
-        testList.add("NAME 1");
+        testList.add("name oNe");
         testList.add("nAmE 2");
-        Assert.assertEquals("NAME 1", NameMatchingUtils.listToUpperCase(testList).get(0));
+        Assert.assertEquals("NAME ONE", NameMatchingUtils.listToUpperCase(testList).get(0));
         Assert.assertEquals("NAME 2", NameMatchingUtils.listToUpperCase(testList).get(1));
     }
 
@@ -73,7 +73,7 @@ public class NameMatchingUtilsTest {
         name = "Czerniaevia";
         Assert.assertEquals("CERNIAEVIA", NameMatchingUtils.replaceInitialCharacter(name));
     }
-    
+
     @Test
     public void testSoundalike() {
         String name = "ae ia oe oi sc";
@@ -88,7 +88,7 @@ public class NameMatchingUtilsTest {
 
     @Test
     public void testReplacerGenderEnding() {
-    	String name="Qas";
+    	String name = "Qas";
     	Assert.assertEquals("QA", NameMatchingUtils.replaceGenderEnding(name));
 //        String name="is";
 //        String name="us";
@@ -98,10 +98,10 @@ public class NameMatchingUtilsTest {
 //        String name="um";
 //        String name="os";
     }
-    
+
     @Test
     public void testmodifiedDamerauLevenshteinDistance() {
-       	
+
     	int distance = NameMatchingUtils.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxya asrerotciha");
     	assertEquals(5,distance);
     	distance = NameMatchingUtils.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynxsa axrerotciha");
@@ -112,5 +112,5 @@ public class NameMatchingUtilsTest {
     	assertEquals(1,distance);
     	distance = NameMatchingUtils.modifiedDamerauLevenshteinDistance("Gynoxys asterotricha", "Gynoxys asterotricha");
     	assertEquals(0,distance);
-    }   
+    }
 }
