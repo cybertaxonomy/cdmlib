@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.formula.functions.T;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -851,7 +852,7 @@ public class DefinedTermDaoImpl
                 map.put(featureUuid, list);
                 continue;
             }
-
+//
             String queryString = TermDto.getTermDtoSelect()
                     + "where v.uuid in (:supportedCategories) "
                     + "order by a.titleCache";
@@ -860,6 +861,21 @@ public class DefinedTermDaoImpl
 
             List<Object[]> result = query.list();
             list = TermDto.termDtoListFrom(result);
+            //map.put(featureUuid, list);
+            //get terms for trees
+            queryString = TermDto.getTermDtoSelect()
+                    + "WHERE a.uuid IN "
+                    + "(SELECT def.uuid FROM TermNode tr  "
+                    + " LEFT JOIN tr.graph as graph "
+                    + " LEFT JOIN tr.term as def  "
+                    + " WHERE graph.uuid in (:supportedCategories))"
+                    + " ORDER BY a.titleCache";
+            query =  getSession().createQuery(queryString, Object[].class);
+            query.setParameterList("supportedCategories", supportedCategories);
+
+            result = query.list();
+            list.addAll( TermDto.termDtoListFrom(result));
+
             map.put(featureUuid, list);
         }
         return map;
