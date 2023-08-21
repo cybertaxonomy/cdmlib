@@ -70,26 +70,26 @@ public class NameMatchingServiceImpl
         // Discuss. value of distance if query is only genus, if genus +
         // epithet, if genus + infrageneric + epithet...
 
-        if (maxDisGenus == null) {
-            maxDisGenus = 2;
-        }
-
-        if (maxDisEpith == null) {
-            maxDisEpith = 4;
-        }
-
-        Integer maxDisInfrageneric = 4;
 
         // 0. Parsing and Normalizing
 
         // TODO? Remove all qualifiers such as cf., aff., ?, <i>, x, etc. from
         // the full input string
 
-        TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
+        TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseReferencedName(taxonName); //parsereferencename 
 
         String genusQuery = name.getGenusOrUninomial();
         String epithetQuery = name.getSpecificEpithet();
         String infraGenericQuery = name.getInfraGenericEpithet();
+
+        if (maxDisGenus == null && epithetQuery == null) 
+        	maxDisGenus = 2; else maxDisGenus = 4;
+                
+        if (maxDisEpith == null) {
+        	maxDisEpith = 4;
+        }
+        
+        Integer maxDisInfrageneric = 4;
 
         int genusComputedDistance = 0;
         int epithetComputedDistance = 0;
@@ -127,12 +127,13 @@ public class NameMatchingServiceImpl
         }
 
         List<DoubleResult<NameMatchingParts, Integer>> genusOrUninomialWithDistance = new ArrayList<>();
-        genusOrUninomialWithDistance = genusOrUninomialList(postFilteredGenusOrUninominalWithDis);
+        genusOrUninomialWithDistance.addAll(genusOrUninomialList(postFilteredGenusOrUninominalWithDis));
 
         List<DoubleResult<NameMatchingParts, Integer>> onlyGenusOrUninominalListWithDistance = new ArrayList<>();
-        if (epithetQuery == null) {
+        if (epithetQuery == null && infraGenericQuery == null) {
             for (int i = 0; i < genusOrUninomialWithDistance.size(); i++) {
-                if (genusOrUninomialWithDistance.get(i).getFirstResult().getSpecificEpithet() == null) {
+                if (genusOrUninomialWithDistance.get(i).getFirstResult().getSpecificEpithet().isEmpty() &&
+                		genusOrUninomialWithDistance.get(i).getFirstResult().getInfraGenericEpithet().isEmpty()) {
                     onlyGenusOrUninominalListWithDistance.add(genusOrUninomialWithDistance.get(i));
                 }
             }
@@ -148,7 +149,7 @@ public class NameMatchingServiceImpl
             } else {
                 return bestResults;
             }
-        } else {
+        } else if (infraGenericQuery == null){
 
             String normalizedEphitetQuery = NameMatchingUtils.normalize(epithetQuery);
             String phoneticNormalizedEpithetQuery = NameMatchingUtils.nearMatch(normalizedEphitetQuery);
@@ -157,8 +158,6 @@ public class NameMatchingServiceImpl
 
             List<DoubleResult<NameMatchingParts, Integer>> binomialListWithDistTemp = new ArrayList<>();
             binomialListWithDistTemp = prefilterEpithet(genusOrUninomialWithDistance, normalizedEphitetQuery);
-
-            // -----------------CONTINUE HERE----------------
 
             List<DoubleResult<NameMatchingParts, Integer>> binomialListWithDist = new ArrayList<>();
             for (DoubleResult<NameMatchingParts, Integer> binomial : binomialListWithDistTemp) {
@@ -176,8 +175,8 @@ public class NameMatchingServiceImpl
                 binomial.setSecondResult(totalDist);
 
                 // 6. species post-filter
-                binomialListWithDist = postfilterEpithet(maxDisEpith, epithetQuery, epithetComputedDistance,
-                        normalizedEphitetQuery, binomialListWithDistTemp, binomial, epithetInDB, totalDist);
+                binomialListWithDist.addAll(postfilterEpithet(maxDisEpith, epithetQuery, epithetComputedDistance,
+                        normalizedEphitetQuery, binomialListWithDistTemp, binomial, epithetInDB, totalDist));
             }
 
             // 7. Result shaping
@@ -191,97 +190,62 @@ public class NameMatchingServiceImpl
             } else {
                 return bestResults;
             }
+        } else if (epithetQuery == null ) {
 
             // 6b Infraspecific comparison (pre-filter, comparison, post-filter)
             // TODO
 
-            // if (infraGenericQuery == null) {
-            //
-            // // 7. Result shaping
-            //
-            // Collections.sort(epithetList, (o1,o2) ->
-            // o1.getSecondResult().compareTo(o2.getSecondResult()) );
-            // List <DoubleResult<NameMatchingParts, Integer>> exactResults =
-            // exactResults(epithetList);
-            // List <DoubleResult<NameMatchingParts, Integer>> bestResults =
-            // bestResults(epithetList);
-            //
-            // if(!exactResults.isEmpty()) {
-            // return exactResults;
-            // } else {
-            // return bestResults;
-            // }
-            // } else {
-            //
-            // String normalizedInfragenericQuery =
-            // NameMatchingUtils.normalize(infraGenericQuery);
-            // String phoneticNormalizedInfragenericQuery =
-            // NameMatchingUtils.nearMatch(normalizedInfragenericQuery);
-            //
-            // fullNameMatchingPartsListWithDistance =
-            // prefilterInfrageneric(fullNameMatchingPartsListWithDistance,
-            // normalizedInfragenericQuery, maxDisInfrageneric);
-            // List <DoubleResult<NameMatchingParts, Integer>> infragenericList
-            // = new ArrayList<>();
-            // for (DoubleResult<NameMatchingParts, Integer> fullTaxonNamePart:
-            // fullNameMatchingPartsListWithDistance) {
-            // String infragenericInDB =
-            // fullTaxonNamePart.getFirstResult().getInfraGenericEpithet();
-            // if (infragenericInDB.isEmpty()) {
-            // continue;
-            // }
-            // String infragenericNameInDBNormalized =
-            // NameMatchingUtils.normalize(infragenericInDB);
-            // String phoneticNormalizedInfragenericNameInDB =
-            // NameMatchingUtils.nearMatch(infragenericNameInDBNormalized);
-            //
-            // // 5. comparison of infrageneric
-            // infragenericComputedDistance =
-            // nameMatchingComputeDistance(phoneticNormalizedInfragenericQuery,
-            // phoneticNormalizedInfragenericNameInDB);
-            // int totalDist = fullTaxonNamePart.getSecondResult() +
-            // infragenericComputedDistance;
-            // fullTaxonNamePart.setSecondResult(totalDist) ;
-            //
-            // // 6. infrageneric post-filter
-            // postfilterInfrageneric(maxDisInfrageneric, infraGenericQuery,
-            // infragenericComputedDistance, normalizedInfragenericQuery,
-            // infragenericList, fullTaxonNamePart,
-            // infragenericInDB, totalDist);
-            // }
-            // Collections.sort(infragenericList, (o1,o2) ->
-            // o1.getSecondResult().compareTo(o2.getSecondResult()));
-            // List <DoubleResult<NameMatchingParts, Integer>> exactResults =
-            // exactResults(infragenericList);
-            // List <DoubleResult<NameMatchingParts, Integer>> bestResults =
-            // bestResults(infragenericList);
-            //// List <DoubleResult<NameMatchingParts, Integer>>
-            // titelCacheResults = new ArrayList<>();
-            //// titelCacheResults =
-            // titleCacheResults(postFilteredGenusOrUninominalWithDis);
-            //
-            // if(!exactResults.isEmpty()) {
-            // // TODO fetch full titelcache for all postfilteres
-            // return exactResults;
-            // } else {
-            // // TODO fetch full titelcache for all postfilteres
-            // return bestResults;
-            // }
-            // }
+            
+        	String normalizedInfragenericQuery = NameMatchingUtils.normalize(infraGenericQuery);
+            String phoneticNormalizedInfragenericQuery = NameMatchingUtils.nearMatch(normalizedInfragenericQuery);
+            
+            List<DoubleResult<NameMatchingParts, Integer>> infragenericBinomialListWithDist = new ArrayList<>();
+            infragenericBinomialListWithDist = prefilterInfrageneric(genusOrUninomialWithDistance,
+            		normalizedInfragenericQuery, maxDisInfrageneric);
+            List <DoubleResult<NameMatchingParts, Integer>> infragenericList = new ArrayList<>();
+            for (DoubleResult<NameMatchingParts, Integer> infragenericBinomial:
+            	infragenericBinomialListWithDist) {
+            	String infragenericInDB = infragenericBinomial.getFirstResult().getInfraGenericEpithet();
+            	if (infragenericInDB.isEmpty()) {
+            		continue;
+            	}
+            	String infragenericNameInDBNormalized = NameMatchingUtils.normalize(infragenericInDB);
+            	String phoneticNormalizedInfragenericNameInDB = NameMatchingUtils.nearMatch(infragenericNameInDBNormalized);
+            		// 5. comparison of infrageneric
+            	infragenericComputedDistance = nameMatchingComputeDistance(phoneticNormalizedInfragenericQuery,
+            			phoneticNormalizedInfragenericNameInDB);
+            	int totalDist = infragenericBinomial.getSecondResult() + infragenericComputedDistance;
+            	infragenericBinomial.setSecondResult(totalDist) ;
+            			
+            		// 6. infrageneric post-filter
+            	postfilterInfrageneric(maxDisInfrageneric, infraGenericQuery,
+            			infragenericComputedDistance, normalizedInfragenericQuery,
+            			infragenericList, infragenericBinomial,
+            			infragenericInDB, totalDist);
+            	}
+            Collections.sort(infragenericList, (o1,o2) ->
+            o1.getSecondResult().compareTo(o2.getSecondResult()));
+            List<DoubleResult<NameMatchingParts, Integer>> exactResults = exactResults(infragenericList);
+            List<DoubleResult<NameMatchingParts, Integer>> bestResults = bestResults(infragenericList);
+            if(!exactResults.isEmpty()) {
+            	return exactResults;
+            } else {
+            	return bestResults;
+            }
+        } else {
+        	return null;
         }
     }
 
     private List<DoubleResult<NameMatchingParts, Integer>> genusOrUninomialList(
-            Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
-        List<DoubleResult<NameMatchingParts, Integer>> genusOrUninomialWithDistance = new ArrayList<>();
+    		Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
+    	List<DoubleResult<NameMatchingParts, Integer>> genusOrUninomialWithDistance = new ArrayList<>();
+    	List<NameMatchingParts> fullNameMatchingPartsListTemp = nameDao2.findNameMatchingParts(postFilteredGenusOrUninominalWithDis);
         postFilteredGenusOrUninominalWithDis.forEach((key, value) -> {
-            List<NameMatchingParts> fullNameMatchingPartsListTemp = nameDao2
-                    .findNameMatchingParts(postFilteredGenusOrUninominalWithDis);
-            for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
-                // if (fullNameMatchingParts.getSpecificEpithet() == null) {
-                genusOrUninomialWithDistance
-                        .add(new DoubleResult<NameMatchingParts, Integer>(fullNameMatchingParts, value));
-                // }
+        	for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
+        		if (fullNameMatchingParts.getGenusOrUninomial() == key) {
+        			genusOrUninomialWithDistance.add(new DoubleResult<NameMatchingParts, Integer>(fullNameMatchingParts, value));
+                 }
             }
         });
         return genusOrUninomialWithDistance;
