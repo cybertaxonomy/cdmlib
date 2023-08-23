@@ -149,7 +149,7 @@ public class NameMatchingServiceImpl
             } else {
                 return bestResults;
             }
-        } else if (infraGenericQuery == null){
+        } else if (epithetQuery != null && infraGenericQuery == null){
 
             String normalizedEphitetQuery = NameMatchingUtils.normalize(epithetQuery);
             String phoneticNormalizedEpithetQuery = NameMatchingUtils.nearMatch(normalizedEphitetQuery);
@@ -307,12 +307,18 @@ public class NameMatchingServiceImpl
     private int nameMatchingComputeDistance(String strQuery, String strDB) {
         int computedDistanceTemp;
         String trimmedStrings = trimCommonChar(strQuery, strDB);
+        String restantTrimmedQuery = "";
+        String restantTrimmedDB="";
 
         if ("".equals(trimmedStrings)) {
             computedDistanceTemp = 0;
         } else {
-            String restantTrimmedQuery = trimmedStrings.split(" ")[0];
-            String restantTrimmedDB = trimmedStrings.split(" ")[1];
+        	try {
+            restantTrimmedQuery = trimmedStrings.split(" ")[0];
+            restantTrimmedDB = trimmedStrings.split(" ")[1];}
+        	catch (Exception e) {
+        		System.out.println("error");
+        	}
             computedDistanceTemp = NameMatchingUtils.modifiedDamerauLevenshteinDistance(restantTrimmedQuery,
                     restantTrimmedDB);
         }

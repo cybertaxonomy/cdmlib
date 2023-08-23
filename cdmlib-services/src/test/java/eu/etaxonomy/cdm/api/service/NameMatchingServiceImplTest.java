@@ -153,55 +153,55 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // if the binomial query comprises genus and subgenus
         	
-        	// for exact match return exact matching name 
-//        inputName = "Nectandra (Nectrina)";
-//        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
-//        Assert.assertEquals(1, matchResult.size());
-//        matchRes = matchResult.get(0);
-//        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
-//        Assert.assertEquals("Nectrina", matchRes.getFirstResult().getInfraGenericEpithet());
-//        Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
-//        Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
-//        Assert.assertEquals(0,(int) matchRes.getSecondResult());
-//        
-//        	// non exact match return the best results
-//        inputName = "Nectandra (Nextrina)";
-//        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
-//        Assert.assertEquals(2, matchResult.size());
-//        matchRes = matchResult.get(0);
-//        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
-//        Assert.assertEquals("Nectrina", matchRes.getFirstResult().getInfraGenericEpithet());
-//        Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
-//        Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
-//        Assert.assertEquals(1,(int) matchRes.getSecondResult());
-//
-//        matchRes = matchResult.get(1);
-//        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
-//        Assert.assertEquals("Nexxxina", matchRes.getFirstResult().getInfraGenericEpithet());
-//        Assert.assertEquals(42, (int)matchRes.getFirstResult().getTaxonNameId());
-//        Assert.assertEquals("c955a8ab-8501-421a-bfa3-5748237e8942", matchRes.getFirstResult().getTaxonNameUuid().toString());
-//        Assert.assertEquals(2,(int) matchRes.getSecondResult());
+//        	 for exact match return exact matching name 
+        inputName = "Nectandra subgen. Nectrina";
+        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        Assert.assertEquals(1, matchResult.size());
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("Nectrina", matchRes.getFirstResult().getInfraGenericEpithet());
+        Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(0,(int) matchRes.getSecondResult());
         
-//      inputName = "Nectandra subg. Nectrina";
-//      matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
-//      Assert.assertEquals(1, matchResult.size());
-//      matchRes = matchResult.get(0);
-//      Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
-//      Assert.assertEquals("Nectrina", matchRes.getFirstResult().getInfraGenericEpithet());
-//      Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
-//      Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
-//      Assert.assertEquals(0,(int) matchRes.getSecondResult());
-//      
-//      	// non exact match return the best results
-//      inputName = "Nectandra subg. Nextrina";
-//      matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
-//      Assert.assertEquals(2, matchResult.size());
-//      matchRes = matchResult.get(0);
-//      Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
-//      Assert.assertEquals("Nectrina", matchRes.getFirstResult().getInfraGenericEpithet());
-//      Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
-//      Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
-//      Assert.assertEquals(1,(int) matchRes.getSecondResult());
+        	// non exact match return the best results
+        inputName = "Nectandra subgen. Nextrina";
+        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        Assert.assertEquals(2, matchResult.size());
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("Nectrina", matchRes.getFirstResult().getInfraGenericEpithet());
+        Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(1,(int) matchRes.getSecondResult());
+
+        matchRes = matchResult.get(1);
+        Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+        Assert.assertEquals("Nexxxina", matchRes.getFirstResult().getInfraGenericEpithet());
+        Assert.assertEquals(42, (int)matchRes.getFirstResult().getTaxonNameId());
+        Assert.assertEquals("c955a8ab-8501-421a-bfa3-5748237e8942", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(2,(int) matchRes.getSecondResult());
+        
+		inputName = "Nectandra subg. Nectrina";
+		matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+		Assert.assertEquals(1, matchResult.size());
+		matchRes = matchResult.get(0);
+		Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+		Assert.assertEquals("Nectrina", matchRes.getFirstResult().getInfraGenericEpithet());
+		Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
+		Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
+		Assert.assertEquals(0,(int) matchRes.getSecondResult());
+  
+  	// non exact match return the best results
+		inputName = "Nectandra subg. Nextrina";
+		matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+		Assert.assertEquals(2, matchResult.size());
+		matchRes = matchResult.get(0);
+		Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+		Assert.assertEquals("Nectrina", matchRes.getFirstResult().getInfraGenericEpithet());
+		Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
+		Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
+		Assert.assertEquals(1,(int) matchRes.getSecondResult());
     }
 
 	@Override
