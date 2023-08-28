@@ -58,7 +58,7 @@
                 <abcd21:SourceName>Herbarium Berolinense</abcd21:SourceName>
                 <abcd21:UnitID>B GT 0000966</abcd21:UnitID>
                 <abcd21:AssociationType>DNA and voucher from same in situ individual</abcd21:AssociationType>
-                <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum</abcd21:DatasetAccessPoint>
+                <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar</abcd21:DatasetAccessPoint>
               </abcd21:UnitAssociation>
             </abcd21:Associations>
             <abcd21:Gathering>
@@ -166,7 +166,7 @@
                 <abcd21:SourceName>Herbarium Berolinense</abcd21:SourceName>
                 <abcd21:UnitID>B 10 0356881</abcd21:UnitID>
                 <abcd21:AssociationType>DNA and voucher from same in situ population</abcd21:AssociationType>
-                <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum</abcd21:DatasetAccessPoint>
+                <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar</abcd21:DatasetAccessPoint>
               </abcd21:UnitAssociation>
             </abcd21:Associations>
             <abcd21:Gathering>
