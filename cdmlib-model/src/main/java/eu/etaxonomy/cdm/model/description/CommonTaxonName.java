@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CommonTaxonName", propOrder = {
     "name",
+    "transliteration",
     "language",
     "area"
 })
@@ -61,6 +62,10 @@ public class CommonTaxonName extends DescriptionElementBase {
     @XmlElement(name = "Name")
     @Field(store=Store.YES)
     private String name;
+
+    @XmlElement(name = "Name")
+    @Field(store=Store.YES)
+    private String transliteration;
 
     @XmlElement(name = "Language")
     @XmlIDREF
@@ -152,6 +157,19 @@ public class CommonTaxonName extends DescriptionElementBase {
      */
     public void setName(String name){
         this.name = name;
+    }
+
+    /**
+     * Returns the transliteration string of <i>this</i> common name.
+     */
+    public String getTransliteration(){
+        return this.transliteration;
+    }
+    /**
+     * @see #getTransliteration()
+     */
+    public void setTransliteration(String transliteration){
+        this.transliteration = transliteration;
     }
 
     /**

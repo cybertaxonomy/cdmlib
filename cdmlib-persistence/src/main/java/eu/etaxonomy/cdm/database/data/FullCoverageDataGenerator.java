@@ -360,6 +360,7 @@ public class FullCoverageDataGenerator {
 
 		//CommonTaxonName
 		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance("common name", Language.ENGLISH(), Country.UNITEDSTATESOFAMERICA());
+		commonTaxonName.setTransliteration("transliteration of 'common name'");
 		handleAnnotatableEntity(commonTaxonName);
 
 		//TextData
