@@ -33,7 +33,6 @@ public class DocUtils {
      * @param aptFile apt file
      *
      * @return html as string or error message if exception
-     *
      */
     public static String convertAptToHtml(File aptFile) {
         PlexusContainer container;

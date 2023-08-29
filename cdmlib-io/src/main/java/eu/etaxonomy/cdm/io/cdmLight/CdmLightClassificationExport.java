@@ -257,9 +257,9 @@ public class CdmLightClassificationExport
                 if (root.hasChildNodes()) {
                     childNodes = new ArrayList<>();
                     for (TaxonNode child : root.getChildNodes()) {
-                    	if (child != null) {
-                    		childNodes.add(new TaxonNodeDto(child));
-                    	}
+                        if (child != null) {
+                            childNodes.add(new TaxonNodeDto(child));
+                        }
                     }
                     state.getNodeChildrenMap().put(root.getUuid(), childNodes);
 
@@ -683,10 +683,10 @@ public class CdmLightClassificationExport
                     state.getProcessor().put(table, textData, csvLine);
                 }
             }else if (element instanceof CategoricalData) {
-            	//use formater
-            	CategoricalData categoricalData = (CategoricalData)element;
-            	String cache = CategoricalDataFormatter.NewInstance(null).format(categoricalData);
-            	csvLine = new String[table.getSize()];
+                //use formater
+                CategoricalData categoricalData = (CategoricalData)element;
+                String cache = CategoricalDataFormatter.NewInstance(null).format(categoricalData);
+                csvLine = new String[table.getSize()];
                 csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
                 if (cdmBase instanceof Taxon) {
                     csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, cdmBase);
@@ -697,9 +697,9 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.FACT_CATEGORY)] = categoricalData.getFeature().getLabel();
                 state.getProcessor().put(table, categoricalData, csvLine);
             }else if (element instanceof QuantitativeData) {
-            	QuantitativeData quantitativeData = (QuantitativeData) element;
-            	String cache = QuantitativeDataFormatter.NewInstance(null).format(quantitativeData);
-            	csvLine = new String[table.getSize()];
+                QuantitativeData quantitativeData = (QuantitativeData) element;
+                String cache = QuantitativeDataFormatter.NewInstance(null).format(quantitativeData);
+                csvLine = new String[table.getSize()];
                 csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
                 if (cdmBase instanceof Taxon) {
                     csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, cdmBase);
@@ -1968,7 +1968,7 @@ public class CdmLightClassificationExport
                         }
                     }
                     if (state.getConfig().isShowInverseNameRelationsInHomotypicGroup()) {
-			if (rel.getToName().equals(name)){
+            if (rel.getToName().equals(name)){
                             // alle Homonyme und inverse blocking names
 //                               if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM())
 //                                       || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())
@@ -1996,9 +1996,9 @@ public class CdmLightClassificationExport
                     if (relName.getFromName().equals(name)){
                         relatedName = relName.getToName();
                         if (state.getConfig().isAddHTML()){
-                        	nonRelNames += label + createNameWithItalics(relatedName.getTaggedName())+ " ";
+                            nonRelNames += label + createNameWithItalics(relatedName.getTaggedName())+ " ";
                         }else{
-                        	nonRelNames += label + relatedName.getTitleCache();
+                            nonRelNames += label + relatedName.getTitleCache();
                         }
                     }
 //                    else{
@@ -2172,9 +2172,9 @@ public class CdmLightClassificationExport
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
             for (TypeDesignationBase<?> typeDes: designationList) {
-            	if (typeDes instanceof TextualTypeDesignation) {
-            		typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
-            		String typeDesStateRefs = "";
+                if (typeDes instanceof TextualTypeDesignation) {
+                    typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
+                    String typeDesStateRefs = "";
                     if (typeDes.getDesignationSource() != null ){
                         typeDesStateRefs = "[";
                         NamedSource source = typeDes.getDesignationSource();
@@ -2193,26 +2193,26 @@ public class CdmLightClassificationExport
                         typeDesStateRefs += "]";
                     }
 
-            		typeTextDesignations =  typeTextDesignations + typeDesStateRefs +"; ";
+                    typeTextDesignations =  typeTextDesignations + typeDesStateRefs +"; ";
 
-            	}else if (typeDes instanceof SpecimenTypeDesignation){
-            	    DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();
-            	    if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
-            	        handleSpecimen(state, specimen);
-            	    }
-            	}
+                }else if (typeDes instanceof SpecimenTypeDesignation){
+                    DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();
+                    if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
+                        handleSpecimen(state, specimen);
+                    }
+                }
             }
             if (typeTextDesignations.equals("; ")) {
-            	typeTextDesignations = "";
+                typeTextDesignations = "";
             }
             if (StringUtils.isNotBlank(typeTextDesignations)) {
-            	typeTextDesignations = typeTextDesignations.substring(0, typeTextDesignations.length()-2);
+                typeTextDesignations = typeTextDesignations.substring(0, typeTextDesignations.length()-2);
             }
             String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list, true, typifiedNames.get(0).isSpecies() || typifiedNames.get(0).isInfraSpecific()):"";
 
             if (StringUtils.isNotBlank(specimenTypeString)) {
                 if (!specimenTypeString.endsWith(".")) {
-                	specimenTypeString = specimenTypeString + ".";
+                    specimenTypeString = specimenTypeString + ".";
                 }
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = specimenTypeString;
 
@@ -2221,7 +2221,7 @@ public class CdmLightClassificationExport
             }
             if (StringUtils.isNotBlank(typeTextDesignations)) {
                 if (!typeTextDesignations.endsWith(".")) {
-                	typeTextDesignations = typeTextDesignations + ".";
+                    typeTextDesignations = typeTextDesignations + ".";
                 }
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_CACHE)] = typeTextDesignations;
 
@@ -2512,7 +2512,6 @@ public class CdmLightClassificationExport
              * Diego, El Amatal, 14.4.1993, GonzÃ¡lez 159” [Auch ohne Punkt] ->
              * FieldUnit TitleCache HerbariumAbbrev = “B” [wie gehabt]
              * HerbariumCode
-             *
              */
 
             csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_ID)] = specimenId;
@@ -2553,7 +2552,6 @@ public class CdmLightClassificationExport
                     Iterator<MediaRepresentation> it = mediaSpecimen.getMediaSpecimen().getRepresentations().iterator();
                     String mediaUris = extractMediaUris(it);
                     csvLine[table.getIndex(CdmLightExportTable.MEDIA_SPECIMEN_URL)] = mediaUris;
-
                 }
 
                 if (derivedUnit.getDerivedFrom() == null) {

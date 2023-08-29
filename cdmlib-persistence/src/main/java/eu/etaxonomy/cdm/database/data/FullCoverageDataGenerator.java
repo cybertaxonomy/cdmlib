@@ -937,7 +937,7 @@ public class FullCoverageDataGenerator {
 		registration.setInstitution(Institution.NewInstance());
 		User submitter = User.NewInstance("submitter", "12345");
 		registration.setSubmitter(submitter);
-		handleAnnotatableEntity(registration);;
+		handleAnnotatableEntity(registration);
 
 		cdmBases.add(submitter);
 		cdmBases.add(bacName);
