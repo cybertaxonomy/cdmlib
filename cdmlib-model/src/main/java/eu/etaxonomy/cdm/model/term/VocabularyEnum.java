@@ -240,7 +240,7 @@ public enum VocabularyEnum {
         result.add(UUID.fromString("2f213ce1-7d83-4cf9-8e45-cd151025a726"));  //duration
         result.add(UUID.fromString("5f38986d-fcbd-4119-983a-e434c060ff28"));  //fixation
         result.add(UUID.fromString("858cbad3-705f-48ed-9558-f33e203c1728"));  //fragility
-        result.add(UUID.fromString("858cbad3-705f-48ed-9558-f33e203c1728"));  //fusion
+        result.add(UUID.fromString("5a6834cf-bff9-4cfb-8b9f-12731a49ab4e"));  //fusion
         result.add(UUID.fromString("0ae0038d-aa69-45fb-8e65-0458b92a8cf4"));  //growth form
         result.add(UUID.fromString("395a13fb-359e-4ee9-84d8-4cabd162de53"));  //habitat
         result.add(UUID.fromString("d4992bf3-f4b8-461f-8896-97ded8307a5e"));  //length
@@ -258,6 +258,7 @@ public enum VocabularyEnum {
         result.add(UUID.fromString("84fa5fcc-780f-4f48-9a08-1573cf6f4ce2"));  //texture
         result.add(UUID.fromString("310ea67f-3898-4c82-9fda-a431fa934c08"));  //transparency
         result.add(UUID.fromString("e7e22727-f2e8-4cda-8d20-fcbd06262d05"));  //variability
+        result.add(UUID.fromString("0a4200d9-7c48-42ff-9c2f-e6f4a5a79ca8"));  //width
 
         return result;
     }
