@@ -10,8 +10,10 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -147,14 +149,16 @@ public class QuantitativeDataDto extends DescriptionElementDto {
 
     public static List<QuantitativeDataDto> quantitativeDataDtoListFrom(List<Object[]> result) {
         List<QuantitativeDataDto> dtoResult = new ArrayList<>();
+        Map<UUID,QuantitativeDataDto> dtoResultMap = new HashMap<>();
         QuantitativeDataDto dto = null;
 
         for (Object[] o: result){
             UUID uuid = (UUID)o[0];
             UUID featureUuid = (UUID)o[1];
-            if (dto == null || !dto.getElementUuid().equals(uuid)){
+            dto = dtoResultMap.get(uuid);
+            if (dto == null ){
                 dto = new QuantitativeDataDto(uuid, new FeatureDto(featureUuid, null, null, null, null, null, null, true, false, true, null, true, false, null, null, null, null), (NoDescriptiveDataStatus)o[6]);
-                dtoResult.add(dto);
+                dtoResultMap.put(uuid, dto);
             }
             StatisticalMeasurementValueDto statVal = new StatisticalMeasurementValueDto(TermDto.fromTerm((DefinedTermBase)o[4]),(BigDecimal)o[3], (UUID)o[2]) ;
             dto.addValue(statVal);
@@ -166,6 +170,6 @@ public class QuantitativeDataDto extends DescriptionElementDto {
             }
         }
 
-        return dtoResult;
+        return new ArrayList(dtoResultMap.values());
     }
 }
