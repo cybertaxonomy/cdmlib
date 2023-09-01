@@ -255,6 +255,7 @@ public enum VocabularyEnum {
         result.add(UUID.fromString("7b052355-5c40-44a4-be28-9e9be64cf643"));  //relief
         result.add(UUID.fromString("d8d54f47-2ef6-41fe-9f45-2ff361ff5509"));  //reproduction
         result.add(UUID.fromString("5530a471-5d30-4b5e-ae34-4fffbf7512c5"));  //shape
+        result.add(UUID.fromString("292bca94-faa9-4243-9837-611c10ba3fa5"));  //size
         result.add(UUID.fromString("84fa5fcc-780f-4f48-9a08-1573cf6f4ce2"));  //texture
         result.add(UUID.fromString("310ea67f-3898-4c82-9fda-a431fa934c08"));  //transparency
         result.add(UUID.fromString("e7e22727-f2e8-4cda-8d20-fcbd06262d05"));  //variability
