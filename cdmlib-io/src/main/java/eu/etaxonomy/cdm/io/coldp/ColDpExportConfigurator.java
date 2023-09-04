@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
@@ -54,6 +53,7 @@ public class ColDpExportConfigurator
     private boolean doFactualData = true;
 
     //metadata /gfbio
+    /*
     private String description;
     private String creator;
     private String contributor;
@@ -66,8 +66,8 @@ public class ColDpExportConfigurator
     private String location;
     private String keywords;
     private String licence;
-
-    private static final IExportTransformer transformer = new ColDpExportTransformer();
+*/
+    private static final ColDpExportTransformer transformer = new ColDpExportTransformer();
 
 //************************* FACTORY ******************************/
 
@@ -89,7 +89,7 @@ public class ColDpExportConfigurator
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
-        setUserFriendlyIOName("Cdm Light Export");
+        setUserFriendlyIOName("Col DP Export");
     }
 
     @Override
@@ -162,89 +162,89 @@ public class ColDpExportConfigurator
         this.csvIOConfig.setFieldsTerminatedBy(fieldsTerminatedBy);
     }
 
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-    public void setCreator(String creator) {
-        this.creator = creator;
-    }
-
-    public String getContributor() {
-        return contributor;
-    }
-    public void setContributor(String contributor) {
-        this.contributor = contributor;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
-    public String getDataSet_landing_page() {
-        return dataSet_landing_page;
-    }
-    public void setDataSet_landing_page(String dataSet_landing_page) {
-        this.dataSet_landing_page = dataSet_landing_page;
-    }
-
-    public String getDataset_download_link() {
-        return dataset_download_link;
-    }
-    public void setDataset_download_link(String dataset_download_link) {
-        this.dataset_download_link = dataset_download_link;
-    }
-
-    public String getBase_url() {
-        return base_url;
-    }
-    public void setBase_url(String base_url) {
-        this.base_url = base_url;
-    }
-
-    public String getRecommended_citation() {
-        return recommended_citation;
-    }
-    public void setRecommended_citation(String recommended_citation) {
-        this.recommended_citation = recommended_citation;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
-
-    public String getLicence() {
-        return licence;
-    }
-    public void setLicence(String licence) {
-        this.licence = licence;
-    }
+//    public String getDescription() {
+//        return description;
+//    }
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
+//
+//    public String getCreator() {
+//        return creator;
+//    }
+//    public void setCreator(String creator) {
+//        this.creator = creator;
+//    }
+//
+//    public String getContributor() {
+//        return contributor;
+//    }
+//    public void setContributor(String contributor) {
+//        this.contributor = contributor;
+//    }
+//
+//    public String getTitle() {
+//        return title;
+//    }
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
+//
+//    public Language getLanguage() {
+//        return language;
+//    }
+//    public void setLanguage(Language language) {
+//        this.language = language;
+//    }
+//
+//    public String getDataSet_landing_page() {
+//        return dataSet_landing_page;
+//    }
+//    public void setDataSet_landing_page(String dataSet_landing_page) {
+//        this.dataSet_landing_page = dataSet_landing_page;
+//    }
+//
+//    public String getDataset_download_link() {
+//        return dataset_download_link;
+//    }
+//    public void setDataset_download_link(String dataset_download_link) {
+//        this.dataset_download_link = dataset_download_link;
+//    }
+//
+//    public String getBase_url() {
+//        return base_url;
+//    }
+//    public void setBase_url(String base_url) {
+//        this.base_url = base_url;
+//    }
+//
+//    public String getRecommended_citation() {
+//        return recommended_citation;
+//    }
+//    public void setRecommended_citation(String recommended_citation) {
+//        this.recommended_citation = recommended_citation;
+//    }
+//
+//    public String getLocation() {
+//        return location;
+//    }
+//    public void setLocation(String location) {
+//        this.location = location;
+//    }
+//
+//    public String getKeywords() {
+//        return keywords;
+//    }
+//    public void setKeywords(String keywords) {
+//        this.keywords = keywords;
+//    }
+//
+//    public String getLicence() {
+//        return licence;
+//    }
+//    public void setLicence(String licence) {
+//        this.licence = licence;
+//    }
 
     public boolean isHighLightPrimaryCollector() {
         return isHighlightPrimaryCollector;

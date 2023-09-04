@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.coldp;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +28,9 @@ import eu.etaxonomy.cdm.model.term.Representation;
  * @author a.mueller
  * @date 17.07.2023
  */
-public class ColDpExportTransformer extends ExportTransformerBase {
+public class ColDpExportTransformer extends ExportTransformerBase implements Serializable{
+
+    private static final long serialVersionUID = -527652844010832994L;
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
