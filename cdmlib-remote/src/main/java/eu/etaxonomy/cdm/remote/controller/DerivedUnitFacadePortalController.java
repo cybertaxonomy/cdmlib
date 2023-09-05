@@ -8,23 +8,22 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.Arrays;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import io.swagger.annotations.Api;
+
 /**
  * @author a.kohlbecker
  * @since 14.10.2010
- *
  */
 @Controller
 @Api("portal_derivedUnitFacade")
 @RequestMapping(value = {"/portal/derivedUnitFacade/{uuid}"})
-public class DerivedUnitFacadePortalController extends
-        DerivedUnitFacadeController {
+public class DerivedUnitFacadePortalController
+        extends DerivedUnitFacadeController {
 
     public DerivedUnitFacadePortalController(){
         super();

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @author a.mueller
  * @since 03.06.2010
  *
- * @deprecated with #9678 a similar cache strategy (DerivedUnitCacheStrategy)
+ * @deprecated with #9678 a similar cache strategy (DerivedUnitDefaultCacheStrategy)
  *      was implemented in cdmlib-model. This class may be removed in future.
  */
 @Deprecated
@@ -150,6 +150,7 @@ public class DerivedUnitFacadeCacheStrategy
      */
     private String getUnitNumber(DerivedUnitFacade facade) {
         String result;
+
         if (isNotBlank(facade.getAccessionNumber())){
             result = facade.getAccessionNumber();
         }else if (isNotBlank(facade.getBarcode())){
