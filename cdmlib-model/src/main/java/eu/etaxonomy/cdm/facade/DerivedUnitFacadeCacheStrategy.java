@@ -157,12 +157,13 @@ public class DerivedUnitFacadeCacheStrategy
         }else{
             result = facade.getCatalogNumber();
         }
-        String code = getCode(facade);
         if(result != null){
             result = result.trim();
-            if(isNotBlank(code) && result.startsWith(code + " ")){
-                result = result.replaceAll("^" + code + "\\s", "");
-            }
+            //#10379 do not deduplicate anymore
+//          String code = getCode(facade);
+//          if(isNotBlank(code) && result.startsWith(code + " ")){
+//              result = result.replaceAll("^" + code + "\\s", "");
+//          }
         }
         return result;
     }
