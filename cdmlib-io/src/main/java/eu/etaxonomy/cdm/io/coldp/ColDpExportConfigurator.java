@@ -113,20 +113,6 @@ public class ColDpExportConfigurator
 
 //******************** GETTER / SETTER *******************************/
 
-    public boolean isShowAllNameRelationsInHomotypicGroup() {
-        return isShowAllNameRelationsInHomotypicGroup;
-    }
-    public void setShowAllNameRelationsInHomotypicGroup(boolean isShowAllNameRelationsInHomotypicGroup) {
-        this.isShowAllNameRelationsInHomotypicGroup = isShowAllNameRelationsInHomotypicGroup;
-    }
-
-    public boolean isShowInverseNameRelationsInHomotypicGroup() {
-        return isShowInverseNameRelationsInHomotypicGroup;
-    }
-    public void setShowInverseNameRelationsInHomotypicGroup(boolean isShowInverseNameRelationsInHomotypicGroup) {
-        this.isShowInverseNameRelationsInHomotypicGroup = isShowInverseNameRelationsInHomotypicGroup;
-    }
-
     public String getEncoding() {
         return csvIOConfig.getEncoding();
     }
@@ -162,90 +148,7 @@ public class ColDpExportConfigurator
         this.csvIOConfig.setFieldsTerminatedBy(fieldsTerminatedBy);
     }
 
-//    public String getDescription() {
-//        return description;
-//    }
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
-//
-//    public String getCreator() {
-//        return creator;
-//    }
-//    public void setCreator(String creator) {
-//        this.creator = creator;
-//    }
-//
-//    public String getContributor() {
-//        return contributor;
-//    }
-//    public void setContributor(String contributor) {
-//        this.contributor = contributor;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public Language getLanguage() {
-//        return language;
-//    }
-//    public void setLanguage(Language language) {
-//        this.language = language;
-//    }
-//
-//    public String getDataSet_landing_page() {
-//        return dataSet_landing_page;
-//    }
-//    public void setDataSet_landing_page(String dataSet_landing_page) {
-//        this.dataSet_landing_page = dataSet_landing_page;
-//    }
-//
-//    public String getDataset_download_link() {
-//        return dataset_download_link;
-//    }
-//    public void setDataset_download_link(String dataset_download_link) {
-//        this.dataset_download_link = dataset_download_link;
-//    }
-//
-//    public String getBase_url() {
-//        return base_url;
-//    }
-//    public void setBase_url(String base_url) {
-//        this.base_url = base_url;
-//    }
-//
-//    public String getRecommended_citation() {
-//        return recommended_citation;
-//    }
-//    public void setRecommended_citation(String recommended_citation) {
-//        this.recommended_citation = recommended_citation;
-//    }
-//
-//    public String getLocation() {
-//        return location;
-//    }
-//    public void setLocation(String location) {
-//        this.location = location;
-//    }
-//
-//    public String getKeywords() {
-//        return keywords;
-//    }
-//    public void setKeywords(String keywords) {
-//        this.keywords = keywords;
-//    }
-//
-//    public String getLicence() {
-//        return licence;
-//    }
-//    public void setLicence(String licence) {
-//        this.licence = licence;
-//    }
-
+    //TODO really needed?
     public boolean isHighLightPrimaryCollector() {
         return isHighlightPrimaryCollector;
     }
@@ -257,46 +160,11 @@ public class ColDpExportConfigurator
         this.createZipFile = createZipFile;
     }
 
-    public boolean isFilterIntextReferences() {
-        return isFilterIntextReferences;
-    }
-    public void setRemoveIntextReferences(boolean isRemoveIntextReferences) {
-        this.isFilterIntextReferences = isRemoveIntextReferences;
-    }
-
     public Comparator<TaxonNodeDto> getTaxonNodeComparator() {
         return taxonNodeComparator;
     }
     public void setTaxonNodeComparator(Comparator<TaxonNodeDto> taxonNodeComparator) {
         this.taxonNodeComparator = taxonNodeComparator;
-    }
-
-    public boolean isExcludeImportSources() {
-        return isExcludeImportSources;
-    }
-    public void setExcludeImportSources(boolean isFilterImportSources) {
-        this.isExcludeImportSources = isFilterImportSources;
-    }
-
-    public boolean isAddHTML() {
-        return isAddHTML;
-    }
-    public void setAddHTML(boolean isAddHTML) {
-        this.isAddHTML = isAddHTML;
-    }
-
-    public boolean isCreateCondensedDistributionString() {
-        return this.isCreateCondensedDistributionString;
-    }
-    public void setCreateCondensedDistributionString(boolean isCreateCondensedDistributionString) {
-         this.isCreateCondensedDistributionString = isCreateCondensedDistributionString;
-    }
-
-    public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {
-        return this.condensedDistributionConfiguration;
-    }
-    public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistributionConfiguration) {
-        this.condensedDistributionConfiguration = condensedDistributionConfiguration;
     }
 
     public boolean isDoFactualData() {

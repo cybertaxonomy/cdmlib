@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
 /**
+ * TODO merge with CDM light
+ *
  * @author a.mueller
  * @since 2023-07-17
  */
