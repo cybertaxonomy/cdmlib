@@ -1968,7 +1968,7 @@ public class CdmLightClassificationExport
                         }
                     }
                     if (state.getConfig().isShowInverseNameRelationsInHomotypicGroup()) {
-            if (rel.getToName().equals(name)){
+                        if (rel.getToName().equals(name)){
                             // alle Homonyme und inverse blocking names
 //                               if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM())
 //                                       || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())
@@ -1980,7 +1980,7 @@ public class CdmLightClassificationExport
 //                               }else if (!rel.getType().isBasionymRelation()){
                                    otherRelationships.add(rel);
 //                               }
-                           }
+                         }
                     }
                 }
 
@@ -2111,7 +2111,9 @@ public class CdmLightClassificationExport
                             doubtful = "";
                         }
                         if (tb instanceof Synonym ){
-                            if (!((Synonym)tb).getAcceptedTaxon().equals(acceptedTaxon)) {
+                            Synonym syn = CdmBase.deproxy(tb, Synonym.class);
+                            Taxon acc = syn.getAcceptedTaxon();
+                            if (acc == null || !acc.equals(acceptedTaxon)) {
                                 continue;
                             }
                             if (StringUtils.isNotBlank(sec)){
@@ -2123,7 +2125,8 @@ public class CdmLightClassificationExport
                             break;
                         }else{
                             sec = "";
-                            if (!(((Taxon)tb).isProparteSynonym() || ((Taxon)tb).isMisapplication())){
+                            Taxon taxon = CdmBase.deproxy(tb, Taxon.class);
+                            if (!(taxon.isProparteSynonym() || taxon.isMisapplication())){
                                 isAccepted = true;
                                 break;
                             }else {
