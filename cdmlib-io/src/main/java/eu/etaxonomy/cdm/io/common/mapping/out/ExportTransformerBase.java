@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.io.Serializable;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,9 +29,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  * @since 15.03.2010
  */
-public abstract class ExportTransformerBase implements IExportTransformer {
+public abstract class ExportTransformerBase implements IExportTransformer, Serializable  {
 
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = -7148232986905966817L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
 	@Override
