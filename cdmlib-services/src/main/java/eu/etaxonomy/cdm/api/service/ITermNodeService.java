@@ -90,13 +90,13 @@ public interface ITermNodeService extends IVersionableService<TermNode>{
      * @param vocabularyUuid
      * @return
      */
-    UpdateResult saveNewCharacterNodeDtoMap(Map<Character, CharacterNodeDto> dtos, UUID vocabularyUuid);
+    public UpdateResult saveNewCharacterNodeDtoMap(Map<Character, CharacterNodeDto> dtos, UUID vocabularyUuid);
 
     /**
      * @param dtos
      * @return
      */
-    UpdateResult saveCharacterNodeDtoList(List<CharacterNodeDto> dtos);
+    public UpdateResult saveCharacterNodeDtoList(List<CharacterNodeDto> dtos);
 
 
 
