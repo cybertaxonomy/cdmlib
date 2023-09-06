@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @since 15.07.2016
  */
 @Component
-public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase>> {
+public class GbifImport
+        extends SpecimenImportBase<GbifImportConfigurator, SpecimenImportStateBase<SpecimenImportConfiguratorBase, SpecimenImportStateBase>> {
 
     private static final long serialVersionUID = 3631757505818095911L;
     private static final Logger logger = LogManager.getLogger();

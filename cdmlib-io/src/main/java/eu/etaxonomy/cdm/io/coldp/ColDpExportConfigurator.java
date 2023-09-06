@@ -41,21 +41,6 @@ public class ColDpExportConfigurator
     //filter
     private boolean doFactualData = true;
 
-    //metadata /gfbio
-    /*
-    private String description;
-    private String creator;
-    private String contributor;
-    private String title;
-    private Language language;
-    private String dataSet_landing_page;
-    private String dataset_download_link;
-    private String base_url;
-    private String recommended_citation;
-    private String location;
-    private String keywords;
-    private String licence;
-*/
     private static final ColDpExportTransformer transformer = new ColDpExportTransformer();
 
 //************************* FACTORY ******************************/
