@@ -108,7 +108,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                     collectorsString = collector.getTitleCache();  //institutions
                 }
             }
-            collectorsString = CdmUtils.concat(" - ", collectorsString, fieldNumberString);
+            collectorsString = CdmUtils.concat(" ", collectorsString, fieldNumberString);
         }
         setDeterminations(specimenOrObservation.getDeterminations().stream()
                 .map(det -> DeterminationEventDTO.from(det))
