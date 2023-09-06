@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.description.Character;
@@ -48,7 +49,8 @@ public class TermTreeDto extends TermCollectionDto {
 
     public TermTreeDto(UUID uuid, Set<Representation> representations, TermType termType, TermNode root, String titleCache, boolean isAllowDuplicates, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicates, isOrderRelevant, isFlat);
-        this.root = new TermNodeDto(null, 0, this, root.getUuid(), root.getId(), root.treeIndex(), root.getPath());
+        root = HibernateProxyHelper.deproxy(root);
+        this.root = TermNodeDto.fromNode(root, this);
     }
 
     public TermNodeDto getRoot() {

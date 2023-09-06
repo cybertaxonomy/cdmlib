@@ -335,13 +335,13 @@ public class FeatureDto extends TermDto {
                 }
                 o =  elements[15];
                 Set<TermCollectionDto> supportedCategoricalDtos = new HashSet<>();
-                if (o instanceof TermVocabulary){
-                    supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
+                if (o instanceof TermCollection){
+                    supportedCategoricalDtos.add(TermCollectionDto.fromCdmBase((TermCollection)o));
                 }else if (o instanceof Set){
-                    Set<TermVocabulary<? extends DefinedTermBase>> supportedCategoricalEnumerations =
-                            (Set<TermVocabulary<? extends DefinedTermBase>>)o;
-                    for (TermVocabulary<? extends DefinedTermBase> voc: supportedCategoricalEnumerations){
-                        supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary(voc));
+                    Set<TermCollection> supportedCategoricalEnumerations =
+                            (Set<TermCollection>)o;
+                    for (TermCollection voc: supportedCategoricalEnumerations){
+                        supportedCategoricalDtos.add(TermCollectionDto.fromCdmBase((TermCollection)o));
                     }
                 }
 

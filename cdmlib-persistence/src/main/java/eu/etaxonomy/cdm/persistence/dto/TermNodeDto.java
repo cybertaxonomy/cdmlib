@@ -43,10 +43,14 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
 
     private TermDto term;
     private TermType type;
-    private TermTreeDto tree;
+    private UUID treeUuid;
     private String path;
     private Set<MarkerDto> markers;
     private Set<AnnotationDto> annotations;
+    private boolean externallyManaged = false;
+    private boolean allowsDuplicats = false;
+    private boolean isFlat = false;
+    private boolean isOrderRelevant = false;
 
 
     public static TermNodeDto fromNode(TermNode node, TermTreeDto treeDto){
@@ -61,6 +65,10 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
         if (node.getParent() != null){
             dto.setParentUuid(node.getParent().getUuid());
         }
+        dto.setExternallyManaged(treeDto!= null? treeDto.isManaged():false);
+        dto.setAllowsDuplicats(treeDto!= null? treeDto.isAllowDuplicate():false);
+        dto.setFlat(treeDto!= null? treeDto.isFlat():false);
+        dto.setFlat(treeDto!= null? treeDto.isOrderRelevant():false);
 
         List<TermNodeDto> children = new ArrayList<>();
         for (Object o: node.getChildNodes()){
@@ -131,9 +139,20 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
         if (parent != null){
             parent.getChildren().add(position, this);
         }
-        tree = treeDto;
-        if (tree != null){
-            tree.addTerm(termDto);
+
+        if (treeDto != null){
+            treeUuid = treeDto.getUuid();
+            treeDto.addTerm(termDto);
+            this.externallyManaged = treeDto.isManaged();
+            this.allowsDuplicats = treeDto.isAllowDuplicate();
+            this.isFlat = treeDto.isFlat();
+            this.isOrderRelevant = treeDto.isOrderRelevant();
+        }else {
+            treeUuid = parent.getTreeUuid();
+            this.externallyManaged = parent.externallyManaged;
+            this.allowsDuplicats = parent.allowsDuplicats;
+            this.isFlat = parent.isFlat;
+            this.isOrderRelevant = parent.isOrderRelevant;
         }
         this.path = path;
     }
@@ -148,7 +167,14 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
         type = termDto!= null? termDto.getTermType(): null;
         children = new ArrayList<>();
 
-        tree = treeDto;
+        if (treeDto != null){
+            treeUuid = treeDto.getUuid();
+            treeDto.addTerm(termDto);
+            this.externallyManaged = treeDto.isManaged();
+            this.allowsDuplicats = treeDto.isAllowDuplicate();
+            this.setFlat(treeDto.isFlat());
+            this.isOrderRelevant = treeDto.isOrderRelevant();
+        }
         this.path = path;
 
     }
@@ -161,7 +187,14 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
         type = termDto!= null? termDto.getTermType(): null;
         children = new ArrayList<>();
 
-        tree = treeDto;
+        if (treeDto != null){
+            treeUuid = treeDto.getUuid();
+            treeDto.addTerm(termDto);
+            this.externallyManaged = treeDto.isManaged();
+            this.allowsDuplicats= treeDto.isAllowDuplicate();
+            this.isFlat = treeDto.isFlat();
+            this.isOrderRelevant = treeDto.isOrderRelevant();
+        }
         this.path = path;
     }
 
@@ -183,12 +216,12 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
         this.treeIndex = treeIndex;
     }
 
-    public TermTreeDto getTree() {
-        return tree;
+    public UUID getTreeUuid() {
+        return treeUuid;
     }
 
-    public void setTree(TermTreeDto tree) {
-        this.tree = tree;
+    public void setTree(UUID treeUUID) {
+        this.treeUuid = treeUUID;
     }
 
     public List<TermNodeDto> getChildren() {
@@ -288,9 +321,60 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
         this.markers.add(marker);
     }
 
+    /**
+     * @return the externallyManaged
+     */
+    public boolean isExternallyManaged() {
+        return externallyManaged;
+    }
+
+    /**
+     * @return the isFlat
+     */
+    public boolean isFlat() {
+        return isFlat;
+    }
+
+    /**
+     * @param isFlat the isFlat to set
+     */
+    public void setFlat(boolean isFlat) {
+        this.isFlat = isFlat;
+    }
+
+    /**
+     * @param externallyManaged the externallyManaged to set
+     */
+    public void setExternallyManaged(boolean externallyManaged) {
+        this.externallyManaged = externallyManaged;
+    }
+
     @Override
     public Set<AnnotationDto> getAnnotations() {
         return annotations;
+    }
+
+
+
+    /**
+     * @return the allowsDuplicats
+     */
+    public boolean isAllowsDuplicats() {
+        return allowsDuplicats;
+    }
+
+    /**
+     * @param allowsDuplicats the allowsDuplicats to set
+     */
+    public void setAllowsDuplicats(boolean allowsDuplicats) {
+        this.allowsDuplicats = allowsDuplicats;
+    }
+
+
+
+
+    public void setType(TermType type) {
+        this.type = type;
     }
 
     @Override
@@ -310,7 +394,7 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
        int index = this.getIndex(nodeDto);
        if (index > -1){
            this.getChildren().remove(index);
-           this.tree.removeTerm(nodeDto.term);
+           //this.tree.removeTerm(nodeDto.term);
            return true;
        }else if (doRecursive && this.getChildren() != null && !this.getChildren().isEmpty()){
            for (TermNodeDto child: children){
@@ -338,10 +422,10 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
                + " a.termType,  "
                + " a.uri,  "
                + " root,  "
-               + " a.titleCache, "
-               + " a.allowDuplicates, "
-               + " a.orderRelevant, "
-               + " a.isFlat ";
+               + " a.titleCache ";
+//               + " a.allowDuplicates, "
+//               + " a.orderRelevant, "
+//               + " a.isFlat ";
        String sqlFromString = " FROM TermNode as a ";
 
        String sqlJoinString = " LEFT JOIN a.tree "
@@ -384,6 +468,20 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
     @Override
     public String getLabel() {
         return this.getTerm().getTitleCache();
+    }
+
+    /**
+     * @return the isOrderRelevant
+     */
+    public boolean isOrderRelevant() {
+        return isOrderRelevant;
+    }
+
+    /**
+     * @param isOrderRelevant the isOrderRelevant to set
+     */
+    public void setOrderRelevant(boolean isOrderRelevant) {
+        this.isOrderRelevant = isOrderRelevant;
     }
 
     @Override
