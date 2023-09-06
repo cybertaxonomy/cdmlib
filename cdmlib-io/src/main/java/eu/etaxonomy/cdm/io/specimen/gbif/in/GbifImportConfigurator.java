@@ -20,11 +20,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class GbifImportConfigurator<GbifImportState, InputStream> extends SpecimenImportConfiguratorBase {
 
+    private static final long serialVersionUID = -6574012865739879532L;
+
     private static IInputTransformer defaultTransformer = null;
 
-    /**
-     * @param transformer
-     */
     public GbifImportConfigurator(IInputTransformer transformer) {
         super(transformer);
         // TODO Auto-generated constructor stub
@@ -35,8 +34,6 @@ public class GbifImportConfigurator<GbifImportState, InputStream> extends Specim
         newInstance.setOccurenceQuery(query);
         return newInstance;
     }
-
-    private static final long serialVersionUID = 1L;
 
     @Override
     protected void makeIoClassList() {
@@ -54,10 +51,7 @@ public class GbifImportConfigurator<GbifImportState, InputStream> extends Specim
 
     @Override
     public SpecimenImportStateBase getNewState() {
-        SpecimenImportStateBase state = new SpecimenImportStateBase(this);
+        SpecimenImportStateBase<?,?> state = new SpecimenImportStateBase(this);
         return state;
     }
-
-
-
 }
