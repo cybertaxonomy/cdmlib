@@ -20,5 +20,5 @@ import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
 public interface INameMatchingService  {
 
     public List<DoubleResult<NameMatchingParts, Integer>> findMatchingNames(String taxonName,
-            Integer maxDistanceGenus, Integer maxDisEpith);
+            Integer maxDistance);
 }

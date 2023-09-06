@@ -53,7 +53,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
      // if the query does not include an epithet (exact match)
         inputName = "Nectandra";
-        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(1, matchResult.size());
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -64,7 +64,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // if the query does not include an epithet (not exact match)
         inputName = "Nextondra";
-        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(2, matchResult.size());
 
         matchRes = matchResult.get(0);
@@ -90,7 +90,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         
         // if the query has an exact match on the DB, return the exact match
         inputName = "Nectandra magnoliifolia";
-        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(1, matchResult.size());
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -100,7 +100,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(0,(int) matchRes.getSecondResult());
 
         inputName = "Nectandra surinamensis";
-        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -118,7 +118,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // if the query does not have an exact match on the DB, return the best matches
         inputName = "Nectendra nigre";
-        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -135,7 +135,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(4,(int) matchRes.getSecondResult());
 
         inputName = "Bectendra nigri";
-        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -155,7 +155,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         	
 //        	 for exact match return exact matching name 
         inputName = "Nectandra subgen. Nectrina";
-        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(1, matchResult.size());
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -166,7 +166,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         
         	// non exact match return the best results
         inputName = "Nectandra subgen. Nextrina";
-        matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+        matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -183,7 +183,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(2,(int) matchRes.getSecondResult());
         
 		inputName = "Nectandra subg. Nectrina";
-		matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+		matchResult = nameMatchingService.findMatchingNames(inputName, null);
 		Assert.assertEquals(1, matchResult.size());
 		matchRes = matchResult.get(0);
 		Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -194,7 +194,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
   
   	// non exact match return the best results
 		inputName = "Nectandra subg. Nextrina";
-		matchResult = nameMatchingService.findMatchingNames(inputName, null, null);
+		matchResult = nameMatchingService.findMatchingNames(inputName, null);
 		Assert.assertEquals(2, matchResult.size());
 		matchRes = matchResult.get(0);
 		Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
@@ -202,6 +202,40 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 		Assert.assertEquals(41, (int)matchRes.getFirstResult().getTaxonNameId());
 		Assert.assertEquals("08ab2653-a4da-4c9b-8330-1bf4268cab88", matchRes.getFirstResult().getTaxonNameUuid().toString());
 		Assert.assertEquals(1,(int) matchRes.getSecondResult());
+		
+		// if it is a trinomial name (genus species and subspecies) 
+		// exact match
+		inputName = "Nectandra mollis subsp. laurel";
+		matchResult = nameMatchingService.findMatchingNames(inputName, null);
+		Assert.assertEquals(1, matchResult.size());
+		matchRes = matchResult.get(0);
+		Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+		Assert.assertEquals("mollis", matchRes.getFirstResult().getSpecificEpithet());
+		Assert.assertEquals("laurel", matchRes.getFirstResult().getInfraSpecificEpithet());
+		Assert.assertEquals(55, (int)matchRes.getFirstResult().getTaxonNameId());
+		Assert.assertEquals("25296c78-f62b-4dfa-9cd1-813bc9d1d777", matchRes.getFirstResult().getTaxonNameUuid().toString());
+		Assert.assertEquals(0,(int) matchRes.getSecondResult());
+		
+		// if it is a trinomial name (genus species and subspecies) 
+		// exact match
+		inputName = "Nectandra mollis var. laurol";
+		matchResult = nameMatchingService.findMatchingNames(inputName, null);
+		Assert.assertEquals(2, matchResult.size());
+		matchRes = matchResult.get(0);
+		Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+		Assert.assertEquals("mollis", matchRes.getFirstResult().getSpecificEpithet());
+		Assert.assertEquals("laurel", matchRes.getFirstResult().getInfraSpecificEpithet());
+		Assert.assertEquals(55, (int)matchRes.getFirstResult().getTaxonNameId());
+		Assert.assertEquals("25296c78-f62b-4dfa-9cd1-813bc9d1d777", matchRes.getFirstResult().getTaxonNameUuid().toString());
+		Assert.assertEquals(1,(int) matchRes.getSecondResult());
+				
+		matchRes = matchResult.get(1);
+		Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
+		Assert.assertEquals("mollis", matchRes.getFirstResult().getSpecificEpithet());
+		Assert.assertEquals("laureli", matchRes.getFirstResult().getInfraSpecificEpithet());
+		Assert.assertEquals(58, (int)matchRes.getFirstResult().getTaxonNameId());
+		Assert.assertEquals("a598ab3f-b33b-4b4b-b237-d616fcb6b5b1", matchRes.getFirstResult().getTaxonNameUuid().toString());
+		Assert.assertEquals(2,(int) matchRes.getSecondResult());
     }
 
 	@Override
