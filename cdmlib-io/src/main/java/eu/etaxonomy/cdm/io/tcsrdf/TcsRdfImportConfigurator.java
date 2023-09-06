@@ -42,6 +42,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
+    //im-/export uses Classification for is_taxonomically_included_in relationships
+    private boolean useClassification = true;
 
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
@@ -303,4 +305,11 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	public void setDoRelTaxa(boolean doRelTaxa) {
 		this.doRelTaxa = doRelTaxa;
 	}
+
+    public boolean isUseClassification() {
+        return useClassification;
+    }
+    public void setUseClassification(boolean useClassification) {
+        this.useClassification = useClassification;
+    }
 }

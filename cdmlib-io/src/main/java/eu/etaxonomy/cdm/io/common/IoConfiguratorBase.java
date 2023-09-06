@@ -33,9 +33,6 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
     public static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
     public static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
 
-	//im-/export uses Classification for is_taxonomically_included_in relationships
-	private boolean useClassification = true;
-
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 
@@ -75,13 +72,6 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	@Override
     public void setCdmAppController(ICdmApplication cdmApp) {
 		this.cdmApp = cdmApp;
-	}
-
-	public boolean isUseClassification() {
-		return useClassification;
-	}
-	public void setUseClassification(boolean useClassification) {
-		this.useClassification = useClassification;
 	}
 
 	@Override
