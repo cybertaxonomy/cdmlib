@@ -798,7 +798,7 @@ public class ColDpClassificationExport
                     }
 
                     //transliteration - we do not have this yet
-                    csvLine[table.getIndex(ColDpExportTable.VERN_TRANSLITERATION)] = null;
+                    csvLine[table.getIndex(ColDpExportTable.VERN_TRANSLITERATION)] = commonName.getTransliteration();
 
                     if (commonName.getLanguage() != null) {
                         //TODO char(3) lang
