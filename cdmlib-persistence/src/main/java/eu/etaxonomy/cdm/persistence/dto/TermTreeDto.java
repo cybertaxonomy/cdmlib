@@ -170,15 +170,16 @@ public class TermTreeDto extends TermCollectionDto {
                     (boolean)elements[5],
                     (boolean)elements[6]);
             termTreeDto.setUri((URI)elements[8]);
+            ExternallyManaged extManaged = (ExternallyManaged) elements[7];
+            if (extManaged != null) {
+                termTreeDto.setManaged(extManaged != null && extManaged.getAuthorityType() == AuthorityType.EXTERN);
+            }
+
 
             if (termTreeDto.getTermType().equals(TermType.Character)){
                 termTreeDto.setRoot(CharacterNodeDto.fromTermNode((TermNode<Character>) elements[9], termTreeDto));
             }else {
                 termTreeDto.setRoot(TermNodeDto.fromNode((TermNode)elements[9], termTreeDto));
-            }
-            ExternallyManaged extManaged = (ExternallyManaged) elements[7];
-            if (extManaged != null) {
-                termTreeDto.setManaged(extManaged != null && extManaged.getAuthorityType() == AuthorityType.EXTERN);
             }
 
             dtoMap.put(uuid, termTreeDto);
