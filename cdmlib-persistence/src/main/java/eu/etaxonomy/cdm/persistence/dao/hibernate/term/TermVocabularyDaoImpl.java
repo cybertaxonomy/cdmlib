@@ -364,7 +364,11 @@ public class TermVocabularyDaoImpl
         query.setParameter("feature", TermType.Feature);
 
         List<Object[]> result = query.list();
-        List<TermVocabularyDto>  dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        List<TermCollectionDto>  collDtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        List<TermVocabularyDto>  dtos = new ArrayList<>();
+        for (TermCollectionDto coll: collDtos) {
+            dtos.add((TermVocabularyDto)coll);
+        }
         return dtos;
     }
 
@@ -384,7 +388,7 @@ public class TermVocabularyDaoImpl
                 }
             }
         }
-        String queryString = TermCollectionDto.getTermCollectionDtoSelect();
+        String queryString = TermVocabularyDto.getTermCollectionDtoSelect("TermVocabulary");
 
         if (!termTypeWithSubType.isEmpty()){
             queryString += " WHERE a.termType in (:termTypes) ";
@@ -408,7 +412,11 @@ public class TermVocabularyDaoImpl
         }
 
         List<Object[]> result = query.list();
-        List<TermVocabularyDto> dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        List<TermVocabularyDto> dtos = new ArrayList<>();
+        List<TermCollectionDto> collDtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        for (TermCollectionDto coll:collDtos) {
+            dtos.add((TermVocabularyDto)coll);
+        }
         return dtos;
     }
 
@@ -464,7 +472,7 @@ public class TermVocabularyDaoImpl
 
         List<Object[]> result = query.list();
         if (result.size() == 1){
-            return TermVocabularyDto.termVocabularyDtoListFrom(result).get(0);
+            return (TermVocabularyDto) TermVocabularyDto.termVocabularyDtoListFrom(result).get(0);
         }
         return null;
     }
@@ -484,7 +492,10 @@ public class TermVocabularyDaoImpl
         query.setParameterList("uuidList", vocUuids);
 
         List<Object[]> result = query.list();
-        list = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        List<TermCollectionDto> collDtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        for (TermCollectionDto coll: collDtos) {
+            list.add((TermVocabularyDto)coll);
+        }
         return list;
     }
 

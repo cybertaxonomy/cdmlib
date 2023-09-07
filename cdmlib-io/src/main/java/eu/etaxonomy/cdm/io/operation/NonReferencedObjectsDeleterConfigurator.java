@@ -29,6 +29,9 @@ public class NonReferencedObjectsDeleterConfigurator
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
+    private boolean doTaxa = true;
+    private boolean doSynonyms = true;
+    private boolean doTaxonNames = true;
 	private boolean doReferences = true;
 	private boolean doAuthors = true;
 
@@ -107,5 +110,12 @@ public class NonReferencedObjectsDeleterConfigurator
     @Override
     public Reference getSourceReference() {
         return null;
+    }
+
+    public boolean isDoTaxonNames() {
+        return doTaxonNames;
+    }
+    public void setDoTaxonNames(boolean doTaxonNames) {
+        this.doTaxonNames = doTaxonNames;
     }
 }

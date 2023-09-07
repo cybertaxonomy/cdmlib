@@ -1098,30 +1098,4 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
-
-    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingNames () {
-
-        List<DoubleResult<TaxonNameParts, Integer>> matchResult = nameService.findMatchingNames("Gynxya asrerotciha", 0, 0, 10);
-        Assert.assertEquals(1, matchResult.size());
-
-        matchResult = nameService.findMatchingNames("Gynxya asrerotciha", 1, 0, 10);
-        Assert.assertEquals(2, matchResult.size());
-
-        DoubleResult<TaxonNameParts, Integer> gynxyaAsrerotciha = matchResult.get(0);
-        Assert.assertNotNull(gynxyaAsrerotciha);
-        Assert.assertEquals(10, (int)gynxyaAsrerotciha.getFirstResult().getTaxonNameId());
-        Assert.assertEquals("Gynxya", matchResult.get(0).getFirstResult().getGenusOrUninomial());
-        Assert.assertEquals("asrerotciha", matchResult.get(0).getFirstResult().getSpecificEpithet());
-        Assert.assertEquals("Distance should be 0", 0, (int)gynxyaAsrerotciha.getSecondResult());
-
-        DoubleResult<TaxonNameParts, Integer> gynxyasAsrerotciha = matchResult.get(1);
-        Assert.assertNotNull(gynxyasAsrerotciha);
-        Assert.assertEquals(12, (int)gynxyasAsrerotciha.getFirstResult().getTaxonNameId());
-        Assert.assertEquals("Gynxyas", matchResult.get(1).getFirstResult().getGenusOrUninomial());
-        Assert.assertEquals("asrerotciha", matchResult.get(1).getFirstResult().getSpecificEpithet());
-        Assert.assertEquals("Distance should be 1", 1, (int)gynxyasAsrerotciha.getSecondResult());
-    }
 }

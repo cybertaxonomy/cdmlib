@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.lang.reflect.Constructor;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +54,6 @@ import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -91,7 +91,6 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
     "idInVocabulary",
     "symbol",
     "symbol2",
-    "externallyManaged",
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
@@ -214,8 +213,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     //empty string is explicitly allowed and should be distinguished from NULL!
     private String symbol2;
 
-    private ExternallyManaged externallyManaged;
-
 
 //***************************** CONSTRUCTOR *******************************************/
 
@@ -302,6 +299,19 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
 	@Override
     public Set<T> getIncludes(){
+	    Set<T> toAdd = new HashSet<>();
+	    Iterator<T> it = this.includes.iterator();
+        while (it.hasNext()) {
+            T term = it.next();
+            if (term instanceof HibernateProxy) {
+                HibernateProxy proxy = (HibernateProxy) term;
+                LazyInitializer li = proxy.getHibernateLazyInitializer();
+                T t = (T)li.getImplementation();
+                it.remove();
+                toAdd.add(t);
+            }
+        }
+        this.includes.addAll(toAdd);
         return this.includes;
     }
 
@@ -538,19 +548,19 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 //******************************* METHODS ******************************************************/
 
     @Override
-      public boolean isKindOf(T ancestor) {
-          if (kindOf == null || ancestor == null){
-              return false;
-          }else if (kindOf.equals(ancestor)){
-              return true;
-          }else{
-              return kindOf.isKindOf(ancestor);
-          }
-      }
+    public boolean isKindOf(T ancestor) {
+        if (kindOf == null || ancestor == null){
+            return false;
+        }else if (kindOf.equals(ancestor)){
+            return true;
+        }else{
+            return kindOf.isKindOf(ancestor);
+        }
+    }
 
-      @Override
-      public Set<T> getGeneralizationOf(boolean recursive) {
-          Set<T> result = new HashSet<>();
+    @Override
+    public Set<T> getGeneralizationOf(boolean recursive) {
+        Set<T> result = new HashSet<>();
         result.addAll(this.generalizationOf);
         if (recursive){
             for (T child : this.generalizationOf){
@@ -558,7 +568,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
             }
         }
         return result;
-      }
+    }
 
     public abstract void resetTerms();
 

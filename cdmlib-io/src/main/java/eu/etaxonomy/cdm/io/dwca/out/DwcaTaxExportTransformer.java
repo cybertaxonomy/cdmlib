@@ -28,6 +28,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 public class DwcaTaxExportTransformer extends ExportTransformerBase {
 
+    private static final long serialVersionUID = -5736678510833015272L;
+
     private static final Logger logger = LogManager.getLogger();
 
 	private static TermMapping nomStatusMapping;

@@ -3,7 +3,6 @@
 LSID HTTP Binding Standard for the LSIDDataServicePortType 
 and the LSIDMetadataServicePortType 
 
-
 Jordi Albornoz and Ben Szekely
 12 November 2003 - Initial Draft
 -->
@@ -122,5 +121,4 @@ Jordi Albornoz and Ben Szekely
 			</output>
 		</operation>
 	</binding>
-		
 </definitions>

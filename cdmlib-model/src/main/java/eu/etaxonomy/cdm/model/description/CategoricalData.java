@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -19,6 +20,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -60,7 +63,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlType(name = "CategoricalData", propOrder = {
     "orderRelevant",
     "stateData",
-    "unknownData"
+    "noDataStatus"
 })
 @XmlRootElement(name = "CategoricalData")
 @Entity
@@ -84,8 +87,13 @@ public class CategoricalData extends DescriptionElementBase {
     @NotEmpty(groups = Level2.class)
     private List<StateData> stateData = new ArrayList<>();
 
-    @XmlElement(name = "UnknownData")
-    private final Boolean unknownData = false;
+    @XmlAttribute(name ="NoDataStatus")
+    @Column(name="noDataStatus", length=10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus")}
+    )
+    //see also QuantitativeData.noDataStatus
+    private NoDescriptiveDataStatus noDataStatus;
 
 //****************************** FACTORY METHOD *******************************/
 
@@ -204,6 +212,14 @@ public class CategoricalData extends DescriptionElementBase {
         this.orderRelevant = orderRelevant;
     }
 
+    //no data status, #2975
+    public NoDescriptiveDataStatus getNoDataStatus() {
+        return noDataStatus;
+    }
+    public void setNoDataStatus(NoDescriptiveDataStatus noDataStatus) {
+        this.noDataStatus = noDataStatus;
+    }
+
 // ********************* CONVENIENCE ******************************************/
 
     /**
@@ -263,7 +279,7 @@ public class CategoricalData extends DescriptionElementBase {
         return (getFeature()!=null ? getFeature().getLabel(): "") +
                 "[" + stateData +
                     (orderRelevant? ", orderRelevant=" + orderRelevant:"") +
-                    (unknownData? ", unknownData=" + unknownData:"")
+                    (noDataStatus != null ? ", noDataStatus=" + noDataStatus.getLabel() :"")
                 + "]";
     }
 

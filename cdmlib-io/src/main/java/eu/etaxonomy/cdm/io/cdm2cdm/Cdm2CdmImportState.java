@@ -35,6 +35,10 @@ public class Cdm2CdmImportState
     private Map<Class,Set<UUID>> existingObjects = new HashMap<>();
     private Set<CdmBase> toSave = new HashSet<>();
 
+    //flag to indicate that currently a graph is imported and therefore vocabularies should be
+    //imported only partially and marked as such
+    private boolean isGraph = false;
+
 //************************ CONSTRUCTOR **********************************/
 
     protected Cdm2CdmImportState(Cdm2CdmImportConfigurator config) {
@@ -88,5 +92,13 @@ public class Cdm2CdmImportState
     }
     public void clearToSave() {
         this.toSave.clear();
+        this.toSave = new HashSet<>();
+    }
+
+    public boolean isGraph() {
+        return isGraph;
+    }
+    public void setGraph(boolean isGraph) {
+        this.isGraph = isGraph;
     }
 }

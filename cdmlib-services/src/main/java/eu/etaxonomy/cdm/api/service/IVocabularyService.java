@@ -18,9 +18,9 @@ import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -112,10 +112,10 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	/**
 	 * Initializes the complete term hierarchy consisting of {@link TermDto}s
 	 * for the given vocabulary
-	 * @param vocabularyDto the dto of the term vocabulary
-	 * @return a the top level elements for this vocabulary
+	 * @param collectionDto the dto of the term collection
+	 * @return a the top level elements for this collection
 	 */
-	public Collection<TermDto> getCompleteTermHierarchy(TermVocabularyDto vocabularyDto);
+	public Collection<TermDto> getCompleteTermHierarchy(TermCollectionDto vocabularyDto);
 
 	/**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.
@@ -187,7 +187,7 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @param vocUuid
      * @return
      */
-    public TermVocabularyDto findVocabularyDtoByVocabularyUuid(UUID vocUuid);
+    public TermCollectionDto findVocabularyDtoByVocabularyUuid(UUID vocUuid);
 
     /**
      * @param vocUuid
@@ -218,12 +218,4 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * Returns the total count of vocabularies according to the given filter.
      */
     public long count(VocabularyFilter filter);
-
-    /**
-     * TODO move to a term collection service as soon as it exists.
-     *
-     * @return the {@link TermCollection} searched for
-     */
-    public TermCollection<?,?> findCollection(UUID termCollectionUuid);
-
 }

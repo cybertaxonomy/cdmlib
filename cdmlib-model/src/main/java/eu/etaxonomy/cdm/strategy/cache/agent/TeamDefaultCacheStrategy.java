@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 /**
@@ -173,7 +174,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
         List<Person> teamMembers = team.getTeamMembers();
         int size = teamMembers.size();
         for (int i = 1; i <= size && (i < etAlPosition || (size == etAlPosition && !team.isHasMoreMembers())); i++){
-            Person teamMember = teamMembers.get(i-1);
+            Person teamMember = CdmBase.deproxy(teamMembers.get(i-1), Person.class);
             if(teamMember == null){
                 // this can happen in UIs in the process of adding new members
                 continue;

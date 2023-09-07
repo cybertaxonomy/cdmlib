@@ -360,6 +360,7 @@ public class FullCoverageDataGenerator {
 
 		//CommonTaxonName
 		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance("common name", Language.ENGLISH(), Country.UNITEDSTATESOFAMERICA());
+		commonTaxonName.setTransliteration("transliteration of 'common name'");
 		handleAnnotatableEntity(commonTaxonName);
 
 		//TextData
@@ -937,7 +938,7 @@ public class FullCoverageDataGenerator {
 		registration.setInstitution(Institution.NewInstance());
 		User submitter = User.NewInstance("submitter", "12345");
 		registration.setSubmitter(submitter);
-		handleAnnotatableEntity(registration);;
+		handleAnnotatableEntity(registration);
 
 		cdmBases.add(submitter);
 		cdmBases.add(bacName);

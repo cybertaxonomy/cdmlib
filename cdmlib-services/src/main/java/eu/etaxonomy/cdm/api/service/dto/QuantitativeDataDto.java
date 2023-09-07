@@ -10,11 +10,14 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -34,18 +37,24 @@ public class QuantitativeDataDto extends DescriptionElementDto {
 
     private Set<StatisticalMeasurementValueDto> values = new HashSet<>();
 
-    public QuantitativeDataDto(UUID elementUuid, FeatureDto feature){
-        super(elementUuid, feature);
+    private NoDescriptiveDataStatus noDataStatus = null;
+
+    public QuantitativeDataDto(UUID elementUuid, FeatureDto feature, NoDescriptiveDataStatus noDataStatus){
+        super(elementUuid, feature, noDataStatus);
     }
 
     public static QuantitativeDataDto fromQuantitativeData (QuantitativeData data) {
-        QuantitativeDataDto dto = new QuantitativeDataDto(data.getUuid(), FeatureDto.fromFeature(data.getFeature()));
+        QuantitativeDataDto dto = new QuantitativeDataDto(data.getUuid(), FeatureDto.fromFeature(data.getFeature()), data.getNoDataStatus());
         dto.measurementUnitDto = data.getUnit() != null? TermDto.fromTerm(data.getUnit()): null;
 //        dto.measurementIdInVocabulary = data.getUnit() != null? data.getUnit().getIdInVocabulary(): null;
+        if (data.getNoDataStatus() != null) {
+            dto.setNoDataStatus(data.getNoDataStatus());
+        }
         for (StatisticalMeasurementValue value: data.getStatisticalValues()){
             StatisticalMeasurementValueDto statDto = StatisticalMeasurementValueDto.fromStatisticalMeasurementValue(value);
             dto.values.add(statDto);
         }
+
         return dto;
     }
 
@@ -71,6 +80,22 @@ public class QuantitativeDataDto extends DescriptionElementDto {
 
     public void addValue(StatisticalMeasurementValueDto value) {
         this.values.add(value);
+    }
+
+    /**
+     * @return the noDataStatus
+     */
+    @Override
+    public NoDescriptiveDataStatus getNoDataStatus() {
+        return noDataStatus;
+    }
+
+    /**
+     * @param noDataStatus the noDataStatus to set
+     */
+    @Override
+    public void setNoDataStatus(NoDescriptiveDataStatus noDataStatus) {
+        this.noDataStatus = noDataStatus;
     }
 
     public BigDecimal getSpecificStatisticalValue(UUID typeUUID){
@@ -103,7 +128,8 @@ public class QuantitativeDataDto extends DescriptionElementDto {
                 + "statVal.uuid,  "
                 + "statVal.value, "
                 + "statVal.type, "
-                + "unit";
+                + "unit, "
+                + "a.noDataStatus ";
 
         String sqlFromString =   " FROM QuantitativeData as a ";
 
@@ -123,22 +149,27 @@ public class QuantitativeDataDto extends DescriptionElementDto {
 
     public static List<QuantitativeDataDto> quantitativeDataDtoListFrom(List<Object[]> result) {
         List<QuantitativeDataDto> dtoResult = new ArrayList<>();
+        Map<UUID,QuantitativeDataDto> dtoResultMap = new HashMap<>();
         QuantitativeDataDto dto = null;
 
         for (Object[] o: result){
             UUID uuid = (UUID)o[0];
             UUID featureUuid = (UUID)o[1];
-            if (dto == null || !dto.getElementUuid().equals(uuid)){
-                dto = new QuantitativeDataDto(uuid, new FeatureDto(featureUuid, null, null, null, null, null, null, true, false, true, null, true, false, null, null, null, null));
-                dtoResult.add(dto);
+            dto = dtoResultMap.get(uuid);
+            if (dto == null ){
+                dto = new QuantitativeDataDto(uuid, new FeatureDto(featureUuid, null, null, null, null, null, null, true, false, true, null, true, false, null, null, null, null), (NoDescriptiveDataStatus)o[6]);
+                dtoResultMap.put(uuid, dto);
             }
             StatisticalMeasurementValueDto statVal = new StatisticalMeasurementValueDto(TermDto.fromTerm((DefinedTermBase)o[4]),(BigDecimal)o[3], (UUID)o[2]) ;
             dto.addValue(statVal);
             if (o[5] != null) {
                 dto.setMeasurementUnit(TermDto.fromTerm((DefinedTermBase)o[5]));
             }
+            if (o[6] != null) {
+                dto.setNoDataStatus((NoDescriptiveDataStatus)o[6]);
+            }
         }
 
-        return dtoResult;
+        return new ArrayList(dtoResultMap.values());
     }
 }

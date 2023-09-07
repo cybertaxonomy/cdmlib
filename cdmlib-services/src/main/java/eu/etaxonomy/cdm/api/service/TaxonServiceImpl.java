@@ -472,13 +472,11 @@ public class TaxonServiceImpl
         Reference newSecRef = null;
         switch (secHandling){
             case AlwaysDelete:
-                newSecRef = null;
                 break;
             case UseNewParentSec:
                 newSecRef = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
                 break;
             case KeepOrWarn:
-                Reference parentSec = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
                 Reference synSec = synonym.getSec();
                 if (synSec != null ){
                     newSecRef = CdmBase.deproxy(synSec);

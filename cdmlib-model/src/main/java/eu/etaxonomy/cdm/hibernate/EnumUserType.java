@@ -27,7 +27,9 @@ import org.jadira.usertype.spi.shared.AbstractUserType;
 
 import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.CdmClass;
+import eu.etaxonomy.cdm.model.common.ExternallyManagedImport;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
+import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
@@ -177,6 +179,15 @@ public class EnumUserType<E extends Enum<E>>
         //TaxonomicOperation
         }else if (clazz.equals(TaxonomicOperationType.class)){
             return TaxonomicOperationType.getByKey(val);
+        //Externally Managed
+        }else if (clazz.equals(ExternallyManagedImport.class)){
+            return ExternallyManagedImport.getByKey(val);
+        //AuthorityType
+        }else if (clazz.equals(AuthorityType.class)){
+            return AuthorityType.getByKey(val);
+        //NoDescriptiveDataStatus
+        }else if (clazz.equals(NoDescriptiveDataStatus.class)){
+            return NoDescriptiveDataStatus.getByKey(val);
         }else{
         	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
         }

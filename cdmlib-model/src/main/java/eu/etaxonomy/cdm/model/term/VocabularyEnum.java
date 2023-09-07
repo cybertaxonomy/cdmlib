@@ -223,7 +223,44 @@ public enum VocabularyEnum {
         List<UUID> result = new ArrayList<>();
         result.add(UUID.fromString("17941710-059e-4e0b-a617-6439d66a39a6"));   //structures
         result.add(UUID.fromString("a4598d3f-0acf-4ad1-a6c9-0c31485da535"));   //properties
-        result.add(UUID.fromString("fa9e8602-65b8-4f29-89f3-79132df994ca"));   //states
+//        result.add(UUID.fromString("fa9e8602-65b8-4f29-89f3-79132df994ca"));   //states
+        //states
+        result.add(UUID.fromString("80967670-779f-4fda-9fae-9236a614c714"));  //architecture
+        result.add(UUID.fromString("db08667f-d9b3-440e-9568-2664b1037596"));  //arrangement
+        result.add(UUID.fromString("b7edbc11-10b8-435a-83ae-797341a9014d"));  //branching
+        result.add(UUID.fromString("a756f68c-99ad-452c-8546-e679f21a4e8b"));  //coating
+        result.add(UUID.fromString("9f05ce9a-99be-4182-a8a0-2d9cb98cbde4"));  //coloration
+        result.add(UUID.fromString("a352c884-235d-4960-8ac8-0f24d2d1b8a0"));  //condition
+        result.add(UUID.fromString("a232f8d5-084b-40b1-8ad1-878223b72a4c"));  //course
+        result.add(UUID.fromString("f3f1bb08-c51e-4801-b46e-fcfd1c33700d"));  //dehiscence
+        result.add(UUID.fromString("6dd0f464-cc18-4e12-9163-7719b49c9668"));  //density
+        result.add(UUID.fromString("1cded4b8-094e-4338-a365-25e1efd6a38f"));  //depth
+        result.add(UUID.fromString("d2304ae7-11f4-4dee-a4c4-eb385843cf91"));  //derivation
+        result.add(UUID.fromString("c37b839e-ea99-49ee-a502-4f6691933426"));  //development
+        result.add(UUID.fromString("2f213ce1-7d83-4cf9-8e45-cd151025a726"));  //duration
+        result.add(UUID.fromString("5f38986d-fcbd-4119-983a-e434c060ff28"));  //fixation
+        result.add(UUID.fromString("858cbad3-705f-48ed-9558-f33e203c1728"));  //fragility
+        result.add(UUID.fromString("5a6834cf-bff9-4cfb-8b9f-12731a49ab4e"));  //fusion
+        result.add(UUID.fromString("0ae0038d-aa69-45fb-8e65-0458b92a8cf4"));  //growth form
+        result.add(UUID.fromString("395a13fb-359e-4ee9-84d8-4cabd162de53"));  //habitat
+        result.add(UUID.fromString("d4992bf3-f4b8-461f-8896-97ded8307a5e"));  //length
+        result.add(UUID.fromString("5cf0a654-c5d6-4c63-9e74-85e22ac59791"));  //orientation
+        result.add(UUID.fromString("65a9800f-8387-4aa0-b443-c8f1e865cb36"));  //position
+        result.add(UUID.fromString("78c4ad9c-54c5-4f6e-92fb-61649ef96192"));  //position relational
+        result.add(UUID.fromString("5f11e606-9892-4c98-ad06-f8e3ea3d6e45"));  //presence
+        result.add(UUID.fromString("5be251cd-1a75-494f-83d6-a2d7d5c25b76"));  //prominence
+        result.add(UUID.fromString("06ca8cf3-3245-4ece-a501-7378c867fb74"));  //pubescence
+        result.add(UUID.fromString("b02f5ff5-ec97-46ea-b7c0-233e60ff42db"));  //quantity
+        result.add(UUID.fromString("3d867957-4a0c-4642-90c9-63fa9045944f"));  //reflectance
+        result.add(UUID.fromString("7b052355-5c40-44a4-be28-9e9be64cf643"));  //relief
+        result.add(UUID.fromString("d8d54f47-2ef6-41fe-9f45-2ff361ff5509"));  //reproduction
+        result.add(UUID.fromString("5530a471-5d30-4b5e-ae34-4fffbf7512c5"));  //shape
+        result.add(UUID.fromString("292bca94-faa9-4243-9837-611c10ba3fa5"));  //size
+        result.add(UUID.fromString("84fa5fcc-780f-4f48-9a08-1573cf6f4ce2"));  //texture
+        result.add(UUID.fromString("310ea67f-3898-4c82-9fda-a431fa934c08"));  //transparency
+        result.add(UUID.fromString("e7e22727-f2e8-4cda-8d20-fcbd06262d05"));  //variability
+        result.add(UUID.fromString("0a4200d9-7c48-42ff-9c2f-e6f4a5a79ca8"));  //width
+
         return result;
     }
 }

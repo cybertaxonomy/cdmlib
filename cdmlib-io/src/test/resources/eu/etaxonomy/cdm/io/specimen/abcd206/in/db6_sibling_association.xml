@@ -71,7 +71,7 @@
             <abcd21:UnitID>B 10 0066577</abcd21:UnitID>
             <abcd21:AssociationType>DNA and specimen from the same
               population</abcd21:AssociationType>
-            <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum</abcd21:DatasetAccessPoint>
+            <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar</abcd21:DatasetAccessPoint>
           </abcd21:UnitAssociation>
         </abcd21:Associations>
         <abcd21:Gathering>

@@ -55,4 +55,7 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
     public UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos);
 
 
+    List<TermTreeDto> getTermTreeDtosByUuids(List<UUID> uuid);
+
+
 }

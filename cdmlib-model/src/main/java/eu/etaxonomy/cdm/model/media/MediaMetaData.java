@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @Entity
 @Audited  //necessary because otherwise mapping from MediaRepresentationPart to MediaMetaData is not possible
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class MediaMetaData extends CdmBase implements Cloneable {
+public class MediaMetaData extends CdmBase {
 
     private static final long serialVersionUID = -2523716526037575324L;
 

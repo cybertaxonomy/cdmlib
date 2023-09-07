@@ -12,30 +12,31 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+
 /**
  * @author K.Luther
  * @date 05.06.2023
  *
  */
-public class MarkerDto implements Serializable, Comparable<MarkerDto>, ICdmBaseDto {
+public class MarkerDto extends CdmBaseDto implements Serializable, Comparable<MarkerDto> {
 
     private Boolean value;
     private UUID typeUuid;
     private String type;
-    private UUID uuid;
-    private int id;
 
 
     public MarkerDto(UUID uuid, int id) {
-        this.uuid = uuid;
-        this.id = id;
+        super(uuid, id);
+
     }
 
-    public MarkerDto(UUID uuid, Integer id, UUID typeUuid, String type, Boolean value) {
-        this(uuid, id);
+    public MarkerDto(UUID uuid, Integer id, UUID typeUuid, String type, Boolean value, DateTime created, String createdBy, DateTime updated, String updatedBy) {
+        super(uuid, id, created, createdBy, updated, updatedBy);
         this.typeUuid = typeUuid;
         this.type = type;
         this.value = value;
+
     }
 
     public Boolean getValue() {
@@ -62,23 +63,7 @@ public class MarkerDto implements Serializable, Comparable<MarkerDto>, ICdmBaseD
         this.type = type;
     }
 
-    @Override
-    public UUID getUuid() {
-        return uuid;
-    }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     @Override
     public int compareTo(MarkerDto o) {
@@ -106,4 +91,6 @@ public class MarkerDto implements Serializable, Comparable<MarkerDto>, ICdmBaseD
 
         return this.getType().compareTo(o.getType());
     }
+
+
 }

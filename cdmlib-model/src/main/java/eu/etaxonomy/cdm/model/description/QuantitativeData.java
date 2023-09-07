@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
 
 import java.math.BigDecimal;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -22,6 +22,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
@@ -69,7 +71,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlType(name = "QuantitativeData", propOrder = {
     "unit",
     "statisticalValues",
-    "unknownData"
+    "noDataStatus"
 })
 @XmlRootElement(name = "QuantitativeData")
 @Entity
@@ -116,8 +118,13 @@ public class QuantitativeData
 //
 //	private Integer sampleSize;
 
-	@XmlElement(name = "UnknownData")
-	private Boolean unknownData = false;
+    @XmlAttribute(name ="NoDataStatus")
+    @Column(name="noDataStatus", length=10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus")}
+    )
+    //see also CategoricalData.noDataStatus
+    private NoDescriptiveDataStatus noDataStatus;
 
 // ******************************** FACTORY METHODS *******************************/
 
@@ -574,13 +581,13 @@ public class QuantitativeData
 //        return result;
 //    }
 
-	public Boolean getUnknownData() {
-		return unknownData;
-	}
-
-	public void setUnknownData(Boolean unknownData) {
-		this.unknownData = unknownData;
-	}
+    //no data status, #2975
+    public NoDescriptiveDataStatus getNoDataStatus() {
+        return noDataStatus;
+    }
+    public void setNoDataStatus(NoDescriptiveDataStatus noDataStatus) {
+        this.noDataStatus = noDataStatus;
+    }
 
 //
 //	public BigDecimal getMinimum() {
@@ -671,8 +678,7 @@ public class QuantitativeData
         return (getFeature()!=null ? getFeature().getLabel(): "") +
                 "[" + statisticalValues +
                 (unit!=null ? ", unit=" + unit : "") +
-                (unknownData? ", unknownData=" + unknownData:"")
+                (noDataStatus != null ? ", noDataStatus=" + noDataStatus.getLabel() :"")
                 + "]";
 	}
-
 }

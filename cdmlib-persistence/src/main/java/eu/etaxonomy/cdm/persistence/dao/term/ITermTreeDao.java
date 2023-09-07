@@ -40,4 +40,12 @@ public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
 
     public TermTreeDto getTermTreeDtosByUuid(UUID uuid);
 
+    /**
+     * Returns list of term trees for list of UUIDs
+     *
+     * @param vocUuids the {@link UUID} of the trees
+     * @return term trees
+     */
+    public List<TermTreeDto> findTermTreeDtoByUuids(List<UUID> vocUuids);
+
 }

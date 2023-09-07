@@ -6,8 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping.out;
+
+import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,15 +19,21 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
  * @since 15.03.2010
  */
-public class ExportTransformerBase implements IExportTransformer {
+public abstract class ExportTransformerBase implements IExportTransformer, Serializable  {
 
-	@SuppressWarnings("unused")
+    private static final long serialVersionUID = -7148232986905966817L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
 	@Override
@@ -47,18 +54,12 @@ public class ExportTransformerBase implements IExportTransformer {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getCacheByLanguage(eu.etaxonomy.cdm.model.common.Language)
-	 */
 	@Override
 	public String getCacheByLanguage(Language language) throws UndefinedTransformerMethodException {
 		String warning = "getCacheByLanguage is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByExtensionType(eu.etaxonomy.cdm.model.common.ExtensionType)
-	 */
 	@Override
 	public Object getKeyByExtensionType(ExtensionType extensionType) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByExtensionType is not implemented in implementing transformer class";
@@ -105,16 +106,42 @@ public class ExportTransformerBase implements IExportTransformer {
 		String warning = "getKeyByNomStatus is not yet implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
+
 	@Override
 	public String getQualityStatusCacheByKey(Integer qualityStatusFk) throws UndefinedTransformerMethodException {
 		String warning = "getQualityStatusCacheByKey is not yet implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
+
 	@Override
 	public String getTaxonStatusCacheByKey(Integer taxonStatusId) throws UndefinedTransformerMethodException {
 		String warning = "getTaxonStatusCacheByKey is not yet implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
+
+	@Override
+    public String getCacheByReferenceType(Reference refType) throws UndefinedTransformerMethodException {
+        String warning = "getCacheByReferenceType is not yet implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
+
+    @Override
+    public String getCacheByNomenclaturalCode(NomenclaturalCode nomenclaturalCode) throws UndefinedTransformerMethodException {
+        String warning = "getCacheByNomenclaturalCode is not yet implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
+
+    @Override
+    public String getCacheByRank(Rank rank) throws UndefinedTransformerMethodException {
+        String warning = "getCacheByRank is not yet implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
+
+    @Override
+    public String getCacheByNameRelationType(NameRelationshipType nameRelType) throws UndefinedTransformerMethodException {
+        String warning = "getCacheByNameRelationType is not yet implemented in implementing transformer class";
+        throw new UndefinedTransformerMethodException(warning);
+    }
 
 
 }

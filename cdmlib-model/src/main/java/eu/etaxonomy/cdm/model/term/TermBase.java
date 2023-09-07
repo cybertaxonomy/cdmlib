@@ -40,6 +40,9 @@ import org.hibernate.search.annotations.FieldBridge;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
+import eu.etaxonomy.cdm.model.common.IExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -50,7 +53,8 @@ import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 @XmlType(name = "TermBase", propOrder = {
     "uri",
     "termType",
-    "representations"
+    "representations",
+    "externallyManaged"
 })
 @XmlSeeAlso({
     DefinedTermBase.class,
@@ -60,7 +64,7 @@ import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 @Audited
 public abstract class TermBase
             extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
-            implements IHasTermType {
+            implements IHasTermType, IExternallyManaged {
 
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
@@ -91,6 +95,8 @@ public abstract class TermBase
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<>();
+
+    private ExternallyManaged externallyManaged;
 
 //******************* CONSTRUCTOR *************************************/
 
@@ -205,7 +211,6 @@ public abstract class TermBase
     public URI getUri() {
         return this.uri;
     }
-
     public void setUri(URI uri) {
         this.uri = uri;
     }
@@ -264,6 +269,21 @@ public abstract class TermBase
         return (repr == null) ? null :repr.getDescription();
     }
 
+    @Transient
+    public ExternallyManaged getExternallyManaged() {
+        return externallyManaged;
+    }
+    public void setExternallyManaged(ExternallyManaged externallyManaged) {
+        this.externallyManaged = externallyManaged;
+    }
+
+    @Transient
+    @Override
+    public boolean isManaged() {
+        return this.externallyManaged == null ? false : this.externallyManaged.getAuthorityType() == AuthorityType.EXTERN;
+    }
+
+//********************** TO STRING *****************************************************/
 
     @Override
     public String toString() {

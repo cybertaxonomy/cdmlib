@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Datasets xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xmlns:u="http://rs.tdwg.org/UBIF/2006/">
+<Datasets xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ https://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xmlns:u="http://rs.tdwg.org/UBIF/2006/">
 <TechnicalMetadata created="2011-10-31T09:43:32">
 <Generator name="DiversityDescriptions" version="2.0beta 11" notes="Software Copyright © 1995-2007 G. Hagedorn." routine="vers.12"/>
 </TechnicalMetadata>

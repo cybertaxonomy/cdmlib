@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.NameMatchingUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -144,6 +145,12 @@ public class NameServiceImpl
     @Autowired
     // @Qualifier("defaultBeanInitializer")
     protected IBeanInitializer defaultBeanInitializer;
+    
+    @Override
+    @Autowired
+    protected void setDao(ITaxonNameDao dao) {
+        this.dao = dao;
+    }
 
 //***************************** CONSTRUCTOR **********************************/
 
@@ -185,7 +192,7 @@ public class NameServiceImpl
             return result;
         }
         if (result.isOk()){
-        //remove references to this name
+            //remove references to this name
             removeNameRelationshipsByDeleteConfig(name, config);
 
            //remove name from homotypical group
@@ -559,13 +566,6 @@ public class NameServiceImpl
             results = dao.getHybridRelationships(types, pageSize, pageNumber, orderHints, propertyPaths);
         }
         return results;
-    }
-
-
-    @Override
-    @Autowired
-    protected void setDao(ITaxonNameDao dao) {
-        this.dao = dao;
     }
 
     @Override
@@ -1303,69 +1303,4 @@ public class NameServiceImpl
         M bestMatching = matchingList.iterator().next();
         return bestMatching;
     }
-
-    /* This is a implementation of the Taxamatch algorithm built by Tony Rees.
-     * It employs a custom Modified Damerau-Levenshtein Distance algorithm
-     * see also https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0107510
-     */
-    //TODO work in progress
-    @Override
-	public List<DoubleResult<TaxonNameParts, Integer>> findMatchingNames(String taxonName, int maxDistanceGenus, int maxDisEpith, int limit) {
-
-    	//0. Normalizing and parsing
-
-//    	TODO Remove all qualifiers such as cf., aff., ?, <i>, x, etc.
-
-    	TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
-		String genusQuery = name.getGenusOrUninomial();
-		String epithetQuery = name.getSpecificEpithet();
-
-		//1. Genus pre-filter
-
-		String initial= genusQuery.substring(0,1) + "*";
-		List<String> tempGenusList = dao.distinctGenusOrUninomial(initial, null, null); //list of all genera in the database starting with the initial letter of the query
-		List<String> genusList= new ArrayList <>(); // compare the length of query and the length of the database name. When the difference is less than the variable "limit", add the genus into the list
-
-		for (String x:tempGenusList) {
-		    if (Math.abs(x.length()-genusQuery.length())<=limit) {
-		        genusList.add(x);
-		    }
-		}
-		List<DoubleResult<TaxonNameParts,Integer>> fullTaxonNamePartsList = new ArrayList<>();
-
-		//2. comparison of:
-
-		    //genus
-		for (String genusNameInDB : genusList) {
-		    int distance = CdmUtils.modifiedDamerauLevenshteinDistance(genusQuery, genusNameInDB);
-            if (distance <= maxDistanceGenus) {
-                List<TaxonNameParts> tempParts = dao.findTaxonNameParts(Optional.of(genusNameInDB),null, null, null, null, null, null, null, null);
-                for (TaxonNameParts namePart: tempParts) {
-                    fullTaxonNamePartsList.add(new DoubleResult<TaxonNameParts, Integer>(namePart, distance));
-                }
-            }
-		}
-		    //epithet
-		   //add epithet distance
-		List <DoubleResult<TaxonNameParts, Integer>> epithetList = new ArrayList<>();
-		for (DoubleResult<TaxonNameParts, Integer> part: fullTaxonNamePartsList) {
-		    int epithetDistance = CdmUtils.modifiedDamerauLevenshteinDistance(epithetQuery, part.getFirstResult().getSpecificEpithet());
-            if (epithetDistance <= maxDisEpith) {
-                epithetList.add(part);
-                part.setSecondResult(part.getSecondResult() + epithetDistance)  ;
-//                tempMap.add(part, fullTaxonNamePartsList.get(part) + epithetDistance); // need to check how the final distance is calculated
-            }else {
-                //do nothing
-                //tempMap.remove(part);
-            }
-		}
-
-		Collections.sort(epithetList, (o1,o2)->o1.getSecondResult().compareTo(o2.getSecondResult()) );
-//		tempMap.entrySet().stream().forEach(e->result);
-//
-//		Map<TaxonNameParts,Integer> sortedBestMatches = tempMap.entrySet().stream().sorted(Map.Entry.comparingByValue()).limit(limit)
-//                   .collect(Collectors.toMap(
-//                              Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-        return epithetList.subList(0, Math.min(limit,epithetList.size()));
-	}
 }

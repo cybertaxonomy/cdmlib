@@ -14,19 +14,20 @@ import java.util.Comparator;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
-import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
+ * The configurator for the CDM light export.
+ *
  * @author k.luther
  * @since 15.03.2017
- *
  */
 public class CdmLightExportConfigurator
-        extends ExportConfiguratorBase<CdmLightExportState, IExportTransformer, File>{
+        extends TaxonTreeExportConfiguratorBase<CdmLightExportState,CdmLightExportConfigurator>{
 
     private static final long serialVersionUID = -1562074221435082060L;
 
@@ -42,40 +43,17 @@ public class CdmLightExportConfigurator
     private boolean isFilterIntextReferences = true;
     private boolean isCreateCondensedDistributionString = true;
     private CondensedDistributionConfiguration condensedDistributionConfiguration = CondensedDistributionConfiguration.NewDefaultInstance();
-    private boolean isExcludeImportSources = true;
     private boolean isShowAllNameRelationsInHomotypicGroup = false;
-    /**
-     * @return the isShowAllNameRelationsInHomotypicGroup
-     */
-    public boolean isShowAllNameRelationsInHomotypicGroup() {
-        return isShowAllNameRelationsInHomotypicGroup;
-    }
 
-    /**
-     * @param isShowAllNameRelationsInHomotypicGroup the isShowAllNameRelationsInHomotypicGroup to set
-     */
-    public void setShowAllNameRelationsInHomotypicGroup(boolean isShowAllNameRelationsInHomotypicGroup) {
-        this.isShowAllNameRelationsInHomotypicGroup = isShowAllNameRelationsInHomotypicGroup;
-    }
-
-    /**
-     * @return the isShowInverseNameRelationsInHomotypicGroup
-     */
-    public boolean isShowInverseNameRelationsInHomotypicGroup() {
-        return isShowInverseNameRelationsInHomotypicGroup;
-    }
-
-    /**
-     * @param isShowInverseNameRelationsInHomotypicGroup the isShowInverseNameRelationsInHomotypicGroup to set
-     */
-    public void setShowInverseNameRelationsInHomotypicGroup(boolean isShowInverseNameRelationsInHomotypicGroup) {
-        this.isShowInverseNameRelationsInHomotypicGroup = isShowInverseNameRelationsInHomotypicGroup;
-    }
     private boolean isShowInverseNameRelationsInHomotypicGroup = false;
 
     private boolean isAddHTML = true;
 
-    private Comparator<TaxonNodeDto> comparator;
+    private Comparator<TaxonNodeDto> taxonNodeComparator;
+
+    //filter
+    private boolean isExcludeImportSources = true;
+    private boolean doFactualData = true;
 
     //metadata /gfbio
     private String description;
@@ -91,6 +69,7 @@ public class CdmLightExportConfigurator
     private String keywords;
     private String licence;
 
+//************************* FACTORY ******************************/
 
     public static CdmLightExportConfigurator NewInstance(){
         CdmLightExportConfigurator result = new CdmLightExportConfigurator(null);
@@ -104,6 +83,8 @@ public class CdmLightExportConfigurator
         return result;
     }
 
+//************************ CONSTRUCTOR *******************************/
+
     //TODO AM: do we need the transformer parameter here?
     private CdmLightExportConfigurator(IExportTransformer transformer) {
         super(transformer);
@@ -111,6 +92,7 @@ public class CdmLightExportConfigurator
         this.setTarget(TARGET.EXPORT_DATA);
         setUserFriendlyIOName("Cdm Light Export");
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -123,6 +105,28 @@ public class CdmLightExportConfigurator
     @Override
     public CdmLightExportState getNewState() {
         return new CdmLightExportState(this);
+    }
+
+    @Override
+    public String getDestinationNameString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+//******************** GETTER / SETTER *******************************/
+
+    public boolean isShowAllNameRelationsInHomotypicGroup() {
+        return isShowAllNameRelationsInHomotypicGroup;
+    }
+    public void setShowAllNameRelationsInHomotypicGroup(boolean isShowAllNameRelationsInHomotypicGroup) {
+        this.isShowAllNameRelationsInHomotypicGroup = isShowAllNameRelationsInHomotypicGroup;
+    }
+
+    public boolean isShowInverseNameRelationsInHomotypicGroup() {
+        return isShowInverseNameRelationsInHomotypicGroup;
+    }
+    public void setShowInverseNameRelationsInHomotypicGroup(boolean isShowInverseNameRelationsInHomotypicGroup) {
+        this.isShowInverseNameRelationsInHomotypicGroup = isShowInverseNameRelationsInHomotypicGroup;
     }
 
     public String getEncoding() {
@@ -158,12 +162,6 @@ public class CdmLightExportConfigurator
     }
     public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
         this.csvIOConfig.setFieldsTerminatedBy(fieldsTerminatedBy);
-    }
-
-    @Override
-    public String getDestinationNameString() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public String getDescription() {
@@ -250,7 +248,6 @@ public class CdmLightExportConfigurator
         this.licence = licence;
     }
 
-
     public boolean isHighLightPrimaryCollector() {
         return isHighlightPrimaryCollector;
     }
@@ -269,11 +266,11 @@ public class CdmLightExportConfigurator
         this.isFilterIntextReferences = isRemoveIntextReferences;
     }
 
-    public Comparator<TaxonNodeDto> getComparator() {
-        return comparator;
+    public Comparator<TaxonNodeDto> getTaxonNodeComparator() {
+        return taxonNodeComparator;
     }
-    public void setComparator(Comparator<TaxonNodeDto> comparator) {
-        this.comparator = comparator;
+    public void setTaxonNodeComparator(Comparator<TaxonNodeDto> taxonNodeComparator) {
+        this.taxonNodeComparator = taxonNodeComparator;
     }
 
     public boolean isExcludeImportSources() {
@@ -302,5 +299,12 @@ public class CdmLightExportConfigurator
     }
     public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistributionConfiguration) {
         this.condensedDistributionConfiguration = condensedDistributionConfiguration;
+    }
+
+    public boolean isDoFactualData() {
+        return doFactualData;
+    }
+    public void setDoFactualData(boolean doFactualData) {
+        this.doFactualData = doFactualData;
     }
 }

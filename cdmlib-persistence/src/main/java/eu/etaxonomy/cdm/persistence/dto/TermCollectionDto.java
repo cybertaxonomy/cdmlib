@@ -9,8 +9,10 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -76,6 +78,11 @@ public abstract class TermCollectionDto extends AbstractTermDto {
         terms.add(term);
     }
 
+    public void setTerms(List<TermDto> terms){
+        this.terms.clear();
+        this.terms.addAll(terms);
+    }
+
     public void removeTerm(TermDto term){
         terms.remove(term);
     }
@@ -115,20 +122,94 @@ public abstract class TermCollectionDto extends AbstractTermDto {
     }
 
     public static String getTermCollectionDtoSelect(){
-        return getTermCollectionDtoSelect("TermVocabulary");
+        return getTermCollectionDtoSelect("TermCollection");
     }
 
     public static String getTermCollectionDtoSelect(String fromTable){
-        return ""
-                + "select a.uuid, "
-                + "r, "
-                + "a.termType,"
-                + "a.titleCache,"
-                + "a.allowDuplicates,"
-                + "a.orderRelevant,"
-                + "a.isFlat "
+//        return ""
+//                + "select "
+//                + "a.uuid, "
+//                + "r, "
+//                + "a.termType,"
+//                + "a.titleCache,"
+//                + "a.allowDuplicates,"
+//                + "a.orderRelevant,"
+//                + "a.isFlat, "
+//                + "a.externallyManaged, "
+//                + "root "
+//
+//
+//                + "FROM "+fromTable+" as a "
+//                + "LEFT JOIN a.representations AS r "
+//                + "LEFT JOIN a.root as root";
 
-                + "FROM "+fromTable+" as a "
-                + "LEFT JOIN a.representations AS r ";
+        String sqlSelectString = ""
+                + "select "
+                + "a.uuid, "
+                + "r, "
+                + "a.termType,  "
+                + "a.titleCache, "
+                + "a.allowDuplicates, "
+                + "a.orderRelevant, "
+                + "a.isFlat, "
+                + "a.externallyManaged, "
+                + "a.uri ";
+        if (!fromTable.equals("TermVocabulary")) {
+            sqlSelectString+=  ", root ";
+        }
+
+        String sqlFromString =   "from " +fromTable+" as a ";
+        String sqlJoinString = "";
+        if (!fromTable.equals("TermVocabulary")) {
+            sqlJoinString +="LEFT JOIN a.root as root ";
+        }
+        sqlJoinString +=" LEFT JOIN a.representations AS r ";
+
+        String result = sqlSelectString + sqlFromString + sqlJoinString;
+
+        return result;
+    }
+
+
+
+
+
+    /**
+     * @param result
+     * @return
+     */
+    public static List<TermCollectionDto> termCollectionDtoListFrom(List<Object[]> result) {
+        List<TermCollectionDto> dtos = new ArrayList<>(); // list to ensure order
+        // map to handle multiple representations because of LEFT JOIN
+        Map<UUID, TermCollectionDto> dtoMap = new HashMap<>(result.size());
+        for (Object[] elements : result) {
+            extracted(dtos, dtoMap, elements);
+        }
+        return dtos;
+    }
+
+    /**
+     * @param dtos
+     * @param dtoMap
+     * @param elements
+     * @param uuid
+     */
+    protected static void extracted(List<TermCollectionDto> dtos, Map<UUID, TermCollectionDto> dtoMap, Object[] elements) {
+        UUID uuid = (UUID)elements[0];
+        if(dtoMap.containsKey(uuid)){
+            // multiple results for one voc -> multiple (voc) representation
+            if(elements[1]!=null){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+            }
+
+        } else {
+            if (elements[9]== null) {
+               TermVocabularyDto.extractedVocabularies(dtos, dtoMap, elements);
+
+            }else {
+                TermTreeDto.extracted(dtos, dtoMap, elements);
+            }
+
+        }
     }
 }

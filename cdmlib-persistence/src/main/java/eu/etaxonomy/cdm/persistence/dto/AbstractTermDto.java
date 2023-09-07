@@ -36,6 +36,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     private String representation_L10n_abbreviatedLabel = null;
     private String representation_L10n_text = null;
     private String titleCache;
+    private boolean isManaged = false;
 
     protected AbstractTermDto(){}
 
@@ -178,6 +179,16 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
 
     public void setTitleCache(String titleCache) {
         this.titleCache = titleCache;
+    }
+
+
+    public boolean isManaged() {
+        return isManaged;
+    }
+
+
+    public void setManaged(boolean isManaged) {
+        this.isManaged = isManaged;
     }
 
     @Override

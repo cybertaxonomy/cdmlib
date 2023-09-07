@@ -15,7 +15,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -31,11 +33,13 @@ public class CategoricalDataDto extends DescriptionElementDto {
     private static final long serialVersionUID = -675109569492621389L;
     private List<StateDataDto> states = new ArrayList<>();
 
-    public CategoricalDataDto (UUID elementUuid, FeatureDto feature, List<StateDataDto> states){
-       super(elementUuid, feature);
+
+    public CategoricalDataDto (UUID elementUuid, FeatureDto feature, List<StateDataDto> states, NoDescriptiveDataStatus noDataStatus){
+       super(elementUuid, feature, noDataStatus);
        if (states != null){
            this.states = states;
        }
+
     }
 
     public CategoricalDataDto(FeatureDto feature){
@@ -55,13 +59,19 @@ public class CategoricalDataDto extends DescriptionElementDto {
             Integer count = stateData.getCount();
             UUID uuid = stateData.getUuid();
             TermDto termDto = TermDto.fromTerm(CdmBase.deproxy(stateData.getState(), DefinedTermBase.class));
-            stateDataDto = new StateDataDto(termDto, count, uuid);
+            List<TermDto> modifiers = new ArrayList<>();
+            for (DefinedTermBase modifier: stateData.getModifiers()) {
+                modifiers.add(TermDto.fromTerm(modifier));
+            }
+            String modifyingText = (stateData.getModifyingText() != null && !stateData.getModifyingText().isEmpty())? stateData.getModifyingText().get(Language.getDefaultLanguage()).getText(): null;
+            stateDataDto = new StateDataDto(termDto, count, modifiers, modifyingText, uuid);
             stateDtos.add(stateDataDto);
         }
         for (StateData stateData: toRemove){
             data.removeStateData(stateData);
         }
-        CategoricalDataDto dto = new CategoricalDataDto(data.getUuid(), FeatureDto.fromFeature(data.getFeature()), stateDtos);
+
+        CategoricalDataDto dto = new CategoricalDataDto(data.getUuid(), FeatureDto.fromFeature(data.getFeature()), stateDtos, data.getNoDataStatus());
 
         return dto;
     }
@@ -111,6 +121,8 @@ public class CategoricalDataDto extends DescriptionElementDto {
         states.clear();
     }
 
+
+
     public static String getCategoricalDtoSelect(){
         String[] result = createSqlParts();
 
@@ -121,16 +133,22 @@ public class CategoricalDataDto extends DescriptionElementDto {
         //featureDto, uuid, states
 
         String sqlSelectString = ""
-                + "select a.uuid, "
-                + "feature.uuid, "
-                + "state.uuid,  "
-                + "state.count, "
-                + "state.state ";
+                + "select a.uuid, "//0
+                + "feature.uuid, "//1
+                + "stateData.uuid,  "//2
+                + "stateData.count, "//3
+                + "stateData.state, "//4
+                + "modifier.uuid, "//5
+                + "modifier.titleCache, "//6
+                + "modifier.orderIndex, " //7
+                + "a.noDataStatus ";//8
+
 
         String sqlFromString =   " FROM CategoricalData as a ";
 
-        String sqlJoinString =  "LEFT JOIN a.stateData as state "
-                + "LEFT JOIN a.feature as feature ";
+        String sqlJoinString =  "LEFT JOIN a.stateData as stateData "
+                + "LEFT JOIN a.feature as feature "
+                + "LEFT JOIN stateData.modifiers as modifier";
 
         String sqlWhereString =  " WHERE a.inDescription.uuid = :uuid";
 
@@ -150,15 +168,23 @@ public class CategoricalDataDto extends DescriptionElementDto {
     public static List<CategoricalDataDto> categoricalDataDtoListFrom(List<Object[]> result) {
         List<CategoricalDataDto> dtoResult = new ArrayList<>();
         CategoricalDataDto dto = null;
-
+        StateDataDto state = null;
         for (Object[] o: result){
             UUID uuid = (UUID)o[0];
             UUID featureUuid = (UUID)o[1];
+            UUID stateDataUuid = (UUID)o[2];
+
             if (dto == null || !dto.getElementUuid().equals(uuid)){
-                dto = new CategoricalDataDto(uuid, new FeatureDto(featureUuid, null, null, null, null, null, null, true, false, true, null, true, false, null, null, null, null), null);
+                dto = new CategoricalDataDto(uuid, new FeatureDto(featureUuid, null, null, null, null, null, null, true, false, true, null, true, false, null, null, null, null), null, (NoDescriptiveDataStatus)o[8]);
                 dtoResult.add(dto);
             }
-            StateDataDto state = new StateDataDto(TermDto.fromTerm((DefinedTermBase)o[4]),(Integer) o[3], uuid);
+            if (state == null || !state.getUuid().equals(stateDataUuid)) {
+                state = new StateDataDto(TermDto.fromTerm((DefinedTermBase)o[4]),(Integer) o[3], null, null, stateDataUuid);
+            }
+            if (o[5] != null) {
+                TermDto modifier = new TermDto((UUID)o[5], null, null, null, null, null, (Integer)o[7], null, (String)o[6]);
+                state.addModifier(modifier);
+            }
             dto.addState(state);
         }
 

@@ -287,7 +287,6 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
-
         IFindTaxaAndNamesConfigurator config = FindTaxaAndNamesConfiguratorImpl.NewInstance();
         config.setIncludeUnpublished(includeUnpublished);
         config.setPageNumber(pagerParams.getPageIndex());
@@ -312,9 +311,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         config.setSubtree(subtree);
 
         return service.findTaxaAndNames(config);
-
     }
-
 
     /**
      * @param clazz

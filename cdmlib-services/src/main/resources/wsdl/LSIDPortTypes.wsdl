@@ -99,5 +99,4 @@
             <output message="tns:getMetadataSubsetResponse" />
         </operation>
     </portType>
-    
 </definitions>

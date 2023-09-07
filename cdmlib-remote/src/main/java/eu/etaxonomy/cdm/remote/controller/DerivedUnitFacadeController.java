@@ -47,7 +47,8 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("derivedUnitFacade")
 @RequestMapping(value = {"/derivedUnitFacade/{uuid}"})
-public class DerivedUnitFacadeController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>{
+public class DerivedUnitFacadeController
+        extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>{
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -105,7 +106,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
     public List<MediaDTO> doGetFieldObjectMediaDTO(
         @PathVariable("uuid") UUID occurrenceUuid,
         HttpServletRequest request,
-        HttpServletResponse response) {
+        @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetFieldObjectMediaDTO() - " + readPathParameter(request, null));
 
@@ -132,7 +133,6 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
 
         return mv;
     }
-
 
 // TODO
     //@RequestMapping(method = RequestMethod.GET, value = "{uuid}/collectingareas")
@@ -164,10 +164,8 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         return duf.getCollection();
     }
 
-
     //TODO:
     // public Point getExactLocation() => valueProcessor?
-
 
     // public Collection getCollection() {
     // public AgentBase getCollector() {
@@ -214,15 +212,4 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         }
         return null;
     }
-
-
-
-
-
-
-
-
-
-
-
 }

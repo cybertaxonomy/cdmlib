@@ -17,15 +17,13 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author k.luther
  * @since 15.07.2016
- *
  */
 public class GbifImportConfigurator<GbifImportState, InputStream> extends SpecimenImportConfiguratorBase {
 
+    private static final long serialVersionUID = -6574012865739879532L;
+
     private static IInputTransformer defaultTransformer = null;
 
-    /**
-     * @param transformer
-     */
     public GbifImportConfigurator(IInputTransformer transformer) {
         super(transformer);
         // TODO Auto-generated constructor stub
@@ -37,42 +35,23 @@ public class GbifImportConfigurator<GbifImportState, InputStream> extends Specim
         return newInstance;
     }
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#makeIoClassList()
-     */
     @Override
     protected void makeIoClassList() {
         System.out.println("makeIOClassList");
         ioClassList = new Class[]{
                GbifImport.class,
         };
-
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-     */
     @Override
     public Reference getSourceReference() {
         // TODO Auto-generated method stub
         return null;
     }
 
-
-
     @Override
     public SpecimenImportStateBase getNewState() {
-        SpecimenImportStateBase state = new SpecimenImportStateBase(this);
-
+        SpecimenImportStateBase<?,?> state = new SpecimenImportStateBase(this);
         return state;
     }
-
-
-
 }

@@ -1,4 +1,5 @@
 # for how to use .gitattributes see https://git-scm.com/docs/gitattributes
+# set the default behavior for all files:
 * text=auto !eol
 pom.xml merge=ours
 cdmlib-print/pom.xml merge=ours

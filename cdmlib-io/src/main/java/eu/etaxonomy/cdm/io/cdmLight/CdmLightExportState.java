@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.cdmLight;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +16,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
-import eu.etaxonomy.cdm.io.common.ExportStateBase;
-import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -28,11 +26,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
+ * The state for the CDM light export.
+ *
  * @author k.luther
  * @since 15.03.2017
  */
 public class CdmLightExportState
-        extends ExportStateBase<CdmLightExportConfigurator, IExportTransformer, File>{
+        extends TaxonTreeExportStateBase<CdmLightExportConfigurator,CdmLightExportState>{
 
     private ExportResult result;
 

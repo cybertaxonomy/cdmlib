@@ -33,6 +33,9 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
         super(transformer);
     }
 
+    //im-/export uses Classification for is_taxonomically_included_in relationships
+    private boolean useClassification = true;
+
     private boolean ignoreImportOfExistingSpecimen = true;
     private boolean reuseExistingTaxaWhenPossible = true;
     private final Map<UUID, UUID> taxonToDescriptionMap = new HashMap<>();
@@ -345,5 +348,12 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
 
     public void setDownloadSequenceData(boolean downloadSequenceData) {
         this.downloadSequenceData = downloadSequenceData;
+    }
+
+    public boolean isUseClassification() {
+        return useClassification;
+    }
+    public void setUseClassification(boolean useClassification) {
+        this.useClassification = useClassification;
     }
 }

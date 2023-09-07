@@ -17,6 +17,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -46,7 +49,8 @@ public class TermTreeDto extends TermCollectionDto {
 
     public TermTreeDto(UUID uuid, Set<Representation> representations, TermType termType, TermNode root, String titleCache, boolean isAllowDuplicates, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicates, isOrderRelevant, isFlat);
-        this.root = new TermNodeDto(null, 0, this, root.getUuid(), root.getId(), root.treeIndex(), root.getPath());
+        root = HibernateProxyHelper.deproxy(root);
+        this.root = TermNodeDto.fromNode(root, this);
     }
 
     public TermNodeDto getRoot() {
@@ -75,15 +79,17 @@ public class TermTreeDto extends TermCollectionDto {
 
     private static String[] createSqlParts() {
         String sqlSelectString = ""
-                + "select a.uuid, "
+                + "select "
+                + "a.uuid, "
                 + "r, "
                 + "a.termType,  "
                 + "a.uri,  "
-                + "root,  "
                 + "a.titleCache, "
                 + "a.allowDuplicates, "
                 + "a.orderRelevant, "
-                + "a.isFlat ";
+                + "a.isFlat, "
+                + "a.externallyManaged, "
+                + "root ";
         String sqlFromString =   "from TermTree as a ";
 
         String sqlJoinString =  "LEFT JOIN a.root as root "
@@ -104,11 +110,12 @@ public class TermTreeDto extends TermCollectionDto {
                 + "r, "
                 + "a.termType,  "
                 + "a.uri,  "
-                + "root,  "
                 + "a.titleCache, "
                 + "a.allowDuplicates, "
                 + "a.orderRelevant, "
-                + "a.isFlat ";
+                + "a.isFlat, "
+                + "a.externallyManaged,"
+                + "root ";
         String sqlFromString =   "from DescriptiveDataSet as d ";
 
         String sqlJoinString =  "JOIN d.descriptiveSystem as a "
@@ -124,45 +131,60 @@ public class TermTreeDto extends TermCollectionDto {
     }
 
 
-    public static List<TermTreeDto> termTreeDtoListFrom(List<Object[]> results) {
-        List<TermTreeDto> dtos = new ArrayList<>(); // list to ensure order
+    public static List<TermCollectionDto> termTreeDtoListFrom(List<Object[]> results) {
+        List<TermCollectionDto> dtos = new ArrayList<>(); // list to ensure order
         // map to handle multiple representations/media/vocRepresentation because of LEFT JOIN
-        Map<UUID, TermTreeDto> dtoMap = new HashMap<>(results.size());
+        Map<UUID, TermCollectionDto> dtoMap = new HashMap<>(results.size());
         for (Object[] elements : results) {
-            UUID uuid = (UUID)elements[0];
-            if(dtoMap.containsKey(uuid)){
-                // multiple results for one term -> multiple (voc) representation/media
-                if(elements[1]!=null){
-                    dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
-                }
-            } else {
-                // term representation
-                Set<Representation> representations = new HashSet<>();
-                if(elements[1] instanceof Representation) {
-                    representations = new HashSet<>(1);
-                    representations.add((Representation)elements[1]);
-                }
-
-                TermTreeDto termTreeDto = new TermTreeDto(
-                        uuid,
-                        representations,
-                        (TermType)elements[2],
-                        (String)elements[5],
-                        (boolean)elements[6],
-                        (boolean)elements[7],
-                        (boolean)elements[8]);
-                termTreeDto.setUri((URI)elements[3]);
-                if (termTreeDto.getTermType().equals(TermType.Character)){
-                    termTreeDto.setRoot(CharacterNodeDto.fromTermNode((TermNode<Character>) elements[4], termTreeDto));
-                }else {
-                    termTreeDto.setRoot(TermNodeDto.fromNode((TermNode)elements[4], termTreeDto));
-                }
-
-                dtoMap.put(uuid, termTreeDto);
-                dtos.add(termTreeDto);
-            }
+            extracted(dtos, dtoMap, elements);
         }
         return dtos;
+    }
+
+    /**
+     * @param dtos
+     * @param dtoMap
+     * @param elements
+     */
+    protected static void extracted(List<TermCollectionDto> dtos, Map<UUID, TermCollectionDto> dtoMap, Object[] elements) {
+        UUID uuid = (UUID)elements[0];
+        if(dtoMap.containsKey(uuid)){
+            // multiple results for one term -> multiple (voc) representation/media
+            if(elements[1]!=null){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
+            }
+        } else {
+            // term representation
+            Set<Representation> representations = new HashSet<>();
+            if(elements[1] instanceof Representation) {
+                representations = new HashSet<>(1);
+                representations.add((Representation)elements[1]);
+            }
+
+            TermTreeDto termTreeDto = new TermTreeDto(
+                    uuid,
+                    representations,
+                    (TermType)elements[2],
+                    (String)elements[3],
+                    (boolean)elements[4],
+                    (boolean)elements[5],
+                    (boolean)elements[6]);
+            termTreeDto.setUri((URI)elements[8]);
+            ExternallyManaged extManaged = (ExternallyManaged) elements[7];
+            if (extManaged != null) {
+                termTreeDto.setManaged(extManaged != null && extManaged.getAuthorityType() == AuthorityType.EXTERN);
+            }
+
+
+            if (termTreeDto.getTermType().equals(TermType.Character)){
+                termTreeDto.setRoot(CharacterNodeDto.fromTermNode((TermNode<Character>) elements[9], termTreeDto));
+            }else {
+                termTreeDto.setRoot(TermNodeDto.fromNode((TermNode)elements[9], termTreeDto));
+            }
+
+            dtoMap.put(uuid, termTreeDto);
+            dtos.add(termTreeDto);
+        }
     }
 
     public boolean containsSubtrees(){

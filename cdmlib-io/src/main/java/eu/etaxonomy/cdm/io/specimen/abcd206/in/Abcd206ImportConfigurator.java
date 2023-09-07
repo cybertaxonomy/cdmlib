@@ -55,33 +55,10 @@ public class Abcd206ImportConfigurator
         return new Abcd206ImportConfigurator(null, uri, destination, false);
     }
 
-    /**
-     * @param uri
-     * @param object
-     * @param b
-     * @return
-     */
     public static Abcd206ImportConfigurator NewInstance(URI uri, ICdmDataSource destination, boolean interact) {
         return new Abcd206ImportConfigurator(null, uri, destination, interact);
     }
 
-    /**
-     * @param uri
-     * @param object
-     * @param b
-     * @return
-     *//*
-    public static Abcd206ImportConfigurator NewInstance(InputStream stream, ICdmDataSource destination, boolean interact) {
-        return new Abcd206ImportConfigurator(stream, null, destination, interact);
-    }
-*/
-
-
-    /**
-     * @param berlinModelSource
-     * @param sourceReference
-     * @param destination
-     */
     private Abcd206ImportConfigurator(InputStream stream, URI uri, ICdmDataSource destination, boolean interact) {
         super(defaultTransformer);
         if (stream != null){
@@ -94,15 +71,10 @@ public class Abcd206ImportConfigurator
         setInteractWithUser(interact);
     }
 
-
-
-
-
     @Override
     public Abcd206ImportState getNewState() {
         return new Abcd206ImportState(this);
     }
-
 
     @Override
     public InputStream getSource(){
@@ -121,8 +93,6 @@ public class Abcd206ImportConfigurator
         }
     }
 
-
-
     public URI getSourceUri(){
     	return this.sourceUri;
     }
@@ -131,9 +101,6 @@ public class Abcd206ImportConfigurator
         this.sourceUri = sourceUri;
         super.setSource(null);
     }
-
-
-
 
     public URI getDnaSoure() {
         return dnaSoure;
@@ -149,130 +116,108 @@ public class Abcd206ImportConfigurator
         return sourceReference;
     }
 
-    /**
-     * @return the getSiblings
-     */
     public boolean isGetSiblings() {
         return getSiblings;
     }
 
-    /**
-     * @param getSiblings the getSiblings to set
-     */
     public void setGetSiblings(boolean getSiblings) {
         this.getSiblings = getSiblings;
     }
 
+    @Override
+    public String toString(){
 
+        StringBuffer result = new StringBuffer();
+        //the preference value is build like this:
+        //<section1>:true;<section2>:false....
 
+        result.append("ignoreImportOfExistingSpecimen");
+        result.append(":");
+        result.append(this.isIgnoreImportOfExistingSpecimen());
+        result.append(";");
+        result.append("addIndividualsAssociationsSuchAsSpecimenAndObservations");
+        result.append(":");
+        result.append(this.isAddIndividualsAssociationsSuchAsSpecimenAndObservations());
+        result.append(";");
+        result.append("reuseExistingTaxaWhenPossible");
+        result.append(":");
+        result.append(this.isReuseExistingTaxaWhenPossible());
+        result.append(";");
+        result.append("ignoreAuthorship");
+        result.append(":");
+        result.append(this.isIgnoreAuthorship());
+        result.append(";");
+        result.append("addMediaAsMediaSpecimen");
+        result.append(":");
+        result.append(this.isAddMediaAsMediaSpecimen());
+        result.append(";");
+        result.append("reuseExistingMetaData");
+        result.append(":");
+        result.append(this.isReuseExistingMetaData());
+        result.append(";");
+        result.append("reuseExistingDescriptiveGroups");
+        result.append(":");
+        result.append(this.isReuseExistingDescriptiveGroups());
+        result.append(";");
+        result.append("allowReuseOtherClassifications");
+        result.append(":");
+        result.append(this.isAllowReuseOtherClassifications());
+        result.append(";");
+        result.append("deduplicateReferences");
+        result.append(":");
+        result.append(this.isDeduplicateReferences());
+        result.append(";");
+        result.append("deduplicateClassifications");
+        result.append(":");
+        result.append(this.isDeduplicateClassifications());
+        result.append(";");
+        result.append("moveNewTaxaToDefaultClassification");
+        result.append(":");
+        result.append(this.isMoveNewTaxaToDefaultClassification());
+        result.append(";");
+        result.append("getSiblings");
+        result.append(":");
+        result.append(this.isGetSiblings());
+        result.append(";");
+        result.append("removeCountryFromLocalityText");
+        result.append(":");
+        result.append(this.isRemoveCountryFromLocalityText());
+        result.append(";");
 
-@Override
-public String toString(){
+        result.append("mapUnitIdToCatalogNumber");
+        result.append(":");
+        result.append(this.isMapUnitIdToCatalogNumber());
+        result.append(";");
+        result.append("mapUnitIdToAccessionNumber");
+        result.append(":");
+        result.append(this.isMapUnitIdToAccessionNumber());
+        result.append(";");
+        result.append("mapUnitIdToBarcode");
+        result.append(":");
+        result.append(this.isMapUnitIdToBarcode());
+        result.append(";");
 
-    StringBuffer result = new StringBuffer();
-    //the preference value is build like this:
-      //<section1>:true;<section2>:false....
+        result.append("overwriteExistingSpecimens");
+        result.append(":");
+        result.append(this.isOverwriteExistingSpecimens());
+        result.append(";");
+        result.append("nomenclaturalCode");
+        result.append(":");
+        result.append(this.getNomenclaturalCode() != null ? this.getNomenclaturalCode().getKey():"");
+        result.append(";");
+        result.append("dnaSource");
+        result.append(":");
+        result.append(this.getDnaSoure() != null ? this.getDnaSoure().toString():"");
+        result.append(";");
+        result.append("classificationUUID");
+        result.append(":");
+        result.append(this.getClassificationUuid() != null ? this.getClassificationUuid().toString():"");
+        result.append(";");
+        result.append("classificationName");
+        result.append(":");
+        result.append(this.getClassificationName() != null ? this.getClassificationName():"");
+        result.append(";");
 
-      result.append("ignoreImportOfExistingSpecimen");
-      result.append(":");
-      result.append(this.isIgnoreImportOfExistingSpecimen());
-      result.append(";");
-      result.append("addIndividualsAssociationsSuchAsSpecimenAndObservations");
-      result.append(":");
-      result.append(this.isAddIndividualsAssociationsSuchAsSpecimenAndObservations());
-      result.append(";");
-      result.append("reuseExistingTaxaWhenPossible");
-      result.append(":");
-      result.append(this.isReuseExistingTaxaWhenPossible());
-      result.append(";");
-      result.append("ignoreAuthorship");
-      result.append(":");
-      result.append(this.isIgnoreAuthorship());
-      result.append(";");
-      result.append("addMediaAsMediaSpecimen");
-      result.append(":");
-      result.append(this.isAddMediaAsMediaSpecimen());
-      result.append(";");
-      result.append("reuseExistingMetaData");
-      result.append(":");
-      result.append(this.isReuseExistingMetaData());
-      result.append(";");
-      result.append("reuseExistingDescriptiveGroups");
-      result.append(":");
-      result.append(this.isReuseExistingDescriptiveGroups());
-      result.append(";");
-      result.append("allowReuseOtherClassifications");
-      result.append(":");
-      result.append(this.isAllowReuseOtherClassifications());
-      result.append(";");
-      result.append("deduplicateReferences");
-      result.append(":");
-      result.append(this.isDeduplicateReferences());
-      result.append(";");
-      result.append("deduplicateClassifications");
-      result.append(":");
-      result.append(this.isDeduplicateClassifications());
-      result.append(";");
-      result.append("moveNewTaxaToDefaultClassification");
-      result.append(":");
-      result.append(this.isMoveNewTaxaToDefaultClassification());
-      result.append(";");
-      result.append("getSiblings");
-      result.append(":");
-      result.append(this.isGetSiblings());
-      result.append(";");
-      result.append("removeCountryFromLocalityText");
-      result.append(":");
-      result.append(this.isRemoveCountryFromLocalityText());
-      result.append(";");
-
-      result.append("mapUnitIdToCatalogNumber");
-      result.append(":");
-      result.append(this.isMapUnitIdToCatalogNumber());
-      result.append(";");
-      result.append("mapUnitIdToAccessionNumber");
-      result.append(":");
-      result.append(this.isMapUnitIdToAccessionNumber());
-      result.append(";");
-      result.append("mapUnitIdToBarcode");
-      result.append(":");
-      result.append(this.isMapUnitIdToBarcode());
-      result.append(";");
-
-      result.append("overwriteExistingSpecimens");
-      result.append(":");
-      result.append(this.isOverwriteExistingSpecimens());
-      result.append(";");
-      result.append("nomenclaturalCode");
-      result.append(":");
-      result.append(this.getNomenclaturalCode() != null ? this.getNomenclaturalCode().getKey():"");
-      result.append(";");
-      result.append("dnaSource");
-      result.append(":");
-      result.append(this.getDnaSoure() != null ? this.getDnaSoure().toString():"");
-      result.append(";");
-      result.append("classificationUUID");
-      result.append(":");
-      result.append(this.getClassificationUuid() != null ? this.getClassificationUuid().toString():"");
-      result.append(";");
-      result.append("classificationName");
-      result.append(":");
-      result.append(this.getClassificationName() != null ? this.getClassificationName():"");
-      result.append(";");
-
-
-    return result.toString();
-
-}
-
-
-
-
-
-
-
-
-
-
-
+        return result.toString();
+    }
 }

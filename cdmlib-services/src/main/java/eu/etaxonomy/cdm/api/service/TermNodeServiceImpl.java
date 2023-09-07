@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -83,6 +84,9 @@ public class TermNodeServiceImpl
 
 	@Autowired
 	private IVocabularyService vocabularyService;
+
+	@Autowired
+    private ITermCollectionService termCollService;
 
 	@Override
     public List<TermNode> list(TermType termType, Integer limit, Integer start,
@@ -257,8 +261,8 @@ public class TermNodeServiceImpl
 
                 }
 
-                MergeResult<TermNode> mergeResult = dao.merge(node, true);
-                result.addUpdatedObject(mergeResult.getMergedEntity());
+                UUID mergeResult = dao.saveOrUpdate(node);
+                result.addUpdatedObject(dao.findByUuid(mergeResult));
             }
         }
         return result;
@@ -288,6 +292,7 @@ public class TermNodeServiceImpl
                     Annotation annotation = Annotation.NewDefaultLanguageInstance(anDto.getText());
                     annotation.setAnnotationType(AnnotationType.getTermByUUID(anDto.getTypeUuid(), AnnotationType.class));
                     annotationsToAdd.add(annotation);
+
                 }
             }
         }
@@ -528,13 +533,15 @@ public class TermNodeServiceImpl
 //                  recommended mod. vocabularies
                     character.getRecommendedModifierEnumeration().clear();
                     uuids = new ArrayList<>();
+                    List<UUID> termCollUuids = new ArrayList<>();
                     for (TermCollectionDto termDto: characterDto.getRecommendedModifierEnumeration()){
-                        uuids.add(termDto.getUuid());
+                        termCollUuids.add(termDto.getUuid());
                     }
-                    List<TermVocabulary> termVocs;
+                    List<TermCollection> termVocs;
                     if (!uuids.isEmpty()){
-                        termVocs = vocabularyService.load(uuids, null);
-                        for (TermVocabulary<DefinedTerm> voc: termVocs){
+                        termVocs = termCollService.load(uuids, null);
+
+                        for (TermCollection voc: termVocs){
                             character.addRecommendedModifierEnumeration(voc);
                         }
                     }
@@ -542,13 +549,15 @@ public class TermNodeServiceImpl
 //                  supported state vocabularies
                     character.getSupportedCategoricalEnumerations().clear();
                     uuids = new ArrayList<>();
+
                     for (TermCollectionDto termDto: characterDto.getSupportedCategoricalEnumerations()){
                         uuids.add(termDto.getUuid());
                     }
                     if (!uuids.isEmpty()){
-                        termVocs = vocabularyService.load(uuids, null);
 
-                        for (TermVocabulary voc: termVocs){
+                        termVocs = termCollService.load(uuids, null);
+
+                        for (TermCollection voc: termVocs){
                             character.addSupportedCategoricalEnumeration(voc);
                         }
                     }

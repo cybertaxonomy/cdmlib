@@ -36,7 +36,8 @@ import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
- * Embedabble class to embed attributes to use externally managed data
+ * Embedabble class to embed attributes to use externally managed data.
+ *
  * @author a.mueller
  * @since 12.08.2019
  */
@@ -53,7 +54,6 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
 
     private static final long serialVersionUID = -2254347420863435872L;
-
 
     //attributes for externally managed
 
@@ -104,7 +104,44 @@ public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
                 && externalLink == null && importMethod == null && lastRetrieved == null;
     }
 
-// ************************ CLONE ***********************/
+// ************************ GETTER /SETTER ***********************/
+
+    public DateTime getLastRetrieved() {
+        return lastRetrieved;
+    }
+    public void setLastRetrieved(DateTime lastRetrieved) {
+        this.lastRetrieved = lastRetrieved;
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
+    public URI getExternalLink() {
+        return externalLink;
+    }
+    public void setExternalLink(URI externalLink) {
+        this.externalLink = externalLink;
+    }
+
+    public AuthorityType getAuthorityType() {
+        return authorityType;
+    }
+    public void setAuthorityType(AuthorityType authorityType) {
+        this.authorityType = authorityType;
+    }
+
+    public ExternallyManagedImport getImportMethod() {
+        return importMethod;
+    }
+    public void setImportMethod(ExternallyManagedImport importMethod) {
+        this.importMethod = importMethod;
+    }
+
+// ********************** CLONE ***********************************/
 
     @Override
     protected Object clone() throws CloneNotSupportedException {

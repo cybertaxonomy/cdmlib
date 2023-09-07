@@ -761,14 +761,14 @@ public class DefinedTermDaoImpl
         //vocabularies
         String vocQueryString = TermCollectionDto.getTermCollectionDtoSelect() + " WHERE a.uuid = :uuid";
         Query<Object[]> vocQuery = getSession().createQuery(vocQueryString, Object[].class);
-        Map<UUID,TermVocabularyDto> vocMap = new HashMap<>();
+        Map<UUID,TermCollectionDto> vocMap = new HashMap<>();
         for (TermDto dto: list){
             UUID vocUuid = dto.getVocabularyUuid();
-            TermVocabularyDto vocDto = vocMap.get(vocUuid);
+            TermCollectionDto vocDto = vocMap.get(vocUuid);
             if (vocDto == null){
                 vocQuery.setParameter("uuid", dto.getVocabularyUuid());
                 List<Object[]> vocArrayResult = vocQuery.list();
-                List<TermVocabularyDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(vocArrayResult);
+                List<TermCollectionDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(vocArrayResult);
                 if (!vocs.isEmpty()){
                     vocDto = vocs.get(0);
                     vocMap.put(vocUuid, vocs.get(0));
@@ -860,6 +860,21 @@ public class DefinedTermDaoImpl
 
             List<Object[]> result = query.list();
             list = TermDto.termDtoListFrom(result);
+
+            //get terms for trees
+            queryString = TermDto.getTermDtoSelect()
+                    + "WHERE a.uuid IN "
+                    + "(SELECT def.uuid FROM TermNode tr  "
+                    + " LEFT JOIN tr.graph as graph "
+                    + " LEFT JOIN tr.term as def  "
+                    + " WHERE graph.uuid in (:supportedCategories))"
+                    + " ORDER BY a.titleCache";
+            query =  getSession().createQuery(queryString, Object[].class);
+            query.setParameterList("supportedCategories", supportedCategories);
+
+            result = query.list();
+            list.addAll( TermDto.termDtoListFrom(result));
+
             map.put(featureUuid, list);
         }
         return map;

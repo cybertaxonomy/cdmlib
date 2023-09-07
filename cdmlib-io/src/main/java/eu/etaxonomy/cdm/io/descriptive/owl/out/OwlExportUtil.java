@@ -94,12 +94,12 @@ public class OwlExportUtil {
         vocabularyResource.addProperty(OwlUtil.propHasTerm, termResource);
 
         // export includes and generalizationOf
-        Set<DefinedTermBase> generalizationOf = term.getGeneralizationOf();
+        Set<DefinedTermBase<?>> generalizationOf = term.getGeneralizationOf();
         for (DefinedTermBase<?> kindOf : generalizationOf) {
             Resource kindOfResource = addTerm(kindOf, vocabularyResource, repo, state);
             termResource.addProperty(OwlUtil.propTermIsGeneralizationOf, kindOfResource);
         }
-        Set<DefinedTermBase> includes = term.getIncludes();
+        Set<DefinedTermBase<?>> includes = term.getIncludes();
         for (DefinedTermBase<?> partOf : includes) {
             Resource partOfResource = addTerm(partOf, vocabularyResource, repo, state);
             termResource.addProperty(OwlUtil.propTermIncludes, partOfResource);

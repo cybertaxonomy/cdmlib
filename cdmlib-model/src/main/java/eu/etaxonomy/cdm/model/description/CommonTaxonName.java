@@ -21,8 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
@@ -49,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CommonTaxonName", propOrder = {
     "name",
+    "transliteration",
     "language",
     "area"
 })
@@ -59,11 +58,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class CommonTaxonName extends DescriptionElementBase {
 
     private static final long serialVersionUID = 2643808051976643339L;
-    private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Name")
     @Field(store=Store.YES)
     private String name;
+
+    @XmlElement(name = "Name")
+    @Field(store=Store.YES)
+    private String transliteration;
 
     @XmlElement(name = "Language")
     @XmlIDREF
@@ -155,6 +157,19 @@ public class CommonTaxonName extends DescriptionElementBase {
      */
     public void setName(String name){
         this.name = name;
+    }
+
+    /**
+     * Returns the transliteration string of <i>this</i> common name.
+     */
+    public String getTransliteration(){
+        return this.transliteration;
+    }
+    /**
+     * @see #getTransliteration()
+     */
+    public void setTransliteration(String transliteration){
+        this.transliteration = transliteration;
     }
 
     /**

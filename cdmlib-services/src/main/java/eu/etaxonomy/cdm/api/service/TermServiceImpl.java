@@ -447,12 +447,12 @@ public class TermServiceImpl
 	            references.remove(generalTerm);
 	        }
 	        //part of
-	        DefinedTermBase parentTerm = term.getPartOf();
+	        DefinedTermBase<?> parentTerm = term.getPartOf();
 	        if (parentTerm != null && termConfig.isDeletePartOfRelations()){
 	            references.remove(parentTerm);
 	        }
 	        //included in
-	        Set<DefinedTermBase> includedTerms = term.getIncludes();
+	        Set<DefinedTermBase<?>> includedTerms = term.getIncludes();
 	        if (!includedTerms.isEmpty() && termConfig.isDeleteIncludedRelations()){
 	            references.removeAll(includedTerms);
 	        }

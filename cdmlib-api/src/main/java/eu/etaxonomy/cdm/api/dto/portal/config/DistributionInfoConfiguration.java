@@ -47,7 +47,7 @@ public class DistributionInfoConfiguration {
     private EnumSet<InfoPart> infoParts = EnumSet.of(
             InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
 
-    private boolean useTreeDto = false;
+    private boolean useTreeDto = true;
 
     private boolean ignoreDistributionStatusUndefined = true;
 

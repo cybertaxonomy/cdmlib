@@ -13,8 +13,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema.
 // Generated on: 2007.08.01 at 10:51:47 AM BST
 //
-
-
 package eu.etaxonomy.remote.dto.rdf;
 
 import java.util.HashSet;
@@ -44,7 +42,7 @@ public class Rdf {
 	  @XmlElement(name = "SpeciesProfileModel", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#", type = SpeciesProfileModel.class),
 	  @XmlElement(name = "NameInformation", namespace = "http://cybertaxonomy.org/cdm/ontology/voc/NameInformation#")
     })
-    protected Set<BaseThing> things = new HashSet<BaseThing>();
+    protected Set<BaseThing> things = new HashSet<>();
 
 	public Set<BaseThing> getThings() {
 		return things;

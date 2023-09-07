@@ -53,12 +53,16 @@ public class Character extends Feature {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
+    @Deprecated
     @XmlElement(name = "Structure")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    /**
+     * @deprecated the concept of structure modifiers has been abandoned (#10133)
+     */
     private TermNode<DefinedTerm> structure;
 
     //#8120
@@ -148,6 +152,7 @@ public class Character extends Feature {
     protected Character() {
         super();
         this.setTermType(TermType.Character);
+        this.setSupportsTextData(false);
     }
 
 
@@ -174,6 +179,7 @@ public class Character extends Feature {
         this.setTermType(TermType.Character);
         this.structure = structure;
         this.property = property;
+        this.setSupportsTextData(false);
     }
 
  // ****************** GETTER / SETTER *********************************************/
@@ -199,9 +205,17 @@ public class Character extends Feature {
         this.property = property;
     }
 
+    /**
+     * @deprecated the concept of structure modifiers has been abandoned (#10133)
+     */
+    @Deprecated
     public DefinedTerm getStructureModifier() {
         return structureModifier;
     }
+    /**
+     * @deprecated the concept of structure modifiers has been abandoned (#10133)
+     */
+    @Deprecated
     public void setStructureModifier(DefinedTerm structureModifier) {
         this.structureModifier = structureModifier;
     }

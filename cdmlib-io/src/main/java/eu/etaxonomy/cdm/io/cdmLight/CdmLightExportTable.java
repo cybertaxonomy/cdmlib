@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.io.cdmLight;
 
+import eu.etaxonomy.cdm.io.out.ITaxonTreeExportTable;
+
 /**
- * An enumeration with each instance representing a table type in the Output Model.
+ * An enumeration with each instance representing a table type in CDM light.
  *
  * @author a.mueller
  * @since 15.03.2017
  */
-public enum CdmLightExportTable {
+public enum CdmLightExportTable implements ITaxonTreeExportTable {
     METADATA("Metadata", metaDataColumns()),
     SCIENTIFIC_NAME("ScientificName", nameColumns()),
     NAME_RELATIONSHIP("NameRelationship",nameRelationColumns()),
@@ -40,243 +42,238 @@ public enum CdmLightExportTable {
     ;
 
     //Taxon/Synonym
-    protected static final String NAME_FK = "Name_Fk";
-    protected static final String TAXON_ID = "Taxon_ID";
-    protected static final String TAXON_FK = "Taxon_Fk";
-    protected static final String CLASSIFICATION_ID = "Classification_ID";
-    protected static final String CLASSIFICATION_TITLE = "ClassificationName";
-    protected static final String SYNONYM_ID = "Synonym_ID";
-    protected static final String PARENT_FK = "Parent_Fk";
-    protected static final String SEC_REFERENCE_FK = "SecReference_Fk";
-    protected static final String SEC_REFERENCE = "SecReference";
-    protected static final String SEC_SUBNAME_FK = "SecSubName_Fk";
-    protected static final String SEC_SUBNAME = "SecSubName";
-    protected static final String SEC_SUBNAME_AUTHORS = "SecSubNameAuthors";
-    protected static final String SORT_INDEX = "SortIndex";
-    protected static final String INCLUDED = "PlacementIncluded";
-    protected static final String DOUBTFUL = "PlacementDoubtful";
-    protected static final String UNPLACED = "Unplaced";
-    protected static final String EXCLUDED = "Excluded";
-    protected static final String EXCLUDED_EXACT = "ExcludedExact";
-    protected static final String EXCLUDED_GEO = "ExcludedGeo";
-    protected static final String EXCLUDED_TAX = "ExcludedTax";
-    protected static final String EXCLUDED_NOM = "ExcludedNom";
-    protected static final String UNCERTAIN_APPLICATION = "UncertainApplication";
-    protected static final String UNRESOLVED = "PlacementUnresolved";
-    protected static final String PLACEMENT_STATUS = "PlacementStatus";
-    protected static final String PUBLISHED = "Published";
-    protected static final String PLACEMENT_NOTES = "PlacementNotes";
-    protected static final String PLACEMENT_REF_FK = "PlacementReference_Fk";
-    protected static final String PLACEMENT_REFERENCE = "PlacementReference";
+    static final String NAME_FK = "Name_Fk";
+    static final String TAXON_ID = "Taxon_ID";
+    static final String TAXON_FK = "Taxon_Fk";
+    static final String CLASSIFICATION_ID = "Classification_ID";
+    static final String CLASSIFICATION_TITLE = "ClassificationName";
+    static final String SYNONYM_ID = "Synonym_ID";
+    static final String PARENT_FK = "Parent_Fk";
+    static final String SEC_REFERENCE_FK = "SecReference_Fk";
+    static final String SEC_REFERENCE = "SecReference";
+    static final String SEC_SUBNAME_FK = "SecSubName_Fk";
+    static final String SEC_SUBNAME = "SecSubName";
+    static final String SEC_SUBNAME_AUTHORS = "SecSubNameAuthors";
+    static final String SORT_INDEX = "SortIndex";
+    static final String INCLUDED = "PlacementIncluded";
+    static final String DOUBTFUL = "PlacementDoubtful";
+    static final String UNPLACED = "Unplaced";
+    static final String EXCLUDED = "Excluded";
+    static final String EXCLUDED_EXACT = "ExcludedExact";
+    static final String EXCLUDED_GEO = "ExcludedGeo";
+    static final String EXCLUDED_TAX = "ExcludedTax";
+    static final String EXCLUDED_NOM = "ExcludedNom";
+    static final String UNCERTAIN_APPLICATION = "UncertainApplication";
+    static final String UNRESOLVED = "PlacementUnresolved";
+    static final String PLACEMENT_STATUS = "PlacementStatus";
+    static final String PUBLISHED = "Published";
+    static final String PLACEMENT_NOTES = "PlacementNotes";
+    static final String PLACEMENT_REF_FK = "PlacementReference_Fk";
+    static final String PLACEMENT_REFERENCE = "PlacementReference";
 
     //pro parte / misapplied
-    protected static final String SYN_SEC_REFERENCE_FK = "SynSecReference_Fk";
-    protected static final String SYN_SEC_REFERENCE = "SynSecReference";
-    protected static final String IS_PRO_PARTE = "IsProParteSynonym";
-    protected static final String IS_PARTIAL = "IsPartial";
-    protected static final String IS_MISAPPLIED = "IsMisapplied";
+    static final String SYN_SEC_REFERENCE_FK = "SynSecReference_Fk";
+    static final String SYN_SEC_REFERENCE = "SynSecReference";
+    static final String IS_PRO_PARTE = "IsProParteSynonym";
+    static final String IS_PARTIAL = "IsPartial";
+    static final String IS_MISAPPLIED = "IsMisapplied";
 
     //Reference
-    protected static final String REFERENCE_ID = "Reference_ID";
-    protected static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
-    protected static final String REF_TITLE = "Title";
-    protected static final String ABBREV_REF_TITLE = "AbbrevTitle";
-    protected static final String DATE_PUBLISHED = "DatePublished";
-    protected static final String EDITION = "Edition";
-    protected static final String EDITOR= "Editor";
-    protected static final String ISBN = "ISBN";
-    protected static final String ISSN = "ISSN";
-    protected static final String ORGANISATION = "Organisation";
-    protected static final String PAGES = "Pages";
-    protected static final String PLACE_PUBLISHED = "PlacePublished";
-    protected static final String PUBLISHER = "Publisher";
-    protected static final String REF_ABSTRACT = "ReferenceAbstract";
-    protected static final String SERIES_PART = "SeriesPart";
-    protected static final String VOLUME = "Volume";
-    protected static final String YEAR = "Year";
-    protected static final String AUTHORSHIP_TITLE = "FullAuthor";
+    static final String REFERENCE_ID = "Reference_ID";
+    static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
+    static final String REF_TITLE = "Title";
+    static final String ABBREV_REF_TITLE = "AbbrevTitle";
+    static final String DATE_PUBLISHED = "DatePublished";
+    static final String EDITION = "Edition";
+    static final String EDITOR= "Editor";
+    static final String ISBN = "ISBN";
+    static final String ISSN = "ISSN";
+    static final String ORGANISATION = "Organisation";
+    static final String PAGES = "Pages";
+    static final String PLACE_PUBLISHED = "PlacePublished";
+    static final String PUBLISHER = "Publisher";
+    static final String REF_ABSTRACT = "ReferenceAbstract";
+    static final String SERIES_PART = "SeriesPart";
+    static final String VOLUME = "Volume";
+    static final String YEAR = "Year";
+    static final String AUTHORSHIP_TITLE = "FullAuthor";
 
 
-    protected static final String IN_REFERENCE = "InReference";
-    protected static final String INSTITUTION = "Institution";
-   // protected static final String LSID = "LSID";
-    protected static final String SCHOOL = "School";
-    protected static final String REF_TYPE = "ReferenceType";
-    protected static final String URI = "URI";
+    static final String IN_REFERENCE = "InReference";
+    static final String INSTITUTION = "Institution";
+   // static final String LSID = "LSID";
+    static final String SCHOOL = "School";
+    static final String REF_TYPE = "ReferenceType";
+    static final String URI = "URI";
 
     //Name
-    protected static final String NAME_ID = "Name_ID";
-//    protected static final String TROPICOS_ID = "Tropicos_ID";
-//    protected static final String IPNI_ID = "IPNI_ID";
-//    protected static final String WFO_ID = "WorldFloraOnline_ID";
-    protected static final String LSID = "LSID";
-    protected static final String RANK = "Rank";
-    protected static final String RANK_SEQUENCE = "RankSequence";
-    protected static final String FULL_NAME_WITH_AUTHORS = "FullNameWithAuthors";
-    protected static final String FULL_NAME_WITH_REF = "FullNameWithRef";
-    protected static final String FULL_NAME_NO_AUTHORS = "FullNameNoAuthors";
-    protected static final String GENUS_UNINOMIAL = "GenusOrUninomial";
-    protected static final String INFRAGENERIC_RANK = "InfragenericRank";
-    protected static final String INFRAGENERIC_EPITHET = "InfraGenericEpithet";
-    protected static final String SPECIFIC_EPITHET = "SpecificEpithet";
-    protected static final String INFRASPECIFIC_RANK = "InfraspecificRank";
-    protected static final String INFRASPECIFIC_EPITHET = "InfraSpecificEpithet ";
-    protected static final String APPENDED_PHRASE = "AppendedPhrase";
-    protected static final String BAS_EX_AUTHORTEAM_FK = "BasionymExAuthorTeam_Fk";
-    protected static final String BAS_AUTHORTEAM_FK = "BasionymAuthorTeam_Fk";
-    protected static final String COMB_EX_AUTHORTEAM_FK = "PublishingExAuthorTeam_Fk";
-    protected static final String COMB_AUTHORTEAM_FK = "PublishingAuthorTeam_Fk";
-    protected static final String AUTHOR_TEAM_STRING = "AuthorTeamString";
-    protected static final String NAME_USED_IN_SOURCE_FK = "NameUsedInSource_Fk";
-   // protected static final String REFERENCE_FK = "Reference_Fk"
-    protected static final String PUBLICATION_TYPE = "PublicationType";
-    protected static final String ABBREV_TITLE = "AbbreviatedTitle";
-    protected static final String FULL_TITLE = "FullTitle";
-    protected static final String ABBREV_REF_AUTHOR = "AbbreviatedInRefAuthor";
-    protected static final String FULL_REF_AUTHOR = "FullInRefAuthor";
-    protected static final String COLLATION = "Collation";
-    protected static final String VOLUME_ISSUE = "VolumeIssue";
-    protected static final String DETAIL = "Detail";
-    protected static final String YEAR_PUBLISHED = "YearPublished";
-    protected static final String VERBATIM_DATE = "VerbatimDate";
-    protected static final String PROTOLOGUE_URI = "ProtologueURI";
-    protected static final String NOM_STATUS = "NomenclaturalStatus";
-    protected static final String NOM_STATUS_ABBREV = "NomenclaturalStatusAbbreviation";
-    protected static final String HOMOTYPIC_GROUP_FK = "HomotypicGroup_Fk";
-    protected static final String HOMOTYPIC_GROUP_SEQ = "HomotypicGroupSequenceNumber";
-    protected static final String PROTOLOGUE_TYPE_STATEMENT = "ProtologueTypeStatement";
-    protected static final String TYPE_SPECIMEN = "TypeSpecimens";
-    protected static final String TYPE_STATEMENT = "TypeStatements";
-
-
+    static final String NAME_ID = "Name_ID";
+//    static final String TROPICOS_ID = "Tropicos_ID";
+//    static final String IPNI_ID = "IPNI_ID";
+//    static final String WFO_ID = "WorldFloraOnline_ID";
+    static final String LSID = "LSID";
+    static final String RANK = "Rank";
+    static final String RANK_SEQUENCE = "RankSequence";
+    static final String FULL_NAME_WITH_AUTHORS = "FullNameWithAuthors";
+    static final String FULL_NAME_WITH_REF = "FullNameWithRef";
+    static final String FULL_NAME_NO_AUTHORS = "FullNameNoAuthors";
+    static final String GENUS_UNINOMIAL = "GenusOrUninomial";
+    static final String INFRAGENERIC_RANK = "InfragenericRank";
+    static final String INFRAGENERIC_EPITHET = "InfraGenericEpithet";
+    static final String SPECIFIC_EPITHET = "SpecificEpithet";
+    static final String INFRASPECIFIC_RANK = "InfraspecificRank";
+    static final String INFRASPECIFIC_EPITHET = "InfraSpecificEpithet ";
+    static final String APPENDED_PHRASE = "AppendedPhrase";
+    static final String BAS_EX_AUTHORTEAM_FK = "BasionymExAuthorTeam_Fk";
+    static final String BAS_AUTHORTEAM_FK = "BasionymAuthorTeam_Fk";
+    static final String COMB_EX_AUTHORTEAM_FK = "PublishingExAuthorTeam_Fk";
+    static final String COMB_AUTHORTEAM_FK = "PublishingAuthorTeam_Fk";
+    static final String AUTHOR_TEAM_STRING = "AuthorTeamString";
+    static final String NAME_USED_IN_SOURCE_FK = "NameUsedInSource_Fk";
+   // static final String REFERENCE_FK = "Reference_Fk"
+    static final String PUBLICATION_TYPE = "PublicationType";
+    static final String ABBREV_TITLE = "AbbreviatedTitle";
+    static final String FULL_TITLE = "FullTitle";
+    static final String ABBREV_REF_AUTHOR = "AbbreviatedInRefAuthor";
+    static final String FULL_REF_AUTHOR = "FullInRefAuthor";
+    static final String COLLATION = "Collation";
+    static final String VOLUME_ISSUE = "VolumeIssue";
+    static final String DETAIL = "Detail";
+    static final String YEAR_PUBLISHED = "YearPublished";
+    static final String VERBATIM_DATE = "VerbatimDate";
+    static final String PROTOLOGUE_URI = "ProtologueURI";
+    static final String NOM_STATUS = "NomenclaturalStatus";
+    static final String NOM_STATUS_ABBREV = "NomenclaturalStatusAbbreviation";
+    static final String HOMOTYPIC_GROUP_FK = "HomotypicGroup_Fk";
+    static final String HOMOTYPIC_GROUP_SEQ = "HomotypicGroupSequenceNumber";
+    static final String PROTOLOGUE_TYPE_STATEMENT = "ProtologueTypeStatement";
+    static final String TYPE_SPECIMEN = "TypeSpecimens";
+    static final String TYPE_STATEMENT = "TypeStatements";
 
     //Name Relationship
-    protected static final String NAME1_FK = "Name1_Fk";
-    protected static final String NAME2_FK = "Name2_Fk";
-    protected static final String NAME_REL_TYPE = "NameRelationshipType";
+    static final String NAME1_FK = "Name1_Fk";
+    static final String NAME2_FK = "Name2_Fk";
+    static final String NAME_REL_TYPE = "NameRelationshipType";
 
     //CDM MetaData
-    protected static final String INSTANCE_ID = "EditInstance_ID";
-    protected static final String INSTANCE_NAME = "EditInstanceName";
+    static final String INSTANCE_ID = "EditInstance_ID";
+    static final String INSTANCE_NAME = "EditInstanceName";
 
-    protected static final String DATASET_DESCRIPTION = "DatasetDescription";
-    protected static final String DATASET_CREATOR = "DatasetCreator";
-    protected static final String DATASET_CONTRIBUTOR = "DatasetContributor";
-    protected static final String DATASET_TITLE = "DatasetTitle";
-    protected static final String DATASET_LANGUAGE = "Language";
-    protected static final String DATASET_LANDINGPAGE = "DataSetLandingPage";
-    protected static final String DATASET_DOWNLOAD_LINK = "DatasetDownloadLink";
-    protected static final String DATASET_BASE_URL = "DatasetBaseUrl";
-    protected static final String DATASET_RECOMMENDED_CITATTION = "RecommendedCitation";
-    protected static final String DATASET_LOCATION = "DatasetLocation";
-    protected static final String DATASET_KEYWORDS = "DatasetKeywords";
-    protected static final String DATASET_LICENCE = "Licence";
-
+    static final String DATASET_DESCRIPTION = "DatasetDescription";
+    static final String DATASET_CREATOR = "DatasetCreator";
+    static final String DATASET_CONTRIBUTOR = "DatasetContributor";
+    static final String DATASET_TITLE = "DatasetTitle";
+    static final String DATASET_LANGUAGE = "Language";
+    static final String DATASET_LANDINGPAGE = "DataSetLandingPage";
+    static final String DATASET_DOWNLOAD_LINK = "DatasetDownloadLink";
+    static final String DATASET_BASE_URL = "DatasetBaseUrl";
+    static final String DATASET_RECOMMENDED_CITATTION = "RecommendedCitation";
+    static final String DATASET_LOCATION = "DatasetLocation";
+    static final String DATASET_KEYWORDS = "DatasetKeywords";
+    static final String DATASET_LICENCE = "Licence";
 
     //Homotypic Group
-    protected static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
-    protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
-    protected static final String HOMOTYPIC_GROUP_WITH_SEC_STRING = "HomotypicGroupStringWithSec";
-    protected static final String HOMOTYPIC_GROUP_WITHOUT_ACCEPTED = "HomotypicGroupStringWithoutAccepted";
-    protected static final String HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC = "HomotypicGroupStringWithoutAcceptedWithSec";
-    protected static final String HOMOTYPIC_GROUP_TYPE_STATEMENT_REFERENCE = "HomotypicGroupTypeStatementReference";
+    static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
+    static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
+    static final String HOMOTYPIC_GROUP_WITH_SEC_STRING = "HomotypicGroupStringWithSec";
+    static final String HOMOTYPIC_GROUP_WITHOUT_ACCEPTED = "HomotypicGroupStringWithoutAccepted";
+    static final String HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC = "HomotypicGroupStringWithoutAcceptedWithSec";
+    static final String HOMOTYPIC_GROUP_TYPE_STATEMENT_REFERENCE = "HomotypicGroupTypeStatementReference";
 
-    protected static final String TYPE_STRING = "TypeSpecimenString";
-    protected static final String TYPE_CACHE = "TypeStatementsString";
-    protected static final String TYPE_STRING_WITH_REF = "TypeSpecimenStringWithRef";
-    protected static final String TYPE_CACHE_WITH_REF = "TypeStatementsStringWithRef";
+    static final String TYPE_STRING = "TypeSpecimenString";
+    static final String TYPE_CACHE = "TypeStatementsString";
+    static final String TYPE_STRING_WITH_REF = "TypeSpecimenStringWithRef";
+    static final String TYPE_CACHE_WITH_REF = "TypeStatementsStringWithRef";
 
     //NomenclaturalAuthor
-    protected static final String AUTHOR_ID = "PersonOrTeam_ID";
-    protected static final String ABBREV_AUTHOR = "AbbrevNames";
-    protected static final String AUTHOR_TITLE = "FullNames";
-    protected static final String AUTHOR_GIVEN_NAME = "PersonOtherNames";
-    protected static final String AUTHOR_FAMILY_NAME = "PersonFamiliyNames";
-    protected static final String AUTHOR_PREFIX = "PersonPrefix";
-    protected static final String AUTHOR_SUFFIX = "PersonSuffix";
+    static final String AUTHOR_ID = "PersonOrTeam_ID";
+    static final String ABBREV_AUTHOR = "AbbrevNames";
+    static final String AUTHOR_TITLE = "FullNames";
+    static final String AUTHOR_GIVEN_NAME = "PersonOtherNames";
+    static final String AUTHOR_FAMILY_NAME = "PersonFamiliyNames";
+    static final String AUTHOR_PREFIX = "PersonPrefix";
+    static final String AUTHOR_SUFFIX = "PersonSuffix";
 
   //Nomenclatural Author AuthorTeam Relations
 
-    protected static final String AUTHOR_FK = "Author_Fk";
-    protected static final String AUTHOR_TEAM_FK = "AuthorTeam_Fk";
-    protected static final String AUTHOR_TEAM_SEQ_NUMBER = "SequenceNumber";
+    static final String AUTHOR_FK = "Author_Fk";
+    static final String AUTHOR_TEAM_FK = "AuthorTeam_Fk";
+    static final String AUTHOR_TEAM_SEQ_NUMBER = "SequenceNumber";
 
     //TypeDesignations
-    protected static final String TYPE_ID="Type_ID";
-    protected static final String SPECIMEN_FK = "Specimen_Fk";
-    protected static final String TYPIFIED_NAME_FK = "TypifiedName_Fk";
-    protected static final String TYPE_VERBATIM_CITATION = "TypeVerbatimCitation";
-    protected static final String TYPE_STATUS = "TypeStatus";
-    protected static final String TYPE_INFORMATION_REF_STRING = "TypeInformationSource";
-    protected static final String TYPE_INFORMATION_REF_FK = "TypeInfoSourcePreferred_Fk";
-    protected static final String TYPE_DESIGNATED_BY_REF_FK = "TypeDesignatedBy_Fk";
+    static final String TYPE_ID="Type_ID";
+    static final String SPECIMEN_FK = "Specimen_Fk";
+    static final String TYPIFIED_NAME_FK = "TypifiedName_Fk";
+    static final String TYPE_VERBATIM_CITATION = "TypeVerbatimCitation";
+    static final String TYPE_STATUS = "TypeStatus";
+    static final String TYPE_INFORMATION_REF_STRING = "TypeInformationSource";
+    static final String TYPE_INFORMATION_REF_FK = "TypeInfoSourcePreferred_Fk";
+    static final String TYPE_DESIGNATED_BY_REF_FK = "TypeDesignatedBy_Fk";
 
     //Type_Name_Rel
-    protected static final String TYPE_FK="Type_Fk";
+    static final String TYPE_FK="Type_Fk";
 
 
     //Specimen
-    protected static final String SPECIMEN_ID = "Specimen_ID";
-    protected static final String SPECIMEN_CITATION = "SpecimenCitation";
-    protected static final String FIELDUNIT_CITATION = "FieldUnitCitation";
-    protected static final String LOCALITY= "Locality";
-    protected static final String COUNTRY = "Country";
-    protected static final String AREA_CATEGORY1 = "AreaCategory1";
-    protected static final String AREA_NAME1 = "AreaName1";
-    protected static final String AREA_CATEGORY2 = "AreaCategory2";
-    protected static final String AREA_NAME2 = "AreaName2";
-    protected static final String AREA_CATEGORY3 = "AreaCategory3";
-    protected static final String AREA_NAME3 = "AreaName3";
-    protected static final String FURTHER_AREAS = "FurtherAreas";
-    protected static final String COLLECTOR_STRING = "CollectorString";
-    protected static final String COLLECTOR_NUMBER = "CollectorNumber";
-    protected static final String COLLECTION_DATE = "CollectionDate";
-    protected static final String SPECIMEN_IMAGE_URIS = "SpecimenImageURIs";
-    protected static final String HERBARIUM_ABBREV = "HerbariumAbbrev";
-    protected static final String MEDIA_SPECIMEN_URL = "MediaSpecimenURI";
-    protected static final String PREFERREDSTABLE_ID = "PreferredStableId";
-    protected static final String BARCODE = "Barcode";
-    protected static final String ACCESSION_NUMBER = "AccessionNumber";
-    protected static final String CATALOGUE_NUMBER = "CatalogueNumber ";
+    static final String SPECIMEN_ID = "Specimen_ID";
+    static final String SPECIMEN_CITATION = "SpecimenCitation";
+    static final String FIELDUNIT_CITATION = "FieldUnitCitation";
+    static final String LOCALITY= "Locality";
+    static final String COUNTRY = "Country";
+    static final String AREA_CATEGORY1 = "AreaCategory1";
+    static final String AREA_NAME1 = "AreaName1";
+    static final String AREA_CATEGORY2 = "AreaCategory2";
+    static final String AREA_NAME2 = "AreaName2";
+    static final String AREA_CATEGORY3 = "AreaCategory3";
+    static final String AREA_NAME3 = "AreaName3";
+    static final String FURTHER_AREAS = "FurtherAreas";
+    static final String COLLECTOR_STRING = "CollectorString";
+    static final String COLLECTOR_NUMBER = "CollectorNumber";
+    static final String COLLECTION_DATE = "CollectionDate";
+    static final String SPECIMEN_IMAGE_URIS = "SpecimenImageURIs";
+    static final String HERBARIUM_ABBREV = "HerbariumAbbrev";
+    static final String MEDIA_SPECIMEN_URL = "MediaSpecimenURI";
+    static final String PREFERREDSTABLE_ID = "PreferredStableId";
+    static final String BARCODE = "Barcode";
+    static final String ACCESSION_NUMBER = "AccessionNumber";
+    static final String CATALOGUE_NUMBER = "CatalogueNumber ";
     //other specimen attributes
 
     //SimpleFacts
-    protected static final String FACT_ID = "Fact_ID";
-    protected static final String FACT_TEXT = "FactText";
-    protected static final String LANGUAGE = "Language";
-    protected static final String MEDIA_URI = "MediaURI";
-    protected static final String FACT_CATEGORY = "FactCategory";
+    static final String FACT_ID = "Fact_ID";
+    static final String FACT_TEXT = "FactText";
+    static final String LANGUAGE = "Language";
+    static final String MEDIA_URI = "MediaURI";
+    static final String FACT_CATEGORY = "FactCategory";
 
     // Specimen Facts
-    protected static final String SPECIMEN_NOTES = "SpecimenNotes";
-    protected static final String SPECIMEN_DESCRIPTION = "SpecimenDescription";
+    static final String SPECIMEN_NOTES = "SpecimenNotes";
+    static final String SPECIMEN_DESCRIPTION = "SpecimenDescription";
 
     // TaxonInteraction Facts
-    protected static final String TAXON2_FK = "Taxon2_FK";
-    protected static final String DESCRIPTION = "Description";
+    static final String TAXON2_FK = "Taxon2_FK";
+    static final String DESCRIPTION = "Description";
 
     //Geographic Area Facts
-    protected static final String AREA_LABEL = "AreaLabel";
-    protected static final String STATUS_LABEL = "StatusLabel";
+    static final String AREA_LABEL = "AreaLabel";
+    static final String STATUS_LABEL = "StatusLabel";
 
     //FactSources
-    protected static final String FACT_FK = "Fact_Fk";
-    protected static final String REFERENCE_FK = "Reference_Fk";
-    protected static final String NAME_IN_SOURCE_FK = "NameInSource_Fk";
-    protected static final String FACT_TYPE = "FactType";
+    static final String FACT_FK = "Fact_Fk";
+    static final String REFERENCE_FK = "Reference_Fk";
+    static final String NAME_IN_SOURCE_FK = "NameInSource_Fk";
+    static final String FACT_TYPE = "FactType";
 
     //Annotations
 
-
     //Identifiers
-    protected static final String EXTERNAL_NAME_IDENTIFIER = "ExternalIdentifier";
-    protected static final String IDENTIFIER_TYPE = "IdentifierType";
-    protected static final String FK = "ForeignKey";
-    protected static final String REF_TABLE = "ReferencedTable";
+    static final String EXTERNAL_NAME_IDENTIFIER = "ExternalIdentifier";
+    static final String IDENTIFIER_TYPE = "IdentifierType";
+    static final String FK = "ForeignKey";
+    static final String REF_TABLE = "ReferencedTable";
 
-    final static String[] homotypicGroupColumns(){
+    private final static String[] homotypicGroupColumns(){
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE, HOMOTYPIC_GROUP_WITH_SEC_STRING, HOMOTYPIC_GROUP_WITHOUT_ACCEPTED, HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC, SORT_INDEX, HOMOTYPIC_GROUP_TYPE_STATEMENT_REFERENCE};
-
     }
 
 //    private static String[] compressedDistributionFactColumns() {
@@ -287,60 +284,61 @@ public enum CdmLightExportTable {
         return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
     }
 
-    final static String[] nameFactColumns() {
+    private final static String[] nameFactColumns() {
         return new String[]{FACT_ID, NAME_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
     }
-    final static String[] taxonInteractionFactsColumns(){
+
+    private final static String[] taxonInteractionFactsColumns(){
         return new String[]{FACT_ID, TAXON_FK, TAXON2_FK, DESCRIPTION};
     }
 
-    final static String[] identifierColumns() {
+    private final static String[] identifierColumns() {
         return new String[]{ FK, REF_TABLE, EXTERNAL_NAME_IDENTIFIER, IDENTIFIER_TYPE};
     }
 
-    final static String[] mediaColumns() {
+    private final static String[] mediaColumns() {
         return new String[]{ FACT_ID, TAXON_FK, NAME_FK, MEDIA_URI};
     }
 
-    final static String[]  factSourcesColumns() {
+    private final static String[]  factSourcesColumns() {
         return new String[]{FACT_FK, REFERENCE_FK, NAME_IN_SOURCE_FK, FACT_TYPE};
     }
 
-    final static String[] specimenFactsColumns() {
+    private final static String[] specimenFactsColumns() {
         return new String[]{FACT_ID, TAXON_FK, SPECIMEN_FK, SPECIMEN_DESCRIPTION, SPECIMEN_NOTES};
     }
 
-    final static String[] commonNameFactsColumns() {
+    private final static String[] commonNameFactsColumns() {
         return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, AREA_LABEL};
-
     }
-    final static String[] geographicAreaFactsColumns() {
+
+    private final static String[] geographicAreaFactsColumns() {
         return new String[]{FACT_ID, TAXON_FK, AREA_LABEL, STATUS_LABEL};
     }
 
-    final static String[] simpleFactsColumns() {
+    private final static String[] simpleFactsColumns() {
         return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
     }
 
-    final static String[] nomenclaturalAuthorColumns() {
+    private final static String[] nomenclaturalAuthorColumns() {
         return new String[]{AUTHOR_ID, ABBREV_AUTHOR, AUTHOR_TITLE, AUTHOR_GIVEN_NAME, AUTHOR_FAMILY_NAME, AUTHOR_PREFIX, AUTHOR_SUFFIX};
     }
 
-    final static String[] nomenclaturalAuthorTeamRelColumns() {
+    private final static String[] nomenclaturalAuthorTeamRelColumns() {
         return new String[]{AUTHOR_TEAM_FK, AUTHOR_FK, AUTHOR_TEAM_SEQ_NUMBER};
     }
 
-    final static String[] metaDataColumns(){
+    private final static String[] metaDataColumns(){
         return new String[]{INSTANCE_ID, INSTANCE_NAME, DATASET_TITLE, DATASET_CONTRIBUTOR, DATASET_CREATOR, DATASET_DESCRIPTION,
                 DATASET_DOWNLOAD_LINK, DATASET_BASE_URL, DATASET_KEYWORDS, DATASET_LANDINGPAGE, DATASET_LANGUAGE, DATASET_LICENCE,
                 DATASET_LOCATION, DATASET_RECOMMENDED_CITATTION};
     }
 
-    final static String[] nameRelationColumns(){
+    private final static String[] nameRelationColumns(){
         return new String[]{NAME1_FK, NAME2_FK, NAME_REL_TYPE};
     }
 
-    final static String[] nameColumns(){
+    private final static String[] nameColumns(){
         return new String[]{NAME_ID, LSID, RANK, RANK_SEQUENCE,
                 FULL_NAME_WITH_AUTHORS, FULL_NAME_NO_AUTHORS, GENUS_UNINOMIAL,
                 INFRAGENERIC_RANK, INFRAGENERIC_EPITHET, SPECIFIC_EPITHET,
@@ -354,34 +352,32 @@ public enum CdmLightExportTable {
         };
     }
 
-    final static String[] taxonColumns(){
+    private final static String[] taxonColumns(){
         return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SEC_SUBNAME_FK, SEC_SUBNAME, SEC_SUBNAME_AUTHORS, APPENDED_PHRASE, SORT_INDEX,
                 INCLUDED, DOUBTFUL, UNPLACED, EXCLUDED, EXCLUDED_EXACT, EXCLUDED_GEO, EXCLUDED_TAX, EXCLUDED_NOM, UNCERTAIN_APPLICATION, UNRESOLVED, PLACEMENT_STATUS,
                 PLACEMENT_NOTES, PLACEMENT_REF_FK, PLACEMENT_REFERENCE, PUBLISHED};
     }
 
-    final static String[] synonymColumns(){
+    private final static String[] synonymColumns(){
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SYN_SEC_REFERENCE_FK, SYN_SEC_REFERENCE, SEC_REFERENCE_FK, SEC_REFERENCE,
                 IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED, PUBLISHED, SORT_INDEX, APPENDED_PHRASE};
     }
 
-    final static String[] referenceColumns(){
+    private final static String[] referenceColumns(){
         return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
                 REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, AUTHOR_FK, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI};
     }
 
-    final static String[] typeDesignationColumns(){
+    private final static String[] typeDesignationColumns(){
         return new String[]{TYPE_ID, TYPIFIED_NAME_FK, SPECIMEN_FK, //TYPE_VERBATIM_CITATION,
                 TYPE_STATUS, TYPE_DESIGNATED_BY_REF_FK, TYPE_INFORMATION_REF_STRING, TYPE_INFORMATION_REF_FK};
-
     }
 
-    final static String[] typeDesignationNameColumns(){
+    private final static String[] typeDesignationNameColumns(){
         return new String[]{TYPE_FK, NAME_FK};
     }
 
-
-    final static String[] specimenColumns() {
+    private final static String[] specimenColumns() {
         return new String[]{SPECIMEN_ID, SPECIMEN_CITATION, FIELDUNIT_CITATION, LOCALITY, COUNTRY, AREA_CATEGORY1, AREA_NAME1, AREA_CATEGORY2, AREA_NAME2, AREA_CATEGORY3, AREA_NAME3,
                 FURTHER_AREAS, COLLECTOR_STRING, COLLECTOR_NUMBER, COLLECTION_DATE, SPECIMEN_IMAGE_URIS, HERBARIUM_ABBREV, MEDIA_SPECIMEN_URL, PREFERREDSTABLE_ID, BARCODE, CATALOGUE_NUMBER, ACCESSION_NUMBER};
     }
@@ -398,6 +394,7 @@ public enum CdmLightExportTable {
 
 // ****************** GETTER / SETTER *************/
 
+    @Override
     public String getTableName() {return tableName;}
 
     public int getSize(){ return columnNames.length;}

@@ -47,11 +47,14 @@ public class Cdm2CdmDescriptionImport
         TaxonNode node = partitioner.next();
         int partitionSize = 100;
         int count = 0;
+        int totalCount = 0;
         TransactionStatus tx = startTransaction();
         while (node != null) {
             doSingleNode(state, node);
             count++;
+            totalCount++;
             if (count>=partitionSize){
+                logger.info("Imported " + totalCount + " taxa with descriptions." );
                 state.clearSessionCache();
                 try {
                     commitTransaction(tx);
@@ -72,9 +75,7 @@ public class Cdm2CdmDescriptionImport
         Set<TaxonDescription> result = new HashSet<>();
         logger.info(node.treeIndex());
         try {
-            for (TaxonDescription desc : node.getTaxon().getDescriptions()){
-                result.add(detach(desc, state));
-            }
+            result = handleTaxonDescriptions(node.getTaxon(), state);
         } catch (Exception e) {
             logger.warn("Exception during detache node " + node.treeIndex());
             e.printStackTrace();
@@ -83,8 +84,8 @@ public class Cdm2CdmDescriptionImport
             if (!result.isEmpty()){
                 getDescriptionService().saveOrUpdate((Set)result);
                 getCommonService().saveOrUpdate(state.getToSave());
-                state.clearToSave();
             }
+            state.clearToSave();
         } catch (Exception e) {
             logger.warn("Exception during save node " + node.treeIndex());
              e.printStackTrace();

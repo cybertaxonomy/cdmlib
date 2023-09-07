@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.format.description;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -38,6 +40,10 @@ public class CategoricalDataFormatter
     protected String doFormat(CategoricalData catData, List<Language> preferredLanguages) {
         List<StateData> stateDatas = catData.getStateData();
         String stateDataText = getStateDatasText(stateDatas, preferredLanguages);
+        if (catData.getNoDataStatus() != null) {
+            String noDataStatus = catData.getNoDataStatus().getLabel();
+            stateDataText = StringUtils.isEmpty(stateDataText) ? noDataStatus : noDataStatus +" (" + stateDataText + ")";
+        }
         return stateDataText;
     }
 

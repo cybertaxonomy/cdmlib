@@ -12,46 +12,32 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+
 /**
  * @author K.Luther
  * @date 05.06.2023
  *
  */
-public class AnnotationDto implements Serializable, Comparable<AnnotationDto>, ICdmBaseDto {
+public class AnnotationDto extends CdmBaseDto implements Serializable, Comparable<AnnotationDto>{
+
     private static final long serialVersionUID = -5138126315299678336L;
 
     private String text;
     private UUID typeUuid;
     private String typeLabel;
-    private UUID uuid;
-    private int id;
-    //TODO do we need type label, too?
 
-    public AnnotationDto() {
+    public AnnotationDto(UUID uuid, Integer id, UUID typeUuid, String typeLabel, String text, DateTime created, String createdBy, DateTime updated, String updatedBy) {
+        super(uuid, id, created, createdBy, updated, updatedBy);
+        this.typeUuid = typeUuid;
+        this.typeLabel = typeLabel;
+        this.text = text;
 
     }
 
     public AnnotationDto(UUID uuid, int id) {
-        this.uuid = uuid;
-        this.id = id;
-    }
+        super(uuid, id);
 
-    @Override
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getText() {
@@ -75,6 +61,7 @@ public class AnnotationDto implements Serializable, Comparable<AnnotationDto>, I
         this.typeLabel = typeLabel;
     }
 
+
     @Override
     public int compareTo(AnnotationDto o) {
         if (this.getUuid().equals(o.getUuid())) {
@@ -91,4 +78,6 @@ public class AnnotationDto implements Serializable, Comparable<AnnotationDto>, I
         }
         return this.getText().compareTo(o.getText());
     }
+
+
 }

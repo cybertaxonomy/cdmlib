@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,6 +92,12 @@ public class CommonServiceImpl
     @Override
     public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths) {
         return uuid == null ? null : genericDao.find(clazz, uuid, propertyPaths);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public <T extends CdmBase> T findWithoutFlush(Class<T> clazz, UUID uuid) throws DataAccessException {
+        return uuid == null ? null : genericDao.findWithoutFlush(clazz, uuid);
     }
 
     @Override

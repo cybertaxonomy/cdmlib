@@ -1273,6 +1273,15 @@ public class Taxon
         }
     }
 
+    //TODO full functionality still needs to be checked
+    public void addBasionymSynonym(TaxonName basionym, Reference synSec, String synSecDetail){
+        SynonymType synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
+        Synonym synonym = addSynonymName(basionym, synSec, synSecDetail, synonymType);
+        TaxonName thisName = this.getName();
+        thisName.addBasionym(basionym);
+        addSynonym(synonym);
+    }
+
     /**
      * Adds the given {@link Synonym synonym} to <code>this</code> taxon
      * and changes the {@link SynonymType

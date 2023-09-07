@@ -322,10 +322,10 @@ public abstract class CdmBase
      *
      * Hopefully this will be resolved through improvements with the creation of
      * proxy objects by hibernate and the following methods will become redundant,
-     * but for the time being . . .
+     * but for the time being ...
      *
-     * Note AM (2022-06-16): maybe for pure casting this method is not reqired anymore and also
-     *       deproxing might be obsolete in most cases since the current bytecode
+     * Note AM (2022-06-16): maybe for pure casting this method is not required anymore and also
+     *       deproxying might be obsolete in most cases since the current bytecode
      *       provider "bytebuddy" probably casts and handles proxies correctly.
      *
      * @param <T>

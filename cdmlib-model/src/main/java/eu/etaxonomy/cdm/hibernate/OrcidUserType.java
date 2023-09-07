@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.agent.ORCID;
  * @author a.mueller
  * @since 08.11.2018
  */
-public class OrcidUserType  extends AbstractUserType implements UserType {
+public class OrcidUserType extends AbstractUserType implements UserType {
 
     private static final long serialVersionUID = -1274015438727972344L;
     @SuppressWarnings("unused")

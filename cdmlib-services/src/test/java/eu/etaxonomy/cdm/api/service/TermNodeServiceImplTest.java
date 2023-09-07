@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.CharacterDto;
 import eu.etaxonomy.cdm.persistence.dto.CharacterNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
@@ -84,8 +85,8 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     public void testSaveCharacterNode_supportedData() {
         UUID characterTreeUuid = createAndSaveCharacterTree();
 
-        TermTreeDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
-        List<TermNodeDto> children = dto.getRoot().getChildren();
+        TermCollectionDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
+        List<TermNodeDto> children = ((TermTreeDto)dto).getRoot().getChildren();
         CharacterNodeDto nodeDto = (CharacterNodeDto) children.get(0);
         TermDto termDto = nodeDto.getTerm();
         if (termDto instanceof CharacterDto){
@@ -111,8 +112,8 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     public void testSaveCharacterNode_representation() {
         UUID characterTreeUuid = createAndSaveCharacterTree();
 
-        TermTreeDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
-        List<TermNodeDto> children = dto.getRoot().getChildren();
+        TermCollectionDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
+        List<TermNodeDto> children = ((TermTreeDto)dto).getRoot().getChildren();
         CharacterNodeDto nodeDto = (CharacterNodeDto) children.get(0);
         TermDto termDto = nodeDto.getTerm();
         if (termDto instanceof CharacterDto){

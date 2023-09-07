@@ -31,7 +31,7 @@ public class DescriptiveDataSetBaseDto implements Serializable{
     private UUID uuid;
     private Integer id;
     private String titleCache;
-    private TermTreeDto descriptiveSystem;
+    private TermCollectionDto descriptiveSystem;
     private Set<TaxonNodeDto> subTreeFilter;
     private Set<TermDto> geoFilter;
     private Set<UUID> descriptionUuids;
@@ -77,11 +77,11 @@ public class DescriptiveDataSetBaseDto implements Serializable{
         this.titleCache = titleCache;
     }
 
-    public TermTreeDto getDescriptiveSystem() {
+    public TermCollectionDto getDescriptiveSystem() {
         return descriptiveSystem;
     }
 
-    public void setDescriptiveSystem(TermTreeDto descriptiveSystem) {
+    public void setDescriptiveSystem(TermCollectionDto descriptiveSystem) {
         this.descriptiveSystem = descriptiveSystem;
     }
 

@@ -10,10 +10,12 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -32,4 +34,15 @@ public interface ITermCollectionService extends IIdentifiableEntityService<TermC
 	public <S extends TermCollection> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(
 	        Class<S> clazz, TermType termType, Integer limit, String pattern);
 
+    public List<TermCollectionDto> findCollectionDtoByTermTypeAndPattern(String pattern, TermType termType);
+
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes);
+
+    public List<TermCollectionDto> findCollectionDtoByTermType(TermType termType, boolean includeSubtypes);
+
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes);
+
+    public List<TermCollectionDto> findCollectionDtoByTermType(TermType termType);
+
+    public List<TermCollectionDto> findTermCollectionDtoByUuids(List<UUID> collectionUuids);
 }

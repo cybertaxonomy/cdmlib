@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.filter.LogicFilter;
 import eu.etaxonomy.cdm.filter.LogicFilter.Op;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -44,7 +45,7 @@ public class TaxonNodeFilterDaoHibernateImpl
 
     private static final String DESCRIPTION_ELEMENTS = "descriptionElements";
 
-    private static final String FEATURE_UUID = "9fc9d10c-ba50-49ee-b174-ce83fc3f80c6";
+    private static final String DISTRIBUTION_FEATURE_UUID = Feature.uuidDistribution.toString();
 
     private static final String HQL_TRUE = " 1 "; //maybe we can/should use 'true' instead, needs to be checked for all DB types
     private static final String HQL_FALSE = " 0 "; //maybe we can/should use 'false' instead, needs to be checked for all DB types
@@ -147,11 +148,14 @@ public class TaxonNodeFilterDaoHibernateImpl
         for (LogicFilter<NamedArea> singleFilter : areaFilter){
             areaIds = getChildAreasRecursively(singleFilter.getUuid());
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
-            result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + FEATURE_UUID + "' "
-                    + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s)))"
-                    + " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = %s " ,
-                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds),
-                    HQL_FALSE);
+            result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
+                    + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s))",
+                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds)
+                    );
+            if (!filter.isIncludeAbsentDistributions()) {
+                result +=  " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = " + HQL_FALSE;
+            }
+            result += ")";
             isFirst = false;
         }
         return result;
@@ -174,10 +178,6 @@ public class TaxonNodeFilterDaoHibernateImpl
 
 
 
-    /**
-     * @param filter
-     * @return
-     */
     private String getRootNodeFilter(TaxonNodeFilter filter) {
         String result = "";
         if (!filter.isIncludeRootNodes()){
@@ -194,17 +194,6 @@ public class TaxonNodeFilterDaoHibernateImpl
         return result;
     }
 
-
-    /**
-     * @param subtreeFilter
-     * @param taxonNodeFilter
-     * @param classificationFilter
-     * @param taxonFilter
-     * @param rankMinFilter
-     * @param rankMaxFilter
-     * @param rootNodeFilter
-     * @return
-     */
     private String getFullFilter(String subtreeFilter, String taxonNodeFilter, String classificationFilter,
             String taxonFilter, String rankMaxFilter, String rankMinFilter, String areaFilter, String rootNodeFilter,
             String unpublishFilter) {

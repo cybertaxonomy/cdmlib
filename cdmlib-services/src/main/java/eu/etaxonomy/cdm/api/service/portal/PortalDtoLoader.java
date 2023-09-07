@@ -567,15 +567,18 @@ public class PortalDtoLoader {
 
     private void loadConceptRelation(TaxonRelationshipFormatter taxRelFormatter, TaxonRelationship rel, ContainerDto<ConceptRelationDTO> conceptRelContainer, boolean inverse,
             boolean withoutName) {
+
         List<Language> languages = Arrays.asList(new Language[] {Language.DEFAULT()}); // TODO config.locales;
         List<TaggedText> tags = taxRelFormatter.getTaggedText(rel, inverse, languages, withoutName);
         String relLabel = TaggedCacheHelper.createString(tags);
         ConceptRelationDTO dto = new TaxonPageDto.ConceptRelationDTO();
         loadBaseData(rel, dto);
+        dto.setRelSource(makeSource(rel.getSource()));
         Taxon relTaxon = inverse ? rel.getFromTaxon() : rel.getToTaxon();
         dto.setRelTaxonId(relTaxon.getId());
         dto.setRelTaxonUuid(relTaxon.getUuid());
         dto.setRelTaxonLabel(relTaxon.getTitleCache());
+        dto.setSecSource(makeSource(relTaxon.getSecSource()));
         dto.setLabel(relLabel);
         dto.setTaggedLabel(tags);
         dto.setNameUuid(relTaxon.getName() != null ? relTaxon.getName().getUuid() : null);
@@ -1156,8 +1159,7 @@ public class PortalDtoLoader {
             SingleSourcedDto sourcedDto = (SingleSourcedDto)dto;
             NamedSource source = sourced.getSource();
             if (source != null) { //TODO  && !source.isEmpty() - does not exist yet
-                SourceDto sourceDto = new SourceDto();
-                loadSource(source, sourceDto);
+                SourceDto sourceDto = makeSource(source);
                 sourcedDto.setSource(sourceDto);
             }
         } else if (dto instanceof SourcedDto && cdmBase instanceof ISourceable) {
@@ -1165,8 +1167,7 @@ public class PortalDtoLoader {
             ISourceable<OriginalSourceBase> sourced = (ISourceable<OriginalSourceBase>)cdmBase;
             SourcedDto sourcedDto = (SourcedDto)dto;
             for (OriginalSourceBase source : sourced.getSources()) {
-                SourceDto sourceDto = new SourceDto();
-                loadSource(source, sourceDto);
+                SourceDto sourceDto = makeSource(source);
                 sourcedDto.addSource(sourceDto);
             }
         }
@@ -1182,6 +1183,15 @@ public class PortalDtoLoader {
                 }
             }
         }
+    }
+
+    private static SourceDto makeSource(OriginalSourceBase source) {
+        if (source == null) {
+            return null;
+        }
+        SourceDto sourceDto = new SourceDto();
+        loadSource(source, sourceDto);
+        return sourceDto;
     }
 
     private static void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
@@ -1201,6 +1211,8 @@ public class PortalDtoLoader {
         if (ref != null) {
             sourceDto.setDoi(ref.getDoiString());
             sourceDto.setUri(ref.getUri());
+            sourceDto.setUuid(ref.getUuid());
+            sourceDto.setOriginalInfo(source.getOriginalInfo());
             Set<ExternalLink> links = ref.getLinks();
             for (ExternalLink link : links) {
                 if (link.getUri() != null) {

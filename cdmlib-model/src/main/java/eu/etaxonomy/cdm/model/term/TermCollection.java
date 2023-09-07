@@ -69,7 +69,6 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
 
     private boolean isFlat = false;
 
-
 //*************************** CONSTRUCTOR *************************************/
 
     //for hibernate use only, *packet* private required by bytebuddy

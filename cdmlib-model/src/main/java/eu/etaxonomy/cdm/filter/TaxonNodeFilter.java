@@ -41,8 +41,9 @@ public class TaxonNodeFilter implements Serializable{
     private LogicFilter<Rank> rankMax = null;
 
     private List<LogicFilter<NamedArea>> areaFilter = new ArrayList<>();
-
     private List<LogicFilter<PresenceAbsenceTerm>> distributionStatusFilter = new ArrayList<>();
+
+    private boolean includeAbsentDistributions = false;
 
     private boolean includeRootNodes = false;
 
@@ -232,6 +233,10 @@ public class TaxonNodeFilter implements Serializable{
         subtrees.add( new LogicFilter<>(taxonNode, Op.NOT));
         return this;
     }
+    public TaxonNodeFilter notSubtree(UUID taxonNodeUuid){
+        subtrees.add( new LogicFilter<>(TaxonNode.class, taxonNodeUuid, Op.NOT));
+        return this;
+    }
 
     public TaxonNodeFilter orSubtree(UUID taxonNodeUuid){
         subtrees.add( new LogicFilter<>(TaxonNode.class, taxonNodeUuid, Op.OR));
@@ -376,6 +381,14 @@ public class TaxonNodeFilter implements Serializable{
         this.orderBy = orderBy;
     }
 
+    public boolean isIncludeAbsentDistributions() {
+        return includeAbsentDistributions;
+    }
+
+    public void setIncludeAbsentDistributions(boolean includeAbsentDistributions) {
+        this.includeAbsentDistributions = includeAbsentDistributions;
+    }
+
 // ************************** toString *********************************/
 
     @Override
@@ -385,5 +398,4 @@ public class TaxonNodeFilter implements Serializable{
                 + areaFilter + ", distributionStatusFilter=" + distributionStatusFilter + ", includeRootNodes="
                 + includeRootNodes + ", includeUnpublished=" + includeUnpublished + ", orderBy=" + orderBy + "]";
     }
-
 }

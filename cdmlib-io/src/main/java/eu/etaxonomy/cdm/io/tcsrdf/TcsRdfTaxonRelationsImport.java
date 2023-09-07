@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.util.HashSet;
@@ -33,13 +32,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
-
 /**
  * @author a.mueller
  * @since 29.05.2008
  */
 @Component
-public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
+public class TcsRdfTaxonRelationsImport
+        extends TcsRdfImportBase
+        implements ICdmIO<TcsRdfImportState> {
+
     private static final long serialVersionUID = 7473543276142564219L;
 
     private static final Logger logger = LogManager.getLogger();

@@ -32,8 +32,8 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 @Repository
@@ -256,7 +256,7 @@ public class DescriptiveDataSetDao
         //get descriptiveSystem
         DescriptiveDataSetBaseDto dto = list.get(0);
         if (descriptiveSystemUuid != null){
-            TermTreeDto treeDto = termTreeDao.getTermTreeDtosByUuid(descriptiveSystemUuid);
+            TermCollectionDto treeDto = termTreeDao.getTermTreeDtosByUuid(descriptiveSystemUuid);
             dto.setDescriptiveSystem(treeDto);
         }
         //get taxon nodes

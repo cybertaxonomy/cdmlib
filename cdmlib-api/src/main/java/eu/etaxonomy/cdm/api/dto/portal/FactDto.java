@@ -26,15 +26,12 @@ public class FactDto extends FactDtoBase {
 
 // ****************** GETTER / SETTER ***********************/
 
-
-
     public List<TypedLabel> getTypedLabel() {
         return typedLabel;
     }
     public void addTypedLabel(TypedLabel typedLabel) {
         this.typedLabel.add(typedLabel);
     }
-
 
     @Override
     public LocalDateTime getLastUpdated() {

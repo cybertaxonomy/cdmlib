@@ -10,8 +10,12 @@ package eu.etaxonomy.cdm.io.cdm2cdm;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -19,7 +23,10 @@ import eu.etaxonomy.cdm.filter.VocabularyFilter;
 import eu.etaxonomy.cdm.io.common.ITaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * Configuration base class for Cdm2Cdm migration.
@@ -38,6 +45,10 @@ public  class Cdm2CdmImportConfigurator
 
     private VocabularyFilter vocabularyFilter = VocabularyFilter.NewInstance();
     private Collection<UUID> graphFilter = new HashSet<>();
+    private boolean partialVocabulariesForGraphs = true;
+
+    private boolean isExternallyManaged = false;
+
     private ITaxonNodeOutStreamPartitioner partitioner;
     private boolean concurrent = false;  //
 
@@ -45,11 +56,26 @@ public  class Cdm2CdmImportConfigurator
     private boolean doDescriptions = false;
     private boolean doVocabularies = false;
 
+    private boolean distributionFilterFromAreaFilter = false;
+    private Set<UUID> commonNameLanguageFilter;
+    private boolean ignoreComputedDescriptions = true;
+    private boolean addAncestors = false;
+
+    private Function<DoubleResult<Taxon,DefinedTermBase<?>[]>,Distribution> endemismHandler;
+    private UUID uuidEndemicRelevantArea;
+
+    /**
+     * If descriptions are empty, e.g. as all elements were filtered, remove them.
+     */
+    private boolean removeEmptyDescriptions = false;
+
     private boolean addSources = true;
     private boolean removeImportSources = false;
 
     private UserImportMode createdByMode = UserImportMode.NONE;
     private UserImportMode updatedByMode = UserImportMode.NONE;
+    private CreatedUpdatedMode createdMode = CreatedUpdatedMode.NONE;
+    private CreatedUpdatedMode updatedMode = CreatedUpdatedMode.NONE;
 
 //***************************** NewInstance ************************/
 
@@ -162,6 +188,20 @@ public  class Cdm2CdmImportConfigurator
         this.graphFilter = graphFilter;
     }
 
+    public CreatedUpdatedMode getCreatedMode() {
+        return createdMode;
+    }
+    public void setCreatedMode(CreatedUpdatedMode createdMode) {
+        this.createdMode = createdMode;
+    }
+
+    public CreatedUpdatedMode getUpdatedMode() {
+        return updatedMode;
+    }
+    public void setUpdatedMode(CreatedUpdatedMode updatedMode) {
+        this.updatedMode = updatedMode;
+    }
+
     public UserImportMode getCreatedByMode() {
         return createdByMode;
     }
@@ -174,5 +214,83 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setUpdatedByMode(UserImportMode updatedByMode) {
         this.updatedByMode = updatedByMode;
+    }
+
+    public boolean isPartialVocabulariesForGraphs() {
+        return partialVocabulariesForGraphs;
+    }
+
+    public void setPartialVocabulariesForGraphs(boolean partialVocabulariesForGraphs) {
+        this.partialVocabulariesForGraphs = partialVocabulariesForGraphs;
+    }
+
+    public boolean isExternallyManaged() {
+        return isExternallyManaged;
+    }
+    public void setExternallyManaged(boolean isExternallyManaged) {
+        this.isExternallyManaged = isExternallyManaged;
+    }
+
+    //area filter
+    public boolean isDistributionFilterFromAreaFilter() {
+        return distributionFilterFromAreaFilter;
+    }
+    public void setDistributionFilterFromAreaFilter(boolean distributionFilterFromAreaFilter) {
+        this.distributionFilterFromAreaFilter = distributionFilterFromAreaFilter;
+    }
+    public boolean hasDistributionFilterFromAreaFilter() {
+        return !CdmUtils.isNullSafeEmpty(this.getTaxonNodeFilter().getAreaFilter());
+    }
+
+    //common name filter
+    public Set<UUID> getCommonNameLanguageFilter() {
+        return commonNameLanguageFilter;
+    }
+    public void setCommonNameLanguageFilter(Set<UUID> commonNameLanguageFilter) {
+        this.commonNameLanguageFilter = commonNameLanguageFilter;
+    }
+    public boolean hasCommonNameLanguageFilter() {
+        return !CdmUtils.isNullSafeEmpty(commonNameLanguageFilter);
+    }
+
+    //computed description filter
+    public boolean isIgnoreComputedDescriptions() {
+        return ignoreComputedDescriptions;
+    }
+    public void setIgnoreComputedDescriptions(boolean ignoreComputedDescriptions) {
+        this.ignoreComputedDescriptions = ignoreComputedDescriptions;
+    }
+
+    /**
+     * If descriptions are empty, e.g. as all elements were filtered, remove them.
+     */
+    public boolean isRemoveEmptyDescriptions() {
+        return removeEmptyDescriptions;
+    }
+
+    public void setRemoveEmptyDescriptions(boolean removeEmptyDescriptions) {
+        this.removeEmptyDescriptions = removeEmptyDescriptions;
+    }
+
+    public boolean isAddAncestors() {
+        return addAncestors;
+    }
+    public void setAddAncestors(boolean addAncestors) {
+        this.addAncestors = addAncestors;
+    }
+
+    public Function<DoubleResult<Taxon,DefinedTermBase<?>[]>,Distribution> getEndemismHandler() {
+        return endemismHandler;
+    }
+    public void setEndemismHandler(Function<DoubleResult<Taxon,DefinedTermBase<?>[]>,Distribution> endemismHandler) {
+        this.endemismHandler = endemismHandler;
+    }
+
+
+    public UUID getUuidEndemicRelevantArea() {
+        return uuidEndemicRelevantArea;
+    }
+    public void setUuidEndemicRelevantArea(UUID uuidEndemicRelevantArea) {
+        this.uuidEndemicRelevantArea = uuidEndemicRelevantArea;
     }
 }

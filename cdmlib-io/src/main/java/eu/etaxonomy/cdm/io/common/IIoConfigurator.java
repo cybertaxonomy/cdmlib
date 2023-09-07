@@ -41,8 +41,7 @@ public interface IIoConfigurator extends IIoObservable{
 
 
 	/**
-	 * Returns the CdmApplicationController
-	 * @return
+	 * @return the CdmApplicationController
 	 */
 	public ICdmApplication getCdmAppController();
 

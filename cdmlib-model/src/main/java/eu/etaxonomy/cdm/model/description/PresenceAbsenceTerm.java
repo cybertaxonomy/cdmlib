@@ -95,10 +95,10 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 	public static final UUID uuidIntroducedAdventitious = UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
 	public static final UUID uuidNaturalised = UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
 	private static final UUID uuidIntroducedCultiated = UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
-	private static final UUID uuidEndemic = UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
+	public static final UUID uuidEndemic = UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 
-	private static final UUID uuidNotEndemic = UUID.fromString("2fda5393-7423-4076-814c-1fa7678d7d33");
-	private static final UUID uuidUnknownEndemism = UUID.fromString("094aa2e4-8048-4086-aca1-2d671a05a86e");
+	public static final UUID uuidNotEndemic = UUID.fromString("2fda5393-7423-4076-814c-1fa7678d7d33");
+	public static final UUID uuidUnknownEndemism = UUID.fromString("094aa2e4-8048-4086-aca1-2d671a05a86e");
 
 	//	private static final UUID uuidNa=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
 	//invasive
@@ -109,7 +109,7 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 	public static final UUID uuidNativePresenceQuestionable = UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
 	private static final UUID uuidCultivatedPresenceQuestionable = UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
 	private static final UUID uuidIntroducedPresenceQuestionable = UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
-	private static final UUID uuidEndedmicPresenceQuestionable = UUID.fromString("5f954f08-267a-4928-b073-12328f74c187");
+	private static final UUID uuidEndemicPresenceQuestionable = UUID.fromString("5f954f08-267a-4928-b073-12328f74c187");
 	//intr. naturalized questionable
 	private static final UUID uuidNaturalisedPresenceQuestionable = UUID.fromString("9e0b413b-5a68-4e5b-91f2-227b4f832466");
 	//natur. invasive questionable
@@ -294,7 +294,7 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
      * @see #NATIVE_PRESENCE_QUESTIONABLE()
      */
     public static final PresenceAbsenceTerm ENDEMIC_DOUBTFULLY_PRESENT(){
-        return getTermByUuid(uuidEndedmicPresenceQuestionable);
+        return getTermByUuid(uuidEndemicPresenceQuestionable);
     }
 
     /**
@@ -720,5 +720,18 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
             }));
         }
         return isAnyIntroduced.contains(uuid);
+    }
+
+    @Transient
+    private Set<UUID> isAnyNative;
+    public boolean isAnyNative() {
+        if (isAnyNative == null){
+            isAnyNative = new HashSet<>(Arrays.asList(new UUID[]{
+                   uuidNative, uuidNativeDoubtfullyNative,
+                   uuidNativeFormerlyNative, uuidNativePresenceQuestionable,
+                   uuidEndemic, uuidEndemicPresenceQuestionable, //unknownEndemism?
+            }));
+        }
+        return isAnyNative.contains(uuid);
     }
 }

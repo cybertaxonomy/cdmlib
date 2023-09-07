@@ -1,0 +1,191 @@
+/**
+* Copyright (C) 2017 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+package eu.etaxonomy.cdm.io.coldp;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import eu.etaxonomy.cdm.io.cdmLight.OrderHelper;
+import eu.etaxonomy.cdm.io.common.ExportResult;
+import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
+import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+
+/**
+ * @author a.mueller
+ * @since 2023-07-17
+ */
+public class ColDpExportState
+        extends TaxonTreeExportStateBase<ColDpExportConfigurator,ColDpExportState>{
+
+    private ExportResult result;
+
+    private ColDpExportResultProcessor processor = new ColDpExportResultProcessor(this);
+
+    private TaxonBase<?> actualTaxonBase;
+
+    private ArrayList<UUID> homotypicalGroupStore = new ArrayList<>();
+    private Map<Integer, TeamOrPersonBase<?>> authorStore = new HashMap<>();
+
+    private List<UUID> specimenStore = new ArrayList<>();
+    //private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
+    private List<UUID> referenceStore = new ArrayList<>();
+    private Map<Integer, UUID> nameStore = new HashMap<>();
+    private Map<UUID,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
+    private List<UUID> mediaStore = new ArrayList<>();
+    private Map<UUID, OrderHelper> orderHelperMap = new HashMap<>();
+    private UUID classificationUUID = null;
+
+    private UUID rootUuid;
+    private int actualOrderIndex;
+
+    protected ColDpExportState(ColDpExportConfigurator config) {
+        super(config);
+        result = ExportResult.NewInstance(config.getResultType());
+    }
+
+    @Override
+    public ExportResult getResult() {
+        return result;
+    }
+    @Override
+    public void setResult(ExportResult result) {
+        this.result = result;
+    }
+
+    protected void setEmptyData() {
+        this.result.setState(ExportResultState.SUCCESS_BUT_NO_DATA);
+    }
+
+    protected ColDpExportResultProcessor getProcessor() {
+        return processor;
+    }
+
+    protected void setActualTaxonBase(TaxonBase<?> actualTaxonBase){
+        this.actualTaxonBase = actualTaxonBase;
+    }
+
+    protected TaxonBase<?> getActualTaxonBase() {
+        return actualTaxonBase;
+    }
+
+    protected ArrayList<UUID> getHomotypicalGroupStore() {
+        return homotypicalGroupStore;
+    }
+    protected void addHomotypicalGroupToStore(HomotypicalGroup homotypicalGroup) {
+        this.homotypicalGroupStore.add(homotypicalGroup.getUuid());
+    }
+    protected boolean containsHomotypicalGroupFromStore(UUID id){
+        return homotypicalGroupStore.contains(id);
+    }
+    protected void setHomotypicalGroupStore(ArrayList<UUID> homotypicalGroupStore) {
+        this.homotypicalGroupStore = homotypicalGroupStore;
+    }
+
+    protected List<UUID> getSpecimenStore() {
+        return specimenStore;
+    }
+    protected void setSpecimenStore(List<UUID> specimenStore) {
+        this.specimenStore = specimenStore;
+    }
+    protected void addSpecimenToStore(SpecimenOrObservationBase<?> specimen) {
+        this.specimenStore.add(specimen.getUuid());
+    }
+
+    protected Map<Integer, TeamOrPersonBase<?>> getAuthorStore() {
+        return authorStore;
+    }
+    protected void setAuthorStore(Map<Integer, TeamOrPersonBase<?>> authorStore) {
+        this.authorStore = authorStore;
+    }
+    protected void addAuthorToStore(TeamOrPersonBase<?> author) {
+        this.authorStore.put(author.getId(), author);
+    }
+    protected TeamOrPersonBase<?> getAuthorFromStore(Integer id){
+        return authorStore.get(id);
+    }
+
+    protected void addReferenceToStore(Reference ref) {
+        this.referenceStore.add(ref.getUuid());
+    }
+    protected void setReferenceStore(List<UUID> referenceStore) {
+        this.referenceStore = referenceStore;
+    }
+    protected List<UUID> getReferenceStore() {
+        return referenceStore;
+    }
+
+    protected Map<UUID, List<TaxonNodeDto>> getNodeChildrenMap() {
+        return nodeChildrenMap;
+    }
+    protected void setNodeChildrenMap(Map<UUID,List<TaxonNodeDto>> nodeChildrenMap) {
+        this.nodeChildrenMap = nodeChildrenMap;
+    }
+
+    protected Map<UUID,OrderHelper> getOrderHelperMap() {
+        return orderHelperMap;
+    }
+    protected void setOrderHelperMap(Map<UUID,OrderHelper> orderHelperMap) {
+        this.orderHelperMap = orderHelperMap;
+    }
+
+    protected UUID getClassificationUUID(TaxonNode root) {
+        if (classificationUUID == null){
+            classificationUUID = root.getClassification().getUuid();
+        }
+        return classificationUUID;
+    }
+    protected void setClassificationUUID(UUID classificationUUID) {
+        this.classificationUUID = classificationUUID;
+    }
+
+    protected UUID getRootId() {
+        return rootUuid;
+    }
+    protected void setRootId(UUID rootId) {
+        this.rootUuid = rootId;
+    }
+
+    protected int getActualOrderIndexAndUpdate() {
+        int returnValue = actualOrderIndex;
+        actualOrderIndex++;
+        return returnValue;
+    }
+    protected void setActualOrderIndex(int actualOrderIndex) {
+        this.actualOrderIndex = actualOrderIndex;
+    }
+
+    protected Map<Integer, UUID> getNameStore() {
+        return nameStore;
+    }
+    protected void setNameStore(Map<Integer, UUID> nameStore) {
+        this.nameStore = nameStore;
+    }
+
+    protected List<UUID> getMediaStore() {
+        return mediaStore;
+    }
+    protected void setMediaStore(List<UUID> mediaStore) {
+        this.mediaStore = mediaStore;
+    }
+    //TODO for now we use mediaRepPart, but in future it may become Media
+    protected void addMediaToStore(MediaRepresentationPart media) {
+        this.mediaStore.add(media.getUuid());
+    }
+}

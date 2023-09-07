@@ -252,9 +252,9 @@ public class WordClassificationExport
                 if (root.hasChildNodes()) {
                     childNodes = new ArrayList<>();
                     for (TaxonNode child : root.getChildNodes()) {
-                    	if (child != null) {
-                    		childNodes.add(new TaxonNodeDto(child));
-                    	}
+                        if (child != null) {
+                            childNodes.add(new TaxonNodeDto(child));
+                        }
                     }
                     state.getNodeChildrenMap().put(root.getUuid(), childNodes);
 
@@ -2053,9 +2053,9 @@ public class WordClassificationExport
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
             for (TypeDesignationBase<?> typeDes: designationList) {
-            	if (typeDes instanceof TextualTypeDesignation) {
-            		typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
-            		String typeDesStateRefs = "";
+                if (typeDes instanceof TextualTypeDesignation) {
+                    typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
+                    String typeDesStateRefs = "";
                     if (typeDes.getDesignationSource() != null ){
                         typeDesStateRefs = "[";
                         NamedSource source = typeDes.getDesignationSource();
@@ -2074,26 +2074,26 @@ public class WordClassificationExport
                         typeDesStateRefs += "]";
                     }
 
-            		typeTextDesignations =  typeTextDesignations + typeDesStateRefs +"; ";
+                    typeTextDesignations =  typeTextDesignations + typeDesStateRefs +"; ";
 
-            	}else if (typeDes instanceof SpecimenTypeDesignation){
-            	    DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();
-            	    if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
-            	        handleSpecimen(state, specimen);
-            	    }
-            	}
+                }else if (typeDes instanceof SpecimenTypeDesignation){
+                    DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();
+                    if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
+                        handleSpecimen(state, specimen);
+                    }
+                }
             }
             if (typeTextDesignations.equals("; ")) {
-            	typeTextDesignations = "";
+                typeTextDesignations = "";
             }
             if (StringUtils.isNotBlank(typeTextDesignations)) {
-            	typeTextDesignations = typeTextDesignations.substring(0, typeTextDesignations.length()-2);
+                typeTextDesignations = typeTextDesignations.substring(0, typeTextDesignations.length()-2);
             }
             String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list, true, typifiedNames.get(0).isSpecies() || typifiedNames.get(0).isInfraSpecific()):"";
 
             if (StringUtils.isNotBlank(specimenTypeString)) {
                 if (!specimenTypeString.endsWith(".")) {
-                	specimenTypeString = specimenTypeString + ".";
+                    specimenTypeString = specimenTypeString + ".";
                 }
                 csvLine[table.getIndex(WordClassificationExportTable.TYPE_STRING)] = specimenTypeString;
 
@@ -2102,7 +2102,7 @@ public class WordClassificationExport
             }
             if (StringUtils.isNotBlank(typeTextDesignations)) {
                 if (!typeTextDesignations.endsWith(".")) {
-                	typeTextDesignations = typeTextDesignations + ".";
+                    typeTextDesignations = typeTextDesignations + ".";
                 }
                 csvLine[table.getIndex(WordClassificationExportTable.TYPE_CACHE)] = typeTextDesignations;
 
@@ -2393,7 +2393,6 @@ public class WordClassificationExport
              * Diego, El Amatal, 14.4.1993, GonzÃ¡lez 159” [Auch ohne Punkt] ->
              * FieldUnit TitleCache HerbariumAbbrev = “B” [wie gehabt]
              * HerbariumCode
-             *
              */
 
             csvLine[table.getIndex(WordClassificationExportTable.SPECIMEN_ID)] = specimenId;
@@ -2434,10 +2433,12 @@ public class WordClassificationExport
                     Iterator<MediaRepresentation> it = mediaSpecimen.getMediaSpecimen().getRepresentations().iterator();
                     String mediaUris = extractMediaUris(it);
                     csvLine[table.getIndex(WordClassificationExportTable.MEDIA_SPECIMEN_URL)] = mediaUris;
-
                 }
 
-                if (derivedUnit.getDerivedFrom() != null) {
+                if (derivedUnit.getDerivedFrom() == null) {
+                    state.getResult().addWarning("The specimen with uuid " + specimen.getUuid()
+                        + " does not have a field unit.");
+                } else {
                     for (SpecimenOrObservationBase<?> original : derivedUnit.getDerivedFrom().getOriginals()) {
                         // TODO: What to do if there are more then one
                         // FieldUnit??
@@ -2491,9 +2492,6 @@ public class WordClassificationExport
                             }
                         }
                     }
-                } else {
-                    state.getResult().addWarning("The specimen with uuid " + specimen.getUuid()
-                            + " is not an DerivedUnit.");
                 }
             }
 
@@ -2604,5 +2602,4 @@ public class WordClassificationExport
     protected boolean isIgnore(WordClassificationExportState state) {
         return false;
     }
-
 }

@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.persistence.dao.term;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.metadata.TermSearchField;
@@ -17,6 +19,7 @@ import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermGraphBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
@@ -33,4 +36,27 @@ public interface ITermCollectionDao extends IIdentifiableDao<TermCollection> {
 
     public <S extends TermCollection> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern);
+
+    /**
+     * @param termTypes
+     * @param pattern
+     * @param includeSubtypes
+     * @return
+     */
+    List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, String pattern,
+            boolean includeSubtypes);
+
+    /**
+     * @param termTypes
+     * @param includeSubtypes
+     * @return
+     */
+    public List<TermCollectionDto> findCollectionDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes);
+
+    /**
+     * @param termTypes
+     * @param includeSubtypes
+     * @return
+     */
+    public List<TermCollectionDto> findCollectionDtoByUuids(List<UUID> uuids);
 }
