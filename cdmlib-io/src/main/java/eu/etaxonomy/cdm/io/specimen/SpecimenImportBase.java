@@ -192,22 +192,27 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        Set<TaxonName> namesWithAcceptedTaxa = new HashSet<>();
 	        List<TaxonName> namesWithAcceptedTaxaInClassification = new ArrayList<>();
 	        for (TaxonName name : names) {
-	            if(!name.getTaxa().isEmpty()){
-	                Set<Taxon> taxa = name.getTaxa();
-	                for (Taxon taxon:taxa){
-	                    if (!taxon.getTaxonNodes().isEmpty()){
+	            if(!name.getTaxonBases().isEmpty()){
+	                Set<TaxonBase> taxa = name.getTaxonBases();
+	                for (TaxonBase taxonBase:taxa){
+	                    Taxon acceptedTaxon= null;
+	                    if (taxonBase instanceof Synonym) {
+	                        Synonym syn = (Synonym) taxonBase;
+	                        acceptedTaxon = syn.getAcceptedTaxon();
+	                    }else {
+	                        acceptedTaxon = (Taxon)taxonBase;
+	                    }
+	                    if (!(acceptedTaxon).getTaxonNodes().isEmpty()){
 	                        //use only taxa included in a classification
-	                        for (TaxonNode node:taxon.getTaxonNodes()){
+	                        for (TaxonNode node:(acceptedTaxon).getTaxonNodes()){
 	                            if (state.getClassification() != null && node.getClassification().equals(state.getClassification())){
 	                                namesWithAcceptedTaxaInClassification.add(name);
 	                            }else {
 	                                namesWithAcceptedTaxa.add(name);
 	                            }
 	                        }
-
 	                    }
 	                }
-
 	            }
 	        }
 	        String message = String.format("More than one taxon name was found for %s, maybe in other classifications!", scientificName);
@@ -231,25 +236,25 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	            return namesWithAcceptedTaxa.iterator().next();
 	        }
-	        //no names with accepted taxa found -> check accepted taxa of synonyms
-	        List<Taxon> taxaFromSynonyms = new ArrayList<>();
-	        for (TaxonName name : names) {
-	            Set<TaxonBase> taxonBases = name.getTaxonBases();
-	            for (TaxonBase taxonBase : taxonBases) {
-	                if(taxonBase.isInstanceOf(Synonym.class)){
-	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
-	                    taxaFromSynonyms.add(synonym.getAcceptedTaxon());
-	                }
-	            }
-	        }
-	        if(taxaFromSynonyms.size()>0){
-	            if(taxaFromSynonyms.size()>1){
-	                state.getReport().addInfoMessage(message);
-	                logger.warn(message);
-	                return null;
-	            }
-	            return taxaFromSynonyms.iterator().next().getName();
-	        }
+//	        //no names with accepted taxa found -> check accepted taxa of synonyms -> this is handled in the first block now!
+//	        List<Taxon> taxaFromSynonyms = new ArrayList<>();
+//	        for (TaxonName name : names) {
+//	            Set<TaxonBase> taxonBases = name.getTaxonBases();
+//	            for (TaxonBase taxonBase : taxonBases) {
+//	                if(taxonBase.isInstanceOf(Synonym.class)){
+//	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
+//	                    taxaFromSynonyms.add(synonym.getAcceptedTaxon());
+//	                }
+//	            }
+//	        }
+//	        if(taxaFromSynonyms.size()>0){
+//	            if(taxaFromSynonyms.size()>1){
+//	                state.getReport().addInfoMessage(message);
+//	                logger.warn(message);
+//	                return null;
+//	            }
+//	            return taxaFromSynonyms.iterator().next().getName();
+//	        }
 	        //no accepted and no synonyms -> return one of the names and create a new taxon
 	        if (names.isEmpty()){
 	            return null;
