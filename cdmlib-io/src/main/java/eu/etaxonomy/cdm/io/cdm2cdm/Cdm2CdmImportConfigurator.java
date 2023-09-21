@@ -227,7 +227,6 @@ public  class Cdm2CdmImportConfigurator
     public boolean isPartialVocabulariesForGraphs() {
         return partialVocabulariesForGraphs;
     }
-
     public void setPartialVocabulariesForGraphs(boolean partialVocabulariesForGraphs) {
         this.partialVocabulariesForGraphs = partialVocabulariesForGraphs;
     }

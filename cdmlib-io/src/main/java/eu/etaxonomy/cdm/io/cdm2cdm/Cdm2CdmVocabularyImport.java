@@ -86,8 +86,8 @@ public class Cdm2CdmVocabularyImport
         try {
             thisVoc = detach(otherVoc, state);
             if (thisVoc != otherVoc){ //voc already existed
-                for (DefinedTermBase<?> term: otherVoc.getTerms()){
-                    doSingleTerm(state, term, thisVoc);
+                for (DefinedTermBase<?> otherTerm: otherVoc.getTerms()){
+                    doSingleTerm(state, otherTerm, thisVoc);
                 }
             }
         } catch (Exception e) {
@@ -113,10 +113,8 @@ public class Cdm2CdmVocabularyImport
         try {
             if (!thisVoc.getTerms().contains(otherTerm)){
                 thisTerm = detach(otherTerm, state);
-//                if(thisTerm == otherTerm){ //term does not yet exist
                 thisVoc.addTerm(thisTerm);
                 state.addToSave(thisTerm);
-//                }
             }
         } catch (Exception e) {
             logger.warn("Exception during detache node " + otherTerm.getUuid());
@@ -131,7 +129,7 @@ public class Cdm2CdmVocabularyImport
         TermTree<DefinedTermBase> thisGraph = null;
         try {
             thisGraph = detach(otherGraph, state);
-            if (thisGraph != otherGraph){ //voc already existed
+            if (thisGraph != otherGraph){ //graph already existed
                 for (TermNode<DefinedTermBase> node: otherGraph.getRootChildren()){
                     //TODO this is not implemented yet!!
                     doSingleNode(state, node, thisGraph.getRoot());
