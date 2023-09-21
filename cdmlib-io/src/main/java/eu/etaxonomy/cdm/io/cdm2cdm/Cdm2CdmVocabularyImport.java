@@ -132,7 +132,6 @@ public class Cdm2CdmVocabularyImport
             if (thisGraph != otherGraph
                     && state.getConfig().isAddMissingTerms()){ //graph already existed
                 for (TermNode<DefinedTermBase> node: otherGraph.getRootChildren()){
-                    //TODO this is not implemented yet!!
                     doSingleNode(state, node, thisGraph.getRoot());
                 }
             }
@@ -153,20 +152,26 @@ public class Cdm2CdmVocabularyImport
         }
     }
 
-    private void doSingleNode(Cdm2CdmImportState state, TermNode<DefinedTermBase> otherNode, TermNode<DefinedTermBase> thisRoot) {
-//        TermNode<DefinedTermBase> thisTerm = null;
-////        try {
-////            if (!thisRoot.getChilcontains(otherNode)){
-////                thisTerm = detache(otherNode, state);
-//////                if(thisTerm == otherTerm){ //term does not yet exist
-////                thisGraph.addTerm(thisTerm);
-////                state.addToSave(thisTerm);
-//////                }
-////            }
-//        } catch (Exception e) {
-//            logger.warn("Exception during detache node " + otherNode.getUuid());
-//            e.printStackTrace();
-//        }
+    private void doSingleNode(Cdm2CdmImportState state, TermNode<DefinedTermBase> otherNode,
+            TermNode<DefinedTermBase> thisParent) {
+
+        TermNode<DefinedTermBase> thisNode = null;
+        try {
+            if (!thisParent.getChildNodes().contains(otherNode)){
+                thisNode = this.detach(otherNode, state);
+                thisParent.addChild(thisNode);
+                state.addToSave(thisNode);
+                getTermService().saveOrUpdate(thisNode.getTerm());  //state.addToSave() may throw LIE due to linked term during a flush
+                System.out.println("Added term: " + thisNode.getTerm().getTitleCache() + "/" + thisNode.getTerm().getVocabulary().getTitleCache());
+                //do recursive
+                for (TermNode<DefinedTermBase> otherChild : otherNode.getChildNodes()) {
+                    doSingleNode(state, otherChild, thisNode);
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Exception during detache node " + otherNode.getUuid());
+            e.printStackTrace();
+        }
     }
 
     @Override
