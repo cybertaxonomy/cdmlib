@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -413,7 +414,8 @@ public abstract class Cdm2CdmImportBase
     protected Taxon handlePersistedTaxon(Taxon taxon, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Taxon result = handlePersisted((TaxonBase<?>)taxon, state);
         //complete
-        handleCollection(result, Taxon.class, "synonyms", Synonym.class, state);
+        BiFunction<Synonym,Cdm2CdmImportState,Boolean> filterFunction = state.getConfig().getSynonymFilter();
+        handleCollection(result, Taxon.class, "synonyms", Synonym.class, filterFunction, state);
         //do not cascade to taxon nodes
 //        handleCollection(result, Taxon.class, "taxonNodes", TaxonNode.class);
         setNewCollection(result, Taxon.class, "taxonNodes", TaxonNode.class);
@@ -630,7 +632,7 @@ public abstract class Cdm2CdmImportBase
         //do not propagate taxa from names
         @SuppressWarnings("rawtypes")
         Function<TaxonBase,Boolean> keepEmpty = tn->{return true;};
-        handleCollection(result, TaxonName.class, "taxonBases", TaxonBase.class, keepEmpty, state);
+        handleCollection(result, TaxonName.class, "taxonBases", TaxonBase.class, keepEmpty, null, state);
 
         return result;
     }
@@ -1327,16 +1329,44 @@ public abstract class Cdm2CdmImportBase
             Cdm2CdmImportState state)
             throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         Function<ITEM, Boolean> filterFunction = null;
-        handleCollection(holder, declaringClass, parameter, itemClass, filterFunction, state);
+        BiFunction<ITEM,Cdm2CdmImportState,Boolean> filterBiFunction = null;
+        handleCollection(holder, declaringClass, parameter, itemClass, filterFunction, filterBiFunction, state);
     }
 
     protected <HOLDER extends CdmBase, ITEM extends CdmBase> void handleCollection(
             HOLDER holder, Class<? super HOLDER> declaringClass, String parameter, Class<ITEM> itemClass,
-            Function<ITEM,Boolean> filterFunction, Cdm2CdmImportState state)
+            Function<ITEM,Boolean> filterFunction,
+            Cdm2CdmImportState state)
+            throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+        BiFunction<ITEM,Cdm2CdmImportState,Boolean> filterBiFunction = null;
+        Collection<ITEM> oldCollection = setNewCollection(holder, declaringClass, parameter, itemClass);
+        Collection<ITEM> newCollection = getTargetCollection(oldCollection, filterFunction, filterBiFunction, state);
+        Field field = declaringClass.getDeclaredField(parameter);
+        field.setAccessible(true);
+        field.set(holder, newCollection);
+    }
+
+    protected <HOLDER extends CdmBase, ITEM extends CdmBase> void handleCollection(
+            HOLDER holder, Class<? super HOLDER> declaringClass, String parameter, Class<ITEM> itemClass,
+            Function<ITEM,Boolean> filterFunction, BiFunction<ITEM,Cdm2CdmImportState,Boolean> filterBiFunction,
+            Cdm2CdmImportState state)
             throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         Collection<ITEM> oldCollection = setNewCollection(holder, declaringClass, parameter, itemClass);
-        Collection<ITEM> newCollection = getTargetCollection(oldCollection, filterFunction, state);
+        Collection<ITEM> newCollection = getTargetCollection(oldCollection, filterFunction, filterBiFunction, state);
+        Field field = declaringClass.getDeclaredField(parameter);
+        field.setAccessible(true);
+        field.set(holder, newCollection);
+    }
+
+    protected <HOLDER extends CdmBase, ITEM extends CdmBase> void handleCollection(
+            HOLDER holder, Class<? super HOLDER> declaringClass, String parameter, Class<ITEM> itemClass,
+            BiFunction<ITEM,Cdm2CdmImportState,Boolean> filterBiFunction, Cdm2CdmImportState state)
+            throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+        Collection<ITEM> oldCollection = setNewCollection(holder, declaringClass, parameter, itemClass);
+        Collection<ITEM> newCollection = getTargetCollection(oldCollection, null, filterBiFunction, state);
         Field field = declaringClass.getDeclaredField(parameter);
         field.setAccessible(true);
         field.set(holder, newCollection);
@@ -1391,8 +1421,8 @@ public abstract class Cdm2CdmImportBase
 
 
     private <T extends Collection<S>, S extends CdmBase> Collection<S> getTargetCollection(
-            T sourceCollection, Function<S,Boolean> filterFunction, Cdm2CdmImportState state
-            ) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+            T sourceCollection, Function<S,Boolean> filterFunction, BiFunction<S,Cdm2CdmImportState,Boolean> filterBiFunction,
+            Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
 
         Collection<S> result;
         if (Set.class.isAssignableFrom(sourceCollection.getClass())){
@@ -1402,6 +1432,8 @@ public abstract class Cdm2CdmImportBase
         }
         for (S entity : sourceCollection){
             if (filterFunction != null && filterFunction.apply(entity)) {
+                continue;
+            }else if (filterBiFunction != null && filterBiFunction.apply(entity,state)) {
                 continue;
             }else {
                 S target = detach(entity, state);

@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
@@ -76,6 +78,12 @@ public  class Cdm2CdmImportConfigurator
     private UserImportMode updatedByMode = UserImportMode.NONE;
     private CreatedUpdatedMode createdMode = CreatedUpdatedMode.NONE;
     private CreatedUpdatedMode updatedMode = CreatedUpdatedMode.NONE;
+
+
+    /**
+     * If not all synonyms should be copied.
+     */
+    private BiFunction<Synonym,Cdm2CdmImportState,Boolean> synonymFilter = null;
 
 //***************************** NewInstance ************************/
 
@@ -291,5 +299,12 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setUuidEndemicRelevantArea(UUID uuidEndemicRelevantArea) {
         this.uuidEndemicRelevantArea = uuidEndemicRelevantArea;
+    }
+
+    public void setSynonymFilter(BiFunction<Synonym,Cdm2CdmImportState,Boolean> synonymFilter) {
+        this.synonymFilter = synonymFilter;
+    }
+    public BiFunction<Synonym,Cdm2CdmImportState,Boolean> getSynonymFilter(){
+        return synonymFilter;
     }
 }
