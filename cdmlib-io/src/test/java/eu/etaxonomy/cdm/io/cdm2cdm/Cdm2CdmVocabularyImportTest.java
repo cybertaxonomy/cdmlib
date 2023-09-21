@@ -128,6 +128,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     @Before
     public void setUp() throws Exception {
         configurator = Cdm2CdmImportConfigurator.NewInstace(otherRepository, null);
+        configurator.setDoVocabularies(true);
         configurator.setDoTaxa(false);
         configurator.setDoDescriptions(false);
 //        VocabularyFilter vocFilter = VocabularyFilter.NewTermTypeInstance(TermType.Structure);
