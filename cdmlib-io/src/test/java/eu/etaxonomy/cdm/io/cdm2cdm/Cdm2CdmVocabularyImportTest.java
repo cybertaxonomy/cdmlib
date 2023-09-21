@@ -180,6 +180,10 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1, voc.getTerms().size());
         commitAndStartNewTransaction();
         result = defaultImport.invoke(this.configurator);
+        Assert.assertEquals("Second term should not be added as configuration does not allow adding terms", 1, voc.getTerms().size());
+        commitAndStartNewTransaction();
+        configurator.setAddMissingTerms(true);
+        result = defaultImport.invoke(this.configurator);
         commitAndStartNewTransaction();
         voc = vocService.find(uuidStructVoc);
         Assert.assertEquals(2, voc.getTerms().size());
