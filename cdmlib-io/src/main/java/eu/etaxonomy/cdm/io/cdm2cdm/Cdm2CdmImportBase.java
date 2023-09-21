@@ -534,6 +534,7 @@ public abstract class Cdm2CdmImportBase
         NomenclaturalStatus result = handlePersisted((SingleSourcedEntityBase)status, state);
         //complete
         result.setType(detach(result.getType(), state));
+        setInvisible(result, "name", detach(result.getName(), state));
         return result;
     }
 
