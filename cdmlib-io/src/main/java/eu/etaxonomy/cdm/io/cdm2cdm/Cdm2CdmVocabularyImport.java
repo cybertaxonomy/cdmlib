@@ -85,7 +85,7 @@ public class Cdm2CdmVocabularyImport
         TermVocabulary<DefinedTermBase> thisVoc = null;
         try {
             thisVoc = detach(otherVoc, state);
-            if (thisVoc != otherVoc){ //voc already existed
+            if (thisVoc != otherVoc && state.getConfig().isAddMissingTerms()){ //voc already existed
                 for (DefinedTermBase<?> otherTerm: otherVoc.getTerms()){
                     doSingleTerm(state, otherTerm, thisVoc);
                 }
@@ -129,7 +129,8 @@ public class Cdm2CdmVocabularyImport
         TermTree<DefinedTermBase> thisGraph = null;
         try {
             thisGraph = detach(otherGraph, state);
-            if (thisGraph != otherGraph){ //graph already existed
+            if (thisGraph != otherGraph
+                    && state.getConfig().isAddMissingTerms()){ //graph already existed
                 for (TermNode<DefinedTermBase> node: otherGraph.getRootChildren()){
                     //TODO this is not implemented yet!!
                     doSingleNode(state, node, thisGraph.getRoot());

@@ -79,6 +79,7 @@ public  class Cdm2CdmImportConfigurator
     private CreatedUpdatedMode createdMode = CreatedUpdatedMode.NONE;
     private CreatedUpdatedMode updatedMode = CreatedUpdatedMode.NONE;
 
+    private boolean addMissingTerms = false;
 
     /**
      * If not all synonyms should be copied.
@@ -309,5 +310,20 @@ public  class Cdm2CdmImportConfigurator
     }
     public BiFunction<Synonym,Cdm2CdmImportState,Boolean> getSynonymFilter(){
         return synonymFilter;
+    }
+
+    //If true updating termcollections and terms is allowed.
+    //For now only missing terms are added
+    //In future we may adapt
+    //   * Strings and primitive types, etc.
+    //   * update Representations and add missing Representations
+    //   * move missing terms (if they are in use in the current database but were deleted in the remote database)
+    //   * ... other delete them)
+    //If this is implemented we may rename this method
+    public boolean isAddMissingTerms() {
+        return addMissingTerms;
+    }
+    public void setAddMissingTerms(boolean addMissingTerms) {
+        this.addMissingTerms = addMissingTerms;
     }
 }
