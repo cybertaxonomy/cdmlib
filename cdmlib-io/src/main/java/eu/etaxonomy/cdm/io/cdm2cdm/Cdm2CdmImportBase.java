@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,6 +73,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -460,6 +462,8 @@ public abstract class Cdm2CdmImportBase
 
             DoubleResult<Taxon,DefinedTermBase<?>[]> input = new DoubleResult<>(taxon, params);
             endemismDistribution = state.getConfig().getEndemismHandler().apply(input);
+            DescriptionElementSource source = endemismDistribution.addPrimaryTaxonomicSource(getSourceReference(state));
+            source.setAccessed(TimePeriod.NewInstance(Calendar.getInstance()));
         }
         return endemismDistribution;
     }
