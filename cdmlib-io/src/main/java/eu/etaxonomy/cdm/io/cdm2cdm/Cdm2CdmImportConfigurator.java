@@ -286,7 +286,6 @@ public  class Cdm2CdmImportConfigurator
         this.endemismHandler = endemismHandler;
     }
 
-
     public UUID getUuidEndemicRelevantArea() {
         return uuidEndemicRelevantArea;
     }

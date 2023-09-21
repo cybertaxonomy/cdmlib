@@ -534,7 +534,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected TypeDesignationBase handlePersisted(TypeDesignationBase designation, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        TypeDesignationBase result = handlePersisted((SourcedEntityBase)designation, state);
+        TypeDesignationBase<?> result = handlePersisted((SourcedEntityBase)designation, state);
         //complete
         handleCollection(result, TypeDesignationBase.class, "registrations", Registration.class, state);
         handleCollection(result, TypeDesignationBase.class, "typifiedNames", TaxonName.class, state);
@@ -1101,7 +1101,7 @@ public abstract class Cdm2CdmImportBase
 
     private <SOURCE extends OriginalSourceBase> Function<SOURCE,Boolean> getImportSourceFilter(){
         return (s)->s.getType() == OriginalSourceType.Import;
-    };
+    }
 
     protected <T extends SourcedEntityBase<?>> T handlePersisted(
             @SuppressWarnings("rawtypes") SourcedEntityBase sourcedEntity,

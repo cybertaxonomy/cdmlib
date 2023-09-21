@@ -699,7 +699,7 @@ public class OccurrenceDaoHibernateImpl
 
     private <T extends SpecimenOrObservationBase, R extends Object> Query<R> createSpecimenQuery(String select, Class<T> clazz,
             Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, Class<R> returnClass){
-//        Set<SpecimenOrObservationBase> setOfAll = new HashSet<>();
+
         Set<Integer> setOfAllIds = new HashSet<>();
 
         Criteria criteria = null;
