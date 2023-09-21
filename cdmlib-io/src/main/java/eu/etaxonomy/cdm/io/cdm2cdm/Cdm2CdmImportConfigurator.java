@@ -224,6 +224,10 @@ public  class Cdm2CdmImportConfigurator
         this.updatedByMode = updatedByMode;
     }
 
+    /**
+     * If true, only those terms of a vocabulary are imported which are
+     * used e.g. by a term tree/graph
+     */
     public boolean isPartialVocabulariesForGraphs() {
         return partialVocabulariesForGraphs;
     }
