@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 18.09.2021
  */
-@Ignore  //preliminary ignored as it does not run on jenkins yet
+//@Ignore  //preliminary ignored as it does not run on jenkins yet
 public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
@@ -74,8 +74,9 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     public static void setUpClass() throws Exception {
     //      this.startH2Server();
           boolean omitTermLoading = true;
-          //TODO remove user directory
-          ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", "C:\\Users\\a.mueller\\tmp\\testVoc");
+
+          String tmpDirLocation = System.getProperty("java.io.tmpdir");
+          ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", tmpDirLocation + "testVoc");
 //          int a = dataSource.executeUpdate("CREATE TABLE HIBERNATE_SEQUENCES ("
 //                  + " sequence_name VARCHAR(255), next_val BIGINT )");
 //          try {
@@ -93,7 +94,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
 //            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
-          System.out.println("started");
+          logger.debug("Other repository started");
           TermVocabulary<DefinedTerm> voc = createTestVocabulary(otherRepository);
           createTestGraph(otherRepository, voc);
     }
@@ -192,12 +193,18 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
             Assert.assertEquals(secondTerm, t);
             Assert.assertNotSame(secondTerm, t);
         });
+    }
+
+
+    @Test
+    public void testInvokeGraph() {
+
 
         //test invoke for graph (not vocabulary)
         configurator.setGraphFilter(new HashSet<>(Arrays.asList(uuidStructGraph)));
         TermTree<DefinedTerm> graph = treeService.find(uuidStructGraph);
         Assert.assertNull("Graph must not exist before invoke", graph);
-        result = defaultImport.invoke(this.configurator);
+        ImportResult result = defaultImport.invoke(this.configurator);
         Assert.assertTrue(result.isSuccess());
         commitAndStartNewTransaction();
         graph = treeService.find(uuidStructGraph);
