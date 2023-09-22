@@ -53,13 +53,13 @@ public class NameMatchingServiceImpl
     }
 
     //**********METHODS**********
-    
+
     /**
      * This is a implementation of the Taxamatch algorithm built by Tony Rees.
      * It employs a custom Modified Damerau-Levenshtein Distance algorithm see
      * also https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0107510
      */
-    
+
      // TODO work in progress
 
     @Override
@@ -74,7 +74,7 @@ public class NameMatchingServiceImpl
         // TODO? Remove all qualifiers such as cf., aff., ?, <i>, x, etc. from
         // the full input string
 
-        TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseReferencedName(taxonName); //parsereferencename 
+        TaxonName name = NonViralNameParserImpl.NewInstance().parseReferencedName(taxonName); //parsereferencename
 
         String genusQuery = name.getGenusOrUninomial();
         String epithetQuery = name.getSpecificEpithet();
@@ -89,12 +89,12 @@ public class NameMatchingServiceImpl
         	if (epithetQuery != null && infraSpecificQuery == null || infraGenericQuery != null) {
         		maxDistance = maxDisBinomial;
         	} else if (epithetQuery != null && infraSpecificQuery != null){
-        		maxDistance = maxDisTrinomial;       		
+        		maxDistance = maxDisTrinomial;
         	} else {
         		maxDistance = maxDisMonomial;
         	}
         }
-        
+
         int genusComputedDistance = 0;
         int infraSpecificComputedDistance = 0;
         int infragenericComputedDistance = 0;
@@ -136,7 +136,7 @@ public class NameMatchingServiceImpl
 
         List<DoubleResult<NameMatchingParts, Integer>> taxonNamePartsWithDistance = new ArrayList<>();
         taxonNamePartsWithDistance.addAll(getTaxonNamePartsFromDB(postFilteredGenusOrUninominalWithDis));
-        
+
         List<DoubleResult<NameMatchingParts, Integer>> resultSetOnlyGenusOrUninominal = new ArrayList<>();
         if (epithetQuery == null && infraGenericQuery == null) {
             filterMatchingMonomialFromResultSet(taxonNamePartsWithDistance, resultSetOnlyGenusOrUninominal);
@@ -150,15 +150,15 @@ public class NameMatchingServiceImpl
             } else {
                 return bestResults;
             }
-            
+
         } else if (infraGenericQuery != null) {
         	String normalizedInfragenericQuery = NameMatchingUtils.normalize(infraGenericQuery);
             String phoneticNormalizedInfragenericQuery = NameMatchingUtils.nearMatch(normalizedInfragenericQuery);
             List<DoubleResult<NameMatchingParts, Integer>> preFilteredInfragenericListWithDist = new ArrayList<>();
-            
+
             filterNamesWithInfragenericEpithets(taxonNamePartsWithDistance, preFilteredInfragenericListWithDist);
             prefilterInfrageneric(preFilteredInfragenericListWithDist, normalizedInfragenericQuery, maxDistance);
-            
+
             List <DoubleResult<NameMatchingParts, Integer>> resultSetInfraGenericListWithDist = new ArrayList<>();
             for (DoubleResult<NameMatchingParts, Integer> preFilteredInfrageneric:
             	preFilteredInfragenericListWithDist) {
@@ -170,7 +170,7 @@ public class NameMatchingServiceImpl
             			phoneticNormalizedInfragenericNameInDB);
             	int totalDist = preFilteredInfrageneric.getSecondResult() + infragenericComputedDistance;
             	preFilteredInfrageneric.setSecondResult(totalDist) ;
-            			
+
             		// 6. infrageneric post-filter
             	postfilterInfrageneric(maxDistance, infraGenericQuery,
             			infragenericComputedDistance, normalizedInfragenericQuery,
@@ -186,7 +186,7 @@ public class NameMatchingServiceImpl
             } else {
             	return bestResults;
             }
-            
+
         } else if (epithetQuery != null && infraSpecificQuery == null){
 
             String normalizedEphitetQuery = NameMatchingUtils.normalize(epithetQuery);
@@ -205,7 +205,7 @@ public class NameMatchingServiceImpl
                 }
                 String epithetNameInDBNormalized = NameMatchingUtils.normalize(epithetInDB);
                 String phoneticNormalizedEpithetNameInDB = NameMatchingUtils.nearMatch(epithetNameInDBNormalized);
-            	
+
             		// 5. comparison of epithet
                 infraSpecificComputedDistance = nameMatchingComputeDistance(phoneticNormalizedEpithetQuery,
                         phoneticNormalizedEpithetNameInDB);
@@ -228,9 +228,9 @@ public class NameMatchingServiceImpl
             } else {
                 return bestResults;
             }
-            
+
         } else if (infraSpecificQuery != null) {
-        	
+
             String normalizedInfraSpecificQuery = NameMatchingUtils.normalize(infraSpecificQuery);
             String phoneticNormalizedInfraSpecificQuery = NameMatchingUtils.nearMatch(normalizedInfraSpecificQuery);
 
@@ -242,7 +242,7 @@ public class NameMatchingServiceImpl
                 	preFilteredInfraSpecificListWithDist.add(taxonNamePartsWithDistance.get(i));
                 }
             }
-            
+
             preFilteredInfraSpecificListWithDist = prefilterInfraSpecific(taxonNamePartsWithDistance, normalizedInfraSpecificQuery, 6);
             List<DoubleResult<NameMatchingParts, Integer>> resultSetInfraSpecificListWithDist = new ArrayList<>();
             for (DoubleResult<NameMatchingParts, Integer> infraSpecific: preFilteredInfraSpecificListWithDist) {
@@ -252,7 +252,7 @@ public class NameMatchingServiceImpl
                 }
             	String infraSpecificNameInDBNormalized = NameMatchingUtils.normalize(infraSpecificInDB);
                 String phoneticNormalizedInfraSpecificNameInDB = NameMatchingUtils.nearMatch(infraSpecificNameInDBNormalized);
-            	
+
             		// 5. comparison of infra specific
                 infraSpecificComputedDistance = nameMatchingComputeDistance(phoneticNormalizedInfraSpecificQuery ,
                         phoneticNormalizedInfraSpecificNameInDB);
@@ -275,7 +275,9 @@ public class NameMatchingServiceImpl
             } else {
                 return bestResults;
             }
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
 	private void filterNamesWithEpithets(List<DoubleResult<NameMatchingParts, Integer>> taxonNamePartsWithDistance,
@@ -299,7 +301,7 @@ public class NameMatchingServiceImpl
 			List<DoubleResult<NameMatchingParts, Integer>> taxonNamePartsWithDistance,
 			List<DoubleResult<NameMatchingParts, Integer>> preFilteredInfragenericListWithDist) {
 		for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
-		    if (taxonNamePartsWithDistance.get(i).getFirstResult().getSpecificEpithet().isEmpty() && 
+		    if (taxonNamePartsWithDistance.get(i).getFirstResult().getSpecificEpithet().isEmpty() &&
 		    		taxonNamePartsWithDistance.get(i).getFirstResult().getInfraSpecificEpithet().isEmpty() &&
 		    		StringUtils.isNotEmpty(taxonNamePartsWithDistance.get(i).getFirstResult().getInfraGenericEpithet())) {
 		    	preFilteredInfragenericListWithDist.add(taxonNamePartsWithDistance.get(i));
@@ -310,10 +312,10 @@ public class NameMatchingServiceImpl
     /**
 	 * @param taxonNamePartsWithDistance
 	 * @param resultSetOnlyGenusOrUninominal
-	 * 
+	 *
 	 * @return List of only Genus or Uninomial names (filters out all bi/trinomial names)+ distance
 	 */
-    
+
 	private void filterMatchingMonomialFromResultSet(
 			List<DoubleResult<NameMatchingParts, Integer>> taxonNamePartsWithDistance,
 			List<DoubleResult<NameMatchingParts, Integer>> resultSetOnlyGenusOrUninominal) {
@@ -329,9 +331,9 @@ public class NameMatchingServiceImpl
 
     /**
 	 * @param postFilteredGenusOrUninominalWithDis
-	 * @return List of all species belonging to the genera that passed the post filter + calculated distance 
+	 * @return List of all species belonging to the genera that passed the post filter + calculated distance
 	 */
-    
+
     private List<DoubleResult<NameMatchingParts, Integer>> getTaxonNamePartsFromDB(
     		Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
     	List<DoubleResult<NameMatchingParts, Integer>> genusOrUninomialWithDistance = new ArrayList<>();
