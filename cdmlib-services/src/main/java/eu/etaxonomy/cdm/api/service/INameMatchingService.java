@@ -10,8 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.common.DoubleResult;
-import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
+import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
 
 /**
  * @author andreabee90
@@ -19,6 +18,6 @@ import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
  */
 public interface INameMatchingService  {
 
-    public List<DoubleResult<NameMatchingParts, Integer>> findMatchingNames(String taxonName,
+    public List<SingleNameMatchingResult> findMatchingNames(String taxonName,
             Integer maxDistance);
 }
