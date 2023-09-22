@@ -46,13 +46,13 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
+ * Test class for Cdm2CdmVocabularyImport.
+ *
  * @author a.mueller
  * @since 18.09.2021
  */
-//@Ignore  //preliminary ignored as it does not run on jenkins yet
 public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     private static CdmApplicationController otherRepository;
@@ -81,23 +81,8 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
           Path path = Paths.get(tmpDirLocation, "testVoc");
 
           ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", path.toString());
-//          int a = dataSource.executeUpdate("CREATE TABLE HIBERNATE_SEQUENCES ("
-//                  + " sequence_name VARCHAR(255), next_val BIGINT )");
-//          try {
-//              ResultSet rs = dataSource.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES");
-//              while(rs.next()){
-//                  for (int i = 1; i<=12; i++){
-//                      System.out.print(";"+rs.getObject(i));
-//                  }
-//                  System.out.println();
-//              }
-//              dataSource.executeQuery("select tbl.next_val from hibernate_sequences tbl where tbl.sequence_name='a'");
-            otherRepository = CdmApplicationController.NewInstance(dataSource,
+          otherRepository = CdmApplicationController.NewInstance(dataSource,
                       DbSchemaValidation.CREATE, omitTermLoading);
-//        } catch (Exception e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
           logger.debug("Other repository started");
           TermVocabulary<DefinedTerm> voc = createTestVocabulary(otherRepository);
           createTestGraph(otherRepository, voc);
