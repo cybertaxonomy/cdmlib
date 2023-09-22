@@ -29,6 +29,9 @@ import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
+ * This class implements name matching according to ...
+ *
+ * @see https://dev.e-taxonomy.eu/redmine/issues/10178
  * @author andreabee90
  * @since 02.08.2023
  */

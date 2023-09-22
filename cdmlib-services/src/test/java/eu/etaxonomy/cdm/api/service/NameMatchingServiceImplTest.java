@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +28,9 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest {
 
-	@SpringBeanByType
+    private static final UUID UUID_NECTANDRA = UUID.fromString("0e16e411-e472-48ab-8b32-da9d3968092c");
+
+    @SpringBeanByType
 	private INameMatchingService nameMatchingService;
 
     @Test
@@ -51,6 +54,8 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         List<DoubleResult<NameMatchingParts, Integer>> matchResult;
         DoubleResult<NameMatchingParts, Integer> matchRes;
 
+        //test genus only
+
      // if the query does not include an epithet (exact match)
         inputName = "Nectandra";
         matchResult = nameMatchingService.findMatchingNames(inputName, null);
@@ -59,7 +64,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getFirstResult().getGenusOrUninomial());
         Assert.assertEquals("", matchRes.getFirstResult().getSpecificEpithet());
         Assert.assertEquals(33, (int)matchRes.getFirstResult().getTaxonNameId());
-        Assert.assertEquals("0e16e411-e472-48ab-8b32-da9d3968092c", matchRes.getFirstResult().getTaxonNameUuid().toString());
+        Assert.assertEquals(UUID_NECTANDRA, matchRes.getFirstResult().getTaxonNameUuid());
         Assert.assertEquals(0,(int) matchRes.getSecondResult());
 
         // if the query does not include an epithet (not exact match)
