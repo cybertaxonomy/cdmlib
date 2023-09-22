@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.cdm2cdm;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
@@ -76,7 +78,9 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
           boolean omitTermLoading = true;
 
           String tmpDirLocation = System.getProperty("java.io.tmpdir");
-          ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", tmpDirLocation + "testVoc");
+          Path path = Paths.get(tmpDirLocation, "testVoc");
+
+          ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", path.toString());
 //          int a = dataSource.executeUpdate("CREATE TABLE HIBERNATE_SEQUENCES ("
 //                  + " sequence_name VARCHAR(255), next_val BIGINT )");
 //          try {
