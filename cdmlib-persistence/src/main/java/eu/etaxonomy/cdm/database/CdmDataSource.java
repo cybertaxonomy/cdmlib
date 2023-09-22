@@ -91,7 +91,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 
 	/** in work
 	 * @param code TODO*/
-	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, String filePath){
+	static public CdmDataSource NewH2EmbeddedInstance(String database, String username, String password, String filePath){
 		//FIXME in work
 		int port = -1;
 		H2Mode mode = H2Mode.EMBEDDED;
@@ -100,7 +100,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	}
 
 	/** in work */
-	static public CdmDataSource  NewH2InMemoryInstance(){
+	static public CdmDataSource NewH2InMemoryInstance(){
 		//FIXME in work
 		int port = -1;
 		H2Mode mode = H2Mode.IN_MEMORY;
@@ -121,11 +121,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 				dataSource.getFilePath(),
 				dataSource.getMode());
 	}
-	/**
-	 * @param server
-	 * @param database
-	 * @param port
-	 */
+
 	protected CdmDataSource(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password, String filePath, H2Mode mode) {
 		super();
 		this.dbType = dbType;
