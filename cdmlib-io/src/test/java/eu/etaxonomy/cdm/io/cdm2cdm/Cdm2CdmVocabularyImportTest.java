@@ -28,6 +28,7 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -62,6 +63,8 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     private IVocabularyService vocService;
     @SpringBeanByType
     private ITermTreeService treeService;
+    @SpringBeanByType
+    private ITermNodeService termNodeService;
 
     private Cdm2CdmImportConfigurator configurator;
 
@@ -102,7 +105,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         TermType termType = TermType.Structure;
         TermTree<DefinedTerm> graph = TermTree.NewInstance(termType, DefinedTerm.class);
         DefinedTerm firstStruct = voc.getTerms().stream().filter(t->t.getUuid().equals(uuidStructFirst)).findFirst().get();
-        TermNode<DefinedTerm> firstRoot = graph.getRoot().addChild(firstStruct);
+        graph.getRoot().addChild(firstStruct);
         graph.setUuid(uuidStructGraph);
 
         app.getTermTreeService().saveOrUpdate(graph);
@@ -155,7 +158,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1, voc.getTerms().size());
 
         //add term in other repo ...
-        UUID uuidSecond = UUID.fromString("56546e58-e4ea-47f9-ae49-de772a416003");
+        UUID uuidSecond = UUID.fromString("d167b52b-f88c-48a1-9463-ab5f9895cc51");
         DefinedTerm secondTerm = getStructure("2.", uuidSecond);
         TransactionStatus tx = otherRepository.startTransaction();
         otherVoc = otherRepository.getVocabularyService().find(uuidStructVoc);
@@ -208,6 +211,31 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(otherSingleChild, thisSingleChild);
         Assert.assertNotSame(otherSingleChild, thisSingleChild);
         otherRepository.commitTransaction(txOther);
+
+        //add term in other repo to vocabulary and graph as child of top level node ...
+        UUID uuidSecondTerm = UUID.fromString("56546e58-e4ea-47f9-ae49-de772a416004");
+        DefinedTerm secondTerm = getStructure("2.", uuidSecondTerm);
+        TransactionStatus tx = otherRepository.startTransaction();
+        @SuppressWarnings("unchecked")
+        TermVocabulary<DefinedTerm> otherVoc = otherRepository.getVocabularyService().find(uuidStructVoc);
+        otherVoc.addTerm(secondTerm);
+        otherRepository.getTermService().saveOrUpdate(secondTerm);
+        otherGraph = otherRepository.getTermTreeService().find(uuidStructGraph);
+        otherGraph.getRoot().getChildAt(0).addChild(secondTerm);
+        otherRepository.commitTransaction(tx);
+
+        //... to test if added term gets imported
+        commitAndStartNewTransaction();
+        UUID uuidTopLevelNode = thisSingleChild.getUuid();
+        TermNode<DefinedTerm> topLevelNode = termNodeService.find(uuidTopLevelNode);
+        Assert.assertEquals(0, topLevelNode.getChildCount());
+        commitAndStartNewTransaction();
+        configurator.setAddMissingTerms(true);
+        result = defaultImport.invoke(this.configurator);
+        commitAndStartNewTransaction();
+        topLevelNode = termNodeService.find(uuidTopLevelNode);
+        Assert.assertEquals(1, topLevelNode.getChildCount());
+        Assert.assertEquals(uuidSecondTerm, topLevelNode.getChildAt(0).getTerm().getUuid());
     }
 
     private static DefinedTerm getStructure(String distinct, UUID uuid) {

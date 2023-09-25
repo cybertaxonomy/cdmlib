@@ -164,9 +164,11 @@ public class Cdm2CdmVocabularyImport
                 getTermService().saveOrUpdate(thisNode.getTerm());  //state.addToSave() may throw LIE due to linked term during a flush
                 if (logger.isDebugEnabled()) {logger.debug("Added term: " + thisNode.getTerm().getTitleCache() + "/" + thisNode.getTerm().getVocabulary().getTitleCache());}
                 //do recursive
-                for (TermNode<DefinedTermBase> otherChild : otherNode.getChildNodes()) {
-                    doSingleNode(state, otherChild, thisNode);
-                }
+            }else {
+                thisNode = thisParent.getChildNodes().stream().filter(n->n.equals(otherNode)) .findFirst().get();
+            }
+            for (TermNode<DefinedTermBase> otherChild : otherNode.getChildNodes()) {
+                doSingleNode(state, otherChild, thisNode);
             }
         } catch (Exception e) {
             logger.warn("Exception during detache node " + otherNode.getUuid());
