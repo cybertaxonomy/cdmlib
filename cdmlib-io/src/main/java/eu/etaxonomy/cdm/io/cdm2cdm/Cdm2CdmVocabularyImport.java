@@ -162,7 +162,7 @@ public class Cdm2CdmVocabularyImport
                 thisParent.addChild(thisNode);
                 state.addToSave(thisNode);
                 getTermService().saveOrUpdate(thisNode.getTerm());  //state.addToSave() may throw LIE due to linked term during a flush
-                System.out.println("Added term: " + thisNode.getTerm().getTitleCache() + "/" + thisNode.getTerm().getVocabulary().getTitleCache());
+                if (logger.isDebugEnabled()) {logger.debug("Added term: " + thisNode.getTerm().getTitleCache() + "/" + thisNode.getTerm().getVocabulary().getTitleCache());}
                 //do recursive
                 for (TermNode<DefinedTermBase> otherChild : otherNode.getChildNodes()) {
                     doSingleNode(state, otherChild, thisNode);

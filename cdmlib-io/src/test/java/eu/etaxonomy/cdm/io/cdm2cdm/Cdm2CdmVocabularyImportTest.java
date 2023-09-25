@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -72,7 +71,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     private static UUID uuidStructGraph = UUID.fromString("1fdf67c7-e267-44ca-8d35-be66e3746847");
 
     @BeforeClass
-    @Ignore
+//    @Ignore
     public static void setUpClass() throws Exception {
     //      this.startH2Server();
           boolean omitTermLoading = true;
@@ -184,13 +183,12 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         });
     }
 
-
     @Test
     public void testInvokeGraph() {
 
-
         //test invoke for graph (not vocabulary)
         configurator.setGraphFilter(new HashSet<>(Arrays.asList(uuidStructGraph)));
+        @SuppressWarnings("unchecked")
         TermTree<DefinedTerm> graph = treeService.find(uuidStructGraph);
         Assert.assertNull("Graph must not exist before invoke", graph);
         ImportResult result = defaultImport.invoke(this.configurator);
@@ -209,7 +207,6 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         TermNode<DefinedTerm> thisSingleChild = graph.getRootChildren().iterator().next();
         Assert.assertEquals(otherSingleChild, thisSingleChild);
         Assert.assertNotSame(otherSingleChild, thisSingleChild);
-
         otherRepository.commitTransaction(txOther);
     }
 
