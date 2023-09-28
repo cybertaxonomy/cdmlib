@@ -155,11 +155,11 @@
       	</exclusion>
       </exclusions>
     </dependency>
-     <dependency>
+<!--     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-spring</artifactId>
       <scope>compile</scope>
-    </dependency>
+    </dependency>  -->
 <!--     <dependency> -->
 <!--       <groupId>org.dbunit</groupId> -->
 <!--       <artifactId>dbunit</artifactId> -->
