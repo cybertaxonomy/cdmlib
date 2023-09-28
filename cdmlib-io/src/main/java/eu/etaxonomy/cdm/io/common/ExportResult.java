@@ -77,8 +77,7 @@ public class ExportResult extends IoResultBase implements Serializable {
 
     public ExportResultState getState() {return state;}
     public void setState(ExportResultState state) {this.state = state;}
-
-
+    
 
     public ExportDataWrapper<?> getExportData() {return data;}
     public void setExportData(ExportDataWrapper<?> data) {this.data = data;}
