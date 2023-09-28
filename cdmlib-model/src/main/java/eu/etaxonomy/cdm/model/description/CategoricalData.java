@@ -104,11 +104,6 @@ public class CategoricalData extends DescriptionElementBase {
         return new CategoricalData();
     }
 
-
-    /**
-     * @param habitat
-     * @return
-     */
     public static CategoricalData NewInstance(Feature feature) {
         return new CategoricalData( new ArrayList<>() , feature);
     }
