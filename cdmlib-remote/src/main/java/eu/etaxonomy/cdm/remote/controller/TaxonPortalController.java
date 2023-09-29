@@ -379,6 +379,11 @@ public class TaxonPortalController extends TaxonController{
         }
         partSet.remove(InfoPart.elements); // we do not want to return model instances here at all
 
+//      //TODO is this performant?
+//      IVocabularyService vocabularyService = null;
+//      Map<PresenceAbsenceTerm, Color> distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
+//              statusColorsString, termService, vocabularyService);
+        
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
 
         config.setTaxonUuid(taxonUuid);
