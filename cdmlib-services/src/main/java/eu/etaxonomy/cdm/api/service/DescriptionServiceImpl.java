@@ -1119,7 +1119,6 @@ public class DescriptionServiceImpl
             sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
             query =  getSession().createQuery(sqlSelect);
             query.setParameter("uuid", descriptionUuid);
-            @SuppressWarnings("unchecked")
             List<Object[]>  resultQuant = query.list();
             List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
             dto.getElements().addAll(listQuant);
