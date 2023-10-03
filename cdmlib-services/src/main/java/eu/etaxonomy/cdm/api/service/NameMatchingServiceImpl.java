@@ -28,8 +28,11 @@ import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
- * This class implements name matching according to ..
- *
+ * This class implements name matching according to the algorithm built by Tony Rees.
+ * It employs a custom Modified Damerau-Levenshtein Distance algorithm to calculate the 
+ * differences among characters of names. See publication
+ * https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0107510
+ 
  * @see https://dev.e-taxonomy.eu/redmine/issues/10178
  * @author andreabee90
  * @since 02.08.2023
@@ -75,22 +78,19 @@ public class NameMatchingServiceImpl
 
 
     //**********METHODS**********
+    // TODO work in progress
 
     /**
-     * This is a implementation of the Taxamatch algorithm built by Tony Rees.
-     * It employs a custom Modified Damerau-Levenshtein Distance algorithm see
-     * also https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0107510
+     * Compares two names and calculates number of differences. 
+     * 
+     * @return list of exact matching names (distance = 0), or list of best matches if exact matches are not found. 
      */
-
-     // TODO work in progress
-
+    
     @Override
     public List<SingleNameMatchingResult> findMatchingNames(String taxonName, Integer maxDistance) {
 
-        // Discuss. value of distance if query is only genus, if genus +
-        // epithet, if genus + infrageneric + epithet..
-
-
+        // TODO Discuss the value of distance if query is monomial, binomial or trinomial
+    	
         // 0. Parsing and Normalizing
 
         // TODO? Remove all qualifiers such as cf., aff., ?, <i>, x, etc. from
@@ -373,15 +373,16 @@ public class NameMatchingServiceImpl
     /**
      * Deletes common characters at the beginning and end of both parameters.
      * Returns the space separated concatenation of the remaining strings. <BR>
-     * Returns empty string if input strings are equal.
      */
+
     public static String trimCommonChar(String queryName, String dbName) {
 
         String shortenedQueryName = "";
         String shortenedDBName = "";
         String tempQueryName;
         String tempDBName;
-        // trim common leading characters of query and document
+        
+        // trim common leading characters of two strings 
 
         int queryNameLength = queryName.length();
         int dbNameLength = dbName.length();
@@ -401,7 +402,7 @@ public class NameMatchingServiceImpl
         tempQueryName = queryName.substring(i);
         tempDBName = dbName.substring(i);
 
-        // trim common tailing characters between query and document
+        // trim common tailing characters between two strings 
 
         int restantQueryNameLenght = tempQueryName.length();
         int restantDBNameLenght = tempDBName.length();
@@ -600,7 +601,6 @@ public class NameMatchingServiceImpl
             }
         }
     }
-
 
     public static List<SingleNameMatchingResult> exactResults(
             List<SingleNameMatchingResult> resultShapingList) {
