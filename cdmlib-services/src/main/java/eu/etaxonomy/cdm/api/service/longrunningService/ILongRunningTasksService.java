@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 
@@ -66,7 +67,7 @@ public interface ILongRunningTasksService {
      * @param descriptiveDataSetUuid the working set for which getRowWrapper() is invoked
      * @return the uuid of the monitor
      */
-    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid);
+    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid, Language lang);
 
     public UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator);
 

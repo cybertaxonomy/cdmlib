@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -33,8 +34,8 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     private NamedArea country;
 
     public SpecimenRowWrapperDTO(DescriptionBaseDto description, SpecimenOrObservationBaseDTO specimen, SpecimenOrObservationType type, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
-                NamedArea country) {
-        super(description, taxonNode);
+                NamedArea country, Language lang) {
+        super(description, taxonNode, lang);
         if (fieldUnit != null){
             this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
         }
@@ -46,8 +47,8 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
 
     public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
-            NamedArea country) {
-        super(new DescriptionBaseDto(new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache())), taxonNode);
+            NamedArea country, Language lang) {
+        super(new DescriptionBaseDto(new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache())), taxonNode, lang);
         if (fieldUnit != null){
             this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
         }
@@ -58,8 +59,8 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     }
 
     public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, UuidAndTitleCache<FieldUnit> fieldUnit, String identifier,
-            NamedArea country) {
-        super(new DescriptionBaseDto(new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache())), taxonNode);
+            NamedArea country, Language lang) {
+        super(new DescriptionBaseDto(new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache())), taxonNode, lang);
         if (fieldUnit != null){
             this.fieldUnit = fieldUnit;
         }

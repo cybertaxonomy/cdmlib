@@ -12,6 +12,7 @@ import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -62,7 +63,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param the progress monitor
      * @return a list of row wrapper objects
      */
-    public List<RowWrapperDTO<?>> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor);
+    public List<RowWrapperDTO<?>> getRowWrapper(UUID descriptiveDataSetUuid, Language lang, IProgressMonitor monitor);
 
     /**
      * Loads all available specimens wrapped in a {@link SpecimenNodeWrapper} object for
@@ -97,7 +98,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptiveDataSetUuid the data set it should be used in
      * @return the created row wrapper
      */
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid, Language lang);
 
     /**
      * Creates a specimen row wrapper object for the given description
@@ -105,7 +106,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptiveDataSetUuid the data set it should be used in
      * @return the created row wrapper
      */
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid, Language lang);
 
     /**
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding
@@ -123,7 +124,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptiveDataSet the data set it should be used in
      * @return the created row wrapper
      */
-    public TaxonRowWrapperDTO createTaxonRowWrapper(DescriptionBaseDto taxonDescription, UUID descriptiveDataSetUuid);
+    public TaxonRowWrapperDTO createTaxonRowWrapper(DescriptionBaseDto taxonDescription, UUID descriptiveDataSetUuid, Language lang);
 
     /**
      * Creates a taxon row wrapper object for the given description UUID
@@ -131,7 +132,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptiveDataSetUUID the data set it should be used in
      * @return the created row wrapper
      */
-    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid);
+    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid, Language lang);
 
 
     /**
@@ -162,7 +163,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptionType the type of the description
      * @return a taxon row wrapper of the description with the features defined in the data set
      */
-    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
+    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType, Language lang);
 
     /**
      * Loads all taxon nodes that match the filter set defined in the
@@ -235,5 +236,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
 
     public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids);
+
+    //public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids, Language lang);
 
 }

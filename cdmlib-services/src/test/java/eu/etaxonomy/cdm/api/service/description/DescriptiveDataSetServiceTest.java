@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -164,7 +165,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();
 
-        List<RowWrapperDTO<?>> rowWrappers =  datasetService.getRowWrapper(dataSet.getUuid(), monitor);
+        List<RowWrapperDTO<?>> rowWrappers =  datasetService.getRowWrapper(dataSet.getUuid(), Language.DEFAULT(), monitor);
 
         //There are 4 specimen descriptions and one literature description (taxon association)
         assertTrue(rowWrappers.size() == 5);
@@ -243,7 +244,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();
 
-        List<RowWrapperDTO<?>> result = datasetService.getRowWrapper(dataSet.getUuid(), monitor);
+        List<RowWrapperDTO<?>> result = datasetService.getRowWrapper(dataSet.getUuid(), Language.DEFAULT(), monitor);
         List<DescriptionBaseDto> descToUpdate = new ArrayList<>();
         UUID updatedDescription = null;
         int elementCount = 0;

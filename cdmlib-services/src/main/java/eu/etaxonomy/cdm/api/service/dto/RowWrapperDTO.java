@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -57,7 +58,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     private Map<UUID, Set<DescriptionElementDto>> featureToElementMap;
     private Map<UUID, Collection<String>> featureToDisplayDataMap;
 
-    public RowWrapperDTO(DescriptionBaseDto specimenDescription, TaxonNodeDto taxonNode) {
+    public RowWrapperDTO(DescriptionBaseDto specimenDescription, TaxonNodeDto taxonNode, Language lang) {
         this.taxonNode = taxonNode;
         this.featureToElementMap = new HashMap<>();
         this.featureToDisplayDataMap = new HashMap<>();
@@ -70,7 +71,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 UUID featureUuid = descriptionElementBase.getFeatureUuid();
                 addToFeatureToElementMap(featureUuid, descriptionElementBase);
 
-                Collection<String> displayData = generateDisplayString(descriptionElementBase);
+                Collection<String> displayData = generateDisplayString(descriptionElementBase, lang);
                 if(displayData!=null){
                     addDisplayStringsToMap(featureUuid, displayData);
                 }
@@ -143,7 +144,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
 
 
-    private Collection<String> generateDisplayString(DescriptionElementDto descriptionElementBase){
+    private Collection<String> generateDisplayString(DescriptionElementDto descriptionElementBase, Language lang){
         Collection<String> displayData = new ArrayList<>();
         if(descriptionElementBase instanceof CategoricalDataDto){
             CategoricalDataDto categoricalData = (CategoricalDataDto)descriptionElementBase;
@@ -168,13 +169,13 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                             } else if (h2.getState() == null){
                                 return 1;
                             }else{
-                                return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
+                                return h1.getState().getPreferredRepresentation(lang).getLabel().compareTo(h2.getState().getPreferredRepresentation(lang).getLabel());
                             }
                         }
                     }
                 });
                 displayData = states.stream()
-                        .map(stateData->generateStateDataString(stateData))
+                        .map(stateData->generateStateDataString(stateData, lang))
                         .collect(Collectors.toList());
             }
         }
@@ -232,12 +233,12 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 +(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
     }
 
-    private String generateStateDataString(StateDataDto stateData) {
-        return (stateData.getModifiers()!=null && !stateData.getModifiers().isEmpty()?stateData.getModifiers().iterator().next().getTitleCache()+" ":"") + (stateData.getState()!=null?stateData.getState().getTitleCache():"[no state]")
+    private String generateStateDataString(StateDataDto stateData, Language lang) {
+        return (stateData.getModifiers()!=null && !stateData.getModifiers().isEmpty()?stateData.getModifiers().iterator().next().getPreferredRepresentation(lang).getLabel()+" ":"") + (stateData.getState()!=null?stateData.getState().getPreferredRepresentation(lang).getLabel():"[no state]")
                 +(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
     }
 
-    public void setDataValueForCategoricalData(UUID featureUuid, List<StateDataDto> states){
+    public void setDataValueForCategoricalData(UUID featureUuid, List<StateDataDto> states, Language lang){
         Set<DescriptionElementDto> descriptionElementBase = featureToElementMap.get(featureUuid);
 
         if(states.isEmpty()){
@@ -269,12 +270,12 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         addToFeatureToElementMap(featureUuid, categoricalData);
 
         // update display data cache
-        addDisplayStringsToMap(featureUuid, generateDisplayString(categoricalData));
+        addDisplayStringsToMap(featureUuid, generateDisplayString(categoricalData, lang));
 //        featureToDisplayDataMap.put(featureUuid, generateDisplayString(categoricalData));
     }
 
-    public void generateNewDisplayString(UUID featureUuid, DescriptionElementDto element) {
-        addDisplayStringsToMap(featureUuid, generateDisplayString(element));
+    public void generateNewDisplayString(UUID featureUuid, DescriptionElementDto element, Language lang) {
+        addDisplayStringsToMap(featureUuid, generateDisplayString(element, lang));
     }
 
     /**
@@ -319,7 +320,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     }
 
-    public void setDataValueForQuantitativeData(UUID featureUuid, Map<TermDto, List<String>> textFields, TermDto unit, NoDescriptiveDataStatus noDataStatus){
+    public void setDataValueForQuantitativeData(UUID featureUuid, Map<TermDto, List<String>> textFields, TermDto unit, NoDescriptiveDataStatus noDataStatus, Language lang){
         Set<DescriptionElementDto> descriptionElementBase = featureToElementMap.get(featureUuid);
 
         if(textFields.values().stream().allMatch(listOfStrings->listOfStrings.isEmpty())){
@@ -375,7 +376,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         }
         description.getElements().add(quantitativeData);
         addToFeatureToElementMap(featureUuid, quantitativeData);
-        addDisplayStringsToMap(featureUuid, generateDisplayString(quantitativeData));
+        addDisplayStringsToMap(featureUuid, generateDisplayString(quantitativeData, lang));
 //        featureToDisplayDataMap.put(featureUuid, generateDisplayString(quantitativeData));
     }
 
