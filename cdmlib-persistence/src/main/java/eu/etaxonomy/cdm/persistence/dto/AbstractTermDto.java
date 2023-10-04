@@ -140,7 +140,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     public Representation getPreferredRepresentation(Language lang){
 
         Language language = lang;
-        if(lang != null){
+        if(lang == null){
             language = Language.DEFAULT();
         }
         for (Representation rep: representations){
