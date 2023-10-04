@@ -29,10 +29,10 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * This class implements name matching according to the algorithm built by Tony Rees.
- * It employs a custom Modified Damerau-Levenshtein Distance algorithm to calculate the 
+ * It employs a custom Modified Damerau-Levenshtein Distance algorithm to calculate the
  * differences among characters of names. See publication
  * https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0107510
- 
+
  * @see https://dev.e-taxonomy.eu/redmine/issues/10178
  * @author andreabee90
  * @since 02.08.2023
@@ -54,13 +54,13 @@ public class NameMatchingServiceImpl
 
     //**********CONSTRUCTOR**********
 
-    public NameMatchingServiceImpl() {
-    }
+    public NameMatchingServiceImpl() {}
 
     //************* RESULT CLASS *******************/
 
     public class SingleNameMatchingResult extends NameMatchingParts {
-        private Integer distance;
+
+    	private Integer distance;
 
         public SingleNameMatchingResult(NameMatchingParts parts, Integer distance) {
             super(parts.getTaxonNameId(), parts.getTaxonNameUuid(), parts.getTitleCache(),
@@ -68,6 +68,7 @@ public class NameMatchingServiceImpl
                     parts.getInfraGenericEpithet(), parts.getSpecificEpithet(), parts.getInfraSpecificEpithet());
             this.distance = distance;
         }
+
         public Integer getDistance() {
             return distance;
         }
@@ -128,7 +129,6 @@ public class NameMatchingServiceImpl
          * the near match function of Rees 2007 it includes phonetic matches
          * (replace initial characters, soundalike changes, gender endings)
          */
-
         String normalizedGenusQuery = NameMatchingUtils.normalize(genusQuery);
         String phoneticNormalizedGenusQuery = NameMatchingUtils.nearMatch(normalizedGenusQuery);
 
@@ -228,7 +228,7 @@ public class NameMatchingServiceImpl
                 String epithetNameInDBNormalized = NameMatchingUtils.normalize(epithetInDB);
                 String phoneticNormalizedEpithetNameInDB = NameMatchingUtils.nearMatch(epithetNameInDBNormalized);
 
-            		// 5. comparison of epithet
+            	// 5. comparison of epithet
                 infraSpecificComputedDistance = nameMatchingComputeDistance(phoneticNormalizedEpithetQuery,
                         phoneticNormalizedEpithetNameInDB);
                 int totalDist = preFilteredEpithet.getDistance() + infraSpecificComputedDistance;
@@ -315,9 +315,10 @@ public class NameMatchingServiceImpl
 	}
 
     /**
+     * Filter all names from the DB that contain a infrageneric epithet (exclude all names that have epithet or infraspecfic epithet)
+     *
      * @param taxonNamePartsWithDistance
      * @param preFilteredInfragenericListWithDist
-     * Filter all names from the DB that contain a infrageneric epithet (exclude all names that have epithet or infraspecfic epithet)
      */
 	private void filterNamesWithInfragenericEpithets(
 			List<SingleNameMatchingResult> taxonNamePartsWithDistance,
@@ -337,7 +338,6 @@ public class NameMatchingServiceImpl
 	 *
 	 * @return List of only Genus or Uninomial names (filters out all bi/trinomial names)+ distance
 	 */
-
 	private void filterMatchingMonomialFromResultSet(
 			List<SingleNameMatchingResult> taxonNamePartsWithDistance,
 			List<SingleNameMatchingResult> resultSetOnlyGenusOrUninominal) {
@@ -355,7 +355,6 @@ public class NameMatchingServiceImpl
 	 * @param postFilteredGenusOrUninominalWithDis
 	 * @return List of all species belonging to the genera that passed the post filter + calculated distance
 	 */
-
     private List<SingleNameMatchingResult> getTaxonNamePartsFromDB(
     		Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
     	List<SingleNameMatchingResult> genusOrUninomialWithDistance = new ArrayList<>();
@@ -381,8 +380,8 @@ public class NameMatchingServiceImpl
         String shortenedDBName = "";
         String tempQueryName;
         String tempDBName;
-        
-        // trim common leading characters of two strings 
+
+        // trim common leading characters of two strings
 
         int queryNameLength = queryName.length();
         int dbNameLength = dbName.length();
@@ -402,7 +401,7 @@ public class NameMatchingServiceImpl
         tempQueryName = queryName.substring(i);
         tempDBName = dbName.substring(i);
 
-        // trim common tailing characters between two strings 
+        // trim common tailing characters between two strings
 
         int restantQueryNameLenght = tempQueryName.length();
         int restantDBNameLenght = tempDBName.length();
@@ -437,7 +436,8 @@ public class NameMatchingServiceImpl
             restantTrimmedQuery = trimmedStrings.split(" ")[0];
             restantTrimmedDB = trimmedStrings.split(" ")[1];}
         	catch (Exception e) {
-        		System.out.println("timmed string is empty");
+        		//TODO don't use System.out.println in production!
+        		System.out.println("trimmed string is empty");
         	}
             computedDistanceTemp = NameMatchingUtils.modifiedDamerauLevenshteinDistance(restantTrimmedQuery,
                     restantTrimmedDB);

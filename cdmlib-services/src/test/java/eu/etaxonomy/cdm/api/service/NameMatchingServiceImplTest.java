@@ -42,7 +42,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 	private static final UUID UUID_NAME_NEXXXINA = UUID.fromString("c955a8ab-8501-421a-bfa3-5748237e8942");
 	private static final UUID UUID_NAME_LAUREL = UUID.fromString("25296c78-f62b-4dfa-9cd1-813bc9d1d777");
 	private static final UUID UUID_NAME_LAURELI = UUID.fromString("a598ab3f-b33b-4b4b-b237-d616fcb6b5b1");
-	
+
     @SpringBeanByType
 	private INameMatchingService nameMatchingService;
 
@@ -67,7 +67,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         List<SingleNameMatchingResult> matchResult;
         SingleNameMatchingResult matchRes;
 
-        //MONOMIAL: GENUS 
+        //MONOMIAL: GENUS
 
         // exact match
         inputName = "Nectandra";
@@ -114,15 +114,15 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("magnoliifolia", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_MAGNIFOLIA, matchRes.getTaxonNameUuid());
         Assert.assertEquals(0,(int) matchRes.getDistance());
-        
-        /* as Author is not evaluated in this version of the algorithm, 
+
+        /* as Author is not evaluated in this version of the algorithm,
         * if the DB contains the species name twice but with different authorities, both names should be returned
         */
-        
+
         inputName = "Nectandra surinamensis";
         matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(2, matchResult.size());
-      
+
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("surinamensis", matchRes.getSpecificEpithet());
@@ -170,7 +170,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingNamesSubgenus() {
-        
+
     	String inputName;
         List<SingleNameMatchingResult> matchResult;
         SingleNameMatchingResult matchRes;
@@ -185,7 +185,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(UUID_NAME_NECTRINA, matchRes.getTaxonNameUuid());
         Assert.assertEquals(0,(int) matchRes.getDistance());
 
-        // not exact match 
+        // not exact match
         inputName = "Nectandra subgen. Nextrina";
         matchResult = nameMatchingService.findMatchingNames(inputName, null);
         Assert.assertEquals(2, matchResult.size());
@@ -201,15 +201,15 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(UUID_NAME_NEXXXINA, matchRes.getTaxonNameUuid());
         Assert.assertEquals(2,(int) matchRes.getDistance());
     }
-        
+
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingNamesSubspecies() {
-        
+
     	String inputName;
         List<SingleNameMatchingResult> matchResult;
         SingleNameMatchingResult matchRes;
-        
+
 		// exact match
 		inputName = "Nectandra mollis subsp. laurel";
 		matchResult = nameMatchingService.findMatchingNames(inputName, null);
