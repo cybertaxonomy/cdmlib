@@ -6,11 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,8 +23,6 @@ import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
-import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
 /**
  * @author k.luther
@@ -141,14 +141,16 @@ public class CategoricalDataDto extends DescriptionElementDto {
                 + "modifier.uuid, "//5
                 + "modifier.titleCache, "//6
                 + "modifier.orderIndex, " //7
-                + "a.noDataStatus ";//8
+                + "a.noDataStatus "; //8
+
 
 
         String sqlFromString =   " FROM CategoricalData as a ";
 
         String sqlJoinString =  "LEFT JOIN a.stateData as stateData "
                 + "LEFT JOIN a.feature as feature "
-                + "LEFT JOIN stateData.modifiers as modifier";
+                + "LEFT JOIN stateData.modifiers as modifier ";
+
 
         String sqlWhereString =  " WHERE a.inDescription.uuid = :uuid";
 
@@ -166,17 +168,18 @@ public class CategoricalDataDto extends DescriptionElementDto {
      * @return
      */
     public static List<CategoricalDataDto> categoricalDataDtoListFrom(List<Object[]> result) {
-        List<CategoricalDataDto> dtoResult = new ArrayList<>();
+
         CategoricalDataDto dto = null;
         StateDataDto state = null;
+        Map<UUID,CategoricalDataDto> dtoResultMap = new HashMap<>();
         for (Object[] o: result){
             UUID uuid = (UUID)o[0];
             UUID featureUuid = (UUID)o[1];
             UUID stateDataUuid = (UUID)o[2];
-
-            if (dto == null || !dto.getElementUuid().equals(uuid)){
-                dto = new CategoricalDataDto(uuid, new FeatureDto(featureUuid, null, null, null, null, null, null, true, false, true, null, true, false, null, null, null, null), null, (NoDescriptiveDataStatus)o[8]);
-                dtoResult.add(dto);
+            dto = dtoResultMap.get(uuid);
+            if (dto == null ){
+                dto = new CategoricalDataDto(uuid, new FeatureDto(featureUuid, null, null, null, null, null, null, true, false, true, null, true, false, null, null, null, null), null, (NoDescriptiveDataStatus)o[8]);//, (NoDescriptiveDataStatus)o[8]);
+                dtoResultMap.put(uuid,dto);
             }
             if (state == null || !state.getUuid().equals(stateDataUuid)) {
                 state = new StateDataDto(TermDto.fromTerm((DefinedTermBase)o[4]),(Integer) o[3], null, null, stateDataUuid);
@@ -189,7 +192,7 @@ public class CategoricalDataDto extends DescriptionElementDto {
         }
 
 
-        return dtoResult;
+        return new ArrayList(dtoResultMap.values());
 
     }
 

@@ -881,6 +881,51 @@ public class DefinedTermDaoImpl
     }
 
     @Override
+    public  Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids){
+        Map<UUID, List<TermDto>> map = new HashMap<>();
+        for (UUID featureUuid: featureUuids){
+            List<TermDto> list = new ArrayList<>();
+            String recommendedModifiersQueryString = "SELECT cat.uuid "
+                    + "from DefinedTermBase t "
+                    + "join t.recommendedModifierEnumeration as cat "
+                    + "where t.uuid = :featureUuid";
+            Query<UUID> recommendedModifiersQuery =  getSession().createQuery(recommendedModifiersQueryString, UUID.class);
+            recommendedModifiersQuery.setParameter("featureUuid", featureUuid);
+            List<UUID> recommendedModifiers = recommendedModifiersQuery.list();
+            if(recommendedModifiers.isEmpty()){
+                map.put(featureUuid, list);
+                continue;
+            }
+
+            String queryString = TermDto.getTermDtoSelect()
+                    + "where v.uuid in (:recommendedModifiers) "
+                    + "order by a.titleCache";
+            Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+            query.setParameterList("recommendedModifiers", recommendedModifiers);
+
+            List<Object[]> result = query.list();
+            list = TermDto.termDtoListFrom(result);
+
+            //get terms for trees
+            queryString = TermDto.getTermDtoSelect()
+                    + "WHERE a.uuid IN "
+                    + "(SELECT def.uuid FROM TermNode tr  "
+                    + " LEFT JOIN tr.graph as graph "
+                    + " LEFT JOIN tr.term as def  "
+                    + " WHERE graph.uuid in (:recommendedModifiers))"
+                    + " ORDER BY a.titleCache";
+            query =  getSession().createQuery(queryString, Object[].class);
+            query.setParameterList("recommendedModifiers", recommendedModifiers);
+
+            result = query.list();
+            list.addAll( TermDto.termDtoListFrom(result));
+
+            map.put(featureUuid, list);
+        }
+        return map;
+    }
+
+    @Override
     public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList) {
         List<TermDto> list = new ArrayList<>();
         if (uuidList == null || uuidList.isEmpty()){
@@ -991,5 +1036,20 @@ public class DefinedTermDaoImpl
     public <S extends DefinedTermBase> List<S> list(Class<S> type, Integer limit, Integer start,
             List<OrderHint> orderHints) {
         return DefinedTermDaoImpl.deduplicateResult(super.list(type, limit, start, orderHints));
+    }
+
+    @Override
+    public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList){
+        if (uuidList == null || uuidList.isEmpty()){
+            return null;
+        }
+        Collection<TermDto> col = this.findFeatureByUUIDsAsDto(uuidList);
+        Map<UUID, TermDto> result = new HashMap<>();
+        if (col != null){
+            for (TermDto dto: col){
+                result.put(dto.getUuid(), dto);
+            }
+        }
+        return result;
     }
 }

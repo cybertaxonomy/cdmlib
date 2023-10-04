@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -25,8 +25,6 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author k.luther

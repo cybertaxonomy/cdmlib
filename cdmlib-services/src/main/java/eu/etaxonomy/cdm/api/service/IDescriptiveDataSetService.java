@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.RemoveDescriptionsFromDescriptiveDataSetConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -24,6 +23,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -232,5 +232,8 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      */
     public DescriptionBaseDto getTaxonDescriptionForDescriptiveDataSetAndType(DescriptiveDataSetBaseDto dataSet,
             UUID taxonUuid, DescriptionType descriptionType);
+
+
+    public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids);
 
 }

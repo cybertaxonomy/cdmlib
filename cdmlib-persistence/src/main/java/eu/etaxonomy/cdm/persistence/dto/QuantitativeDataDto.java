@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.persistence.dto;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,8 +21,6 @@ import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
-import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
 /**
  * @author k.luther
@@ -36,8 +34,6 @@ public class QuantitativeDataDto extends DescriptionElementDto {
 //    private String measurementIdInVocabulary;
 
     private Set<StatisticalMeasurementValueDto> values = new HashSet<>();
-
-    private NoDescriptiveDataStatus noDataStatus = null;
 
     public QuantitativeDataDto(UUID elementUuid, FeatureDto feature, NoDescriptiveDataStatus noDataStatus){
         super(elementUuid, feature, noDataStatus);
@@ -82,21 +78,7 @@ public class QuantitativeDataDto extends DescriptionElementDto {
         this.values.add(value);
     }
 
-    /**
-     * @return the noDataStatus
-     */
-    @Override
-    public NoDescriptiveDataStatus getNoDataStatus() {
-        return noDataStatus;
-    }
 
-    /**
-     * @param noDataStatus the noDataStatus to set
-     */
-    @Override
-    public void setNoDataStatus(NoDescriptiveDataStatus noDataStatus) {
-        this.noDataStatus = noDataStatus;
-    }
 
     public BigDecimal getSpecificStatisticalValue(UUID typeUUID){
         BigDecimal result = null;
@@ -136,6 +118,7 @@ public class QuantitativeDataDto extends DescriptionElementDto {
         String sqlJoinString =  "LEFT JOIN a.statisticalValues as statVal "
                 + "LEFT JOIN a.feature as feature "
                 + "LEFT JOIN a.unit as unit ";
+
 
         String sqlWhereString =  "WHERE a.inDescription.uuid = :uuid";
 

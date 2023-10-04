@@ -28,11 +28,18 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.persistence.dto.CategoricalDataDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionElementDto;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
+import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
+import eu.etaxonomy.cdm.persistence.dto.StateDataDto;
+import eu.etaxonomy.cdm.persistence.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
@@ -78,15 +85,15 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
      */
     private void addDisplayStringsToMap(UUID featureUuid, Collection<String> displayData) {
         if (featureToDisplayDataMap.get(featureUuid) == null){
-            featureToDisplayDataMap.put(featureUuid, new ArrayList<>());
+            featureToDisplayDataMap.put(featureUuid, new HashSet<>());
         }
         featureToDisplayDataMap.get(featureUuid).addAll(displayData);
     }
 
     public QuantitativeDataDto addQuantitativeData(FeatureDto feature){
         QuantitativeDataDto data = new QuantitativeDataDto(feature);
-        description.addElement(data);
         removeElementForFeature(feature.getUuid());
+        description.addElement(data);
         addToFeatureToElementMap(feature.getUuid(), data);
         return data;
     }
@@ -104,8 +111,8 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     public CategoricalDataDto addCategoricalData(FeatureDto feature){
         CategoricalDataDto data = new CategoricalDataDto(feature);
-        description.addElement(data);
         removeElementForFeature(feature.getUuid());
+        description.addElement(data);
         addToFeatureToElementMap(feature.getUuid(), data);
         return data;
     }
@@ -140,36 +147,45 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         Collection<String> displayData = new ArrayList<>();
         if(descriptionElementBase instanceof CategoricalDataDto){
             CategoricalDataDto categoricalData = (CategoricalDataDto)descriptionElementBase;
-            List<StateDataDto> states = categoricalData.getStates();
-            Collections.sort(states, new Comparator<StateDataDto>() {
-                @Override
-                public int compare(StateDataDto h1, StateDataDto h2) {
-                    if (h1.getCount() == null && h2.getCount() != null){
-                        return -1;
-                    } else if (h2.getCount() == null && h1.getCount() != null){
-                        return 1;
-                    } else if (h1.getCount() != h2.getCount()){
-                        return -h1.getCount().compareTo(h2.getCount());
-                    } else {
-                        if (h1.getState() == h2.getState()){
-                            return h1.toString().compareTo(h2.toString());
-                        } else if (h1.getState() == null){
+            if (categoricalData.getNoDataStatus()!= null) {
+                displayData.add(categoricalData.getNoDataStatus().getLabel());
+            }else {
+                List<StateDataDto> states = categoricalData.getStates();
+                Collections.sort(states, new Comparator<StateDataDto>() {
+                    @Override
+                    public int compare(StateDataDto h1, StateDataDto h2) {
+                        if (h1.getCount() == null && h2.getCount() != null){
                             return -1;
-                        } else if (h2.getState() == null){
+                        } else if (h2.getCount() == null && h1.getCount() != null){
                             return 1;
-                        }else{
-                            return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
+                        } else if (h1.getCount() != h2.getCount()){
+                            return -h1.getCount().compareTo(h2.getCount());
+                        } else {
+                            if (h1.getState() == h2.getState()){
+                                return h1.toString().compareTo(h2.toString());
+                            } else if (h1.getState() == null){
+                                return -1;
+                            } else if (h2.getState() == null){
+                                return 1;
+                            }else{
+                                return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
+                            }
                         }
                     }
-                }
-            });
-            displayData = states.stream()
-                    .map(stateData->generateStateDataString(stateData))
-                    .collect(Collectors.toList());
+                });
+                displayData = states.stream()
+                        .map(stateData->generateStateDataString(stateData))
+                        .collect(Collectors.toList());
+            }
         }
         if(descriptionElementBase instanceof QuantitativeDataDto){
             QuantitativeDataDto quantitativeData = (QuantitativeDataDto)descriptionElementBase;
-            displayData = Collections.singleton(generateQuantitativeDataString(quantitativeData));
+            if (quantitativeData.getNoDataStatus()!= null) {
+                displayData.add(quantitativeData.getNoDataStatus().getLabel());
+            }else {
+                displayData = Collections.singleton(generateQuantitativeDataString(quantitativeData));
+            }
+
         }
         return displayData;
     }
@@ -217,11 +233,11 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     }
 
     private String generateStateDataString(StateDataDto stateData) {
-        return (stateData.getState()!=null?stateData.getState().getTitleCache():"[no state]")
+        return (stateData.getModifiers()!=null && !stateData.getModifiers().isEmpty()?stateData.getModifiers().iterator().next().getTitleCache()+" ":"") + (stateData.getState()!=null?stateData.getState().getTitleCache():"[no state]")
                 +(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
     }
 
-    public void setDataValueForCategoricalData(UUID featureUuid, List<TermDto> states){
+    public void setDataValueForCategoricalData(UUID featureUuid, List<StateDataDto> states){
         Set<DescriptionElementDto> descriptionElementBase = featureToElementMap.get(featureUuid);
 
         if(states.isEmpty()){
@@ -234,13 +250,19 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 DescriptionElementDto dto = descriptionElementBase.iterator().next();
                 if (dto instanceof CategoricalDataDto){
                     categoricalData = (CategoricalDataDto)dto;
-                    categoricalData.setStateDataOnly(states);
+                    categoricalData.getStates().clear();
+                    for(StateDataDto state: states) {
+                        categoricalData.addStateData(state);
+                    }
                 }
             }
         }else{
             Feature feature = DefinedTermBase.getTermByUUID(featureUuid, Feature.class);
             categoricalData = new CategoricalDataDto(FeatureDto.fromFeature(feature));
-            categoricalData.setStateDataOnly(states);
+            categoricalData.getStates().clear();
+            for(StateDataDto state: states) {
+                categoricalData.addStateData(state);
+            }
         }
         removeElementForFeature(featureUuid);
         description.getElements().add(categoricalData);
@@ -249,6 +271,10 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         // update display data cache
         addDisplayStringsToMap(featureUuid, generateDisplayString(categoricalData));
 //        featureToDisplayDataMap.put(featureUuid, generateDisplayString(categoricalData));
+    }
+
+    public void generateNewDisplayString(UUID featureUuid, DescriptionElementDto element) {
+        addDisplayStringsToMap(featureUuid, generateDisplayString(element));
     }
 
     /**
@@ -293,11 +319,14 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     }
 
-    public void setDataValueForQuantitativeData(UUID featureUuid, Map<TermDto, List<String>> textFields, TermDto unit){
+    public void setDataValueForQuantitativeData(UUID featureUuid, Map<TermDto, List<String>> textFields, TermDto unit, NoDescriptiveDataStatus noDataStatus){
         Set<DescriptionElementDto> descriptionElementBase = featureToElementMap.get(featureUuid);
+
         if(textFields.values().stream().allMatch(listOfStrings->listOfStrings.isEmpty())){
             removeFeature(featureUuid, descriptionElementBase);
-            return;
+            if (noDataStatus == null) {
+                return;
+            }
         }
         QuantitativeDataDto quantitativeData = null;
         if (descriptionElementBase == null){
@@ -318,27 +347,32 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             return;
         }
         quantitativeData.getValues().clear();
-        quantitativeData.setMeasurementUnit(unit);
-        //add back all values from text fields
-        Set<StatisticalMeasurementValueDto> tempValues = new HashSet<>();
-        textFields.forEach((measure, texts)->{
-            texts.forEach(text->{
-                String string = text;
-                try {
-                    if (StringUtils.isNotBlank(string)){
-                        BigDecimal exactValue = new BigDecimal(string);
-//                        StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance(measure, exactValue);
-                        StatisticalMeasurementValueDto newValueDto = new StatisticalMeasurementValueDto(measure, exactValue, null);
-//                                StatisticalMeasurementValueDto.fromStatisticalMeasurementValue(newValue);
-                        tempValues.add(newValueDto);
-                    }
-                } catch (NumberFormatException e) {
-                }
-            });
-        });
+        if (noDataStatus != null) {
+            quantitativeData.setNoDataStatus(noDataStatus);
 
-        quantitativeData.setValues(tempValues);
-        removeElementForFeature(featureUuid);
+        }else {
+            quantitativeData.setMeasurementUnit(unit);
+            //add back all values from text fields
+            Set<StatisticalMeasurementValueDto> tempValues = new HashSet<>();
+            textFields.forEach((measure, texts)->{
+                texts.forEach(text->{
+                    String string = text;
+                    try {
+                        if (StringUtils.isNotBlank(string)){
+                            BigDecimal exactValue = new BigDecimal(string);
+    //                        StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance(measure, exactValue);
+                            StatisticalMeasurementValueDto newValueDto = new StatisticalMeasurementValueDto(measure, exactValue, null);
+    //                                StatisticalMeasurementValueDto.fromStatisticalMeasurementValue(newValue);
+                            tempValues.add(newValueDto);
+                        }
+                    } catch (NumberFormatException e) {
+                    }
+                });
+            });
+
+            quantitativeData.setValues(tempValues);
+            removeElementForFeature(featureUuid);
+        }
         description.getElements().add(quantitativeData);
         addToFeatureToElementMap(featureUuid, quantitativeData);
         addDisplayStringsToMap(featureUuid, generateDisplayString(quantitativeData));

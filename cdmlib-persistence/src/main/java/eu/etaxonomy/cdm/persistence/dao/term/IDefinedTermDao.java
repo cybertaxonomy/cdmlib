@@ -270,4 +270,8 @@ public interface IDefinedTermDao
 
     public TermDto findByUUIDAsDto(UUID uuid);
 
+    public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids);
+
+    public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList);
+
 }

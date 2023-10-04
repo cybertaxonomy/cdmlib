@@ -34,15 +34,9 @@ import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.RemoveDescriptionsFromDescriptiveDataSetConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.CategoricalDataDto;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionElementDto;
-import eu.etaxonomy.cdm.api.service.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationDTOFactory;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
-import eu.etaxonomy.cdm.api.service.dto.StateDataDto;
-import eu.etaxonomy.cdm.api.service.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -79,9 +73,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.CategoricalDataDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionElementDto;
 import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
+import eu.etaxonomy.cdm.persistence.dto.StateDataDto;
+import eu.etaxonomy.cdm.persistence.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -446,7 +446,16 @@ public class DescriptiveDataSetService
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getDescriptionUuid(), descriptiveDataSet.getUuid()) : null;
 //                use description not specimen for specimenRow
-        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(description, SpecimenOrObservationDTOFactory.fromEntity(specimen), specimen.getRecordBasis(), taxonNode, fieldUnit, identifier, country);
+        DescriptionBase specDesc = null;
+
+        for (Object desc: specimen.getDescriptions()) {
+            if (description.getDescriptionUuid().equals(((DescriptionBase)desc).getUuid())) {
+                specDesc = (DescriptionBase)desc;
+                break;
+            }
+        }
+        DescriptionBaseDto dto = DescriptionBaseDto.fromDescription(specDesc);
+        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(dto, SpecimenOrObservationDTOFactory.fromEntity(specimen), specimen.getRecordBasis(), taxonNode, fieldUnit, identifier, country);
         specimenRowWrapperDTO.setDefaultDescription(taxonRowWrapper);
         return specimenRowWrapperDTO;
     }
@@ -688,6 +697,10 @@ public class DescriptiveDataSetService
     @Override
     public Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids){
         return termDao.getSupportedStatesForFeature(featureUuids);
+    }
+    @Override
+    public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids){
+        return termDao.getRecommendedModifiersForFeature(featureUuids);
     }
 
     @Override
