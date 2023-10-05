@@ -32,6 +32,9 @@ public class TaxonDescriptionDTO implements Serializable{
     public TaxonDescriptionDTO(Taxon taxon){
        this.taxonUUID = taxon.getUuid();
         for (TaxonDescription desc: taxon.getDescriptions()){
+            if (desc.isComputed()) {
+                continue;
+            }
             for (DescriptionElementBase element: desc.getElements()){
                 if (element instanceof Distribution){
                     descriptions.add(desc);
