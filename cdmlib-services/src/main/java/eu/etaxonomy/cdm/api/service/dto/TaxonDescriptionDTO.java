@@ -13,8 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -32,15 +30,12 @@ public class TaxonDescriptionDTO implements Serializable{
     public TaxonDescriptionDTO(Taxon taxon){
        this.taxonUUID = taxon.getUuid();
         for (TaxonDescription desc: taxon.getDescriptions()){
-            if (desc.isComputed()) {
-                continue;
+
+            if (desc.isDefault()) {
+                descriptions.add(desc);
+                break;
             }
-            for (DescriptionElementBase element: desc.getElements()){
-                if (element instanceof Distribution){
-                    descriptions.add(desc);
-                    break;
-                }
-            }
+
         }
     }
 
