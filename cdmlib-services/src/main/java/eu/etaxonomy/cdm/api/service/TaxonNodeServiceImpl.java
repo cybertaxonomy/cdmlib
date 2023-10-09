@@ -1248,7 +1248,7 @@ public class TaxonNodeServiceImpl
 
     @Override
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
-            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode){
+            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode, boolean useOnlyDefaultDescription){
 
         nodeUuids = nodeUuids.stream().distinct().collect(Collectors.toList());
         List<TaxonNode> nodes = new ArrayList<>();
@@ -1287,7 +1287,7 @@ public class TaxonNodeServiceImpl
             }
             if (node.getTaxon() != null && hasPermission){
                 try{
-                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node);
+                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node, useOnlyDefaultDescription);
                     result.add(dto);
                 }catch(Exception e){
                     logger.error(e.getMessage(), e);
@@ -1320,8 +1320,8 @@ public class TaxonNodeServiceImpl
 
     @Override
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids,
-            List<String> propertyPaths, boolean openChildren) {
-        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren, null);
+            List<String> propertyPaths, boolean openChildren, boolean useOnlyDefaultDescription) {
+        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren, null,useOnlyDefaultDescription);
     }
 
     @Override

@@ -1085,7 +1085,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     @DataSet("TaxonNodeServiceImplTest.xml")
     public void testGetTaxonDistributionDTO(){
         List<UUID> uuidList = Arrays.asList(node1Uuid, node2Uuid, node4Uuid);
-        List<TaxonDistributionDTO> dtos = this.taxonNodeService.getTaxonDistributionDTO(uuidList, null, true);
+        List<TaxonDistributionDTO> dtos = this.taxonNodeService.getTaxonDistributionDTO(uuidList, null, true, false);
         Assert.assertEquals("Children should be deduplicated", 3, dtos.size());
         //note: the following ordering is not given by definition (as the method does not guarantee a certain order)
         //      but is used as pseudo test here for the correctnes of the algorithm as it is currently expected

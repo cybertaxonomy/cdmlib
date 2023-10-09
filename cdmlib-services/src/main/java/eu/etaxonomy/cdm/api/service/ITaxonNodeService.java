@@ -273,9 +273,9 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase);
 
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
-            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode);
+            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode, boolean useOnlyDefaultDescription);
 
-    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren);
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren, boolean useOnlyDefaultDescription);
 
     /**
      * Clones a subtree including all taxa and taxon nodes.

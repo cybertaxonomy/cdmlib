@@ -30,13 +30,13 @@ public class TaxonDistributionDTO implements Serializable{
     private String concatenatedSynonyms = null;
     private TaxonNodeDto parentNodeDto = null;
 
-    public TaxonDistributionDTO(TaxonNode node){
+    public TaxonDistributionDTO(TaxonNode node, boolean onlyUseDefaultDescription){
         nodeDto = new TaxonNodeDto(node);
         parentNodeDto = new TaxonNodeDto(node.getParent());
 
         Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
 
-        this.descriptionsWrapper = new TaxonDescriptionDTO(taxon);
+        this.descriptionsWrapper = new TaxonDescriptionDTO(taxon, onlyUseDefaultDescription);
         concatenateSynonyms(taxon);
     }
 
