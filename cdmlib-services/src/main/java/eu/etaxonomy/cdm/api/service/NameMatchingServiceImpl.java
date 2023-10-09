@@ -113,7 +113,7 @@ public class NameMatchingServiceImpl
         //TODO what to do if name could not be parsed?
 
         String genusQuery = name.getGenusOrUninomial();
-        String epithetQuery = name.getSpecificEpithet();
+        String specificEpithetQuery = name.getSpecificEpithet();
         String infraGenericQuery = name.getInfraGenericEpithet();
         String infraSpecificQuery = name.getInfraSpecificEpithet();
 
@@ -124,9 +124,9 @@ public class NameMatchingServiceImpl
         Integer maxDisTrinomial = 6;
 
         if (maxDistance == null) {
-        	if (epithetQuery != null && infraSpecificQuery == null || infraGenericQuery != null) {
+        	if (specificEpithetQuery != null && infraSpecificQuery == null || infraGenericQuery != null) {
         		maxDistance = maxDisBinomial;
-        	} else if (epithetQuery != null && infraSpecificQuery != null){
+        	} else if (specificEpithetQuery != null && infraSpecificQuery != null){
         		maxDistance = maxDisTrinomial;
         	} else {
         		maxDistance = maxDisMonomial;
@@ -170,7 +170,7 @@ public class NameMatchingServiceImpl
         taxonNamePartsWithDistance.addAll(getTaxonNamePartsFromDB(postFilteredGenusOrUninominalWithDis));
 
         List<SingleNameMatchingResult> resultSetOnlyGenusOrUninominal = new ArrayList<>();
-        if (epithetQuery == null && infraGenericQuery == null) {
+        if (specificEpithetQuery == null && infraGenericQuery == null) {
             filterMatchingMonomialFromResultSet(taxonNamePartsWithDistance, resultSetOnlyGenusOrUninominal);
             Collections.sort(resultSetOnlyGenusOrUninominal,
                     (o1, o2) -> o1.getDistance().compareTo(o2.getDistance()));
@@ -213,9 +213,9 @@ public class NameMatchingServiceImpl
             	result.bestResults = bestResults(resultSetInfraGenericListWithDist);
             }
             return result;
-        } else if (epithetQuery != null && infraSpecificQuery == null){
+        } else if (specificEpithetQuery != null && infraSpecificQuery == null){
 
-            String normalizedEphitetQuery = NameMatchingUtils.normalize(epithetQuery);
+            String normalizedEphitetQuery = NameMatchingUtils.normalize(specificEpithetQuery);
             String phoneticNormalizedEpithetQuery = NameMatchingUtils.nearMatch(normalizedEphitetQuery);
 
             // 4. epithet pre-filter
@@ -239,7 +239,7 @@ public class NameMatchingServiceImpl
                 preFilteredEpithet.setDistance(totalDist);
 
                 // 6. species post-filter
-                resultSetEpithetListWithDist.addAll(postfilterEpithet(maxDistance, epithetQuery, infraSpecificComputedDistance,
+                resultSetEpithetListWithDist.addAll(postfilterEpithet(maxDistance, specificEpithetQuery, infraSpecificComputedDistance,
                         normalizedEphitetQuery, preFilteredEpithet, epithetInDB, totalDist));
             }
 

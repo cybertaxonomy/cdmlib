@@ -32,13 +32,12 @@ import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
  *
  * @author a.kohlbecker
  * @since Oct 10, 2018
- *
  */
 @Configuration
 public class CdmHibernateListenerConfiguration {
 
     @Autowired
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     @Bean
     public TaxonGraphHibernateListener taxonGraphHibernateListener(){
@@ -53,5 +52,4 @@ public class CdmHibernateListenerConfiguration {
 
         return taxonGraphHibernateListener;
     }
-
 }

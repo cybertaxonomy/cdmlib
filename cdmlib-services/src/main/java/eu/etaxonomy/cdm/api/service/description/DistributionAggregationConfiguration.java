@@ -52,7 +52,6 @@ public class DistributionAggregationConfiguration
     public static DistributionAggregationConfiguration NewInstance(List<AggregationMode> aggregationModes, List<UUID> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor){
 
-
         return new DistributionAggregationConfiguration(aggregationModes, superAreas, filter, monitor);
     }
 
