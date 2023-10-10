@@ -29,18 +29,15 @@ public class TaxonDescriptionDTO implements Serializable{
     UUID taxonUUID;
     Set<TaxonDescription> descriptions = new HashSet();
 
-    public TaxonDescriptionDTO(Taxon taxon, boolean onlyUseDefault){
+    public TaxonDescriptionDTO(Taxon taxon, boolean alwaysUseDefault){
        this.taxonUUID = taxon.getUuid();
 
         for (TaxonDescription desc: taxon.getDescriptions()){
             if (desc.isDefault()) {
                 descriptions.add(desc);
-                if (onlyUseDefault) {
-                    break;
-                }
             }
         }
-        if (descriptions.isEmpty() || !onlyUseDefault) {
+        if (descriptions.isEmpty() || !alwaysUseDefault) {
             for (TaxonDescription desc: taxon.getDescriptions()){
                 if (desc.isComputed()) {
                     continue;
