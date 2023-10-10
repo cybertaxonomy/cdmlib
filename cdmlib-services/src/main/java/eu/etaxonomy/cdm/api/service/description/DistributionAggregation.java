@@ -140,8 +140,7 @@ public class DistributionAggregation
     protected void initTransaction() {
     }
 
-    List<NamedArea> superAreaList;
-
+    private List<NamedArea> superAreaList = new ArrayList<>();
     private void makeSuperAreas() {
         TransactionStatus tx = startTransaction(true);
         if (getConfig().getSuperAreas()!= null){
