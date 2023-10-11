@@ -1181,7 +1181,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 	        save(state.getDerivedUnitBase(), state);
 
-	        if (config.isAddIndividualsAssociationsSuchAsSpecimenAndObservations() && preferredFlag) {
+	        if (config.isAddIndividualsAssociations() && preferredFlag) {
 	            //do not add IndividualsAssociation to non-preferred taxa
 	            if (logger.isDebugEnabled()){
 	                logger.debug("isDoCreateIndividualsAssociations");

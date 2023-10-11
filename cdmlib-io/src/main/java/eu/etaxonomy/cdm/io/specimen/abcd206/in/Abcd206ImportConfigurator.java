@@ -137,7 +137,7 @@ public class Abcd206ImportConfigurator
         result.append(";");
         result.append("addIndividualsAssociationsSuchAsSpecimenAndObservations");
         result.append(":");
-        result.append(this.isAddIndividualsAssociationsSuchAsSpecimenAndObservations());
+        result.append(this.isAddIndividualsAssociations());
         result.append(";");
         result.append("reuseExistingTaxaWhenPossible");
         result.append(":");
