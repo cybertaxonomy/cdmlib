@@ -53,6 +53,7 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
 
     private String taxonReference = null;
     private boolean addIndividualsAssociations = true;
+    private boolean addDeterminations = false;
     private boolean reuseExistingDescriptiveGroups = false;
 
 
@@ -129,6 +130,20 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
 
     public boolean isAddIndividualsAssociations() {
         return addIndividualsAssociations;
+    }
+
+    /**
+     * @return the addDeterminations
+     */
+    public boolean isAddDeterminations() {
+        return addDeterminations;
+    }
+
+    /**
+     * @param addDeterminations the addDeterminations to set
+     */
+    public void setAddDeterminations(boolean addDeterminations) {
+        this.addDeterminations = addDeterminations;
     }
 
     public void setAddIndividualsAssociations(

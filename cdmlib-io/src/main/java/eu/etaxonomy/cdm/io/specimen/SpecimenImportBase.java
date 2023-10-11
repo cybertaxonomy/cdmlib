@@ -1128,7 +1128,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                determinationEvent.setModifier(DefinedTerm.DETERMINATION_MODIFIER_AFFINIS());
 	            }
 	        }
-	        state.getDerivedUnitBase().addDetermination(determinationEvent);
+	        if (config.isAddDeterminations()) {
+	            state.getDerivedUnitBase().addDetermination(determinationEvent);
+	        }
+
 
 	        if (logger.isDebugEnabled()){
 	            logger.debug("NB TYPES INFO: "+ state.getDataHolder().getStatusList().size());
