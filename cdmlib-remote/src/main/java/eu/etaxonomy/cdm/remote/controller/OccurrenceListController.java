@@ -116,11 +116,13 @@ public class OccurrenceListController extends AbstractIdentifiableListController
     @RequestMapping(value = "rootUnitDTOsByAssociatedTaxon", method = RequestMethod.GET)
     public List<SpecimenOrObservationBaseDTO> doListlistRootUnitDTOsByAssociatedTaxon(
             @RequestParam(value = "uuid", required = true) UUID uuid,
+            @RequestParam(value = "useDetermination", required = false, defaultValue = "false") boolean useDetermination,
             HttpServletRequest request,
             HttpServletResponse response) {
         logger.info("doListlistRootUnitDTOByAssociatedTaxon() - " + requestPathAndQuery(request));
 
-        List<SpecimenOrObservationBaseDTO> sobDTOs = service.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+
+        List<SpecimenOrObservationBaseDTO> sobDTOs = service.listRootUnitDTOsByAssociatedTaxon(null, uuid, useDetermination, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
         return sobDTOs;
     }
 
