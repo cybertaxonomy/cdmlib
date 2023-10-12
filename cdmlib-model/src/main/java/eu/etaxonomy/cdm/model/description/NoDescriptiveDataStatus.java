@@ -41,7 +41,7 @@ public enum NoDescriptiveDataStatus implements IEnumTerm<NoDescriptiveDataStatus
     ToBeChecked(UUID.fromString("52952fe5-cb3d-4ab9-80a9-5cc93587cd0c"), "to be checked","TBC"),
 
     @XmlEnumValue("NotInterpretable")
-    NotInterpretable(UUID.fromString("22305490-8ea5-487c-9068-b90d16045c8c"), "Not applicable","NI"),
+    NotInterpretable(UUID.fromString("22305490-8ea5-487c-9068-b90d16045c8c"), "not interpretable","NI"),
 
     @XmlEnumValue("DataWithheld")
     DataWithheld(UUID.fromString("05b2abcf-0d41-463c-bd83-30a268fa32ae"), "data withheld","DW");
