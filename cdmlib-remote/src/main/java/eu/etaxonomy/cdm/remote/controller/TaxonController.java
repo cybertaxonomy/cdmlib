@@ -327,7 +327,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) {
         logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
 
-        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, useDetermination, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, true, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
         return rootUnitDtos.stream().filter(dto -> dto instanceof FieldUnitDTO).collect(Collectors.toList());
     }
 
@@ -339,7 +339,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) {
         logger.info("rootUnitDTOs() - " + request.getRequestURI());
 
-        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, useDetermination, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, true, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
         return rootUnitDtos;
     }
