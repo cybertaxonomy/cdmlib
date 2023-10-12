@@ -262,6 +262,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
 	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+	        importConfigurator.setAddDeterminations(true);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
