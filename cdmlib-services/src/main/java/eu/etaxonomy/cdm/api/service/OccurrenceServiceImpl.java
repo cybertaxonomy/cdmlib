@@ -567,25 +567,25 @@ public class OccurrenceServiceImpl
                     DerivedUnitDTO derivativeDTO;
                     if (!alreadyCollectedUnits.containsKey(unit.getUuid())){
                         DerivedUnit derivedUnit = (DerivedUnit)unit;
-                        boolean isAssociated = false;
-                        if (useDeterminations) {
-                            for (DeterminationEvent determination:derivedUnit.getDeterminations()) {
+                        boolean isAssociated = true;
+                        for (DeterminationEvent determination:derivedUnit.getDeterminations()) {
                             	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon())){
                             		isAssociated = true;
                             		break;
-                            	}
+                            	}else {
+                            	    isAssociated = false;
                             }
                         }
-                        for (TaxonDescription desc: taxon.getDescriptions()) {
-                            for (DescriptionElementBase descElement: desc.getElements()) {
-                                if (descElement instanceof IndividualsAssociation) {
-                                    if (((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation().getUuid().equals(derivedUnit.getUuid())) {
-                                        isAssociated = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
+//                        for (TaxonDescription desc: taxon.getDescriptions()) {
+//                            for (DescriptionElementBase descElement: desc.getElements()) {
+//                                if (descElement instanceof IndividualsAssociation) {
+//                                    if (((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation().getUuid().equals(derivedUnit.getUuid())) {
+//                                        isAssociated = true;
+//                                        break;
+//                                    }
+//                                }
+//                            }
+//                        }
 
                         if (!isAssociated) {
                         	continue;
