@@ -731,7 +731,7 @@ public interface IOccurrenceService
      *  The list of root units with fully or partially assembled derivation graph.
      */
     List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid, boolean useDeterminations, List<String> propertyPaths);
+            UUID associatedTaxonUuid, List<String> propertyPaths);
 
 
     /**

@@ -322,24 +322,22 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     @RequestMapping(value = "fieldUnitDTOs", method = RequestMethod.GET)
     public List<SpecimenOrObservationBaseDTO> doListFieldUnitDTOs(
             @PathVariable("uuid") UUID uuid,
-            @RequestParam(value = "useDetermination", required = false, defaultValue = "false") boolean useDetermination,
             HttpServletRequest request,
             HttpServletResponse response) {
         logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
 
-        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, true, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
         return rootUnitDtos.stream().filter(dto -> dto instanceof FieldUnitDTO).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "rootUnitDTOs", method = RequestMethod.GET)
     public List<SpecimenOrObservationBaseDTO> doListRooUnitDTOs(
             @PathVariable("uuid") UUID uuid,
-            @RequestParam(value = "useDetermination", required = false, defaultValue = "false") boolean useDetermination,
             HttpServletRequest request,
             HttpServletResponse response) {
         logger.info("rootUnitDTOs() - " + request.getRequestURI());
 
-        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, true, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
         return rootUnitDtos;
     }

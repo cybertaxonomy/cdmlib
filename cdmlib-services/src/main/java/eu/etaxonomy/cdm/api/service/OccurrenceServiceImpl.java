@@ -541,7 +541,7 @@ public class OccurrenceServiceImpl
     @Override
     @Transactional
     public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid, boolean useDeterminations, List<String> propertyPaths) {
+            UUID associatedTaxonUuid, List<String> propertyPaths) {
 
         Set<Taxon> taxa = new HashSet<>();
         Set<SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashSet<>();
