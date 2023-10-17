@@ -86,6 +86,7 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -572,8 +573,6 @@ public class OccurrenceServiceImpl
                             	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon())){
                             		isAssociated = true;
                             		break;
-//                            	}else {
-//                            	    isAssociated = false;
                             	}
                         }
                         for (TaxonDescription desc: taxon.getDescriptions()) {
@@ -585,6 +584,16 @@ public class OccurrenceServiceImpl
                                     }
                                 }
                             }
+                        }
+
+                        for (TypeDesignationBase desc: taxon.getName().getTypeDesignations()) {
+                            if (desc instanceof SpecimenTypeDesignation) {
+                                if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
+                                    isAssociated = true;
+                                    break;
+                                }
+                            }
+
                         }
 
                         if (!isAssociated) {
