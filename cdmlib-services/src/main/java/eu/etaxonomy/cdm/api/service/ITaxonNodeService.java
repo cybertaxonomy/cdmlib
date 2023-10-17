@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.metadata.DistributionDescription;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -273,9 +274,9 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase);
 
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
-            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode, boolean useOnlyDefaultDescription);
+            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode, DistributionDescription descHandling);
 
-    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren, boolean useOnlyDefaultDescription);
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren, DistributionDescription descHandling);
 
     /**
      * Clones a subtree including all taxa and taxon nodes.
