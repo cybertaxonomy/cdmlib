@@ -31,7 +31,7 @@ public class MicroFormatQuantitativeDescriptionBuilder extends QuantitativeDescr
 	private String spanEnd = "</span>";
 
 	@Override
-	protected TextData doBuild(Map<StatisticalMeasure,BigDecimal> measures, MeasurementUnit mUnit,
+	protected TextData doBuild(Map<StatisticalMeasure,List<BigDecimal>> measures, MeasurementUnit mUnit,
 	        List<Language> languages){
 		StringBuilder QuantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
 		TextData textData = TextData.NewInstance(); // TextData that will contain the description and the language corresponding
