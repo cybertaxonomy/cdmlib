@@ -23,6 +23,7 @@ public class CommonNameDto extends FactDtoBase {
     private UUID areaUUID;
 
     private String name;
+    private String transliteration;
 
  // ****************** GETTER / SETTER *****************************/
 
@@ -59,5 +60,12 @@ public class CommonNameDto extends FactDtoBase {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTransliteration() {
+        return transliteration;
+    }
+    public void setTransliteration(String transliteration) {
+        this.transliteration = transliteration;
     }
 }
