@@ -146,7 +146,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }
         }
 
-        if(taxonName==null && atomisedTaxonName != null){
+        if(taxonName == null && atomisedTaxonName != null){
             taxonName = atomisedTaxonName;
             state.getReport().addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
@@ -180,23 +180,26 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         return taxonName;
     }
 
-	protected TaxonName getBestMatchingName(String scientificName, java.util.Collection<TaxonName> names, STATE state){
-        Set<TaxonName> namesWithAcceptedTaxa = new HashSet<>();
+	protected TaxonName getBestMatchingName(String scientificName,
+	        java.util.Collection<TaxonName> names, STATE state){
+
+	    Set<TaxonName> namesWithAcceptedTaxa = new HashSet<>();
         List<TaxonName> namesWithAcceptedTaxaInClassification = new ArrayList<>();
         for (TaxonName name : names) {
             if(!name.getTaxonBases().isEmpty()){
                 Set<TaxonBase> taxa = name.getTaxonBases();
-                for (TaxonBase taxonBase:taxa){
-                    Taxon acceptedTaxon= null;
+                for (TaxonBase<?> taxonBase:taxa){
+                    Taxon acceptedTaxon = null;
                     if (taxonBase instanceof Synonym) {
-                        Synonym syn = (Synonym) taxonBase;
+                        Synonym syn = (Synonym)taxonBase;
                         acceptedTaxon = syn.getAcceptedTaxon();
                     }else {
                         acceptedTaxon = (Taxon)taxonBase;
                     }
+
                     if (!(acceptedTaxon).getTaxonNodes().isEmpty()){
                         //use only taxa included in a classification
-                        for (TaxonNode node:(acceptedTaxon).getTaxonNodes()){
+                        for (TaxonNode node: acceptedTaxon.getTaxonNodes()){
                             if (state.getClassification() != null && node.getClassification().equals(state.getClassification())){
                                 namesWithAcceptedTaxaInClassification.add(name);
                             }else {
@@ -209,9 +212,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
         String message = String.format("More than one taxon name was found for %s, maybe in other classifications!", scientificName);
         //check for names with accepted taxa in classification
-        if(namesWithAcceptedTaxaInClassification.size()>0){
-            if(namesWithAcceptedTaxaInClassification.size()>1){
-
+        if(namesWithAcceptedTaxaInClassification.size() > 0){
+            if(namesWithAcceptedTaxaInClassification.size() > 1){
                 state.getReport().addInfoMessage(message);
                 logger.warn(message);
                 return null;
@@ -219,7 +221,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             return namesWithAcceptedTaxaInClassification.iterator().next();
         }
         //check for any names with accepted taxa
-        if(namesWithAcceptedTaxa.size()>0){
+        if(namesWithAcceptedTaxa.size() > 0){
             if(namesWithAcceptedTaxa.size()>1){
 
                 state.getReport().addInfoMessage(message);
