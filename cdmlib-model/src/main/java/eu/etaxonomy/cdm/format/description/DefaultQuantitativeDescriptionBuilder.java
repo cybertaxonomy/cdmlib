@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -160,10 +161,13 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 	 * @return
 	 */
 	private String getValues(Map<StatisticalMeasure,List<BigDecimal>> measures, Object key) {
+
 		if(measures.containsKey(key)) {
+
 		    List<BigDecimal> floatValues;
 		    String result = "";
 			floatValues = measures.get(key);
+			Collections.sort(floatValues);
 			for (BigDecimal value: floatValues) {
                 result = CdmUtils.concat("; ", result, value.toString());
             }
