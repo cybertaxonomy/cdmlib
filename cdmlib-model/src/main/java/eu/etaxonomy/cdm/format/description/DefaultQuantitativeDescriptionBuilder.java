@@ -164,11 +164,11 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 
 		if(measures.containsKey(key)) {
 
-		    List<BigDecimal> floatValues;
+		    List<BigDecimal> values;
 		    String result = "";
-			floatValues = measures.get(key);
-			Collections.sort(floatValues);
-			for (BigDecimal value: floatValues) {
+			values = measures.get(key);
+			Collections.sort(values);
+			for (BigDecimal value: values) {
                 result = CdmUtils.concat("; ", result, value.toString());
             }
 			return result;

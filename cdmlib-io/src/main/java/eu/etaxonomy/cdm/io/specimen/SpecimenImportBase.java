@@ -143,12 +143,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                         taxonName = getBestMatchingName(atomisedTaxonName.getTitleCache(), names, state);
                     }
                 }
-
             }
-
         }
 
-        if(taxonName==null && atomisedTaxonName!=null){
+        if(taxonName==null && atomisedTaxonName != null){
             taxonName = atomisedTaxonName;
             state.getReport().addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
@@ -159,7 +157,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 state.getReport().addInfoMessage(String.format("Taxon %s was parsed as %s", scientificName, atomisedTaxonName.getTitleCache()));
             }
         }
-        else if(taxonName==null){
+        else if(taxonName == null){
             //create new taxon name
 
             if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP)){
@@ -174,9 +172,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             state.getReport().addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
         }
-        if (taxonName != null){
-            state.names.put(taxonName.getNameCache(), taxonName);
-        }
+        state.names.put(taxonName.getNameCache(), taxonName);
+
         if(!taxonName.isPersisted()) {
             save(taxonName, state);
         }
@@ -986,7 +983,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             if (config.getNomenclaturalCode() != null){
                 if (config.getNomenclaturalCode() != null){
                     state.getDataHolder().setNomenclatureCode(config.getNomenclaturalCode().toString());
-
                 }
             }
         }
@@ -1015,7 +1011,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }
             TaxonName taxonName = getOrCreateTaxonName(scientificName, null, preferredFlag, state, i);
             Taxon taxon = getOrCreateTaxonForName(taxonName, state);
-            addTaxonNode(taxon, state,preferredFlag);
+            addTaxonNode(taxon, state, preferredFlag);
             linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate(), identification.getModifier());
         }
     }
