@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -153,20 +154,13 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 	 * @return
 	 */
 	private String getValues(Map<StatisticalMeasure,List<BigDecimal>> measures, Object key) {
-		List<BigDecimal> floatValues;
-		Integer intValue;
-		String result = "";
 		if(measures.containsKey(key)) {
+		    List<BigDecimal> floatValues;
+		    String result = "";
 			floatValues = measures.get(key);
 			for (BigDecimal value: floatValues) {
-                intValue=value.intValue();
-    			if (value.equals(intValue.floatValue())) {
-                    result += intValue.toString() + "; ";
-                } else {
-                    result += value.toString() + "; ";
-                }
-			}
-			result = result.substring(0, result.lastIndexOf("; "));
+                result += CdmUtils.concat("; ", result, value.toString());
+            }
 			return result;
 		}
 		return null;
