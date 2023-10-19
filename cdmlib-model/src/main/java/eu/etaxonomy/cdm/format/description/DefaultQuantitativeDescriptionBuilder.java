@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2011 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
@@ -142,8 +150,6 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 		return textData;
 	}
 
-
-
 	/**
 	 * Returns the value of a given type of measure as a String. If the value is an integer it is printed
 	 * as an integer instead of a float.
@@ -165,5 +171,4 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 		}
 		return null;
 	}
-
 }
