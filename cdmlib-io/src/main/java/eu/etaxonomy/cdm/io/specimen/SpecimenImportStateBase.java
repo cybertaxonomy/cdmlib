@@ -68,12 +68,12 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private List<OriginalSourceBase> derivedUnitSources = new ArrayList<>();
     private boolean derivedUnitSourcesSet=false;
     private boolean descriptionGroupSet = false;
-    protected HashMap<String, Institution> institutions = new HashMap<>();
-    protected HashMap<String, Collection> collections= new HashMap<>();
-    protected HashMap<String, TaxonName> names= new HashMap<>();
-    private HashMap<String,FieldUnit> fieldUnits = new HashMap<>();
+    protected Map<String, Institution> institutions = new HashMap<>();
+    protected Map<String, Collection> collections= new HashMap<>();
+    protected Map<String, TaxonName> names= new HashMap<>();
+    private Map<String,FieldUnit> fieldUnits = new HashMap<>();
 
-    MapWrapper<TeamOrPersonBase<?>> personStore;
+    private MapWrapper<TeamOrPersonBase<?>> personStore;
     private Map<String, Reference> importReferences = new HashMap<>();
     private URI actualAccessPoint;
     private Set<URI> allAccesPoints = new HashSet<>();

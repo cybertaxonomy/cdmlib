@@ -88,18 +88,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	protected Map<String, DefinedTerm> kindOfUnitsMap;
 
 
-
 	@Override
     protected abstract void doInvoke(STATE state);
 
 	/**
 	 * Handle a single unit
-	 * @param state
-	 * @param item
 	 */
 	protected abstract void handleSingleUnit(STATE state, Object item) ;
-
-
 
 	protected TaxonName getOrCreateTaxonName(String scientificName, Rank rank, boolean preferredFlag, STATE state, int unitIndexInAbcdFile){
 	    TaxonName taxonName = null;
@@ -262,6 +257,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            return names.iterator().next();
 	        }
 	    }
+
 	 /**
 	     * Parse automatically the scientific name
 	     * @param scientificName the scientific name to parse
@@ -269,7 +265,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param report the import report
 	     * @return a parsed name
 	     */
-
 	    protected TaxonName parseScientificName(String scientificName, STATE state, SpecimenImportReport report, Rank rank) {
 
 	        NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
@@ -555,11 +550,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * https://dev.e-taxonomy.eu/redmine/issues/3726
 	     *
 	     * Not yet complete.
-	     *
-	     * @param cdmBase
-	     * @param state
 	     */
-	    protected UUID save(CdmBase cdmBase, SpecimenImportStateBase state) {
+	    protected UUID save(CdmBase cdmBase, SpecimenImportStateBase<?,?> state) {
 	        ICdmRepository cdmRepository = state.getConfig().getCdmAppController();
 	        if (cdmRepository == null){
 	            cdmRepository = this;
@@ -568,8 +560,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        if (cdmBase.isInstanceOf(LanguageString.class)){
 	            return cdmRepository.getTermService().saveLanguageData(CdmBase.deproxy(cdmBase, LanguageString.class));
 	        }else if (cdmBase.isInstanceOf(SpecimenOrObservationBase.class)){
-	            SpecimenOrObservationBase specimen = CdmBase.deproxy(cdmBase, SpecimenOrObservationBase.class);
-
+	            SpecimenOrObservationBase<?> specimen = CdmBase.deproxy(cdmBase, SpecimenOrObservationBase.class);
 	            return cdmRepository.getOccurrenceService().saveOrUpdate(specimen);
 	        }else if (cdmBase.isInstanceOf(Reference.class)){
 	            return cdmRepository.getReferenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, Reference.class));
@@ -580,8 +571,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }else if (cdmBase.isInstanceOf(Collection.class)){
 	            return cdmRepository.getCollectionService().saveOrUpdate(CdmBase.deproxy(cdmBase, Collection.class));
 	        }else if (cdmBase.isInstanceOf(DescriptionBase.class)){
-	            DescriptionBase description = CdmBase.deproxy(cdmBase, DescriptionBase.class);
-
+	            DescriptionBase<?> description = CdmBase.deproxy(cdmBase, DescriptionBase.class);
 	            return cdmRepository.getDescriptionService().saveOrUpdate(description);
 	        }else if (cdmBase.isInstanceOf(TaxonBase.class)){
 	            return cdmRepository.getTaxonService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonBase.class));
@@ -592,11 +582,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }else{
 	            throw new IllegalArgumentException("Class not supported in save method: " + CdmBase.deproxy(cdmBase, CdmBase.class).getClass().getSimpleName());
 	        }
-
 	    }
 
-
-	    protected SpecimenOrObservationBase findExistingSpecimen(String unitId, SpecimenImportStateBase state){
+	    protected SpecimenOrObservationBase<?> findExistingSpecimen(String unitId, SpecimenImportStateBase<?,?> state){
 	        ICdmRepository cdmAppController = state.getConfig().getCdmAppController();
 	        if(cdmAppController==null){
 	            cdmAppController = this;
@@ -609,7 +597,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        commitTransaction(state.getTx());
 	        state.setTx(startTransaction());
 	        try{
-		        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
+		        @SuppressWarnings("rawtypes")
+                Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
 		        if(!existingSpecimens.getRecords().isEmpty()){
 		            if(existingSpecimens.getRecords().size()==1){
 		                return existingSpecimens.getRecords().iterator().next();
@@ -673,7 +662,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @return the Institution (existing or new)
 	     */
 	    protected Institution getInstitution(String institutionCode, STATE state) {
-	        SpecimenImportConfiguratorBase config = state.getConfig();
+	        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 	        Institution institution=null;
 	        institution = (Institution)state.institutions.get(institutionCode);
 	        if (institution != null){
@@ -707,9 +696,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            institution = Institution.NewInstance();
 	            institution.setCode(institutionCode);
 	            institution.setTitleCache(institutionCode, true);
-	            UUID uuid = save(institution, state);
+	            save(institution, state);
 	        }
-
 
 	        state.institutions.put(institutionCode, institution);
 	        return institution;
@@ -723,7 +711,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @return the Collection (existing or new)
 	     */
 	    protected Collection getCollection(Institution institution, String collectionCode, STATE state) {
-	        SpecimenImportConfiguratorBase config = state.getConfig();
+
+	        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 	        Collection collection = null;
 	        List<Collection> collections;
 	        collection = (Collection) state.collections.get(collectionCode);
@@ -733,7 +722,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        try {
 	            collections = getCollectionService().searchByCode(collectionCode);
 	        } catch (Exception e) {
-	            collections = new ArrayList<Collection>();
+	            collections = new ArrayList<>();
 	        }
 	        if (collections.size() > 0 && config.isReuseExistingMetaData()) {
 	            for (Collection coll:collections){
@@ -749,11 +738,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            collection =Collection.NewInstance();
 	            collection.setCode(collectionCode);
 	            collection.setInstitute(institution);
-	            collection.setTitleCache(collectionCode);
-	            UUID uuid = save(collection, state);
+	            save(collection, state);
 	        }
-
-
 
 	        state.collections.put(collectionCode, collection);
 
@@ -812,7 +798,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                    subgenus = getOrCreateTaxonForName(taxonName, state);
 	                    if (preferredFlag) {
 	                        parent = linkParentChildNode(genus, subgenus, classification, state);
-	                    }            }
+	                    }
+	                }
 	            }
 	            if (rank.isLowerThan(RankClass.Species)){
 	                if (subgenus!=null){
@@ -943,8 +930,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     	            }
     	        }
     	        else{
-    	            Set<TaxonBase> taxonAndSynonyms = taxonName.getTaxonBases();
-    	            for (TaxonBase taxonBase : taxonAndSynonyms) {
+    	            @SuppressWarnings("rawtypes")
+                    Set<TaxonBase> taxonAndSynonyms = taxonName.getTaxonBases();
+    	            for (TaxonBase<?> taxonBase : taxonAndSynonyms) {
     	                if(taxonBase.isInstanceOf(Synonym.class)){
     	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
     	                    Taxon acceptedTaxonOfSynonym = synonym.getAcceptedTaxon();
@@ -968,7 +956,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     	        return taxon;
 	        }
 	        return null;
-
 	    }
 
 	    private boolean hasTaxonNodeInClassification(Taxon taxon, Classification classification){
@@ -990,7 +977,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     */
 	    protected void handleIdentifications(STATE state, DerivedUnitFacade derivedUnitFacade) {
 
-	        SpecimenImportConfiguratorBase config = state.getConfig();
+	        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 
 	        String scientificName = "";
 	        boolean preferredFlag = false;
@@ -1280,7 +1267,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
             }
 
-
 	        taxonDescription.addElement(indAssociation);
 
 	        save(taxonDescription, state);
@@ -1289,12 +1275,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        state.getReport().addIndividualAssociation(taxon, state.getDataHolder().getUnitID(), state.getDerivedUnitBase());
 	    }
 
-	    /**
-	     * @param derivedUnitBase2
-	     * @param ref2
-	     * @param object
-	     * @return
-	     */
 	    private boolean sourceNotLinkedToElement(DerivedUnit derivedUnitBase2, Reference b, String d) {
 	        Set<IdentifiableSource> linkedSources = derivedUnitBase2.getSources();
 	        for (IdentifiableSource is:linkedSources){
@@ -1315,7 +1295,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                }
 	            }catch(Exception e){}
 
-
 	            try{
 	                if (c==null && d==null) {
 	                    microMatch=true;
@@ -1331,13 +1310,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            if (microMatch && refMatch) {
 	                return false;
 	            }
-
-
 	        }
 	        return true;
 	    }
 
-	    private <T extends OriginalSourceBase> boolean  sourceNotLinkedToElement(ISourceable<T> sourcable, Reference reference, String microReference) {
+	    private <T extends OriginalSourceBase> boolean  sourceNotLinkedToElement(
+	            ISourceable<T> sourcable, Reference reference, String microReference) {
+
 	        Set<T> linkedSources = sourcable.getSources();
 	        for (T is:linkedSources){
 	            Reference unitReference = is.getCitation();
@@ -1384,8 +1363,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	    private Feature makeFeature(SpecimenOrObservationBase<?> unit) {
 	        SpecimenOrObservationType type = unit.getRecordBasis();
 
-
-
 	        if (type.isFeatureObservation()){
 	            return Feature.OBSERVATION();
 	        }else if (type.isFeatureSpecimen()){
@@ -1402,11 +1379,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 	    }
 
-
-	    /**
-	     * @param sourceMap
-	     * @param osbSet
-	     */
 	    protected void addToSourceMap(Map<String, OriginalSourceBase> sourceMap, Set<OriginalSourceBase> osbSet) {
 	        for( OriginalSourceBase osb:osbSet) {
 	            if(osb.getCitation()!=null && osb.getCitationMicroReference() !=null  && !osb.getCitationMicroReference().isEmpty()) {
@@ -1420,8 +1392,4 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	    }
-
-
-
-
 }
