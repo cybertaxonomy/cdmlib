@@ -185,6 +185,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	    Set<TaxonName> namesWithAcceptedTaxa = new HashSet<>();
         List<TaxonName> namesWithAcceptedTaxaInClassification = new ArrayList<>();
+        //fill name with accepted taxa collections
         for (TaxonName name : names) {
             if(!name.getTaxonBases().isEmpty()){
                 Set<TaxonBase> taxa = name.getTaxonBases();
@@ -210,6 +211,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
             }
         }
+
         String message = String.format("More than one taxon name was found for %s, maybe in other classifications!", scientificName);
         //check for names with accepted taxa in classification
         if(namesWithAcceptedTaxaInClassification.size() > 0){
