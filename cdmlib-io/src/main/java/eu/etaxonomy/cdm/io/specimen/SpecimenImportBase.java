@@ -103,7 +103,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         //check atomised name data for rank
         //new name will be created
         TaxonName atomisedTaxonName = null;
-        if (rank==null && unitIndexInAbcdFile>=0 && ((state.getDataHolder().getAtomisedIdentificationList() != null && !state.getDataHolder().getAtomisedIdentificationList().isEmpty())|| state.getDataHolder().getAtomisedIdentificationList().size() > 0)) {
+        if (rank==null && unitIndexInAbcdFile>=0 &&
+                ((state.getDataHolder().getAtomisedIdentificationList() != null && !state.getDataHolder().getAtomisedIdentificationList().isEmpty())
+                  || state.getDataHolder().getAtomisedIdentificationList().size() > 0)) {
             atomisedTaxonName = setTaxonNameByType(state.getDataHolder().getAtomisedIdentificationList().get(unitIndexInAbcdFile), scientificName, state);
             if(atomisedTaxonName!=null){
                 rank = atomisedTaxonName.getRank();
@@ -112,9 +114,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         if(config.isReuseExistingTaxaWhenPossible()){
             TaxonName parsedName = atomisedTaxonName;
             if(parsedName==null){
-
                 parsedName = parseScientificName(scientificName, state, state.getReport(), rank);
-
             }
             atomisedTaxonName = parsedName;
             if(config.isIgnoreAuthorship() && parsedName!=null){// && preferredFlag){
