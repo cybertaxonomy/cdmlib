@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -129,7 +131,10 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
         assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
-        assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
+        Pager<Taxon> taxonPager = taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null);
+        assertEquals(1, taxonPager.getRecords().size());
+        //test for correct nomenclatural code
+        assertEquals(NomenclaturalCode.ICNAFP, taxonPager.getRecords().get(0).getName().getNomenclaturalCode());
 
         //test for sortindex=-1
 
