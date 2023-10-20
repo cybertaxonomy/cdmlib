@@ -210,7 +210,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         }
         List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
+        return new ArrayList<>(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
     }
 
     /**

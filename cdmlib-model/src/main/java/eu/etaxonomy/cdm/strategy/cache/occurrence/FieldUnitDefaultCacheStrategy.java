@@ -234,7 +234,6 @@ public class FieldUnitDefaultCacheStrategy
         }
     }
 
-
     private String getEcology(FieldUnit fieldUnit) {
         return getEcology(fieldUnit, Language.DEFAULT());
     }

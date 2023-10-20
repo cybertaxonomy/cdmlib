@@ -94,6 +94,7 @@ public class QuantitativeDataFormatter
             }
         }
 
+        //min max
         String minMax = "";
         if (lower != null){
             minMax = lower;
@@ -103,6 +104,8 @@ public class QuantitativeDataFormatter
         }else if (upper != null){
             minMax = "<" + upper;
         }
+
+        //exact values
         String exactValueStr = "";
         List<BigDecimal> exactValues = new ArrayList<>(quantData.getExactValues());
         Collections.sort(exactValues);
@@ -111,6 +114,8 @@ public class QuantitativeDataFormatter
                 exactValueStr = CdmUtils.concat(EXACT_VALUE_SEP, exactValueStr, String.valueOf(exactValue));
             }
         }
+
+        //decide
         if (isNotBlank(minMax)){
             result = minMax;
             if (isNotBlank(exactValueStr)){
