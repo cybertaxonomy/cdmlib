@@ -173,11 +173,11 @@ public class FieldUnitDefaultCacheStrategy
 
         if (collector == null){
             return fieldNumber;
-        }else if(collector.isProtectedTitleCache()){
-            return  CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
         }else{
             result = "";
             boolean hasMoreMembers = false;
+
+            //extract team members and primary collector
             List<Person> teamMembers = new ArrayList<>();
             if (collector.isInstanceOf(Person.class)){
                 if (primaryCollector == null){
@@ -188,10 +188,11 @@ public class FieldUnitDefaultCacheStrategy
                 Team team = CdmBase.deproxy(collector, Team.class);
                 teamMembers = team.getTeamMembers();
                 hasMoreMembers = team.isHasMoreMembers();
-            }else{ //protected titleCache
+            }else{ //is Institution or Team with protectedTitleCache
                 return CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
             }
 
+            //concat result
             int counter = 0;
             boolean fieldNumberAdded = false;
             for (Person member : teamMembers){
@@ -209,6 +210,7 @@ public class FieldUnitDefaultCacheStrategy
             if (! fieldNumberAdded){
                 result = addFieldNumber(result, fieldNumber);
             }
+
             return result;
         }
     }
@@ -218,17 +220,8 @@ public class FieldUnitDefaultCacheStrategy
         return result;
     }
 
-    //TODO
     private String getMemberString(Person member) {
-        if (isNotBlank(member.getFamilyName()) && ! member.isProtectedTitleCache() ){
-            String result = member.getFamilyName();
-            if  (isNotBlank(member.getGivenName())){
-                result = member.getGivenName().substring(0,1) + ". " + result;
-            }
-            return result;
-        }else{
-            return member.getTitleCache();
-        }
+        return member.getCollectorTitleCache();
     }
 
     public static String teamConcatSeparator(List<Person> teamMembers, boolean hasMoreMembers, int index) {

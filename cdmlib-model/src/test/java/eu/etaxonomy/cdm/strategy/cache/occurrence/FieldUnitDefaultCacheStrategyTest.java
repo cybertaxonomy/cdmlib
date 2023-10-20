@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -152,6 +153,46 @@ public class FieldUnitDefaultCacheStrategyTest extends TermTestBase {
         expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeTextM);
         Assert.assertEquals(expected, fieldUnit.getTitleCache());
     }
+
+
+    @Test
+    public void testCollectorHandling() {
+        //simplify test data
+        GatheringEvent gathering = fieldUnit.getGatheringEvent();
+        gathering.setAbsoluteElevation(null);
+        gathering.setExactLocation(null);
+        gathering.setLocality(null);
+
+        //single person
+        //..protected title cache only
+        gathering.setCollector(primaryCollector);
+        String correctCache = "Germany, 3 May 2005, Kilian 5678";
+        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+
+        //..protected title cache with collector title
+        primaryCollector.setCollectorTitle("N. Kilian");
+        primaryCollector.setCollectorTitleCache(null);  //just in case
+        correctCache = "Germany, 3 May 2005, N. Kilian 5678";
+        Assert.assertEquals("existing collector title should be preferred", correctCache, fieldUnit.getTitleCache());
+
+        //team
+        //no protected titleCache
+        gathering.setCollector(collector);
+        correctCache = "Germany, 3 May 2005, N. Kilian 5678, A. Muller & Kohlbecker";
+        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+
+        //protected titleCache
+        collector.setTitleCache("Kilian, Muller, Kohlbecker", true);
+        correctCache = "Germany, 3 May 2005, Kilian, Muller, Kohlbecker 5678";
+        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+
+        //institution
+        //not sure if an institution can be a collector at all, but just in case
+        Institution institution = Institution.NewNamedInstance("Institute");
+        gathering.setCollector(institution);
+        correctCache = "Germany, 3 May 2005, Institute 5678";
+        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+   }
 
     private void addEcology(FieldUnit fieldUnit, String ecology) {
         SpecimenDescription description = SpecimenDescription.NewInstance(fieldUnit);
