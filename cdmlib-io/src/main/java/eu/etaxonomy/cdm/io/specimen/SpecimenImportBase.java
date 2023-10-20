@@ -160,9 +160,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         else if(taxonName == null){
             //create new taxon name
 
-            if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getKey()) || state.getDataHolder().getNomenclatureCode().equals("Botanical")){
+            if (state.getDataHolder().getNomenclatureCode().equalsIgnoreCase(NomenclaturalCode.ICNAFP.getKey())
+                    || state.getDataHolder().getNomenclatureCode().equalsIgnoreCase("Botanical")){
                 taxonName = TaxonNameFactory.NewBotanicalInstance(rank);
-            }else if (state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getKey()) || state.getDataHolder().getNomenclatureCode().equals("Zoological")){
+            }else if (state.getDataHolder().getNomenclatureCode().equalsIgnoreCase(NomenclaturalCode.ICZN.getKey())
+                    || state.getDataHolder().getNomenclatureCode().equalsIgnoreCase("Zoological")){
                 taxonName = TaxonNameFactory.NewZoologicalInstance(rank);
             }else{
                 taxonName = TaxonNameFactory.NewNonViralInstance(rank);
@@ -329,7 +331,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             logger.debug("settaxonnamebytype " + state.getDataHolder().getNomenclatureCode().toString());
         }
 
-        if (state.getDataHolder().getNomenclatureCode().equals("Zoological") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getUuid().toString()) || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getKey())) {
+        if (state.getDataHolder().getNomenclatureCode().equals("Zoological")
+                || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getUuid().toString())
+                || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICZN.getKey())) {
             TaxonName taxonName = TaxonNameFactory.NewZoologicalInstance(null);
             taxonName.setFullTitleCache(fullName, true);
             taxonName.setGenusOrUninomial(NB(getFromMap(atomisedMap, "Genus")));
@@ -388,7 +392,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 return taxonName;
             }
         }
-        else if (state.getDataHolder().getNomenclatureCode().equals("Botanical") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getUuid().toString()) || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getKey())) {
+        else if (state.getDataHolder().getNomenclatureCode().equals("Botanical")
+                || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getUuid().toString())
+                || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNAFP.getKey())) {
             TaxonName taxonName = parseScientificName(fullName, state, state.getReport(), null);
             if (taxonName != null){
                 return taxonName;
@@ -448,7 +454,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 return taxonName;
             }
         }
-        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNP.getUuid().toString()) || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNP.getKey())) {
+        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial")
+                || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNP.getUuid().toString())
+                || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNP.getKey())) {
             TaxonName taxonName = TaxonNameFactory.NewBacterialInstance(null);
             taxonName.setFullTitleCache(fullName, true);
             taxonName.setGenusOrUninomial(getFromMap(atomisedMap, "Genus"));
