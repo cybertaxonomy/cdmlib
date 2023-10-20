@@ -159,4 +159,25 @@ public class QuantitativeDataFormatterTest extends TermTestBase {
         text = formatter.format(quantData, formatKey);
         Assert.assertEquals("data unavailable (0.1"+lowerUpperSep+"1.3 m [n=2])", text);
     }
+
+    @Test
+    public void testOrdering() {
+        QuantitativeData quantData = QuantitativeData.NewInstance(Feature.CHROMOSOME_NUMBER());
+        FormatKey[] formatKey = null;
+        QuantitativeDataFormatter formatter = new QuantitativeDataFormatter(quantData, formatKey);
+
+        StatisticalMeasurementValue val1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.EXACT_VALUE(), new BigDecimal("2.1"));
+        StatisticalMeasurementValue val2 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.EXACT_VALUE(), new BigDecimal("1.3"));
+        StatisticalMeasurementValue val3 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.EXACT_VALUE(), new BigDecimal("5"));
+        StatisticalMeasurementValue val4 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.EXACT_VALUE(), new BigDecimal("4"));
+        quantData.addStatisticalValue(val1);
+        quantData.addStatisticalValue(val2);
+        quantData.addStatisticalValue(val3);
+        quantData.addStatisticalValue(val4);
+        MeasurementUnit unit = MeasurementUnit.METER();
+        quantData.setUnit(unit);
+
+        String text = formatter.format(quantData, formatKey);
+        Assert.assertEquals("1.3;2.1;4;5 m", text);
+    }
 }

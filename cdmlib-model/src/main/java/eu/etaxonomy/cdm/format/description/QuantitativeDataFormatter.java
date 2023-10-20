@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +36,7 @@ public class QuantitativeDataFormatter
     static final String minSep = UTF8.NARROW_NO_BREAK + sepDash;
     static final String maxSep = sepDash + UTF8.NARROW_NO_BREAK;
     public static final String lowerUpperSep = UTF8.NARROW_NO_BREAK + sepDash + UTF8.NARROW_NO_BREAK;
+    private static final String EXACT_VALUE_SEP = ";";
 
     static final String modifierSep = UTF8.NARROW_NO_BREAK.toString();
 
@@ -101,9 +104,11 @@ public class QuantitativeDataFormatter
             minMax = "<" + upper;
         }
         String exactValueStr = "";
-        for(BigDecimal exactValue : quantData.getExactValues()){
+        List<BigDecimal> exactValues = new ArrayList<>(quantData.getExactValues());
+        Collections.sort(exactValues);
+        for(BigDecimal exactValue : exactValues){
             if (exactValue != null){
-                exactValueStr = CdmUtils.concat(";", exactValueStr, String.valueOf(exactValue));
+                exactValueStr = CdmUtils.concat(EXACT_VALUE_SEP, exactValueStr, String.valueOf(exactValue));
             }
         }
         if (isNotBlank(minMax)){
