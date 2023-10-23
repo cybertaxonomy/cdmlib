@@ -68,7 +68,7 @@ public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatabl
         dto.setExternallyManaged(treeDto!= null? treeDto.isManaged():false);
         dto.setAllowsDuplicats(treeDto!= null? treeDto.isAllowDuplicate():false);
         dto.setFlat(treeDto!= null? treeDto.isFlat():false);
-        dto.setFlat(treeDto!= null? treeDto.isOrderRelevant():false);
+        dto.setOrderRelevant(treeDto!= null? treeDto.isOrderRelevant():false);
 
         List<TermNodeDto> children = new ArrayList<>();
         for (Object o: node.getChildNodes()){
