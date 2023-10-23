@@ -142,7 +142,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                         if (o2.getTimePeriod().checkEmpty()) {
                             return 1;
                         }
-                        return o1.getTimePeriod().getStart().compareTo(o2.getTimePeriod().getStart());
+                        return o2.getTimePeriod().getStart().compareTo(o1.getTimePeriod().getStart());
                     }
                 });
 
