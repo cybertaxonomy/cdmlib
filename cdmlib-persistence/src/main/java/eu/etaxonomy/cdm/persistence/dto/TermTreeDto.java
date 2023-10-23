@@ -198,6 +198,20 @@ public class TermTreeDto extends TermCollectionDto {
         return result;
     }
 
+    public TermNodeDto getNodeWithTerm(TermDto term, TermNodeDto node){
+        TermNodeDto result = null;
+        if (node.getTerm() != null && node.getTerm().getUuid().equals(term.getUuid())) {
+            return node;
+        }
+        for (TermNodeDto child: node.getChildren()){
+            result = getNodeWithTerm(term, child);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
     /**
      * @return the inapplicableMap
      */
