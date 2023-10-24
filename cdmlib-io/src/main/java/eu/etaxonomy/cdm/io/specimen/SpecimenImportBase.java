@@ -234,25 +234,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }
             return namesWithAcceptedTaxa.iterator().next();
         }
-//	        //no names with accepted taxa found -> check accepted taxa of synonyms -> this is handled in the first block now!
-//	        List<Taxon> taxaFromSynonyms = new ArrayList<>();
-//	        for (TaxonName name : names) {
-//	            Set<TaxonBase> taxonBases = name.getTaxonBases();
-//	            for (TaxonBase taxonBase : taxonBases) {
-//	                if(taxonBase.isInstanceOf(Synonym.class)){
-//	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
-//	                    taxaFromSynonyms.add(synonym.getAcceptedTaxon());
-//	                }
-//	            }
-//	        }
-//	        if(taxaFromSynonyms.size()>0){
-//	            if(taxaFromSynonyms.size()>1){
-//	                state.getReport().addInfoMessage(message);
-//	                logger.warn(message);
-//	                return null;
-//	            }
-//	            return taxaFromSynonyms.iterator().next().getName();
-//	        }
 	        //no accepted and no synonyms -> return one of the names and create a new taxon
         if (names.isEmpty()){
             return null;
