@@ -1069,6 +1069,7 @@ public class DescriptionServiceImpl
                 }
             }
         }
+        description.setDefault(false);
         return description;
     }
 

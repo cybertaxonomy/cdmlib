@@ -437,6 +437,8 @@ public class TaxonNodeServiceImpl
                 }
             }
             //oldTaxon.removeDescription(description, false);
+            //copied descriptions shouldn't be default descriptions
+            description.setDefault(false);
             newAcceptedTaxon.addDescription(description);
         }
         oldTaxon.clearDescriptions();

@@ -38,7 +38,7 @@ public class TaxonDescriptionDTO implements Serializable{
                 descriptions.add(desc);
             }
         }
-        if (descriptions.isEmpty() || descHandling.equals(DistributionDescription.UseAlreadyExisting)) {
+       // if (descriptions.isEmpty() || descHandling.equals(DistributionDescription.UseAlreadyExisting)) {
             for (TaxonDescription desc: taxon.getDescriptions()){
                 if (desc.isComputed()) {
                     continue;
@@ -50,7 +50,7 @@ public class TaxonDescriptionDTO implements Serializable{
 
                 }
             }
-        }
+       // }
     }
 
 

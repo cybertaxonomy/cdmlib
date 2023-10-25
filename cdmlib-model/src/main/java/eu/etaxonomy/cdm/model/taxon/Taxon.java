@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -476,6 +477,11 @@ public class Taxon
         Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, description, this);
+        //there should be not more than one default description
+        boolean hasDefaultDescription = !descriptions.stream().filter(d -> d.isDefault()).collect(Collectors.toList()).isEmpty();
+        if (hasDefaultDescription) {
+            description.setDefault(false);
+        }
         descriptions.add(description);
     }
 
