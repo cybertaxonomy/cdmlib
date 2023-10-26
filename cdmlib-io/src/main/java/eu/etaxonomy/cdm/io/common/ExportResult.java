@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 import eu.etaxonomy.cdm.common.IoResultBase;
 
-
 /**
  * @author cmathew
  * @since 31 Jul 2015
@@ -77,7 +76,7 @@ public class ExportResult extends IoResultBase implements Serializable {
 
     public ExportResultState getState() {return state;}
     public void setState(ExportResultState state) {this.state = state;}
-    
+
 
     public ExportDataWrapper<?> getExportData() {return data;}
     public void setExportData(ExportDataWrapper<?> data) {this.data = data;}
@@ -97,46 +96,27 @@ public class ExportResult extends IoResultBase implements Serializable {
     @Override
     public void setAborted() {this.state = ExportResultState.ABORTED;}
 
-
     @Override
     public String toString() {
         return state.toString();
     }
 
-    /**
-     * @param invoke
-     */
     public void merge(ExportResult invoke) {
         // TODO implemented
     }
 
-    /**
-     * @param message
-     * @param dwcaTypesExport
-     * @param string
-     */
     public void addError(String message, CdmExportBase<?,?,?,?> exportBase, String location) {
         this.addError(message,  exportBase.getClass().getSimpleName() + "." + location);
-
     }
 
-    /**
-     * @return the exportType
-     */
     public ExportType getExportType() {
         return exportType;
     }
 
-    /**
-     * @param exportType the exportType to set
-     */
     public void setExportType(ExportType exportType) {
         this.exportType = exportType;
     }
 
-    /**
-     * @param report
-     */
     @Override
     protected void addShortDescription(StringBuffer report) {
         if (this.isSuccess()){
@@ -146,9 +126,5 @@ public class ExportResult extends IoResultBase implements Serializable {
         if (!this.isSuccess()){
             report.append("\n" + "Export had some problems.");
         }
-
     }
-
-
-
 }

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.common;
 /**
  * @author k.luther
  * @since 21.09.2017
- *
  */
 public enum ExportType {
         DWCA,

@@ -73,7 +73,7 @@ public enum NomenclaturalStanding
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    int priority;
+    private int priority;
 
     @SuppressWarnings("unchecked")
     private NomenclaturalStanding(UUID uuid, String defaultString, String key, int priority){
