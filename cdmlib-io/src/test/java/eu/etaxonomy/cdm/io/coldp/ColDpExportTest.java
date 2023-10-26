@@ -22,6 +22,7 @@ import org.unitils.dbunit.annotation.DataSets;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.ExportResult;
+import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -268,6 +269,7 @@ public class ColDpExportTest
         ColDpExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
 
         //test counts
         List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);

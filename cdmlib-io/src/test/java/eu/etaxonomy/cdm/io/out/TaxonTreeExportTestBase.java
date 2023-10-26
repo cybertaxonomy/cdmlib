@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
-import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -179,7 +178,6 @@ public abstract class TaxonTreeExportTestBase
         Assert.assertTrue(result.getExceptions().size() == 0);
         Assert.assertTrue(result.getErrors().size() == 0);
         Assert.assertTrue(result.getWarnings().size() == 0);
-        Assert.assertTrue(result.getExportType().equals(ExportType.COLDP));
     }
 
     protected void setUuid(CdmBase cdmBase, String uuidStr) {

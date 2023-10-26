@@ -24,6 +24,7 @@ import org.unitils.dbunit.annotation.DataSets;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.coldp.ColDpExportTable;
 import eu.etaxonomy.cdm.io.common.ExportResult;
+import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -216,6 +217,7 @@ public class CdmLightExportTest
         CdmLightExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
 
         //test ...
         //taxon
