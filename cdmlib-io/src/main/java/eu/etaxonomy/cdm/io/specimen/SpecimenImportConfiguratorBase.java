@@ -132,16 +132,10 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
         return addIndividualsAssociations;
     }
 
-    /**
-     * @return the addDeterminations
-     */
     public boolean isAddDeterminations() {
         return addDeterminations;
     }
 
-    /**
-     * @param addDeterminations the addDeterminations to set
-     */
     public void setAddDeterminations(boolean addDeterminations) {
         this.addDeterminations = addDeterminations;
     }
