@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -95,6 +96,31 @@ public class ColDpExportTransformer extends ExportTransformerBase {
         return null;
     }
 
+    @Override
+    public String getCacheByNomStatus(NomenclaturalStatusType nomStatusType) {
+        if (nomStatusType == null) {
+            return null;
+        //specific status
+        }else if (nomStatusType.equals(NomenclaturalStatusType.CONSERVED())) {
+            return "conserved";
+        }else if (nomStatusType.equals(NomenclaturalStatusType.REJECTED())) {
+            return "rejected";
+        }else if (nomStatusType.equals(NomenclaturalStatusType.DOUBTFUL())) {
+            return "doubtful";
+        }else if (nomStatusType.equals(NomenclaturalStatusType.INED())) {
+            return "manuscript";
+        //general status
+        }else if (nomStatusType.isLegitimate()) {
+            return "acceptable";
+        }else if (nomStatusType.isIllegitimate()) {
+            return "nomen illegitimum";
+        }else if (nomStatusType.isInvalid()) {
+            return "not established";
+        }
+
+        return null;
+    }
+
     @SuppressWarnings("incomplete-switch") //we ignore this warning as the enumeration should always be completely covered, otherwise an error will be shown if we do not add a default state. This is wanted behavior here.
     @Override
     public String getCacheByNomenclaturalCode(NomenclaturalCode nomenclaturalCode) throws UndefinedTransformerMethodException {
@@ -133,39 +159,67 @@ public class ColDpExportTransformer extends ExportTransformerBase {
         //TODO maybe we still need to adapt some ranks
     }
 
-    @Override
-    public String getCacheByNameRelationType(NameRelationshipType nameRelType) throws UndefinedTransformerMethodException {
+    public static enum ColDpNameRelType{
+        BASIONYM("basionym", 0),
+        SPELLING_CORRECTION("spelling correction", 0),
+        EMENDATION("spelling correction", 1),
+        BASED_ON("based on", 0),
+        REPLACEMENT_NAME("replacement name", 0),
+        CONSERVED("conserved", 0),
+        LATER_HOMONYM("later homonym", 0),
+        SUPERFLUOUS("superfluous", 1),
+        //TODO others
+
+        ;
+        private String label;
+        private int direction;
+        ColDpNameRelType(String label, int direction){
+            this.label = label;
+            this.direction = direction;
+        }
+        public String getLabel() {
+            return label;
+        }
+        public int getDirection() {
+            return direction;
+        }
+    }
+
+    public ColDpNameRelType getColDpNameRelTypeByNameRelationType(NameRelationshipType nameRelType) {
         if (nameRelType == null) {
             return null;
         }
         if (nameRelType.getUuid().equals(NameRelationshipType.uuidBasionym)){
-            return "basionym";
-        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidOrthographicVariant)
-                || nameRelType.getUuid().equals(NameRelationshipType.uuidEmendation)){
-                return "spelling correction";
+            return ColDpNameRelType.BASIONYM;
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidOrthographicVariant)) {
+            return ColDpNameRelType.SPELLING_CORRECTION;
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidEmendation)) {
+            return ColDpNameRelType.EMENDATION;
         } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidValidatedByName)
                 || nameRelType.getUuid().equals(NameRelationshipType.uuidLaterValidatedByName)) {
-            return "based on";
+            return ColDpNameRelType.BASED_ON;
         } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidReplacedSynonym)) {
-            return "replacement name";
+            return ColDpNameRelType.REPLACEMENT_NAME;
         } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidConservedAgainst)) {
-            return "conserved";
+            return ColDpNameRelType.CONSERVED;
         } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidLaterHomonym)
                 || nameRelType.getUuid().equals(NameRelationshipType.uuidTreatedAsLaterHomonym)) {
-            return "later homonym";
-        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidLaterIsonym)) {
-            //TODO other superfluous cases
-            return "superfluous";
+            return ColDpNameRelType.LATER_HOMONYM;
+        } else if (nameRelType.getUuid().equals(NameRelationshipType.uuidLaterIsonym)
+                //only for future merged, currently it will never match as the type is different
+                || nameRelType.getUuid().equals(NomenclaturalStatusType.uuidSuperfluous)) {
+            return ColDpNameRelType.SUPERFLUOUS;
         } else {
             //TODO misspelling, alternative name, blocking name for, avoids homonym of, unspecific "non"
             String warning = "Name relationship type not yet handled by COL-DP: " + nameRelType.getTitleCache();
             //TODO handle warning
             Representation preferredRep = nameRelType.getPreferredRepresentation(Language.ENGLISH());
-            if (preferredRep != null) {
-               return preferredRep.getLabel() == null ? null :preferredRep.getLabel().toLowerCase();
-            }else {
-              return nameRelType.getTitleCache().toLowerCase();
-            }
+//            if (preferredRep != null) {
+//               return preferredRep.getLabel() == null ? null :preferredRep.getLabel().toLowerCase();
+//            }else {
+//              return nameRelType.getTitleCache().toLowerCase();
+//            }
+            return null;
         }
     }
 }

@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
+import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -53,6 +54,7 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -94,6 +96,7 @@ public abstract class TaxonTreeExportTestBase
     protected static final String FALSE  = "\"0\","; //false
     protected static final String TRUE  = "\"1\","; //true
     protected static final String BOOL_NULL = NONE;  //boolean null
+    protected static final String VALID = "\"acceptable\",";  //name status valid
 
     protected static final int COUNT_HEADER = 1;
 
@@ -176,6 +179,7 @@ public abstract class TaxonTreeExportTestBase
         Assert.assertTrue(result.getExceptions().size() == 0);
         Assert.assertTrue(result.getErrors().size() == 0);
         Assert.assertTrue(result.getWarnings().size() == 0);
+        Assert.assertTrue(result.getExportType().equals(ExportType.COLDP));
     }
 
     protected void setUuid(CdmBase cdmBase, String uuidStr) {
@@ -257,6 +261,7 @@ public abstract class TaxonTreeExportTestBase
         //family
         TaxonName familyName = parser.parseReferencedName("Family L., Sp. Pl. 3: 22. 1752",
                 NomenclaturalCode.ICNAFP, Rank.FAMILY());
+        familyName.addStatus(NomenclaturalStatusType.CONSERVED(), null, null);
         setUuid(familyName, familyNameUuid);
         setUuid(familyName.getNomenclaturalReference(), familyNomRefUuid);
         Taxon family = Taxon.NewInstance(familyName, sec1);

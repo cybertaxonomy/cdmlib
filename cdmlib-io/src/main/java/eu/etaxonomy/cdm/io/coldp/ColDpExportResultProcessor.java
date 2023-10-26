@@ -125,8 +125,7 @@ public class ColDpExportResultProcessor {
                 }
 
                 state.getResult().putExportData(table.getTableName(), exportStream.toByteArray());
-                state.getResult().setExportType(ExportType.CDM_LIGHT);
-
+                state.getResult().setExportType(ExportType.COLDP);
             }
         }
         result.clear();

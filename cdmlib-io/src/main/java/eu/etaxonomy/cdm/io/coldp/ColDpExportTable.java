@@ -140,6 +140,12 @@ public enum ColDpExportTable implements ITaxonTreeExportTable {
     static final String RANK = "rank";
     static final String NAME_SCIENTIFIC_NAME = "scientificName";
     static final String NAME_AUTHORSHIP = "authorship";
+    static final String NAME_COMBINATION_AUTHORSHIP = "combinationAuthorship";
+    static final String NAME_COMBINATION_EX_AUTHORSHIP = "combinationExAuthorshipYear";
+    static final String NAME_COMBINATION_AUTHORSHIP_YEAR = "combinationAuthorshipYear";
+    static final String NAME_BASIONYM_AUTHORSHIP = "basionymAuthorship";
+    static final String NAME_BASIONYM_EX_AUTHORSHIP = "basionymExAuthorshipYear";
+    static final String NAME_BASIONYM_AUTHORSHIP_YEAR = "basionymAuthorshipYear";
     static final String NAME_UNINOMIAL = "uninomial";
     static final String NAME_GENUS = "genus";
     static final String NAME_INFRAGENERIC_EPITHET = "infragenericEpithet";
@@ -201,6 +207,9 @@ public enum ColDpExportTable implements ITaxonTreeExportTable {
                 NAME_SCIENTIFIC_NAME, NAME_AUTHORSHIP, RANK,
                 NAME_UNINOMIAL, NAME_GENUS, NAME_INFRAGENERIC_EPITHET, NAME_SPECIFIC_EPITHET,
                 NAME_INFRASPECIFIC_EPITHET, NAME_CULTIVAR_EPITHET,
+                //TODO notho, originalSpelling
+                NAME_COMBINATION_AUTHORSHIP, NAME_COMBINATION_EX_AUTHORSHIP, NAME_COMBINATION_AUTHORSHIP_YEAR,
+                NAME_BASIONYM_AUTHORSHIP, NAME_BASIONYM_EX_AUTHORSHIP, NAME_BASIONYM_AUTHORSHIP_YEAR,
                 NAME_CODE, NAME_STATUS, REFERENCE_ID,
                 NAME_PUBLISHED_IN_YEAR, NAME_PUBLISHED_IN_PAGE, NAME_PUBLISHED_IN_PAGE_LINK,
                 LINK, REMARKS

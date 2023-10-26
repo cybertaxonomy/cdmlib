@@ -31,11 +31,13 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.cdmLight.OrderHelper;
+import eu.etaxonomy.cdm.io.coldp.ColDpExportTransformer.ColDpNameRelType;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
@@ -51,7 +53,9 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -72,7 +76,6 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -83,12 +86,15 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.reference.IOriginalSource;
+import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -212,7 +218,7 @@ public class ColDpClassificationExport
             comp = new TaxonNodeDtoByRankAndNameComparator();
         }
         Collections.sort(children, comp);
-        // TODO: nochmal checken!!!
+        // TODO 3 taxon ordering: nochmal checken!!! - s.auch seq index
         OrderHelper helperChild;
         List<OrderHelper> childrenHelper = new ArrayList<>();
         for (TaxonNodeDto child : children) {
@@ -232,7 +238,7 @@ public class ColDpClassificationExport
 
         if (taxonNode == null) {
             String message = "TaxonNode for given taxon node UUID not found. ";
-            // TODO
+            // TODO 3 taxon node not found
             state.getResult().addError(message);
         } else {
             try {
@@ -312,7 +318,7 @@ public class ColDpClassificationExport
                     }
                 }
 
-                //TODO
+                //TODO 2 pro parte synonyms and misapplications
 //                //pro parte synonyms
 //                index = 0;
 //                for (Taxon tax : taxon.getAllProParteSynonyms()) {
@@ -332,56 +338,59 @@ public class ColDpClassificationExport
 
                 csvLine[table.getIndex(ColDpExportTable.ID)] = getId(state, taxon);
 
-                //TODO alternative IDs
+                //alternative IDs
+                handleAlternativeId(state, csvLine, table, taxon);
 
-                //TODO sourceID
+                //TODO 9 sourceID //handled in referenceID
+                csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
 
                 Taxon parent = (taxonNode.getParent() == null) ? null : taxonNode.getParent().getTaxon();
                 csvLine[table.getIndex(ColDpExportTable.TAX_PARENT_ID)] = getId(state, parent);
 
-                //TODO seq index
+                //TODO 5 seq index
 
-                //branchLength TODO
+                //TODO 9 branchLength
                 csvLine[table.getIndex(ColDpExportTable.TAX_BRANCH_LENGTH)] = null;
 
                 //nameID
                 csvLine[table.getIndex(ColDpExportTable.TAX_NAME_ID)] = getId(state, name);
 
-                //TODO namePhrase
+                //TODO 6 namePhrase
                 csvLine[table.getIndex(ColDpExportTable.TAX_NAMEPHRASE)] = taxon.getAppendedPhrase();
 
                 //secundum reference
                 csvLine[table.getIndex(ColDpExportTable.TAX_SEC_ID)] = getId(state, taxon.getSec());
-                if (taxon.getSec() != null) {
-                    if (!state.getReferenceStore().contains((taxon.getSec().getUuid()))) {
-                        handleReference(state, taxon.getSec());
-                    }
+                if (taxon.getSec() != null
+                        && (!state.getReferenceStore().contains((taxon.getSec().getUuid())))) {
+                    handleReference(state, taxon.getSec());
                 }
 
-                //TODO SCRUTINIZER
-                //TODO SCRUTINIZER ID
-                //TODO SCRUTINIZER DAte
+                //TODO 4 SCRUTINIZER
+                //TODO 4 SCRUTINIZER ID
+                //TODO 4 SCRUTINIZER Date
 
-                //TODO provisional
+                //TODO 2 taxon provisional, still an open issue?
                 csvLine[table.getIndex(ColDpExportTable.TAX_PROVISIONAL)] = taxonNode.isDoubtful() ? "1" : "0";
 
-                //TODO reference ID
+                //reference ID
+                handleReference(state, csvLine, table, taxon);
 
-                //TODO extinct
+                //TODO 3 taxon extinct
 
-                //TODO temporalRangeStart
+                //TODO 7 taxon temporalRangeStart
                 csvLine[table.getIndex(ColDpExportTable.TAX_TEMPORAL_RANGE_END)] = null;
-                //TODO temporalRangeEnd
+                //TODO 7 taxon temporalRangeEnd
                 csvLine[table.getIndex(ColDpExportTable.TAX_TEMPORAL_RANGE_END)] = null;
 
-                //TODO environment
+                //TODO 5 taxon environment
                 csvLine[table.getIndex(ColDpExportTable.TAX_ENVIRONMENT)] = null;
 
+                //TODO 6 taxon species, section, subgenus, genus, ... - can be null if parent ID is given
 
-                //TODO species, section, subgenus, genus, ...
-                //TODO can be null if parent ID is given
+                //remarks
+                csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(taxon);
 
-                //TODO only published
+                //TODO 1 taxon only published
 
                 //process taxon line
                 state.getProcessor().put(table, taxon, csvLine);
@@ -393,6 +402,7 @@ public class ColDpClassificationExport
                 handleMedia(state, taxon);
 
             } catch (Exception e) {
+                e.printStackTrace();
                 state.getResult().addException(e,
                         "An unexpected problem occurred when trying to export taxon with id " + taxon.getId() + " " + taxon.getTitleCache());
                 state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
@@ -403,10 +413,48 @@ public class ColDpClassificationExport
         }
     }
 
+    private void handleAlternativeId(ColDpExportState state, String[] csvLine, ColDpExportTable table, IdentifiableEntity<?> entity) {
+        String alternativeIdStr = null;
+
+        for (Identifier identifier : entity.getIdentifiers()) {
+            //TODO 4 alternativeID filter Identifiers
+            IdentifierType type = identifier.getType();
+            String prefix = null;
+            String value = identifier.getIdentifier();
+            String url = identifier.getUrl();
+            if (type != null) {
+                //TODO 4 alternativeID handle other identifier types
+                if (type.equals(IdentifierType.IDENTIFIER_NAME_WFO())) {
+                    prefix = "wfo";
+                    value = value.replace("wfo-", "");
+                }
+            }else if (url != null && !url.isEmpty() && isUrl(url)) {
+                value = url;
+            }else {
+                //TODO 4 alternativeID log failing identifier
+            }
+            alternativeIdStr = CdmUtils.concat(",", alternativeIdStr, CdmUtils.concat(":", prefix, value));
+        }
+
+        csvLine[table.getIndex(ColDpExportTable.ALTERNATIVE_ID)] = alternativeIdStr;
+    }
+
+    private boolean isUrl(String url) {
+        try {
+            if (url.startsWith("http")) {
+                URI.fromString(url);
+                return true;
+            }
+        } catch (Exception e) {
+            //exception should return false
+        }
+        return false;
+    }
+
     private void handleMedia(ColDpExportState state, Taxon taxon) {
         Set<Media> mediaSet = new HashSet<>();
 
-        //TODO collect media form other places
+        //TODO 3 media collect media form other places
 
         //collect from taxon image gallery
         Set<? extends DescriptionBase<?>> descriptions = taxon.getDescriptions();
@@ -443,7 +491,7 @@ public class ColDpClassificationExport
 
         csvLine[table.getIndex(ColDpExportTable.TAXON_ID)] = getId(state, taxon);
 
-        //TODO sourceID for media
+        //TODO 9 media sourceID //handled in referenceID
         csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
 
         //url
@@ -451,10 +499,10 @@ public class ColDpClassificationExport
             csvLine[table.getIndex(ColDpExportTable.MEDIA_URL)] = part.getUri().toString();
         }
 
-        //TODO media type
+        //TODO 3 media type, still open?
         csvLine[table.getIndex(ColDpExportTable.TYPE)] = part.getMediaRepresentation().getMimeType();
 
-        //TODO media format
+        //TODO 3 media format
         csvLine[table.getIndex(ColDpExportTable.MEDIA_FORMAT)] = null;
 
         Media media = part.getMediaRepresentation().getMedia();
@@ -465,24 +513,24 @@ public class ColDpClassificationExport
         //created
         csvLine[table.getIndex(ColDpExportTable.MEDIA_CREATED)] = toIsoDate(media.getMediaCreated());
 
-        //creator  //TODO format creator
+        //creator  //TODO 3 media format creator
         csvLine[table.getIndex(ColDpExportTable.MEDIA_CREATOR)] = getTitleCache(media.getArtist());
 
-        //TODO media license
+        //TODO 5 media license
         csvLine[table.getIndex(ColDpExportTable.MEDIA_LICENSE)] = null;
 
-        //TODO media link
+        //TODO 5 media link
         csvLine[table.getIndex(ColDpExportTable.LINK)] = null;
 
         state.getProcessor().put(table, part, csvLine);
     }
 
     private String toIsoDate(TimePeriod mediaCreated) {
-        //TODO what if end or freetext exist?
+        //TODO 2 date, what if end or freetext exist?
         Partial partial = mediaCreated.getStart();
         if (partial == null || !partial.isSupported(DateTimeFieldType.year())
                 || !partial.isSupported(DateTimeFieldType.monthOfYear()) && partial.isSupported(DateTimeFieldType.dayOfMonth())) {
-            //TODO log warning, also if mediaCreated.getEnd() != null or so
+            //TODO 2 date, log warning, also if mediaCreated.getEnd() != null or so
             return null;
         } else {
             DateTimeFormatter formatter = new DateTimeFormatterBuilder()
@@ -555,9 +603,9 @@ public class ColDpClassificationExport
     private String getRemarks(AnnotatableEntity entity) {
         String remarks = null;
         for (Annotation a : entity.getAnnotations()) {
-            //TODO handle annotation type
+            //TODO 3 handle other annotation types
             if (AnnotationType.EDITORIAL().equals(a.getAnnotationType())
-                    || CdmUtils.isNotBlank(a.getText())){
+                    && CdmUtils.isNotBlank(a.getText())){
                 remarks = CdmUtils.concat(";", remarks, a.getText());
             }
         }
@@ -604,8 +652,8 @@ public class ColDpClassificationExport
                 csvLine[table.getIndex(ColDpExportTable.TAXON_ID)] = getId(state, cdmBase);
                 csvLine[table.getIndex(ColDpExportTable.REL_TAXON_TAXON_ID)] = getId(state,
                         ((TaxonInteraction) element).getTaxon2());
-                //TODO Scentific name for species interaction
-                //TODO type
+                //TODO 5 taxon interaction Scentific name for species interaction
+                //TODO 2 taxon interaction, why does this handling from other remarks handling?
                 csvLine[table.getIndex(ColDpExportTable.REMARKS)] = createMultilanguageString(
                         ((TaxonInteraction) element).getDescription());
                 state.getProcessor().put(table, element, csvLine);
@@ -639,9 +687,8 @@ public class ColDpClassificationExport
                     }
                 }
                 csvLine[table.getIndex(ColDpExportTable.MEDIA_URL)] = mediaUris;
-                //TODO type  (MIME-type)
+                //TODO 2 media title,  type  (MIME-type), what is meant here?
                 csvLine[table.getIndex(ColDpExportTable.MEDIA_TITLE)] = mediaUris;
-
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling single simple fact "
@@ -726,7 +773,7 @@ public class ColDpClassificationExport
         Set<Distribution> distributions = new HashSet<>();
         for (DescriptionElementBase element : distributionFacts) {
             try {
-                //TODO also check feature
+                //TODO 3 distribution also check feature
                 if (element instanceof Distribution) {
                     String[] csvLine = new String[table.getSize()];
                     Distribution distribution = (Distribution) element;
@@ -751,7 +798,7 @@ public class ColDpClassificationExport
                         csvLine[table.getIndex(ColDpExportTable.DIST_AREA_ID)] = areaID;
 
                         //area
-                        //TODO does this always use the full English? Looks like this is not true for countries.
+                        //TODO 3 distribution area, does this always use the full English? Looks like this is not true for countries.
                         csvLine[table.getIndex(ColDpExportTable.DIST_AREA)] = area.getLabel();
 
                         //gazetteer
@@ -763,9 +810,10 @@ public class ColDpClassificationExport
                                 = state.getTransformer().getCacheByPresenceAbsenceTerm(distribution.getStatus());
                     }
 
-                    //TODO reference ID
+                    //reference ID
+                    handleReference(state, csvLine, table, distribution);
 
-                    //TODO remarks
+                    //remarks
                     csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(distribution);
 
                     state.getProcessor().put(table, distribution, csvLine);
@@ -801,11 +849,11 @@ public class ColDpClassificationExport
                     csvLine[table.getIndex(ColDpExportTable.VERN_TRANSLITERATION)] = commonName.getTransliteration();
 
                     if (commonName.getLanguage() != null) {
-                        //TODO char(3) lang
+                        //TODO 2 common name char(3) lang
                         csvLine[table.getIndex(ColDpExportTable.VERN_LANGUAGE)] = commonName.getLanguage().getIso639_2();
                     }
 
-                    //TODO country
+                    //TODO 2 common name country
 
                     if (commonName.getArea() != null) {
                         csvLine[table.getIndex(ColDpExportTable.VERN_AREA)] = commonName.getArea().getLabel();
@@ -814,8 +862,8 @@ public class ColDpClassificationExport
                     //sex - we do not have this yet
                     csvLine[table.getIndex(ColDpExportTable.VERN_SEX)] = null;
 
-
-                    //TODO referenceID
+                    //referenceID
+                    handleReference(state, csvLine, table, commonName);
 
                     state.getProcessor().put(table, commonName, csvLine);
                 } else if (element instanceof TextData){
@@ -844,7 +892,7 @@ public class ColDpClassificationExport
         if (identEntity == null) {
             return "";
         }
-        // TODO refresh?
+        // TODO 3 titleCache refresh?
         return identEntity.getTitleCache();
     }
 
@@ -852,7 +900,7 @@ public class ColDpClassificationExport
         if (cdmBase == null) {
             return "";
         }
-        // TODO make configurable
+        // TODO 4 id type, make configurable
         return cdmBase.getUuid().toString();
     }
 
@@ -869,12 +917,14 @@ public class ColDpClassificationExport
 
             csvLine[table.getIndex(ColDpExportTable.ID)] = getId(state, synonym);
 
-            //TODO sourceID
+            //TODO 9 synonym sourceID //handled in referenceID and sec_ID
+            csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
 
             csvLine[table.getIndex(ColDpExportTable.TAXON_ID)] = getId(state, synonym.getAcceptedTaxon());
             csvLine[table.getIndex(ColDpExportTable.TAX_NAME_ID)] = getId(state, name);
             if (synonym.getSec() != null && !state.getReferenceStore().contains(synonym.getSec().getUuid())) {
                 handleReference(state, synonym.getSec());
+                csvLine[table.getIndex(ColDpExportTable.REFERENCE_ID)] = getId(state, synonym.getSec());
             }
             csvLine[table.getIndex(ColDpExportTable.TAX_NAMEPHRASE)] = synonym.getAppendedPhrase();
             csvLine[table.getIndex(ColDpExportTable.TAX_SEC_ID)] = getId(state, synonym.getSec());
@@ -978,28 +1028,59 @@ public class ColDpClassificationExport
 
             csvLine[table.getIndex(ColDpExportTable.ID)] = getId(state, name);
 
-            //TODO alternativeID
+            //TODO 3 name, handle LSIDs
 //            if (name.getLsid() != null) {
 //                csvLine[table.getIndex(ColDpExportTable.LSID)] = name.getLsid().getLsid();
 //            } else {
 //                csvLine[table.getIndex(ColDpExportTable.LSID)] = "";
 //            }
-//            handleIdentifier(state, name);
+            handleAlternativeId(state, csvLine, table, name);
 
-            //TODO sourceID
+            //TODO 9 name sourceID
+            csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
 
-            //TODO basionymID
+            //basionymID
+            TaxonName basionym = name.getBasionym();  //TODO 5 basionym, order in case there are >1 basionyms
+            if (basionym != null) {
+                if (!state.getNameStore().containsKey(basionym.getId())) {
+                    handleName(state, basionym, null);
+                }
+                csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_ID)] = getId(state, basionym);
+            }
 
-            //TODO scientificName
-            if (name.isProtectedTitleCache()) {
-                //TODO do we want to check if nameCache is filled somehow, first. Or decide via configuration
-                csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getTitleCache();
+            //scientificName
+            if (name.isProtectedTitleCache() && StringUtils.isEmpty(name.getNameCache())) {
+                //TODO 7 make it configurable if we should always take titleCache if titleCache is protected, as nameCache may not necessarily have complete data if titleCache is protected as it is considered to be irrelevant or at least preliminary
+                String message = "";
+                if (StringUtils.isEmpty(name.getNameCache())) {
+                    csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
+                    message = "ScientificName: Name cache " + name.getNameCache() + " used for name with protected titleCache " +  name.getTitleCache();
+                }else {
+                    csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getTitleCache();
+                    message = "ScientificName: Name has protected titleCache and no explicit nameCache: " +  name.getTitleCache();
+                }
+                state.getResult().addWarning(message);  //TODO 7 add location to warning
             } else {
                 csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
             }
 
-            //TODO authorship
+            //authorship
             csvLine[table.getIndex(ColDpExportTable.NAME_AUTHORSHIP)] = name.getAuthorshipCache();
+            //combinationAuthorship
+            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP)] = teamToString(name.getCombinationAuthorship());
+            //combinationExAuthorship
+            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_EX_AUTHORSHIP)] = teamToString(name.getExCombinationAuthorship());
+            //combinationAuthorshipYear
+            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP_YEAR)] = name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getYear();
+            //basionymAuthorship
+            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_AUTHORSHIP)] = teamToString(name.getBasionymAuthorship());
+            //basionymExAuthorship
+            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_EX_AUTHORSHIP)] = teamToString(name.getExBasionymAuthorship());
+            //basionymAuthorshipYear
+            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_AUTHORSHIP_YEAR)] =
+                    basionym == null? null :
+                    basionym.getNomenclaturalReference() == null ? null :
+                    basionym.getNomenclaturalReference().getYear();
 
             //rank
             csvLine[table.getIndex(ColDpExportTable.RANK)] = state.getTransformer().getCacheByRank(rank);
@@ -1015,31 +1096,36 @@ public class ColDpClassificationExport
             csvLine[table.getIndex(ColDpExportTable.NAME_SPECIFIC_EPITHET)] = name.getSpecificEpithet();
             csvLine[table.getIndex(ColDpExportTable.NAME_INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
 
-            //TODO cultivar epithet, group epithet
+            //TODO 3 name cultivar epithet, group epithet
             csvLine[table.getIndex(ColDpExportTable.NAME_CULTIVAR_EPITHET)] = name.getCultivarEpithet();
 
             //code
             csvLine[table.getIndex(ColDpExportTable.NAME_CODE)] = state.getTransformer().getCacheByNomenclaturalCode(name.getNameType());
 
-            //TODO status
+            //TODO 5 name status, is this handling correct?
+            //Also according to documentation we should put more detailed status information to the remarks field
+            //   or an URI from the NOMEN ontology could be used
             if (name.getStatus() == null || name.getStatus().isEmpty()) {
-                csvLine[table.getIndex(ColDpExportTable.NAME_STATUS)] = "";
-//                csvLine[table.getIndex(ColDpExportTable.NOM_STATUS_ABBREV)] = "";
+                csvLine[table.getIndex(ColDpExportTable.NAME_STATUS)] = "acceptable";
             } else {
-                String statusStringAbbrev = extractStatusString(state, name, true);
-                String statusString = extractStatusString(state, name, false);
-
-                csvLine[table.getIndex(ColDpExportTable.NAME_STATUS)] = statusString.trim();
-//                csvLine[table.getIndex(ColDpExportTable.NOM_STATUS_ABBREV)] = statusStringAbbrev.trim();
+                NomenclaturalStatus status = name.getStatus().iterator().next();
+                if (name.getStatus().size() > 1) {
+                    String message = "There is >1 name status for " + name.getTitleCache();
+                    state.getResult().addWarning(message);
+                }
+                String statusTypeString = state.getTransformer().getCacheByNomStatus(status.getType());
+                csvLine[table.getIndex(ColDpExportTable.NAME_STATUS)] = statusTypeString;
+                if (statusTypeString == null) {
+                    String message = "Name status " + status.getType() + " not yet handled for name " + name.getTitleCache();
+                    state.getResult().addWarning(message);
+                }
             }
 
             //nom. ref.
             Reference nomRef = name.getNomenclaturalReference();
             if (nomRef != null) {
                 csvLine[table.getIndex(ColDpExportTable.REFERENCE_ID)] = getId(state, nomRef);
-                if (!state.getReferenceStore().contains(nomRef.getUuid())) {
-                    handleReference(state, nomRef);
-                }
+                handleReference(state, nomRef);
 
                 //publishedInYear
                 if (nomRef.getDatePublished() != null) {
@@ -1064,15 +1150,16 @@ public class ColDpClassificationExport
             String protologueUriString = extractProtologueURIs(state, name);
             csvLine[table.getIndex(ColDpExportTable.NAME_PUBLISHED_IN_PAGE_LINK)] = protologueUriString;
 
-            //TODO link
+            //TODO 2 name links - do we have this in CDM?
 
-            //TODO remarks
+            //remarks
+            csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(name);
 
             handleTypeMaterial(state, name);
 
 
             state.getProcessor().put(table, name, csvLine);
-            //TODO
+            //TODO 1 nameRelationships - is this still an open issue? Do tests exist?
             handleNameRelationships(state, name);
 
         } catch (Exception e) {
@@ -1080,6 +1167,23 @@ public class ColDpClassificationExport
                     "An unexpected error occurred when handling the name " + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
 
             e.printStackTrace();
+        }
+    }
+
+    private String teamToString(TeamOrPersonBase<?> author) {
+        if (author == null) {
+            return null;
+        }
+        String nomCache = author.getNomenclaturalTitleCache();
+        if (StringUtils.isEmpty(nomCache)){
+            return null;
+        }else {
+            return nomCache
+                    .replace(", ", "|")
+                    .replace(",", "|")
+                    .replace(" & ", "|")
+                    .replace("&", "|")
+                    .replace(" et ", "|");
         }
     }
 
@@ -1106,11 +1210,11 @@ public class ColDpClassificationExport
                             csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = ((TextualTypeDesignation) typeDesignation)
                                     .getPreferredText(Language.DEFAULT());
                         }else{
-                            //TODO textual type designation
+                            //TODO 2 specimen type textual type designation, still open?
                             textualTypeDesignations.add((TextualTypeDesignation) typeDesignation);
                         }
                     } else {
-                        //TODO textual type designation
+                        ///TODO 2 specimen type textual type designation, still open?
                         textualTypeDesignations.add((TextualTypeDesignation) typeDesignation);
                     }
                 } else if (typeDesignation.isInstanceOf(SpecimenTypeDesignation.class)) {
@@ -1128,7 +1232,7 @@ public class ColDpClassificationExport
             //rules.addRule(TagEnum.name, "i");
             csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = typeContainer.print(false, false, false, rules);
 
-            //TODO what is this second type computation? Is it only about sources?
+            //TODO 2 type material what is this second type computation? Is it only about sources?
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
             for (TextualTypeDesignation typeDesignation : textualTypeDesignations) {
@@ -1162,7 +1266,7 @@ public class ColDpClassificationExport
         }
     }
 
-    //TODO what is the difference to handleSpecimenType()
+    //TODO 2 specimen type what is the difference to handleSpecimenType()
 //    private void handleSpecimenType_(ColDpExportState state, SpecimenTypeDesignation specimenType) {
 //
 //        if (specimenType.getTypeSpecimen() != null){
@@ -1214,15 +1318,16 @@ public class ColDpClassificationExport
                 //handleSpecimen(state, specimen);
             }
 
-            //ID - TODO best use dwc:occurrenceID
+            //ID - TODO 3 specimen type best use dwc:occurrenceID
             csvLine[table.getIndex(ColDpExportTable.ID)] = getId(state, specimen);
 
-            //TODO sourceID
+            //TODO 9 specimenType sourceID //handled in referenceID
+            csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
 
             //nameID
             Set<TaxonName> typifiedNames = specimenType.getTypifiedNames();
             if (typifiedNames.size() > 1){
-                //TODO we should
+                //TODO 3 specimen type we should
                 state.getResult().addWarning("Please check the specimen type  "
                         + cdmBaseStr(specimenType) + " there are more then one typified name.");
             }
@@ -1231,23 +1336,23 @@ public class ColDpClassificationExport
                 csvLine[table.getIndex(ColDpExportTable.TYPE_NAMEID)] = getId(state, name);
     //        }
 
-            //TODO citation - also done in calling method
+            //TODO 3 specimen type citation - also done in calling method
             csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = specimen.getTitleCache();
 
 
-            //TODO type status transformation
+            //TODO 3 specimen type type status transformation
             csvLine[table.getIndex(ColDpExportTable.TYPE_STATUS)] = specimenType.getTypeStatus() != null? specimenType.getTypeStatus().getDescription(): "";
 
-            //TODO referenceID -  see description, should be designation ref id or original name refid
+            //TODO 2 specimen type referenceID -  see description, should be designation ref id or original name refid
             if (specimenType.getDesignationSource() != null && specimenType.getDesignationSource().getCitation() != null && !state.getReferenceStore().contains(specimenType.getDesignationSource().getCitation().getUuid())){
-                //TODO should be source, not reference
+                //TODO 3 specimen type, should be source, not reference; why?
                 handleReference(state, specimenType.getDesignationSource().getCitation());
                 csvLine[table.getIndex(ColDpExportTable.REFERENCE_ID)] = specimenType.getDesignationSource() != null ? getId(state, specimenType.getDesignationSource().getCitation()): "";
             }
 
             //institution code
             if (specimen.getCollection() != null) {
-                //TODO institution code not available handling
+                //TODO 3 specimen type institution code not available handling
                 csvLine[table.getIndex(ColDpExportTable.TYPE_INSTITUTION_CODE)] = specimen.getCollection().getCode();
             }
 
@@ -1265,12 +1370,12 @@ public class ColDpClassificationExport
                 csvLine[table.getIndex(ColDpExportTable.TYPE_CATALOG_NUMBER)] = catalogNumber;
             }
 
-            //TODO associatedSequences - not yet implemented
+            //TODO 9 specimen type associatedSequences - not yet implemented
             csvLine[table.getIndex(ColDpExportTable.TYPE_ASSOC_SEQ)] = null;
 
             //sex
             if (specimen.getSex() != null) {
-                //TODO transform sex
+                //TODO 7 specimen type transform sex, we usually don't have specimen with sex
                 csvLine[table.getIndex(ColDpExportTable.TYPE_SEX)] = specimen.getSex().getLabel();
             }
 
@@ -1280,11 +1385,11 @@ public class ColDpClassificationExport
             }
 
             //remarks
-            //TODO gather remarks on type designation, field unit(s) and specimen
+            //TODO 3 specimen type gather remarks on type designation, field unit(s) and specimen
             csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(specimen);
 
             //field unit
-            //TODO performance due to service call
+            //TODO 3 specimen type performance due to service call
             Collection<FieldUnit> fieldUnits = this.getOccurrenceService().findFieldUnits(specimen.getUuid(), null);
             if (!fieldUnits.isEmpty()) {
                 if (fieldUnits.size() > 1) {
@@ -1296,7 +1401,6 @@ public class ColDpClassificationExport
 
                 GatheringEvent gathering = fieldUnit.getGatheringEvent();
                 if (gathering != null) {
-
                     handleGatheringEvent(state, csvLine, table, fieldUnit, gathering);
                 }
             }
@@ -1316,7 +1420,7 @@ public class ColDpClassificationExport
             csvLine[table.getIndex(ColDpExportTable.TYPE_LOCALITY)]
                     = gathering.getLocality().getText();
         }
-        //TODO include areas, see CDM-light implementation and COL-DP description
+        //TODO 3 gathering include areas, see CDM-light implementation and COL-DP description
 
         //country
         if (gathering.getCountry() != null) {
@@ -1329,13 +1433,13 @@ public class ColDpClassificationExport
         if (point != null) {
             //latitude
             if (point.getLatitude() != null) {
-                //TODO rounding
+                //TODO 3 gathering rounding
                 csvLine[table.getIndex(ColDpExportTable.TYPE_LATITUDE)]
                         = point.getLatitude().toString();
             }
             //longitude
             if (point.getLongitude() != null) {
-                //TODO rounding
+                //TODO 3 gathering rounding
                 csvLine[table.getIndex(ColDpExportTable.TYPE_LONGITUDE)]
                         = point.getLongitude().toString();
             }
@@ -1343,7 +1447,7 @@ public class ColDpClassificationExport
 
         //altitude
         if (gathering.getAbsoluteElevation() != null) {
-            //TODO include max/text/depth
+            //TODO 3 type specimen include max/text/depth
             csvLine[table.getIndex(ColDpExportTable.TYPE_ALTITUDE)]
                     = gathering.getAbsoluteElevation().toString();
         }
@@ -1353,7 +1457,7 @@ public class ColDpClassificationExport
 
         //date
         if (gathering.getGatheringDate() != null) {
-            //TODO ISO 8601
+            //TODO 3 specimen type ISO 8601
             csvLine[table.getIndex(ColDpExportTable.TYPE_DATE)] = gathering
                     .getGatheringDate().toString();
         }
@@ -1381,36 +1485,35 @@ public class ColDpClassificationExport
     }
 
     private void handleNameRelationships(ColDpExportState state, TaxonName name) {
+        ColDpExportTable table = ColDpExportTable.NAME_RELATION;
+        ColDpExportTransformer transformer = (ColDpExportTransformer)state.getTransformer();
         try {
-            Set<NameRelationship> rels = name.getRelationsFromThisName();
-            ColDpExportTable table = ColDpExportTable.NAME_RELATION;
-            String[] csvLine = new String[table.getSize()];
-
-            for (NameRelationship rel : rels) {
-                NameRelationshipType type = rel.getType();
-                TaxonName name2 = rel.getToName();
-                name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
-                if (!state.getNameStore().containsKey(name2.getId())) {
-                    handleName(state, name2, null);
+            //relations in which "name" is the from name
+            Set<NameRelationship> fromRels = name.getRelationsFromThisName();
+            for (NameRelationship rel : fromRels) {
+                ColDpNameRelType coldpType = transformer.getColDpNameRelTypeByNameRelationType(rel.getType());
+                if (coldpType == null) {
+                    //TODO warning
+                }else if (coldpType.getDirection() == 0) {
+                    continue;  //the relation is handled the other way round if necessary
                 }
-                csvLine = new String[table.getSize()];
-                csvLine[table.getIndex(ColDpExportTable.REL_NAME_NAMEID)] = getId(state, name);
-                csvLine[table.getIndex(ColDpExportTable.REL_NAME_REL_NAMEID)] = getId(state, name2);
-                csvLine[table.getIndex(ColDpExportTable.TYPE)] = state.getTransformer().getCacheByNameRelationType(type);
-                csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(rel);
-                state.getProcessor().put(table, rel.getUuid().toString(), csvLine);
+
+                TaxonName name2 = CdmBase.deproxy(rel.getToName());
+                handleRelNameCommonData(state, table, rel, name, name2, coldpType);
             }
 
-            rels = name.getRelationsToThisName();
-
-            csvLine = new String[table.getSize()];
-
-            for (NameRelationship rel : rels) {
-                TaxonName name2 = rel.getFromName();
-                name2 = HibernateProxyHelper.deproxy(name2);
-                if (!state.getNameStore().containsKey(name2.getId())) {
-                    handleName(state, name2, null);
+            //relations in which "name" is the toName
+            Set<NameRelationship> toRels = name.getRelationsToThisName();
+            for (NameRelationship rel : toRels) {
+                ColDpNameRelType coldpType = transformer.getColDpNameRelTypeByNameRelationType(rel.getType());
+                if (coldpType == null) {
+                    //TODO warning
+                }else if (coldpType.getDirection() == 1) {
+                    continue;  //the relation is handled the other way round if necessary
                 }
+
+                TaxonName name2 = CdmBase.deproxy(rel.getFromName());
+                handleRelNameCommonData(state, table, rel, name, name2, coldpType);
             }
         } catch (Exception e) {
             state.getResult().addException(e,
@@ -1418,6 +1521,28 @@ public class ColDpClassificationExport
                             + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void handleRelNameCommonData(ColDpExportState state, ColDpExportTable table,
+            NameRelationship rel, TaxonName name, TaxonName relatedName, ColDpNameRelType coldpType) {
+
+        String[] csvLine = new String[table.getSize()];
+
+        if (!state.getNameStore().containsKey(relatedName.getId())) {
+            handleName(state, relatedName, null);
+        }
+        csvLine[table.getIndex(ColDpExportTable.REL_NAME_NAMEID)] = getId(state, name);
+        csvLine[table.getIndex(ColDpExportTable.REL_NAME_REL_NAMEID)] = getId(state, relatedName);
+
+        csvLine[table.getIndex(ColDpExportTable.TYPE)] = coldpType.getLabel();
+        csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
+        if (rel.getCitation() != null) {
+            handleReference(state, rel.getCitation());
+            csvLine[table.getIndex(ColDpExportTable.REFERENCE_ID)] = getId(state, rel.getCitation());
+        }
+
+        csvLine[table.getIndex(ColDpExportTable.REMARKS)] = getRemarks(rel);
+        state.getProcessor().put(table, rel.getUuid().toString(), csvLine);
     }
 
     private String getVolume(Reference reference) {
@@ -1699,7 +1824,7 @@ public class ColDpClassificationExport
 //            for (TaxonName name : typifiedNames) {
 //                // Concatenated output string for homotypic group (names and
 //                // citations) + status + some name relations (e.g. “non”)
-//                // TODO: nameRelations, which and how to display
+//                // TODO 3 commented code - can this be deleted?  -- : nameRelations, which and how to display
 //                Set<TaxonBase> taxonBases = name.getTaxonBases();
 //                TaxonBase<?> taxonBase;
 //
@@ -1919,23 +2044,40 @@ public class ColDpClassificationExport
         }
     }
 
+    private void handleReference(ColDpExportState state, String[] csvLine, ColDpExportTable table,
+            ISourceable<?> sourceable) {
+
+        String referenceID = null;
+        for (IOriginalSource osb : sourceable.getSources()) {
+            if (osb.getCitation() != null && osb.getType().isPrimarySource()) {
+                referenceID = CdmUtils.concat(";", getId(state, osb.getCitation()));
+                handleReference(state, osb.getCitation());
+            }
+        }
+        csvLine[table.getIndex(ColDpExportTable.REFERENCE_ID)] = referenceID;
+    }
+
     private void handleReference(ColDpExportState state, Reference reference) {
         try {
+            if (state.getReferenceStore().contains(reference.getUuid())) {
+                return;
+            }
+
             state.addReferenceToStore(reference);
             ColDpExportTable table = ColDpExportTable.REFERENCE;
             String[] csvLine = new String[table.getSize()];
             reference = HibernateProxyHelper.deproxy(reference);
 
-            // TODO short citations correctly
-//          String shortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null); // Should be Author(year) like in Taxon.sec
-//          csvLine[table.getIndex(ColDpExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
+            // TODO 1 reference short citations correctly
+//            String shortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null); // Should be Author(year) like in Taxon.sec
+//            csvLine[table.getIndex(ColDpExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
 
             csvLine[table.getIndex(ColDpExportTable.ID)] = getId(state, reference);
 
-//          //TODO alternativeID
-//          handleIdentifier(state, reference);
+            //alternativeID
+            handleAlternativeId(state, csvLine, table, reference);
 
-            //TODO sourceID
+            //TODO 9 reference sourceID
             csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
 
             //citation
@@ -1947,17 +2089,17 @@ public class ColDpClassificationExport
             //author
             if (reference.getAuthorship() != null) {
                 TeamOrPersonBase<?> author = reference.getAuthorship();
-                //TODO author formatting fine tuning
+                //TODO 3 reference author formatting fine tuning
                 csvLine[table.getIndex(ColDpExportTable.REF_AUTHOR)] = author.getTitleCache();
             }
 
             //editor
             if (reference.getEditor() != null) {  //if in future this is not a String
-                //TODO editor formatting fine tuning, not yet relevant
+                //TODO 3 reference editor formatting fine tuning, not yet relevant
                 csvLine[table.getIndex(ColDpExportTable.REF_AUTHOR)] = reference.getEditor();
             }
 
-            // TODO get preferred title
+            // TODO 1 reference get preferred title
             csvLine[table.getIndex(ColDpExportTable.REF_TITLE)] = reference.isProtectedTitleCache()
                     ? reference.getTitleCache() : reference.getTitle();
 //          csvLine[table.getIndex(ColDpExportTable.ABBREV_REF_TITLE)] = reference.isProtectedAbbrevTitleCache()
@@ -1965,17 +2107,17 @@ public class ColDpClassificationExport
 
             //inRef
             if (reference.getInReference() != null && reference.getInSeries() != reference.getInReference()) {
-                //TODO exclude series as
+                //TODO 2 reference exclude series as inRef
                 Reference inRef = reference.getInReference();
 
                 //containerAuthor
                 if (inRef.getAuthorship() != null) {
                     TeamOrPersonBase<?> containerAuthor = inRef.getAuthorship();
-                    //TODO author formatting fine tuning
+                    //TODO 1 reference inRef-author formatting fine tuning
                     csvLine[table.getIndex(ColDpExportTable.REF_CONTAINER_AUTHOR)] = containerAuthor.getTitleCache();
                 }
 
-                // TODO get preferred title
+                // TODO 1 reference get preferred inRef-title
                 csvLine[table.getIndex(ColDpExportTable.REF_CONTAINER_TITLE)] = inRef.isProtectedTitleCache()
                         ? inRef.getTitleCache() : inRef.getTitle();
 //              csvLine[table.getIndex(ColDpExportTable.ABBREV_REF_TITLE)] = inRef.isProtectedAbbrevTitleCache()
@@ -1983,10 +2125,10 @@ public class ColDpClassificationExport
 
             }
 
-            //issued TODO issued formatting
+            //issued TODO 2 reference issued formatting
             csvLine[table.getIndex(ColDpExportTable.REF_ISSUED)] = reference.getDatePublishedString();
 
-            //accessed TODO accessed also for source and formatting
+            //accessed TODO 2 reference accessed also for source and formatting
             if (reference.getAccessed() != null) {
                 csvLine[table.getIndex(ColDpExportTable.REF_ACCESSED)] = reference.getAccessed().toDate().toString();
             }
@@ -1997,11 +2139,11 @@ public class ColDpClassificationExport
                 //containerEditor
                 if (series.getEditor() != null) {
 //                    TeamOrPersonBase<?> containerAuthor = series.getAuthorship();
-                    //TODO collection editor
+                    //TODO 2 reference collection editor
                     csvLine[table.getIndex(ColDpExportTable.REF_COLLECTION_EDITOR)] = series.getEditor();
                 }
 
-                // TODO get preferred title
+                // TODO 2 reference get preferred title
                 //collection title
                 csvLine[table.getIndex(ColDpExportTable.REF_COLLECTION_TITLE)] = series.isProtectedTitleCache()
                         ? series.getTitleCache() : series.getTitle();
@@ -2013,7 +2155,7 @@ public class ColDpClassificationExport
             //volume
             csvLine[table.getIndex(ColDpExportTable.REF_VOLUME)] = getVolume(reference);
 
-            //issue TODO issue (we currently do not handle issues separately, but could be parsed in some cases
+            //issue TODO 2 reference issue (we currently do not handle issues separately, but could be parsed in some cases
             csvLine[table.getIndex(ColDpExportTable.REF_ISSUE)] = null;
 
             //edition
@@ -2022,13 +2164,13 @@ public class ColDpClassificationExport
             //volume
             csvLine[table.getIndex(ColDpExportTable.REF_PAGE)] = reference.getPages();
 
-            //publisher TODO publisher2
+            //publisher TODO 3 reference publisher2
             csvLine[table.getIndex(ColDpExportTable.REF_PUBLISHER)] = reference.getPublisher();
 
-            //publisherPlace TODO publisherPlace2
+            //publisherPlace TODO 3 reference publisherPlace2
             csvLine[table.getIndex(ColDpExportTable.REF_PUBLISHER_PLACE)] = reference.getPlacePublished();
 
-            //TODO version does not exist yet in CDM
+            //TODO 7 reference version does not exist yet in CDM
             csvLine[table.getIndex(ColDpExportTable.REF_VERSION)] = null; //reference.getVersion();
 
             //isbn
@@ -2040,7 +2182,7 @@ public class ColDpClassificationExport
             //doi
             csvLine[table.getIndex(ColDpExportTable.REF_DOI)] = reference.getDoiString();
 
-            //TODO ref link (=> external link)
+            //TODO 2 reference link link (=> external link)
 //            csvLine[table.getIndex(ColDpExportTable.LINK)] = null;
             if (reference.getUri() != null) {
                 csvLine[table.getIndex(ColDpExportTable.LINK)] = reference.getUri().toString();
@@ -2056,6 +2198,7 @@ public class ColDpClassificationExport
         }
     }
 
+    //TODO 2 fullAuthorship - still needed?
     private String createFullAuthorship(Reference reference) {
         TeamOrPersonBase<?> authorship = reference.getAuthorship();
         String fullAuthorship = "";
