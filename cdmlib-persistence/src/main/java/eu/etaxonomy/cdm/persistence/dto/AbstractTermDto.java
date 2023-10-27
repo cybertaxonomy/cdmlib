@@ -36,6 +36,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     private String representation_L10n_abbreviatedLabel = null;
     private String representation_L10n_text = null;
     private String titleCache;
+    private String label;
     private boolean isManaged = false;
 
     protected AbstractTermDto(){}
@@ -139,7 +140,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     public Representation getPreferredRepresentation(Language lang){
 
         Language language = lang;
-        if(lang != null){
+        if(lang == null){
             language = Language.DEFAULT();
         }
         for (Representation rep: representations){
@@ -181,6 +182,20 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
         this.titleCache = titleCache;
     }
 
+
+    /**
+     * @return the label
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * @param label the label to set
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     public boolean isManaged() {
         return isManaged;

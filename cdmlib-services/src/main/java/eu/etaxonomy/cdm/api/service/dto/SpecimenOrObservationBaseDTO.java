@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -114,6 +115,37 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 .map(det -> DeterminationEventDTO.from(det))
                 .collect(Collectors.toList())
                 );
+        Collections.sort(getDeterminations(), new Comparator<DeterminationEventDTO>() {
+
+                    @Override
+                    public int compare(DeterminationEventDTO o1, DeterminationEventDTO o2) {
+                        if (o1 == o2) {
+                            return 0;
+                        }
+                        if (o1 == null) {
+                            return -1;
+                        }
+                        if (o2 == null) {
+                            return 1;
+                        }
+                        if (o1.isPreferred()) {
+                            return 1;
+                        }else if (o2.isPreferred()) {
+                            return -1;
+                        }
+                        if (o1.getTimePeriod().checkEmpty() && o2.getTimePeriod().checkEmpty()) {
+                            return o1.compareTo(o2);
+                        }
+                        if (o1.getTimePeriod().checkEmpty() ) {
+                            return -1;
+                        }
+                        if (o2.getTimePeriod().checkEmpty()) {
+                            return 1;
+                        }
+                        return o2.getTimePeriod().getStart().compareTo(o1.getTimePeriod().getStart());
+                    }
+                });
+
         if (specimenOrObservation instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimenOrObservation;
             if (derivedUnit.getSpecimenTypeDesignations() != null){

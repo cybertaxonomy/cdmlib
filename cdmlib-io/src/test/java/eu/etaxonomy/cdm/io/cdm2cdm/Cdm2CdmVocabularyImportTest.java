@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.cdm2cdm;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
@@ -20,13 +22,13 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -44,13 +46,13 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
+ * Test class for Cdm2CdmVocabularyImport.
+ *
  * @author a.mueller
  * @since 18.09.2021
  */
-@Ignore  //preliminary ignored as it does not run on jenkins yet
 public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     private static CdmApplicationController otherRepository;
@@ -61,6 +63,8 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     private IVocabularyService vocService;
     @SpringBeanByType
     private ITermTreeService treeService;
+    @SpringBeanByType
+    private ITermNodeService termNodeService;
 
     private Cdm2CdmImportConfigurator configurator;
 
@@ -70,30 +74,18 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     private static UUID uuidStructGraph = UUID.fromString("1fdf67c7-e267-44ca-8d35-be66e3746847");
 
     @BeforeClass
-    @Ignore
+//    @Ignore
     public static void setUpClass() throws Exception {
     //      this.startH2Server();
           boolean omitTermLoading = true;
-          //TODO remove user directory
-          ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", "C:\\Users\\a.mueller\\tmp\\testVoc");
-//          int a = dataSource.executeUpdate("CREATE TABLE HIBERNATE_SEQUENCES ("
-//                  + " sequence_name VARCHAR(255), next_val BIGINT )");
-//          try {
-//              ResultSet rs = dataSource.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES");
-//              while(rs.next()){
-//                  for (int i = 1; i<=12; i++){
-//                      System.out.print(";"+rs.getObject(i));
-//                  }
-//                  System.out.println();
-//              }
-//              dataSource.executeQuery("select tbl.next_val from hibernate_sequences tbl where tbl.sequence_name='a'");
-            otherRepository = CdmApplicationController.NewInstance(dataSource,
+
+          String tmpDirLocation = System.getProperty("java.io.tmpdir");
+          Path path = Paths.get(tmpDirLocation, "testVoc");
+
+          ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", path.toString());
+          otherRepository = CdmApplicationController.NewInstance(dataSource,
                       DbSchemaValidation.CREATE, omitTermLoading);
-//        } catch (Exception e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-          System.out.println("started");
+          logger.debug("Other repository started");
           TermVocabulary<DefinedTerm> voc = createTestVocabulary(otherRepository);
           createTestGraph(otherRepository, voc);
     }
@@ -113,7 +105,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         TermType termType = TermType.Structure;
         TermTree<DefinedTerm> graph = TermTree.NewInstance(termType, DefinedTerm.class);
         DefinedTerm firstStruct = voc.getTerms().stream().filter(t->t.getUuid().equals(uuidStructFirst)).findFirst().get();
-        TermNode<DefinedTerm> firstRoot = graph.getRoot().addChild(firstStruct);
+        graph.getRoot().addChild(firstStruct);
         graph.setUuid(uuidStructGraph);
 
         app.getTermTreeService().saveOrUpdate(graph);
@@ -128,6 +120,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     @Before
     public void setUp() throws Exception {
         configurator = Cdm2CdmImportConfigurator.NewInstace(otherRepository, null);
+        configurator.setDoVocabularies(true);
         configurator.setDoTaxa(false);
         configurator.setDoDescriptions(false);
 //        VocabularyFilter vocFilter = VocabularyFilter.NewTermTypeInstance(TermType.Structure);
@@ -165,7 +158,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1, voc.getTerms().size());
 
         //add term in other repo ...
-        UUID uuidSecond = UUID.fromString("56546e58-e4ea-47f9-ae49-de772a416003");
+        UUID uuidSecond = UUID.fromString("d167b52b-f88c-48a1-9463-ab5f9895cc51");
         DefinedTerm secondTerm = getStructure("2.", uuidSecond);
         TransactionStatus tx = otherRepository.startTransaction();
         otherVoc = otherRepository.getVocabularyService().find(uuidStructVoc);
@@ -179,6 +172,10 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1, voc.getTerms().size());
         commitAndStartNewTransaction();
         result = defaultImport.invoke(this.configurator);
+        Assert.assertEquals("Second term should not be added as configuration does not allow adding terms", 1, voc.getTerms().size());
+        commitAndStartNewTransaction();
+        configurator.setAddMissingTerms(true);
+        result = defaultImport.invoke(this.configurator);
         commitAndStartNewTransaction();
         voc = vocService.find(uuidStructVoc);
         Assert.assertEquals(2, voc.getTerms().size());
@@ -187,12 +184,17 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
             Assert.assertEquals(secondTerm, t);
             Assert.assertNotSame(secondTerm, t);
         });
+    }
+
+    @Test
+    public void testInvokeGraph() {
 
         //test invoke for graph (not vocabulary)
         configurator.setGraphFilter(new HashSet<>(Arrays.asList(uuidStructGraph)));
+        @SuppressWarnings("unchecked")
         TermTree<DefinedTerm> graph = treeService.find(uuidStructGraph);
         Assert.assertNull("Graph must not exist before invoke", graph);
-        result = defaultImport.invoke(this.configurator);
+        ImportResult result = defaultImport.invoke(this.configurator);
         Assert.assertTrue(result.isSuccess());
         commitAndStartNewTransaction();
         graph = treeService.find(uuidStructGraph);
@@ -208,8 +210,32 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         TermNode<DefinedTerm> thisSingleChild = graph.getRootChildren().iterator().next();
         Assert.assertEquals(otherSingleChild, thisSingleChild);
         Assert.assertNotSame(otherSingleChild, thisSingleChild);
-
         otherRepository.commitTransaction(txOther);
+
+        //add term in other repo to vocabulary and graph as child of top level node ...
+        UUID uuidSecondTerm = UUID.fromString("56546e58-e4ea-47f9-ae49-de772a416004");
+        DefinedTerm secondTerm = getStructure("2.", uuidSecondTerm);
+        TransactionStatus tx = otherRepository.startTransaction();
+        @SuppressWarnings("unchecked")
+        TermVocabulary<DefinedTerm> otherVoc = otherRepository.getVocabularyService().find(uuidStructVoc);
+        otherVoc.addTerm(secondTerm);
+        otherRepository.getTermService().saveOrUpdate(secondTerm);
+        otherGraph = otherRepository.getTermTreeService().find(uuidStructGraph);
+        otherGraph.getRoot().getChildAt(0).addChild(secondTerm);
+        otherRepository.commitTransaction(tx);
+
+        //... to test if added term gets imported
+        commitAndStartNewTransaction();
+        UUID uuidTopLevelNode = thisSingleChild.getUuid();
+        TermNode<DefinedTerm> topLevelNode = termNodeService.find(uuidTopLevelNode);
+        Assert.assertEquals(0, topLevelNode.getChildCount());
+        commitAndStartNewTransaction();
+        configurator.setAddMissingTerms(true);
+        result = defaultImport.invoke(this.configurator);
+        commitAndStartNewTransaction();
+        topLevelNode = termNodeService.find(uuidTopLevelNode);
+        Assert.assertEquals(1, topLevelNode.getChildCount());
+        Assert.assertEquals(uuidSecondTerm, topLevelNode.getChildAt(0).getTerm().getUuid());
     }
 
     private static DefinedTerm getStructure(String distinct, UUID uuid) {

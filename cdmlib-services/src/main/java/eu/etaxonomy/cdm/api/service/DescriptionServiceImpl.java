@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,12 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.description.MissingMaximumMode;
 import eu.etaxonomy.cdm.api.service.description.MissingMinimumMode;
 import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
-import eu.etaxonomy.cdm.api.service.dto.CategoricalDataDto;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionElementDto;
-import eu.etaxonomy.cdm.api.service.dto.QuantitativeDataDto;
-import eu.etaxonomy.cdm.api.service.dto.StateDataDto;
-import eu.etaxonomy.cdm.api.service.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -92,9 +85,14 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
+import eu.etaxonomy.cdm.persistence.dto.CategoricalDataDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionElementDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
+import eu.etaxonomy.cdm.persistence.dto.StateDataDto;
+import eu.etaxonomy.cdm.persistence.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -467,7 +465,7 @@ public class DescriptionServiceImpl
                     UUID descElementUuid = elementBase.getUuid();
                     if (descElementUuid != null){
                         List<DescriptionElementDto> equalUuidsElements = elements.stream().filter( e -> e != null && e.getElementUuid() != null && e.getElementUuid().equals(descElementUuid)).collect(Collectors.toList());
-                        if (equalUuidsElements.size() == 0 || (equalUuidsElements.size() == 1 && equalUuidsElements.get(0)instanceof QuantitativeDataDto && ((QuantitativeDataDto)equalUuidsElements.get(0)).getValues().isEmpty())){
+                        if (equalUuidsElements.size() == 0 || (equalUuidsElements.size() == 1 && equalUuidsElements.get(0)instanceof QuantitativeDataDto && (((QuantitativeDataDto)equalUuidsElements.get(0)).getValues().isEmpty()) &&(((QuantitativeDataDto)equalUuidsElements.get(0)).getNoDataStatus() == null))){
                             removeElements.add(elementBase);
                         }
                     }
@@ -485,9 +483,9 @@ public class DescriptionServiceImpl
                         continue;
                     }
                     UUID descElementUuid = descElement.getElementUuid();
-                    if (descElement instanceof CategoricalDataDto && ((CategoricalDataDto)descElement).getStates().isEmpty() || descElement instanceof QuantitativeDataDto && ((QuantitativeDataDto)descElement).getValues().isEmpty()){
-                        continue;
-                    }
+//                    if (descElement instanceof CategoricalDataDto && ((CategoricalDataDto)descElement).getStates().isEmpty() || descElement instanceof QuantitativeDataDto && ((QuantitativeDataDto)descElement).getValues().isEmpty()){
+//                        continue;
+//                    }
                     List<DescriptionElementBase> equalUuidsElements = descriptionElements.stream().filter( e -> e.getUuid().equals(descElementUuid)).collect(Collectors.toList());
                     Feature feature = DefinedTermBase.getTermByUUID(descElement.getFeatureUuid(), Feature.class);
 
@@ -498,8 +496,17 @@ public class DescriptionServiceImpl
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
                             for (StateDataDto dataDto: stateDtos){
                                 //create new statedata
+                                if (dataDto == null || dataDto.getState() == null){
+                                    continue;
+                                }
                                 DefinedTermBase<?> newState = DefinedTermBase.getTermByUUID(dataDto.getState().getUuid(), DefinedTermBase.class);
                                 StateData newStateData = StateData.NewInstance(newState);
+                                //add modifier
+                                if (dataDto.getModifiers()!= null && !dataDto.getModifiers().isEmpty()) {
+                                    DefinedTerm modifier = DefinedTermBase.getTermByUUID(dataDto.getModifiers().iterator().next().getUuid(), DefinedTerm.class);
+                                    newStateData.addModifier(modifier);
+                                }
+
                                 elementBase.addStateData(newStateData);
                             }
                             desc.addElement(elementBase);
@@ -543,9 +550,16 @@ public class DescriptionServiceImpl
                                 desc.removeElement(data);
                             }else{
                                 for (StateDataDto dataDto: stateDtos){
+                                    if (dataDto == null) {
+                                        continue;
+                                    }
                                     DefinedTermBase<?> newState = DefinedTermBase.getTermByUUID(dataDto.getState().getUuid(), DefinedTermBase.class);
                                     StateData newStateData = StateData.NewInstance(newState);
                                     data.addStateData(newStateData);
+                                    if (dataDto.getModifiers()!= null && !dataDto.getModifiers().isEmpty()) {
+                                        DefinedTerm modifier = DefinedTermBase.getTermByUUID(dataDto.getModifiers().iterator().next().getUuid(), DefinedTerm.class);
+                                        newStateData.addModifier(modifier);
+                                    }
                                 }
 
                                 data.setNoDataStatus(((CategoricalDataDto)descElement).getNoDataStatus());
@@ -992,9 +1006,23 @@ public class DescriptionServiceImpl
             Set<UUID> descriptionElementUUIDs,
             UUID targetTaxonUuid,
             String moveMessage,
-            boolean isCopy, boolean setNameInSource) {
+            boolean isCopy, boolean setNameInSource, boolean useDefaultDescription) {
         Taxon targetTaxon = CdmBase.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
-        DescriptionBase targetDescription = TaxonDescription.NewInstance(targetTaxon);
+        TaxonDescription targetDescription = null;
+        if (useDefaultDescription && targetTaxon.hasDefaultDescription()) {
+            for (TaxonDescription des:targetTaxon.getDescriptions()) {
+                if (des.isDefault()) {
+                    targetDescription = des;
+                    break;
+                }
+            }
+        }
+        if (targetDescription == null) {
+            targetDescription = TaxonDescription.NewInstance(targetTaxon);
+        }
+        if (!targetTaxon.hasDefaultDescription()) {
+            targetDescription.setDefault(true);
+        }
         targetDescription.setTitleCache(moveMessage, true);
         Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
         annotation.setAnnotationType(AnnotationType.TECHNICAL());
@@ -1055,6 +1083,7 @@ public class DescriptionServiceImpl
                 }
             }
         }
+        description.setDefault(false);
         return description;
     }
 
@@ -1082,92 +1111,16 @@ public class DescriptionServiceImpl
 
     }
 
-    // FIXME Query should not be used in service layer
     @Override
     public DescriptionBaseDto loadDto(UUID descriptionUuid) {
-        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
-        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
-        List<UUID> uuids = new ArrayList<>();
-        uuids.add(descriptionUuid);
-        query.setParameterList("uuid", uuids);
-
-        List<Object[]> result = query.list();
-
-        List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
-
-        if (list.size()== 1){
-            DescriptionBaseDto dto = list.get(0);
-            //get categorical data
-            sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
-            query =  getSession().createQuery(sqlSelect);
-            query.setParameter("uuid", descriptionUuid);
-            @SuppressWarnings("unchecked")
-            List<Object[]>  resultCat = query.list();
-            List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
-
-            List<UUID> featureUuids = new ArrayList<>();
-            for (CategoricalDataDto catDto: listCategorical){
-                featureUuids.add(catDto.getFeatureUuid());
-            }
-            Map<UUID, TermDto> featureDtos = termService.findFeatureByUUIDsAsDtos(featureUuids);
-            for (CategoricalDataDto catDto: listCategorical){
-                FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
-                catDto.setFeatureDto(featuredto);
-            }
-            dto.getElements().addAll(listCategorical);
-            //get quantitative data
-            sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
-            query =  getSession().createQuery(sqlSelect);
-            query.setParameter("uuid", descriptionUuid);
-            @SuppressWarnings("unchecked")
-            List<Object[]>  resultQuant = query.list();
-            List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
-            dto.getElements().addAll(listQuant);
-            return dto;
-        }else{
-            return null;
-        }
+        return dao.loadDto(descriptionUuid);
     }
 
-    // FIXME Query should not be used in service layer
+
     @Override
     public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuids) {
-        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
-        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
-        query.setParameterList("uuid", descriptionUuids);
 
-        List<Object[]> result = query.list();
-
-        List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
-
-        for (DescriptionBaseDto dto: list){
-
-            //get categorical data
-            sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
-            query = getSession().createQuery(sqlSelect, Object[].class);
-            query.setParameter("uuid", dto.getDescriptionUuid());
-            List<Object[]>  resultCat = query.list();
-            List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
-
-            List<UUID> featureUuids = new ArrayList<>();
-            for (CategoricalDataDto catDto: listCategorical){
-                featureUuids.add(catDto.getFeatureUuid());
-            }
-            Map<UUID, TermDto> featureDtos = termService.findFeatureByUUIDsAsDtos(featureUuids);
-            for (CategoricalDataDto catDto: listCategorical){
-                FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
-                catDto.setFeatureDto(featuredto);
-            }
-            dto.getElements().addAll(listCategorical);
-            //get quantitative data
-            sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
-            query = getSession().createQuery(sqlSelect, Object[].class);
-            query.setParameter("uuid",  dto.getDescriptionUuid());
-            List<Object[]> resultQuant = query.list();
-            List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
-            dto.getElements().addAll(listQuant);
-        }
-        return list;
+        return dao.loadDtos(descriptionUuids);
     }
 
     // FIXME Query should not be used in service layer

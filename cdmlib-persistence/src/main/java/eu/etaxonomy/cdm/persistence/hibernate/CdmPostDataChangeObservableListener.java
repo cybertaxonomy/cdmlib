@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.HashSet;
@@ -145,7 +144,6 @@ public class CdmPostDataChangeObservableListener implements
 	        CdmDataChangeMap tmpMap = new CdmDataChangeMap();
 	        tmpMap.add(event.getEventType(), event);
 	        observer.update(tmpMap);
-
 	    }
 	}
 
@@ -177,16 +175,9 @@ public class CdmPostDataChangeObservableListener implements
 		}
 	}
 
-	/**
-	 * @return the delayed
-	 */
 	public boolean isDelayed() {
 		return delayed;
 	}
-
-	/**
-	 * @param delayed the delayed to set
-	 */
 	public void setDelayed(boolean delayed) {
 		if(delayed && changeEvents == null){
 			changeEvents = new CdmDataChangeMap();
@@ -194,58 +185,31 @@ public class CdmPostDataChangeObservableListener implements
 		this.delayed = delayed;
 	}
 
-	/**
-	 * @return the propagateLoads
-	 */
 	public boolean isPropagateLoads() {
 		return propagateLoads;
 	}
-
-	/**
-	 * @param propagateLoads the propagateLoads to set
-	 */
 	public void setPropagateLoads(boolean propagateLoads) {
 		this.propagateLoads = propagateLoads;
 	}
 
-	/**
-	 * @return the propagateInserts
-	 */
 	public boolean isPropagateInserts() {
 		return propagateInserts;
 	}
-
-	/**
-	 * @param propagateInserts the propagateInserts to set
-	 */
 	public void setPropagateInserts(boolean propagateInserts) {
 		this.propagateInserts = propagateInserts;
 	}
 
-	/**
-	 * @return the propagateUpdates
-	 */
 	public boolean isPropagateUpdates() {
 		return propagateUpdates;
 	}
-
-	/**
-	 * @param propagateUpdates the propagateUpdates to set
-	 */
 	public void setPropagateUpdates(boolean propagateUpdates) {
 		this.propagateUpdates = propagateUpdates;
 	}
 
-	/**
-	 * @return the propagateDeletes
-	 */
+
 	public boolean isPropagateDeletes() {
 		return propagateDeletes;
 	}
-
-	/**
-	 * @param propagateDeletes the propagateDeletes to set
-	 */
 	public void setPropagateDeletes(boolean propagateDeletes) {
 		this.propagateDeletes = propagateDeletes;
 	}
@@ -254,5 +218,4 @@ public class CdmPostDataChangeObservableListener implements
     public boolean requiresPostCommitHanding(EntityPersister persister) {
         return false;
     }
-
 }

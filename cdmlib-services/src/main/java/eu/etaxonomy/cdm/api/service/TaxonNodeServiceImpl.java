@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.metadata.DistributionDescription;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -436,6 +437,8 @@ public class TaxonNodeServiceImpl
                 }
             }
             //oldTaxon.removeDescription(description, false);
+            //copied descriptions shouldn't be default descriptions
+            description.setDefault(false);
             newAcceptedTaxon.addDescription(description);
         }
         oldTaxon.clearDescriptions();
@@ -1248,7 +1251,7 @@ public class TaxonNodeServiceImpl
 
     @Override
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
-            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode){
+            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode, DistributionDescription descHandling){
 
         nodeUuids = nodeUuids.stream().distinct().collect(Collectors.toList());
         List<TaxonNode> nodes = new ArrayList<>();
@@ -1287,7 +1290,7 @@ public class TaxonNodeServiceImpl
             }
             if (node.getTaxon() != null && hasPermission){
                 try{
-                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node);
+                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node, descHandling);
                     result.add(dto);
                 }catch(Exception e){
                     logger.error(e.getMessage(), e);
@@ -1320,8 +1323,8 @@ public class TaxonNodeServiceImpl
 
     @Override
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids,
-            List<String> propertyPaths, boolean openChildren) {
-        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren, null);
+            List<String> propertyPaths, boolean openChildren, DistributionDescription descHandling) {
+        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren, null,descHandling);
     }
 
     @Override

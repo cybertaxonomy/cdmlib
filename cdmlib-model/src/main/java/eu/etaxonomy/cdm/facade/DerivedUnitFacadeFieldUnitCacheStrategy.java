@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.facade;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
@@ -121,74 +123,82 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy
 		return result;
 	}
 
-	private String getCollectorAndFieldNumber(DerivedUnitFacade facade) {
-		String result = "";
-		AgentBase<?> collector = facade.getCollector();
-		String fieldNumber = facade.getFieldNumber();
-		Person primaryCollector = facade.getPrimaryCollector();
+    private String getCollectorAndFieldNumber(DerivedUnitFacade facade) {
 
-		if (collector == null){
-			return fieldNumber;
-		}else if(collector.isProtectedTitleCache()){
-			return  CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
-		}else{
-			result = "";
-			Team collectorTeam;
-			if (collector.isInstanceOf(Person.class)){
-				collectorTeam = Team.NewInstance();
-				if (primaryCollector == null){
-					primaryCollector = CdmBase.deproxy(collector, Person.class);
-				}
-				collectorTeam.addTeamMember(primaryCollector);
-			} else if (collector.isInstanceOf(Team.class) && ! collector.isProtectedTitleCache() ){
-				collectorTeam = CdmBase.deproxy(collector, Team.class);
-			}else{
-				return  CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
-			}
+        String result = "";
 
-			int counter = 0;
-			boolean fieldNumberAdded = false;
-			List<Person> teamMembers = collectorTeam.getTeamMembers();
-			for (Person member : teamMembers){
-				counter++;
-				String sep = TeamDefaultCacheStrategy.teamConcatSeparator(collectorTeam, counter);
-				result = CdmUtils.concat(sep, result, getMemberString(member) );
-				if (member.equals(primaryCollector)){
-					result = addFieldNumber(result, fieldNumber);
-					fieldNumberAdded = true;
-				}
-			}
-			if (collectorTeam.isHasMoreMembers()){
-			    result = TeamDefaultCacheStrategy.addHasMoreMembers(result);
-			}
-			if (! fieldNumberAdded){
-				result = addFieldNumber(result, fieldNumber);
-			}
-			return result;
-		}
-	}
+        FieldUnit fieldUnit = facade.getFieldUnit(false);
+        if (fieldUnit == null) {
+            return result;
+        }
+
+        GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+        AgentBase<?> collector = gatheringEvent == null? null : gatheringEvent.getCollector();
+        String fieldNumber = fieldUnit.getFieldNumber();
+        Person primaryCollector = fieldUnit.getPrimaryCollector();
+
+        if (collector == null){
+            return fieldNumber;
+        }else{
+            result = "";
+            boolean hasMoreMembers = false;
+
+            //extract team members and primary collector
+            List<Person> teamMembers = new ArrayList<>();
+            if (collector.isInstanceOf(Person.class)){
+                if (primaryCollector == null){
+                    primaryCollector = CdmBase.deproxy(collector, Person.class);
+                }
+                teamMembers.add(primaryCollector);
+            } else if (collector.isInstanceOf(Team.class) && !collector.isProtectedTitleCache()){
+                Team team = CdmBase.deproxy(collector, Team.class);
+                teamMembers = team.getTeamMembers();
+                hasMoreMembers = team.isHasMoreMembers();
+            }else{ //is Institution or Team with protectedTitleCache
+                return CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
+            }
+
+            //concat result
+            int counter = 0;
+            boolean fieldNumberAdded = false;
+            for (Person member : teamMembers){
+                counter++;
+                String sep = teamConcatSeparator(teamMembers, hasMoreMembers, counter);
+                result = CdmUtils.concat(sep, result, getMemberString(member));
+                if (member.equals(primaryCollector)){
+                    result = addFieldNumber(result, fieldNumber);
+                    fieldNumberAdded = true;
+                }
+            }
+            if (hasMoreMembers){
+                result = TeamDefaultCacheStrategy.addHasMoreMembers(result);
+            }
+            if (! fieldNumberAdded){
+                result = addFieldNumber(result, fieldNumber);
+            }
+
+            return result;
+        }
+    }
 
 	private String addFieldNumber(String str, String fieldNumber) {
 		String result = CdmUtils.concat(" ", str, fieldNumber);
 		return result;
 	}
 
-	/**
-	 * Strategy to format a collector team member name
-	 * @param member
-	 * @return
-	 */
 	private String getMemberString(Person member) {
-		if (StringUtils.isNotBlank(member.getFamilyName()) && ! member.isProtectedTitleCache() ){
-			String result = member.getFamilyName();
-			if  (StringUtils.isNotBlank(member.getGivenName())){
-				result = member.getGivenName().substring(0,1) + ". " + result;
-			}
-			return result;
-		}else{
-			return member.getTitleCache();
-		}
+	    return member.getCollectorTitleCache();
 	}
+
+    public static String teamConcatSeparator(List<Person> teamMembers, boolean hasMoreMembers, int index) {
+        if (index <= 1){
+            return "";
+        }else if (index < teamMembers.size() || (hasMoreMembers && index == teamMembers.size())){
+            return TeamDefaultCacheStrategy.STD_TEAM_CONCATINATION;
+        }else{
+            return TeamDefaultCacheStrategy.FINAL_TEAM_CONCATINATION;
+        }
+    }
 
 // ************************** GETTER / SETTER ******************************************************
 

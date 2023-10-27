@@ -85,9 +85,9 @@ public class Cdm2CdmVocabularyImport
         TermVocabulary<DefinedTermBase> thisVoc = null;
         try {
             thisVoc = detach(otherVoc, state);
-            if (thisVoc != otherVoc){ //voc already existed
-                for (DefinedTermBase<?> term: otherVoc.getTerms()){
-                    doSingleTerm(state, term, thisVoc);
+            if (thisVoc != otherVoc && state.getConfig().isAddMissingTerms()){ //voc already existed
+                for (DefinedTermBase<?> otherTerm: otherVoc.getTerms()){
+                    doSingleTerm(state, otherTerm, thisVoc);
                 }
             }
         } catch (Exception e) {
@@ -113,10 +113,8 @@ public class Cdm2CdmVocabularyImport
         try {
             if (!thisVoc.getTerms().contains(otherTerm)){
                 thisTerm = detach(otherTerm, state);
-//                if(thisTerm == otherTerm){ //term does not yet exist
                 thisVoc.addTerm(thisTerm);
                 state.addToSave(thisTerm);
-//                }
             }
         } catch (Exception e) {
             logger.warn("Exception during detache node " + otherTerm.getUuid());
@@ -131,9 +129,9 @@ public class Cdm2CdmVocabularyImport
         TermTree<DefinedTermBase> thisGraph = null;
         try {
             thisGraph = detach(otherGraph, state);
-            if (thisGraph != otherGraph){ //voc already existed
+            if (thisGraph != otherGraph
+                    && state.getConfig().isAddMissingTerms()){ //graph already existed
                 for (TermNode<DefinedTermBase> node: otherGraph.getRootChildren()){
-                    //TODO this is not implemented yet!!
                     doSingleNode(state, node, thisGraph.getRoot());
                 }
             }
@@ -154,20 +152,28 @@ public class Cdm2CdmVocabularyImport
         }
     }
 
-    private void doSingleNode(Cdm2CdmImportState state, TermNode<DefinedTermBase> otherNode, TermNode<DefinedTermBase> thisRoot) {
-//        TermNode<DefinedTermBase> thisTerm = null;
-////        try {
-////            if (!thisRoot.getChilcontains(otherNode)){
-////                thisTerm = detache(otherNode, state);
-//////                if(thisTerm == otherTerm){ //term does not yet exist
-////                thisGraph.addTerm(thisTerm);
-////                state.addToSave(thisTerm);
-//////                }
-////            }
-//        } catch (Exception e) {
-//            logger.warn("Exception during detache node " + otherNode.getUuid());
-//            e.printStackTrace();
-//        }
+    private void doSingleNode(Cdm2CdmImportState state, TermNode<DefinedTermBase> otherNode,
+            TermNode<DefinedTermBase> thisParent) {
+
+        TermNode<DefinedTermBase> thisNode = null;
+        try {
+            if (!thisParent.getChildNodes().contains(otherNode)){
+                thisNode = this.detach(otherNode, state);
+                thisParent.addChild(thisNode);
+                state.addToSave(thisNode);
+                getTermService().saveOrUpdate(thisNode.getTerm());  //state.addToSave() may throw LIE due to linked term during a flush
+                if (logger.isDebugEnabled()) {logger.debug("Added term: " + thisNode.getTerm().getTitleCache() + "/" + thisNode.getTerm().getVocabulary().getTitleCache());}
+                //do recursive
+            }else {
+                thisNode = thisParent.getChildNodes().stream().filter(n->n.equals(otherNode)) .findFirst().get();
+            }
+            for (TermNode<DefinedTermBase> otherChild : otherNode.getChildNodes()) {
+                doSingleNode(state, otherChild, thisNode);
+            }
+        } catch (Exception e) {
+            logger.warn("Exception during detache node " + otherNode.getUuid());
+            e.printStackTrace();
+        }
     }
 
     @Override

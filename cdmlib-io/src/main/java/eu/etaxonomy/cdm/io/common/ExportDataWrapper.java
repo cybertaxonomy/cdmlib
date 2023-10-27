@@ -26,22 +26,15 @@ public class ExportDataWrapper<T> implements Serializable{
     private T exportData;
     private ExportResultType type;
 
-    /**
-     * @return the type
-     */
+    private ExportDataWrapper(){
+    }
+
     public ExportResultType getType() {
         return type;
     }
 
-    /**
-     * @param type the type to set
-     */
     public void setType(ExportResultType type) {
         this.type = type;
-    }
-
-    private ExportDataWrapper(){
-
     }
 
     public static final ExportDataWrapper<List<byte[]>> NewListByteArrayInstance(){

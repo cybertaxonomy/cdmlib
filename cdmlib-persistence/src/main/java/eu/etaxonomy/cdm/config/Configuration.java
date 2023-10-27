@@ -8,11 +8,9 @@
  */
 package eu.etaxonomy.cdm.config;
 
-
 /**
  * @author a.kohlbecker
  * @since Mar 26, 2013
- *
  */
 public class Configuration {
 
@@ -25,5 +23,4 @@ public class Configuration {
      * Default password for the first user 'admin'
      */
     public static String adminPassword = "00000";
-
 }

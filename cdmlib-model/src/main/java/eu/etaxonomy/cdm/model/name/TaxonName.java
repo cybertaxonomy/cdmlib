@@ -1928,6 +1928,11 @@ public class TaxonName
      */
     @Override
     public void setNameCache(String nameCache, boolean protectedNameCache){
+    	int maxLength = 255;
+    	if (nameCache != null && nameCache.length() > maxLength){
+            logger.warn("Truncation of cache: " + this.toString() + "/" + nameCache);
+            nameCache = nameCache.substring(0, maxLength - 4) + "...";   //TODO do we need -4 or is -3 enough
+        }
         this.nameCache = nameCache;
         this.setProtectedNameCache(protectedNameCache);
     }

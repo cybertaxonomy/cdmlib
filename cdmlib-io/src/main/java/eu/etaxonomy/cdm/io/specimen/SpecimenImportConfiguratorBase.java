@@ -52,7 +52,8 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
     private String sourceReferenceTitle = null;
 
     private String taxonReference = null;
-    private boolean addIndividualsAssociationsSuchAsSpecimenAndObservations = true;
+    private boolean addIndividualsAssociations = true;
+    private boolean addDeterminations = false;
     private boolean reuseExistingDescriptiveGroups = false;
 
 
@@ -127,13 +128,21 @@ public abstract class SpecimenImportConfiguratorBase<CONFIG extends SpecimenImpo
         this.taxonReference = taxonReference;
     }
 
-    public boolean isAddIndividualsAssociationsSuchAsSpecimenAndObservations() {
-        return addIndividualsAssociationsSuchAsSpecimenAndObservations;
+    public boolean isAddIndividualsAssociations() {
+        return addIndividualsAssociations;
     }
 
-    public void setAddIndividualsAssociationsSuchAsSpecimenAndObservations(
-            boolean addIndividualsAssociationsSuchAsSpecimenAndObservations) {
-        this.addIndividualsAssociationsSuchAsSpecimenAndObservations = addIndividualsAssociationsSuchAsSpecimenAndObservations;
+    public boolean isAddDeterminations() {
+        return addDeterminations;
+    }
+
+    public void setAddDeterminations(boolean addDeterminations) {
+        this.addDeterminations = addDeterminations;
+    }
+
+    public void setAddIndividualsAssociations(
+            boolean addIndividualsAssociations) {
+        this.addIndividualsAssociations = addIndividualsAssociations;
     }
 
     public boolean isReuseExistingDescriptiveGroups() {

@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.metadata.DistributionDescription;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -30,13 +31,13 @@ public class TaxonDistributionDTO implements Serializable{
     private String concatenatedSynonyms = null;
     private TaxonNodeDto parentNodeDto = null;
 
-    public TaxonDistributionDTO(TaxonNode node){
+    public TaxonDistributionDTO(TaxonNode node, DistributionDescription descHandling){
         nodeDto = new TaxonNodeDto(node);
         parentNodeDto = new TaxonNodeDto(node.getParent());
 
         Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
 
-        this.descriptionsWrapper = new TaxonDescriptionDTO(taxon);
+        this.descriptionsWrapper = new TaxonDescriptionDTO(taxon, descHandling);
         concatenateSynonyms(taxon);
     }
 

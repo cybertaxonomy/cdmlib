@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
@@ -76,6 +78,13 @@ public  class Cdm2CdmImportConfigurator
     private UserImportMode updatedByMode = UserImportMode.NONE;
     private CreatedUpdatedMode createdMode = CreatedUpdatedMode.NONE;
     private CreatedUpdatedMode updatedMode = CreatedUpdatedMode.NONE;
+
+    private boolean addMissingTerms = false;
+
+    /**
+     * If not all synonyms should be copied.
+     */
+    private BiFunction<Synonym,Cdm2CdmImportState,Boolean> synonymFilter = null;
 
 //***************************** NewInstance ************************/
 
@@ -216,10 +225,13 @@ public  class Cdm2CdmImportConfigurator
         this.updatedByMode = updatedByMode;
     }
 
+    /**
+     * If true, only those terms of a vocabulary are imported which are
+     * used e.g. by a term tree/graph
+     */
     public boolean isPartialVocabulariesForGraphs() {
         return partialVocabulariesForGraphs;
     }
-
     public void setPartialVocabulariesForGraphs(boolean partialVocabulariesForGraphs) {
         this.partialVocabulariesForGraphs = partialVocabulariesForGraphs;
     }
@@ -286,11 +298,32 @@ public  class Cdm2CdmImportConfigurator
         this.endemismHandler = endemismHandler;
     }
 
-
     public UUID getUuidEndemicRelevantArea() {
         return uuidEndemicRelevantArea;
     }
     public void setUuidEndemicRelevantArea(UUID uuidEndemicRelevantArea) {
         this.uuidEndemicRelevantArea = uuidEndemicRelevantArea;
+    }
+
+    public void setSynonymFilter(BiFunction<Synonym,Cdm2CdmImportState,Boolean> synonymFilter) {
+        this.synonymFilter = synonymFilter;
+    }
+    public BiFunction<Synonym,Cdm2CdmImportState,Boolean> getSynonymFilter(){
+        return synonymFilter;
+    }
+
+    //If true updating termcollections and terms is allowed.
+    //For now only missing terms are added
+    //In future we may adapt
+    //   * Strings and primitive types, etc.
+    //   * update Representations and add missing Representations
+    //   * move missing terms (if they are in use in the current database but were deleted in the remote database)
+    //   * ... other delete them)
+    //If this is implemented we may rename this method
+    public boolean isAddMissingTerms() {
+        return addMissingTerms;
+    }
+    public void setAddMissingTerms(boolean addMissingTerms) {
+        this.addMissingTerms = addMissingTerms;
     }
 }

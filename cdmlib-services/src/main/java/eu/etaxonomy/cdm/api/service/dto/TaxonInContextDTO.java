@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dto.EntityDTO;
 import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
 
 /**

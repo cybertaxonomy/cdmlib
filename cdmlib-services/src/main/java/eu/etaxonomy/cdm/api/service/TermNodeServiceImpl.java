@@ -533,9 +533,9 @@ public class TermNodeServiceImpl
 //                  recommended mod. vocabularies
                     character.getRecommendedModifierEnumeration().clear();
                     uuids = new ArrayList<>();
-                    List<UUID> termCollUuids = new ArrayList<>();
+
                     for (TermCollectionDto termDto: characterDto.getRecommendedModifierEnumeration()){
-                        termCollUuids.add(termDto.getUuid());
+                        uuids.add(termDto.getUuid());
                     }
                     List<TermCollection> termVocs;
                     if (!uuids.isEmpty()){

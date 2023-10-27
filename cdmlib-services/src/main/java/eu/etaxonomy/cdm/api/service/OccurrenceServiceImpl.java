@@ -86,6 +86,7 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -567,14 +568,32 @@ public class OccurrenceServiceImpl
                     DerivedUnitDTO derivativeDTO;
                     if (!alreadyCollectedUnits.containsKey(unit.getUuid())){
                         DerivedUnit derivedUnit = (DerivedUnit)unit;
-                        boolean isAssociated = true;
+                        boolean isAssociated = false;
                         for (DeterminationEvent determination:derivedUnit.getDeterminations()) {
-                        	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon())){
-                        		isAssociated = true;
-                        		break;
-                        	}else {
-                        		isAssociated = false;
-                        	}
+                            	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon())){
+                            		isAssociated = true;
+                            		break;
+                            	}
+                        }
+                        for (TaxonDescription desc: taxon.getDescriptions()) {
+                            for (DescriptionElementBase descElement: desc.getElements()) {
+                                if (descElement instanceof IndividualsAssociation) {
+                                    if (((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation().getUuid().equals(derivedUnit.getUuid())) {
+                                        isAssociated = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        for (TypeDesignationBase desc: taxon.getName().getTypeDesignations()) {
+                            if (desc instanceof SpecimenTypeDesignation) {
+                                if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
+                                    isAssociated = true;
+                                    break;
+                                }
+                            }
+
                         }
 
                         if (!isAssociated) {

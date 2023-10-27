@@ -163,6 +163,5 @@ public class Representation extends LanguageStringBase {
             e.printStackTrace();
             return null;
         }
-
     }
 }

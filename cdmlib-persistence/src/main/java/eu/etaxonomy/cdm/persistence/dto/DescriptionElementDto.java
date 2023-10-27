@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -14,7 +14,6 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
-import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 
 /**
  * @author k.luther

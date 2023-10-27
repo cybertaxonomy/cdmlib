@@ -10,7 +10,9 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
@@ -23,8 +25,8 @@ public class TaxonRowWrapperDTO extends RowWrapperDTO<TaxonDescription> {
 
     Set<DescriptionBaseDto> taxonDescriptions;
 
-    public TaxonRowWrapperDTO(DescriptionBaseDto description, TaxonNodeDto taxonNode, Set<DescriptionBaseDto> taxonDescriptions) {
-        super(description, taxonNode);
+    public TaxonRowWrapperDTO(DescriptionBaseDto description, TaxonNodeDto taxonNode, Set<DescriptionBaseDto> taxonDescriptions, Language lang) {
+        super(description, taxonNode, lang);
         this.taxonDescriptions = taxonDescriptions;
 
     }

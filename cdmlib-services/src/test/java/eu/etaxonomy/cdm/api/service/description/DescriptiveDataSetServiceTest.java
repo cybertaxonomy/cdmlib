@@ -40,17 +40,12 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.dto.CategoricalDataDto;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionElementDto;
-import eu.etaxonomy.cdm.api.service.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
-import eu.etaxonomy.cdm.api.service.dto.StateDataDto;
-import eu.etaxonomy.cdm.api.service.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -76,7 +71,13 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dto.CategoricalDataDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionElementDto;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
+import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
+import eu.etaxonomy.cdm.persistence.dto.StateDataDto;
+import eu.etaxonomy.cdm.persistence.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -164,7 +165,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();
 
-        List<RowWrapperDTO<?>> rowWrappers =  datasetService.getRowWrapper(dataSet.getUuid(), monitor);
+        List<RowWrapperDTO<?>> rowWrappers =  datasetService.getRowWrapper(dataSet.getUuid(), Language.DEFAULT(), monitor);
 
         //There are 4 specimen descriptions and one literature description (taxon association)
         assertTrue(rowWrappers.size() == 5);
@@ -243,7 +244,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();
 
-        List<RowWrapperDTO<?>> result = datasetService.getRowWrapper(dataSet.getUuid(), monitor);
+        List<RowWrapperDTO<?>> result = datasetService.getRowWrapper(dataSet.getUuid(), Language.DEFAULT(), monitor);
         List<DescriptionBaseDto> descToUpdate = new ArrayList<>();
         UUID updatedDescription = null;
         int elementCount = 0;

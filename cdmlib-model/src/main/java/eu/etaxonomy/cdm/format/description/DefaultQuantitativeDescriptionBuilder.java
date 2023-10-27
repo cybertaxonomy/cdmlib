@@ -1,9 +1,20 @@
+/**
+* Copyright (C) 2011 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
@@ -18,14 +29,18 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 	private String space = " ";
 
 	@Override
-	protected TextData doBuild(Map<StatisticalMeasure,BigDecimal> measures, MeasurementUnit mUnit, List<Language> languages){
+	protected TextData doBuild(Map<StatisticalMeasure,List<BigDecimal>> measures, MeasurementUnit mUnit, List<Language> languages){
 		StringBuilder quantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
 		TextData textData = TextData.NewInstance(); // TextData that will contain the description and the language corresponding
 		// booleans indicating whether a kind of value is present or not and the float that will eventually hold the value
 
 		String unit = "";
-		if ((mUnit!=null)&&(mUnit.getLabel()!=null)){
-			unit = mUnit.getLabel();
+		mUnit = HibernateProxyHelper.deproxy(mUnit, MeasurementUnit.class);
+
+		if ((mUnit!=null)&&(mUnit.getIdInVocabulary()!=null)){
+			unit = mUnit.getIdInVocabulary();
+		}else if ((mUnit!=null)&&(mUnit.getLabel()!=null)){
+            unit = mUnit.getIdInVocabulary();
 		}
 
 		// the different linking words are taken from NaturalLanguageTerm.class (should this be changed ?)
@@ -46,42 +61,50 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 
 		Boolean max, min, upperb, lowerb, average, sd, exact;
 
-		String averagevalue = getValue(measures, StatisticalMeasure.AVERAGE());
+		String averagevalue = getValues(measures, StatisticalMeasure.AVERAGE());
 		if (averagevalue!=null) {
             average=true;
         } else {
             average=false;
         }
-		String sdvalue = getValue(measures, StatisticalMeasure.STANDARD_DEVIATION());
+		String sdvalue = getValues(measures, StatisticalMeasure.STANDARD_DEVIATION());
 		if (sdvalue!=null) {
             sd=true;
         } else {
             sd=false;
         }
-		String minvalue = getValue(measures, StatisticalMeasure.MIN());
+		String minvalue = getValues(measures, StatisticalMeasure.MIN());
 		if (minvalue!=null) {
             min=true;
         } else {
             min=false;
         }
-		String maxvalue = getValue(measures, StatisticalMeasure.MAX());
+		String maxvalue = getValues(measures, StatisticalMeasure.MAX());
 		if (maxvalue!=null) {
             max=true;
         } else {
             max=false;
         }
-		String lowerbvalue = getValue(measures, StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
+		String lowerbvalue = getValues(measures, StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
 		if (lowerbvalue!=null) {
             lowerb=true;
         } else {
             lowerb=false;
         }
-		String upperbvalue = getValue(measures, StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
+		String upperbvalue = getValues(measures, StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
 		if (upperbvalue!=null) {
             upperb=true;
         } else {
             upperb=false;
         }
+
+		String exactValue = getValues(measures, StatisticalMeasure.EXACT_VALUE());
+		if (exactValue != null) {
+		    exact = true;
+		}else {
+		    exact = false;
+		}
+
 
 		// depending on the different associations of values, a sentence is built
 		if (max && min) {
@@ -108,6 +131,9 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 		else if (upperb) {
 			quantitativeDescription.append(space + up_To + space + upperbvalue + space + unit);
 		}
+		if (exact) {
+		    quantitativeDescription.append(space + exactValue + space + unit);
+		}
 		if (((max||min)&&(average))||((lowerb||upperb)&&(average))) {
 			quantitativeDescription.append(separator);
 		}
@@ -118,13 +144,12 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 			}
 		}
 
+
 		textData.putText((languages == null || languages.isEmpty())? Language.DEFAULT() : languages.get(0), quantitativeDescription.toString()); // which language should we put here ?
 //		textData.setFormat(TextFormat.NewInstance(null, "Text",null ));
 
 		return textData;
 	}
-
-
 
 	/**
 	 * Returns the value of a given type of measure as a String. If the value is an integer it is printed
@@ -135,20 +160,19 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 	 * @param key the desired measure
 	 * @return
 	 */
-	private String getValue(Map<StatisticalMeasure,BigDecimal> measures, Object key) {
-		BigDecimal floatValue;
-		Integer intValue;
-		if(measures.containsKey(key)) {
-			floatValue = measures.get(key);
-			intValue=floatValue.intValue();
-			if (floatValue.equals(intValue.floatValue())) {
-                return intValue.toString();
-            } else {
-                return floatValue.toString();
-            }
-		} else {
-            return null;
-        }
-	}
+	private String getValues(Map<StatisticalMeasure,List<BigDecimal>> measures, Object key) {
 
+		if(measures.containsKey(key)) {
+
+		    List<BigDecimal> values;
+		    String result = "";
+			values = measures.get(key);
+			Collections.sort(values);
+			for (BigDecimal value: values) {
+                result = CdmUtils.concat("; ", result, value.toString());
+            }
+			return result;
+		}
+		return null;
+	}
 }

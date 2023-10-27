@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.persistence.dto.EntityDTOBase;
 
 /**
  * DTO for IdentifiableEntities matching a certain marker.

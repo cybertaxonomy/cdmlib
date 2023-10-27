@@ -11,16 +11,12 @@ package eu.etaxonomy.cdm.persistence.query;
 /**
  * @author a.mueller
  * @since 03.12.2016
- *
  */
 public enum TaxonTitleType {
     TAXON,  //Taxon title cache
     NAME,   //Name title cache
     PURE_NAME; //Name name cache
 
-    /**
-     * @return
-     */
     public static TaxonTitleType DEFAULT() {
         return TAXON;
     }
@@ -42,5 +38,4 @@ public enum TaxonTitleType {
             return select;
         }
     }
-
 }

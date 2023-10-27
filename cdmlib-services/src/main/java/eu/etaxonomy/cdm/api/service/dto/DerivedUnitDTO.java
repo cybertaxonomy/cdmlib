@@ -69,7 +69,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     private String barcode;
 
     private String preservationMethod;
-    private List<DerivedUnitStatusDto> status; 
+    private List<DerivedUnitStatusDto> status;
 
     /**
      * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and
@@ -121,7 +121,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
                     .forEach(a -> dto.addAnnotation(AnnotationDTO.fromEntity(a))
                             )
                     );
-        
+
         return dto;
     }
 
@@ -196,7 +196,13 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
                 else if(descriptionElementBase instanceof CategoricalData){
                     CategoricalData categoricalData = (CategoricalData) descriptionElementBase;
                     DefaultCategoricalDescriptionBuilder builder = new DefaultCategoricalDescriptionBuilder();
-                    String state = builder.build(categoricalData, languages).getText(Language.DEFAULT());
+                    String state = null;
+                    if (categoricalData.getNoDataStatus()!= null) {
+                        state = categoricalData.getNoDataStatus().getLabel(Language.DEFAULT());
+                    }else {
+                        state = builder.build(categoricalData, languages).getText(Language.DEFAULT());
+                    }
+
                     addCharacterData(character, state);
                 }
             }
@@ -214,10 +220,10 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
             addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }
         Collection<OccurrenceStatus> occurrenceStatus = derivedUnit.getStatus();
-        
+
         if (occurrenceStatus != null && !occurrenceStatus.isEmpty()) {
         	this.status = new ArrayList<>();
-        
+
 	        for (OccurrenceStatus specimenStatus : occurrenceStatus) {
 	            DerivedUnitStatusDto dto = new DerivedUnitStatusDto(specimenStatus.getType().getLabel());
 	            dto.setStatusSource(SourceDTO.fromDescriptionElementSource(specimenStatus.getSource()) ) ;
@@ -225,8 +231,8 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 	        }
         }
         this.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(derivedUnit, this.getSpecimenShortTitle()));
-        
-        
+
+
         if(derivedUnit.getStoredUnder() != null) {
             storedUnder = TypedEntityReference.fromEntity(derivedUnit.getStoredUnder());
         }
@@ -390,7 +396,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 			this.setHasSpecimenScan(isHasSpecimenScan()|| derivative.isHasSpecimenScan());
 			this.setHasCharacterData(isHasCharacterData()||derivative.isHasCharacterData());
 		}
-		
+
         // TODO DerivationTreeSummaryDTO should be updated here once it is refactored so that it can operate on dtos
     }
 }

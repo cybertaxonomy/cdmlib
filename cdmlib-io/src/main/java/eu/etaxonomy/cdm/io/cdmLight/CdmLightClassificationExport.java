@@ -1384,7 +1384,6 @@ public class CdmLightClassificationExport
                 typifiedNames.addAll(group.getTypifiedNames());
             }
 
-
             Integer seqNumber = typifiedNames.indexOf(name);
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_SEQ)] = String.valueOf(seqNumber);
             state.getProcessor().put(table, name, csvLine);

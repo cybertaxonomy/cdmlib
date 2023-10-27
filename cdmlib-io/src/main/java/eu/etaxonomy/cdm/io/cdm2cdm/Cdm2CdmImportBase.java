@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -72,6 +74,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -411,7 +414,8 @@ public abstract class Cdm2CdmImportBase
     protected Taxon handlePersistedTaxon(Taxon taxon, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         Taxon result = handlePersisted((TaxonBase<?>)taxon, state);
         //complete
-        handleCollection(result, Taxon.class, "synonyms", Synonym.class, state);
+        BiFunction<Synonym,Cdm2CdmImportState,Boolean> filterFunction = state.getConfig().getSynonymFilter();
+        handleCollection(result, Taxon.class, "synonyms", Synonym.class, filterFunction, state);
         //do not cascade to taxon nodes
 //        handleCollection(result, Taxon.class, "taxonNodes", TaxonNode.class);
         setNewCollection(result, Taxon.class, "taxonNodes", TaxonNode.class);
@@ -460,6 +464,8 @@ public abstract class Cdm2CdmImportBase
 
             DoubleResult<Taxon,DefinedTermBase<?>[]> input = new DoubleResult<>(taxon, params);
             endemismDistribution = state.getConfig().getEndemismHandler().apply(input);
+            DescriptionElementSource source = endemismDistribution.addPrimaryTaxonomicSource(getSourceReference(state));
+            source.setAccessed(TimePeriod.NewInstance(Calendar.getInstance()));
         }
         return endemismDistribution;
     }
@@ -530,11 +536,12 @@ public abstract class Cdm2CdmImportBase
         NomenclaturalStatus result = handlePersisted((SingleSourcedEntityBase)status, state);
         //complete
         result.setType(detach(result.getType(), state));
+        setInvisible(result, "name", detach(result.getName(), state));
         return result;
     }
 
     protected TypeDesignationBase handlePersisted(TypeDesignationBase designation, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        TypeDesignationBase result = handlePersisted((SourcedEntityBase)designation, state);
+        TypeDesignationBase<?> result = handlePersisted((SourcedEntityBase)designation, state);
         //complete
         handleCollection(result, TypeDesignationBase.class, "registrations", Registration.class, state);
         handleCollection(result, TypeDesignationBase.class, "typifiedNames", TaxonName.class, state);
@@ -625,7 +632,7 @@ public abstract class Cdm2CdmImportBase
         //do not propagate taxa from names
         @SuppressWarnings("rawtypes")
         Function<TaxonBase,Boolean> keepEmpty = tn->{return true;};
-        handleCollection(result, TaxonName.class, "taxonBases", TaxonBase.class, keepEmpty, state);
+        handleCollection(result, TaxonName.class, "taxonBases", TaxonBase.class, keepEmpty, null, state);
 
         return result;
     }
@@ -1101,7 +1108,7 @@ public abstract class Cdm2CdmImportBase
 
     private <SOURCE extends OriginalSourceBase> Function<SOURCE,Boolean> getImportSourceFilter(){
         return (s)->s.getType() == OriginalSourceType.Import;
-    };
+    }
 
     protected <T extends SourcedEntityBase<?>> T handlePersisted(
             @SuppressWarnings("rawtypes") SourcedEntityBase sourcedEntity,
@@ -1322,16 +1329,44 @@ public abstract class Cdm2CdmImportBase
             Cdm2CdmImportState state)
             throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         Function<ITEM, Boolean> filterFunction = null;
-        handleCollection(holder, declaringClass, parameter, itemClass, filterFunction, state);
+        BiFunction<ITEM,Cdm2CdmImportState,Boolean> filterBiFunction = null;
+        handleCollection(holder, declaringClass, parameter, itemClass, filterFunction, filterBiFunction, state);
     }
 
     protected <HOLDER extends CdmBase, ITEM extends CdmBase> void handleCollection(
             HOLDER holder, Class<? super HOLDER> declaringClass, String parameter, Class<ITEM> itemClass,
-            Function<ITEM,Boolean> filterFunction, Cdm2CdmImportState state)
+            Function<ITEM,Boolean> filterFunction,
+            Cdm2CdmImportState state)
+            throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+        BiFunction<ITEM,Cdm2CdmImportState,Boolean> filterBiFunction = null;
+        Collection<ITEM> oldCollection = setNewCollection(holder, declaringClass, parameter, itemClass);
+        Collection<ITEM> newCollection = getTargetCollection(oldCollection, filterFunction, filterBiFunction, state);
+        Field field = declaringClass.getDeclaredField(parameter);
+        field.setAccessible(true);
+        field.set(holder, newCollection);
+    }
+
+    protected <HOLDER extends CdmBase, ITEM extends CdmBase> void handleCollection(
+            HOLDER holder, Class<? super HOLDER> declaringClass, String parameter, Class<ITEM> itemClass,
+            Function<ITEM,Boolean> filterFunction, BiFunction<ITEM,Cdm2CdmImportState,Boolean> filterBiFunction,
+            Cdm2CdmImportState state)
             throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         Collection<ITEM> oldCollection = setNewCollection(holder, declaringClass, parameter, itemClass);
-        Collection<ITEM> newCollection = getTargetCollection(oldCollection, filterFunction, state);
+        Collection<ITEM> newCollection = getTargetCollection(oldCollection, filterFunction, filterBiFunction, state);
+        Field field = declaringClass.getDeclaredField(parameter);
+        field.setAccessible(true);
+        field.set(holder, newCollection);
+    }
+
+    protected <HOLDER extends CdmBase, ITEM extends CdmBase> void handleCollection(
+            HOLDER holder, Class<? super HOLDER> declaringClass, String parameter, Class<ITEM> itemClass,
+            BiFunction<ITEM,Cdm2CdmImportState,Boolean> filterBiFunction, Cdm2CdmImportState state)
+            throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+        Collection<ITEM> oldCollection = setNewCollection(holder, declaringClass, parameter, itemClass);
+        Collection<ITEM> newCollection = getTargetCollection(oldCollection, null, filterBiFunction, state);
         Field field = declaringClass.getDeclaredField(parameter);
         field.setAccessible(true);
         field.set(holder, newCollection);
@@ -1386,8 +1421,8 @@ public abstract class Cdm2CdmImportBase
 
 
     private <T extends Collection<S>, S extends CdmBase> Collection<S> getTargetCollection(
-            T sourceCollection, Function<S,Boolean> filterFunction, Cdm2CdmImportState state
-            ) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+            T sourceCollection, Function<S,Boolean> filterFunction, BiFunction<S,Cdm2CdmImportState,Boolean> filterBiFunction,
+            Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
 
         Collection<S> result;
         if (Set.class.isAssignableFrom(sourceCollection.getClass())){
@@ -1397,6 +1432,8 @@ public abstract class Cdm2CdmImportBase
         }
         for (S entity : sourceCollection){
             if (filterFunction != null && filterFunction.apply(entity)) {
+                continue;
+            }else if (filterBiFunction != null && filterBiFunction.apply(entity,state)) {
                 continue;
             }else {
                 S target = detach(entity, state);

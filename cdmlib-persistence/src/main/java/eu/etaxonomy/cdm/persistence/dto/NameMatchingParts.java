@@ -13,7 +13,6 @@ import java.util.UUID;
 
 /**
  * @author andreabee90
- *
  */
 public class NameMatchingParts {
 

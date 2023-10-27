@@ -22,6 +22,7 @@ import org.unitils.dbunit.annotation.DataSets;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.ExportResult;
+import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -52,17 +53,22 @@ public class ColDpExportTest
     private String expectedArmenianDistributionLine = uuid(subspeciesTaxonUuid) + NONE +
             "\"ARM\",\"Armenia\",\"iso\",\"uncertain\"," + NONE + NONE_END;
 
+    private String expectedFamilyNameLine = uuid(familyNameUuid) + NONE3 + "\"Family\",\"L.\",\"family\",\"Family\"," +
+            NONE4 + NONE + "\"L.\"," + NONE + "\"1752\"," + NONE3 + "\"ICN\",\"conserved\"," +
+            uuid(familyNomRefUuid) + "\"1752\",\"22\"," + NONE2 + NONE_END;
+
     //FIXME basionymID, nom. status
     private String basionymID = NONE;
     private String expectedSubspeciesNameLine = uuid(subspeciesNameUuid) + NONE2 + basionymID + "\"Genus species subsp. subspec\",\"Mill.\",\"subspecies\","
-            + NONE + "\"Genus\"," + NONE + "\"species\",\"subspec\"," + NONE + "\"ICN\"," + NONE + uuid(subspeciesNomRefUuid) + "\"1804\",\"22\"," + NONE2 + NONE_END;
+            + NONE + "\"Genus\"," + NONE + "\"species\",\"subspec\"," + NONE + "\"Mill.\"," + NONE + "\"1804\"," + NONE3 +
+            "\"ICN\"," + VALID + uuid(subspeciesNomRefUuid) + "\"1804\",\"22\"," + NONE2 + NONE_END;
 
     //FIXME media line
     private String expectedMediaLine = uuid(subspeciesTaxonUuid)+ NONE + "\"https://www.abc.de/fghi.jpg\",\"image/jpg\","
             + NONE + "\"My nice image\",\"2023-07-20\"," + NONE2 + NONE_END;
 
     //FIXME name relation line 1
-    private String expectedNameRelationLine1 = uuid(basionymNameUuid) + uuid(speciesNameUuid)+
+    private String expectedNameRelationLine1 = uuid(speciesNameUuid) + uuid(basionymNameUuid)+
             NONE + "\"basionym\"," + NONE + NONE_END;
 
     //FIXME name relation line 2
@@ -221,12 +227,12 @@ public class ColDpExportTest
         Assert.assertEquals(expectedArmenianDistributionLine, distributionStr);
 
         //name
-//        String scientificNameString = new String(data.get(ColDpExportTable.NAME.getTableName()));
-//        System.out.println(scientificNameString);
-        String nameStr = getLine(nameResult, subspeciesNameUuid);
+        //... family => test nom. status 'conserved'
+        String nameStr = getLine(nameResult, familyNameUuid);
+        Assert.assertEquals(expectedFamilyNameLine, nameStr);
+        //... subspecies
+        nameStr = getLine(nameResult, subspeciesNameUuid);
         Assert.assertEquals(expectedSubspeciesNameLine, nameStr);
-
-        //FIXME test nom. status
 
         //media
 //        String mediaString = new String(data.get(ColDpExportTable.MEDIA.getTableName()));
@@ -235,7 +241,8 @@ public class ColDpExportTest
         Assert.assertEquals(expectedMediaLine, mediaStr);
 
         //name relation
-        String nameRelStr = getLine(nameRelationResult, basionymNameUuid);
+        //TODO is speciesNameUuid specific enough?
+        String nameRelStr = getLine(nameRelationResult, speciesNameUuid);
         Assert.assertEquals(expectedNameRelationLine1, nameRelStr);
 
         //type material
@@ -262,6 +269,7 @@ public class ColDpExportTest
         ColDpExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
 
         //test counts
         List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);

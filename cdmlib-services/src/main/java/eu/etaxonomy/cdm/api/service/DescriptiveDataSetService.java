@@ -34,15 +34,9 @@ import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.RemoveDescriptionsFromDescriptiveDataSetConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.CategoricalDataDto;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
-import eu.etaxonomy.cdm.api.service.dto.DescriptionElementDto;
-import eu.etaxonomy.cdm.api.service.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationDTOFactory;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
-import eu.etaxonomy.cdm.api.service.dto.StateDataDto;
-import eu.etaxonomy.cdm.api.service.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -79,9 +73,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.CategoricalDataDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionElementDto;
 import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
+import eu.etaxonomy.cdm.persistence.dto.StateDataDto;
+import eu.etaxonomy.cdm.persistence.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -140,7 +140,7 @@ public class DescriptiveDataSetService
     }
 
 	@Override
-	public List<RowWrapperDTO<?>> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
+	public List<RowWrapperDTO<?>> getRowWrapper(UUID descriptiveDataSetUuid, Language lang, IProgressMonitor monitor) {
 	    DescriptiveDataSetBaseDto datasetDto = dao.getDescriptiveDataSetDtoByUuid(descriptiveDataSetUuid);
 //	    DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
 	    monitor.beginTask("Load row wrapper", datasetDto.getDescriptionUuids().size());
@@ -157,11 +157,11 @@ public class DescriptiveDataSetService
                             || descDto.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC)
                             || descDto.getTypes().contains(DescriptionType.SECONDARY_DATA)
                             )){
-                rowWrapper = createTaxonRowWrapper(descDto, datasetDto.getUuid());
+                rowWrapper = createTaxonRowWrapper(descDto, datasetDto.getUuid(), lang);
             }
             else if (descDto != null &&descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
                     !descDto.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))){
-                rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid);
+                rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid, lang);
             }
             if(rowWrapper!=null){
                 wrappers.add(rowWrapper);
@@ -248,9 +248,9 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid) {
+    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid, Language lang) {
         DescriptionBaseDto description = descriptionService.loadDto(taxonDescriptionUuid);
-        return createTaxonRowWrapper(description, descriptiveDataSetUuid);
+        return createTaxonRowWrapper(description, descriptiveDataSetUuid, lang);
     }
 
     @Override
@@ -400,7 +400,7 @@ public class DescriptiveDataSetService
     }
 
     private SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID taxonNodeUuid,
-            UUID datasetUuid) {
+            UUID datasetUuid, Language lang) {
         TaxonNodeDto taxonNode = taxonNodeService.dto(taxonNodeUuid);
         DescriptiveDataSetBaseDto descriptiveDataSet = getDescriptiveDataSetDtoByUuid(datasetUuid);
 //        UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
@@ -444,24 +444,33 @@ public class DescriptiveDataSetService
 //        TaxonDescription defaultTaxonDescription = findDefaultDescription(description.getUuid(), descriptiveDataSet.getUuid());
         DescriptionBaseDto defaultTaxonDescription = recurseDefaultDescription(taxonNode, descriptiveDataSet);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
-                ? createTaxonRowWrapper(defaultTaxonDescription.getDescriptionUuid(), descriptiveDataSet.getUuid()) : null;
+                ? createTaxonRowWrapper(defaultTaxonDescription.getDescriptionUuid(), descriptiveDataSet.getUuid(), lang) : null;
 //                use description not specimen for specimenRow
-        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(description, SpecimenOrObservationDTOFactory.fromEntity(specimen), specimen.getRecordBasis(), taxonNode, fieldUnit, identifier, country);
+        DescriptionBase specDesc = null;
+
+        for (Object desc: specimen.getDescriptions()) {
+            if (description.getDescriptionUuid().equals(((DescriptionBase)desc).getUuid())) {
+                specDesc = (DescriptionBase)desc;
+                break;
+            }
+        }
+        DescriptionBaseDto dto = DescriptionBaseDto.fromDescription(specDesc);
+        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(dto, SpecimenOrObservationDTOFactory.fromEntity(specimen), specimen.getRecordBasis(), taxonNode, fieldUnit, identifier, country, lang);
         specimenRowWrapperDTO.setDefaultDescription(taxonRowWrapper);
         return specimenRowWrapperDTO;
     }
 
     @Override
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid){
-        return createSpecimenRowWrapper(description, null, descriptiveDataSetUuid);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid, Language lang){
+        return createSpecimenRowWrapper(description, null, descriptiveDataSetUuid, lang);
 	}
 
     @Override
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid){
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid, Language lang){
 
         SpecimenOrObservationBase<?> specimen = occurrenceService.load(specimenUuid);
         DescriptionBaseDto specimenDescription = findSpecimenDescription(descriptiveDataSetUuid, specimen);
-        return createSpecimenRowWrapper(specimenDescription, taxonNodeUuid, descriptiveDataSetUuid);
+        return createSpecimenRowWrapper(specimenDescription, taxonNodeUuid, descriptiveDataSetUuid, lang);
     }
 
     @Override
@@ -674,7 +683,7 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly=false)
-    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType){
+    public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType, Language lang){
         DescriptiveDataSet dataSet = load(dataSetUuid);
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid, Arrays.asList("taxon"));
         TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
@@ -682,13 +691,22 @@ public class DescriptiveDataSetService
         newTaxonDescription.getTypes().add(descriptionType);
         dataSet.addDescription(newTaxonDescription);
         saveOrUpdate(dataSet);
-        return createTaxonRowWrapper(newTaxonDescription.getUuid(), dataSet.getUuid());
+        return createTaxonRowWrapper(newTaxonDescription.getUuid(), dataSet.getUuid(), lang);
     }
 
     @Override
     public Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids){
         return termDao.getSupportedStatesForFeature(featureUuids);
     }
+    @Override
+    public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids){
+        return termDao.getRecommendedModifiersForFeature(featureUuids);
+    }
+
+//    @Override
+//    public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids, Language lang){
+//        return termDao.getRecommendedModifiersForFeature(featureUuids);
+//    }
 
     @Override
     @Transactional(readOnly=false)
@@ -979,7 +997,7 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public TaxonRowWrapperDTO createTaxonRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid) {
+    public TaxonRowWrapperDTO createTaxonRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid, Language lang) {
         Classification classification = null;
         DescriptiveDataSet descriptiveDataSet = dao.load(descriptiveDataSetUuid, null);
         Optional<TaxonNode> first = descriptiveDataSet.getTaxonSubtreeFilter().stream()
@@ -992,7 +1010,7 @@ public class DescriptiveDataSetService
             nodeDto = taxonNodeService.dto(description.getTaxonDto().getUuid(), classification.getUuid());
         }
 
-        return new TaxonRowWrapperDTO(description, nodeDto, descriptions);
+        return new TaxonRowWrapperDTO(description, nodeDto, descriptions, lang);
     }
 
 //    @Override

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +30,17 @@ public abstract class QuantitativeDescriptionBuilderBase
 
 	@Override
     public TextData build(QuantitativeData data, List<Language> languages) {
-		   Map<StatisticalMeasure,BigDecimal> measures = new HashMap<>();
+		   Map<StatisticalMeasure,List<BigDecimal>> measures = new HashMap<>();
 		   for (StatisticalMeasurementValue smv : data.getStatisticalValues()){
-		       measures.put(smv.getType(),smv.getValue());
+		       if (measures.get(smv.getType()) == null) {
+		           measures.put(smv.getType(), new ArrayList<>());
+		       }
+		       measures.get(smv.getType()).add(smv.getValue());
 		   }
 		   return doBuild(measures,data.getUnit(), languages);
 		 }
 
-	protected abstract TextData doBuild(Map<StatisticalMeasure,BigDecimal> measures,
+	protected abstract TextData doBuild(Map<StatisticalMeasure,List<BigDecimal>> measures,
 	        MeasurementUnit unit, List<Language> languages);
 
 }

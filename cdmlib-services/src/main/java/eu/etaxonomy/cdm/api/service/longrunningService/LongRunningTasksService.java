@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurat
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 
 /**
@@ -64,11 +65,11 @@ public class LongRunningTasksService implements ILongRunningTasksService{
     private ICdmApplication repository;
 
     @Override
-    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid) {
+    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid, Language lang) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                return (Serializable)descriptiveDataSetService.getRowWrapper(descriptiveDataSetUuid, monitor);
+                return (Serializable)descriptiveDataSetService.getRowWrapper(descriptiveDataSetUuid, lang, monitor);
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);

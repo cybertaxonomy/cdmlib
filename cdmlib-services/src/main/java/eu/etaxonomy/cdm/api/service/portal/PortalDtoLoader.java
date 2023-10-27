@@ -1028,6 +1028,7 @@ public class PortalDtoLoader {
                 dto.setAreaUUID(area.getUuid());
             }
             dto.setName(ctn.getName());
+            dto.setTransliteration(ctn.getTransliteration());
             loadBaseData(ctn, dto);
             //TODO sort all common names (not urgent as this is done by portal code)
             result = dto;

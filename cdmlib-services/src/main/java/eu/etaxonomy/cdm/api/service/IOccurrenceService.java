@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
-
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;

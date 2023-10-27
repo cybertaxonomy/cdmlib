@@ -27,6 +27,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -52,6 +53,11 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.CategoricalDataDto;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
+import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
+import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -64,6 +70,10 @@ public class DescriptionDaoImpl
             implements IDescriptionDao{
 
     private static final Logger logger = LogManager.getLogger();
+
+    @Autowired
+    private IDefinedTermDao termDao;
+
 
     @SuppressWarnings("unchecked")
     public DescriptionDaoImpl() {
@@ -914,5 +924,93 @@ public class DescriptionDaoImpl
         List<TermDto> dtoList = TermDto.termDtoListFrom(parentResults);
 
         return dtoList;
+    }
+
+    @Override
+    public DescriptionBaseDto loadDto(UUID descriptionUuid) {
+        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
+        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
+        List<UUID> uuids = new ArrayList<>();
+        uuids.add(descriptionUuid);
+        query.setParameterList("uuid", uuids);
+
+        List<Object[]> result = query.list();
+
+        List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
+
+        if (list.size()== 1){
+            DescriptionBaseDto dto = list.get(0);
+            //get categorical data
+            sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid", descriptionUuid);
+
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultCat = query.list();
+            List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
+
+            List<UUID> featureUuids = new ArrayList<>();
+            for (CategoricalDataDto catDto: listCategorical){
+                featureUuids.add(catDto.getFeatureUuid());
+            }
+            Map<UUID, TermDto> featureDtos = termDao.findFeatureByUUIDsAsDtos(featureUuids);
+            for (CategoricalDataDto catDto: listCategorical){
+                FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
+                catDto.setFeatureDto(featuredto);
+            }
+            dto.getElements().addAll(listCategorical);
+            //get quantitative data
+            sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
+            query =  getSession().createQuery(sqlSelect);
+            query.setParameter("uuid", descriptionUuid);
+            @SuppressWarnings("unchecked")
+            List<Object[]>  resultQuant = query.list();
+            List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
+            dto.getElements().addAll(listQuant);
+            return dto;
+        }else{
+            return null;
+        }
+    }
+
+
+    @Override
+    public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuids) {
+        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
+        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
+        query.setParameterList("uuid", descriptionUuids);
+
+        List<Object[]> result = query.list();
+
+        List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
+
+        for (DescriptionBaseDto dto: list){
+
+            //get categorical data
+            sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
+            query = getSession().createQuery(sqlSelect, Object[].class);
+            query.setParameter("uuid", dto.getDescriptionUuid());
+            List<Object[]>  resultCat = query.list();
+            List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
+
+            List<UUID> featureUuids = new ArrayList<>();
+            for (CategoricalDataDto catDto: listCategorical){
+                featureUuids.add(catDto.getFeatureUuid());
+            }
+            Map<UUID, TermDto> featureDtos = termDao.findFeatureByUUIDsAsDtos(featureUuids);
+            for (CategoricalDataDto catDto: listCategorical){
+                FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
+                catDto.setFeatureDto(featuredto);
+            }
+            dto.getElements().addAll(listCategorical);
+            //get quantitative data
+            sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
+            query = getSession().createQuery(sqlSelect, Object[].class);
+            query.setParameter("uuid",  dto.getDescriptionUuid());
+            List<Object[]> resultQuant = query.list();
+            List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
+            dto.getElements().addAll(listQuant);
+        }
+        return list;
     }
 }

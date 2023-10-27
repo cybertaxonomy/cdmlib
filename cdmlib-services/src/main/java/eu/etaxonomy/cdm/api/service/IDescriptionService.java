@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -34,6 +33,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -475,7 +475,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
             boolean isCopy, boolean setNameInSource);
 
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetTaxonUuid,
-            String moveMessage, boolean isCopy, boolean setNameInSource);
+            String moveMessage, boolean isCopy, boolean setNameInSource, boolean useDefaultDescription);
 
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid, boolean setNameInSource);
 
