@@ -1009,6 +1009,9 @@ public class DescriptionServiceImpl
             boolean isCopy, boolean setNameInSource) {
         Taxon targetTaxon = CdmBase.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
         DescriptionBase targetDescription = TaxonDescription.NewInstance(targetTaxon);
+        if (!targetTaxon.hasDefaultDescription()) {
+            targetDescription.setDefault(true);
+        }
         targetDescription.setTitleCache(moveMessage, true);
         Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
         annotation.setAnnotationType(AnnotationType.TECHNICAL());
