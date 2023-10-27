@@ -1006,9 +1006,20 @@ public class DescriptionServiceImpl
             Set<UUID> descriptionElementUUIDs,
             UUID targetTaxonUuid,
             String moveMessage,
-            boolean isCopy, boolean setNameInSource) {
+            boolean isCopy, boolean setNameInSource, boolean useDefaultDescription) {
         Taxon targetTaxon = CdmBase.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
-        DescriptionBase targetDescription = TaxonDescription.NewInstance(targetTaxon);
+        TaxonDescription targetDescription = null;
+        if (useDefaultDescription && targetTaxon.hasDefaultDescription()) {
+            for (TaxonDescription des:targetTaxon.getDescriptions()) {
+                if (des.isDefault()) {
+                    targetDescription = des;
+                    break;
+                }
+            }
+        }
+        if (targetDescription == null) {
+            targetDescription = TaxonDescription.NewInstance(targetTaxon);
+        }
         if (!targetTaxon.hasDefaultDescription()) {
             targetDescription.setDefault(true);
         }
