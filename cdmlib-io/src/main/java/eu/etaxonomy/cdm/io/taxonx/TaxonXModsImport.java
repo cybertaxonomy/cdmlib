@@ -102,16 +102,11 @@ public class TaxonXModsImport
 		return;
 	}
 
-
-	/**
-	 * @param contentList
-	 * @return
-	 */
 	private void removeEmptyContent(List<Content> contentList) {
 		List<Content> removeList = new ArrayList<Content>();
 		for (Content content: contentList){
 			if (content instanceof Text){
-				if ( CdmUtils.isEmpty(((Text) content).getTextNormalize())){
+				if ( CdmUtils.isBlank(((Text) content).getTextNormalize())){
 					removeList.add(content);
 				}
 			}
@@ -119,13 +114,10 @@ public class TaxonXModsImport
 		contentList.removeAll(removeList);
 	}
 
-	/**
-	 * @param elModsName
-	 * @param ref
-	 */
 	private void makeOriginInfo(Element elOriginInfo, Reference ref) {
 		Namespace nsMods = elOriginInfo.getNamespace();
-		List<Content> contentList = elOriginInfo.getContent();
+		@SuppressWarnings("unchecked")
+        List<Content> contentList = elOriginInfo.getContent();
 
 		//dateIssued
 		Element elDateIssued = elOriginInfo.getChild("dateIssued", nsMods);
@@ -161,11 +153,6 @@ public class TaxonXModsImport
 		return;
 	}
 
-
-	/**
-	 * @param elModsName
-	 * @param ref
-	 */
 	//TODO
 	//THIS implementation is against the mods semantics but supports the current
 	//format for palmae taxonX files
@@ -174,11 +161,13 @@ public class TaxonXModsImport
 		int UNPARSED = 0;
 		int PARSED = 1;
 		Namespace nsMods = elModsName.getNamespace();
-		List<Content> contentList = elModsName.getContent();
+		@SuppressWarnings("unchecked")
+        List<Content> contentList = elModsName.getContent();
 		Team authorship = Team.NewInstance();
 
 		//name
-		List<Element> elNameParts = elModsName.getChildren("namePart", nsMods);
+		@SuppressWarnings("unchecked")
+        List<Element> elNameParts = elModsName.getChildren("namePart", nsMods);
 		int mode = UNPARSED;
 		if (elNameParts.size() > 0){
 			if (elNameParts.get(0).getAttributes().size() > 0){
@@ -223,13 +212,10 @@ public class TaxonXModsImport
 		return;
 	}
 
-	/**
-	 * @param elTitleInfo
-	 * @param ref
-	 */
 	private void makeTitleInfo(Element elTitleInfo, Reference ref) {
 		Namespace nsMods = elTitleInfo.getNamespace();
-		List<Content> contentList = elTitleInfo.getContent();
+		@SuppressWarnings("unchecked")
+        List<Content> contentList = elTitleInfo.getContent();
 
 		//title
 		Element elTitle = elTitleInfo.getChild("title", nsMods);
@@ -245,12 +231,8 @@ public class TaxonXModsImport
 		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(TaxonXImportState state){
 		return ! state.getConfig().isDoMods();
 	}
-
 }
