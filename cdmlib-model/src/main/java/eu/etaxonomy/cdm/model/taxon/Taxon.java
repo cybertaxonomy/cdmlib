@@ -446,6 +446,24 @@ public class Taxon
         return descriptions;
     }
 
+    /**
+     * Returns the default description if exist {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
+     * concerning <i>this</i> taxon.
+     *
+     * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
+     */
+    public TaxonDescription getDefaultDescription() {
+        if(descriptions == null) {
+            return null;
+        }
+        for (TaxonDescription desc: descriptions) {
+            if (desc.isDefault()) {
+                return desc;
+            }
+        }
+        return null;
+    }
+
     public Set<TaxonDescription> getDescriptions(DescriptionType type) {
         Set<TaxonDescription> result = new HashSet<>();
         for (TaxonDescription description : getDescriptions()){
