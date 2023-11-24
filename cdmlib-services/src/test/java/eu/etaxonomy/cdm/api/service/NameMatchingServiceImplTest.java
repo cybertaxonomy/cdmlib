@@ -313,17 +313,14 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         Assert.assertEquals(2,(int) matchRes.getDistance());
 
-//        This test is not working because the method getAuthorshipCache() parse only the first author..?
-
-//        inputName = "Nectindra cinnamomoides Turm. and Kilian";
-//        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
-//        matchResult = matchResults.bestResults;
-//        matchRes = matchResult.get(0);
-//        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-//        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
-//        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
-//        Assert.assertEquals(2,(int) matchRes.getDistance());
-
+        inputName = "Nectindra cinnamomoides Turm. & Kilian";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.bestResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
+        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
+        Assert.assertEquals(2,(int) matchRes.getDistance());
 
     }
 
