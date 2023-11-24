@@ -295,34 +295,34 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         List<SingleNameMatchingResult> matchResult;
         SingleNameMatchingResult matchRes;
 
-//        inputName = "Nectandra laevis Turm.";
-//        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
-//        matchResult = matchResults.exactResults;
-//        matchRes = matchResult.get(0);
-//        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-//        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
-//        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-//        Assert.assertEquals(1,(int) matchRes.getDistance());
-//
-//        inputName = "Nectindra levis Turm.";
-//        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
-//        matchResult = matchResults.bestResults;
-//        matchRes = matchResult.get(0);
-//        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-//        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
-//        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-//        Assert.assertEquals(2,(int) matchRes.getDistance());
+        inputName = "Nectandra laevis Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.exactResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(1,(int) matchRes.getDistance());
 
-//        This test is not working because the method getAuthorshipCache() parse only the first author..?
-
-        inputName = "Nectindra cinnamomoides Turm. and Kilian";
+        inputName = "Nectindra levis Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
         matchResult = matchResults.bestResults;
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
+        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         Assert.assertEquals(2,(int) matchRes.getDistance());
+
+//        This test is not working because the method getAuthorshipCache() parse only the first author..?
+
+//        inputName = "Nectindra cinnamomoides Turm. and Kilian";
+//        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+//        matchResult = matchResults.bestResults;
+//        matchRes = matchResult.get(0);
+//        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+//        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
+//        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
+//        Assert.assertEquals(2,(int) matchRes.getDistance());
 
 
     }
