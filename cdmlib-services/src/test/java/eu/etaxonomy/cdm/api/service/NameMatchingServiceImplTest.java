@@ -322,6 +322,16 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
         Assert.assertEquals(2,(int) matchRes.getDistance());
 
+        //TODO matching non-parsable names is still an open issue (#10178)
+
+//        inputName = "Nectindra cinnamomoides Turm. and Kilian";
+//        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+//        matchResult = matchResults.bestResults;
+//        matchRes = matchResult.get(0);
+//        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+//        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
+//        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
+//        Assert.assertEquals(2,(int) matchRes.getDistance());
     }
 
 	@Override
