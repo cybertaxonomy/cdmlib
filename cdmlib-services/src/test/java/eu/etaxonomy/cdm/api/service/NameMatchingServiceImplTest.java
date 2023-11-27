@@ -257,7 +257,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingNamesWithAuthors() {
+    public void testFindingMatchingGenusWithAuthors() {
 
         String inputName;
         NameMatchingResult matchResults;
@@ -295,6 +295,8 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         List<SingleNameMatchingResult> matchResult;
         SingleNameMatchingResult matchRes;
 
+        // the exact match results show all species names that retrieve a distance of 0
+        // EXCLUDING the authorship
         inputName = "Nectandra laevis Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
         matchResult = matchResults.exactResults;
@@ -324,14 +326,133 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         //TODO matching non-parsable names is still an open issue (#10178)
 
-//        inputName = "Nectindra cinnamomoides Turm. and Kilian";
-//        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
-//        matchResult = matchResults.bestResults;
-//        matchRes = matchResult.get(0);
-//        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-//        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
-//        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
-//        Assert.assertEquals(2,(int) matchRes.getDistance());
+        inputName = "Nectindra cinnamomoides Turm. and Kilian";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.bestResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
+        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
+        Assert.assertEquals(2,(int) matchRes.getDistance());
+    }
+
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    public void testFindingMatchingGenusWithExAuthors() {
+
+        String inputName;
+        NameMatchingResult matchResults;
+        List<SingleNameMatchingResult> matchResult;
+        SingleNameMatchingResult matchRes;
+
+        // exact match
+        inputName = "Nectandra (Kilian) Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.exactResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(1,(int) matchRes.getDistance());
+
+        inputName = "Nectandra (Kilian ex Turm.) Kilian ex Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.exactResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(1,(int) matchRes.getDistance());
+    }
+
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    public void testFindingMatchingSpeciesWithExAuthors() {
+
+        String inputName;
+        NameMatchingResult matchResults;
+        List<SingleNameMatchingResult> matchResult;
+        SingleNameMatchingResult matchRes;
+
+        // exact match
+        inputName = "Nectandra laevis (Kilian) Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.exactResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(1,(int) matchRes.getDistance());
+
+        inputName = "Nectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.exactResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(1,(int) matchRes.getDistance());
+
+        // not exact match
+        inputName = "Mectandra laevis (Kilian) Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.bestResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(2,(int) matchRes.getDistance());
+
+        inputName = "Mectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.bestResults;
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(2,(int) matchRes.getDistance());
+    }
+
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    public void testFindingMatchingSubspeciesWithExAuthors() {
+
+        String inputName;
+        NameMatchingResult matchResults;
+        List<SingleNameMatchingResult> matchResult;
+        SingleNameMatchingResult matchRes;
+
+        // exact match
+        inputName = "Nectandra mollis subsp. laurel Kilian ex Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.exactResults;
+        Assert.assertEquals(1, matchResult.size());
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(1,(int) matchRes.getDistance());
+
+        // not exact match
+        inputName = "Nectandra mollis var. laurol (Kilian) Turm.";
+        matchResults = nameMatchingService.findMatchingNames(inputName, null, true);
+        matchResult = matchResults.bestResults;
+        Assert.assertEquals(2, matchResult.size());
+        matchRes = matchResult.get(0);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(2,(int) matchRes.getDistance());
+
+        matchRes = matchResult.get(1);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
+        Assert.assertEquals("laureli", matchRes.getInfraSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_LAURELI, matchRes.getTaxonNameUuid());
+        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        Assert.assertEquals(3,(int) matchRes.getDistance());
     }
 
 	@Override

@@ -95,6 +95,7 @@ public class NameMatchingServiceImpl
     @Override
     public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor) {
 
+        taxonName = taxonName.replace(" and ", " & ");
         // TODO Discuss the value of distance if query is monomial, binomial or trinomial
 
         // 0. Parsing and Normalizing
@@ -109,14 +110,17 @@ public class NameMatchingServiceImpl
     		config = new NameMatchingConfigurator();
     	}
 
-        TaxonName name = NonViralNameParserImpl.NewInstance().parseReferencedName(taxonName); //parsereferencename
-        //TODO what to do if name could not be parsed?
+        TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
 
         String genusQuery = name.getGenusOrUninomial();
         String specificEpithetQuery = name.getSpecificEpithet();
         String infraGenericQuery = name.getInfraGenericEpithet();
         String infraSpecificQuery = name.getInfraSpecificEpithet();
-        String authorschipCacheQuery = name.getAuthorshipCache();
+        String authorshipCacheQuery = name.getAuthorshipCache();
+
+        if (name.getCombinationAuthorship() != null)  {
+            authorshipCacheQuery = name.getCombinationAuthorship().getNomenclaturalTitleCache();
+        }
 
         //define max. distances
         Integer maxDistance = config.getMaxDistance();
@@ -139,6 +143,7 @@ public class NameMatchingServiceImpl
          * the near match function of Rees 2007 it includes phonetic matches
          * (replace initial characters, soundalike changes, gender endings)
          */
+
         String normalizedGenusQuery = NameMatchingUtils.normalize(genusQuery);
         String phoneticNormalizedGenusQuery = NameMatchingUtils.nearMatch(normalizedGenusQuery);
 
@@ -181,7 +186,7 @@ public class NameMatchingServiceImpl
             }
 
             if (compareAuthor) {
-                authorMatch(result, authorschipCacheQuery);
+                authorMatch(result, authorshipCacheQuery);
                 }
 
             return result;
@@ -219,7 +224,7 @@ public class NameMatchingServiceImpl
             	result.bestResults = bestResults(resultSetInfraGenericListWithDist);
             }
             if (compareAuthor) {
-                authorMatch(result, authorschipCacheQuery);
+                authorMatch(result, authorshipCacheQuery);
                 }
             return result;
         } else if (specificEpithetQuery != null && infraSpecificQuery == null){
@@ -261,7 +266,7 @@ public class NameMatchingServiceImpl
             }
 
             if (compareAuthor) {
-                authorMatch(result, authorschipCacheQuery);
+                authorMatch(result, authorshipCacheQuery);
                 }
             return result;
 
@@ -311,7 +316,7 @@ public class NameMatchingServiceImpl
             }
 
             if (compareAuthor) {
-            authorMatch(result, authorschipCacheQuery);
+            authorMatch(result, authorshipCacheQuery);
             }
 
             return result;
