@@ -56,6 +56,7 @@ public class IdentifierImport
     @Override
     protected void doInvoke(IdentifierImportConfigurator config) {
         try {
+            //read stream
             InputStreamReader inputReader = config.getSource();
             CSVReader csvReader = new CSVReader(inputReader, ';');
             List<String[]> lines = csvReader.readAll();
@@ -65,24 +66,16 @@ public class IdentifierImport
                 return;
             }
 
-            Set<UUID> entityUuidsHandled = new HashSet<>();
-
-            UUID identifierTypeUuid = config.getIdentifierTypeUuid();
-
-            DefinedTermBase<?> identifierType = getTermService().find(identifierTypeUuid);
-            if (identifierType == null || identifierType.getTermType() != TermType.IdentifierType){
-                logger.warn("IdentifierType not recognized. Skip import");
-                csvReader.close();
+            //get identifier type
+            IdentifierType idType = getIdentifierType(config, csvReader);
+            if (idType == null) {
                 return;
             }
-            IdentifierType idType = CdmBase.deproxy(identifierType, IdentifierType.class);
 
+            Set<UUID> entityUuidsHandled = new HashSet<>();
             int i = 0;
             for (String[] strs : lines){
-                IdentifiableEntity<?> entity = handleSingleLine(config, strs, idType, i, entityUuidsHandled);
-                if (entity != null){
-//                    entitiesToSave.add(entity);
-                }
+                handleSingleLine(config, strs, idType, i, entityUuidsHandled);
                 i++;
             }
             csvReader.close();
@@ -93,6 +86,20 @@ public class IdentifierImport
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private IdentifierType getIdentifierType(IdentifierImportConfigurator config, CSVReader csvReader)
+            throws IOException {
+        UUID identifierTypeUuid = config.getIdentifierTypeUuid();
+
+        DefinedTermBase<?> identifierType = getTermService().find(identifierTypeUuid);
+        if (identifierType == null || identifierType.getTermType() != TermType.IdentifierType){
+            logger.warn("IdentifierType not recognized. Skip import");
+            csvReader.close();
+            return null;
+        }
+        IdentifierType idType = CdmBase.deproxy(identifierType, IdentifierType.class);
+        return idType;
     }
 
     /**
