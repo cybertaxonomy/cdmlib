@@ -48,6 +48,7 @@ public class IdentifierType
     public static final UUID uuidWfoNameIdentifier = UUID.fromString("048e0cf9-f59c-42dd-bfeb-3a5cba0191c7");
     //currently only used in Caryophyllales_spp
     public static final UUID uuidPlantListIdentifier = UUID.fromString("06e4c3bd-7bf6-447a-b96e-2844b279f276");
+    public static final UUID uuidIndexFungorumIdentifier = UUID.fromString("f405be9f-359a-49ba-b09b-4a7920386190");
 
 	protected static Map<UUID, IdentifierType> termMap = null;
 
