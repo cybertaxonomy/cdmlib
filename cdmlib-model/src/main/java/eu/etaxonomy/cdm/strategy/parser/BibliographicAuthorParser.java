@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
  * @author a.mueller
- * @date 05.03.2022
+ * @date 2022-03-05
  */
 public class BibliographicAuthorParser {
 
