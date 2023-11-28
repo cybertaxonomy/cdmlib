@@ -1042,7 +1042,7 @@ public class DescriptionServiceImpl
                     specimen.setPreferredDetermination(event);
                 }else {
                     DeterminationEvent detEvent =  DeterminationEvent.NewInstance(targetTaxon, specimen);
-                    detEvent.setPreferredFlag(true);
+                    specimen.setPreferredDetermination(detEvent);
                 }
             }
         }
