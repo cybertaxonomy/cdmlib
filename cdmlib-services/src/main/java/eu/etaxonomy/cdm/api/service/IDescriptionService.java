@@ -475,7 +475,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
             boolean isCopy, boolean setNameInSource);
 
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetTaxonUuid,
-            String moveMessage, boolean isCopy, boolean setNameInSource, boolean useDefaultDescription);
+            String moveMessage, boolean isCopy, boolean setNameInSource, boolean useDefaultDescription, boolean createNewCurrentDeterminations);
 
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid, boolean setNameInSource);
 

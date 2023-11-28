@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
@@ -65,6 +66,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.CdmLinkSource;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
@@ -944,23 +946,23 @@ public class DescriptionServiceImpl
         return result;
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public UpdateResult moveDescriptionElementsToDescription(
-            Set<UUID> descriptionElementUUIDs,
-            UUID targetDescriptionUuid,
-            boolean isCopy, boolean setNameInSource) {
-        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
-        for(UUID deUuid : descriptionElementUUIDs) {
-            DescriptionElementBase element = descriptionElementDao.load(deUuid);
-            if (element != null){
-                descriptionElements.add(element);
-            }
-        }
-        DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
-
-        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy, setNameInSource);
-    }
+//    @Override
+//    @Transactional(readOnly = false)
+//    public UpdateResult moveDescriptionElementsToDescription(
+//            Set<UUID> descriptionElementUUIDs,
+//            UUID targetDescriptionUuid,
+//            boolean isCopy, boolean setNameInSource) {
+//        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+//        for(UUID deUuid : descriptionElementUUIDs) {
+//            DescriptionElementBase element = descriptionElementDao.load(deUuid);
+//            if (element != null){
+//                descriptionElements.add(element);
+//            }
+//        }
+//        DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
+//
+//        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy, setNameInSource);
+//    }
 
     @Override
     @Transactional(readOnly = false)
@@ -1006,7 +1008,7 @@ public class DescriptionServiceImpl
             Set<UUID> descriptionElementUUIDs,
             UUID targetTaxonUuid,
             String moveMessage,
-            boolean isCopy, boolean setNameInSource, boolean useDefaultDescription) {
+            boolean isCopy, boolean setNameInSource, boolean useDefaultDescription, boolean createNewCurrentDeterminations) {
         Taxon targetTaxon = CdmBase.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
         TaxonDescription targetDescription = null;
         if (useDefaultDescription && targetTaxon.hasDefaultDescription()) {
@@ -1031,7 +1033,18 @@ public class DescriptionServiceImpl
         targetDescription = dao.save(targetDescription);
         Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
         for(UUID deUuid : descriptionElementUUIDs) {
-            descriptionElements.add(descriptionElementDao.load(deUuid));
+            DescriptionElementBase descEl = descriptionElementDao.load(deUuid);
+            descriptionElements.add(descEl);
+            if (createNewCurrentDeterminations && descEl instanceof IndividualsAssociation && ((IndividualsAssociation)descEl).getAssociatedSpecimenOrObservation()!= null){
+                SpecimenOrObservationBase specimen = HibernateProxyHelper.deproxy(((IndividualsAssociation)descEl).getAssociatedSpecimenOrObservation());
+                DeterminationEvent event = specimen.getDeterminationsForTaxonOrName(targetTaxon, targetTaxon.getName());
+                if (event != null) {
+                    specimen.setPreferredDetermination(event);
+                }else {
+                    DeterminationEvent detEvent =  DeterminationEvent.NewInstance(targetTaxon, specimen);
+                    detEvent.setPreferredFlag(true);
+                }
+            }
         }
 
         return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy, setNameInSource);
@@ -1153,5 +1166,23 @@ public class DescriptionServiceImpl
             }
         }
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveDescriptionElementsToDescription(
+            Set<UUID> descriptionElementUUIDs,
+            UUID targetDescriptionUuid,
+            boolean isCopy, boolean setNameInSource) {
+        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        for(UUID deUuid : descriptionElementUUIDs) {
+            DescriptionElementBase element = descriptionElementDao.load(deUuid);
+            if (element != null){
+                descriptionElements.add(element);
+            }
+        }
+        DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
+
+        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy, setNameInSource);
     }
 }
