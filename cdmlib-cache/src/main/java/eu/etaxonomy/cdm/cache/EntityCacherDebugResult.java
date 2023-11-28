@@ -60,7 +60,7 @@ public class EntityCacherDebugResult {
             for(CdmBase rootEntity : rootEntities) {
                 debug(rootEntity, true, includeIgnored);
                 String out = toString(duplicateCdmEntityMap, notInCacheList, rootEntity);
-                System.out.println(out);
+                //System.out.println(out);
                 debugOutput.append(out);
                 clear();
             }
@@ -319,7 +319,7 @@ public class EntityCacherDebugResult {
            CdmBase cb =  (CdmBase)cei.getObject();
            cb = ProxyUtils.deproxyIfInitialized(cb);
            CdmBase cachedCdmEntityInSubGraph = cacher.getFromCache(cb);
-           if(cachedCdmEntityInSubGraph != cb && (includeIgnored || !cacher.ignoreRecursiveLoad(cb))) {
+           if(!cachedCdmEntityInSubGraph.equals(cb) && (includeIgnored || !cacher.ignoreRecursiveLoad(cb))) {
                cei.setNotInCacheDetail(cachedCdmEntityInSubGraph == null ? NotInCacheType.NOT_FOUND : NotInCacheType.COPY_ENTITY);
                // found a cdm entity which is not in cache - need to record this
                //logger.info("  - found entity not in cache " + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
