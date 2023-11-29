@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.permission;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +51,7 @@ public class PermissionDeniedException extends HibernateException {
 
     public PermissionDeniedException(Authentication authentication, Role[] roles) {
         super("Permission denied for '" + authentication.getName()
-                + "' none of the roles '" + roles + "' found in authentication.");
+                + "' none of the roles '" + Arrays.toString(roles) + "' found in authentication.");
     }
 
     public PermissionDeniedException(Throwable cause) {
