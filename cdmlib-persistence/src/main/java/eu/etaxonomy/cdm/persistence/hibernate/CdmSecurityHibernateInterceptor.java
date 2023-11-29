@@ -27,13 +27,13 @@ import org.hibernate.type.Type;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.permission.PermissionDeniedException;
 import eu.etaxonomy.cdm.persistence.permission.Role;
 import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
 

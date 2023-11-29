@@ -2,8 +2,6 @@ package eu.etaxonomy.cdm.persistence.permission;
 
 import org.springframework.security.access.AccessDeniedException;
 
-import eu.etaxonomy.cdm.database.PermissionDeniedException;
-
 /**
  * This utility class helps finding security related exceptions in Throwables.
  *
