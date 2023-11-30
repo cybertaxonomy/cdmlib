@@ -476,6 +476,7 @@ public class Person extends TeamOrPersonBase<Person>{
     }
 
     //updates the nomenclaturalTitleCache if necessary
+    @SuppressWarnings("deprecation")
     private boolean updateNomenclaturalCache() {
         String oldCache = this.nomenclaturalTitleCache;
         String newCache = cacheStrategy().getNomenclaturalTitleCache(this);
@@ -488,6 +489,7 @@ public class Person extends TeamOrPersonBase<Person>{
     }
 
     //updates the collectorTitleCache if necessary
+    @SuppressWarnings("deprecation")
     private boolean updateCollectorCache() {
         String oldCache = this.collectorTitleCache;
         String newCache = cacheStrategy().getCollectorTitleCache(this);
