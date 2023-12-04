@@ -73,20 +73,23 @@ public interface IZoologicalName extends INonViralName {
      * according to ICZN Recommendation 51E.
      * @see https://dev.e-taxonomy.eu/redmine/issues/6943
      */
+    @Override
     public TeamOrPersonBase<?> getInCombinationAuthorship();
     /**
      * @param the zoological in author of current combination
      * according to ICZN Recommendation 51E.
      * @see https://dev.e-taxonomy.eu/redmine/issues/6943
      */
-    public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
+    //moved to INonViralName because also Fungi names can have in-authors
+   // public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
 
     /**
      * @return the zoological in author of original combination
      * according to ICZN Recommendation 51E.
      * @see https://dev.e-taxonomy.eu/redmine/issues/6943
      */
-    public TeamOrPersonBase<?> getInBasionymAuthorship();
+  //moved to INonViralName because also Fungi names can have in-authors
+   // public TeamOrPersonBase<?> getInBasionymAuthorship();
 
     /**
      * @param the zoological in author of original combination

@@ -157,7 +157,15 @@ public interface INonViralName extends ITaxonNameBase{
      * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
     public TeamOrPersonBase<?> getCombinationAuthorship();
-
+    /**
+     * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase in author (team)} that published <i>this</i> non viral
+     * taxon name.
+     *
+     * @return  the in-author (team) of <i>this</i> non viral taxon name
+     * @see     eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
+     * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
+     */
+    public TeamOrPersonBase<?> getInCombinationAuthorship();
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} that contributed to
@@ -563,4 +571,14 @@ public interface INonViralName extends ITaxonNameBase{
     * @see  #isMonomHybrid()
     */
    public void setTrinomHybrid(boolean trinomHybrid);
+
+    /**
+     * @param inCombinationAuthorship
+     */
+    void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
+
+    /**
+     * @return
+     */
+    TeamOrPersonBase<?> getInBasionymAuthorship();
 }
