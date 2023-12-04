@@ -1382,7 +1382,8 @@ public class NonViralNameParserImpl
 	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors,
 	        Integer[] years, NomenclaturalCode code)
 			throws StringNotParsableException{
-		if (fullAuthorStringOrig == null || code == null){
+
+	    if (fullAuthorStringOrig == null || code == null){
 			return;
 		}
 		String fullAuthorString = fullAuthorStringOrig.trim();

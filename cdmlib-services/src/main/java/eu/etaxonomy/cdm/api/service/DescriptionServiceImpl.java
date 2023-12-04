@@ -1055,7 +1055,7 @@ public class DescriptionServiceImpl
             Integer pageIndex){
         List<TermDto> results = dao.listNamedAreasInUse(includeAllParents, null, null);
         List<TermDto> subList = PagerUtils.pageList(results, pageIndex, pageSize);
-        return new DefaultPagerImpl<TermDto>(pageIndex, results.size(), pageSize, subList);
+        return new DefaultPagerImpl<>(pageIndex, Long.valueOf(results.size()), pageSize, subList);
     }
 
 
@@ -1181,7 +1181,7 @@ public class DescriptionServiceImpl
                 descriptionElements.add(element);
             }
         }
-        DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
+        DescriptionBase<?> targetDescription = dao.load(targetDescriptionUuid);
 
         return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy, setNameInSource);
     }

@@ -24,7 +24,7 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
      *
      * @deprecated The Hibernate <code>count</code> function returns <code>Long</code> values!
      * This constructor only supports total result counts to {@link Integer#MAX_VALUE} u
-     * use {@link DefaultPagerImpl(Integer currentIndex, Long count, Integer pageSize, List<T> records, String suggestion)}
+     * use {@link DefaultPagerImpl(Integer currentIndex, Long count, Integer pageSize, List<T> records)}
      * instead
      */
     @Deprecated

@@ -173,10 +173,8 @@ public class TaxonNameDefaultCacheStrategy
     }
 
     /**
-     * Returns the authorshipcache string for the atomized authorship fields. Does not use the authorship field.
+     * Returns the authorshipCache string for the atomized authorship fields. Does not use the authorship field.
      * @throws NullPointerException if nonViralName is null.
-     * @param taxonName
-     * @return
      */
     protected String getNonCacheAuthorshipCache(TaxonName nonViralName){
         if (nonViralName.getNameType().isZoological()){
@@ -203,9 +201,9 @@ public class TaxonNameDefaultCacheStrategy
                 authorPart = getAuthorAndExAuthor(combinationAuthor, exCombinationAuthor);
             }
             result = CdmUtils.concat(basionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
-//        if ("".equals(result)){
-//        	result = null;
-//        }
+//          if ("".equals(result)){
+//        	   result = null;
+//          }
             return result;
         }
     }
@@ -334,8 +332,6 @@ public class TaxonNameDefaultCacheStrategy
 
     /**
      * Returns the tag list of the name part (without author and reference).
-     * @param taxonName
-     * @return
      */
     @Override
     public List<TaggedText> getTaggedName(TaxonName taxonName) {
