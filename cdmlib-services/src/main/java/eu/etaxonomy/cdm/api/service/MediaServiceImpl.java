@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -339,7 +340,24 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     }
 
     private boolean containsCaseInsensitive(String s, List<String> l){
-        return l.stream().anyMatch(x -> x.equalsIgnoreCase(s));
+        boolean result = l.stream().anyMatch(x -> equalsIgnoreBlank(x, s));
+        return result;
+    }
+
+    private boolean equalsIgnoreBlank(String a, String b){
+        if (a.contains(" ")) {
+           a = StringUtils.replace(a," ", "");
+           if (a.equalsIgnoreCase(b)) {
+               return true;
+           }
+        }
+        if (b.contains(" ")) {
+            b = StringUtils.replace(b," ", "");
+            if (a.equalsIgnoreCase(b)) {
+                return true;
+            }
+        }
+        return a.equalsIgnoreCase(b);
     }
 
     protected List<String> mediaMetadataKeyExludes(){
@@ -358,7 +376,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             }
             return Arrays.asList(PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString().split(","));
         }
-       // return pref.splitStringListValue();
+
         return Arrays.asList(pref.getValue().split(","));
     }
 }

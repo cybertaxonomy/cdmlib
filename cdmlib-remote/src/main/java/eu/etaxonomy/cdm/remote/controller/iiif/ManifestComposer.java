@@ -248,7 +248,12 @@ public class ManifestComposer {
                      .entrySet()
                      .stream()
                      .map(e -> new MetadataEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
-            mediaMetadata.addAll(representationMetadata);
+            if (representationMetadata == null || representationMetadata.isEmpty()) {
+                //do nothing keep the meta data from the media object
+            }else {
+                mediaMetadata = representationMetadata;
+            }
+            //mediaMetadata.addAll(representationMetadata);
         } catch (IOException e) {
             logger.error("Error reading media metadata", e);
         } catch (HttpException e) {
