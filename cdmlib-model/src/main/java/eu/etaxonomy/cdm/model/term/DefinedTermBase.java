@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -300,18 +301,21 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 	@Override
     public Set<T> getIncludes(){
 	    Set<T> toAdd = new HashSet<>();
-	    Iterator<T> it = this.includes.iterator();
-        while (it.hasNext()) {
-            T term = it.next();
-            if (term instanceof HibernateProxy) {
-                HibernateProxy proxy = (HibernateProxy) term;
-                LazyInitializer li = proxy.getHibernateLazyInitializer();
-                T t = (T)li.getImplementation();
-                it.remove();
-                toAdd.add(t);
+
+	    if (Hibernate.isInitialized(this.includes)) {
+    	    Iterator<T> it = this.includes.iterator();
+            while (it.hasNext()) {
+                T term = it.next();
+                if (term instanceof HibernateProxy) {
+                    HibernateProxy proxy = (HibernateProxy) term;
+                    LazyInitializer li = proxy.getHibernateLazyInitializer();
+                    T t = (T)li.getImplementation();
+                    it.remove();
+                    toAdd.add(t);
+                }
             }
-        }
-        this.includes.addAll(toAdd);
+            this.includes.addAll(toAdd);
+	    }
         return this.includes;
     }
 
