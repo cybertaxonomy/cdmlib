@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +48,14 @@ public class VocabularyController extends AbstractIdentifiableController<TermVoc
         this.service = service;
     }
 
+    private static final List<String> TERM_INIT_STRATEGY = Arrays.asList(
+            new String[]{
+                "terms.$",
+                "terms.includes.$",
+                "includes"
+            });
+
+
     @RequestMapping(value="terms", method=RequestMethod.GET, params="orderBy")
     public Pager<DefinedTermBase> terms(
             @PathVariable("uuid")UUID uuid,
@@ -58,7 +67,7 @@ public class VocabularyController extends AbstractIdentifiableController<TermVoc
 
         TermVocabulary<?> vocabulary = getCdmBaseInstance(uuid, response, (List<String>)null);
 
-        Pager<DefinedTermBase> pager = service.getTerms(vocabulary, null, 0, orderBy.checkSuitableFor(vocabulary.getClass()).orderHints(), getInitializationStrategy());
+        Pager<DefinedTermBase> pager = service.getTerms(vocabulary, null, 0, orderBy.checkSuitableFor(vocabulary.getClass()).orderHints(), TERM_INIT_STRATEGY);
 
         return pager;
     }
