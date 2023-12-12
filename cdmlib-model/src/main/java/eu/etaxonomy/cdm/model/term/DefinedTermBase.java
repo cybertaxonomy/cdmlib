@@ -38,7 +38,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -89,6 +88,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
     "media",
     "vocabulary",
     "orderIndex",
+    "includes",
     "idInVocabulary",
     "symbol",
     "symbol2",
@@ -302,7 +302,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     public Set<T> getIncludes(){
 	    Set<T> toAdd = new HashSet<>();
 
-	    if (Hibernate.isInitialized(this.includes)) {
     	    Iterator<T> it = this.includes.iterator();
             while (it.hasNext()) {
                 T term = it.next();
@@ -315,7 +314,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
                 }
             }
             this.includes.addAll(toAdd);
-	    }
         return this.includes;
     }
 
