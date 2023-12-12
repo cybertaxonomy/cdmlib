@@ -88,7 +88,6 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
     "media",
     "vocabulary",
     "orderIndex",
-    "includes",
     "idInVocabulary",
     "symbol",
     "symbol2",
