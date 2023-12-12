@@ -51,7 +51,6 @@ public class VocabularyController extends AbstractIdentifiableController<TermVoc
     private static final List<String> TERM_INIT_STRATEGY = Arrays.asList(
             new String[]{
                 "terms.$",
-                "terms.includes.$",
                 "includes"
             });
 
