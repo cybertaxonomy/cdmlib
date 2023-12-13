@@ -104,6 +104,7 @@ public class ManifestController {
                 @RequestParam(value = "includeOccurrences", required = false, defaultValue = "false") Boolean  includeOccurrences,
                 @RequestParam(value = "includeTaxonNameDescriptions", required = false, defaultValue = "false") Boolean  includeTaxonNameDescriptions,
                 @RequestParam(value = "includeTaxonomicChildren", required = false, defaultValue = "false") Boolean  includeTaxonomicChildren,
+                @RequestParam(value = "metaDataSource", required = false, defaultValue = "mediaServer") String  metaDataSource,
                 HttpServletRequest request, HttpServletResponse response) throws IOException {
 
             logger.info("doGetMedia() " + AbstractController.requestPathAndQuery(request));
@@ -124,7 +125,7 @@ public class ManifestController {
             ManifestComposer manifestFactory = new ManifestComposer(HTTP_IIIF_CYBERTAXONOMY_ORG, mediaTools, mediaService, mediaInfoFactory);
             manifestFactory.setDoJoinAttributions(true);
             manifestFactory.setUseThumbnailDimensionsForCanvas(true);
-            return serializeManifest(manifestFactory.manifestFor(entityMediaContext, "taxon", uuid.toString()));
+            return serializeManifest(manifestFactory.manifestFor(entityMediaContext, "taxon", uuid.toString(), metaDataSource));
     }
 
     private String serializeManifest(Manifest manifest) throws JsonProcessingException{

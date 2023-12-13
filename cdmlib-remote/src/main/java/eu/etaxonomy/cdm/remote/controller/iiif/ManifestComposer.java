@@ -35,6 +35,7 @@ import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
+import eu.etaxonomy.cdm.api.service.media.MetaDataMapping;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -138,7 +139,7 @@ public class ManifestComposer {
         this.mediaInfoFactory = mediaInfoFactory;
     }
 
-    <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) throws IOException {
+    <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid, String metaDataSource) throws IOException {
 
 //        LogUtils.setLevel(MediaUtils.class, Level.DEBUG);
 //        LogUtils.setLevel(logger, Level.DEBUG);
@@ -146,7 +147,7 @@ public class ManifestComposer {
         try {
         canvases = entityMediaContext.getMedia().parallelStream().map(m -> {
                 try {
-                    return createCanvas(onEntitiyType, onEntityUuid, m);
+                    return createCanvas(onEntitiyType, onEntityUuid, m, metaDataSource);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -181,7 +182,7 @@ public class ManifestComposer {
         return manifest;
     }
 
-    public Optional<Canvas> createCanvas(String onEntitiyType, String onEntityUuid, Media media) throws IOException {
+    public Optional<Canvas> createCanvas(String onEntitiyType, String onEntityUuid, Media media, String metaDataSource) throws IOException {
         Canvas canvas;
 
         MediaRepresentation thumbnailRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, 100, 100, thumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
@@ -240,24 +241,29 @@ public class ManifestComposer {
                 canvas.setWidth(thumbnailImageContents.get(0).getWidth());
             }
         }
+        List<MetadataEntry> mediaMetadata = new ArrayList<>();
+        if (metaDataSource.equals("cdm")) {
+            mediaMetadata = mediaMetaData(media);
+        }else {
+            List<MetadataEntry> representationMetadata;
+            try {
+                representationMetadata = mediaService.readResourceMetadataFiltered(fullSizeRepresentation)
+                         .entrySet()
+                         .stream()
+                         .map(e -> new MetadataEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
+                if (representationMetadata == null || representationMetadata.isEmpty()) {
+                    //do nothing keep the meta data from the media object
+                }else {
+                    //check for duplicate entries
 
-        List<MetadataEntry> mediaMetadata = mediaMetaData(media);
-        List<MetadataEntry> representationMetadata;
-        try {
-            representationMetadata = mediaService.readResourceMetadataFiltered(fullSizeRepresentation)
-                     .entrySet()
-                     .stream()
-                     .map(e -> new MetadataEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
-            if (representationMetadata == null || representationMetadata.isEmpty()) {
-                //do nothing keep the meta data from the media object
-            }else {
-                mediaMetadata = representationMetadata;
+                //    mediaMetadata = representationMetadata;
+                }
+                mediaMetadata.addAll(representationMetadata);
+            } catch (IOException e) {
+                logger.error("Error reading media metadata", e);
+            } catch (HttpException e) {
+                logger.error("Error accessing remote media resource", e);
             }
-            //mediaMetadata.addAll(representationMetadata);
-        } catch (IOException e) {
-            logger.error("Error reading media metadata", e);
-        } catch (HttpException e) {
-            logger.error("Error accessing remote media resource", e);
         }
 
         // extractAndAddDesciptions(canvas, mediaMetadata);
@@ -450,10 +456,11 @@ public class ManifestComposer {
 
         if(media.getTitle() != null){
             // TODO get localized titleCache
-            metadata.add(new MetadataEntry("Title", media.getTitleCache()));
+            metadata.add(new MetadataEntry(MetaDataMapping.Taxon.getLabel(), media.getTitleCache()));
         }
         if(media.getArtist() != null){
-            metadata.add(new MetadataEntry("Artist", media.getArtist().getTitleCache()));
+
+            metadata.add(new MetadataEntry(MetaDataMapping.Artist.getLabel(), media.getArtist().getTitleCache()));
         }
         if(media.getAllDescriptions().size() > 0){
             // TODO get localized description

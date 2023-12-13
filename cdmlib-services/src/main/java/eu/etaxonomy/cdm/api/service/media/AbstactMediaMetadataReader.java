@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.api.service.media;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
@@ -52,6 +54,13 @@ public abstract class AbstactMediaMetadataReader {
     protected String text(String  text) {
         if(text.startsWith("'") && text.endsWith("'")) {
             text = text.substring(1 , text.length() - 1);
+        }
+
+        //if text contains date with time informations, remove the time information
+        Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}");
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.matches()) {
+            text = text.substring(0, text.indexOf("T"));
         }
 
         return text;
