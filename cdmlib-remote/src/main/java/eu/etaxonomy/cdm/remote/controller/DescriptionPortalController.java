@@ -87,6 +87,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     protected static final List<String> ORDERED_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
             "elements.$",
             "elements.annotations",
+            "elements.annotations.includes.$",
             "elements.markers",
             "elements.sources.citation.authorship.$",
             "elements.sources.nameUsedInSource",
@@ -96,7 +97,8 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     protected static final List<String> DISTRIBUTION_INFO_INIT_STRATEGY = Arrays.asList(new String []{
             "sources.citation.authorship.$",
             "sources.nameUsedInSource",
-            "annotations"
+            "annotations",
+            "annotations.includes.$"
     });
 
     @Autowired

@@ -25,6 +25,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/termNode/{uuid}"})
 public class TermNodeController extends BaseController<TermNode, ITermNodeService> {
 
+
     @Override
     @Autowired
     public void setService(ITermNodeService service) {

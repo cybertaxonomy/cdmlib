@@ -147,7 +147,9 @@ public class TaxonPortalController extends TaxonController{
             "secSource.nameUsedInSource.nomenclaturalSource.citation.authorship",
             "secSource.nameUsedInSource.nomenclaturalSource.citation.inReference.authorship",
             "secSource.citation.authorship.$",
-            "secSource.citation.inReference.authorship.$"
+            "secSource.citation.inReference.authorship.$",
+            "annotations.$",
+            "annotations.type.includes.$"
 //            "descriptions" // TODO remove
 
             }));
@@ -383,7 +385,7 @@ public class TaxonPortalController extends TaxonController{
 //      IVocabularyService vocabularyService = null;
 //      Map<PresenceAbsenceTerm, Color> distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
 //              statusColorsString, termService, vocabularyService);
-        
+
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
 
         config.setTaxonUuid(taxonUuid);

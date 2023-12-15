@@ -29,6 +29,7 @@ public class TermPortalController extends TermController {
     private static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "vocabulary",
+            "includes",
             "countries" // NamedArea.countries
     });
 

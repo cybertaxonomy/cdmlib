@@ -29,6 +29,8 @@ public class TaxonPortalListController extends TaxonListController {
     private static final EntityInitStrategy SIMPLE_TAXON_INIT_STRATEGY = TaxonPortalController.SIMPLE_TAXON_INIT_STRATEGY.clone().extend(
             null,
             Arrays.asList(
+            "annotations.$",
+            "annotations.type.includes.$",
             "synonym.name.nomenclaturalSource.citation.authorship",
             "synonym.name.nomenclaturalSource.citation.inReference.authorship",
             "relationsFromThisTaxon.toTaxon.taxonNodes" // needed for misapplications, see Taxon.isMisapplicationOnly()

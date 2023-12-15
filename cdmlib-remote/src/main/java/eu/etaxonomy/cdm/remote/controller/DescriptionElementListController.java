@@ -72,7 +72,12 @@ public class DescriptionElementListController {
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
-            "multilanguageText"
+            "multilanguageText",
+            "stateData.modifyingText",
+            "stateData.categoricalData.$",
+            "annotations.$",
+            "annotations.type.$",
+            "annotations.type.includes.$"
     });
 
     protected List<String> getInitializationStrategy() {
@@ -150,7 +155,7 @@ public class DescriptionElementListController {
                 HttpStatusMessage.UUID_NOT_FOUND.send(response);
             }
         }
-
+        List<String> propertyPath = getInitializationStrategy();
         Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
                 pageIndex, getInitializationStrategy());
         return pager;

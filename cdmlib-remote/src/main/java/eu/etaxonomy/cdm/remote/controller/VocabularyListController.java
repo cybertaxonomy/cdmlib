@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +31,19 @@ import io.swagger.annotations.Api;
 public class VocabularyListController extends AbstractIdentifiableListController<TermVocabulary, IVocabularyService> {
 
     private static final Logger logger = LogManager.getLogger();
+    private static final List<String> TERM_INIT_STRATEGY = Arrays.asList(
+            new String[]{
+                "terms.$",
+                "terms.includes.$",
+                "includes"
+            });
+
 
     @Autowired
     @Override
     public void setService(IVocabularyService service) {
         this.service = service;
+        setInitializationStrategy(TERM_INIT_STRATEGY);
     }
 
 
