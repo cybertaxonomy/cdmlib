@@ -118,6 +118,13 @@ public abstract class AbstactMediaMetadataReader {
         }
         if (mapping != null) {
             text = mapping.getLabel();
+        }else {
+           for (MetaDataMapping value: MetaDataMapping.values()) {
+               if (value.getKey().equals(text)) {
+                   text = value.getLabel();
+                   break;
+               }
+           }
         }
         if (!text.contains(" ")) {
             String[] splittedKey = StringUtils.splitByCharacterTypeCamelCase(text);
