@@ -95,7 +95,7 @@ public abstract class AbstactMediaMetadataReader {
     }
 
     public void appendMetadataEntry(String key, String text) {
-        key = convert(key);
+        //key = convert(key);
         if(cdmImageInfo.getMetaData().containsKey(key)) {
             if (!cdmImageInfo.getMetaData().get(key).contains(text)) {
                 cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));

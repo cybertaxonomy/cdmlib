@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -300,14 +302,20 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     @Override
     public Map<String, String> readResourceMetadataFiltered(MediaRepresentation representation) throws IOException, HttpException {
 
-        List<String> includes = mediaMetadataKeyIncludes();
+        Map<String, String> includes = mediaMetadataKeyIncludes();
         List<String> excludes = mediaMetadataKeyExludes();
         Map<String, String> metadata = new HashMap<>();
 
         for(MediaRepresentationPart part : representation.getParts()) {
             CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(part.getUri(), true);
             if(iInfo.getMetaData() != null) {
-                metadata.putAll(iInfo.getMetaData());
+                for (Entry<String,String> item:iInfo.getMetaData().entrySet()) {
+                    String key = item.getKey();
+                    if (includes.get(item.getKey().replace(" ", ""))!= null) {
+                        key = includes.get(item.getKey().replace(" ", ""));
+                    }
+                    metadata.put(key, item.getValue());
+                }
             }
         }
         if(logger.isDebugEnabled()) {
@@ -317,21 +325,15 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         if(!includes.isEmpty()) {
             metadata = metadata.entrySet()
                     .stream()
-                    .filter( e -> containsCaseInsensitive(e.getKey(), includes))
+                    .filter( e -> containsCaseInsensitive(e.getKey(), includes.values()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             if(logger.isDebugEnabled()) {
                 logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
             }
+
+
         }
-        if(!excludes.isEmpty()) {
-            metadata = metadata.entrySet()
-                    .stream()
-                    .filter( e -> !containsCaseInsensitive(e.getKey(), excludes))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            if(logger.isDebugEnabled()) {
-                logger.debug("meta filtered by excludes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
-            }
-        }
+
 
         if(metadata == null) {
             metadata = new HashMap<>();
@@ -339,7 +341,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         return metadata;
     }
 
-    private boolean containsCaseInsensitive(String s, List<String> l){
+    private boolean containsCaseInsensitive(String s, Collection<String> l){
         boolean result = l.stream().anyMatch(x -> equalsIgnoreBlank(x, s));
         return result;
     }
@@ -368,15 +370,27 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         return pref.splitStringListValue();
     }
 
-    protected List<String> mediaMetadataKeyIncludes(){
+    protected Map<String, String> mediaMetadataKeyIncludes(){
         CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameIncludes));
+        List<String> metaDataItems = null;
         if(pref == null) {
             if (PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue() == null) {
-                return new ArrayList<>();
+                return new HashMap<>();
             }
-            return Arrays.asList(PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString().split(","));
+           metaDataItems = Arrays.asList(PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString().split(";"));
+
+        }else {
+           metaDataItems = Arrays.asList(pref.getValue().split(";"));
         }
 
-        return Arrays.asList(pref.getValue().split(","));
+
+        Map<String, String> metaDataMapping = new HashMap<>();
+        for (String item: metaDataItems) {
+            String[] itemArray = item.split(" => ");
+            metaDataMapping.put(itemArray[0], itemArray[1]);
+        }
+
+        return metaDataMapping;
+
     }
 }
