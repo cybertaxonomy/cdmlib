@@ -314,24 +314,28 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     if (includes.get(item.getKey().replace(" ", ""))!= null) {
                         key = includes.get(item.getKey().replace(" ", ""));
                     }
-                    metadata.put(key, item.getValue());
+                    if (metadata.get(key)!= null) {
+                        metadata.put(key, metadata.get(key).concat("; " + item.getValue()));
+                    }else {
+                        metadata.put(key, item.getValue());
+                    }
                 }
             }
         }
         if(logger.isDebugEnabled()) {
             logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
-           if(!includes.isEmpty()) {
-            metadata = metadata.entrySet()
-                    .stream()
-                    .filter( e -> containsCaseInsensitive(e.getKey(), includes.values()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            if(logger.isDebugEnabled()) {
-                logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
-            }
-           }
-
-
         }
+       if(!includes.isEmpty()) {
+        metadata = metadata.entrySet()
+                .stream()
+                .filter( e -> containsCaseInsensitive(e.getKey(), includes.values()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if(logger.isDebugEnabled()) {
+            logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+        }
+       }
+
+
 
 
         if(metadata == null) {
