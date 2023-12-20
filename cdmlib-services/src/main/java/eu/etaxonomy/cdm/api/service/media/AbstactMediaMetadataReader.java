@@ -95,11 +95,11 @@ public abstract class AbstactMediaMetadataReader {
     }
 
     public void appendMetadataEntry(String key, String text) {
-        //key = convert(key);
+        key = convert(key);
         if(cdmImageInfo.getMetaData().containsKey(key)) {
-            if (!cdmImageInfo.getMetaData().get(key).contains(text)) {
-                cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
-            }
+           
+            cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
+            
         } else {
             cdmImageInfo.getMetaData().put(key, text);
         }
@@ -110,22 +110,7 @@ public abstract class AbstactMediaMetadataReader {
      * @return
      */
     private String convert(String text) {
-        MetaDataMapping mapping = null;
-        try {
-            mapping = MetaDataMapping.valueOf(text);
-        }catch(IllegalArgumentException e) {
-            //Do nothing
-        }
-        if (mapping != null) {
-            text = mapping.getLabel();
-        }else {
-           for (MetaDataMapping value: MetaDataMapping.values()) {
-               if (value.getKey().equals(text)) {
-                   text = value.getLabel();
-                   break;
-               }
-           }
-        }
+
         if (!text.contains(" ")) {
             String[] splittedKey = StringUtils.splitByCharacterTypeCamelCase(text);
 
