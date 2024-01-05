@@ -183,7 +183,8 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxonRecord record, TaxonBase<?> taxonBase, TaxonName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
 			IRelationshipType relType) {
-		record.setId(taxonBase.getId());
+
+	    record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 
 		//maybe wrong as according to the DwC-A documentation only resolvable ids are allowed, this differs from DwC documentation
@@ -211,7 +212,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 		//nameAccordingTo
 		Reference sec = taxonBase.getSec();
 		if (sec == null){
-			String message = "There is a taxon without sec " + taxonBase.getTitleCache() + "(" + taxonBase.getId() + ")";
+			String message = "There is a " + taxonBase.getUserFriendlyTypeName() + " without sec " + taxonBase.getTitleCache() + "(" + taxonBase.getId() + ")";
 			state.getResult().addWarning(message);
 		}else{
 			record.setNameAccordingToId(taxonBase.getSec().getUuid());

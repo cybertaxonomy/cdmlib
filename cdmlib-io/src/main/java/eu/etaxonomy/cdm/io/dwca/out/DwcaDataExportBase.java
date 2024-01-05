@@ -43,7 +43,7 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
     /**
      * Creates the locationId, locality, countryCode triple
      */
-    protected void handleArea(DwcaTaxExportState state, IDwcaAreaRecord record, NamedArea area, TaxonBase<?> taxon, boolean required) {
+    protected void handleArea(DwcaTaxExportState state, IDwcaAreaRecord record, NamedArea area, TaxonBase<?> taxon, String recordType, boolean required) {
         if (area != null){
             record.setLocationId(area);
             record.setLocality(area.getLabel());
@@ -53,7 +53,7 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
             }
         }else{
             if (required){
-                String message = "Description requires area but area does not exist for taxon " + getTaxonLogString(taxon);
+                String message = recordType + " requires area but area does not exist for taxon " + getTaxonLogString(taxon);
                 state.getResult().addWarning(message);
             }
         }

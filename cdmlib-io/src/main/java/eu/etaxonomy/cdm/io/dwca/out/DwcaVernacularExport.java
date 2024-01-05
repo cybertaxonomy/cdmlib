@@ -105,7 +105,7 @@ public class DwcaVernacularExport extends DwcaDataExportBase {
 		// does not exist in CDM
 		record.setTemporal(null);
 
-		handleArea(state, record, commonTaxonName.getArea(), taxon, false);
+		handleArea(state, record, commonTaxonName.getArea(), taxon, commonTaxonName.getUserFriendlyTypeName(), false);
 	}
 
 	@Override

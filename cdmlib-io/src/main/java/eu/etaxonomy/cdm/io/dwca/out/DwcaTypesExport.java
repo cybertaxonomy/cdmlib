@@ -135,6 +135,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
     private boolean handleType(DwcaTaxExportState state, DwcaTypesRecord record,
             TypeDesignationBase<?> designation, TaxonBase<?> taxonBase,
             DwcaTaxExportConfigurator config) {
+
         designation = CdmBase.deproxy(designation);
         if (designation instanceof TextualTypeDesignation){
             return handleTextualType(state, record, (TextualTypeDesignation)designation, taxonBase, config);
@@ -174,7 +175,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 	    TypeDesignationStatusBase<?> status = null;
 		DerivedUnitFacade facade = null;
 		if (individualsAssociation != null){
-			facade = getFacadeFromAssociation(state, individualsAssociation);
+			facade = getFacadeFromAssociation(state, individualsAssociation, taxonBase);
 		}else if (designation != null){
 			facade = getFacadeFromDesignation(state, designation);
 			status = designation.getTypeStatus();
@@ -272,15 +273,15 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 		}
 	}
 
-	private DerivedUnitFacade getFacadeFromAssociation(DwcaTaxExportState state, IndividualsAssociation individualsAssociation) {
+	private DerivedUnitFacade getFacadeFromAssociation(DwcaTaxExportState state, IndividualsAssociation individualsAssociation, TaxonBase<?> taxonBase) {
 		SpecimenOrObservationBase<?> specimen = individualsAssociation.getAssociatedSpecimenOrObservation();
 		DerivedUnitFacade facade;
 		if (specimen == null){
-		    String message = "Individuals association " +  individualsAssociation.getId() + " has no associated specimen";
+		    String message = "Individuals association " + individualsAssociation.getId() + " has no associated specimen ("+taxonBase.getTitleCache()+")";
             state.getResult().addWarning(message);
 		    return null;
 		}else if (! specimen.isInstanceOf(DerivedUnit.class)){
-			String message = "Non DerivedUnit specimen can not yet be handled by this export";
+			String message = "Non-DerivedUnit specimen can not yet be handled by this export ("+taxonBase.getTitleCache()+")";
 			state.getResult().addWarning(message);
 			//TODO handle empty records
 			return null;
