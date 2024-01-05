@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,9 +51,6 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.NameMatchingUtils;
-import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -145,7 +141,7 @@ public class NameServiceImpl
     @Autowired
     // @Qualifier("defaultBeanInitializer")
     protected IBeanInitializer defaultBeanInitializer;
-    
+
     @Override
     @Autowired
     protected void setDao(ITaxonNameDao dao) {
@@ -1043,7 +1039,7 @@ public class NameServiceImpl
             else if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
                 NameTypeDesignation typeDesignation = HibernateProxyHelper.deproxy(referencingObject, NameTypeDesignation.class);
 
-                if (typeDesignation.getTypeName().equals(name) && !typeDesignation.getTypifiedNames().isEmpty()){
+                if (name.equals(typeDesignation.getTypeName()) && !typeDesignation.getTypifiedNames().isEmpty()){
                     String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
                     result.addException(new ReferencedObjectUndeletableException(message));
                     result.addRelatedObject(referencingObject);
