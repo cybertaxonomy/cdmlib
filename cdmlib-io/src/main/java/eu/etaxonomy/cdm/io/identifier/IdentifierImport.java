@@ -188,7 +188,7 @@ public class IdentifierImport
                 identifier = existingIdentifiers.iterator().next();
                 if (!CdmUtils.nullSafeEqual(identifier.getIdentifier(), value)){
                     String message = String.format(
-                            "Existing identifier in line %d differs: " + identifier.getIdentifier() + "(existing)<->" + value   + "(import). Line not imported", i);
+                            "Existing identifier in line %d differs: " + identifier.getIdentifier() + "(existing)<->" + value   + "(import). Line not imported.", i);
                     logger.warn(message);
                     this.commitTransaction(tx);
                     return null;

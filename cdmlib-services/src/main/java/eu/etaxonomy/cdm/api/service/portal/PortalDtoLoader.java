@@ -612,6 +612,7 @@ public class PortalDtoLoader {
     }
 
     private void loadProtologues(TaxonName name, TaxonBaseDto taxonBaseDto) {
+        //TODO maybe also load reference DOI/URL if no source external link exists
         NomenclaturalSource nomSource = name.getNomenclaturalSource();
         if (nomSource != null) {
             Set<ExternalLink> links = nomSource.getLinks();

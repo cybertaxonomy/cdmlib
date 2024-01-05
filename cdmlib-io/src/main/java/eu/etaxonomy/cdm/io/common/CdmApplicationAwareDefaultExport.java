@@ -219,7 +219,8 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 
 		//do invoke for each class
 		for (int i = 0; i< ioList.size(); i++){
-		    ICdmExport export = ioList.get(i);
+		    @SuppressWarnings("rawtypes")
+            ICdmExport export = ioList.get(i);
 		    Integer counts = stepCounts.get(i);
 			try {
 			    String ioName = export.getClass().getSimpleName();

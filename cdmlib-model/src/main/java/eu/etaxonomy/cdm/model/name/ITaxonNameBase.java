@@ -46,11 +46,9 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
  *
  * @author a.mueller
  * @since 21.01.2017
- *
  */
 public interface ITaxonNameBase
         extends IIdentifiableEntity, IParsable, IRelated, IMatchable, Cloneable{
-
 
     public NomenclaturalCode getNameType();
     public void setNameType(NomenclaturalCode nameType);
