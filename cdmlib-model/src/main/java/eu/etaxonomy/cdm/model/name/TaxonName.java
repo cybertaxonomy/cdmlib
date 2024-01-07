@@ -3460,6 +3460,73 @@ public class TaxonName
         return computeNomenclaturalStanding().isValid();
     }
 
+    @Override
+    @Transient
+    public boolean isConserved() {
+        if (!isValid()) {
+            return false;
+        }else {
+            for (NomenclaturalStatus status : this.status){
+                //TODO what about CONSERVED_DESIG
+                if (status.getType() != null && status.getType().equals(NomenclaturalStatusType.CONSERVED())){
+                    return true;
+                }
+            }
+            for (NameRelationship nameRel : this.relationsFromThisName){
+                if (nameRel.getType() != null && nameRel.getType().getUuid().equals(NameRelationshipType.uuidConservedAgainst)){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    @Override
+    @Transient
+    public boolean isRejected() {
+        if (isValid()) {
+            return false;
+        }else {
+            for (NomenclaturalStatus status : this.status){
+                NomenclaturalStatusType type = status.getType();
+                //TODO what about orthography rejected
+                if (NomenclaturalStatusType.REJECTED().equals(type)
+                        || NomenclaturalStatusType.UTIQUE_REJECTED().equals(type)
+                        || NomenclaturalStatusType.OPUS_UTIQUE_OPPR().equals(type)){
+                    return true;
+                }
+            }
+            for (NameRelationship nameRel : this.relationsFromThisName){
+                if (nameRel.getType() != null && nameRel.getType().getUuid().equals(NameRelationshipType.uuidConservedAgainst)){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    @Override
+    @Transient
+    @Deprecated
+    public boolean isOrthographicVariant() {
+        if (!isValid()) {
+            return false;
+        }else {
+            for (NomenclaturalStatus status : this.status){
+                //TODO what about CONSERVED_DESIG
+                if (status.getType() != null && status.getType().equals(NomenclaturalStatusType.ORTH_VAR())){
+                    return true;
+                }
+            }
+            for (NameRelationship nameRel : this.relationsFromThisName){
+                if (nameRel.getType() != null && nameRel.getType().getUuid().equals(NameRelationshipType.uuidOrthographicVariant)){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
 // ***************** COMPARE ********************************/
 
     @Override
@@ -3773,5 +3840,4 @@ public class TaxonName
             return null;
         }
     }
-
 }

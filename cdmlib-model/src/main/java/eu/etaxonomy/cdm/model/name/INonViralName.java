@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @since 21.01.2017
- *
  */
 public interface INonViralName extends ITaxonNameBase{
 
@@ -427,6 +426,48 @@ public interface INonViralName extends ITaxonNameBase{
     */
    public boolean isProtectedAuthorshipCache();
 
+   /**
+    * Returns the boolean value if the name is conserved according to it's
+    * nomenclatural code. This can be true if the name either has the status
+    * of type {@link NomenclaturalStatusType#CONSERVED()} or if it has a
+    * name relationship of tpye {@link NameRelationshipType#CONSERVED_AGAINST()}.
+    *
+    * @return <code>true</code>, if this name is conserved
+    * @see INomenclaturalStanding
+    * @see <a href="https://dev.e-taxonomy.eu/redmine/issues/9273">Ticket on unifying status and name relation</a>
+    */
+   public boolean isConserved();
+
+   /**
+    * Returns the boolean value if the name is rejected by the nomenclatural code.
+    * This includes the names with nomenclatural status {@link NomenclaturalStatusType#REJECTED()},
+    * {@link NomenclaturalStatusType#UTIQUE_REJECTED()}
+    * and {@link NomenclaturalStatusType#OPUS_UTIQUE_OPPR()}.
+    * Also names being in a name relationship {@link NameRelationshipType#CONSERVED_AGAINST()}
+    * as the non-conserved name are included.<BR>
+    * A name considered as rejected in this sense can either be invalid (<i>opus utique rej.</i>)
+    * or illegitimate (others).
+    *
+    * @return <code>true</code>, if this name is rejected
+    * @see INomenclaturalStanding
+    * @see <a href="https://dev.e-taxonomy.eu/redmine/issues/9273">Ticket on unifying status and name relation</a>
+    */
+   public boolean isRejected();
+
+   /**
+    * Returns the boolean value if the name is an orthographic variant. This can
+    * be true if the name either has the status of type
+    * {@link NomenclaturalStatusType#ORTH_VAR()} or if it has a
+    * name relationship of tpye {@link NameRelationshipType#ORTHOGRAPHIC_VARIANT()}.
+    * <BR>TODO find a way to also handle original spellings here.
+    *
+    * @return <code>true</code>, if this name is an orthographic variant
+    * @see INomenclaturalStanding
+    * @deprecated deprecated as long as original spellings can not be easily handled here
+    * @see <a href="https://dev.e-taxonomy.eu/redmine/issues/9273">Ticket on unifying status and name relation</a>
+    */
+    @Deprecated
+    public boolean isOrthographicVariant();
 
    /**
     * Returns the boolean value of the flag intended to protect (true)
