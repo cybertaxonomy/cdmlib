@@ -304,24 +304,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
         Map<String, String> includes = mediaMetadataKeyIncludes();
         List<String> excludes = mediaMetadataKeyExludes();
-        Map<String, String> metadata = new HashMap<>();
-
-        for(MediaRepresentationPart part : representation.getParts()) {
-            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(part.getUri(), true);
-            if(iInfo.getMetaData() != null) {
-                for (Entry<String,String> item:iInfo.getMetaData().entrySet()) {
-                    String key = item.getKey();
-                    if (includes.get(item.getKey().replace(" ", ""))!= null) {
-                        key = includes.get(item.getKey().replace(" ", ""));
-                    }
-                    if (metadata.get(key)!= null) {
-                        metadata.put(key, metadata.get(key).concat("; " + item.getValue()));
-                    }else {
-                        metadata.put(key, item.getValue());
-                    }
-                }
-            }
-        }
+        Map<String, String> metadata = getMetaDatafromServer(representation);
         if(logger.isDebugEnabled()) {
             logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
         }
@@ -334,12 +317,65 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
         }
        }
-
-
-
-
-        if(metadata == null) {
+       if(metadata == null) {
             metadata = new HashMap<>();
+        }
+        return metadata;
+    }
+
+    /**
+     * Reads the metadata as stored in the file or web resource
+     * <p>
+     * Metadata of multiple parts is merged into one common metadata map whereas the later part being read may overwrite data from previous parts.
+     * The consequences of this can be neglected since we don't expect that multiple parts are actually being used.
+     *
+     * @param representation
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
+    @Override
+    public Map<String, String> readResourceMetadata(MediaRepresentation representation) throws IOException, HttpException {
+
+        Map<String, String> metadata = getMetaDatafromServer(representation);
+        if(logger.isDebugEnabled()) {
+            logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+        }
+
+
+        if(logger.isDebugEnabled()) {
+            logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+        }
+
+       if(metadata == null) {
+           metadata = new HashMap<>();
+       }
+       return metadata;
+    }
+
+    /**
+     * @param representation
+     * @param mapping
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
+    private Map<String, String> getMetaDatafromServer(MediaRepresentation representation)
+            throws IOException, HttpException {
+        Map<String, String> metadata = new HashMap<>();
+
+        for(MediaRepresentationPart part : representation.getParts()) {
+            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(part.getUri(), true);
+            if(iInfo.getMetaData() != null) {
+                for (Entry<String,String> item:iInfo.getMetaData().entrySet()) {
+                    String key = item.getKey();
+                    if (metadata.get(key)!= null) {
+                        metadata.put(key, metadata.get(key).concat("; " + item.getValue()));
+                    }else {
+                        metadata.put(key, item.getValue());
+                    }
+                }
+            }
         }
         return metadata;
     }
@@ -373,7 +409,8 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         return pref.splitStringListValue();
     }
 
-    protected Map<String, String> mediaMetadataKeyIncludes(){
+    @Override
+    public Map<String, String> mediaMetadataKeyIncludes(){
         CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameIncludes));
         List<String> metaDataItems = null;
         if(pref == null) {
