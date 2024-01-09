@@ -527,6 +527,9 @@ public class ColDpClassificationExport
     }
 
     private String toIsoDate(TimePeriod mediaCreated) {
+        if (mediaCreated == null) {
+            return null;
+        }
         //TODO 2 date, what if end or freetext exist?
         Partial partial = mediaCreated.getStart();
         if (partial == null || !partial.isSupported(DateTimeFieldType.year())
