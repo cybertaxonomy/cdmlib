@@ -76,6 +76,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -1493,7 +1494,8 @@ public class ColDpClassificationExport
             for (NameRelationship rel : fromRels) {
                 ColDpNameRelType coldpType = transformer.getColDpNameRelTypeByNameRelationType(rel.getType());
                 if (coldpType == null) {
-                    //TODO warning
+                    handleNoColDpNameRelType(state, rel.getType(), name);
+                    continue;
                 }else if (coldpType.getDirection() == 0) {
                     continue;  //the relation is handled the other way round if necessary
                 }
@@ -1507,7 +1509,8 @@ public class ColDpClassificationExport
             for (NameRelationship rel : toRels) {
                 ColDpNameRelType coldpType = transformer.getColDpNameRelTypeByNameRelationType(rel.getType());
                 if (coldpType == null) {
-                    //TODO warning
+                    handleNoColDpNameRelType(state, rel.getType(), name);
+                    continue;
                 }else if (coldpType.getDirection() == 1) {
                     continue;  //the relation is handled the other way round if necessary
                 }
@@ -1521,6 +1524,17 @@ public class ColDpClassificationExport
                             + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void handleNoColDpNameRelType(ColDpExportState state, NameRelationshipType nameRelType, TaxonName taxonName) {
+        String warning;
+        if (nameRelType == null) {
+            warning = "Name relationship has not type for name " + taxonName.getTitleCache();
+        } else {
+            //TODO misspelling, alternative name, blocking name for, avoids homonym of, unspecific "non"
+            warning = "Name relationship type not yet handled by COL-DP: " + nameRelType.getTitleCache() + "; name: " + taxonName.getTitleCache();
+        }
+        state.getResult().addWarning(warning);
     }
 
     private void handleRelNameCommonData(ColDpExportState state, ColDpExportTable table,

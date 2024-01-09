@@ -212,7 +212,7 @@ public class ColDpExportTransformer extends ExportTransformerBase {
         } else {
             //TODO misspelling, alternative name, blocking name for, avoids homonym of, unspecific "non"
             String warning = "Name relationship type not yet handled by COL-DP: " + nameRelType.getTitleCache();
-            //TODO handle warning
+            //TODO handle warning, is currently handled in calling method
             Representation preferredRep = nameRelType.getPreferredRepresentation(Language.ENGLISH());
 //            if (preferredRep != null) {
 //               return preferredRep.getLabel() == null ? null :preferredRep.getLabel().toLowerCase();
