@@ -311,7 +311,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
        if(!includes.isEmpty()) {
         metadata = metadata.entrySet()
                 .stream()
-                .filter( e -> containsCaseInsensitive(e.getKey(), includes.values()))
+                .filter( e -> containsCaseInsensitive(e.getKey(), includes.keySet()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         if(logger.isDebugEnabled()) {
             logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
@@ -319,8 +319,22 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
        }
        if(metadata == null) {
             metadata = new HashMap<>();
-        }
-        return metadata;
+       }
+       Map<String, String> resultMetadata = new HashMap();
+       String replacedKey = null;
+       for (Entry<String,String> a: metadata.entrySet()) {
+           if (includes.containsKey(a.getKey().replaceAll(" ", ""))) {
+               replacedKey = includes.get(a.getKey().replaceAll(" ", ""));
+           }else {
+               replacedKey = includes.get(a.getKey());
+           }
+           if (resultMetadata.containsKey(replacedKey)) {
+               resultMetadata.put(replacedKey, resultMetadata.get(replacedKey) + "; " + a.getValue());
+           }else {
+               resultMetadata.put(replacedKey, a.getValue());
+           }
+       }
+       return resultMetadata;
     }
 
     /**

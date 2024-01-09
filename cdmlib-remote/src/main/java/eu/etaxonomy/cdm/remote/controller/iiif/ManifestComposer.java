@@ -249,7 +249,7 @@ public class ManifestComposer {
 
         List<MetadataEntry> representationMetadata = null;
         try {
-            representationMetadata = mediaService.readResourceMetadata(fullSizeRepresentation)
+            representationMetadata = mediaService.readResourceMetadataFiltered(fullSizeRepresentation)
                      .entrySet()
                      .stream()
                      .map(e -> new MetadataEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
@@ -277,6 +277,7 @@ public class ManifestComposer {
 //                logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
 //            }
            }
+
 
         // extractAndAddDesciptions(canvas, mediaMetadata);
         mediaMetadata = deduplicateMetadata(mediaMetadata);
