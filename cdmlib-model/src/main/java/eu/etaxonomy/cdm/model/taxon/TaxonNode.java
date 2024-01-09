@@ -296,6 +296,10 @@ public class TaxonNode
         this.countChildren = countChildren;
     }
 
+    public void refreshCountChildren() {
+        this.countChildren = childNodes.size();
+    }
+
     //parent
     @Override
     public TaxonNode getParent(){
@@ -652,7 +656,7 @@ public class TaxonNode
             childNodes.remove(index);
             child.setClassification(null);
 
-            this.countChildren = childNodes.size();
+            refreshCountChildren();
             child.setParent(null);
             child.setTreeIndex(null);
         }
