@@ -63,7 +63,10 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "designationSource.citation",
             "designationSource.citation.authorship.$",
             "registrations", // needed for access control
-            "text"
+            "text",
+            "annotations.type.$",
+            "annotations.type.includes.$"
+
     }));
 
     public static final EntityInitStrategy FULL_TITLE_CACHE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -74,7 +77,10 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "nomenclaturalSource.citation.authorship.$",
             "nomenclaturalSource.citation.inReference.authorship.$",
             "nomenclaturalSource.citation.inReference.inReference.authorship.$",
-            "nomenclaturalSource.citation.inReference.inReference.inReference.authorship.$"
+            "nomenclaturalSource.citation.inReference.inReference.inReference.authorship.$",
+            "annotations.type.$",
+            "annotations.type.includes.$"
+
     }));
 
     public static final EntityInitStrategy NAME_RELATIONS_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -116,12 +122,18 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
 
         EntityInitStrategy initStrategy = new EntityInitStrategy(pathProperties);
+        List<String> propertyPath = Arrays.asList(new String []{
+                "$",
+                "annotationType.$",
+                "annotationType.includes.$"
+        });
 
         if(pathProperties.contains("nameRelations")){
             // nameRelations is a transient property!
             initStrategy.getPropertyPaths().remove("nameRelations");
             initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
             initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
+
         } else {
             if(pathProperties.contains("relationsFromThisName")){
                 initStrategy.getPropertyPaths().remove("relationsFromThisName");
@@ -131,8 +143,11 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
                 initStrategy.getPropertyPaths().remove("relationsToThisName");
                 initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
             }
-        }
 
+        }
+        if(pathProperties.contains("annotations")){
+            initStrategy.extend("annotations", propertyPath, false);
+        }
         return initStrategy.getPropertyPaths();
     }
 
