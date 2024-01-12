@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  * @date 15.01.2023
  */
-public class HomotypicalGroupComparator implements
+public class HomotypicGroupComparator implements
 		Comparator<HomotypicalGroup>, Serializable {
 
     private static final long serialVersionUID = -676465815899137107L;
