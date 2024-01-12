@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.compare.name.HomotypicalGroupComparator;
+import eu.etaxonomy.cdm.compare.name.HomotypicGroupComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
@@ -617,7 +617,7 @@ public class CsvNameExport extends CsvNameExportBase {
         }
         nameRecord.put("typeName", typeNameString);
         StringBuffer homotypicalSynonyms = new StringBuffer();
-        TreeMap<HomotypicalGroup,List<Synonym>> heterotypicSynonymsList = new TreeMap<>(new HomotypicalGroupComparator());
+        TreeMap<HomotypicalGroup,List<Synonym>> heterotypicSynonymsList = new TreeMap<>(new HomotypicGroupComparator());
 
         List<Synonym> homotypicSynonymsList = new ArrayList<>();
         StringBuffer heterotypicalSynonyms = new StringBuffer();
@@ -651,8 +651,6 @@ public class CsvNameExport extends CsvNameExportBase {
                 homotypicSynonymsList.add(synonym);
             }
         }
-
-
 
         String synonymString;
         boolean first = true;
