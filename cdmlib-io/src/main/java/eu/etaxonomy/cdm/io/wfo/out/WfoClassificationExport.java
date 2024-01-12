@@ -287,6 +287,11 @@ public class WfoClassificationExport
     }
 
     private void handleSynonyms(WfoExportState state, Taxon taxon) {
+
+        if (!state.getConfig().isDoSynonyms()) {
+            return;
+        }
+
         //homotypic group / synonyms
         HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
         handleHomotypicalGroup(state, homotypicGroup, taxon);

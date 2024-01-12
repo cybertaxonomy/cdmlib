@@ -301,21 +301,23 @@ public class ColDpClassificationExport
                 TaxonName name = taxon.getName();
                 handleName(state, name, taxon, true);
 
-                //homotypic group / synonyms
-                HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
-                int index = 0;
-                handleHomotypicalGroup(state, homotypicGroup, taxon);
-                for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
-                    handleSynonym(state, syn, index);
-                    index++;
-                }
-
-                List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
-                for (HomotypicalGroup group: heterotypicHomotypicGroups){
-                    handleHomotypicalGroup(state, group, taxon);
-                    for (Synonym syn : taxon.getSynonymsInGroup(group)) {
+                if (state.getConfig().isDoSynonyms()) {
+                    //homotypic group / synonyms
+                    HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
+                    int index = 0;
+                    handleHomotypicalGroup(state, homotypicGroup, taxon);
+                    for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
                         handleSynonym(state, syn, index);
                         index++;
+                    }
+
+                    List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
+                    for (HomotypicalGroup group: heterotypicHomotypicGroups){
+                        handleHomotypicalGroup(state, group, taxon);
+                        for (Synonym syn : taxon.getSynonymsInGroup(group)) {
+                            handleSynonym(state, syn, index);
+                            index++;
+                        }
                     }
                 }
 
