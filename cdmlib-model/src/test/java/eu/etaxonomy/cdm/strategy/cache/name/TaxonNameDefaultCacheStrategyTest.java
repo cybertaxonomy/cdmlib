@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -61,8 +62,10 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
     private static final String authorString = "L.";
     private static final String exAuthorString = "Exaut.";
+    private static final String inAuthorString = "Inaut. B.";
     private static final String basAuthorString = "Basio, A.";
     private static final String exBasAuthorString = "ExBas. N.";
+    private static final String inBasAuthorString = "Inbas., C.";
 
     private static final String referenceTitle = "My Reference";
 
@@ -73,8 +76,10 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     private TaxonName subSpeciesName;
     private TeamOrPersonBase<?> author;
     private TeamOrPersonBase<?> exAuthor;
+    private TeamOrPersonBase<?> inAuthor;
     private TeamOrPersonBase<?> basAuthor;
     private TeamOrPersonBase<?> exBasAuthor;
+    private TeamOrPersonBase<?> inBasAuthor;
     private Reference citationRef;
 
     @Before
@@ -93,11 +98,15 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         author = Person.NewInstance();
         author.setNomenclaturalTitleCache(authorString, true);
         exAuthor = Person.NewInstance();
-        exAuthor.setNomenclaturalTitleCache(exAuthorString, true);
+        exAuthor.setNomenclaturalTitleCache(inAuthorString, true);
+        inAuthor = Person.NewInstance();
+        inAuthor.setNomenclaturalTitleCache(inAuthorString, true);
         basAuthor = Person.NewInstance();
         basAuthor.setNomenclaturalTitleCache(basAuthorString, true);
         exBasAuthor = Person.NewInstance();
         exBasAuthor.setNomenclaturalTitleCache(exBasAuthorString, true);
+        inBasAuthor = Person.NewInstance();
+        inBasAuthor.setNomenclaturalTitleCache(inBasAuthorString, true);
 
         citationRef = ReferenceFactory.newGeneric();
         citationRef.setTitle(referenceTitle);
@@ -857,5 +866,33 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         formatter.setEtAlPosition(2);
         Assert.assertEquals("", "Ophrys kastelli (Mill. & al.) Mill. & al.", formatter.getTitleCache(name));
 
+    }
+
+    @Test  //#7443
+    public void testInAuthors() {
+        //base configuration
+        speciesName.setCombinationAuthorship(author);
+        speciesName.setBasionymAuthorship(basAuthor);
+        String expectedWithoutInAuthor = speciesNameString + " (" + basAuthorString + ") " + authorString;
+        Assert.assertEquals(expectedWithoutInAuthor, speciesName.getTitleCache());
+
+        //with in-authors
+        speciesName.setNameType(NomenclaturalCode.Fungi);
+        speciesName.setInBasionymAuthorship(inBasAuthor);
+        speciesName.setInCombinationAuthorship(inAuthor);
+        String expectedWithInAuthor = speciesNameString + " (" + basAuthorString + " in "+inBasAuthorString+") " + authorString + " in "+inAuthorString;
+        speciesName.setTitleCache(null, false);
+        Assert.assertEquals(expectedWithInAuthor, speciesName.getTitleCache());
+
+        //... for zoo-names
+        speciesName.setNameType(NomenclaturalCode.ICZN);
+        speciesName.setTitleCache(null, false);
+        Assert.assertEquals(expectedWithInAuthor, speciesName.getTitleCache());
+
+        //... for botanical names
+        speciesName.setNameType(NomenclaturalCode.ICNAFP);
+        speciesName.setTitleCache(null, false);
+        Assert.assertEquals("For now we do not allow in-authors for botanical names (except for fungi)",
+                expectedWithoutInAuthor, speciesName.getTitleCache());
     }
 }

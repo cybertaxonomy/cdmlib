@@ -104,7 +104,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String author = "((" + authorPart + "(" + fWs + "|-)" + ")+" + "(f(il)?\\.|secundus|jun\\.|ter|bis)?|Man in "+qm+"t Veld|Sant"+qm+"Anna)" ;
     protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
     protected static String notFinalTeamSplitter = "(?:" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
-    protected static String authorTeam = fWs + "(((?>" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?(?:"  + author + "|al\\.)|hort\\.)" +  fWs;
+    //temp. public for CoraTaxonImport #10432, can be removed once in-authors are included in general parser
+    public static String authorTeam = fWs + "(((?>" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?(?:"  + author + "|al\\.)|hort\\.)" +  fWs;
     protected static String exString = "(ex\\.?)";
     protected static String authorAndExTeam = "(" + authorTeam + oWs + exString + oWs + ")?" + authorTeam;
     protected static String basStart = "\\(";
