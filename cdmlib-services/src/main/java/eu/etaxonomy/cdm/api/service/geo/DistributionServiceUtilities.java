@@ -701,12 +701,19 @@ public class DistributionServiceUtilities {
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            TermTree<NamedArea> areaTree, Set<MarkerType> fallbackAreaMarkerTypes,
+            TermTree<NamedArea> areaTree, TermTree<PresenceAbsenceTerm> statusTree,
+            Set<MarkerType> fallbackAreaMarkerTypes,
             boolean preferAggregated, boolean statusOrderPreference,
-            boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists,
-            boolean ignoreDistributionStatusUndefined) {
+            boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists) {
 
         SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
+        Set<UUID> statusPositiveSet = null;
+        if (statusTree != null) {
+            statusPositiveSet = new HashSet<>();
+            for (PresenceAbsenceTerm status : statusTree.asTermList()) {
+                statusPositiveSet.add(status.getUuid());
+            }
+        }
 
         // assign distributions to the area and filter undefinedStatus
         for(Distribution distribution : distributions){
@@ -715,9 +722,10 @@ public class DistributionServiceUtilities {
                 logger.debug("skipping distribution with NULL area");
                 continue;
             }
-            boolean filterUndefined = ignoreDistributionStatusUndefined && distribution.getStatus() != null
-                    && distribution.getStatus().getUuid().equals(PresenceAbsenceTerm.uuidUndefined);
-            if (!filterUndefined){
+            boolean filterOutStatus = statusPositiveSet != null &&
+                    (distribution.getStatus() == null
+                      || statusPositiveSet.contains(distribution.getStatus().getUuid()));
+            if (!filterOutStatus){
                 filteredDistributions.putItem(area, distribution);
             }
         }

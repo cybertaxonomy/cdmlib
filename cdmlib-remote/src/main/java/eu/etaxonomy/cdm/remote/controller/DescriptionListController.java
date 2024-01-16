@@ -277,6 +277,7 @@ public class DescriptionListController
             @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
             @RequestParam(value = "features", required = false ) Set<UUID> featureUuids,
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
+            @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
@@ -317,6 +318,7 @@ public class DescriptionListController
                 config.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
                 config.setFeatures(featureUuids);
                 config.setAreaTree(areaTreeUuid);
+                config.setStatusTree(statusTreeUuid);
                 config.setCondensedDistributionConfiguration(condensedConfig);
                 //TODO needed?
                 config.setStatusColorsString(statusColorsString);

@@ -153,6 +153,7 @@ public class DistributionServiceImpl implements IDistributionService {
             omitLevels = emptySet;
         }
 
+        //area tree
         TermTree<NamedArea> areaTree = getPersistentAreaTree(distributions, config);
         if (areaTree == null) {
             //TODO better use areaTree created within filterDistributions(...) but how to get it easily?
@@ -163,14 +164,15 @@ public class DistributionServiceImpl implements IDistributionService {
         SetMap<NamedArea, TermNode<NamedArea>> parentAreaNodeMap = areaTree.getParentNodeMap();
         SetMap<NamedArea, TermNode<NamedArea>> area2TermNodesMap = areaTree.getTermNodesMap();
 
+        //status tree
+        TermTree<PresenceAbsenceTerm> statusTree = getPersistentStatusTree(config);
 
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea
         // and ignoreUndefinedStatus to all distributions, but KEEP fallback area distributions
         boolean keepFallBackOnlyIfNoSubareaDataExists = false;
         Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA,
-                keepFallBackOnlyIfNoSubareaDataExists,
-                config.isIgnoreDistributionStatusUndefined());
+                areaTree, statusTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA,
+                keepFallBackOnlyIfNoSubareaDataExists);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
@@ -216,9 +218,8 @@ public class DistributionServiceImpl implements IDistributionService {
             // only apply the subAreaPreference rule for the maps
             keepFallBackOnlyIfNoSubareaDataExists = true;
             Set<Distribution> filteredMapDistributions = DistributionServiceUtilities.filterDistributions(
-                    filteredDistributions, areaTree, fallbackAreaMarkerType, !PREFER_AGGREGATED,
-                    IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists,
-                    config.isIgnoreDistributionStatusUndefined());
+                    filteredDistributions, areaTree, statusTree, fallbackAreaMarkerType, !PREFER_AGGREGATED,
+                    IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists);
 
             dto.setMapUriParams(DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,
@@ -241,18 +242,32 @@ public class DistributionServiceImpl implements IDistributionService {
         return areaTree;
     }
 
+    private TermTree<PresenceAbsenceTerm> getPersistentStatusTree(DistributionInfoConfiguration config) {
+        UUID statusTreeUuid = config.getStatusTree();
+        if (statusTreeUuid == null) {
+            return null;
+        }
+        //TODO property path
+        String[] propertyPath = new String[] {};
+        @SuppressWarnings("unchecked")
+        TermTree<PresenceAbsenceTerm> statusTree = termTreeDao.load(statusTreeUuid, Arrays.asList(propertyPath));
+        return statusTree;
+    }
+
     @Override
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
             TermTree<NamedArea> areaTree,
+            TermTree<PresenceAbsenceTerm> statusTree,
             boolean statusOrderPreference,
             Set<MarkerType> fallbackAreaMarkerTypes,
             CondensedDistributionConfiguration config,
             List<Language> langs) {
 
+        //TODO exclude "undefined" status as long as status tree is not yet
         areaTree = areaTree == null ? DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes) : areaTree;
         SetMap<NamedArea,TermNode<NamedArea>> parentNodeMap = areaTree.getParentNodeMap();
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, null, fallbackAreaMarkerTypes, false, statusOrderPreference, false, false, true);
+                distributions, null, statusTree, fallbackAreaMarkerTypes, false, statusOrderPreference, false, false);
         CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
                 parentNodeMap,
@@ -276,8 +291,8 @@ public class DistributionServiceImpl implements IDistributionService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, null,
-                hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true, false);
+                distributions, null, null,
+                hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true);
 
         String uriParams = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
                 filteredDistributions,

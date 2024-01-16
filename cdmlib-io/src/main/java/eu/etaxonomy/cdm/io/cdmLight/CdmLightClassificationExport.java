@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
@@ -104,6 +106,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -125,6 +128,9 @@ public class CdmLightClassificationExport
 
     @Autowired
     private IDistributionService distributionService;
+
+    @Autowired
+    private ITermTreeDao termTreeDao;
 
     public CdmLightClassificationExport() {
         this.ioName = this.getClass().getSimpleName();
@@ -880,32 +886,46 @@ public class CdmLightClassificationExport
                         + cdmBaseStr(element) + ": " + e.getMessage());
             }
         }
-         if(state.getConfig().isCreateCondensedDistributionString()){
-             List<Language> langs = new ArrayList<>();
-             langs.add(Language.ENGLISH());
-             TermTree<NamedArea> areaTree = null; //TODO
+        if(state.getConfig().isCreateCondensedDistributionString()){
+            List<Language> langs = new ArrayList<>();
+            langs.add(Language.ENGLISH());
+            TermTree<NamedArea> areaTree = null; //TODO
+            TermTree<PresenceAbsenceTerm> statusTree = getPersistentStatusTree(state.getConfig());
 
-             CondensedDistribution conDis = distributionService.getCondensedDistribution(
-                     //TODO add CondensedDistributionConfiguration to export configuration
-                     distributions, areaTree, true, null, state.getConfig().getCondensedDistributionConfiguration(), langs);
-             CdmLightExportTable tableCondensed =
-                     CdmLightExportTable.SIMPLE_FACT;
-             String[] csvLine = new String[tableCondensed.getSize()];
-             //the computed fact has no uuid, TODO: remember the uuid for later reference assignment
-             UUID randomUuid = UUID.randomUUID();
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] =
-                     randomUuid.toString();
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
-                     getId(state, taxon);
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
-                     conDis.toString();
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.LANGUAGE)] =Language.ENGLISH().toString();
+            CondensedDistribution conDis = distributionService.getCondensedDistribution(
+                    //TODO add CondensedDistributionConfiguration to export configuration
+                    distributions, areaTree, statusTree, true, null,
+                    state.getConfig().getCondensedDistributionConfiguration(), langs);
+            CdmLightExportTable tableCondensed =
+                    CdmLightExportTable.SIMPLE_FACT;
+            String[] csvLine = new String[tableCondensed.getSize()];
+            //the computed fact has no uuid, TODO: remember the uuid for later reference assignment
+            UUID randomUuid = UUID.randomUUID();
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] =
+                    randomUuid.toString();
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
+                    getId(state, taxon);
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
+                    conDis.toString();
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.LANGUAGE)] =Language.ENGLISH().toString();
 
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_CATEGORY)] =
-                     "CondensedDistribution";
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_CATEGORY)] =
+                    "CondensedDistribution";
 
-             state.getProcessor().put(tableCondensed, taxon, csvLine);
-         }
+            state.getProcessor().put(tableCondensed, taxon, csvLine);
+        }
+    }
+
+    private TermTree<PresenceAbsenceTerm> getPersistentStatusTree(CdmLightExportConfigurator config) {
+        UUID statusTreeUuid = config.getStatusTree();
+        if (statusTreeUuid == null) {
+            return null;
+        }
+        //TODO property path
+        String[] propertyPath = new String[] {};
+        @SuppressWarnings("unchecked")
+        TermTree<PresenceAbsenceTerm> statusTree = termTreeDao.load(statusTreeUuid, Arrays.asList(propertyPath));
+        return statusTree;
     }
 
     private void handleCommonNameFacts(CdmLightExportState state, Taxon taxon,

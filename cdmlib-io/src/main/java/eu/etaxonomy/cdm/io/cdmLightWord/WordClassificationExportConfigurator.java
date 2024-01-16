@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.cdmLightWord;
 
 import java.io.File;
 import java.util.Comparator;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
@@ -34,6 +35,8 @@ public class WordClassificationExportConfigurator
     private boolean isHighlightPrimaryCollector = false;
 
     private boolean createZipFile = false;
+
+    private UUID statusTree;
 
     private boolean isFilterIntextReferences = true;
     private boolean isCreateCondensedDistributionString = true;
@@ -223,5 +226,12 @@ public class WordClassificationExportConfigurator
     }
     public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistributionConfiguration) {
         this.condensedDistributionConfiguration = condensedDistributionConfiguration;
+    }
+
+    public UUID getStatusTree() {
+        return statusTree;
+    }
+    public void setStatusTree(UUID statusTree) {
+        this.statusTree = statusTree;
     }
 }

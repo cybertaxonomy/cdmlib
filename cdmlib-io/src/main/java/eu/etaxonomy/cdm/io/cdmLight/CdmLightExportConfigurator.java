@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
 import java.util.Comparator;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
@@ -39,6 +40,8 @@ public class CdmLightExportConfigurator
     private boolean isHighlightPrimaryCollector = false;
 
     private boolean createZipFile = false;
+
+    private UUID statusTree;
 
     private boolean isFilterIntextReferences = true;
     private boolean isCreateCondensedDistributionString = true;
@@ -306,5 +309,12 @@ public class CdmLightExportConfigurator
     }
     public void setDoFactualData(boolean doFactualData) {
         this.doFactualData = doFactualData;
+    }
+
+    public UUID getStatusTree() {
+        return statusTree;
+    }
+    public void setStatusTree(UUID statusTree) {
+        this.statusTree = statusTree;
     }
 }

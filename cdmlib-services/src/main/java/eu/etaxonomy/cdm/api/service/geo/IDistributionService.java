@@ -76,6 +76,7 @@ public interface IDistributionService {
     */
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
             TermTree<NamedArea> areaTree,
+            TermTree<PresenceAbsenceTerm> statusTree,
             boolean statusOrderPreference,
             Set<MarkerType> fallbackAreaMarkerTypes,
             CondensedDistributionConfiguration config,

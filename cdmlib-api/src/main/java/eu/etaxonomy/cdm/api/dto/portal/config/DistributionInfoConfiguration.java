@@ -42,6 +42,8 @@ public class DistributionInfoConfiguration {
 
     private UUID areaTree = null;
 
+    private UUID statusTree = null;
+
     private CondensedDistributionConfiguration condensedDistrConfig = CondensedDistributionConfiguration.NewDefaultInstance();
 
     private EnumSet<InfoPart> infoParts = EnumSet.of(
@@ -144,4 +146,10 @@ public class DistributionInfoConfiguration {
         this.areaTree = areaTree;
     }
 
+    public UUID getStatusTree() {
+        return statusTree;
+    }
+    public void setStatusTree(UUID statusTree) {
+        this.statusTree = statusTree;
+    }
 }
