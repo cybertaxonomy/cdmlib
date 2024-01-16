@@ -724,7 +724,7 @@ public class DistributionServiceUtilities {
             }
             boolean filterOutStatus = statusPositiveSet != null &&
                     (distribution.getStatus() == null
-                      || statusPositiveSet.contains(distribution.getStatus().getUuid()));
+                      || !statusPositiveSet.contains(distribution.getStatus().getUuid()));
             if (!filterOutStatus){
                 filteredDistributions.putItem(area, distribution);
             }
