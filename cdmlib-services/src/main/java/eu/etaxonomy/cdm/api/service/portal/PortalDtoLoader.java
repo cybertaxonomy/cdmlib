@@ -931,8 +931,6 @@ public class PortalDtoLoader {
 
         //copied from DescriptionListController
 
-        boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
-        distributionConfig.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
         boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future
 
         //fallbackArea markers include markers for fully hidden areas and fallback areas.
