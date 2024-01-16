@@ -291,13 +291,13 @@ public class WordClassificationExport
     }
 
     private void handleTaxon(WordClassificationExportState state, TaxonNode taxonNode) {
-        try {
+        if (taxonNode == null) {
+            state.getResult().addError("The taxonNode was null.", "handleTaxon");
+            state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
+            return;
+        }
 
-            if (taxonNode == null) {
-                state.getResult().addError("The taxonNode was null.", "handleTaxon");
-                state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
-                return;
-            }
+        try {
             if (taxonNode.getTaxon() == null) {
                 state.getResult().addError("There was a taxon node without a taxon: " + taxonNode.getUuid(),
                         "handleTaxon");
@@ -773,7 +773,7 @@ public class WordClassificationExport
                         + cdmBaseStr(element) + ": " + e.getMessage());
             }
         }
-         if(state.getConfig().isCreateCondensedDistributionString()){
+        if(state.getConfig().isCreateCondensedDistributionString()){
              List<Language> langs = new ArrayList<>();
              langs.add(Language.ENGLISH());
 

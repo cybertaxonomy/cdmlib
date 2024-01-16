@@ -1,3 +1,8 @@
+/**
+* Copyright (C) 2008 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*/
 package eu.etaxonomy.cdm.io.csv.caryophyllales.out;
 
 import java.io.File;

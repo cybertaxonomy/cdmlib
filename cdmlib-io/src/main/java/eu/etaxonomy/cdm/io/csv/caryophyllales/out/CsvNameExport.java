@@ -1,3 +1,8 @@
+/**
+* Copyright (C) 2008 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*/
 package eu.etaxonomy.cdm.io.csv.caryophyllales.out;
 
 import java.io.ByteArrayOutputStream;
@@ -99,10 +104,9 @@ public class CsvNameExport extends CsvNameExportBase {
                 writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));
                 break;
             case EXPORT_DATA :
+            default:
                 exportStream = new ByteArrayOutputStream();
                 writer = new PrintWriter(exportStream);
-                break;
-            default:
                 break;
             }
 
@@ -218,9 +222,6 @@ public class CsvNameExport extends CsvNameExportBase {
               }
               node = partitioner.next();
             }
-
-
-
 
 //        List<HashMap<String,String>> nameRecords = new ArrayList<>();
 //
