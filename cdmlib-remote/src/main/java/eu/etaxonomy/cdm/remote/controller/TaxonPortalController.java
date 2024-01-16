@@ -417,8 +417,6 @@ public class TaxonPortalController extends TaxonController{
         distributionConfig.setStatusOrderPreference(statusOrderPreference);
         distributionConfig.setAreaTree(areaTreeUuid);
         distributionConfig.setStatusTree(statusTreeUuid);
-        //TODO remove undefined config
-        distributionConfig.setIgnoreDistributionStatusUndefined(true);
         distributionConfig.setOmitLevels(omitLevels);
         distributionConfig.setStatusColorsString(statusColorsString);
         distributionConfig.setDistributionOrder(distributionOrder);

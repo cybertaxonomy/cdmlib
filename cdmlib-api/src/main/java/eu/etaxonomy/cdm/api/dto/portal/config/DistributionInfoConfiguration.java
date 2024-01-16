@@ -51,8 +51,6 @@ public class DistributionInfoConfiguration {
 
     private boolean useTreeDto = true;
 
-    private boolean ignoreDistributionStatusUndefined = true;
-
 //********************* GETTER / SETTER ***************************/
 
     public boolean isPreferSubareas() {
@@ -116,13 +114,6 @@ public class DistributionInfoConfiguration {
     }
     public void setUseTreeDto(boolean useTreeDto) {
         this.useTreeDto = useTreeDto;
-    }
-
-    public boolean isIgnoreDistributionStatusUndefined() {
-        return ignoreDistributionStatusUndefined;
-    }
-    public void setIgnoreDistributionStatusUndefined(boolean ignoreDistributionStatusUndefined) {
-        this.ignoreDistributionStatusUndefined = ignoreDistributionStatusUndefined;
     }
 
     public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {

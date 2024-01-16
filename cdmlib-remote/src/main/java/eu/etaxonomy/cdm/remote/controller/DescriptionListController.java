@@ -289,7 +289,6 @@ public class DescriptionListController
 
             ModelAndView mv = new ModelAndView();
 
-            boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
             boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future
 
             DistributionInfoDto dto;
@@ -315,7 +314,6 @@ public class DescriptionListController
                 config.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
                 config.setOmitLevels(omitLevels);
                 config.setDistributionOrder(distributionOrder);
-                config.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
                 config.setFeatures(featureUuids);
                 config.setAreaTree(areaTreeUuid);
                 config.setStatusTree(statusTreeUuid);
