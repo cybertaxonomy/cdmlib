@@ -287,6 +287,7 @@ public class DescriptionListController
 
             logger.info("doGetDistributionInfo() - " + requestPathAndQuery(request));
 
+            boolean includeUnpublished = false;
             ModelAndView mv = new ModelAndView();
 
             boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future
@@ -308,6 +309,7 @@ public class DescriptionListController
                         statusColorsString, termService, vocabularyService);
 
                 DistributionInfoConfiguration config = new DistributionInfoConfiguration();
+                config.setIncludeUnpublished(includeUnpublished);
                 config.setInfoParts(parts);
                 config.setPreferSubAreas(preferSubAreas);
                 config.setStatusOrderPreference(statusOrderPreference);

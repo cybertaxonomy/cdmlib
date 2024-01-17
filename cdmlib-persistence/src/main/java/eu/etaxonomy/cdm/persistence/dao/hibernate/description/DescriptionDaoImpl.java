@@ -739,7 +739,7 @@ public class DescriptionDaoImpl
                 " LEFT JOIN de.inDescription AS d" +
                 " LEFT JOIN d.taxon AS t" +
                 " WHERE d.class = 'TaxonDescription' AND t.uuid = :taxon_uuid " +
-                (includeUnpublished? "" : " AND de.publish = :publish ");                ;
+                (includeUnpublished? "" : " AND d.publish = :publish ");
 
         if(type != null){
             queryString += " and de.class = :type";
