@@ -66,6 +66,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
     private static final NomenclaturalCode ICNAFP = NomenclaturalCode.ICNAFP;
     private static final NomenclaturalCode ICZN = NomenclaturalCode.ICZN;
+    private static final NomenclaturalCode FUNGI = NomenclaturalCode.Fungi;
 
     private static final String SEP = TimePeriod.SEP;
 
@@ -2366,7 +2367,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         // & am Ende macht es langsamger (16s), als nur ","(6s))
 
         String authorStr = "R.S. Terry J.E. Sm. R.G. Sharpe T. Rigaud T.H. Rigseaud D.T. Li, R.G. Sharpe, T. Rigaud, D.T.J. Littlewood & D. Bou";
-        TeamOrPersonBase[] authorArray = new TeamOrPersonBase[4];
+        TeamOrPersonBase<?>[] authorArray = new TeamOrPersonBase[4];
         try {
             DateTime start = DateTime.now();
             parser.fullAuthors(authorStr, authorArray, new Integer[]{1800, null, null, null}, NomenclaturalCode.ICNAFP);
@@ -2635,6 +2636,77 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNull(name.getRank());
     }
 
+    //#7443
+    @Test
+    public final void testFungiWithInAuthors() {
+        //test in-author and basionym in-author
+        String nameStr = "Cora pavonia (Sw. in Weber & Mohr) Fr. in Montagne";
+        TaxonName name = (TaxonName)parser.parseFullName(nameStr, FUNGI, Rank.SPECIES());
+        assertInAuthors(name, false);
+        Assert.assertEquals("(Sw. in Weber & Mohr) Fr. in Montagne", name.getAuthorshipCache());
+
+        //referenced name
+        name = parser.parseReferencedName(nameStr, FUNGI, Rank.SPECIES());
+        assertInAuthors(name, false);
+        Assert.assertEquals("(Sw. in Weber & Mohr) Fr. in Montagne", name.getAuthorshipCache());
+
+        String referencedName = "Cora pavonia (Sw. in Weber & Mohr) Fr. in Montagne, Interesting thoughts about Fungi 2: 66. 1835";
+        name = parser.parseReferencedName(referencedName, FUNGI, Rank.SPECIES());
+        assertInAuthors(name, true);
+        Assert.assertEquals("(Sw. in Weber & Mohr) Fr.", name.getAuthorshipCache());
+        Reference inRef = name.getNomenclaturalReference().getInReference();
+        Assert.assertEquals("Montagne", inRef.getAuthorship().getTitleCache());
+        Assert.assertEquals("Interesting thoughts about Fungi", inRef.getAbbrevTitle());
+
+        //test non-fungi ICNafp name
+        name = (TaxonName)parser.parseFullName(nameStr, ICNAFP, Rank.SPECIES());
+        Assert.assertTrue("Non-fungi names currently should not support in authors", name.isProtectedTitleCache());
+
+        //... only combination in-author
+        nameStr = "Cora pavonia (Sw.) Fr. in Montagne";
+        name = (TaxonName)parser.parseFullName(nameStr, ICNAFP, Rank.SPECIES());
+        Assert.assertTrue("Non-fungi names currently should not support in authors", name.isProtectedTitleCache());
+
+        //... only basionym in-author
+        nameStr = "Cora pavonia (Sw. in Weber & Mohr) Fr.";
+        name = (TaxonName)parser.parseFullName(nameStr, ICNAFP, Rank.SPECIES());
+        Assert.assertTrue("Non-fungi names currently should not support in authors", name.isProtectedTitleCache());
+    }
+
+    //#7443
+    @Test
+    public final void testZooWithInAuthors() {
+        //test in-author and basionym in-author
+        String nameStr = "Cora pavonia (Sw. in Weber & Mohr, 1825) Fr. in Montagne, 1830";
+        TaxonName name = (TaxonName)parser.parseFullName(nameStr, ICZN, Rank.SPECIES());
+        assertInAuthors(name, false);
+        Assert.assertEquals("(Sw. in Weber & Mohr, 1825) Fr. in Montagne, 1830", name.getAuthorshipCache());
+    }
+
+    private void assertInAuthors(TaxonName name, boolean noInAuthor) {
+        Assert.assertFalse(name.isProtectedTitleCache());
+        Assert.assertFalse(name.isProtectedNameCache());
+        Assert.assertFalse(name.isProtectedAuthorshipCache());
+        Assert.assertEquals("Cora", name.getGenusOrUninomial());
+        Assert.assertEquals("pavonia", name.getSpecificEpithet());
+        TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
+        Assert.assertEquals("Fr.", combinationAuthor.getTitleCache());
+        TeamOrPersonBase<?> combinationInAuthor = name.getInCombinationAuthorship();
+        if (noInAuthor) {
+            Assert.assertNull(combinationInAuthor);
+            Assert.assertNotNull(name.getNomenclaturalReference());
+        }else {
+            Assert.assertEquals("Montagne", combinationInAuthor.getTitleCache());
+            Assert.assertNull(name.getNomenclaturalReference());
+        }
+        TeamOrPersonBase<?> basionymAuthor = name.getBasionymAuthorship();
+        Assert.assertEquals("Sw.", basionymAuthor.getTitleCache());
+        TeamOrPersonBase<?> basionymInAuthor = name.getInBasionymAuthorship();
+        Assert.assertEquals("Weber & Mohr", basionymInAuthor.getTitleCache());
+        Assert.assertNull(name.getExCombinationAuthorship());
+        Assert.assertNull(name.getExBasionymAuthorship());
+    }
+
     @Test
     public final void testNomenclaturalStatus() {
         IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
@@ -2791,6 +2863,15 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Reference nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("46 (1-2)", nomRef.getVolume());
+
+        //Man in 't Veld  #6100
+        String nameStr = "Phytophthora multivesiculata Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters";
+        name = parser.parseFullName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters",
+                name.getCombinationAuthorship().getTitleCache());
+        assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters",
+                name.getCombinationAuthorship().getNomenclaturalTitleCache());
 
         //Canabio, detail with fig.
         name = parser.parseReferencedName("Didymaea floribunda Rzed."
@@ -3066,7 +3147,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals( "30(Vorabdr.)", name.getNomenclaturalReference().getVolume());
 
         //#6100  jun.
-        String nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
+        nameStr = "Swida \u00D7 friedlanderi (W.H.Wagner jun.) Holub";
         name = parser.parseFullName(nameStr, botanicCode, null);  //fails with missing botanicCode, see open issues
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         assertEquals( "W.H.Wagner jun.", name.getBasionymAuthorship().getTitleCache());

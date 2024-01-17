@@ -3635,30 +3635,42 @@ public class TaxonName
 
     @Override
     public boolean isNonViral() {
+        checkNameTypeNull();
         return nameType.isNonViral();
     }
     @Override
     public boolean isZoological(){
+        checkNameTypeNull();
         return nameType.isZoological();
     }
     @Override
     public boolean isBotanical() {
-        if (nameType == null){
-            throw new RuntimeException("Name has no nameType: " +  this.getUuid() + ", " + getId()+ ", species epi: " + getSpecificEpithet() );
-        }
+        checkNameTypeNull();
         return nameType.isBotanical();
     }
     @Override
+    public boolean isFungus() {
+        checkNameTypeNull();
+        return nameType.isFungus();
+    }
+    @Override
     public boolean isCultivar() {
+        checkNameTypeNull();
         return nameType.isCultivar();
     }
     @Override
     public boolean isBacterial() {
+        checkNameTypeNull();
         return nameType.isBacterial();
     }
     @Override
     public boolean isViral() {
         return nameType != null? nameType.isViral(): false;
+    }
+    private void checkNameTypeNull() {
+        if (nameType == null){
+            throw new RuntimeException("Name has no nameType: " +  this.getUuid() + ", " + getId()+ ", species epi: " + getSpecificEpithet() );
+        }
     }
 
 // *********************** CACHES ***************************************************/

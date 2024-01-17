@@ -110,22 +110,28 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String authorAndExTeam = "(" + authorTeam + oWs + exString + oWs + ")?" + authorTeam;
     protected static String basStart = "\\(";
     protected static String basEnd = "\\)";
+    protected static String optionalInAuthor = "("+oWs+"in" + oWs + authorTeam + ")?";
+    protected static String authorAndExAndInTeam = authorAndExTeam + optionalInAuthor;
     protected static String botanicBasionymAuthor = basStart + "(" + authorAndExTeam + ")" + basEnd;  // '(' and ')' is for evaluation with RE.paren(x)
     protected static String fullBotanicAuthorString = fWs + "((" + botanicBasionymAuthor +")?" + fWs + authorAndExTeam + "|" + botanicBasionymAuthor +")"+ fWs;
-    protected static String facultFullBotanicAuthorString = "(" +  fullBotanicAuthorString + ")?" ;
+    protected static String fungiBasionymAuthor = basStart + "(" + authorAndExAndInTeam + ")" + basEnd;  // '(' and ')' is for evaluation with RE.paren(x)
+    protected static String fullFungiAuthorString = fWs + "((" + fungiBasionymAuthor +")?" + fWs + authorAndExAndInTeam + "|" + botanicBasionymAuthor +")"+ fWs;
+    protected static String fullFungiNoInAuthorString = fWs + "((" + fungiBasionymAuthor +")?" + fWs + authorAndExTeam + "|" + botanicBasionymAuthor +")"+ fWs;
+
+    protected static String facultFullBotanicAuthorString = "(" +  fullBotanicAuthorString + "|" + fullFungiAuthorString + ")?" ;
 
     //Zoo. Author
     //TODO does zoo author have ex-Author?
     protected static String zooAuthorYearSeperator = "(,|\\s)";
     protected static String zooAuthorAddidtion = fWs + zooAuthorYearSeperator + fWs + singleYear;
-    protected static String zooAuthorTeam = authorTeam + zooAuthorAddidtion;
+    protected static String zooAuthorTeam = authorTeam + optionalInAuthor +  zooAuthorAddidtion;
     protected static String zooBasionymAuthor = basStart + "(" + zooAuthorTeam + ")" + basEnd;
     protected static String fullZooAuthorString = fWs + "((" + zooBasionymAuthor +")?" + fWs + zooAuthorTeam + "|" + zooBasionymAuthor +")"+ fWs;
     protected static String facultFullZooAuthorString = "(" +  fullZooAuthorString + ")?" ;
 
     protected static String facultFullAuthorString2 = "(" + facultFullBotanicAuthorString + "|" + facultFullZooAuthorString + ")";
 
-    protected static String basionymAuthor = "(" + botanicBasionymAuthor + "|" + zooBasionymAuthor+ ")";
+    protected static String basionymAuthor = "(" + botanicBasionymAuthor + "|" + fungiBasionymAuthor +"|" + zooBasionymAuthor+ ")";
     protected static String fullAuthorString = "(" + fullBotanicAuthorString + "|" + fullZooAuthorString+ ")";
 
     //details
@@ -321,7 +327,11 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
                     speciesWithInfraGen + "|" +zooInfraSpecies + "|" +  oldInfraSpecies + ")+";
+
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
+    protected static String anyFungiFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullFungiAuthorString + ")"  ;
+    protected static String anyFungiNoInAuthorFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullFungiNoInAuthorString + ")"  ;
+
     protected static String anyCultivarFullName = anyCultivarName + oWs + "(?<cultivarAuthor>" + authorTeam +")";
     protected static String anyZooFullName = anyZooName + oWs + fullZooAuthorString ;
     protected static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
@@ -361,6 +371,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern exAuthorPattern = Pattern.compile(oWs + exString);
 
     protected static Pattern fullBotanicAuthorStringPattern = Pattern.compile(fullBotanicAuthorString);
+    protected static Pattern fullFungiAuthorStringPattern = Pattern.compile(fullFungiAuthorString);
     protected static Pattern fullZooAuthorStringPattern = Pattern.compile(fullZooAuthorString);
     protected static Pattern fullAuthorStringPattern = Pattern.compile(fullAuthorString);
 

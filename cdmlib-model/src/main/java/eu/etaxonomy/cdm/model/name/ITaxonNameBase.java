@@ -951,6 +951,12 @@ public interface ITaxonNameBase
     public boolean isBotanical();
 
     /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#Fungi} or
+     * any sub type and is supposed to be handled via {@link IFungusName}
+     */
+    public boolean isFungus();
+
+    /**
      * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNCP} or
      * any sub type and is supposed to be handled via {@link ICultivarPlantName}
      */
