@@ -513,9 +513,9 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
         Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
         Assert.assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
-        Assert.assertEquals(new TaggedText(TagEnum.separator, " [as \""), taggedFullTitle.get(4));
+        Assert.assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, " [as \""), taggedFullTitle.get(4));
         Assert.assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
-        Assert.assertEquals(new TaggedText(TagEnum.separator, "\"]"), taggedFullTitle.get(6));
+        Assert.assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, "\"]"), taggedFullTitle.get(6));
 
         originalName.setInfraSpecificEpithet("peta");
         originalName.setNameCache(null, false);
@@ -526,11 +526,11 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
         Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
         Assert.assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
-        Assert.assertEquals(new TaggedText(TagEnum.separator, " [as \""), taggedFullTitle.get(4));
+        Assert.assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, " [as \""), taggedFullTitle.get(4));
         Assert.assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
         Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(6));
         Assert.assertEquals(new TaggedText(TagEnum.name, "peta"), taggedFullTitle.get(7));
-        Assert.assertEquals(new TaggedText(TagEnum.separator, "\"]"), taggedFullTitle.get(8));
+        Assert.assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, "\"]"), taggedFullTitle.get(8));
     }
 
     @Test
