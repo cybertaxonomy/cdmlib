@@ -163,6 +163,7 @@ public interface INonViralName extends ITaxonNameBase{
      * @return  the in-author (team) of <i>this</i> non viral taxon name
      * @see     eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
      * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
+     * @see     #getInBasionymAuthorship()
      */
     public TeamOrPersonBase<?> getInCombinationAuthorship();
 
@@ -613,12 +614,30 @@ public interface INonViralName extends ITaxonNameBase{
     */
    public void setTrinomHybrid(boolean trinomHybrid);
 
+   /**
+    * @param the zoological in author of current combination
+    * according to ICZN Recommendation 51E.
+    * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+    * @see #getInCombinationAuthorship()
+    */
+    //moved to INonViralName because also Fungi names can have in-authors
+    public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
 
-   public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
+   /**
+    * @return the zoological in author of original combination
+    * according to ICZN Recommendation 51E.
+    * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+    * @see #getInCombinationAuthorship()
+    */
+    //moved to INonViralName because also Fungi names can have in-authors
+    public TeamOrPersonBase<?> getInBasionymAuthorship();
 
-
-   public TeamOrPersonBase<?> getInBasionymAuthorship();
-
-
-   public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship);
+   /**
+    * @param the zoological in author of original combination
+    * according to ICZN Recommendation 51E.
+    * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+    * @see #getInBasionymAuthorship()
+    */
+    //moved to INonViralName because also Fungi names can have in-authors
+    public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship);
 }
