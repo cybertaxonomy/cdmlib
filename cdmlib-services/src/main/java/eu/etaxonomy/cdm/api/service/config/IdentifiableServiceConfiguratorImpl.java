@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service.config;
 
 import java.util.List;
@@ -43,7 +42,6 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 	public Class<T> getClazz() {
 		return (Class)clazz;
 	}
-
 	@Override
 	public void setClazz(Class<? extends T> clazz) {
 		this.clazz = clazz;
@@ -58,20 +56,15 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
     public String getTitleSearchStringSqlized(){
 	    return getTitleSearchString() == null ? null : getTitleSearchString().replace("*", "%");
 	}
-
 	@Override
     public void setTitleSearchString(String titleSearchString) {
 		this.titleSearchString = titleSearchString;
 	}
 
-	/**
-	 * @return the pageSize
-	 */
 	@Override
     public Integer getPageSize() {
 		return pageSize;
 	}
-
 	/**
 	 * Sets the number of results that should be shown on current page
 	 *
@@ -89,7 +82,6 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
     public Integer getPageNumber() {
 		return pageNumber;
 	}
-
 	/**
 	 * Sets the number of the page the first result should come from, starting
 	 * with 0 as the first page.
@@ -105,17 +97,15 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
     public MatchMode getMatchMode() {
 		return matchMode;
 	}
-
 	@Override
     public void setMatchMode(MatchMode matchMode) {
 		this.matchMode = matchMode;
 	}
 
-   @Override
+    @Override
     public List<Criterion> getCriteria() {
         return criteria;
     }
-
     @Override
     public void setCriteria(List<Criterion> criteria) {
         this.criteria = criteria;
@@ -126,7 +116,6 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
     public List<Restriction<?>> getRestrictions() {
         return restrictions;
     }
-
     @Override
     public void setRestrictions(List<Restriction<?>> restrictions) {
         this.restrictions = restrictions;
@@ -136,7 +125,6 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 	public List<OrderHint> getOrderHints() {
 		return orderHints;
 	}
-
 	@Override
 	public void setOrderHints(List<OrderHint> orderHints) {
 		this.orderHints = orderHints;

@@ -903,7 +903,6 @@ public class TaxonPortalController extends TaxonController{
         return media;
     }
 
-
     public class EntityMediaContext<T extends IdentifiableEntity> {
 
         private T entity;
