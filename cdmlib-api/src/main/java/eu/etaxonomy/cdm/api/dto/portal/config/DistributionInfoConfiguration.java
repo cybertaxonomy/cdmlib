@@ -51,6 +51,8 @@ public class DistributionInfoConfiguration {
 
     private boolean useTreeDto = true;
 
+    private boolean includeUnpublished = false;
+
 //********************* GETTER / SETTER ***************************/
 
     public boolean isPreferSubareas() {
@@ -142,5 +144,12 @@ public class DistributionInfoConfiguration {
     }
     public void setStatusTree(UUID statusTree) {
         this.statusTree = statusTree;
+    }
+
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
     }
 }

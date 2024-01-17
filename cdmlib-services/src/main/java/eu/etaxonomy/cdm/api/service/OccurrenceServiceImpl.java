@@ -316,12 +316,14 @@ public class OccurrenceServiceImpl
 
     @Override
     public List<DerivedUnitFacade> listDerivedUnitFacades(
-            DescriptionBase description, List<String> derivedUnitFacadeInitStrategy) {
+            DescriptionBase description, boolean includeUnpublished,
+            List<String> derivedUnitFacadeInitStrategy) {
 
         List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<>();
         IndividualsAssociation tempIndividualsAssociation;
         SpecimenOrObservationBase tempSpecimenOrObservationBase;
-        List<IndividualsAssociation> elements = descriptionService.listDescriptionElements(description, null, IndividualsAssociation.class, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
+        List<IndividualsAssociation> elements = descriptionService.listDescriptionElements(
+                description, null, IndividualsAssociation.class, includeUnpublished, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
         for (IndividualsAssociation element : elements) {
             tempIndividualsAssociation = HibernateProxyHelper.deproxy(element, IndividualsAssociation.class);
             if (tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null) {
@@ -518,7 +520,8 @@ public class OccurrenceServiceImpl
         taxa.add(associatedTaxon);
 
         for (Taxon taxon : taxa) {
-            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, null, null, orderHints, propertyPaths);
+            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, includeUnpublished,
+                    null, null, orderHints, propertyPaths);
             for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 occurrenceIds.add(o.getId());
             }
@@ -558,7 +561,8 @@ public class OccurrenceServiceImpl
         for (Taxon taxon : taxa) {
             // TODO there might be a good potential to speed up the whole processing by collecting all entities first
             // and to create the DTOs in a second step
-            Set<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null, taxon, null, null, null, propertyPaths)
+            Set<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(
+                    null, taxon, includeUnpublished, null, null, null, propertyPaths)
                     .stream()
                     .map(u -> HibernateProxyHelper.deproxy(u, SpecimenOrObservationBase.class))
                     .collect(Collectors.toSet());
@@ -1438,6 +1442,7 @@ public class OccurrenceServiceImpl
 
     @Override
     public long countByTitle(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             Taxon taxon = null;
@@ -1460,7 +1465,8 @@ public class OccurrenceServiceImpl
                 List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
                 List<SpecimenOrObservationBase> sobs = dao.findOccurrences(occurrenceConfig.getClazz(),
                         occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
-                        occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                        occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(),
+                        occurrenceConfig.isIncludeUnpublished(), null, null,
                         occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
                 occurrences.addAll(sobs);
                 occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
@@ -1469,7 +1475,8 @@ public class OccurrenceServiceImpl
 
             return dao.countOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
-                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(),
+                    occurrenceConfig.isIncludeUnpublished(), null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
         }
         else{
@@ -1480,6 +1487,7 @@ public class OccurrenceServiceImpl
     @Override
     public Pager<UuidAndTitleCache<SpecimenOrObservationBase>> findByTitleUuidAndTitleCache(
             FindOccurrencesConfigurator config){
+
         List<UuidAndTitleCache<SpecimenOrObservationBase>> occurrences = new ArrayList<>();
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
@@ -1494,14 +1502,16 @@ public class OccurrenceServiceImpl
         }
         occurrences.addAll(dao.findOccurrencesUuidAndTitleCache(config.getClazz(),
                 config.getTitleSearchString(), config.getSignificantIdentifier(),
-                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
-                config.getOrderHints()));
+                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(),
+                config.isIncludeUnpublished(),
+                null, null, config.getOrderHints()));
         long count = Integer.valueOf(occurrences.size()).longValue();
         return new DefaultPagerImpl<>(config.getPageNumber(), count, config.getPageSize(), occurrences);
     }
 
     @Override
     public List<DerivedUnitDTO> findByTitleDerivedUnitDTO(FindOccurrencesConfigurator config) {
+
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
             TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
@@ -1516,7 +1526,8 @@ public class OccurrenceServiceImpl
         List<DerivedUnit> occurrences = new ArrayList<>();
         occurrences.addAll(dao.findOccurrences(DerivedUnit.class,
                 config.getTitleSearchString(), config.getSignificantIdentifier(),
-                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
+                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(),
+                config.isIncludeUnpublished(), null, null,
                 config.getOrderHints(), null));
 
         List<DerivedUnitDTO> dtos = new ArrayList<>();
@@ -1527,6 +1538,7 @@ public class OccurrenceServiceImpl
     @Override
     public <S extends SpecimenOrObservationBase> Pager<S> findByTitle(
             IIdentifiableEntityServiceConfigurator<S> config) {
+
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
@@ -1541,10 +1553,12 @@ public class OccurrenceServiceImpl
             if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
-            List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(occurrenceConfig.getClazz(),
+            List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(
+                    occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
-                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
-                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName,
+                    occurrenceConfig.getMatchMode(), occurrenceConfig.isIncludeUnpublished(),
+                    null, null, occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
             occurrences.addAll(foundOccurrences);
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 

@@ -223,7 +223,7 @@ public interface IOccurrenceService
 
     public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
 
-    public List<DerivedUnitFacade> listDerivedUnitFacades(DescriptionBase description, List<String> propertyPaths);
+    public List<DerivedUnitFacade> listDerivedUnitFacades(DescriptionBase description, boolean includeUnpublished, List<String> propertyPaths);
 
     /**
      * Lists all instances of {@link SpecimenOrObservationBase} which are

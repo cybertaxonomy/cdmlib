@@ -267,22 +267,15 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @return the list of matching DescriptionElementBase instances
      */
     <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(UUID taxonUuid,
-            Set<Feature> features,
-            Class<T> type, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths);
+            Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Return a list of ids of the specimens attached to a taxon via IndividualsAssociations
-     * @param taxonUuid
-     * @param features
-     * @param pageSize
-     * @param pageNumber
-     * @param propertyPaths
-     * @return
      */
     public List<Integer> getIndividualAssociationSpecimenIDs(UUID taxonUuid,
-            Set<Feature> features, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths);
+            Set<Feature> features, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * @param taxon
@@ -293,7 +286,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @return the count of matching TaxonDescription instances
      */
     <T extends DescriptionElementBase> long countDescriptionElementForTaxon(UUID taxonUuid,
-            Set<Feature> features, Class<T> type);
+            Set<Feature> features, Class<T> type, boolean includeUnpublished);
 
     /**
      * Method to list all {@link NamedAreas} instances which are currently used

@@ -974,8 +974,9 @@ public class TaxonServiceImpl
 
     @Override
     public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginalOccurences,
-            Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
+            Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
+            Boolean includeOriginalOccurences, Boolean includeTaxonNameDescriptions,
+            List<String> propertyPath) {
 
         //TODO let inherit
         boolean includeUnpublished = INCLUDE_UNPUBLISHED;
@@ -1033,7 +1034,8 @@ public class TaxonServiceImpl
             Set<SpecimenOrObservationBase> specimensOrObservations = new HashSet<>();
             // --- Specimens
             for (Taxon t : taxa) {
-                specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(null, t, null, null, null, null));
+                specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(
+                        null, t, includeUnpublished, null, null, null, null));
             }
             for (SpecimenOrObservationBase<?> occurrence : specimensOrObservations) {
 

@@ -1007,6 +1007,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
         // wildcard search => all derivates
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setIncludeUnpublished(false);
         config.setTitleSearchString("*");
         assertEquals(6, occurrenceService.countOccurrences(config));
         @SuppressWarnings("rawtypes")

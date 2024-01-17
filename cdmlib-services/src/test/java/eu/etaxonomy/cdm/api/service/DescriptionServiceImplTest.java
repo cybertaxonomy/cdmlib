@@ -80,7 +80,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
             }
         }
         service.saveOrUpdate(descBase);
-        Pager<DescriptionElementBase> allElements = service.getDescriptionElements(null, null, null, null, null, null);
+        Pager<DescriptionElementBase> allElements = service.getDescriptionElements(null, null, null, false, null, null, null);
         Assert.assertEquals(1, allElements.getCount().intValue());
         DescriptionElementBase test = allElements.getRecords().get(0);
         if (test instanceof TextData){

@@ -106,7 +106,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *             instead
      */
     @Deprecated
-    public <T extends DescriptionElementBase> Pager<T> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> Pager<T> getDescriptionElements(
+            DescriptionBase description,Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
     /**
@@ -137,7 +139,10 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *
      * @return a Pager containing DescriptionElementBase instances
      */
-    public <T extends DescriptionElementBase> Pager<T> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> Pager<T> pageDescriptionElements(
+            DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given
@@ -165,7 +170,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @deprecated use {@link #listDescriptionElements(DescriptionBase, Class, Set, Class, Integer, Integer, List)} instead
      */
     @Deprecated
-    public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(
+            DescriptionBase description, Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given
@@ -178,7 +185,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            Restrict the results to those description elements which are
      *            scoped by one of the Features passed (can be null or empty)
      * @param type
-     *            A filter DescriptionElements of a for specific class
+     *            A filter DescriptionElements of a specific class
      * @param pageSize
      *            The maximum number of description elements returned (can be
      *            null for all description elements)
@@ -191,7 +198,10 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of DescriptionElementBase instances
      */
-    public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(
+            DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
     /**
@@ -360,7 +370,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @deprecated use {@link #listDescriptionElementsForTaxon(Taxon, Set, Class, Integer, Integer, List)} instead
      */
     @Deprecated
-    public <T extends DescriptionElementBase> List<T>  getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> List<T>  getDescriptionElementsForTaxon(
+            Taxon taxon, Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Provides access to all DescriptionElements associated with the given Taxon
@@ -373,6 +385,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            scoped by one of the Features passed (can be null or empty)
      * @param type
      *            A filter for DescriptionElements of a specific class
+     * @param includeUnpublished
+     *            If true factual data in a description not being published
+     *            is included.
      * @param pageSize
      *            The maximum number of description elements returned (can be
      *            null for all description elements)
@@ -386,7 +401,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return a List containing all matching DescriptionElementBase instances
      *
      */
-    public <T extends DescriptionElementBase> List<T>  listDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> List<T>  listDescriptionElementsForTaxon(
+            Taxon taxon, Set<Feature> features, Class<T> type, boolean includePublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Provides access to all DescriptionElements associated with the given Taxon
@@ -399,6 +416,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            scoped by one of the Features passed (can be null or empty)
      * @param type
      *            A filter for DescriptionElements of a specific class
+     * @param includeUnpublished
+     *            If true factual data in a description not being published
+     *            is included.
      * @param pageSize
      *            The maximum number of description elements returned
      * @param pageNumber
@@ -411,7 +431,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return a Pager for all matching DescriptionElementBase instances
      *
      */
-    public <T extends DescriptionElementBase> Pager<T>  pageDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DescriptionElementBase> Pager<T>  pageDescriptionElementsForTaxon(
+            Taxon taxon, Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
       * Generate a string representation of the structured <code>description</code> supplied in natural language

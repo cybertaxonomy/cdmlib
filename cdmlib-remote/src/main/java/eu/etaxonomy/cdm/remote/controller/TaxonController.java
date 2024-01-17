@@ -299,17 +299,19 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return pager;
     }
 
-
     @RequestMapping(value = "specimensOrObservationsCount", method = RequestMethod.GET)
     public StringResultDTO doCountSpecimensOrObservations(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) {
+
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setIncludeUnpublished(includeUnpublished);
         config.setAssociatedTaxonUuid(uuid);
         long countSpecimen = occurrenceService.countOccurrences(config);
         return new StringResultDTO(String.valueOf(countSpecimen));
@@ -527,7 +529,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
                     + classSimpleName);
             if (taxonDescriptions != null) {
                 for (TaxonDescription description : taxonDescriptions) {
-                    elements = descriptionService.listDescriptionElements(description, null, type, null, 0, initStrategy);
+                    elements = descriptionService.listDescriptionElements(
+                            description, null, type, includeUnpublished, null, 0, initStrategy);
                     allElements.addAll(elements);
                     count += elements.size();
                 }

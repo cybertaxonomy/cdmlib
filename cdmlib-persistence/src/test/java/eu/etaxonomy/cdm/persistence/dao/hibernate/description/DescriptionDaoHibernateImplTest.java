@@ -352,21 +352,21 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
         // 1.
         List<DescriptionElementBase> elements1 = descriptionDao.getDescriptionElementForTaxon(
-                taxonSphingidae.getUuid() , null, null, null, 0, null);
+                taxonSphingidae.getUuid(), null, null, false, null, 0, null);
 
         assertNotNull("getDescriptionElementForTaxon should return a List", elements1);
         assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements1.size());
 
         // 2.
         List<DescriptionElementBase> elements2 = descriptionDao.getDescriptionElementForTaxon(
-                taxonSphingidae.getUuid() , null, DescriptionElementBase.class, null, 0, null);
+                taxonSphingidae.getUuid(), null, DescriptionElementBase.class, false, null, 0, null);
 
         assertNotNull("getDescriptionElementForTaxon should return a List", elements2);
         assertTrue("getDescriptionElementForTaxon should be empty",elements2.isEmpty());
 
         // 3.
         List<Distribution> elements3 = descriptionDao.getDescriptionElementForTaxon(
-                taxonSphingidae.getUuid() , null, Distribution.class, null, 0, null);
+                taxonSphingidae.getUuid() , null, Distribution.class, false, null, 0, null);
 
         assertNotNull("getDescriptionElementForTaxon should return a List", elements3);
         assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements3.size());
@@ -621,13 +621,13 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertEquals(3, list.size());
     }
 
-    
+
     @Test
     @DataSet
     public void testGetNodeOfIndividualAssociationForSpecimen() {
     	List<SortableTaxonNodeQueryResult> list = descriptionDao.getNodeOfIndividualAssociationForSpecimen(UUID.fromString("4c3231a9-336e-4b21-acf2-129683627de4"), null);
     	Assert.assertEquals(1, list.size());
-    
+
     }
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

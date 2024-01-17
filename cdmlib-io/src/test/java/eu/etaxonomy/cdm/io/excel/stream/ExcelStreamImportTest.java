@@ -136,9 +136,9 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 
 		Set<TaxonDescription> taxonSet = secondTaxon.getTaxon().getDescriptions();
 		assertTrue("Description is not Empty", !taxonSet.isEmpty());
-		assertEquals("Number of Distributions should be 7", 7, descriptionService.listDescriptionElements(null, null, Distribution.class, null, null, null).size());
+		assertEquals("Number of Distributions should be 7", 7, descriptionService.listDescriptionElements(null, null, Distribution.class, false, null, null, null).size());
 //		assertEquals("Number of Vernecular Names should be 7", 6, descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null).size());
-		List<CommonTaxonName> list = descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null);
+		List<CommonTaxonName> list = descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, false, null, null, null);
 		for(DescriptionElementBase db : list){
 			System.out.println(db.toString());
 		}

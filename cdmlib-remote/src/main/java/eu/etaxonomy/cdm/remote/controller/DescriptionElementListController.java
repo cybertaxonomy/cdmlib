@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -116,6 +117,7 @@ public class DescriptionElementListController {
             HttpServletResponse response) throws IOException {
 
         logger.info("doPageDescriptionElementsByFeature : " + requestPathAndQuery(request));
+        boolean includeUnpublished = false;
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
@@ -125,7 +127,7 @@ public class DescriptionElementListController {
         }
 
         Pager<? extends DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
-                type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
+                type, includeUnpublished, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
 
         return pager;
     }
@@ -147,6 +149,7 @@ public class DescriptionElementListController {
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
+        boolean includeUnpublished = false;
         Taxon taxon = null;
         if( taxon_uuid!= null){
             try {
@@ -155,9 +158,10 @@ public class DescriptionElementListController {
                 HttpStatusMessage.UUID_NOT_FOUND.send(response);
             }
         }
+        Set<Feature> featureSet = features != null ? features.asSet() : null;
         List<String> propertyPath = getInitializationStrategy();
-        Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
-                pageIndex, getInitializationStrategy());
+        Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, featureSet, type, includeUnpublished,
+                pageSize, pageIndex, propertyPath);
         return pager;
     }
 

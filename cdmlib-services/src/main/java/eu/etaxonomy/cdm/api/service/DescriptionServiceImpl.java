@@ -225,22 +225,27 @@ public class DescriptionServiceImpl
 
     @Override
     public <T extends DescriptionElementBase> Pager<T> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
-            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+            Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-        List<T> results = listDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
+        List<T> results = listDescriptionElements(description, descriptionType, features, type, includeUnpublished,
+                pageSize, pageNumber, propertyPaths);
         return new DefaultPagerImpl<>(pageNumber, Integer.valueOf(results.size()).longValue(), pageSize, results);
     }
 
     @Override
     @Deprecated
     public <T extends DescriptionElementBase> Pager<T> getDescriptionElements(DescriptionBase description,
-            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        return pageDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
+            Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+        return pageDescriptionElements(description, null, features, type, includeUnpublished, pageSize, pageNumber, propertyPaths);
     }
 
     @Override
     public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,
-            Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber,
+            Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber,
             List<String> propertyPaths) {
 
         long numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type);
@@ -253,10 +258,13 @@ public class DescriptionServiceImpl
 
     @Override
     @Deprecated
-    public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,
-            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(
+            DescriptionBase description,
+            Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-        return listDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
+        return listDescriptionElements(description, null, features, type, includeUnpublished,
+                pageSize, pageNumber, propertyPaths);
     }
 
     @Override
@@ -726,35 +734,41 @@ public class DescriptionServiceImpl
     @Deprecated
     public <T extends DescriptionElementBase> List<T> getDescriptionElementsForTaxon(
             Taxon taxon, Set<Feature> features,
-            Class<T> type, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths) {
-        return listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+            Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+        return listDescriptionElementsForTaxon(taxon, features, type, includeUnpublished,
+                pageSize, pageNumber, propertyPaths);
     }
 
     @Override
     public <T extends DescriptionElementBase> List<T> listDescriptionElementsForTaxon(
             Taxon taxon, Set<Feature> features,
-            Class<T> type, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths) {
-        return dao.getDescriptionElementForTaxon(taxon.getUuid(), features, type, pageSize, pageNumber, propertyPaths);
+            Class<T> type, boolean includePublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+        return dao.getDescriptionElementForTaxon(taxon.getUuid(), features, type, includePublished,
+                pageSize, pageNumber, propertyPaths);
     }
 
     @Override
     public <T extends DescriptionElementBase> Pager<T> pageDescriptionElementsForTaxon(
             Taxon taxon, Set<Feature> features,
-            Class<T> type, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths) {
+            Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
         if (logger.isDebugEnabled()){logger.debug(" get count ...");}
-        Long count = dao.countDescriptionElementForTaxon(taxon.getUuid(), features, type);
+        Long count = dao.countDescriptionElementForTaxon(taxon.getUuid(), features, type, includeUnpublished);
         List<T> descriptionElements;
         if(AbstractPagerImpl.hasResultsInRange(count, pageNumber, pageSize)){ // no point checking again
             if (logger.isDebugEnabled()){logger.debug(" get list ...");}
-            descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+            descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, includeUnpublished,
+                    pageSize, pageNumber, propertyPaths);
         } else {
-            descriptionElements = new ArrayList<T>(0);
+            descriptionElements = new ArrayList<>(0);
         }
         if (logger.isDebugEnabled()){logger.debug(" service - DONE ...");}
-        return new DefaultPagerImpl<T>(pageNumber, count, pageSize, descriptionElements);
+        return new DefaultPagerImpl<>(pageNumber, count, pageSize, descriptionElements);
     }
 
     @Override

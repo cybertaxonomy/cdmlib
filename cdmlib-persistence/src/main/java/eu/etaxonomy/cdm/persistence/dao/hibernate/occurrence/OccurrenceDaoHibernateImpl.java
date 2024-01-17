@@ -324,10 +324,11 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> findOccurrencesUuidAndTitleCache(
             Class<T> clazz, String queryString, String significantIdentifier, SpecimenOrObservationType recordBasis,
-            Taxon associatedTaxon, TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
-            List<OrderHint> orderHints) {
+            Taxon associatedTaxon, TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints) {
+
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, limit, start, orderHints, null);
+                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished, limit, start, orderHints, null);
         if(criteria!=null){
             ProjectionList projectionList = Projections.projectionList();
             projectionList.add(Projections.property("uuid"));
@@ -350,10 +351,11 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
-            MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            MatchMode matchmode, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, limit, start, orderHints, propertyPaths);
+                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished, limit, start, orderHints, propertyPaths);
         if(criteria!=null){
             @SuppressWarnings("unchecked")
             List<T> results = criteria.list();
@@ -366,8 +368,9 @@ public class OccurrenceDaoHibernateImpl
 
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
-            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Criteria criteria = null;
 
         if(clazz == null) {
@@ -416,7 +419,8 @@ public class OccurrenceDaoHibernateImpl
         Set<UUID> associationUuids = new HashSet<>();
         //taxon associations
         if(associatedTaxon!=null){
-            List<UuidAndTitleCache<SpecimenOrObservationBase>> associatedTaxaList = listUuidAndTitleCacheByAssociatedTaxon(clazz, associatedTaxon, limit, start, orderHints);
+            List<UuidAndTitleCache<SpecimenOrObservationBase>> associatedTaxaList = listUuidAndTitleCacheByAssociatedTaxon(
+                    clazz, associatedTaxon, includeUnpublished, limit, start, orderHints);
             if(associatedTaxaList!=null){
                 for (UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache : associatedTaxaList) {
                     associationUuids.add(uuidAndTitleCache.getUuid());
@@ -452,10 +456,10 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
-            MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            MatchMode matchmode, boolean includeUnpublished, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, limit, start, orderHints, propertyPaths);
+                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished, limit, start, orderHints, propertyPaths);
 
         if(criteria!=null){
             criteria.setProjection(Projections.rowCount());
@@ -667,9 +671,11 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(Class<T> clazz, Taxon associatedTaxon,
+    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(
+            Class<T> clazz, Taxon associatedTaxon, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints){
-        Query<Object[]> query = createSpecimenQuery("sob.uuid, sob.id, sob.titleCache", clazz, associatedTaxon, limit, start, orderHints, Object[].class);
+
+        Query<Object[]> query = createSpecimenQuery("sob.uuid, sob.id, sob.titleCache", clazz, associatedTaxon, includeUnpublished, limit, start, orderHints, Object[].class);
         if(query==null){
             return Collections.emptyList();
         }
@@ -683,10 +689,11 @@ public class OccurrenceDaoHibernateImpl
 
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> clazz,
-            Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Taxon associatedTaxon, boolean includeUnpublished, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         @SuppressWarnings("rawtypes")
-        Query<SpecimenOrObservationBase> query = createSpecimenQuery("sob", clazz, associatedTaxon, limit, start, orderHints, SpecimenOrObservationBase.class);
+        Query<SpecimenOrObservationBase> query = createSpecimenQuery(
+                "sob", clazz, associatedTaxon, includeUnpublished, limit, start, orderHints, SpecimenOrObservationBase.class);
         if(query==null){
             return Collections.emptyList();
         }
@@ -698,7 +705,7 @@ public class OccurrenceDaoHibernateImpl
     }
 
     private <T extends SpecimenOrObservationBase, R extends Object> Query<R> createSpecimenQuery(String select, Class<T> clazz,
-            Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, Class<R> returnClass){
+            Taxon associatedTaxon, boolean includeUnpublished, Integer limit, Integer start, List<OrderHint> orderHints, Class<R> returnClass){
 
         Set<Integer> setOfAllIds = new HashSet<>();
 
@@ -746,7 +753,7 @@ public class OccurrenceDaoHibernateImpl
 
         // The IndividualsAssociation elements in a TaxonDescription contain DerivedUnits
         setOfAllIds.addAll(descriptionDao.getIndividualAssociationSpecimenIDs(
-                associatedTaxon.getUuid(), null, null, 0, null));
+                associatedTaxon.getUuid(), null, includeUnpublished, null, 0, null));
 
 
         // SpecimenTypeDesignations may be associated with the TaxonName.

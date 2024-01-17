@@ -123,7 +123,8 @@ public class DistributionServiceImpl implements IDistributionService {
             initStrategy.add("markers.markerType");
         }
 
-        List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, features, Distribution.class, null, null, initStrategy);
+        List<Distribution> distributions = dao.getDescriptionElementForTaxon(
+                taxonUUID, features, Distribution.class, config.isIncludeUnpublished(), null, null, initStrategy);
 
         return composeDistributionInfoFor(config, distributions, neverUseFallbackAreaAsParent, presenceAbsenceTermColors, languages);
     }

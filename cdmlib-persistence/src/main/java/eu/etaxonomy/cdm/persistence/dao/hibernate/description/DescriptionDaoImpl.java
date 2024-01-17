@@ -687,9 +687,10 @@ public class DescriptionDaoImpl
 
     @Override
     public List<Integer> getIndividualAssociationSpecimenIDs(UUID taxonUuid,
-            Set<Feature> features, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths){
-        Query<Integer> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, IndividualsAssociation.class, pageSize, pageNumber, "de.associatedSpecimenOrObservation.id");
+            Set<Feature> features, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths){
+        Query<Integer> query = prepareGetDescriptionElementForTaxon(taxonUuid, features,
+                IndividualsAssociation.class, includeUnpublished, pageSize, pageNumber, "de.associatedSpecimenOrObservation.id");
         List<Integer> results = query.list();
         return results;
     }
@@ -705,11 +706,12 @@ public class DescriptionDaoImpl
     @Override
     public <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(
             UUID taxonUuid, Set<Feature> features,
-            Class<T> type, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths) {
+            Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
-        Query<T> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, "de");
+        Query<T> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, includeUnpublished,
+                pageSize, pageNumber, "de");
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
         List<T> results = query.list();
@@ -723,20 +725,21 @@ public class DescriptionDaoImpl
 
     @Override
     public <T extends DescriptionElementBase> long countDescriptionElementForTaxon(
-            UUID taxonUuid, Set<Feature> features, Class<T> type) {
+            UUID taxonUuid, Set<Feature> features, Class<T> type, boolean includeUnpublished) {
 
-        Query<Long> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, null, null, "count(de)");
+        Query<Long> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, includeUnpublished, null, null, "count(de)");
 
         return query.uniqueResult();
     }
 
     private <T extends DescriptionElementBase, R extends Object> Query<R> prepareGetDescriptionElementForTaxon(UUID taxonUuid,
-            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, String selectString) {
+            Set<Feature> features, Class<T> type, boolean includeUnpublished, Integer pageSize, Integer pageNumber, String selectString) {
 
         String queryString = "SELECT " + selectString + " FROM DescriptionElementBase AS de" +
                 " LEFT JOIN de.inDescription AS d" +
                 " LEFT JOIN d.taxon AS t" +
-                " WHERE d.class = 'TaxonDescription' AND t.uuid = :taxon_uuid ";
+                " WHERE d.class = 'TaxonDescription' AND t.uuid = :taxon_uuid " +
+                (includeUnpublished? "" : " AND de.publish = :publish ");                ;
 
         if(type != null){
             queryString += " and de.class = :type";
@@ -750,6 +753,9 @@ public class DescriptionDaoImpl
         query.setParameter("taxon_uuid", taxonUuid);
         if(type != null){
             query.setParameter("type", type.getSimpleName());
+        }
+        if (!includeUnpublished){
+            query.setParameter("publish", true);
         }
         if(hasFeatureFilter){
             query.setParameterList("features", features) ;

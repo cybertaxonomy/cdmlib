@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
             implements IIdentifiableEntityServiceConfigurator<T>{
 
-    private static final long serialVersionUID = -8126736101861741087L;
+    private static final long serialVersionUID = -8136736101861741087L;
 
     private String titleSearchString;
 	protected MatchMode matchMode;
@@ -37,6 +37,7 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 	private List<Restriction<?>> restrictions;
 	private List<String> propertyPaths;
 	private List<OrderHint> orderHints;
+	private boolean includeUnpublished = false;
 
 	@Override
 	public Class<T> getClazz() {
@@ -145,9 +146,15 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 	public List<String> getPropertyPaths() {
 		return propertyPaths;
 	}
-
 	@Override
 	public void setPropertyPaths(List<String> propertyPaths) {
 		this.propertyPaths = propertyPaths;
 	}
+
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
+    }
 }
