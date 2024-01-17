@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-
 /**
  * TaxonName interface for animals.
  * <P>
@@ -73,8 +71,8 @@ public interface IZoologicalName extends INonViralName {
      * according to ICZN Recommendation 51E.
      * @see https://dev.e-taxonomy.eu/redmine/issues/6943
      */
-    @Override
-    public TeamOrPersonBase<?> getInCombinationAuthorship();
+  //moved to INonViralName because also Fungi names can have in-authors
+    //public TeamOrPersonBase<?> getInCombinationAuthorship();
     /**
      * @param the zoological in author of current combination
      * according to ICZN Recommendation 51E.
@@ -96,7 +94,8 @@ public interface IZoologicalName extends INonViralName {
      * according to ICZN Recommendation 51E.
      * @see https://dev.e-taxonomy.eu/redmine/issues/6943
      */
-    public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship);
+    //moved to INonViralName because also Fungi names can have in-authors
+    //public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship);
 
 
 

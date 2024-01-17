@@ -613,13 +613,12 @@ public interface INonViralName extends ITaxonNameBase{
     */
    public void setTrinomHybrid(boolean trinomHybrid);
 
-    /**
-     * @param inCombinationAuthorship
-     */
-    void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
 
-    /**
-     * @return
-     */
-    TeamOrPersonBase<?> getInBasionymAuthorship();
+   public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
+
+
+   public TeamOrPersonBase<?> getInBasionymAuthorship();
+
+
+   public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship);
 }
