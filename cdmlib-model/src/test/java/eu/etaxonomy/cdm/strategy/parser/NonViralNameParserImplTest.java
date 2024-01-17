@@ -1782,9 +1782,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         nvn = this.parser.parseReferencedName(again, ICNAFP, null);
         Assert.assertEquals("Titlecache", "Adiantum emarginatum Bory ex Willd.", nvn.getTitleCache());
         Assert.assertEquals("If this line reached everything should be ok", "Adiantum", nvn.getGenusOrUninomial());
-
     }
-
 
     @Test
     public final void testSeries(){

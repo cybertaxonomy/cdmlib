@@ -182,9 +182,7 @@ public class NonViralNameParserImpl
 	}
 
 	/**
-	 * Returns the regEx to be used for the full-name depending on the code
-	 * @param nameToBeFilled
-	 * @return
+	 * Returns the regular expression to be used for the full-name depending on the code
 	 */
 	private String getCodeSpecificFullNameRegEx(INonViralName nameToBeFilledOrig){
 	    INonViralName nameToBeFilled = CdmBase.deproxy(nameToBeFilledOrig);
@@ -203,9 +201,7 @@ public class NonViralNameParserImpl
 	}
 
 	/**
-	 * Returns the regEx to be used for the fsimple-name depending on the code
-	 * @param nameToBeFilled
-	 * @return
+	 * Returns the regular expression to be used for the simple-name depending on the code
 	 */
 	private String getCodeSpecificSimpleNameRegEx(INonViralName nameToBeFilled){
 		nameToBeFilled = CdmBase.deproxy(nameToBeFilled);
@@ -247,9 +243,9 @@ public class NonViralNameParserImpl
 	    fullReferenceString = parseOriginalSpelling(fullReferenceString, nameToBeFilled, makeEmpty);
         nameToBeFilled.setProblemEnds(fullReferenceString.length());
 
-	    //get full name reg
+	    //get full name regEx
 		String localFullNameRegEx = getCodeSpecificFullNameRegEx(nameToBeFilled);
-		//get full name reg
+		//get simple name regEx
 		String localSimpleNameRegEx = getCodeSpecificSimpleNameRegEx(nameToBeFilled);
 
 		//separate name and reference part
@@ -1454,7 +1450,8 @@ public class NonViralNameParserImpl
 		//int authorEnd = authorTeamString.length();
 		int authorBegin = 0;
 
-		Matcher exAuthorMatcher = exAuthorPattern.matcher(authorShipString);
+		//ex-author
+        Matcher exAuthorMatcher = exAuthorPattern.matcher(authorShipString);
 		if (exAuthorMatcher.find(0)){
 			authorBegin = exAuthorMatcher.end(0);
 			int exAuthorEnd = exAuthorMatcher.start(0);
