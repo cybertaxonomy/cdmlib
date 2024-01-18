@@ -545,11 +545,10 @@ public class OccurrenceServiceImpl
     @Override
     @Transactional
     public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid, List<String> propertyPaths) {
+            UUID associatedTaxonUuid, boolean includeUnpublished, List<String> propertyPaths) {
 
         Set<Taxon> taxa = new HashSet<>();
         Set<SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashSet<>();
-        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
         Taxon associatedTaxon = (Taxon) taxonService.load(associatedTaxonUuid);
         if (includedRelationships != null) {
@@ -1318,19 +1317,10 @@ public class OccurrenceServiceImpl
         return associatedTaxa;
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listDeterminedTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
-    }
-    @Override
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (DeterminationEvent determinationEvent : listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths)) {
             if(determinationEvent.getIdentifiedUnit().equals(specimen)){

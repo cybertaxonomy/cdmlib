@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +41,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
@@ -317,21 +315,6 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return new StringResultDTO(String.valueOf(countSpecimen));
     }
 
-    /**
-     * @deprecated replaced by rootUnitDTOs
-     */
-    @Deprecated
-    @RequestMapping(value = "fieldUnitDTOs", method = RequestMethod.GET)
-    public List<SpecimenOrObservationBaseDTO> doListFieldUnitDTOs(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
-
-        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
-        return rootUnitDtos.stream().filter(dto -> dto instanceof FieldUnitDTO).collect(Collectors.toList());
-    }
-
     @RequestMapping(value = "rootUnitDTOs", method = RequestMethod.GET)
     public List<SpecimenOrObservationBaseDTO> doListRooUnitDTOs(
             @PathVariable("uuid") UUID uuid,
@@ -339,7 +322,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) {
         logger.info("rootUnitDTOs() - " + request.getRequestURI());
 
-        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(
+                null, uuid, includeUnpublished, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
         return rootUnitDtos;
     }

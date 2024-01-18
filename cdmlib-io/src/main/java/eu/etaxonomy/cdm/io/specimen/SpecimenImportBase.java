@@ -580,6 +580,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             cdmAppController = this;
         }
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setIncludeUnpublished(INCLUDE_UNPUBLISHED); //also find unpublished occurrences for import
         config.setSignificantIdentifier(unitId);
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("derivedFrom.*");

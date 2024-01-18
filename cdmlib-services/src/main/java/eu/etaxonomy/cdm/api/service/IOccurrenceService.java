@@ -489,11 +489,6 @@ public interface IOccurrenceService
      */
     public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    /**
-     * @see #listDeterminedTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)
-     */
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link DeterminationEvent}s which have the given specimen set as identified unit.
@@ -731,7 +726,7 @@ public interface IOccurrenceService
      *  The list of root units with fully or partially assembled derivation graph.
      */
     List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid, List<String> propertyPaths);
+            UUID associatedTaxonUuid, boolean includeUnpublished, List<String> propertyPaths);
 
 
     /**

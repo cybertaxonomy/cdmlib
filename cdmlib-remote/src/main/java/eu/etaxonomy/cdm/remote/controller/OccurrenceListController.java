@@ -120,8 +120,9 @@ public class OccurrenceListController extends AbstractIdentifiableListController
             HttpServletResponse response) {
         logger.info("doListlistRootUnitDTOByAssociatedTaxon() - " + requestPathAndQuery(request));
 
-
-        List<SpecimenOrObservationBaseDTO> sobDTOs = service.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        List<SpecimenOrObservationBaseDTO> sobDTOs = service.listRootUnitDTOsByAssociatedTaxon(
+                null, uuid, includeUnpublished, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
         return sobDTOs;
     }
 

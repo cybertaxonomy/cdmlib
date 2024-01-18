@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
@@ -65,6 +66,9 @@ public class DescriptionElementListController {
 
     @Autowired
     private ITaxonService taxonService;
+
+    protected static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
+    protected static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;
@@ -117,7 +121,7 @@ public class DescriptionElementListController {
             HttpServletResponse response) throws IOException {
 
         logger.info("doPageDescriptionElementsByFeature : " + requestPathAndQuery(request));
-        boolean includeUnpublished = false;
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
@@ -149,7 +153,7 @@ public class DescriptionElementListController {
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
-        boolean includeUnpublished = false;
+        boolean includeUnpublished = NO_UNPUBLISHED;
         Taxon taxon = null;
         if( taxon_uuid!= null){
             try {
