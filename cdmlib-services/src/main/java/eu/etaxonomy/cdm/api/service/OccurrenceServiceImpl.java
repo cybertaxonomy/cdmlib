@@ -1291,14 +1291,12 @@ public class OccurrenceServiceImpl
         return dao.listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return listAssociatedTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
     }
+
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {

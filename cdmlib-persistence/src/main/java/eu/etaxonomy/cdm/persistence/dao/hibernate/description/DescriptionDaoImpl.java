@@ -689,6 +689,7 @@ public class DescriptionDaoImpl
     public List<Integer> getIndividualAssociationSpecimenIDs(UUID taxonUuid,
             Set<Feature> features, boolean includeUnpublished,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths){
+
         Query<Integer> query = prepareGetDescriptionElementForTaxon(taxonUuid, features,
                 IndividualsAssociation.class, includeUnpublished, pageSize, pageNumber, "de.associatedSpecimenOrObservation.id");
         List<Integer> results = query.list();

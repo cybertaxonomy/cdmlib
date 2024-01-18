@@ -543,7 +543,7 @@ public class DescriptiveDataSetService
         DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
         keyConfig.setDataSet(descriptiveDataSet);
         PolytomousKey key = new PolytomousKeyGenerator().invoke(keyConfig);
-        IdentifiableServiceConfiguratorImpl<PolytomousKey> serviceConfig= new IdentifiableServiceConfiguratorImpl<>();
+        IdentifiableServiceConfiguratorImpl<PolytomousKey> serviceConfig = new IdentifiableServiceConfiguratorImpl<>();
         serviceConfig.setTitleSearchString(descriptiveDataSet.getTitleCache());
         List<PolytomousKey> list = polytomousKeyService.findByTitle(serviceConfig).getRecords();
         if(list!=null){
