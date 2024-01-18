@@ -213,6 +213,7 @@ public class OccurrenceServiceImpl
                 );
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, mediaDTOs);
     }
+
     @Override
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivateMedia, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
@@ -256,17 +257,15 @@ public class OccurrenceServiceImpl
 	         }
          }
 
-
          return new DefaultPagerImpl<>(pageNumber, Long.valueOf(media.size()), pageSize, media);
     }
-
 
     @Override
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-    	return getMediaInHierarchy(rootOccurence, false, true, pageSize,
-                pageNumber, propertyPaths);
 
+        return getMediaInHierarchy(rootOccurence, false, true, pageSize,
+                pageNumber, propertyPaths);
     }
 
     @Override
@@ -315,9 +314,9 @@ public class OccurrenceServiceImpl
 
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
+        return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, includeUnpublished, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
     }
 
     @Override
@@ -327,13 +326,14 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(Class<T> type, Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return pageRootUnitsByAssociatedTaxon(type, null, associatedTaxon, null, null, null, null, propertyPaths).getRecords();
+    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(
+            Class<T> type, Taxon associatedTaxon, boolean includeUnpublished, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return pageRootUnitsByAssociatedTaxon(type, null, associatedTaxon, includeUnpublished, null, null, null, null, propertyPaths).getRecords();
     }
 
     @Override
     public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
         if (!getSession().contains(associatedTaxon)) {
@@ -342,7 +342,8 @@ public class OccurrenceServiceImpl
 
         // gather the IDs of all relevant root units
         Set<UUID> rootUnitUuids = new HashSet<>();
-        List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
+        List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships,
+                associatedTaxon, includeUnpublished, maxDepth, null, null, orderHints, propertyPaths);
         for (SpecimenOrObservationBase<?> specimen : records) {
             for (SpecimenOrObservationBase<?> rootUnit : findRootUnits(specimen.getUuid(), null)) {
                 if(type == null || type.isAssignableFrom(rootUnit.getClass())) {
@@ -437,37 +438,14 @@ public class OccurrenceServiceImpl
         return derivedUnits;
     }
 
-//    private Set<DerivateDTO> getDerivedUnitDTOsFor(DerivateDTO specimenDto, DerivedUnit specimen, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
-//        Set<DerivateDTO> derivedUnits = new HashSet<>();
-////        load
-//        for (DerivationEvent derivationEvent : specimen.getDerivationEvents()) {
-//            for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
-//                if (!alreadyCollectedSpecimen.containsKey(specimenDto.getUuid())){
-//                    PreservedSpecimenDTO dto;
-//                    if (derivative instanceof DnaSample){
-//                        dto = DNASampleDTO.newInstance(derivative);
-//                    }else{
-//                        dto = PreservedSpecimenDTO.newInstance(derivative);
-//                    }
-//                    alreadyCollectedSpecimen.put(dto.getUuid(), dto);
-//                    dto.addAllDerivates(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
-//                    derivedUnits.add(dto);
-//                }
-//            }
-//        }
-//        return derivedUnits;
-//    }
-
-
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includedRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Set<Taxon> taxa = new HashSet<>();
         Set<Integer> occurrenceIds = new HashSet<>();
         List<T> occurrences = new ArrayList<>();
-        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
         // Integer limit = PagerUtils.limitFor(pageSize);
         // Integer start = PagerUtils.startFor(pageSize, pageNumber);
@@ -493,15 +471,6 @@ public class OccurrenceServiceImpl
 
         return new DefaultPagerImpl<>(pageNumber, Long.valueOf(occurrences.size()), pageSize, occurrences);
 
-    }
-
-    @Override
-    public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-
-        UUID uuid = UUID.fromString(taxonUUID);
-        Taxon taxon = (Taxon) taxonService.load(uuid);
-        return pageByAssociatedTaxon(type, includeRelationships, taxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
@@ -1297,14 +1266,6 @@ public class OccurrenceServiceImpl
         return associatedTaxa;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listTypeDesignationTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
-    }
     @Override
     public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -1321,15 +1282,6 @@ public class OccurrenceServiceImpl
             }
         }
         return associatedTaxa;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listIndividualsAssociationTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
     }
 
     @Override

@@ -108,6 +108,9 @@ public class ManifestController {
                 HttpServletRequest request, HttpServletResponse response) throws IOException {
 
             logger.info("doGetMedia() " + AbstractController.requestPathAndQuery(request));
+            boolean includeUnpublished = false;
+
+            boolean includeOriginals = false; //TODO added during refactoring, do we want to add it to the webservice parameters?
 
             EntityInitStrategy taxonInitStrategy = includeTaxonomicChildren? TaxonPortalController.TAXON_WITH_CHILDNODES_INIT_STRATEGY : TaxonPortalController.TAXON_INIT_STRATEGY;
             EntityMediaContext<Taxon> entityMediaContext = taxonPortalController.loadMediaForTaxonAndRelated(uuid,
@@ -119,7 +122,8 @@ public class ManifestController {
             if(includeTaxonomicChildren){
                 Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
                 entityMediaContext.setMedia(
-                        taxonPortalController.addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, entityMediaContext.getEntity(), includeRelationships, entityMediaContext.getMedia())
+                        taxonPortalController.addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeOriginals, includeTaxonNameDescriptions,
+                                entityMediaContext.getEntity(), includeRelationships, entityMediaContext.getMedia(), includeUnpublished)
                                 );
             }
             ManifestComposer manifestFactory = new ManifestComposer(HTTP_IIIF_CYBERTAXONOMY_ORG, mediaTools, mediaService, mediaInfoFactory);

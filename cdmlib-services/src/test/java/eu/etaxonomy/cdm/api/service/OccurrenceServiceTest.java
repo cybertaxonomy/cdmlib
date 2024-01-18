@@ -899,7 +899,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(taxon, associatedTaxa.iterator().next());
 
         //check association (IndividualsAssociations + TypeDesignations) taxon (name) -> specimen
-        List<DerivedUnit> byAssociatedTaxon = occurrenceService.listByAssociatedTaxon(DerivedUnit.class, null, taxon, null, null, null, null, null);
+        List<DerivedUnit> byAssociatedTaxon = occurrenceService.listByAssociatedTaxon(
+                DerivedUnit.class, null, taxon, includeUnpublished, null, null, null, null, null);
         assertNotNull(byAssociatedTaxon);
         assertEquals(2, byAssociatedTaxon.size());
         assertTrue(byAssociatedTaxon.contains(associatedSpecimen));

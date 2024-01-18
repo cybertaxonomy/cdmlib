@@ -217,13 +217,12 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
             HttpServletResponse response)
             throws IOException {
 
-
         logger.info("doGetTaxonOccurrenceKml() " + requestPathAndQuery(request));
-
+        boolean includeUnpublished = NO_UNPUBLISHED;
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(uuid, relationshipUuids,
-				relationshipInversUuids, maxDepth, response);
+				relationshipInversUuids, includeUnpublished, maxDepth, response);
 
         Kml kml = geoservice.occurrencesToKML(specimensOrObersvations, specimenOrObservationTypeColors);
 
@@ -231,17 +230,18 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
     }
 
 	private List<SpecimenOrObservationBase> occurencesForTaxon(UUID taxonUuid, UuidList relationshipUuids,
-			UuidList relationshipInversUuids, Integer maxDepth, HttpServletResponse response) throws IOException {
-		Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
-                relationshipUuids, relationshipInversUuids, termService);
+			UuidList relationshipInversUuids, boolean includeUnpublished, Integer maxDepth,
+			HttpServletResponse response) throws IOException {
 
+	    Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
+                relationshipUuids, relationshipInversUuids, termService);
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, (List<String>)null);
 
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
-                null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
+                null, includeRelationships, taxon, includeUnpublished, maxDepth, null, null, orderHints, null);
 		return specimensOrObersvations;
 	}
 

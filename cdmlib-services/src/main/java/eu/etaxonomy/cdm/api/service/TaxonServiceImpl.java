@@ -960,26 +960,10 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public List<Media> listTaxonDescriptionMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, boolean limitToGalleries, List<String> propertyPath){
-        return listMedia(taxon, includeRelationships, limitToGalleries, true, false, false, propertyPath);
-    }
-
-    @Override
-    public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
-            Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
-    	return  listMedia(taxon, includeRelationships, limitToGalleries, includeTaxonDescriptions, includeOccurrences, false,
-                includeTaxonNameDescriptions, propertyPath);
-    }
-
-    @Override
     public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeOriginalOccurences, Boolean includeTaxonNameDescriptions,
-            List<String> propertyPath) {
-
-        //TODO let inherit
-        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
+            boolean includeUnpublished, List<String> propertyPath) {
 
 //      LogUtils.setLevel(logger, Level.TRACE);
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);

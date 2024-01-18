@@ -815,7 +815,7 @@ public class TaxonPortalController extends TaxonController{
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
         List<Media> media = listMediaForTaxon(taxon, includeRelationships,
-                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, mediaInitStrategy);
+                includeTaxonDescriptions, includeOccurrences, includeOriginals, includeTaxonNameDescriptions, includeUnpublished, mediaInitStrategy);
 
         EntityMediaContext<Taxon> entityMediaContext = new EntityMediaContext<>(taxon, media);
 
@@ -850,10 +850,12 @@ public class TaxonPortalController extends TaxonController{
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
+        boolean includeOriginals = false; //or when unifying methods, do we want this as webservice parameter, too?
         List<Media> media = listMediaForTaxon(taxon, includeRelationships,
-                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, null);
-        media = addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, taxon,
-                includeRelationships, media);
+                includeTaxonDescriptions, includeOccurrences, includeOriginals, includeTaxonNameDescriptions, includeUnpublished, null);
+        media = addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeOriginals,
+                includeTaxonNameDescriptions, taxon,
+                includeRelationships, media, includeUnpublished);
 
         List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
                 media);
@@ -862,8 +864,8 @@ public class TaxonPortalController extends TaxonController{
     }
 
     public List<Media> addTaxonomicChildrenMedia(Boolean includeTaxonDescriptions, Boolean includeOccurrences,
-            Boolean includeTaxonNameDescriptions, Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            List<Media> media) {
+            boolean includeOriginals, Boolean includeTaxonNameDescriptions, Taxon taxon,
+            Set<TaxonRelationshipEdge> includeRelationships, List<Media> media, boolean includeUnpublished) {
 
         //TODO use treeindex
         //looking for all medias of direct children
@@ -883,7 +885,8 @@ public class TaxonPortalController extends TaxonController{
                 if(childTaxon != null) {
                     childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), NO_UNPUBLISHED, null);
                     media.addAll(listMediaForTaxon(childTaxon, includeRelationships,
-                            includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths()));
+                            includeTaxonDescriptions, includeOccurrences, includeOriginals,
+                            includeTaxonNameDescriptions, includeUnpublished, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths()));
                 }
             }
         }
@@ -891,16 +894,12 @@ public class TaxonPortalController extends TaxonController{
     }
 
     private List<Media> listMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
-
-        return listMediaForTaxon(taxon, includeRelationships, includeTaxonDescriptions, includeOccurrences, false, includeTaxonNameDescriptions, propertyPath);
-    }
-
-    private List<Media> listMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals, Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals,
+            Boolean includeTaxonNameDescriptions, boolean includeUnpublished, List<String> propertyPath) {
 
         List<Media> media = service.listMedia(taxon, includeRelationships,
-                false, includeTaxonDescriptions, includeOccurrences, includeOriginals, includeTaxonNameDescriptions, propertyPath);
+                false, includeTaxonDescriptions, includeOccurrences, includeOriginals,
+                includeTaxonNameDescriptions, includeUnpublished, propertyPath);
 
         return media;
     }

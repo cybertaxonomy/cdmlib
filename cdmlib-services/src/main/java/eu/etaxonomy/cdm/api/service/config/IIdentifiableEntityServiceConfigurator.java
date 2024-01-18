@@ -60,4 +60,6 @@ public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableE
 	public List<String> getPropertyPaths();
 	public void setPropertyPaths(List<String> propertyPaths);
 
+    public boolean isIncludeUnpublished();
+    public void setIncludeUnpublished(boolean includeUnpublished);
 }

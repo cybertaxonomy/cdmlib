@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactor
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -66,7 +65,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -1005,7 +1003,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     public void testFindByTitleTitle_using_Configurator(){
 
         String searchString = "*";
-        IdentifiableServiceConfiguratorImpl<TaxonName> searchConfigurator = new IdentifiableServiceConfiguratorImpl<TaxonName>();
+        IdentifiableServiceConfiguratorImpl<TaxonName> searchConfigurator = new IdentifiableServiceConfiguratorImpl<>();
 
         searchConfigurator = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonName.class);
         searchConfigurator.setTitleSearchString(searchString);

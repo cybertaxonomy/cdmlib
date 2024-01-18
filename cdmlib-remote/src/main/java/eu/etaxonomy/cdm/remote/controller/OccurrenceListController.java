@@ -99,6 +99,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
                 HttpServletResponse response) throws IOException {
 
         logger.info("doListByAssociatedTaxon()" + requestPathAndQuery(request));
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
@@ -109,7 +110,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
         List<OrderHint> orderHints = null;
 
         return service.pageByAssociatedTaxon(null, includeRelationships, associatedTaxon,
-                maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                includeUnpublished, maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 orderHints, getInitializationStrategy());
     }
 

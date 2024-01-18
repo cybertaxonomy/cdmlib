@@ -879,8 +879,9 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 //DEBUG CHENOPODIUM VULVARIA
                 UUID uuid = UUID.fromString("85234ff5-8e40-4813-8f06-44ab960a905a");
                 Taxon taxon = (Taxon)getTaxonService().find(uuid);
-
-                specimenOrObs = getOccurrenceService().listByAssociatedTaxon(null, null, taxon, null, null, null, null, null);
+                boolean includeUnpublished = true; //for import we always include
+                specimenOrObs = getOccurrenceService().listByAssociatedTaxon(null, null,
+                        taxon, includeUnpublished, null, null, null, null, null);
             }
             Map<String,String> unit=null;
             MyHashMap<String,String> myunit;

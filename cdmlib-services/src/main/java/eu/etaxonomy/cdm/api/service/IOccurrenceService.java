@@ -72,7 +72,7 @@ public interface IOccurrenceService
     /**
      * Returns a paged list of occurrences that have been determined to belong
      * to the taxon concept determinedAs, optionally restricted to objects
-     * belonging to a class that that extends SpecimenOrObservationBase. This
+     * belonging to a class that extends SpecimenOrObservationBase. This
      * will also consider specimens that are determined as a taxon concept
      * belonging to the synonymy of the given taxon concept.
      * <p>
@@ -256,7 +256,7 @@ public interface IOccurrenceService
      * @return
      */
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * The method will search for specimen associated with the taxon nodes.<br>
@@ -293,7 +293,8 @@ public interface IOccurrenceService
      * @return a Pager
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link FieldUnit}s for the {@link SpecimenOrObservationBase} with the given {@link UUID}.<br>
@@ -334,21 +335,6 @@ public interface IOccurrenceService
             String queryString, RectangleDTO boundingBox, List<Language> languages, boolean highlightFragments,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
             throws IOException, LuceneParseException;
-    /**
-     * See {@link #listByAssociatedTaxon(Class, Set, String, Integer, Integer, Integer, List, List)}
-     *
-     * @param type
-     * @param includeRelationships
-     * @param associatedTaxon
-     * @param maxDepth
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return a Pager
-     */
-    public <T extends SpecimenOrObservationBase> Pager<T>  pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Moves the given {@link Sequence} from one {@link DnaSample} to another
@@ -444,12 +430,7 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return a collection of associated taxa
      */
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    /**
-      * @see #listIndividualsAssociationTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)
-      */
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+     public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -491,11 +472,6 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return a collection of all taxa where the given specimen is the type specimen
      */
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    /**
-     * @see #listTypeDesignationTaxa(DerivedUnit, Integer, Integer, List, List)a
-     */
     public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -508,6 +484,7 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return map of all designations with the given type specimens
      */
+    //TODO needed?
     public Map<DerivedUnit, Collection<SpecimenTypeDesignation>> listTypeDesignations(Collection<DerivedUnit> specimens, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -697,7 +674,6 @@ public interface IOccurrenceService
     List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid, boolean includeUnpublished, List<String> propertyPaths);
 
-
     /**
      * Lists all root units which are
      * associated <b>directly or indirectly</b>with the <code>taxon</code> specified
@@ -732,16 +708,14 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return
      */
-    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(Class<T> type, Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
-
+    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(
+            Class<T> type, Taxon associatedTaxon, boolean includeUnpublished, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * See {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-
+            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 

@@ -546,7 +546,7 @@ public class DescriptiveDataSetService
         IdentifiableServiceConfiguratorImpl<PolytomousKey> serviceConfig = new IdentifiableServiceConfiguratorImpl<>();
         serviceConfig.setTitleSearchString(descriptiveDataSet.getTitleCache());
         List<PolytomousKey> list = polytomousKeyService.findByTitle(serviceConfig).getRecords();
-        if(list!=null){
+        if(list != null){
             list.forEach(polytomousKey->polytomousKeyService.delete(polytomousKey));
         }
         key.setTitleCache(descriptiveDataSet.getTitleCache(), true);

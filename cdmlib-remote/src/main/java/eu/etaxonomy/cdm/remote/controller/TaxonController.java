@@ -337,11 +337,13 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
         TaxonBase<?> tb = service.load(uuid);
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
         if(tb instanceof Taxon){
-            List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+            List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(
+                    null, null, (Taxon)tb, includeUnpublished, null, null, null, orderHints, null);
             return specimensOrObservations;
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
@@ -359,8 +361,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
         logger.info("doGetAssociatedRootUnits() - " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
         TaxonBase<?> taxonBase = service.load(uuid);
-        taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
+        taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
@@ -369,7 +372,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
             pagerParams.normalizeAndValidate(response);
 
-            return occurrenceService.pageRootUnitsByAssociatedTaxon(null, null, (Taxon) taxonBase, maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
+            return occurrenceService.pageRootUnitsByAssociatedTaxon(null, null, (Taxon) taxonBase,
+                    includeUnpublished, maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
         }else{
             // FIXME proper HTTP code response
             return null;

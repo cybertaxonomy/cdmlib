@@ -206,9 +206,9 @@ public class OccurrenceCatalogueController
             HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         logger.info("doGetOccurrenceSearch() " +  requestPathAndQuery(request));
-
         ModelAndView mv = new ModelAndView();
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
         Integer pS = null;
         Integer pN = null;
 
@@ -268,6 +268,7 @@ public class OccurrenceCatalogueController
             specimenOrObs= service.pageByAssociatedTaxon(DerivedUnit.class,
                     null,
                     taxon,
+                    includeUnpublished,
                     null,
                     pagerParams.getPageSize(),
                     pagerParams.getPageIndex(),

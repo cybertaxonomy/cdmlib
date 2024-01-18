@@ -728,50 +728,7 @@ public interface ITaxonService
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz,
             String queryString, Classification classification, TaxonNode subtree, List<Feature> features, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, LuceneParseException;
 
-    /**
-     * Lists all Media found in an any TaxonDescription associated with this
-     * taxon.
-     *
-     * @param taxon
-     * @param includeRelationships
-     *            the given list of TaxonRelationshipEdges will be taken into
-     *            account when retrieving media associated with the given taxon.
-     *            Can be NULL.
-     * @param limitToGalleries
-     *            whether to take only TaxonDescription into account which are
-     *            marked as gallery
-     * @return
-     * @deprecated use {@link #listMedia(Taxon, Set, boolean, boolean, List)} instead
-     */
-    @Deprecated
-    public List<Media> listTaxonDescriptionMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, boolean limitToGalleries, List<String> propertyPath);
-
-    /**
-     * Lists all Media found in an any TaxonDescription, NameDescription,
-     * SpecimenOrObservationBase, DnaSample Chromatograms, etc. associated with this taxon.
-     *
-     * @param taxon
-     * @param includeRelationships
-     *            the given list of TaxonRelationshipEdges will be taken into
-     *            account when retrieving media associated with the given taxon.
-     *            Can be NULL.
-     * @param limitToGalleries
-     *            whether to take only descriptions into account which are
-     *            marked as gallery, can be NULL
-     * @param includeTaxonDescriptions
-     *            whether to take TaxonDescriptions into account, can be NULL
-     * @param includeOccurrences
-     *          whether to take TaxonDescriptions into account, can be NULL
-     * @param includeTaxonNameDescriptions
-     *       whether to take TaxonNameDescriptions into account, can be NULL
-     * @param propertyPath
-     * @return
-     */
-    public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
-            Boolean includeTaxonNameDescriptions, List<String> propertyPath);
-
-    /**
+     /**
      * Lists all Media found in an any TaxonDescription, NameDescription,
      * SpecimenOrObservationBase, DnaSample Chromatograms, etc. associated with this taxon.
      *
@@ -796,7 +753,7 @@ public interface ITaxonService
      */
     public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals,
-            Boolean includeTaxonNameDescriptions, List<String> propertyPath);
+            Boolean includeTaxonNameDescriptions, boolean includeUnpublished, List<String> propertyPath);
 
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
 
