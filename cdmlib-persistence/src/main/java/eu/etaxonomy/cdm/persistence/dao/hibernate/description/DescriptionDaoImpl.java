@@ -90,13 +90,14 @@ public class DescriptionDaoImpl
         }
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getCriteria(clazz);
+            criteria.createAlias("inDescription", "d");
 
             if(description != null) {
                 criteria.add(Restrictions.eq("inDescription", description));
             }
 
             if(descriptionType != null) {
-                criteria.createAlias("inDescription", "d").add(Restrictions.eq("d.class", descriptionType));
+                criteria.add(Restrictions.eq("d.class", descriptionType));
             }
 
             if(features != null && !features.isEmpty()) {
@@ -104,7 +105,7 @@ public class DescriptionDaoImpl
             }
 
             if (!includeUnpublished) {
-                criteria.createAlias("inDescription", "d").add(Restrictions.eq("d.publish", true));
+                criteria.add(Restrictions.eq("d.publish", true));
             }
 
             criteria.setProjection(Projections.rowCount());
