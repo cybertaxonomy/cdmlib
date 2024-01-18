@@ -1140,12 +1140,6 @@ public class NameServiceImpl
 
     @Override
     public <S extends TaxonName> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
-            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return page(clazz, restrictions, pageSize, pageIndex, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
-    }
-
-    @Override
-    public <S extends TaxonName> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
             Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished) {
 
         List<S> records;
