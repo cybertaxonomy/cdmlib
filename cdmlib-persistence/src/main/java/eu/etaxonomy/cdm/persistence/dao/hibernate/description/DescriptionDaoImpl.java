@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -56,7 +55,6 @@ import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
 @Qualifier("descriptionDaoImpl")
@@ -150,38 +148,6 @@ public class DescriptionDaoImpl
                 return (Long)query.getSingleResult();
             }
         }
-    }
-
-    @Override
-    public long countDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText, Set<Feature> features) {
-        checkNotInPriorView("DescriptionDaoImpl.countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> features)");
-
-        Criteria inner = getCriteria(clazz);
-
-        Criteria elementsCriteria = inner.createCriteria("descriptionElements");
-        if(hasText != null) {
-            if(hasText) {
-                elementsCriteria.add(Restrictions.isNotEmpty("multilanguageText"));
-            } else {
-                elementsCriteria.add(Restrictions.isEmpty("multilanguageText"));
-            }
-        }
-
-        if(hasImages != null) {
-            if(hasImages) {
-                elementsCriteria.add(Restrictions.isNotEmpty("media"));
-            } else {
-                elementsCriteria.add(Restrictions.isEmpty("media"));
-            }
-        }
-
-        if(features != null && !features.isEmpty()) {
-            elementsCriteria.add(Restrictions.in("feature", features));
-        }
-
-        inner.setProjection(Projections.countDistinct("id"));
-
-        return (Long)inner.uniqueResult();
     }
 
     @Override
@@ -481,66 +447,6 @@ public class DescriptionDaoImpl
         }
     }
 
-    /**
-     * Should use a DetachedCriteria & subquery, but HHH-158 prevents this, for now.
-     *
-     * e.g. DetachedCriteria inner = DestachedCriteria.forClass(type);
-     *
-     * outer.add(Subqueries.propertyIn("id", inner));
-     */
-    @Override
-    public List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        checkNotInPriorView("DescriptionDaoImpl.listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber)");
-        Criteria inner = getCriteria(clazz);
-
-        Criteria elementsCriteria = inner.createCriteria("descriptionElements");
-        if(hasText != null) {
-            if(hasText) {
-                elementsCriteria.add(Restrictions.isNotEmpty("multilanguageText"));
-            } else {
-                elementsCriteria.add(Restrictions.isEmpty("multilanguageText"));
-            }
-        }
-
-        if(hasImages != null) {
-            if(hasImages) {
-                elementsCriteria.add(Restrictions.isNotEmpty("media"));
-            } else {
-                elementsCriteria.add(Restrictions.isEmpty("media"));
-            }
-        }
-
-        if(features != null && !features.isEmpty()) {
-            elementsCriteria.add(Restrictions.in("feature", features));
-        }
-
-        inner.setProjection(Projections.distinct(Projections.id()));
-
-        @SuppressWarnings("unchecked")
-        List<Object> intermediateResult = inner.list();
-
-        if(intermediateResult.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        Integer[] resultIds = new Integer[intermediateResult.size()];
-        for(int i = 0; i < resultIds.length; i++) {
-                resultIds[i] = (Integer)intermediateResult.get(i);
-        }
-
-        Criteria outer = getCriteria(clazz);
-
-        outer.add(Restrictions.in("id", resultIds));
-        addOrder(outer, orderHints);
-
-        addPageSizeAndNumber(outer, pageSize, pageNumber);
-
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<DescriptionBase> results = outer.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
-    }
-
     @Override
     public DescriptionBase find(LSID lsid) {
         DescriptionBase<?> descriptionBase = super.find(lsid);
@@ -673,87 +579,6 @@ public class DescriptionDaoImpl
         }
 
         return query;
-    }
-
-    @Override
-    public List<Media> listTaxonDescriptionMedia(UUID taxonUuid,
-            Boolean limitToGalleries, Set<MarkerType> markerTypes,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-
-               AuditEvent auditEvent = getAuditEventFromContext();
-            if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-                String queryString = " SELECT media " +
-                    getTaxonDescriptionMediaQueryString(
-                        taxonUuid, limitToGalleries,  markerTypes);
-                queryString +=
-                    " GROUP BY media "
-//	    						" ORDER BY index(media) "  //not functional
-                    ;
-
-                Query<Media> query = getSession().createQuery(queryString, Media.class);
-
-                setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
-//	            addMarkerTypesCriterion(markerTypes, hql);
-
-                addPageSizeAndNumber(query, pageSize, pageNumber);
-                List<Media> results = query.list();
-                defaultBeanInitializer.initializeAll(results, propertyPaths);
-
-                return results;
-            } else {
-                throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid, boolean restrictToGalleries)");
-            }
-    }
-
-    @Override
-    public int countTaxonDescriptionMedia(UUID taxonUuid,
-            Boolean limitToGalleries, Set<MarkerType> markerTypes) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            String queryString = " SELECT count(DISTINCT media) " +
-                getTaxonDescriptionMediaQueryString(
-                    taxonUuid, limitToGalleries, markerTypes);
-
-            Query<Long> query = getSession().createQuery(queryString, Long.class);
-            setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
-            return query.uniqueResult().intValue();
-        }else{
-            throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid)");
-        }
-    }
-
-    private void setTaxonDescriptionMediaParameters(Query query, UUID taxonUuid, Boolean limitToGalleries, Set<MarkerType> markerTypes) {
-        if(taxonUuid != null){
-            query.setParameter("uuid", taxonUuid);
-        }
-    }
-
-    private String getTaxonDescriptionMediaQueryString(UUID taxonUuid,
-            Boolean restrictToGalleries, Set<MarkerType> markerTypes) {
-        String fromQueryString =
-            " FROM DescriptionElementBase as deb INNER JOIN " +
-                " deb.inDescription as td "
-                + " INNER JOIN td.taxon as t "
-                + " JOIN deb.media as media "
-                + " LEFT JOIN td.markers marker ";
-
-        String whereQueryString = " WHERE (1=1) ";
-        if (taxonUuid != null){
-            whereQueryString += " AND t.uuid = :uuid ";
-        }
-        if (restrictToGalleries){
-            whereQueryString += " AND td.imageGallery is true ";
-        }
-        if (markerTypes != null && !markerTypes.isEmpty()){
-            whereQueryString += " AND (1=0";
-            for (MarkerType markerType : markerTypes){
-                whereQueryString += " OR ( marker.markerType.id = " + markerType.getId() + " AND marker.flag is true)";
-
-            }
-            whereQueryString += ") ";
-        }
-
-        return fromQueryString + whereQueryString;
     }
 
     @Override

@@ -63,7 +63,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -73,7 +72,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
@@ -205,21 +203,9 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public TermVocabulary<Feature> getDefaultFeatureVocabulary(){
-        String uuidFeature = "b187d555-f06f-4d65-9e53-da7c93f8eaa8";
-        UUID featureUuid = UUID.fromString(uuidFeature);
-        return vocabularyDao.findByUuid(featureUuid);
-    }
-
-    @Override
     @Autowired
     protected void setDao(IDescriptionDao dao) {
         this.dao = dao;
-    }
-
-    @Override
-    public long count(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText,Set<Feature> feature) {
-        return dao.countDescriptions(type, hasImages, hasText, feature);
     }
 
     @Override
@@ -248,25 +234,6 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Long numberOfResults = descriptionElementDao.countMedia(descriptionElement);
-
-        List<Media> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = descriptionElementDao.getMedia(descriptionElement, pageSize, pageNumber, propertyPaths);
-        }
-
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-    @Override
-    public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Set<MarkerType> markerTypes = null;
-        Set<DescriptionType> descriptionTypes = null;
-        return pageTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, descriptionTypes, pageSize, pageNumber, propertyPaths);
-    }
-
-    @Override
     public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Set<MarkerType> markerTypes = null;
         Set<DescriptionType> descriptionTypes = null;
@@ -291,17 +258,6 @@ public class DescriptionServiceImpl
         return results;
     }
 
-
-    @Override
-    public List<Media> listTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths){
-        return this.dao.listTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes, pageSize, pageNumber, propertyPaths);
-    }
-
-    @Override
-    public int countTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes){
-        return this.dao.countTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes);
-    }
-
     @Override
     public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonName name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         long numberOfResults = dao.countTaxonNameDescriptions(name);
@@ -309,20 +265,6 @@ public class DescriptionServiceImpl
         List<TaxonNameDescription> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.getTaxonNameDescriptions(name, pageSize, pageNumber,propertyPaths);
-        }
-
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-
-    @Override
-    public Pager<DescriptionBase> page(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        long numberOfResults = dao.countDescriptions(type, hasImages, hasText, feature);
-
-        @SuppressWarnings("rawtypes")
-        List<DescriptionBase> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.listDescriptions(type, hasImages, hasText, feature, pageSize, pageNumber,orderHints,propertyPaths);
         }
 
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);

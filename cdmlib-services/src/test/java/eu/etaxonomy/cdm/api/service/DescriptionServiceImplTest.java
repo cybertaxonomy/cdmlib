@@ -55,11 +55,6 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     private ITermService termService;
 
     @Test
-    public void testGetDefaultFeatureVocabulary() {
-        service.getDefaultFeatureVocabulary();
-    }
-
-    @Test
     @DataSet("CommonServiceImplTest.xml")
     public void testChangeDescriptionElement(){
         DescriptionBase<?> descBase = service.find(UUID.fromString("eb17b80a-9be6-4642-a6a8-b19a318925e6"));

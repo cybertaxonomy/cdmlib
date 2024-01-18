@@ -231,6 +231,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             method = RequestMethod.GET)
     public List<TaxonNameDescription> doGetNameDescriptions(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
+
         logger.info("doGetNameDescriptions()" + request.getRequestURI());
 
         TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
