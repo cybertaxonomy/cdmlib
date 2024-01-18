@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.term.TermTree;
 
@@ -88,6 +89,11 @@ public interface IDistributionService {
      * @throws XMLStreamException
      */
     public void setMapping(NamedArea area, GeoServiceArea geoServiceArea);
+
+    public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors, List<Language> langs,
+            boolean includeUnpublished);
 
     /**
      *

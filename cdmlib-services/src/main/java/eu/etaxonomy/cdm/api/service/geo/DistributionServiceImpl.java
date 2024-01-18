@@ -45,9 +45,11 @@ import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionCon
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -278,6 +280,53 @@ public class DistributionServiceImpl implements IDistributionService {
     @Override
     public void setMapping(NamedArea area, GeoServiceArea geoServiceArea) {
         areaMapping.set(area, geoServiceArea);
+    }
+
+    @Override
+    public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            List<Language> langs,
+            boolean includeUnpublished) {
+
+        Set<Feature> features = new HashSet<>();
+        features.add(Feature.DISTRIBUTION()); //for now only this one
+        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions, features, includeUnpublished);
+
+        String uriParams = getDistributionServiceRequestParameterString(distributions,
+                subAreaPreference,
+                statusOrderPreference,
+                hideMarkedAreas,
+                presenceAbsenceTermColors,
+                langs);
+
+        return uriParams;
+    }
+
+    private Set<Distribution> getDistributionsOf(List<TaxonDescription> taxonDescriptions, Set<Feature> features, boolean includeUnpublished) {
+        Set<Distribution> result = new HashSet<>();
+
+        for (TaxonDescription taxonDescription : taxonDescriptions) {
+            List<Distribution> distributions;
+            if (taxonDescription.getId() > 0){
+                distributions = dao.getDescriptionElements(taxonDescription,
+                        null, features, Distribution.class, includeUnpublished, null, null, null);
+            }else{
+                distributions = new ArrayList<>();
+                for (DescriptionElementBase deb : taxonDescription.getElements()){
+                    if (deb.isInstanceOf(Distribution.class)){
+                        if (features == null || features.isEmpty()
+                                || features.contains(deb.getFeature())) {
+                            distributions.add(CdmBase.deproxy(deb, Distribution.class));
+                        }
+                    }
+                }
+            }
+            result.addAll(distributions);
+        }
+        return result;
     }
 
     @Override
