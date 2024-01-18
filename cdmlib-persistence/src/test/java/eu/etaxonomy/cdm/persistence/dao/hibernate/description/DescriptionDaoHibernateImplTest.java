@@ -69,11 +69,8 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @SpringBeanByType
     private ITaxonDao taxonDao;
 
-    private Set<NamedArea> namedAreas;
     private Set<Feature> features;
 
-    private UUID northernAmericaUuid;
-    private UUID southernAmericaUuid;
     private UUID antarcticaUuid;
 
     private UUID uuidTaxonDescription1;
@@ -84,9 +81,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     public void setUp() {
         uuidTaxonDescription1 = UUID.fromString("5f3265ed-68ad-4ec3-826f-0d29d25986b9");
 
-        namedAreas = new HashSet<>();
-        northernAmericaUuid = UUID.fromString("2757e726-d897-4546-93bd-7951d203bf6f");
-        southernAmericaUuid = UUID.fromString("6310b3ba-96f4-4855-bb5b-326e7af188ea");
         antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
         taxonSphingidaeUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 

@@ -98,43 +98,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            Properties to initialize in the returned entities, following
      *            the syntax described in
      *            {@link IBeanInitializer#initialize(Object, List)}
-     * @return a Pager containing DescriptionElementBase instances
-
-     * @deprecated use
-     *             {@link #pageDescriptionElements(DescriptionBase, Set, Class, Integer, Integer, List)}
-     *             instead
-     */
-    @Deprecated
-    public <T extends DescriptionElementBase> Pager<T> getDescriptionElements(
-            DescriptionBase description,Set<Feature> features, Class<T> type, boolean includeUnpublished,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-
-    /**
-     * Returns description elements of type <TYPE>, belonging to a given
-     * description, optionally filtered by one or more features
-     *
-     * @param description
-     *            The description which these description elements belong to
-     *            (can be null to count all description elements)
-     * @param descriptionType
-     *            A filter DescriptionElements which belong to of a specific
-     *            class of Descriptions
-     * @param features
-     *            Restrict the results to those description elements which are
-     *            scoped by one of the Features passed (can be null or empty)
-     * @param type
-     *            A filter for DescriptionElements of a specific class
-     * @param pageSize
-     *            The maximum number of description elements returned (can be
-     *            null for all description elements)
-     * @param pageNumber
-     *            The offset (in pageSize chunks) from the start of the result
-     *            set (0 - based)
-     * @param propertyPaths
-     *            Properties to initialize in the returned entities, following
-     *            the syntax described in
-     *            {@link IBeanInitializer#initialize(Object, List)}
      *
      * @return a Pager containing DescriptionElementBase instances
      */

@@ -233,14 +233,6 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    @Deprecated
-    public <T extends DescriptionElementBase> Pager<T> getDescriptionElements(DescriptionBase description,
-            Set<Feature> features, Class<T> type, boolean includeUnpublished,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        return pageDescriptionElements(description, null, features, type, includeUnpublished, pageSize, pageNumber, propertyPaths);
-    }
-
-    @Override
     public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,
             Class<? extends DescriptionBase> descriptionType,
             Set<Feature> features, Class<T> type, boolean includeUnpublished,
