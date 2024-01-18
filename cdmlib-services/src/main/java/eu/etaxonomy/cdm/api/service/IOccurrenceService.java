@@ -138,14 +138,15 @@ public interface IOccurrenceService
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Returns a List of Media that are associated with a given occurence
+     * Returns a List of Media that are associated with a given occurrence
      *
-     * @param occurence the occurence associated with these media
+     * @param occurrence the occurrence associated with these media
      * @param pageSize The maximum number of media returned (can be null for all related media)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of media instances
      */
+    //TODO needed?
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
@@ -276,14 +277,6 @@ public interface IOccurrenceService
      */
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start);
-
-
-    /**
-     * @deprecated replace by {@link #listRootUnitsByAssociatedTaxon(Class, Taxon, List, List)}
-     */
-    @Deprecated
-    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
-
 
     /**
      * See {@link #listByAssociatedTaxon(Class, Set, Taxon, Integer, Integer, Integer, List, List)}
@@ -636,23 +629,12 @@ public interface IOccurrenceService
     public List<DerivedUnitDTO> findByTitleDerivedUnitDTO(
             FindOccurrencesConfigurator config);
 
-
-    /**
-     * Collects the <code>FieldUnits</code> which are at the root of the derivation event
-     * graph in which the {@link DerivedUnit} with the specified <code>findByAccessionNumber</code>
-     * is found.
-     *
-     * @deprecated method name unclear and thus replaced by {@link #findByGeneticAccessionNumber(String, List)}
-     */
-    @Deprecated
-    SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
-
     /**
      * Collects the <code>FieldUnits</code> which are at the root of the derivation event
      * graph in which the {@link DnaSample} with the specified <code>accessionNumberString</code>
      * is found.
      */
-    SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String dnaAccessionNumber, List<OrderHint> orderHints);
+    public SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String dnaAccessionNumber, List<OrderHint> orderHints);
 
     /**
      * Recursively searches all {@link DerivationEvent}s to find all "originals" ({@link SpecimenOrObservationBase})

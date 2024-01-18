@@ -324,12 +324,6 @@ public class OccurrenceServiceImpl
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start) {
         return dao.listUuidAndTitleCacheByAssociatedTaxon(taxonNodeUuids, limit, start);
-        }
-
-    @Override
-    @Deprecated
-    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return pageRootUnitsByAssociatedTaxon(FieldUnit.class, null, associatedTaxon, null, null, null, null, propertyPaths).getRecords();
     }
 
     @Override
@@ -557,17 +551,17 @@ public class OccurrenceServiceImpl
                             }
                         }
 
-                        for (TypeDesignationBase desc: taxon.getName().getHomotypicalGroup().getTypeDesignations()) {
+                        for (TypeDesignationBase<?> desc: taxon.getName().getHomotypicalGroup().getTypeDesignations()) {
                             if (desc instanceof SpecimenTypeDesignation) {
                                 if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
                                     isAssociated = true;
                                     break;
                                 }
                             }
-
                         }
+
                         for (TaxonName name: taxon.getSynonymNames()) {
-                            for (TypeDesignationBase desc :name.getHomotypicalGroup().getTypeDesignations()) {
+                            for (TypeDesignationBase<?> desc :name.getHomotypicalGroup().getTypeDesignations()) {
 
                                 if (desc instanceof SpecimenTypeDesignation) {
                                     if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
@@ -575,7 +569,6 @@ public class OccurrenceServiceImpl
                                         break;
                                     }
                                 }
-
                             }
                         }
 
@@ -624,13 +617,6 @@ public class OccurrenceServiceImpl
         });
 
         return orderdDTOs;
-    }
-
-    @Override
-    @Transactional
-    @Deprecated
-    public  SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints)  {
-        return findByAccessionNumber(accessionNumberString, orderHints);
     }
 
     @Override
