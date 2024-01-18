@@ -95,7 +95,7 @@ public class OccurrencePortalController extends OccurrenceController {
         SpecimenOrObservationBase<?> sob = service.load(uuid);
         if(sob.isPublish()) {
             if(sob instanceof FieldUnit){
-                return service.assembleFieldUnitDTO((FieldUnit)sob);
+                return service.loadFieldUnitDTO(sob.getUuid());
             } else {
                 return service.assembleDerivedUnitDTO((DerivedUnit)sob);
             }
