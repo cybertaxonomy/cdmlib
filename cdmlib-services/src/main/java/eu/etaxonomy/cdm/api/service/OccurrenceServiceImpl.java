@@ -541,7 +541,7 @@ public class OccurrenceServiceImpl
                         DerivedUnit derivedUnit = (DerivedUnit)unit;
                         boolean isAssociated = false;
                         for (DeterminationEvent determination:derivedUnit.getDeterminations()) {
-                            	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon())){
+                            	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon()) ){
                             		isAssociated = true;
                             		break;
                             	}
@@ -557,7 +557,7 @@ public class OccurrenceServiceImpl
                             }
                         }
 
-                        for (TypeDesignationBase desc: taxon.getName().getTypeDesignations()) {
+                        for (TypeDesignationBase desc: taxon.getName().getHomotypicalGroup().getTypeDesignations()) {
                             if (desc instanceof SpecimenTypeDesignation) {
                                 if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
                                     isAssociated = true;
@@ -565,6 +565,18 @@ public class OccurrenceServiceImpl
                                 }
                             }
 
+                        }
+                        for (TaxonName name: taxon.getSynonymNames()) {
+                            for (TypeDesignationBase desc :name.getHomotypicalGroup().getTypeDesignations()) {
+
+                                if (desc instanceof SpecimenTypeDesignation) {
+                                    if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
+                                        isAssociated = true;
+                                        break;
+                                    }
+                                }
+
+                            }
                         }
 
                         if (!isAssociated) {
