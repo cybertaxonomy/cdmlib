@@ -223,8 +223,6 @@ public interface IOccurrenceService
 
     public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
 
-    public List<DerivedUnitFacade> listDerivedUnitFacades(DescriptionBase description, boolean includeUnpublished, List<String> propertyPaths);
-
     /**
      * Lists all instances of {@link SpecimenOrObservationBase} which are
      * associated with the <code>taxon</code> specified as parameter.
@@ -463,19 +461,8 @@ public interface IOccurrenceService
 
     /**
      * Retrieves all associated taxa for the given specimen (via type designations, determination, individuals associations)
-     * @param specimen
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @return
      */
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    /**
-     * @see #listAssociatedTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)axa
-     */
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**

@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -248,23 +247,12 @@ public class DescriptionServiceImpl
             Integer pageSize, Integer pageNumber,
             List<String> propertyPaths) {
 
-        long numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type);
-        List<T> results = new ArrayList<T>();
+        long numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type, includeUnpublished);
+        List<T> results = new ArrayList<>();
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
-            results = dao.getDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
+            results = dao.getDescriptionElements(description, descriptionType, features, type, includeUnpublished, pageSize, pageNumber, propertyPaths);
         }
         return results;
-    }
-
-    @Override
-    @Deprecated
-    public <T extends DescriptionElementBase> List<T> listDescriptionElements(
-            DescriptionBase description,
-            Set<Feature> features, Class<T> type, boolean includeUnpublished,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-
-        return listDescriptionElements(description, null, features, type, includeUnpublished,
-                pageSize, pageNumber, propertyPaths);
     }
 
     @Override
@@ -343,22 +331,6 @@ public class DescriptionServiceImpl
         List<DescriptionBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             results = dao.listDescriptions(type, hasImages, hasText, feature, pageSize, pageNumber,orderHints,propertyPaths);
-        }
-
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * Rename: searchByDistribution
-     */
-    @Override
-    public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        long numberOfResults = dao.countDescriptionByDistribution(namedAreas, presence);
-
-        List<TaxonDescription> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.searchDescriptionByDistribution(namedAreas, presence, pageSize, pageNumber,orderHints,propertyPaths);
         }
 
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);

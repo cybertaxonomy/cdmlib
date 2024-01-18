@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -155,36 +154,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            Restrict the results to those description elements which are
      *            scoped by one of the Features passed (can be null or empty)
      * @param type
-     *            A filter for DescriptionElements of a specific class
-     * @param pageSize
-     *            The maximum number of description elements returned (can be
-     *            null for all description elements)
-     * @param pageNumber
-     *            The offset (in pageSize chunks) from the start of the result
-     *            set (0 - based)
-     * @param propertyPaths
-     *            Properties to initialize in the returned entities, following
-     *            the syntax described in
-     *            {@link IBeanInitializer#initialize(Object, List)}
-     * @return a List of DescriptionElementBase instances
-     * @deprecated use {@link #listDescriptionElements(DescriptionBase, Class, Set, Class, Integer, Integer, List)} instead
-     */
-    @Deprecated
-    public <T extends DescriptionElementBase> List<T> listDescriptionElements(
-            DescriptionBase description, Set<Feature> features, Class<T> type, boolean includeUnpublished,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-    /**
-     * Returns description elements of type <TYPE>, belonging to a given
-     * description, optionally filtered by one or more features
-     *
-     * @param description
-     *            The description which these description elements belong to
-     *            (can be null to count all description elements)
-     * @param features
-     *            Restrict the results to those description elements which are
-     *            scoped by one of the Features passed (can be null or empty)
-     * @param type
      *            A filter DescriptionElements of a specific class
      * @param pageSize
      *            The maximum number of description elements returned (can be
@@ -298,21 +267,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * FIXME candidate for harmonization - rename to pageTaxonNameDescriptions
      */
     public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonName name, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-
-    /**
-     * Returns a List of distinct TaxonDescription instances which have Distribution elements that refer to one of the NamedArea instances passed (optionally
-     * filtered by a type of PresenceAbsenceTerm e.g. PRESENT / ABSENT / NATIVE / CULTIVATED etc)
-     *
-     * @param namedAreas The set of NamedArea instances
-     * @param presence Restrict the descriptions to those which have Distribution elements are of this status (can be null)
-     * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
-     * @return a Pager containing TaxonDescription instances
-     */
-    public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a Paged List of DescriptionElementBase instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)

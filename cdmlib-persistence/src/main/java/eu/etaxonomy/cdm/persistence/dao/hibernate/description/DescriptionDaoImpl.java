@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -34,13 +32,11 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -60,7 +56,6 @@ import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
@@ -84,41 +79,11 @@ public class DescriptionDaoImpl
         indexedClasses[2] = SpecimenDescription.class;
     }
 
-//    @Override  //Override for testing
-//    public DescriptionBase load(UUID uuid, List<String> propertyPaths){
-//    	DescriptionBase bean = findByUuid(uuid);
-//        if(bean == null){
-//            return bean;
-//        }
-//        defaultBeanInitializer.initialize(bean, propertyPaths);
-//
-//        return bean;
-//    }
-
     @Override
-    public long countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm status) {
-        checkNotInPriorView("DescriptionDaoImpl.countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status)");
-        Query<Long> query = null;
+    public <T extends DescriptionElementBase> long countDescriptionElements(
+            DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<T> clazz, boolean includeUnpublished) {
 
-        if(status == null) {
-            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.descriptionElements element join element.area area where area in (:namedAreas)", Long.class);
-        } else {
-            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.descriptionElements element join element.area area  join element.status status where area in (:namedAreas) and status = :status", Long.class);
-            query.setParameter("status", status);
-        }
-        query.setParameterList("namedAreas", namedAreas);
-
-        return query.uniqueResult();
-    }
-
-    @Override
-    public <T extends DescriptionElementBase> long countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<T> clazz) {
-        return countDescriptionElements(description, null, features, clazz);
-    }
-
-    @Override
-    public <T extends DescriptionElementBase> long countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
-            Set<Feature> features, Class<T> clazz) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if (clazz == null){
             clazz = (Class<T>)DescriptionElementBase.class;
@@ -138,6 +103,10 @@ public class DescriptionDaoImpl
                 criteria.add(Restrictions.in("feature", features));
             }
 
+            if (!includeUnpublished) {
+                criteria.createAlias("inDescription", "d").add(Restrictions.eq("d.publish", true));
+            }
+
             criteria.setProjection(Projections.rowCount());
 
             return (Long)criteria.uniqueResult();
@@ -154,6 +123,10 @@ public class DescriptionDaoImpl
 
                     if(descriptionType != null) {
                         query.add(AuditEntity.property("inDescription.class").eq(descriptionType));
+                    }
+
+                    if (!includeUnpublished) {
+                        query.add(AuditEntity.property("inDescription.publish").eq(true));
                     }
 
                     query.add(AuditEntity.relatedId("feature").eq(f.getId()));
@@ -289,18 +262,12 @@ public class DescriptionDaoImpl
             //AT: added in case the projects requires an third state description, An empty Marker type set
         }
     }
-    @Override
-    public <T extends DescriptionElementBase> List<T> getDescriptionElements(
-            DescriptionBase description, Set<Feature> features,
-            Class<T> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        return getDescriptionElements(description, null, features, clazz, pageSize, pageNumber, propertyPaths);
-    }
 
     @Override
     public <T extends DescriptionElementBase> List<T> getDescriptionElements(
             DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
             Set<Feature> features,
-            Class<T> clazz,
+            Class<T> clazz, boolean includeUnpublished,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
@@ -571,91 +538,6 @@ public class DescriptionDaoImpl
         List<DescriptionBase> results = outer.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
-    }
-
-    @Override
-    public List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        checkNotInPriorView("DescriptionDaoImpl.searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-
-        Criteria criteria = getSession().createCriteria(TaxonDescription.class);
-        Criteria elements = criteria.createCriteria("descriptionElements", "descriptionElement", Criteria.LEFT_JOIN);
-        elements.add(Restrictions.in("area", namedAreas.toArray()));
-
-        if(status != null) {
-            elements.add(Restrictions.eq("status", status));
-        }
-
-        ProjectionList projectionList = Projections.projectionList().add(Projections.id());
-
-        if(orderHints != null && !orderHints.isEmpty()) {
-            for(OrderHint orderHint : orderHints) {
-                projectionList = projectionList.add(Projections.property(orderHint.getPropertyName()));
-            }
-        }
-
-        criteria.setProjection(Projections.distinct(projectionList));
-
-        if(pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            }
-        }
-
-        addOrder(criteria,orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<Object> intermediateResult = criteria.list();
-
-        if(intermediateResult.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        Integer[] resultIds = new Integer[intermediateResult.size()];
-        for(int i = 0; i < resultIds.length; i++) {
-            if(orderHints == null || orderHints.isEmpty()) {
-                resultIds[i] = (Integer)intermediateResult.get(i);
-            } else {
-              resultIds[i] = ((Number)((Object[])intermediateResult.get(i))[0]).intValue();
-            }
-        }
-
-        criteria = getSession().createCriteria(TaxonDescription.class);
-        criteria.add(Restrictions.in("id", resultIds));
-        addOrder(criteria,orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<TaxonDescription> results = criteria.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
-    }
-
-    @Override
-    public List<CommonTaxonName> searchDescriptionByCommonName(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
-
-        Criteria crit = getSession().createCriteria(CommonTaxonName.class);
-        if (matchMode == MatchMode.EXACT) {
-            crit.add(Restrictions.eq("name", matchMode.queryStringFrom(queryString)));
-        } else {
-            crit.add(Restrictions.ilike("name", matchMode.queryStringFrom(queryString)));
-        }
-
-        if(pageSize != null) {
-            crit.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                crit.setFirstResult(pageNumber * pageSize);
-            }
-        }
-        @SuppressWarnings("unchecked")
-        List<CommonTaxonName> results = crit.list();
-        return results;
-    }
-
-    @Override
-    public Integer countDescriptionByCommonName(String queryString, MatchMode matchMode) {
-        //TODO inprove performance
-        List<CommonTaxonName> results =  searchDescriptionByCommonName(queryString, matchMode, null, null);
-        return results.size();
     }
 
     @Override

@@ -12,7 +12,6 @@ import java.awt.Color;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,25 +38,18 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
-import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.ext.geo.OccurrenceServiceRequestParameterDto;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
@@ -117,73 +109,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
     public void setService(ITaxonService service) {
         this.service = service;
     }
-
-    /**
-     * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
-     * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
-     * an valid URI parameter String. Higher level distribution areas are expanded in order to include all
-     * nested sub-areas.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
-     *
-     *
-     * @param subAreaPreference
-     *            enables the <b>Sub area preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
-     * @param statusOrderPreference
-     *            enables the <b>Status order preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
-     * @param hideMarkedAreas
-     *            comma separated list of {@link MarkerType} uuids,
-     *            distributions where the area has a {@link Marker} with one of
-     *            the specified {@link MarkerType}s will be skipped, see
-     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
-     * @param request
-     * @param response
-     * @return URI parameter Strings for the EDIT Map Service
-     * @throws IOException
-     */
-    @RequestMapping(value = { "taxonDistributionFor/{uuid}" }, method = RequestMethod.GET)
-    public ModelAndView doGetDistributionMapUriParams(
-            @PathVariable("uuid") UUID uuid,
-            @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
-            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
-            @RequestParam(value = "hideMarkedAreas", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
-
-        logger.info("doGetDistributionMapUriParams() " + request.getRequestURI());
-        ModelAndView mv = new ModelAndView();
-
-        // get the descriptions for the taxon
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
-        //languages
-        List<Language> langs = LocaleContext.getLanguages();
-
-        Set<MarkerType> hideMarkedAreas = null;
-        if(hideMarkedAreasList != null){
-            hideMarkedAreas = hideMarkedAreasList.asSet();
-        }
-
-        Set<DefinedTerm> scopes = null;
-        Set<NamedArea> geographicalScope = null;
-        Integer pageSize = null;
-        Integer pageNumber = null;
-        List<String> propertyPaths = null;
-        Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
-
-        List<TaxonDescription> taxonDescriptions = page.getRecords();
-        String uriParams = distributionService.getDistributionServiceRequestParameterString(taxonDescriptions,
-                subAreaPreference, statusOrderPreference,
-                hideMarkedAreas, presenceAbsenceTermColors, langs);
-        mv.addObject(uriParams);
-
-        return mv;
-    }
-
 
     /**
      * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the

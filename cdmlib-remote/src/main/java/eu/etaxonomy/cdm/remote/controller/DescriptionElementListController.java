@@ -110,6 +110,7 @@ public class DescriptionElementListController {
 
     /**
      * Requires the query parameter "descriptionType" to be present
+     * @TODO needed? A description element list without taxon or specimen relation does not seem to make sense.
      */
     @RequestMapping(value = "byFeature", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<? extends DescriptionElementBase> doPageDescriptionElementsByFeature(

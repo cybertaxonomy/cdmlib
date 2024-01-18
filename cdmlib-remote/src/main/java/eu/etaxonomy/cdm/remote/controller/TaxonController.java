@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -479,8 +480,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
 
+        logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
@@ -514,8 +515,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
                     + classSimpleName);
             if (taxonDescriptions != null) {
                 for (TaxonDescription description : taxonDescriptions) {
+                    Class<? extends DescriptionBase<?>> descriptionType = null;
                     elements = descriptionService.listDescriptionElements(
-                            description, null, type, includeUnpublished, null, 0, initStrategy);
+                            description, descriptionType, null, type, includeUnpublished, null, 0, initStrategy);
                     allElements.addAll(elements);
                     count += elements.size();
                 }

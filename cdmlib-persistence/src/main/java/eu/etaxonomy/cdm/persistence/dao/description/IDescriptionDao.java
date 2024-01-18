@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.description;
 
 import java.util.List;
@@ -14,13 +13,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -34,10 +31,10 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
+
     /**
      * List the descriptions of type <TYPE>, filtered using the following parameters
      *
@@ -51,7 +48,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of DescriptionBase instances
      */
-     List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+     public List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Count the descriptions of type <TYPE>, filtered using the following parameters
@@ -75,21 +72,6 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @return a count of TaxonDescription instances
      */
     public long countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType, Set<DescriptionType> descriptionTypes);
-
-    /**
-     * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
-     *
-     * @param description The description which these description elements belong to (can be null to count all description elements)
-     * @param features Restrict the results to those description elements which are scoped by one of the Features passed (can be null or empty)
-     * @param type The type of description
-     * @param pageSize The maximum number of description elements returned (can be null for all description elements)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
-     * @return a List of DescriptionElementBase instances
-     * @deprecated use {@link #getDescriptionElements(DescriptionBase, Class, Set, Class, Integer, Integer, List)} instead
-     */
-     @Deprecated
-     public <T extends DescriptionElementBase> List<T> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given
@@ -118,20 +100,10 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of DescriptionElementBase instances
      */
-    public <T extends DescriptionElementBase> List<T> getDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-
-    /**
-     * Returns a count of description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
-     *
-     * @param description The description which these description elements belong to (can be null to count all description elements)
-     * @param features Restrict the results to those description elements which are scoped by one of the Features passed (can be null or empty)
-     * @param type A filter for DescriptionElements of a specific class
-     * @return a count of DescriptionElementBase instances
-     * @deprecated use {@link #countDescriptionElements(DescriptionBase, Class, Set, Class)} instead
-     */
-    @Deprecated
-    <T extends DescriptionElementBase> long countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<T> type);
+    public <T extends DescriptionElementBase> List<T> getDescriptionElements(
+            DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<T> type, boolean includeUnpublished,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a count of description elements of type <TYPE>, belonging to a
@@ -150,7 +122,8 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      *            The type of description
      * @return a count of DescriptionElementBase instances
      */
-    public <T extends DescriptionElementBase> long countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type);
+    public <T extends DescriptionElementBase> long countDescriptionElements(
+            DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<T> type, boolean includeUnpublished);
 
     /**
      * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method
@@ -215,47 +188,6 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
     public long countTaxonNameDescriptions(TaxonName name);
 
     /**
-     * Returns a List of distinct TaxonDescription instances which have Distribution elements that refer to one of the NamedArea instances passed (optionally
-     * filtered by a type of PresenceAbsenceTerm e.g. PRESENT / ABSENT / NATIVE / CULTIVATED etc)
-     *
-     * @param namedAreas The set of NamedArea instances
-     * @param presence Restrict the descriptions to those which have Distribution elements are of this status (can be null)
-     * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
-     * @return a List of TaxonDescription instances
-     */
-    List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-    /**
-     * Returns a list of CommonTaxonName instances that match a search string
-     * @param searchString
-     * @param pageSize
-     * @param pageNumber
-     * @return
-     */
-    List<CommonTaxonName> searchDescriptionByCommonName(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber);
-
-
-    /**
-     * @param queryString
-     * @param matchMode
-     * @return
-     */
-    Integer countDescriptionByCommonName(String queryString, MatchMode matchMode);
-
-    /**
-     * Returns a count of distinct TaxonDescription instances which have Distribution elements that refer to one of the NamedArea instances passed (optionally
-     * filtered by a type of PresenceAbsenceTerm e.g. PRESENT / ABSENT / NATIVE / CULTIVATED etc)
-     *
-     * @param namedAreas The set of NamedArea instances
-     * @param presence Restrict the descriptions to those which have Distribution elements are of this status (can be null)
-     * @return a count of TaxonDescription instances
-     */
-    long countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTerm presence);
-
-    /**
      * @param taxon
      * @param features
      *            Restrict the results to those description elements which are
@@ -285,7 +217,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param type A filter for DescriptionElements of a specific class
      * @return the count of matching TaxonDescription instances
      */
-    <T extends DescriptionElementBase> long countDescriptionElementForTaxon(UUID taxonUuid,
+    public <T extends DescriptionElementBase> long countDescriptionElementForTaxon(UUID taxonUuid,
             Set<Feature> features, Class<T> type, boolean includeUnpublished);
 
     /**

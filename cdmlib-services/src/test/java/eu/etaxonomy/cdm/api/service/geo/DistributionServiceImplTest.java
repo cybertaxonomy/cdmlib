@@ -360,6 +360,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 //        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
 //    })
     public void getDistributionServiceRequestParameterString(){
+
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         Set<MarkerType> hideMarkedAreas = null;
@@ -376,20 +377,25 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         description1.addElement(distribution2);
 
         Taxon taxon = (Taxon)taxonService.find(UUID.fromString("7598f5d4-1cf2-4269-ae99-2adb79ae167c"));
-        TaxonDescription taxDesc = taxon.getDescriptions().iterator().next();
-        for (DescriptionElementBase deb : taxDesc.getElements()){
-            Distribution distribution = CdmBase.deproxy(deb, Distribution.class);
-            NamedArea area = distribution.getArea();
-            System.out.println(area.getTitleCache());
-        }
-        taxonDescriptions.addAll(taxon.getDescriptions());
 
-        String distributions = distributionService.getDistributionServiceRequestParameterString(taxonDescriptions,
+        taxonDescriptions.addAll(taxon.getDescriptions());
+        Set<Distribution> distributionSet = new HashSet<>();
+
+        for (TaxonDescription taxonDescription : taxonDescriptions) {
+            for (DescriptionElementBase deb : taxonDescription.getElements()){
+                if (deb.isInstanceOf(Distribution.class)){
+                    if (deb.getFeature().equals(Feature.DISTRIBUTION())) {
+                        distributionSet.add(CdmBase.deproxy(deb, Distribution.class));
+                    }
+                }
+            }
+        }
+
+        String distributions = distributionService.getDistributionServiceRequestParameterString(distributionSet,
                 subAreaPreference, statusOrderPreference, hideMarkedAreas, presenceAbsenceTermColors, langs);
-//        System.out.println(distributions);
+
         Assert.assertTrue("Distribution string should contain the non-persisted distribution Germany", distributions.contains("DEU"));
         Assert.assertFalse("Distribution string should contain France as it has a non-distribution feature", distributions.contains("FRA"));
-//        CHE,POL
     }
 
     @Override

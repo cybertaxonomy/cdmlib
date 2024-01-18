@@ -287,7 +287,7 @@ public class DescriptionListController
 
             logger.info("doGetDistributionInfo() - " + requestPathAndQuery(request));
 
-            boolean includeUnpublished = false;
+            boolean includeUnpublished = NO_UNPUBLISHED;
             ModelAndView mv = new ModelAndView();
 
             boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future

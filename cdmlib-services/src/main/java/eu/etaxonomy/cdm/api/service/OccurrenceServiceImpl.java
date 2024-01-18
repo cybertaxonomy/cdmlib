@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -315,36 +314,6 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public List<DerivedUnitFacade> listDerivedUnitFacades(
-            DescriptionBase description, boolean includeUnpublished,
-            List<String> derivedUnitFacadeInitStrategy) {
-
-        List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<>();
-        IndividualsAssociation tempIndividualsAssociation;
-        SpecimenOrObservationBase tempSpecimenOrObservationBase;
-        List<IndividualsAssociation> elements = descriptionService.listDescriptionElements(
-                description, null, IndividualsAssociation.class, includeUnpublished, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
-        for (IndividualsAssociation element : elements) {
-            tempIndividualsAssociation = HibernateProxyHelper.deproxy(element, IndividualsAssociation.class);
-            if (tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null) {
-                tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
-                if (tempSpecimenOrObservationBase.isInstanceOf(DerivedUnit.class)) {
-                    try {
-                        derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance(HibernateProxyHelper.deproxy(tempSpecimenOrObservationBase, DerivedUnit.class)));
-                    } catch (DerivedUnitFacadeNotSupportedException e) {
-                        logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " + e.getMessage());
-                    }
-                }
-            }
-        }
-
-        beanInitializer.initializeAll(derivedUnitFacadeList, derivedUnitFacadeInitStrategy);
-
-        return derivedUnitFacadeList;
-    }
-
-
-    @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -539,7 +508,6 @@ public class OccurrenceServiceImpl
         UUID uuid = UUID.fromString(taxonUUID);
         Taxon taxon = (Taxon) taxonService.load(uuid);
         return pageByAssociatedTaxon(type, includeRelationships, taxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths);
-
     }
 
     @Override
@@ -1292,14 +1260,9 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listAssociatedTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
-    }
-
-    @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
 
         //individuals associations

@@ -354,7 +354,7 @@ public class TaxonPortalController extends TaxonController{
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        boolean includeUnpublished = !INCLUDE_UNPUBLISHED;
+        boolean includeUnpublished = NO_UNPUBLISHED;
         if(request != null){
             logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
         }
@@ -411,6 +411,7 @@ public class TaxonPortalController extends TaxonController{
 
         //default distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
+        distributionConfig.setIncludeUnpublished(includeUnpublished);
         distributionConfig.setUseTreeDto(true);
         distributionConfig.setInfoParts(EnumSet.copyOf(partSet));
         distributionConfig.setPreferSubAreas(preferSubAreas);
@@ -430,6 +431,7 @@ public class TaxonPortalController extends TaxonController{
 
         //iucn distribution info config
         DistributionInfoConfiguration iucnDistributionConfig = new DistributionInfoConfiguration();
+        iucnDistributionConfig.setIncludeUnpublished(includeUnpublished);
         config.putDistributionInfoConfiguration(Feature.uuidIucnStatus, iucnDistributionConfig);
         iucnDistributionConfig.setUseTreeDto(true);
         EnumSet<InfoPart> iucnPartSet = EnumSet.of(InfoPart.condensedDistribution);

@@ -45,11 +45,9 @@ import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionCon
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -291,9 +289,12 @@ public class DistributionServiceImpl implements IDistributionService {
             Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
+        TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
+        boolean keepFallbackOnlyIfNoSubareaDataExists = true;
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, null, null,
-                hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true);
+                distributions, areaTree, statusTree,
+                hideMarkedAreas, false, statusOrderPreference, subAreaPreference, keepFallbackOnlyIfNoSubareaDataExists);
 
         String uriParams = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
                 filteredDistributions,
@@ -302,66 +303,6 @@ public class DistributionServiceImpl implements IDistributionService {
                 null, langs);
         return uriParams;
     }
-
-    @Override
-    public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
-            boolean subAreaPreference,
-            boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> langs) {
-
-        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
-
-        String uriParams = getDistributionServiceRequestParameterString(distributions,
-                subAreaPreference,
-                statusOrderPreference,
-                hideMarkedAreas,
-                presenceAbsenceTermColors,
-                langs);
-
-        return uriParams;
-    }
-
-
-    private Set<Distribution> getDistributionsOf(List<TaxonDescription> taxonDescriptions) {
-        Set<Distribution> result = new HashSet<>();
-
-        Set<Feature> features = getDistributionFeatures();
-        for (TaxonDescription taxonDescription : taxonDescriptions) {
-            List<Distribution> distributions;
-            if (taxonDescription.getId() > 0){
-                distributions = dao.getDescriptionElements(
-                        taxonDescription,
-                        null,
-                        null /*features*/,
-                        Distribution.class,
-                        null,
-                        null,
-                        null);
-            }else{
-                distributions = new ArrayList<Distribution>();
-                for (DescriptionElementBase deb : taxonDescription.getElements()){
-                    if (deb.isInstanceOf(Distribution.class)){
-                        if (features == null || features.isEmpty()
-                                || features.contains(deb.getFeature())) {
-                            distributions.add(CdmBase.deproxy(deb, Distribution.class));
-                        }
-                    }
-                }
-            }
-            result.addAll(distributions);
-        }
-        return result;
-    }
-
-    private Set<Feature> getDistributionFeatures() {
-        Set<Feature> distributionFeature = new HashSet<>();
-        Feature feature = (Feature) termDao.findByUuid(Feature.DISTRIBUTION().getUuid());
-        distributionFeature.add(feature);
-        return distributionFeature;
-    }
-
 
     @Override
     @Transactional(readOnly=false)
