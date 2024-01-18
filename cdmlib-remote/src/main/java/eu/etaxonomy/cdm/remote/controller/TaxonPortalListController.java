@@ -30,9 +30,13 @@ public class TaxonPortalListController extends TaxonListController {
             null,
             Arrays.asList(
             "annotations.$",
-            "annotations.type.includes.$",
-            "synonym.name.nomenclaturalSource.citation.authorship",
-            "synonym.name.nomenclaturalSource.citation.inReference.authorship",
+            "annotations.annotationType.$",
+            "annotations.annotationType.includes.$",
+            "synonyms.annotations.$",
+            "synonyms.annotations.annotationType.$",
+            "synonyms.annotations.annotationType.includes.$",
+            "synonyms.name.nomenclaturalSource.citation.authorship",
+            "synonyms.name.nomenclaturalSource.citation.inReference.authorship",
             "relationsFromThisTaxon.toTaxon.taxonNodes" // needed for misapplications, see Taxon.isMisapplicationOnly()
             ),
             false

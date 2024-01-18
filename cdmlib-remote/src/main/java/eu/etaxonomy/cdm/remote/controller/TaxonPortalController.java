@@ -149,7 +149,8 @@ public class TaxonPortalController extends TaxonController{
             "secSource.citation.authorship.$",
             "secSource.citation.inReference.authorship.$",
             "annotations.$",
-            "annotations.type.includes.$"
+            "annotations.annotationType.$",
+            "annotations.annotationType.includes.$"
 //            "descriptions" // TODO remove
 
             }));
@@ -194,6 +195,10 @@ public class TaxonPortalController extends TaxonController{
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalSource.citation.authorship",
             "name.homotypicalGroup.typifiedNames.nomenclaturalSource.citation.inReference.authorship",
+            "synonyms.annotations.$",
+            "synonyms.annotations.annotationType.$",
+            "synonyms.annotations.annotationType.includes.$"
+
 //            "name.homotypicalGroup.typifiedNames.taxonBases.$"
     }));
 

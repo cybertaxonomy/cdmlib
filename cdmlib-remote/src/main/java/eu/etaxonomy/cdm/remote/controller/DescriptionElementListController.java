@@ -81,8 +81,8 @@ public class DescriptionElementListController {
             "stateData.modifyingText",
             "stateData.categoricalData.$",
             "annotations.$",
-            "annotations.type.$",
-            "annotations.type.includes.$"
+            "annotations.annotationType.$",
+            "annotations.annotationType.includes.$"
     });
 
     protected List<String> getInitializationStrategy() {

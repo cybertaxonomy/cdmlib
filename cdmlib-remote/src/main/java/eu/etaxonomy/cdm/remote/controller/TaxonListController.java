@@ -98,7 +98,8 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         setInitializationStrategy(Arrays.asList(new String[]{
                 "$",
                 "annotations.$",
-                "annotations.type.includes.$",
+                "annotations.annotationType.$",
+                "annotations.annotationType.includes.$",
                 "name.nomenclaturalSource.citation"
                 }));
     }
