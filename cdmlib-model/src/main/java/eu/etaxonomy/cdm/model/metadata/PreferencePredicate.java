@@ -175,8 +175,11 @@ public enum PreferencePredicate
     //Media
     AdditionalMediaCopyright(UUID.fromString("c55aa7ca-4a6a-4a40-b4f1-e75030cd38bc"), "Additional media copyright","copyright.additional.media", null),
     MediaRepresentationTransformations(UUID.fromString("7d5151a4-6354-43da-b784-f167da236020"), "Transformations rules for media representations", "media.representationTransformations", null),
-    MediaMetadataKeynameIncludes(UUID.fromString("3fe84169-892b-4e80-af69-d23a1f2d7620"), "Positive list of media metadata keywords", "media.metadataKeyword.icludes", String.join(";",
-            "Title => Title", "Headline => Taxon", "Artist => Photographer", "Photographer => Photographer", "Credit => Photographer", "Rights => Rights", "Location => Location", "Sublocation => Locality", "Copyright => Copyright", "Date Created => Date Created", "Locality => Locality", "Taxon => Taxon", "Collection => Collection", "Description => Description", "Country => Country")),
+    MediaMetadataKeynameIncludes(UUID.fromString("3fe84169-892b-4e80-af69-d23a1f2d7620"), "Positive list of media metadata keywords", "media.metadataKeyword.icludes", "{\"Title\":\"Title\""
+            + ",\"Headline\":\"Taxon\",\"Artist\":\"Photographer\",\"Photographer\":\"Photographer\",\"Credit\":\"Photographer\",\"Rights\":\"Rights\",\"Location\":\"Location\",\"Sublocation\":\"Locality\","
+            + "\"Copyright\":\"Copyright\",\"Date Created\":\"Date Created\",\"Locality\":\"Locality\",\"Taxon\":\"Taxon\",\"Collection\":\"Collection\",\"Description\":\"Description\",\"Country\":\"Country\"}"),
+
+
     MediaMetadataKeynameExcludes(UUID.fromString("f1375a03-259a-4cf3-b360-ac8339249464"), "Negative list of media metadata keywords", "media.metadataKeyword.excludes", null),
 
     CdmLightExportCondensedDistributionString(UUID.fromString("76e7951e-d213-4121-b0bb-18d4299102e2"), "Create condensed distribution string in CdmLight export", "io.cdmLight.createCondensedString", Boolean.FALSE),

@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +26,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator;
@@ -379,6 +383,9 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         Map<String, String> metadata = new HashMap<>();
 
         for(MediaRepresentationPart part : representation.getParts()) {
+            if (part.getUri() == null) {
+                continue;
+            }
             CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(part.getUri(), true);
             if(iInfo.getMetaData() != null) {
                 for (Entry<String,String> item:iInfo.getMetaData().entrySet()) {
@@ -426,25 +433,33 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     @Override
     public Map<String, String> mediaMetadataKeyIncludes(){
         CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameIncludes));
-        List<String> metaDataItems = null;
+        String metaDataItems = null;
         if(pref == null) {
             if (PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue() == null) {
                 return new HashMap<>();
             }
-           metaDataItems = Arrays.asList(PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString().split(";"));
+           metaDataItems = PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString();
 
         }else {
-           metaDataItems = Arrays.asList(pref.getValue().split(";"));
+           metaDataItems = pref.getValue();
         }
 
 
-        Map<String, String> metaDataMapping = new HashMap<>();
-        for (String item: metaDataItems) {
-            String[] itemArray = item.split(" => ");
-            metaDataMapping.put(itemArray[0], itemArray[1]);
-        }
-
+        Map<String, String> metaDataMapping = readJson(metaDataItems);
         return metaDataMapping;
+
+    }
+    private Map<String, String> readJson(String json) {
+        JsonNode tree = null;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Map<String, String> map
+            = mapper.readValue(json, new TypeReference<Map<String,String>>(){});
+            return map;
+        } catch (JsonProcessingException e) {
+           logger.error(e.getMessage());
+        }
+        return null;
 
     }
 }
