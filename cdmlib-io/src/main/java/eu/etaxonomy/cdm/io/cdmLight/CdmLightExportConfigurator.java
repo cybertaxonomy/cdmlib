@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionCon
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.out.IFactExportConfigurator;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -28,7 +29,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
  * @since 15.03.2017
  */
 public class CdmLightExportConfigurator
-        extends TaxonTreeExportConfiguratorBase<CdmLightExportState,CdmLightExportConfigurator>{
+        extends TaxonTreeExportConfiguratorBase<CdmLightExportState,CdmLightExportConfigurator>
+        implements IFactExportConfigurator {
 
     private static final long serialVersionUID = -1562074221435082060L;
 
@@ -57,6 +59,7 @@ public class CdmLightExportConfigurator
     //filter
     private boolean isExcludeImportSources = true;
     private boolean doFactualData = true;
+    private boolean includeUnpublishedFacts = false;
 
     //metadata /gfbio
     private String description;
@@ -304,11 +307,22 @@ public class CdmLightExportConfigurator
         this.condensedDistributionConfiguration = condensedDistributionConfiguration;
     }
 
+    @Override
     public boolean isDoFactualData() {
         return doFactualData;
     }
+    @Override
     public void setDoFactualData(boolean doFactualData) {
         this.doFactualData = doFactualData;
+    }
+
+    @Override
+    public boolean isIncludeUnpublishedFacts() {
+        return includeUnpublishedFacts;
+    }
+    @Override
+    public void setIncludeUnpublishedFacts(boolean includeUnpublishedFacts) {
+        this.includeUnpublishedFacts = includeUnpublishedFacts;
     }
 
     public UUID getStatusTree() {
@@ -317,4 +331,5 @@ public class CdmLightExportConfigurator
     public void setStatusTree(UUID statusTree) {
         this.statusTree = statusTree;
     }
+
 }

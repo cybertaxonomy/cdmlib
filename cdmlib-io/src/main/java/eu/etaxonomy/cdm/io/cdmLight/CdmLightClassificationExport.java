@@ -458,20 +458,22 @@ public class CdmLightClassificationExport
                 List<DescriptionElementBase> usageFacts = new ArrayList<>();
                 for (TaxonDescription description : descriptions) {
                     if (description.getElements() != null) {
-                        for (DescriptionElementBase element : description.getElements()) {
-                            element = CdmBase.deproxy(element);
-                            handleAnnotations(element);
-                            if (element.getFeature().equals(Feature.COMMON_NAME())) {
-                                commonNameFacts.add(element);
-                            } else if (element.getFeature().equals(Feature.DISTRIBUTION())) {
-                                distributionFacts.add(element);
-                            } else if (element instanceof IndividualsAssociation
-                                    || isSpecimenFeature(element.getFeature())) {
-                                specimenFacts.add(element);
-                            } else if (element.getFeature().isSupportsTaxonInteraction()) {
-                                taxonInteractionsFacts.add(element);
-                            } else {
-                                simpleFacts.add(element);
+                        if (description.isPublish() || state.getConfig().isIncludeUnpublishedFacts()){
+                            for (DescriptionElementBase element : description.getElements()) {
+                                element = CdmBase.deproxy(element);
+                                handleAnnotations(element);
+                                if (element.getFeature().equals(Feature.COMMON_NAME())) {
+                                    commonNameFacts.add(element);
+                                } else if (element.getFeature().equals(Feature.DISTRIBUTION())) {
+                                    distributionFacts.add(element);
+                                } else if (element instanceof IndividualsAssociation
+                                        || isSpecimenFeature(element.getFeature())) {
+                                    specimenFacts.add(element);
+                                } else if (element.getFeature().isSupportsTaxonInteraction()) {
+                                    taxonInteractionsFacts.add(element);
+                                } else {
+                                    simpleFacts.add(element);
+                                }
                             }
                         }
                     }

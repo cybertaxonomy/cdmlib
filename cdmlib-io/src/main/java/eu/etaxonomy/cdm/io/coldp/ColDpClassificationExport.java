@@ -576,7 +576,8 @@ public class ColDpClassificationExport
             List<DescriptionElementBase> taxonInteractionsFacts = new ArrayList<>();
             List<DescriptionElementBase> commonNameFacts = new ArrayList<>();
             for (TaxonDescription description : descriptions) {
-                if (description.getElements() != null) {
+                if (description.getElements() != null &&
+                        description.isPublish() || state.getConfig().isIncludeUnpublishedFacts()){
                     for (DescriptionElementBase element : description.getElements()) {
                         element = CdmBase.deproxy(element);
                         if (element.getFeature().equals(Feature.COMMON_NAME())) {
