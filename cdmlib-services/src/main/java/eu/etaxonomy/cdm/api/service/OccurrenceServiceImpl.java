@@ -343,7 +343,7 @@ public class OccurrenceServiceImpl
         // gather the IDs of all relevant root units
         Set<UUID> rootUnitUuids = new HashSet<>();
         List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships,
-                associatedTaxon, includeUnpublished, maxDepth, null, null, orderHints, propertyPaths);
+                associatedTaxon, includeUnpublished, maxDepth, null, null, null, propertyPaths);
         for (SpecimenOrObservationBase<?> specimen : records) {
             for (SpecimenOrObservationBase<?> rootUnit : findRootUnits(specimen.getUuid(), null)) {
                 if(type == null || type.isAssignableFrom(rootUnit.getClass())) {
@@ -353,12 +353,43 @@ public class OccurrenceServiceImpl
         }
         long totalCount = rootUnitUuids.size();
         //dao.list() does the paging of the field units. Passing the field units directly to the Pager would not work
-        List<SpecimenOrObservationBase> rootUnits = dao.list(rootUnitUuids, pageSize, pageNumber, orderHints, propertyPaths);
-        List<T> castedUnits = new ArrayList<>(rootUnits.size());
-        for(SpecimenOrObservationBase<?> sob : rootUnits) {
-            // this cast should be save since the uuids have been filtered by type above
-            castedUnits.add((T)sob);
+        List<T> castedUnits = new ArrayList<>(rootUnitUuids.size());
+        try {
+            List<SpecimenOrObservationBase> rootUnits = dao.list(rootUnitUuids, pageSize, pageNumber, orderHints, propertyPaths);
+            castedUnits = new ArrayList<>(rootUnits.size());
+            for(SpecimenOrObservationBase<?> sob : rootUnits) {
+                // this cast should be save since the uuids have been filtered by type above
+                castedUnits.add((T)sob);
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
         }
+
+        Collections.sort(castedUnits, new Comparator<SpecimenOrObservationBase>() {
+
+            @Override
+            public int compare(SpecimenOrObservationBase o1, SpecimenOrObservationBase o2) {
+                if(o1 instanceof FieldUnit && o2 instanceof FieldUnit) {
+                    FieldUnit fu1 = (FieldUnit)o1;
+                    FieldUnit fu2 = (FieldUnit)o2;
+
+                    return PartialComparator.INSTANCE().compare(fu1.getGatheringEvent().getGatheringDate(), fu2.getGatheringEvent().getGatheringDate());
+                }
+                if(o1 instanceof DerivedUnit && o2 instanceof DerivedUnit) {
+                    SpecimenOrObservationBase du1 = o1;
+                    SpecimenOrObservationBase du2 = o2;
+                    return StringUtils.compare(du1.getTitleCache(), du2.getTitleCache());
+                 }
+                if(o1 instanceof FieldUnit && o2 instanceof DerivedUnit) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+
+        });
+
+
         return new DefaultPagerImpl<>(pageNumber, totalCount, pageSize, castedUnits);
     }
 
