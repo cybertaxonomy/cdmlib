@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
@@ -430,7 +429,7 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return a collection of associated taxa
      */
-     public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -585,7 +584,6 @@ public interface IOccurrenceService
      */
     public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid);
 
-
     /**
      * Returns a list of {@link UuidAndTitleCache} for the specimens found with the
      * given configurator
@@ -671,7 +669,7 @@ public interface IOccurrenceService
      * @return
      *  The list of root units with fully or partially assembled derivation graph.
      */
-    List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
+    public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid, boolean includeUnpublished, List<String> propertyPaths);
 
     /**
@@ -721,15 +719,11 @@ public interface IOccurrenceService
 
     /**
      * Load the FieldUnitDTO for the given <code>derivedUnitUuid</code> with all intermediate derivatives and {@link eu.etaxonomy.cdm.api.service.dto.GatheringEventDTO}
-
-     * @param derivedUnitUuid
-     * @return
      */
-    FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid);
+    public FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid);
 
-    Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber);
+    public Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber);
 
-	Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivativeMedia,
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivativeMedia,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
 }
