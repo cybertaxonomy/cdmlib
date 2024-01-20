@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.apache.lucene.index.CorruptIndexException;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
@@ -58,7 +59,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -257,7 +257,7 @@ public interface IOccurrenceService
      * @return
      */
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -295,7 +295,7 @@ public interface IOccurrenceService
      * @return a Pager
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer maxDepth, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -680,7 +680,7 @@ public interface IOccurrenceService
      */
     public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(
             UUID associatedTaxonUuid, Set<TaxonRelationshipEdge> includedRelationships,
-            boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             List<String> propertyPaths);
 
     /**
@@ -719,14 +719,14 @@ public interface IOccurrenceService
      */
     public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(
             Class<T> type, Taxon associatedTaxon, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * See {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);

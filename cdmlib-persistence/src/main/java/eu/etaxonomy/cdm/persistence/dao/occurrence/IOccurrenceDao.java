@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -130,7 +131,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -153,7 +154,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
             Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints);
 
     /**
@@ -190,7 +191,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -292,7 +293,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * </ul>
 	 */
 	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
-	        boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+	        boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
@@ -300,7 +301,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 */
 	public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(
 	        Class<T> type, Taxon associatedTaxon, boolean includeUnpublished,
-	        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+	        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
 	        Integer limit, Integer start, List<OrderHint> orderHints);
 
     /**

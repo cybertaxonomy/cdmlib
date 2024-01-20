@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -51,7 +52,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
@@ -138,7 +138,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
 
         boolean includeUnpublished = NO_UNPUBLISHED;
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
@@ -155,7 +155,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
 	private List<SpecimenOrObservationBase> occurencesForTaxon(UUID taxonUuid, UuidList relationshipUuids,
 			UuidList relationshipInversUuids, boolean includeUnpublished,
-			EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+			EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
 			Integer maxDepth,
 			HttpServletResponse response) throws IOException {
 

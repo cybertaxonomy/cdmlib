@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
@@ -66,7 +67,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -901,7 +901,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(taxon, associatedTaxa.iterator().next());
 
         //FIXME adapt if needed
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         //check association (IndividualsAssociations + TypeDesignations) taxon (name) -> specimen
         List<DerivedUnit> byAssociatedTaxon = occurrenceService.listByAssociatedTaxon(

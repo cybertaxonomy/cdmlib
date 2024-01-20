@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -51,7 +52,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -179,7 +179,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         final Integer start = null;
         final List<OrderHint> orderHints = null;
         final List<String> propertyPaths = null;
-        final EnumSet<TaxonOccurrenceRelType> taxonOccRelType = TaxonOccurrenceRelType.All();
+        final EnumSet<TaxonOccurrenceRelationType> taxonOccRelType = TaxonOccurrenceRelationType.All();
 
         //load data
 	    //TODO empty
@@ -201,19 +201,19 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
         //test include individual associations
         associatedUnits = dao.listByAssociatedTaxon(
-                type, taxon, included_unpublished, TaxonOccurrenceRelType.IndividualsAssociations(),
+                type, taxon, included_unpublished, TaxonOccurrenceRelationType.IndividualsAssociations(),
                 limit, start, orderHints, propertyPaths);
         Assert.assertEquals("Only specimen associated via individuals association should be attached", 1, associatedUnits.size());
 
         //test include determinations
         associatedUnits = dao.listByAssociatedTaxon(
-                type, taxon, included_unpublished, TaxonOccurrenceRelType.Determinations(),
+                type, taxon, included_unpublished, TaxonOccurrenceRelationType.Determinations(),
                 limit, start, orderHints, propertyPaths);
         Assert.assertEquals("Only specimen associated via determination should be attached", 1, associatedUnits.size());
 
         //test include type specimens
         associatedUnits = dao.listByAssociatedTaxon(
-                type, taxon, included_unpublished, TaxonOccurrenceRelType.TypeDesignations(),
+                type, taxon, included_unpublished, TaxonOccurrenceRelationType.TypeDesignations(),
                 limit, start, orderHints, propertyPaths);
         Assert.assertEquals("Only specimen associated via type designation should be attached", 4, associatedUnits.size());
 

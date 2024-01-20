@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -64,7 +65,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -330,7 +330,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         logger.info("rootUnitDTOs() - " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(
                 uuid, null, includeUnpublished,
@@ -347,7 +347,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         TaxonBase<?> tb = service.load(uuid);
         List<OrderHint> orderHints = new ArrayList<>();
@@ -375,7 +375,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         logger.info("doGetAssociatedRootUnits() - " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         TaxonBase<?> taxonBase = service.load(uuid);
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);

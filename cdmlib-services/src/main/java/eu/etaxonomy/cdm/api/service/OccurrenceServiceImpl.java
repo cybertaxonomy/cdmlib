@@ -38,6 +38,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
@@ -98,7 +99,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
@@ -315,7 +315,7 @@ public class OccurrenceServiceImpl
 
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, includeUnpublished,
@@ -332,7 +332,7 @@ public class OccurrenceServiceImpl
     @Override
     public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(
             Class<T> type, Taxon associatedTaxon, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
         return pageRootUnitsByAssociatedTaxon(type, null, associatedTaxon, includeUnpublished,
@@ -344,7 +344,7 @@ public class OccurrenceServiceImpl
     public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type,
             Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
@@ -483,7 +483,7 @@ public class OccurrenceServiceImpl
 
     @Override
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includedRelationships,
-            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer maxDepth, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -523,7 +523,7 @@ public class OccurrenceServiceImpl
     @Transactional
     public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(
             UUID associatedTaxonUuid, Set<TaxonRelationshipEdge> includedRelationships,
-            boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             List<String> propertyPaths) {
 
         //assemble taxa
@@ -1406,7 +1406,7 @@ public class OccurrenceServiceImpl
     public long countByTitle(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
 
         //FIXME if still used adapt
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
@@ -1458,7 +1458,7 @@ public class OccurrenceServiceImpl
             FindOccurrencesConfigurator config){
 
         //FIXME if still used adapt
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         List<UuidAndTitleCache<SpecimenOrObservationBase>> occurrences = new ArrayList<>();
         Taxon taxon = null;
@@ -1485,7 +1485,7 @@ public class OccurrenceServiceImpl
     public List<DerivedUnitDTO> findByTitleDerivedUnitDTO(FindOccurrencesConfigurator config) {
 
         //FIXME if still used adapt
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
@@ -1517,7 +1517,7 @@ public class OccurrenceServiceImpl
             IIdentifiableEntityServiceConfigurator<S> config) {
 
         //FIXME if still used adapt
-        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;

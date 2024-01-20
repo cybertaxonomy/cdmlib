@@ -33,6 +33,7 @@ import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -59,7 +60,6 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -327,7 +327,7 @@ public class OccurrenceDaoHibernateImpl
     public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> findOccurrencesUuidAndTitleCache(
             Class<T> clazz, String queryString, String significantIdentifier, SpecimenOrObservationType recordBasis,
             Taxon associatedTaxon, TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints) {
 
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
@@ -356,7 +356,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
-            MatchMode matchmode, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            MatchMode matchmode, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
@@ -376,7 +376,7 @@ public class OccurrenceDaoHibernateImpl
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = null;
@@ -465,7 +465,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
-            MatchMode matchmode, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            MatchMode matchmode, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
@@ -684,7 +684,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(
             Class<T> clazz, Taxon associatedTaxon, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints){
 
         Query<Object[]> query = createSpecimenQuery("sob.uuid, sob.id, sob.titleCache", clazz,
@@ -704,7 +704,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> clazz,
             Taxon associatedTaxon, boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         @SuppressWarnings("rawtypes")
@@ -724,7 +724,7 @@ public class OccurrenceDaoHibernateImpl
     private <T extends SpecimenOrObservationBase, R extends Object> Query<R> createSpecimenQuery(
             String select, Class<T> clazz, Taxon associatedTaxon,
             boolean includeUnpublished,
-            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start,
             List<OrderHint> orderHints, Class<R> returnClass){
 
@@ -735,13 +735,13 @@ public class OccurrenceDaoHibernateImpl
         //Note: we don't pass limits and order to individual results query as the data is merged with other results
 
         //add determinations
-        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelType.Determination)) {
+        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.Determination)) {
             List<Integer> detResults = addAssociatedDeterminations(clazz, associatedTaxon);
             setOfAllIds.addAll(detResults);
         }
 
         //add specimen associated via IndividualsAssociation
-        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelType.IndividualsAssociation)) {
+        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.IndividualsAssociation)) {
             List<Integer> iaResults = descriptionDao.getIndividualAssociationSpecimenIDs(
                     associatedTaxon.getUuid(), null, includeUnpublished, null, null, null);
             //NOTE: iaResults are not yet filtered by clazz
@@ -750,7 +750,7 @@ public class OccurrenceDaoHibernateImpl
         }
 
         // add specimen associated via type designation
-        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelType.TypeDesignation)) {
+        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.TypeDesignation)) {
             //... of accepted taxon name
             List<Integer> accTdResults = taxonNameDao.getTypeSpecimenIdsForTaxonName(
                     associatedTaxon.getName(), null, null, null);
