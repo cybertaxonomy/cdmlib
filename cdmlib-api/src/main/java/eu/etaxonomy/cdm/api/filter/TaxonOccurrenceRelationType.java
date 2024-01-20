@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.api.filter;
 import java.util.EnumSet;
 
 /**
+ * Enumeration to define a filter for taxon-occurrence associations.
+ *
  * @author muellera
  * @since 20.01.2024
  */
@@ -19,6 +21,11 @@ public enum TaxonOccurrenceRelationType {
     IndividualsAssociation,
     Determination,
     TypeDesignation;
+
+    //TODO more fine grained rel types could be:
+//    TypeDesignationAcceptedOnly
+    //TypeDesignationsNoNamesMissingInSynonymy //currently all names in a homotypical group are taken, even the names do not appear in the synonymy, however in most projects this is not of relevance
+    //DeterminationAcceptedOnly
 
     public static EnumSet<TaxonOccurrenceRelationType> All(){
         return EnumSet.allOf(TaxonOccurrenceRelationType.class);
