@@ -1405,12 +1405,10 @@ public class OccurrenceServiceImpl
     @Override
     public long countByTitle(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
 
-        //FIXME if still used adapt
-        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
-
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             Taxon taxon = null;
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = ((FindOccurrencesConfigurator) config).getTaxonOccurrenceRelTypes();
             if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
                 TaxonBase<?> taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
                 if(taxonBase != null && taxonBase.isInstanceOf(Taxon.class)){
@@ -1629,7 +1627,7 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public long countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+    public long countOccurrences(FindOccurrencesConfigurator config){
         return countByTitle(config);
     }
 

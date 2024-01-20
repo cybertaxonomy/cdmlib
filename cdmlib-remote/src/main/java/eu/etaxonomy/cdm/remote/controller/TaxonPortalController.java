@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -339,6 +340,8 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "doMedia", required = false) boolean doMedia,
             @RequestParam(value = "doTaxonNodes", required = false) boolean doTaxonNodes,
             @RequestParam(value = "doTaxonRelations", required = false) boolean doTaxonRelations,
+            @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
+
             //TODO annotation type filter
 
             //distributionInfoConfig
@@ -360,6 +363,7 @@ public class TaxonPortalController extends TaxonController{
             HttpServletResponse response) throws IOException {
 
         boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
         if(request != null){
             logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
         }
@@ -371,7 +375,6 @@ public class TaxonPortalController extends TaxonController{
         if (defaultAlternativeRootAreaMarkerType != null) {
             alternativeRootAreaMarkerTypeList.add(defaultAlternativeRootAreaMarkerType);
         }
-
 
         //TODO is this current state of art?
 //        ModelAndView mv = new ModelAndView();
@@ -403,7 +406,10 @@ public class TaxonPortalController extends TaxonController{
         config.setWithSynonyms(doSynonyms);
         config.setWithTaxonNodes(doTaxonNodes);
         config.setWithTaxonRelationships(doTaxonRelations);
+
+        //filter
         config.setIncludeUnpublished(includeUnpublished);
+        config.setSpecimenAssociationFilter(taxonOccurrenceRelTypes);
 
         Set<MarkerType> fallbackAreaMarkerTypes = new HashSet<>();
         if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
@@ -760,6 +766,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
             @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
             @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+            @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             @RequestParam(value = "includeOriginals", required = false) Boolean  includeOriginals,
             @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
             @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
@@ -769,10 +776,13 @@ public class TaxonPortalController extends TaxonController{
 
         logger.info("doGetMedia() " + requestPathAndQuery(request));
 
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
+
         List<String> initStrategy = null;
 
         EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
-            relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+            relationshipInversUuids, includeTaxonDescriptions, includeOccurrences,
+            taxonOccurrenceRelTypes, includeOriginals, includeTaxonNameDescriptions,
             response, initStrategy, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
 
         List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(
@@ -781,34 +791,26 @@ public class TaxonPortalController extends TaxonController{
         return mediafilteredForPreferredRepresentations;
     }
 
-    /**
-     * @Deprecated To be replaced by other loadMediaForTaxonAndRelated method
-     */
-    @Deprecated
-    public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID uuid,
-            UuidList relationshipUuids, UuidList relationshipInversUuids,
-            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
-            HttpServletResponse response,
-            List<String> taxonInitStrategy) throws IOException {
-        return loadMediaForTaxonAndRelated(uuid, relationshipUuids, relationshipInversUuids,
-                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, response, taxonInitStrategy, null);
-    }
-
     public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID taxonUuid,
             UuidList relationshipUuids, UuidList relationshipInversUuids,
-            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Boolean includeTaxonNameDescriptions,
             HttpServletResponse response,
             List<String> taxonInitStrategy, List<String> mediaInitStrategy) throws IOException {
 
         return loadMediaForTaxonAndRelated(taxonUuid,
                 relationshipUuids, relationshipInversUuids,
-                includeTaxonDescriptions, includeOccurrences, false, includeTaxonNameDescriptions,
+                includeTaxonDescriptions, includeOccurrences, taxonOccurrenceRelTypes,
+                false, includeTaxonNameDescriptions,
                 response, taxonInitStrategy, mediaInitStrategy);
     }
 
     public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID taxonUuid,
             UuidList relationshipUuids, UuidList relationshipInversUuids,
-            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginals, Boolean includeTaxonNameDescriptions,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Boolean includeOriginals, Boolean includeTaxonNameDescriptions,
             HttpServletResponse response,
             List<String> taxonInitStrategy, List<String> mediaInitStrategy) throws IOException {
 

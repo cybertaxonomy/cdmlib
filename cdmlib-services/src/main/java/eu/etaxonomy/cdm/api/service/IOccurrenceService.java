@@ -554,7 +554,7 @@ public interface IOccurrenceService
      *            authorTeam.persistentTitleCache
      * @return the number of found specimens
      */
-    public long countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
+    public long countOccurrences(FindOccurrencesConfigurator config);
 
     /**
      * Return the all {@link SpecimenOrObservationBase}s of the complete

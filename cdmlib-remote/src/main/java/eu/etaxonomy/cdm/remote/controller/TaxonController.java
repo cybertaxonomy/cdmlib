@@ -23,6 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +132,20 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
         binder.registerCustomEditor(MarkerType.class, new TermBasePropertyEditor<>(termService));
+    }
+
+    public static EnumSet<TaxonOccurrenceRelationType> bindAssociationFilter(String taxOccRelFilter) {
+        //TODO implement as binder
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+        if (!StringUtils.isEmpty(taxOccRelFilter) && !"ALL".equalsIgnoreCase(taxOccRelFilter)) {
+            for (String split: taxOccRelFilter.split(",")){
+                TaxonOccurrenceRelationType relType = TaxonOccurrenceRelationType.of(split);
+                if(relType != null) {
+                    taxonOccurrenceRelTypes.add(relType);
+                }
+            }
+        }
+        return taxonOccurrenceRelTypes;
     }
 
     protected List<String> getTaxonDescriptionInitStrategy() {
@@ -303,26 +318,30 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     @RequestMapping(value = "specimensOrObservationsCount", method = RequestMethod.GET)
     public StringResultDTO doCountSpecimensOrObservations(
             @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             HttpServletRequest request,
             HttpServletResponse response) {
 
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
         boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
 
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
         config.setIncludeUnpublished(includeUnpublished);
         config.setAssociatedTaxonUuid(uuid);
+        config.setTaxonOccurrenceRelTypes(taxonOccurrenceRelTypes);
         long countSpecimen = occurrenceService.countOccurrences(config);
         return new StringResultDTO(String.valueOf(countSpecimen));
     }
 
     @RequestMapping(value = "rootUnitDTOs", method = RequestMethod.GET)
     public List<SpecimenOrObservationBaseDTO> doListRooUnitDTOs(
-
             @PathVariable("uuid") UUID uuid,
-
+            //TODO or should it be required
+            @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             HttpServletRequest request,
             HttpServletResponse response) {
 
@@ -330,7 +349,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         logger.info("rootUnitDTOs() - " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
-        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
 
         List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(
                 uuid, null, includeUnpublished,

@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
+import eu.etaxonomy.cdm.remote.controller.TaxonController;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
@@ -127,10 +128,11 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      */
     @RequestMapping(value = { "taxonOccurrencesFor/{uuid}" }, method = RequestMethod.GET)
     public OccurrenceServiceRequestParameterDto doGetOccurrenceMapUriParams(
-            @PathVariable("uuid") UUID uuid,
+            @PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
             @RequestParam(value = "maxDepth", required = false) Integer maxDepth,
+            @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
@@ -138,11 +140,11 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
 
         boolean includeUnpublished = NO_UNPUBLISHED;
-        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonController.bindAssociationFilter(taxOccRelFilter);
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
-        List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(uuid, relationshipUuids,
+        List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(taxonUuid, relationshipUuids,
 				relationshipInversUuids, includeUnpublished,
 				taxonOccurrenceRelTypes,
 				maxDepth, response);
@@ -187,7 +189,9 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      * @return URI parameter Strings for the EDIT Map Service
      * @throws IOException TODO write controller method documentation
      */
-    @RequestMapping(value = { "taxonOccurrencesForX" }, method = RequestMethod.GET)
+    //TODO needed? Seems to be not used currently. Difference to
+	//     doGetOccurrenceMapUriParams() seems to be that there is taxon relation here
+	@RequestMapping(value = { "taxonOccurrencesForX" }, method = RequestMethod.GET)
     public ModelAndView doGetOccurrenceXMapUriParams(
             @RequestParam(value = "fieldUnitUuidList", required = false) UuidList fieldUnitUuids,
             HttpServletRequest request,

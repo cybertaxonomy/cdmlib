@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
@@ -246,6 +248,12 @@ public class PortalDtoLoader {
 
     private void loadSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
         //TODO load specimen from multiple places
+
+        //TODO use filter
+        EnumSet<TaxonOccurrenceRelationType> specimenFilter = config.getSpecimenAssociationFilter();
+
+        //TODO maybe use OccurrenceService.listRootUnitDTOsByAssociatedTaxon
+        //     or OccurrenceService.listRootUnitsByAssociatedTaxon()
 
         try {
             ContainerDto<SpecimenDTO> container = new ContainerDto<>();

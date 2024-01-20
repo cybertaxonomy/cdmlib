@@ -18,14 +18,20 @@ import java.util.EnumSet;
  */
 public enum TaxonOccurrenceRelationType {
 
-    IndividualsAssociation,
-    Determination,
-    TypeDesignation;
+    IndividualsAssociation("IA"),
+    Determination("DET"),
+    TypeDesignation("TD");
+
+    private String key;
 
     //TODO more fine grained rel types could be:
-//    TypeDesignationAcceptedOnly
-    //TypeDesignationsNoNamesMissingInSynonymy //currently all names in a homotypical group are taken, even the names do not appear in the synonymy, however in most projects this is not of relevance
-    //DeterminationAcceptedOnly
+//  TypeDesignationAcceptedOnly
+  //TypeDesignationsNoNamesMissingInSynonymy //currently all names in a homotypical group are taken, even the names do not appear in the synonymy, however in most projects this is not of relevance
+  //DeterminationAcceptedOnly
+
+    TaxonOccurrenceRelationType(String key) {
+        this.key = key;
+    }
 
     public static EnumSet<TaxonOccurrenceRelationType> All(){
         return EnumSet.allOf(TaxonOccurrenceRelationType.class);
@@ -42,5 +48,16 @@ public enum TaxonOccurrenceRelationType {
     public static EnumSet<TaxonOccurrenceRelationType> TypeDesignations(){
         return EnumSet.of(TypeDesignation);
     }
+
+    public static TaxonOccurrenceRelationType of(String key) {
+        for (TaxonOccurrenceRelationType t : values()) {
+            if (t.key.equalsIgnoreCase(key)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+
 
 }
