@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -63,6 +64,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -828,7 +830,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
     @Override
     protected void doInvoke(SpecimenSynthesysExcelImportState state) {
+
         boolean success = true;
+        //TODO adapt if needed
+        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+
         if (state.getConfig().doAskForDate()) {
             keepAtomisedDate = askQuestion("Gathering dates can be stored in either atomised fieds (day month year) or in a concatenated field."+
                     "\nWhich value do you want to store?\nPress 1 for the atomised, press 2 for the concatenated field, and then press enter.");
@@ -881,7 +887,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 Taxon taxon = (Taxon)getTaxonService().find(uuid);
                 boolean includeUnpublished = true; //for import we always include
                 specimenOrObs = getOccurrenceService().listByAssociatedTaxon(null, null,
-                        taxon, includeUnpublished, null, null, null, null, null);
+                        taxon, includeUnpublished, taxonOccurrenceRelTypes,
+                        null, null, null, null, null);
             }
             Map<String,String> unit=null;
             MyHashMap<String,String> myunit;

@@ -8,6 +8,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -99,7 +101,9 @@ public class OccurrenceListController extends AbstractIdentifiableListController
                 HttpServletResponse response) throws IOException {
 
         logger.info("doListByAssociatedTaxon()" + requestPathAndQuery(request));
+
         boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
@@ -110,20 +114,25 @@ public class OccurrenceListController extends AbstractIdentifiableListController
         List<OrderHint> orderHints = null;
 
         return service.pageByAssociatedTaxon(null, includeRelationships, associatedTaxon,
-                includeUnpublished, maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                includeUnpublished, taxonOccurrenceRelTypes,
+                maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 orderHints, getInitializationStrategy());
     }
 
+    //FIXME this method seems to be a duplicate for TaxonController.doListRooUnitDTOs
     @RequestMapping(value = "rootUnitDTOsByAssociatedTaxon", method = RequestMethod.GET)
     public List<SpecimenOrObservationBaseDTO> doListlistRootUnitDTOsByAssociatedTaxon(
             @RequestParam(value = "uuid", required = true) UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) {
         logger.info("doListlistRootUnitDTOByAssociatedTaxon() - " + requestPathAndQuery(request));
 
         boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+
         List<SpecimenOrObservationBaseDTO> sobDTOs = service.listRootUnitDTOsByAssociatedTaxon(
-                null, uuid, includeUnpublished, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+                uuid, null, includeUnpublished, taxonOccurrenceRelTypes,
+                OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
         return sobDTOs;
     }
 

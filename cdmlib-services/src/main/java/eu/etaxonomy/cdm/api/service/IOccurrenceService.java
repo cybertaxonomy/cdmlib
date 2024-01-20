@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,6 +58,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -255,7 +257,8 @@ public interface IOccurrenceService
      * @return
      */
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * The method will search for specimen associated with the taxon nodes.<br>
@@ -292,7 +295,8 @@ public interface IOccurrenceService
      * @return a Pager
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber,
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -645,13 +649,13 @@ public interface IOccurrenceService
      * <li>... also sollen beim DerivateTree eigentlich auch nur die Derivate
      * angezeigt werden, die über Taxon Association oder Determination an einem
      * Taxon oder Namen hängen und ihre direkten Eltern und Kinder (+
-     * KindesKinder…).
+     * KindesKinder…).</li>
      * <li>Also im Endeffekt muss man die Derivate raus suchen, die eine
      * Assoziation zu dem Taxon haben und dann die direkten Vorgänger und die
      * Nachfolger finden. Andere Derivate, die von Origin Derivaten abstammen
      * würden erstmal nicht dazugehören, außer sie sind ebenfalls mit dem Taxon
      * assoziiert....</li>
-     * <ul>
+     * </ol>
      *
      * Related tickets:
      *
@@ -660,17 +664,24 @@ public interface IOccurrenceService
      * <li>https://dev.e-taxonomy.eu/redmine/issues/9216</li>
      * </ul>
      *
+     * @param associatedTaxonUuid the associated taxon uuid
+     *      The uuid of the taxon for which associated derivatives are to be found.
      * @param includedRelationships
-     *  TODO
-     * @param associatedTaxonUuid
-     *  The uuid of the taxon for which associated derivatives are to be found.
+     *      if also specimen of related taxa are to be loaded the taxon relationships
+     *      can be defined here<BR>
+     *      TODO needed? it currently does not seem to be in use
+     * @param includeUnpublished
+     *      if <code>false</code> units marked as publish=false are not added
+     *      TODO maybe not yet fully implemented
      * @param propertyPaths
-     *  The bean initialization strategy
+     *      The bean initialization strategy
      * @return
-     *  The list of root units with fully or partially assembled derivation graph.
+     *      The list of root units with fully or partially assembled derivation graph.
      */
-    public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid, boolean includeUnpublished, List<String> propertyPaths);
+    public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(
+            UUID associatedTaxonUuid, Set<TaxonRelationshipEdge> includedRelationships,
+            boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            List<String> propertyPaths);
 
     /**
      * Lists all root units which are
@@ -707,13 +718,16 @@ public interface IOccurrenceService
      * @return
      */
     public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(
-            Class<T> type, Taxon associatedTaxon, boolean includeUnpublished, List<OrderHint> orderHints, List<String> propertyPaths);
+            Class<T> type, Taxon associatedTaxon, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * See {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, boolean includeUnpublished, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 

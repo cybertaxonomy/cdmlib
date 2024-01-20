@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
@@ -134,12 +136,16 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             throws IOException {
 
         logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
+
         boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(uuid, relationshipUuids,
-				relationshipInversUuids, includeUnpublished, maxDepth, response);
+				relationshipInversUuids, includeUnpublished,
+				taxonOccurrenceRelTypes,
+				maxDepth, response);
 
         OccurrenceServiceRequestParameterDto dto = geoService.getOccurrenceServiceRequestParameters(specimensOrObersvations,
                 specimenOrObservationTypeColors );
@@ -148,7 +154,9 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
     }
 
 	private List<SpecimenOrObservationBase> occurencesForTaxon(UUID taxonUuid, UuidList relationshipUuids,
-			UuidList relationshipInversUuids, boolean includeUnpublished, Integer maxDepth,
+			UuidList relationshipInversUuids, boolean includeUnpublished,
+			EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+			Integer maxDepth,
 			HttpServletResponse response) throws IOException {
 
 	    Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
@@ -160,7 +168,9 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
-                null, includeRelationships, taxon, includeUnpublished, maxDepth, null, null, orderHints, null);
+                null, includeRelationships, taxon, includeUnpublished,
+                taxonOccurrenceRelTypes,
+                maxDepth, null, null, orderHints, null);
 		return specimensOrObersvations;
 	}
 

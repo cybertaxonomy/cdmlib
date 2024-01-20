@@ -358,15 +358,11 @@ public class TaxonNameDaoHibernateImpl
     }
 
     @Override
-    public List<TypeDesignationBase> getTypeDesignations(TaxonName name, TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths){
-        return getTypeDesignations(name, null, status, pageSize, pageNumber, propertyPaths);
-    }
-
-    @Override
     public List<Integer> getTypeSpecimenIdsForTaxonName(TaxonName name,
-            TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber){
-        Query<Integer> query = getTypeDesignationQuery("designation.typeSpecimen.id", name, SpecimenTypeDesignation.class, status);
+            TypeDesignationStatusBase<?> status, Integer pageSize, Integer pageNumber){
 
+        Query<Integer> query = getTypeDesignationQuery("designation.typeSpecimen.id",
+                name, SpecimenTypeDesignation.class, status, Integer.class);
         addPageSizeAndNumber(query, pageSize, pageNumber);
         List<Integer> result = query.list();
         return result;
@@ -375,21 +371,21 @@ public class TaxonNameDaoHibernateImpl
     @Override
     public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonName name,
                 Class<T> type,
-                TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
+                TypeDesignationStatusBase<?> status, Integer pageSize, Integer pageNumber,
                 List<String> propertyPaths){
-        checkNotInPriorView("getTypeDesignations(TaxonName name,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
 
-        Query<T> query = getTypeDesignationQuery("designation", name, type, status);
+        checkNotInPriorView("getTypeDesignations(TaxonName name,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
+        Query<T> query = getTypeDesignationQuery("designation", name, type, status, type);
 
         addPageSizeAndNumber(query, pageSize, pageNumber);
         List<T> result = defaultBeanInitializer.initializeAll(query.list(), propertyPaths);
         return result;
     }
 
-    private <T extends TypeDesignationBase> Query getTypeDesignationQuery(String select, TaxonName name,
-            Class<T> type, TypeDesignationStatusBase status){
+    private <T extends TypeDesignationBase, R extends Object> Query<R> getTypeDesignationQuery(String select, TaxonName name,
+            Class<T> type, TypeDesignationStatusBase<?> status, Class<R> returnType){
 
-        Query<?> query = null;
+        Query<R> query = null;
         String queryString = "select "+select+" from TypeDesignationBase designation join designation.typifiedNames name where name = :name";
 
         if(status != null) {
@@ -399,7 +395,7 @@ public class TaxonNameDaoHibernateImpl
             queryString +=  " and designation.class = :type";
         }
 
-        query = getSession().createQuery(queryString);
+        query = getSession().createQuery(queryString, returnType);
 
         if(status != null) {
             query.setParameter("status", status);
@@ -413,6 +409,7 @@ public class TaxonNameDaoHibernateImpl
     }
 
     public List<TaxonName> searchNames(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
+
         checkNotInPriorView("TaxonNameDaoHibernateImpl.searchNames(String queryString, Integer pageSize, Integer pageNumber)");
         Criteria criteria = getSession().createCriteria(TaxonName.class);
 

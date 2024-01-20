@@ -7,6 +7,7 @@
 package eu.etaxonomy.cdm.persistence.dao.occurrence;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -129,6 +130,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
             Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -151,6 +153,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
             Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints);
 
     /**
@@ -187,6 +190,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
             Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -288,14 +292,15 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * </ul>
 	 */
 	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
-	        boolean includeUnpublished, Integer limit, Integer start,
-	        List<OrderHint> orderHints, List<String> propertyPaths);
+	        boolean includeUnpublished, EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * @see IOccurrenceDao#listByAssociatedTaxon(Class, Taxon, Integer, Integer, List, List)
 	 */
 	public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(
 	        Class<T> type, Taxon associatedTaxon, boolean includeUnpublished,
+	        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes,
 	        Integer limit, Integer start, List<OrderHint> orderHints);
 
     /**

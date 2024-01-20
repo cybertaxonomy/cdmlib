@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -209,6 +211,8 @@ public class OccurrenceCatalogueController
         ModelAndView mv = new ModelAndView();
 
         boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+
         Integer pS = null;
         Integer pN = null;
 
@@ -269,6 +273,7 @@ public class OccurrenceCatalogueController
                     null,
                     taxon,
                     includeUnpublished,
+                    taxonOccurrenceRelTypes,
                     null,
                     pagerParams.getPageSize(),
                     pagerParams.getPageIndex(),

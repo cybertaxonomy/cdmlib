@@ -127,6 +127,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -959,6 +960,9 @@ public class TaxonServiceImpl
             Boolean includeOriginalOccurences, Boolean includeTaxonNameDescriptions,
             boolean includeUnpublished, List<String> propertyPath) {
 
+        //FIXME add to parameters
+        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+
 //      LogUtils.setLevel(logger, Level.TRACE);
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
@@ -1013,7 +1017,9 @@ public class TaxonServiceImpl
             // --- Specimens
             for (Taxon t : taxa) {
                 specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(
-                        null, t, includeUnpublished, null, null, null, null));
+                        null, t, includeUnpublished,
+                        taxonOccurrenceRelTypes,
+                        null, null, null, null));
             }
             for (SpecimenOrObservationBase<?> occurrence : specimensOrObservations) {
 

@@ -1,6 +1,6 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
@@ -18,11 +18,11 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  * @since 24.09.2008
  */
 public interface IHomotypicalGroupDao extends ICdmEntityDao<HomotypicalGroup> {
-	
+
 	/**
 	 * Return a List of types related to the given HomotypicalGroup
 	 * , optionally filtered by type designation status
-	 * 
+	 *
 	 * @param homotypicalGroup
 	 *            the homotypicalGroup
 	 * @param type
@@ -38,9 +38,9 @@ public interface IHomotypicalGroupDao extends ICdmEntityDao<HomotypicalGroup> {
 	 * @param propertyPaths
 	 * @return a List of TypeDesignationBase instances
 	 */
-	public <T extends TypeDesignationBase> List<T> getTypeDesignations(HomotypicalGroup homotypicalGroup, 
+	public <T extends TypeDesignationBase> List<T> getTypeDesignations(HomotypicalGroup homotypicalGroup,
 			Class<T> type,
-			TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
+			TypeDesignationStatusBase<?> status, Integer pageSize, Integer pageNumber,
 			List<String> propertyPaths);
 
 }

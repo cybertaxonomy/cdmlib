@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -65,6 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.TaxonOccurrenceRelType;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -898,9 +900,14 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertEquals(1, associatedTaxa.size());
         assertEquals(taxon, associatedTaxa.iterator().next());
 
+        //FIXME adapt if needed
+        EnumSet<TaxonOccurrenceRelType> taxonOccurrenceRelTypes = TaxonOccurrenceRelType.All();
+
         //check association (IndividualsAssociations + TypeDesignations) taxon (name) -> specimen
         List<DerivedUnit> byAssociatedTaxon = occurrenceService.listByAssociatedTaxon(
-                DerivedUnit.class, null, taxon, includeUnpublished, null, null, null, null, null);
+                DerivedUnit.class, null, taxon, includeUnpublished,
+                taxonOccurrenceRelTypes,
+                null, null, null, null, null);
         assertNotNull(byAssociatedTaxon);
         assertEquals(2, byAssociatedTaxon.size());
         assertTrue(byAssociatedTaxon.contains(associatedSpecimen));

@@ -35,11 +35,15 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 	@Override
 	public <T extends TypeDesignationBase> List<T> getTypeDesignations(
 			HomotypicalGroup homotypicalGroup, Class<T> type,
-			TypeDesignationStatusBase status, Integer pageSize,
+			TypeDesignationStatusBase<?> status, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
 
 		// checkNotInPriorView("getTypeDesignations(HomotypicalGroup homotypicalGroup,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
-		String queryString = "select designation from TypeDesignationBase designation join designation.typifiedNames name join name.homotypicalGroup homotypicalGroup where homotypicalGroup = :homotypicalGroup";
+		String queryString = "SELECT designation "
+		        + " FROM TypeDesignationBase designation "
+		        + "   JOIN designation.typifiedNames name "
+		        + "   JOIN name.homotypicalGroup homotypicalGroup "
+		        + " WHERE homotypicalGroup = :homotypicalGroup";
 
 		if(status != null) {
 			queryString +=  " and designation.typeStatus = :status";

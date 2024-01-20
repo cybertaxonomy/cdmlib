@@ -123,11 +123,8 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 
         Collection<SpecimenOrObservationBaseDTO> fieldUnitDtos = service.findRootUnitDTOs(uuid);
-
-
         return fieldUnitDtos;
     }
-
 
     @RequestMapping(value = { "extensions" }, method = RequestMethod.GET)
     public Object doGetExtensions(
