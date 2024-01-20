@@ -480,7 +480,8 @@ public class DescriptionDaoImpl
             Integer pageSize, Integer pageNumber, List<String> propertyPaths){
 
         Query<Integer> query = prepareGetDescriptionElementForTaxon(taxonUuid, features,
-                IndividualsAssociation.class, includeUnpublished, pageSize, pageNumber, "de.associatedSpecimenOrObservation.id");
+                IndividualsAssociation.class, includeUnpublished, pageSize, pageNumber,
+                "de.associatedSpecimenOrObservation.id");
         List<Integer> results = query.list();
         return results;
     }

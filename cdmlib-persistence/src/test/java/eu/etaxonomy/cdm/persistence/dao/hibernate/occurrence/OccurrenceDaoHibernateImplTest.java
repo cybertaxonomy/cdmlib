@@ -9,8 +9,10 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -170,13 +172,14 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
 	    //define defaults
         @SuppressWarnings("rawtypes")
-        Class<SpecimenOrObservationBase> type = SpecimenOrObservationBase.class;
-        boolean no_unpublished = false;
-        Integer limit = null;
-        Integer start = null;
-        List<OrderHint> orderHints = null;
-        List<String> propertyPaths = null;
-        EnumSet<TaxonOccurrenceRelType> taxonOccRelType = TaxonOccurrenceRelType.All();
+        final Class<SpecimenOrObservationBase> type = SpecimenOrObservationBase.class;
+        final boolean included_unpublished = true;
+        final boolean no_unpublished = false;
+        final Integer limit = null;
+        final Integer start = null;
+        final List<OrderHint> orderHints = null;
+        final List<String> propertyPaths = null;
+        final EnumSet<TaxonOccurrenceRelType> taxonOccRelType = TaxonOccurrenceRelType.All();
 
         //load data
 	    //TODO empty
@@ -186,11 +189,100 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         //test
         @SuppressWarnings("rawtypes")
         List<SpecimenOrObservationBase> associatedUnits = dao.listByAssociatedTaxon(
-                type, taxon, no_unpublished,
-                taxonOccRelType,
+                type, taxon, included_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals(6, associatedUnits.size());
+        Assert.assertEquals("All directly associated specimen should be attached", 6, associatedUnits.size());
+
+        //test published only
+        associatedUnits = dao.listByAssociatedTaxon(
+                type, taxon, no_unpublished, taxonOccRelType,
+                limit, start, orderHints, propertyPaths);
+        Assert.assertEquals("All published directly associated specimen should be attached", 5, associatedUnits.size());
+
+        //test include individual associations
+        associatedUnits = dao.listByAssociatedTaxon(
+                type, taxon, included_unpublished, TaxonOccurrenceRelType.IndividualsAssociations(),
+                limit, start, orderHints, propertyPaths);
+        Assert.assertEquals("Only specimen associated via individuals association should be attached", 1, associatedUnits.size());
+
+        //test include determinations
+        associatedUnits = dao.listByAssociatedTaxon(
+                type, taxon, included_unpublished, TaxonOccurrenceRelType.Determinations(),
+                limit, start, orderHints, propertyPaths);
+        Assert.assertEquals("Only specimen associated via determination should be attached", 1, associatedUnits.size());
+
+        //test include type specimens
+        associatedUnits = dao.listByAssociatedTaxon(
+                type, taxon, included_unpublished, TaxonOccurrenceRelType.TypeDesignations(),
+                limit, start, orderHints, propertyPaths);
+        Assert.assertEquals("Only specimen associated via type designation should be attached", 4, associatedUnits.size());
+
+        //test orderHints
+        List<OrderHint> titleCacheOrder = new ArrayList<>();
+        titleCacheOrder.add(OrderHint.ORDER_BY_TITLE_CACHE);
+        associatedUnits = dao.listByAssociatedTaxon(
+                type, taxon, included_unpublished, taxonOccRelType,
+                limit, start, titleCacheOrder, propertyPaths);
+        @SuppressWarnings("rawtypes")
+        Iterator<SpecimenOrObservationBase> iterator = associatedUnits.iterator();
+        Assert.assertEquals("Specimen Accepted Name Type", iterator.next().getTitleCache());
+        Assert.assertEquals("Specimen Determination", iterator.next().getTitleCache());
+        Assert.assertEquals("Specimen Heterotypic Name Type 1", iterator.next().getTitleCache());
+        Assert.assertEquals("Specimen Heterotypic Name Type 2", iterator.next().getTitleCache());
+        Assert.assertEquals("Specimen Homotypic Name Type", iterator.next().getTitleCache());
+        Assert.assertEquals("Specimen Individual Association", iterator.next().getTitleCache());
+
+        //test limit + start
+        int myLimit = 3;
+        int myStart = 1;
+        associatedUnits = dao.listByAssociatedTaxon(
+                type, taxon, included_unpublished, taxonOccRelType,
+                myLimit, myStart, titleCacheOrder, propertyPaths);
+        Assert.assertEquals(myLimit, associatedUnits.size());
+        iterator = associatedUnits.iterator();
+//        Assert.assertEquals("Specimen Accepted Name Type", iterator.next().getTitleCache());
+        Assert.assertEquals("Specimen Determination", iterator.next().getTitleCache());
+        Assert.assertEquals("Specimen Heterotypic Name Type 1", iterator.next().getTitleCache());
+        Assert.assertEquals("Specimen Heterotypic Name Type 2", iterator.next().getTitleCache());
+//        Assert.assertEquals("Specimen Homotypic Name Type", iterator.next().getTitleCache());
+//        Assert.assertEquals("Specimen Individual Association", iterator.next().getTitleCache());
+
+        //test type
+        Taxon fieldUnitTaxon = (Taxon)taxonDao.load(uuid_fieldUnitTaxon);
+        associatedUnits = dao.listByAssociatedTaxon(
+                type, fieldUnitTaxon, included_unpublished, taxonOccRelType,
+                limit, start, orderHints, propertyPaths);
+        //TODO do we really want to have the type of the homotypic synonym here
+        //     though it is not explicitly mentioned in the synonymy of field unit taxon?
+        Assert.assertEquals("Only field unit and the 2 derived units associated to the name "
+                + " and its homotypic group via type designation should be returned for field unit taxon",
+                3, associatedUnits.size());
+
+        List<FieldUnit> fieldUnits = dao.listByAssociatedTaxon(
+                FieldUnit.class, fieldUnitTaxon, included_unpublished, taxonOccRelType,
+                limit, start, orderHints, propertyPaths);
+        Assert.assertEquals("Only the field unit 1 should be attached to field unit taxon", 1, fieldUnits.size());
+
+        List<DerivedUnit> derivedUnits = dao.listByAssociatedTaxon(
+                DerivedUnit.class, fieldUnitTaxon, included_unpublished, taxonOccRelType,
+                limit, start, orderHints, propertyPaths);
+        Assert.assertEquals("Only the 2 derived unit associated via type designation should "
+                + " be attached to field unit taxon", 2, derivedUnits.size());
+
+        //test synonyms
+        //TODO
+//        Synonym heteroSyn_1 = (Synonym)taxonDao.load(uuid_hetero_syn_1);
+//        associatedUnits = dao.listByAssociatedTaxon(
+//                type, heteroSyn_1, included_unpublished, taxonOccRelType,
+//                limit, start, orderHints, propertyPaths);
+
 	}
+
+	private UUID uuid_du_indAss = UUID.randomUUID();
+	private UUID uuid_du_determination = UUID.randomUUID();
+	private UUID uuid_du_accType = UUID.randomUUID();
+	private UUID uuid_fieldUnitTaxon = UUID.randomUUID();
+	private UUID uuid_hetero_syn_1 = UUID.randomUUID();
 
 	private Taxon createListByAssociationTestData(){
 
@@ -201,48 +293,63 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             sec.setTitleCache("Taxon sec reference", true);
 
             //accepted taxon
-            TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", "alba", null, null, null, null, null, null);
+            TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);
             Taxon taxon = Taxon.NewInstance(name1, sec);
+            Taxon fieldUnitTaxon = Taxon.NewInstance(name1, sec);
+            fieldUnitTaxon.setUuid(uuid_fieldUnitTaxon);
 
             //homotypic synonym
-            TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", "alba", null, null, null, null, null, null);
+            TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", null, "alba", null, null, null, null, null);
             Synonym homoSyn = taxon.addHomotypicSynonymName(name2);
 
             //heterotypic group
-            TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", "pinus", null, null, null, null, null, null);
-            Synonym heteroSyn = taxon.addHeterotypicSynonymName(name2, sec, null, null);
+            TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "pinus", null, null, null, null, null);
+            Synonym heteroSyn1 = taxon.addHeterotypicSynonymName(name2, sec, null, null);
+            heteroSyn1.setUuid(uuid_hetero_syn_1);
 
-            TaxonName name4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", "pinus",
-                    null, null, null, null, null, null);
-            Synonym heteroSynBasio = taxon.addHeterotypicSynonymName(name4, sec, null, name3.getHomotypicalGroup());
+            TaxonName name4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", null, "pinus", null, null, null, null, null);
+            taxon.addHeterotypicSynonymName(name4, sec, null, name3.getHomotypicalGroup());
 
             taxonDao.save(taxon);
+            taxonDao.save(fieldUnitTaxon);
 
-            DerivedUnit du1 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-            du1.setTitleCache("Specimen1", true);
-            DerivedUnit du2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-            du2.setTitleCache("Specimen2", true);
-            DerivedUnit du3 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-            du3.setTitleCache("Specimen3", true);
-            DerivedUnit du4 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-            du4.setTitleCache("Specimen4", true);
-            DerivedUnit du5 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-            du5.setTitleCache("Specimen5", true);
-            DerivedUnit du6 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-            du6.setTitleCache("Specimen6", true);
+            //create associated derived units
+            DerivedUnit du_indAss = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+            du_indAss.setTitleCache("Specimen Individual Association", true);
+            du_indAss.setUuid(uuid_du_indAss);
 
-            dao.save(du1);
-            dao.save(du2);
-            dao.save(du3);
-            dao.save(du4);
-            dao.save(du5);
-            dao.save(du6);
+            DerivedUnit du_determination = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+            du_determination.setTitleCache("Specimen Determination", true);
+            du_determination.setUuid(uuid_du_determination);
+
+            DerivedUnit du_accType = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+            du_accType.setTitleCache("Specimen Accepted Name Type", true);
+            du_accType.setUuid(uuid_du_accType);
+
+            DerivedUnit du_homonymType = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+            du_homonymType.setTitleCache("Specimen Homotypic Name Type", true);
+            DerivedUnit du_heteroType1 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+            du_heteroType1.setTitleCache("Specimen Heterotypic Name Type 1", true);
+            DerivedUnit du_heteroType2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+            du_heteroType2.setTitleCache("Specimen Heterotypic Name Type 2", true);
+            du_heteroType2.setPublish(false);
+            //not associated derived unit
+            DerivedUnit du_notAssociated = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+            du_notAssociated.setTitleCache("Specimen Not Associated", true);
+
+            dao.save(du_indAss);
+            dao.save(du_determination);
+            dao.save(du_accType);
+            dao.save(du_homonymType);
+            dao.save(du_heteroType1);
+            dao.save(du_heteroType2);
 
             //TODO unused
-            FieldUnit fu1 = DerivedUnitFacade.NewInstance(du1).getFieldUnit(true);
-            FieldUnit fu2 = DerivedUnitFacade.NewInstance(du1).getFieldUnit(true);
-            FieldUnit fu3 = DerivedUnitFacade.NewInstance(du1).getFieldUnit(true);
-            FieldUnit fu4 = DerivedUnitFacade.NewInstance(du1).getFieldUnit(true);
+            FieldUnit fu1 = DerivedUnitFacade.NewInstance(du_indAss).getFieldUnit(true);
+            fu1.setTitleCache("FieldUnit 1", true);
+            FieldUnit fu2 = DerivedUnitFacade.NewInstance(du_determination).getFieldUnit(true);
+            FieldUnit fu3 = DerivedUnitFacade.NewInstance(du_accType).getFieldUnit(true);
+            FieldUnit fu4 = DerivedUnitFacade.NewInstance(du_homonymType).getFieldUnit(true);
             dao.save(fu1);
             dao.save(fu2);
             dao.save(fu3);
@@ -250,23 +357,28 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
             //du1 is added as indiv. association
             TaxonDescription td = TaxonDescription.NewInstance(taxon);
-            IndividualsAssociation ia = IndividualsAssociation.NewInstance(du1);
+            IndividualsAssociation ia = IndividualsAssociation.NewInstance(du_indAss);
             td.addElement(ia);
 
             //du2 is added as determination
-            DeterminationEvent.NewInstance(taxon, du2);
+            DeterminationEvent.NewInstance(taxon, du_determination);
 
-           //du3 is added as type designation for the accepted taxon
-           name1.addSpecimenTypeDesignation(du3, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            //du3 is added as type designation for the accepted taxon
+            name1.addSpecimenTypeDesignation(du_accType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-           //du4 is added as type designation for the homotypic synonym
-           name2.addSpecimenTypeDesignation(du4, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            //du4 is added as type designation for the homotypic synonym
+            name2.addSpecimenTypeDesignation(du_homonymType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-           //du5 is added as type designation for the heterotypic synonym
-           name3.addSpecimenTypeDesignation(du5, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            //du5 is added as type designation for the heterotypic synonym
+            name3.addSpecimenTypeDesignation(du_heteroType1, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-           //du6 is added as type designation for the other heterotypic synonym
-           name4.addSpecimenTypeDesignation(du6, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            //du6 is added as type designation for the other heterotypic synonym
+            name4.addSpecimenTypeDesignation(du_heteroType2, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+
+
+            TaxonDescription fieldUnitDescription = TaxonDescription.NewInstance(fieldUnitTaxon);
+            IndividualsAssociation fieldUnitIndAss = IndividualsAssociation.NewInstance(fu1);
+            fieldUnitDescription.addElement(fieldUnitIndAss);
 
             return taxon;
         } catch (Exception e) {

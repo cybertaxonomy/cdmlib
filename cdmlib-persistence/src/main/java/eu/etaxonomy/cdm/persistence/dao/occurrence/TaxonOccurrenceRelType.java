@@ -23,4 +23,17 @@ public enum TaxonOccurrenceRelType {
     public static EnumSet<TaxonOccurrenceRelType> All(){
         return EnumSet.allOf(TaxonOccurrenceRelType.class);
     }
+
+    //** Enum Sets
+
+    public static EnumSet<TaxonOccurrenceRelType> IndividualsAssociations(){
+        return EnumSet.of(IndividualsAssociation);
+    }
+    public static EnumSet<TaxonOccurrenceRelType> Determinations(){
+        return EnumSet.of(Determination);
+    }
+    public static EnumSet<TaxonOccurrenceRelType> TypeDesignations(){
+        return EnumSet.of(TypeDesignation);
+    }
+
 }

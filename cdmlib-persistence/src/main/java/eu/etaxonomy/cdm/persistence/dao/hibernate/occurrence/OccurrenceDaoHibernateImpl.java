@@ -469,8 +469,7 @@ public class OccurrenceDaoHibernateImpl
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished,
-                taxonOccurrenceRelTypes,
+                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished, taxonOccurrenceRelTypes,
                 limit, start, orderHints, propertyPaths);
 
         if(criteria!=null){
@@ -710,8 +709,7 @@ public class OccurrenceDaoHibernateImpl
 
         @SuppressWarnings("rawtypes")
         Query<SpecimenOrObservationBase> query = createSpecimenQuery(
-                "sob", clazz, associatedTaxon, includeUnpublished,
-                taxonOccurrenceRelTypes,
+                "sob", clazz, associatedTaxon, includeUnpublished, taxonOccurrenceRelTypes,
                 limit, start, orderHints, SpecimenOrObservationBase.class);
         if(query==null){
             return Collections.emptyList();
@@ -731,44 +729,58 @@ public class OccurrenceDaoHibernateImpl
             List<OrderHint> orderHints, Class<R> returnClass){
 
         Set<Integer> setOfAllIds = new HashSet<>();
+        boolean classFilterExists = clazz != null && !clazz.equals(SpecimenOrObservationBase.class);
+        boolean requiresClassFilter = false;
+
+        //Note: we don't pass limits and order to individual results query as the data is merged with other results
 
         //add determinations
         if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelType.Determination)) {
-            List<Integer> detResults = addAssociatedDeterminations(clazz, associatedTaxon, limit, start);
+            List<Integer> detResults = addAssociatedDeterminations(clazz, associatedTaxon);
             setOfAllIds.addAll(detResults);
         }
 
         //add specimen associated via IndividualsAssociation
         if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelType.IndividualsAssociation)) {
             List<Integer> iaResults = descriptionDao.getIndividualAssociationSpecimenIDs(
-                    associatedTaxon.getUuid(), null, includeUnpublished, null, 0, null);
+                    associatedTaxon.getUuid(), null, includeUnpublished, null, null, null);
+            //NOTE: iaResults are not yet filtered by clazz
+            requiresClassFilter |= classFilterExists && !iaResults.isEmpty();
             setOfAllIds.addAll(iaResults);
         }
 
-        // add specimen associated via type designation of accepted taxon name
+        // add specimen associated via type designation
         if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelType.TypeDesignation)) {
+            //... of accepted taxon name
             List<Integer> accTdResults = taxonNameDao.getTypeSpecimenIdsForTaxonName(
                     associatedTaxon.getName(), null, null, null);
+            //NOTE: accTdResults are not yet filtered by clazz
+            requiresClassFilter |= classFilterExists && !accTdResults.isEmpty();
             setOfAllIds.addAll(accTdResults);
-        }
 
-        //     ... and of synonym names (via homotypic groups)
-        Set<Integer> synTdResults = getTypeSpecimenIdsForSynonyms(associatedTaxon);
-        setOfAllIds.addAll(synTdResults);
+            //... and of synonym names (via homotypic groups)
+            Set<Integer> synTdResults = getTypeSpecimenIdsForSynonyms(associatedTaxon);
+            //NOTE: synTdResults are not yet filtered by clazz
+            requiresClassFilter |= classFilterExists && !synTdResults.isEmpty();
+            setOfAllIds.addAll(synTdResults);
+        }
 
         if(setOfAllIds.isEmpty()){
             // no need querying the data base
             return null;
         }
 
-        //TODO remove unpublished
+        //query
         String queryString =
             " SELECT "+select+
             " FROM SpecimenOrObservationBase sob" +
             " WHERE sob.id in (:setOfAllIds)";
 
-        boolean explicitClassExists = clazz != null && !clazz.equals(SpecimenOrObservationBase.class);
-        if(explicitClassExists){
+        if (!includeUnpublished) {
+            queryString += " AND sob.publish = TRUE ";
+        }
+
+        if(requiresClassFilter){
             queryString += " AND sob.class = :type ";
         }
 
@@ -787,7 +799,7 @@ public class OccurrenceDaoHibernateImpl
         Query<R> query = getSession().createQuery(queryString, returnClass);
         query.setParameterList("setOfAllIds", setOfAllIds);
 
-        if(explicitClassExists){
+        if(requiresClassFilter){
             //note: null warning is incorrect here
             query.setParameter("type", clazz.getSimpleName());
         }
@@ -817,9 +829,7 @@ public class OccurrenceDaoHibernateImpl
      * Computes the IDs of the specimen associated with a taxon via determinations
      */
     private List<Integer> addAssociatedDeterminations(Class<? extends SpecimenOrObservationBase> clazz,
-            Taxon associatedTaxon,
-            Integer limit, Integer start) {
-
+            Taxon associatedTaxon) {
 
         Criteria criteria = null;
         if(clazz == null) {
@@ -839,24 +849,20 @@ public class OccurrenceDaoHibernateImpl
             determinationOr.add(Restrictions.eq("taxon", synonym));
         }
 
-        //determinations via names
-        //TODO should be checked only if determination.taxon is NULL
-        determinationOr.add(Restrictions.eq("taxonName", associatedTaxon.getName()));
+        //determinations via names, to be used only if determination taxon
+        //... accepted name
+        determinationOr.add(Restrictions.and(
+                Restrictions.eq("taxonName", associatedTaxon.getName()),
+                Restrictions.isNull("taxon")));
+        //... synonyms
         for (TaxonName synonymName : associatedTaxon.getSynonymNames()) {
-            determinationOr.add(Restrictions.eq("taxonName", synonymName));
+            determinationOr.add(Restrictions.and(
+                    Restrictions.eq("taxonName", synonymName),
+                    Restrictions.isNull("taxon")));
         }
 
         determinationsCriteria.add(determinationOr);
 
-        //paging //TODO only limiting makes sense here but no paging
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
         criteria.setProjection(Projections.property("id"));
 
         @SuppressWarnings("unchecked")
