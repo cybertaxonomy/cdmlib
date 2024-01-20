@@ -33,7 +33,7 @@ public class FindOccurrencesConfigurator
     private String significantIdentifier;
     private boolean retrieveIndirectlyAssociatedSpecimens;
     //used, if occurrences related to a taxon are retrieved
-    private EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes;
+    private EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
     private AssignmentStatus assignmentStatus = AssignmentStatus.ALL_SPECIMENS;
 
