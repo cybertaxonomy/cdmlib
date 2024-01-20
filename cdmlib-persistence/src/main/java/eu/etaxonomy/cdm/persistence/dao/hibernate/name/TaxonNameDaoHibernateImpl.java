@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -374,8 +376,9 @@ public class TaxonNameDaoHibernateImpl
                 TypeDesignationStatusBase<?> status, Integer pageSize, Integer pageNumber,
                 List<String> propertyPaths){
 
-        checkNotInPriorView("getTypeDesignations(TaxonName name,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
-        Query<T> query = getTypeDesignationQuery("designation", name, type, status, type);
+        Class<T> returnType = (type != null)? type : (Class<T>)TypeDesignationBase.class;
+        checkNotInPriorView("getTypeDesignations(TaxonName name, TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
+        Query<T> query = getTypeDesignationQuery("designation", name, type, status, returnType);
 
         addPageSizeAndNumber(query, pageSize, pageNumber);
         List<T> result = defaultBeanInitializer.initializeAll(query.list(), propertyPaths);
@@ -383,25 +386,33 @@ public class TaxonNameDaoHibernateImpl
     }
 
     private <T extends TypeDesignationBase, R extends Object> Query<R> getTypeDesignationQuery(String select, TaxonName name,
-            Class<T> type, TypeDesignationStatusBase<?> status, Class<R> returnType){
+            Class<T> type, TypeDesignationStatusBase<?> status, @NotNull Class<R> returnType){
 
+        if (returnType == null) {
+            throw new RuntimeException("Return type must not be null");
+        }
+
+        //Note on implementation: the prior version of assigning the
+        //  type as parameter designation.class = :type and using
+        //  TypeDesignationBase in the FROM part of the query
+        //  does not work with typed query as the internal query return type
+        //  is then still TypeDesignationBase while the expected one is
+        //  e.g. SpecimenTypeDesignation. This throws an exception.
+        type = (type != null) ? type : (Class)TypeDesignationBase.class;
         Query<R> query = null;
-        String queryString = "select "+select+" from TypeDesignationBase designation join designation.typifiedNames name where name = :name";
+        String queryString =
+                  " SELECT " + select
+                + " FROM " + type.getSimpleName() + " designation "
+                + "   JOIN designation.typifiedNames name "
+                + " WHERE name = :name";
 
         if(status != null) {
             queryString +=  " and designation.typeStatus = :status";
         }
-        if(type != null){
-            queryString +=  " and designation.class = :type";
-        }
-
         query = getSession().createQuery(queryString, returnType);
 
         if(status != null) {
             query.setParameter("status", status);
-        }
-        if(type != null){
-            query.setParameter("type", type.getSimpleName());
         }
 
         query.setParameter("name",name);
