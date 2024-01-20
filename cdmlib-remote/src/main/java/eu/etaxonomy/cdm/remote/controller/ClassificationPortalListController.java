@@ -121,7 +121,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             value = {"{treeUuid}/childNodesOf/{taxonUuid}"},
             method = RequestMethod.GET)
     public List<TaxonNodeDto> getChildNodesOfTaxon(
-            @PathVariable("treeUuid") UUID treeUuid,
+            @PathVariable("treeUuid") UUID classificationUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "sortMode", required = false, defaultValue = ClassificationController.DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeDtoSortMode sortMode,
@@ -133,7 +133,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
 
         List<TaxonNodeDto> children;
         try {
-            children = service.listChildNodeDtosOfTaxon(taxonUuid, treeUuid, subtreeUuid,
+            children = service.listChildNodeDtosOfTaxon(taxonUuid, classificationUuid, subtreeUuid,
                     includeUnpublished, null, null, sortMode, NODE_INIT_STRATEGY);
         } catch (FilterException e) {
             HttpStatusMessage.SUBTREE_FILTER_INVALID.send(response);

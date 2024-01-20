@@ -223,7 +223,7 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,  boolean includeUnpublished,
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive, boolean includeUnpublished,
             boolean doSynonyms, TaxonNodeSortMode sortMode,
             Integer pageSize, Integer pageIndex) {
 

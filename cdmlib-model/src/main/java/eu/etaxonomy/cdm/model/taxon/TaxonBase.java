@@ -381,7 +381,8 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
 
 
     /**
-     * @return
+     * Returns the rank if it exists. Name might be <code>null</code>
+     * without throwing an {@link NullPointerException}.
      */
     @Transient
     public Rank getNullSafeRank() {
