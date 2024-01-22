@@ -64,8 +64,9 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "designationSource.citation.authorship.$",
             "registrations", // needed for access control
             "text",
-            "annotations.type.$",
-            "annotations.type.includes.$"
+            "annotations.$",
+            "annotations.annotationType.$",
+            "annotations.annotationType.includes.$"
 
     }));
 
@@ -78,8 +79,9 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "nomenclaturalSource.citation.inReference.authorship.$",
             "nomenclaturalSource.citation.inReference.inReference.authorship.$",
             "nomenclaturalSource.citation.inReference.inReference.inReference.authorship.$",
-            "annotations.type.$",
-            "annotations.type.includes.$"
+            "annotations.$",
+            "annotations.annotationType.$",
+            "annotations.annotationType.includes.$"
 
     }));
 
