@@ -242,7 +242,7 @@ public class ManifestComposer {
                 canvas.setWidth(thumbnailImageContents.get(0).getWidth());
             }
         }
-        List<MetadataEntry> mediaMetadata = new ArrayList<>();
+        Map<String, MetadataEntry> mediaMetadata = new HashMap<>();
         Map<String, String> includes = mediaService.mediaMetadataKeyIncludes();
 
         mediaMetadata = mediaMetaData(media, includes);
@@ -261,15 +261,27 @@ public class ManifestComposer {
         } catch (Exception e) {
             logger.error("Error reading media metadata", e);
         }
-        if (representationMetadata.isEmpty() || metaDataSource.equals("cdm")) {
+        if (representationMetadata.isEmpty() || metaDataSource.equals("onlyCdm")) {
             //use only mediaData
-        }else if (metaDataSource.equals("mediaServer")) {
-            mediaMetadata = representationMetadata;
+        }else if (metaDataSource.equals("onlyMediaServer")) {
+            for (MetadataEntry entry: representationMetadata) {
+                mediaMetadata.put(entry.getLabelString(), entry);
+            }
         } else  {
-            mediaMetadata.addAll(representationMetadata);
+            for (MetadataEntry entry: representationMetadata) {
+                if (mediaMetadata.get(entry.getLabelString()) != null && metaDataSource.equals("preferCdm")) {
+                    //keep it
+                }else if (mediaMetadata.get(entry.getLabelString()) != null && metaDataSource.equals("preferMediaServer")) {
+                    mediaMetadata.put(entry.getLabelString(), entry);
+                }else {
+                    //these data are not available in cdm meta data, so use meta data from media Server
+                    mediaMetadata.put(entry.getLabelString(), entry);
+                }
+            }
+
         }
         if(!includes.isEmpty()) {
-            mediaMetadata = mediaMetadata
+            representationMetadata = mediaMetadata.values()
                     .stream()
                     .filter( e -> containsCaseInsensitive(e.getLabelString(), includes.values()))
                     .collect(Collectors.toList());
@@ -280,10 +292,11 @@ public class ManifestComposer {
 
 
         // extractAndAddDesciptions(canvas, mediaMetadata);
-        mediaMetadata = deduplicateMetadata(mediaMetadata);
-        canvas = addAttributionAndLicense(media, canvas, mediaMetadata);
+        canvas = addAttributionAndLicense(media, canvas, representationMetadata);
+        representationMetadata = deduplicateMetadata(representationMetadata);
+
         orderMedatadaItems(canvas);
-        canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
+        canvas.addMetadata(representationMetadata.toArray(new MetadataEntry[representationMetadata.size()]));
         return Optional.of(canvas);
     }
 
@@ -484,23 +497,23 @@ public class ManifestComposer {
         return metadata;
   }
 
-    private List<MetadataEntry> mediaMetaData(Media media, Map<String,String> mapping) {
-        List<MetadataEntry> metadata = new ArrayList<>();
+    private Map<String, MetadataEntry> mediaMetaData(Media media, Map<String,String> mapping) {
+        Map<String, MetadataEntry> metadata = new HashMap<>();
         List<Language> languages = LocaleContext.getLanguages();
 
         if(media.getTitle() != null){
             // TODO get localized titleCache
             if (mapping.get("Title")!= null) {
-                metadata.add(new MetadataEntry(mapping.get("Title"), media.getTitleCache()));
+                metadata.put(mapping.get("Title"), new MetadataEntry(mapping.get("Title"), media.getTitleCache()));
             }else {
-                metadata.add(new MetadataEntry("Taxon", media.getTitleCache()));
+                metadata.put("Taxon", new MetadataEntry("Taxon", media.getTitleCache()));
             }
         }
         if(media.getArtist() != null){
             if (mapping.get("Artist")!= null) {
-                metadata.add(new MetadataEntry(mapping.get("Artist"), media.getArtist().getTitleCache()));
+                metadata.put(mapping.get("Artist"), new MetadataEntry(mapping.get("Artist"), media.getArtist().getTitleCache()));
             }else {
-                metadata.add(new MetadataEntry("Photographer", media.getArtist().getTitleCache()));
+                metadata.put("Photographer",new MetadataEntry("Photographer", media.getArtist().getTitleCache()));
             }
 
         }
@@ -510,14 +523,14 @@ public class ManifestComposer {
             for(LanguageString description : media.getAllDescriptions().values()){
                 descriptionValues.addValue(description.getText());
             }
-            metadata.add(new MetadataEntry(new PropertyValue("Description"), descriptionValues));
+            metadata.put("Description", new MetadataEntry(new PropertyValue("Description"), descriptionValues));
         }
         if(media.getMediaCreated() != null){
 
             if (mapping.get("Created Date")!= null) {
-                metadata.add(new MetadataEntry(mapping.get("Created Date"), media.getMediaCreated().toString()));
+                metadata.put(mapping.get("Created Date"), new MetadataEntry(mapping.get("Created Date"), media.getMediaCreated().toString()));
             }else {
-                metadata.add(new MetadataEntry("Created Date", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
+                metadata.put("Created Date", new MetadataEntry("Created Date", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
             }
 
         }
@@ -529,7 +542,7 @@ public class ManifestComposer {
                     identifierValues.addValue(identifier.getIdentifier());
                 }
             }
-            metadata.add(new MetadataEntry(new PropertyValue("Identifiers"), identifierValues));
+            metadata.put("Identifiers", new MetadataEntry(new PropertyValue("Identifiers"), identifierValues));
         }
 
         if(!media.getSources().isEmpty()) {
@@ -537,7 +550,7 @@ public class ManifestComposer {
             for(IdentifiableSource source : media.getSources()){
                 descriptionValues.addValue(sourceAsHtml(source));
             }
-            metadata.add(new MetadataEntry(new PropertyValue("Sources"), descriptionValues));
+            metadata.put("Sources", new MetadataEntry(new PropertyValue("Sources"), descriptionValues));
         }
         return metadata;
     }
