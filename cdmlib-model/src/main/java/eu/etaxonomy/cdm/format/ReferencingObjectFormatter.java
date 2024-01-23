@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
@@ -164,12 +165,15 @@ public class ReferencingObjectFormatter {
         }else if (element instanceof KeyStatement) {
             KeyStatement keyStatement = (KeyStatement) element;
             resultString = getCache(keyStatement);
+        }else if (element instanceof Registration) {
+            Registration registration = (Registration) element;
+            resultString = registration.getIdentifier();
         }else{
             // TODO write return texts for HomotypicalGroup, etc.
             resultString = element.toString();
         }
 
-        if (resultString == null){
+        if (StringUtils.isEmpty(resultString)){
             resultString = element.toString();
         }
         return resultString;
