@@ -1126,7 +1126,7 @@ public class NameServiceImpl
     public Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages){
         List<TypeDesignationStatusBase> termList = typeDesignationDao.getTypeDesignationStatusInUse();
         Map<String, TypeDesignationStatusFilter>  filterMap = new HashMap<>();
-        for(TypeDesignationStatusBase term : termList){
+        for(TypeDesignationStatusBase<?> term : termList){
             TypeDesignationStatusFilter filter = new TypeDesignationStatusFilter(term, preferredLanguages, true);
             String key = filter.getKey();
             if(filterMap.containsKey(key)){
