@@ -34,9 +34,6 @@ public class WfoExportConfigurator
 
     private boolean createZipFile = true;
 
-    //filter
-    private boolean doFactualData = true;
-
     private String familyStr = null;
 
     private static final WfoExportTransformer transformer = new WfoExportTransformer();
@@ -125,13 +122,6 @@ public class WfoExportConfigurator
     }
     public void setCreateZipFile(boolean createZipFile) {
         this.createZipFile = createZipFile;
-    }
-
-    public boolean isDoFactualData() {
-        return doFactualData;
-    }
-    public void setDoFactualData(boolean doFactualData) {
-        this.doFactualData = doFactualData;
     }
 
     //familyStr
