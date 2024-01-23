@@ -255,9 +255,11 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     /**
      * {@inheritDoc}
      * @throws TypeDesignationSetException
+     * @throws PermissionDeniedException
      */
     @Override
-    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException {
+    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections)
+            throws TypeDesignationSetException, PermissionDeniedException {
 
         Reference reference = repo.getReferenceService().load(referenceUuid); // needed to use load to avoid the problem described in #7331
         if(resolveSections){
