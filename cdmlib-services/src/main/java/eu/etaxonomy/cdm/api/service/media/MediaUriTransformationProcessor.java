@@ -118,6 +118,10 @@ public class MediaUriTransformationProcessor {
     }
 
     protected String buildPathQueryFragment(URI uri) {
+        if (uri == null) {
+
+            return null;
+        }
         String pathQueryFragment = uri.getPath();
         if (uri.getQuery() != null) {
             pathQueryFragment += "?" + uri.getQuery();
@@ -134,6 +138,7 @@ public class MediaUriTransformationProcessor {
         List<MediaRepresentation> repr = new ArrayList<>();
 
         String pathQueryFragment = buildPathQueryFragment(uri);
+
 
         for (MediaUriTransformation transformation : transformations) {
 
@@ -164,6 +169,10 @@ public class MediaUriTransformationProcessor {
         List<MediaRepresentation> repr = new ArrayList<>();
 
         String pathQueryFragment = buildPathQueryFragment(part.getUri());
+        if (pathQueryFragment == null) {
+            logger.error("Missing path query fragment, for media representation part with UUID: " + part.getUuid());
+            return repr;
+        }
 
         for (MediaUriTransformation transformation : transformations) {
 
@@ -190,7 +199,7 @@ public class MediaUriTransformationProcessor {
                     repr.add(mRepresentation);
                 }
 
-            } catch (URISyntaxException e) {
+            } catch (Exception e) {
                 logger.error(e);
             }
         }
