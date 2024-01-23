@@ -116,7 +116,7 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         //CategoricalData
         CategoricalData catData = CategoricalData.NewInstance(Feature.DESCRIPTION());
         //TODO
-        Assert.assertEquals("", defaultFormat(catData));
+        Assert.assertEquals("Description[[]]", defaultFormat(catData));
 
         State state1 = State.NewInstance("State1", "State1", null);
         StateData stateData1 = catData.addStateData(state1);
@@ -196,13 +196,6 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         gatheringEvent.setCollector(person1);
         return gatheringEvent;
     }
-
-
-
-//    @Test
-//    public void testFormatCdmBaseStringLanguage() {
-//        fail("Not yet implemented");
-//    }
 
     private String defaultFormat(CdmBase cdmBase) {
         return ReferencingObjectFormatter.format(cdmBase, Language.ENGLISH());
