@@ -132,38 +132,6 @@ public class MediaUriTransformationProcessor {
         return pathQueryFragment;
     }
 
-    @Deprecated
-    public List<MediaRepresentation> makeNewMediaRepresentationsFor(URI uri) {
-
-        List<MediaRepresentation> repr = new ArrayList<>();
-
-        String pathQueryFragment = buildPathQueryFragment(uri);
-
-
-        for (MediaUriTransformation transformation : transformations) {
-
-            try {
-                Optional<URI> newUri = uriTransformation(uri, pathQueryFragment, transformation);
-                if(newUri.isPresent()) {
-                    MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(), null);
-                    MediaRepresentationPart part;
-                    if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
-                        part = ImageFile.NewInstance(newUri.get(), null, transformation.getHeight(), transformation.getWidth());
-                    } else {
-                        part = MediaRepresentationPart.NewInstance(newUri.get(), null);
-                    }
-                    mRepresentation.addRepresentationPart(part);
-                    repr.add(mRepresentation);
-                }
-
-            } catch (URISyntaxException e) {
-                logger.error(e);
-            }
-        }
-
-        return repr;
-    }
-
     public List<MediaRepresentation> makeNewMediaRepresentationsFor(MediaRepresentationPart part) {
 
         List<MediaRepresentation> repr = new ArrayList<>();
