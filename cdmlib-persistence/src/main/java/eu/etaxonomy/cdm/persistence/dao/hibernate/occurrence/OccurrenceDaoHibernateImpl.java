@@ -735,8 +735,10 @@ public class OccurrenceDaoHibernateImpl
         //Note: we don't pass limits and order to individual results query as the data is merged with other results
 
         //add determinations
-        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.Determination)) {
-            List<Integer> detResults = addAssociatedDeterminations(clazz, associatedTaxon);
+        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.Determination)
+                || taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.CurrentDetermination)) {
+            boolean currentOnly = !taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.Determination);
+            List<Integer> detResults = addAssociatedDeterminations(clazz, associatedTaxon, currentOnly);
             setOfAllIds.addAll(detResults);
         }
 
@@ -829,7 +831,7 @@ public class OccurrenceDaoHibernateImpl
      * Computes the IDs of the specimen associated with a taxon via determinations
      */
     private List<Integer> addAssociatedDeterminations(Class<? extends SpecimenOrObservationBase> clazz,
-            Taxon associatedTaxon) {
+            Taxon associatedTaxon, boolean currentOnly) {
 
         Criteria criteria = null;
         if(clazz == null) {
@@ -839,6 +841,9 @@ public class OccurrenceDaoHibernateImpl
         }
 
         Criteria determinationsCriteria = criteria.createCriteria("determinations");
+        if (currentOnly) {
+            determinationsCriteria.add(Restrictions.eq("preferredFlag", Boolean.TRUE));
+        }
 
         Disjunction determinationOr = Restrictions.disjunction();
 

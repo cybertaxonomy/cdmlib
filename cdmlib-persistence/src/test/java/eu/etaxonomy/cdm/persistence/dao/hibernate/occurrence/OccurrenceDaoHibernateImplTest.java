@@ -182,7 +182,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         final EnumSet<TaxonOccurrenceRelationType> taxonOccRelType = TaxonOccurrenceRelationType.All();
 
         //load data
-	    //TODO empty
+	    //TODO make DB empty
 	    Taxon taxon = createListByAssociationTestData();
         this.commitAndStartNewTransaction();
 
@@ -191,13 +191,13 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         List<SpecimenOrObservationBase> associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("All directly associated specimen should be attached", 6, associatedUnits.size());
+        Assert.assertEquals("All directly associated specimen should be attached", 7, associatedUnits.size());
 
         //test published only
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, no_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("All published directly associated specimen should be attached", 5, associatedUnits.size());
+        Assert.assertEquals("All published directly associated specimen should be attached", 6, associatedUnits.size());
 
         //test include individual associations
         associatedUnits = dao.listByAssociatedTaxon(
@@ -208,6 +208,12 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         //test include determinations
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, TaxonOccurrenceRelationType.Determinations(),
+                limit, start, orderHints, propertyPaths);
+        Assert.assertEquals("Only specimen associated via determination should be attached", 2, associatedUnits.size());
+
+        //test include current determinations only
+        associatedUnits = dao.listByAssociatedTaxon(
+                type, taxon, included_unpublished, TaxonOccurrenceRelationType.CurrentDeterminations(),
                 limit, start, orderHints, propertyPaths);
         Assert.assertEquals("Only specimen associated via determination should be attached", 1, associatedUnits.size());
 
@@ -225,6 +231,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
                 limit, start, titleCacheOrder, propertyPaths);
         @SuppressWarnings("rawtypes")
         Iterator<SpecimenOrObservationBase> iterator = associatedUnits.iterator();
+        Assert.assertEquals("FieldUnit 3", iterator.next().getTitleCache());
         Assert.assertEquals("Specimen Accepted Name Type", iterator.next().getTitleCache());
         Assert.assertEquals("Specimen Determination", iterator.next().getTitleCache());
         Assert.assertEquals("Specimen Heterotypic Name Type 1", iterator.next().getTitleCache());
@@ -234,35 +241,37 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
         //test limit + start
         int myLimit = 3;
-        int myStart = 1;
+        int myStart = 2;
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, taxonOccRelType,
                 myLimit, myStart, titleCacheOrder, propertyPaths);
         Assert.assertEquals(myLimit, associatedUnits.size());
         iterator = associatedUnits.iterator();
-//        Assert.assertEquals("Specimen Accepted Name Type", iterator.next().getTitleCache());
+        //this is a subset of the above test
         Assert.assertEquals("Specimen Determination", iterator.next().getTitleCache());
         Assert.assertEquals("Specimen Heterotypic Name Type 1", iterator.next().getTitleCache());
         Assert.assertEquals("Specimen Heterotypic Name Type 2", iterator.next().getTitleCache());
-//        Assert.assertEquals("Specimen Homotypic Name Type", iterator.next().getTitleCache());
-//        Assert.assertEquals("Specimen Individual Association", iterator.next().getTitleCache());
 
         //test type
+        //... type all classes (default)
         Taxon fieldUnitTaxon = (Taxon)taxonDao.load(uuid_fieldUnitTaxon);
         associatedUnits = dao.listByAssociatedTaxon(
                 type, fieldUnitTaxon, included_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
         //TODO do we really want to have the type of the homotypic synonym here
         //     though it is not explicitly mentioned in the synonymy of field unit taxon?
-        Assert.assertEquals("Only field unit and the 2 derived units associated to the name "
-                + " and its homotypic group via type designation should be returned for field unit taxon",
+        Assert.assertEquals("Only field unit 1 (added via ind. ass.) and the 2 derived units "
+                + " associated to the name and its homotypic group via type designation "
+                + " should be returned for field unit taxon",
                 3, associatedUnits.size());
 
+        //... test type = FieldUnit.class
         List<FieldUnit> fieldUnits = dao.listByAssociatedTaxon(
                 FieldUnit.class, fieldUnitTaxon, included_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
         Assert.assertEquals("Only the field unit 1 should be attached to field unit taxon", 1, fieldUnits.size());
 
+        //... test type = DerivedUnit.class
         List<DerivedUnit> derivedUnits = dao.listByAssociatedTaxon(
                 DerivedUnit.class, fieldUnitTaxon, included_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
@@ -270,7 +279,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
                 + " be attached to field unit taxon", 2, derivedUnits.size());
 
         //test synonyms
-        //TODO
+        //TODO not yet available in listByAssociatedTaxon()
 //        Synonym heteroSyn_1 = (Synonym)taxonDao.load(uuid_hetero_syn_1);
 //        associatedUnits = dao.listByAssociatedTaxon(
 //                type, heteroSyn_1, included_unpublished, taxonOccRelType,
@@ -300,7 +309,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
             //homotypic synonym
             TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", null, "alba", null, null, null, null, null);
-            Synonym homoSyn = taxon.addHomotypicSynonymName(name2);
+            taxon.addHomotypicSynonymName(name2);
 
             //heterotypic group
             TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "pinus", null, null, null, null, null);
@@ -349,19 +358,26 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             fu1.setTitleCache("FieldUnit 1", true);
             FieldUnit fu2 = DerivedUnitFacade.NewInstance(du_determination).getFieldUnit(true);
             FieldUnit fu3 = DerivedUnitFacade.NewInstance(du_accType).getFieldUnit(true);
+            fu3.setTitleCache("FieldUnit 3", true);
             FieldUnit fu4 = DerivedUnitFacade.NewInstance(du_homonymType).getFieldUnit(true);
             dao.save(fu1);
             dao.save(fu2);
             dao.save(fu3);
             dao.save(fu4);
 
+            //*** Add assoziations ****
+
             //du1 is added as indiv. association
             TaxonDescription td = TaxonDescription.NewInstance(taxon);
             IndividualsAssociation ia = IndividualsAssociation.NewInstance(du_indAss);
             td.addElement(ia);
 
-            //du2 is added as determination
+            //du2 is assoziated as determination
             DeterminationEvent.NewInstance(taxon, du_determination);
+
+            //fu3 is assoziated with name3 (first heterotypic synonym) as current determination
+            DeterminationEvent de = DeterminationEvent.NewInstance(heteroSyn1.getName(), fu3);
+            de.setPreferredFlag(true);
 
             //du3 is added as type designation for the accepted taxon
             name1.addSpecimenTypeDesignation(du_accType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);

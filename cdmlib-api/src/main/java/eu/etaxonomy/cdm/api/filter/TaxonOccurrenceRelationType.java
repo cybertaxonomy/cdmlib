@@ -13,6 +13,8 @@ import java.util.EnumSet;
 /**
  * Enumeration to define a filter for taxon-occurrence associations.
  *
+ * See also https://dev.e-taxonomy.eu/redmine/issues/10400
+ *
  * @author muellera
  * @since 20.01.2024
  */
@@ -20,6 +22,7 @@ public enum TaxonOccurrenceRelationType {
 
     IndividualsAssociation("IA"),
     Determination("DET"),
+    CurrentDetermination("CDET"),  //only relevant if DET is not used as CurrentDetermination is a subset of Determination
     TypeDesignation("TD");
 
     private String key;
@@ -45,6 +48,9 @@ public enum TaxonOccurrenceRelationType {
     public static EnumSet<TaxonOccurrenceRelationType> Determinations(){
         return EnumSet.of(Determination);
     }
+    public static EnumSet<TaxonOccurrenceRelationType> CurrentDeterminations(){
+        return EnumSet.of(CurrentDetermination);
+    }
     public static EnumSet<TaxonOccurrenceRelationType> TypeDesignations(){
         return EnumSet.of(TypeDesignation);
     }
@@ -57,7 +63,4 @@ public enum TaxonOccurrenceRelationType {
         }
         return null;
     }
-
-
-
 }
