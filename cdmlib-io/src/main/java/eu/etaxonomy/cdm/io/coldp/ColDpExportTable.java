@@ -20,7 +20,7 @@ public enum ColDpExportTable implements ITaxonTreeExportTable {
 
     NAME_RELATION("NameRelation",nameRelationColumns()),
     NAME("Name", nameColumns()),
-    NAME_WITH_FULLNAME("Name", nameWithFullNameColumns()),
+    NAME_WITH_FULLNAME("Name2", nameWithFullNameColumns()),
     TAXON("Taxon", taxonColumns()),
     SYNONYM("Synonym", synonymColumns()),
     REFERENCE("Reference", referenceColumns()),
