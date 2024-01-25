@@ -1026,7 +1026,10 @@ public class ColDpClassificationExport
             return;
         }
         try {
-            ColDpExportTable table = ColDpExportTable.NAME;
+            //TODO is there a better way to handle configurable columns? #10451
+            ColDpExportTable table = state.getConfig().isIncludeFullName() ? ColDpExportTable.NAME_WITH_FULLNAME :
+                    ColDpExportTable.NAME;
+
             String[] csvLine = new String[table.getSize()];
 
             Rank rank = name.getRank();
@@ -1069,6 +1072,9 @@ public class ColDpClassificationExport
                 state.getResult().addWarning(message);  //TODO 7 add location to warning
             } else {
                 csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
+            }
+            if (state.getConfig().isIncludeFullName()) {
+                csvLine[table.getIndex(ColDpExportTable.NAME_FULLNAME)] = name.getTitleCache();
             }
 
             //authorship
