@@ -51,5 +51,8 @@ public class DefaultTermInitializerTest {
 		Set<MeasurementUnit> units = Feature.ALTITUDE().getRecommendedMeasurementUnits();
 		Assert.assertEquals("Recommended measurement unit should exist", 1, units.size());
 		Assert.assertEquals(MeasurementUnit.uuidMeter, units.iterator().next().getUuid());
+
+		IdentifierType idTypeIF = IdentifierType.IDENTIFIER_NAME_IF();
+		Assert.assertEquals("https://www.indexfungorum.org/names/NamesRecord.asp?RecordID={@ID}", idTypeIF.getUrlPattern());
 	}
 }

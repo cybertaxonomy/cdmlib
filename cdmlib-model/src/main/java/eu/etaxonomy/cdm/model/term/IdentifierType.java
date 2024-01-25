@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
@@ -113,9 +115,8 @@ public class IdentifierType
     public static IdentifierType IDENTIFIER_NAME_WFO(){
         return getTermByUuid(uuidWfoNameIdentifier);
     }
-
-    public static IdentifierType WFO_NAME_IDENTIFIER(){
-        return getTermByUuid(uuidWfoNameIdentifier);
+    public static IdentifierType IDENTIFIER_NAME_IF(){
+        return getTermByUuid(uuidIndexFungorumIdentifier);
     }
 
 // ******************** GETTER /SETTER *********
@@ -153,8 +154,20 @@ public class IdentifierType
 		}
 	}
 
+    @Override
+    public IdentifierType readCsvLine(Class<IdentifierType> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        try {
+            IdentifierType newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
+            String urlPattern = CdmUtils.Ne(csvLine.get(5));
+            newInstance.setUrlPattern(urlPattern);
+            return newInstance;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 	@Override
 	protected int partOfCsvLineIndex(){
-		return 5;
+		return 6;
 	}
 }
