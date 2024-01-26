@@ -706,7 +706,7 @@ public class WfoClassificationExport
             reference = CdmBase.deproxy(reference);
 
             state.addReferenceToStore(reference);
-            WfoExportTable table = WfoExportTable.REFERECE;
+            WfoExportTable table = WfoExportTable.REFERENCE;
             String[] csvLine = new String[table.getSize()];
 
             csvLine[table.getIndex(WfoExportTable.IDENTIFIER)] = getId(state, reference);

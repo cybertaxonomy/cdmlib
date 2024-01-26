@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.out.ITaxonTreeExportTable;
 public enum WfoExportTable implements ITaxonTreeExportTable {
 
     CLASSIFICATION("Classification", classificationColumns()),
-    REFERECE("Reference", referenceColumns());
+    REFERENCE("Reference", referenceColumns());
 
     //Classification
     static final String TAXON_ID = "taxonID";
@@ -61,9 +61,9 @@ public enum WfoExportTable implements ITaxonTreeExportTable {
 
 
     private final static String[] classificationColumns(){
-        return new String[]{TAXON_ID,
+        return new String[]{TAXON_ID, NAME_SCIENTIFIC_NAME_ID, NAME_LOCAL_ID,
                 NAME_SCIENTIFIC_NAME, RANK, TAX_PARENT_ID,
-                NAME_AUTHORSHIP, TAX_SUBFAMILY, TAX_TRIBE, TAX_SUBTRIBE, TAX_GENUS,
+                NAME_AUTHORSHIP, TAX_FAMILY, TAX_SUBFAMILY, TAX_TRIBE, TAX_SUBTRIBE, TAX_GENUS,
                 TAX_SUBGENUS, TAX_SPECIES, TAX_SECTION, NAME_GENUS, NAME_SPECIFIC_EPITHET,
                 NAME_INFRASPECIFIC_EPITHET, NAME_VERBATIM_RANK, NAME_STATUS,
                 NAME_PUBLISHED_IN, TAX_STATUS, TAX_ACCEPTED_NAME_ID,
