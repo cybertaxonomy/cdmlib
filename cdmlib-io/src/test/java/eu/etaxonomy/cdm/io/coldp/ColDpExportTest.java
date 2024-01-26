@@ -53,16 +53,16 @@ public class ColDpExportTest
     private String expectedArmenianDistributionLine = uuid(subspeciesTaxonUuid) + NONE +
             "\"ARM\",\"Armenia\",\"iso\",\"uncertain\"," + NONE + NONE_END;
 
-    private String expectedFamilyNameLine = uuid(familyNameUuid) + NONE3 + "\"Family\",\"L.\",\"family\",\"Family\"," +
+    private String expectedFamilyNameLine = uuid(familyNameUuid) + "\"wfo:WFO-12347f\"," + NONE2 + "\"Family\",\"L.\",\"family\",\"Family\"," +
             NONE4 + NONE + "\"L.\"," + NONE + "\"1752\"," + NONE3 + "\"ICN\",\"conserved\"," +
             uuid(familyNomRefUuid) + "\"1752\",\"22\"," + NONE2 + NONE_END;
 
     //FIXME basionymID, nom. status
     private String basionymID = NONE;
-    private String expectedSubspeciesNameLine = uuid(subspeciesNameUuid) + NONE2 + basionymID + "\"Genus species subsp. subspec\",\"Mill.\",\"subspecies\","
+    private String expectedSubspeciesNameLine = uuid(subspeciesNameUuid) + "\"wfo:WFO-12347ss\"," + NONE + basionymID + "\"Genus species subsp. subspec\",\"Mill.\",\"subspecies\","
             + NONE + "\"Genus\"," + NONE + "\"species\",\"subspec\"," + NONE + "\"Mill.\"," + NONE + "\"1804\"," + NONE3 +
             "\"ICN\"," + VALID + uuid(subspeciesNomRefUuid) + "\"1804\",\"22\"," + NONE2 + NONE_END;
-    private String expectedSubspeciesNameLineWithFullName = uuid(subspeciesNameUuid) + NONE2 + basionymID + "\"Genus species subsp. subspec\","
+    private String expectedSubspeciesNameLineWithFullName = uuid(subspeciesNameUuid) + "\"wfo:WFO-12347ss\"," + NONE + basionymID + "\"Genus species subsp. subspec\","
             + "\"Genus species subsp. subspec Mill.\",\"Mill.\",\"subspecies\","
             + NONE + "\"Genus\"," + NONE + "\"species\",\"subspec\"," + NONE + "\"Mill.\"," + NONE + "\"1804\"," + NONE3 +
             "\"ICN\"," + VALID + uuid(subspeciesNomRefUuid) + "\"1804\",\"22\"," + NONE2 + NONE_END;
