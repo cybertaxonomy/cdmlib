@@ -136,7 +136,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
     public static EnumSet<TaxonOccurrenceRelationType> bindAssociationFilter(String taxOccRelFilter) {
         //TODO implement as binder
-        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = EnumSet.noneOf(TaxonOccurrenceRelationType.class);;
         if (!StringUtils.isEmpty(taxOccRelFilter) && !"ALL".equalsIgnoreCase(taxOccRelFilter)) {
             for (String split: taxOccRelFilter.split(",")){
                 TaxonOccurrenceRelationType relType = TaxonOccurrenceRelationType.of(split);
@@ -144,6 +144,10 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
                     taxonOccurrenceRelTypes.add(relType);
                 }
             }
+        }
+        if (taxonOccurrenceRelTypes.isEmpty()) {
+            taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
         }
         return taxonOccurrenceRelTypes;
     }
