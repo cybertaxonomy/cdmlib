@@ -35,9 +35,6 @@ public enum WfoExportTable implements ITaxonTreeExportTable {
     static final String TAX_SUBTRIBE = "subtribe";
     static final String TAX_GENUS = "genus";
     static final String TAX_SUBGENUS = "subgenus";
-    static final String TAX_SPECIES = "species";
-    static final String TAX_SECTION = "section";
-    static final String NAME_GENUS = "genus";
     static final String NAME_SPECIFIC_EPITHET = "specificEpithet";
     static final String NAME_INFRASPECIFIC_EPITHET = "infraspecificEpithet ";
     static final String NAME_VERBATIM_RANK = "verbatimTaxonRank ";
@@ -64,7 +61,7 @@ public enum WfoExportTable implements ITaxonTreeExportTable {
         return new String[]{TAXON_ID, NAME_SCIENTIFIC_NAME_ID, NAME_LOCAL_ID,
                 NAME_SCIENTIFIC_NAME, RANK, TAX_PARENT_ID,
                 NAME_AUTHORSHIP, TAX_FAMILY, TAX_SUBFAMILY, TAX_TRIBE, TAX_SUBTRIBE, TAX_GENUS,
-                TAX_SUBGENUS, TAX_SPECIES, TAX_SECTION, NAME_GENUS, NAME_SPECIFIC_EPITHET,
+                TAX_SUBGENUS, NAME_SPECIFIC_EPITHET,
                 NAME_INFRASPECIFIC_EPITHET, NAME_VERBATIM_RANK, NAME_STATUS,
                 NAME_PUBLISHED_IN, TAX_STATUS, TAX_ACCEPTED_NAME_ID,
                 NAME_ORIGINAL_NAME_ID, NAME_ACCORDING_TO_ID, TAXON_REMARKS,

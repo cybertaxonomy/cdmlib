@@ -249,6 +249,7 @@ public class WfoClassificationExport
             csvLine[table.getIndex(WfoExportTable.TAX_SUBFAMILY)] = null;
             csvLine[table.getIndex(WfoExportTable.TAX_TRIBE)] = null;
             csvLine[table.getIndex(WfoExportTable.TAX_SUBTRIBE)] = null;
+            //TODO
             csvLine[table.getIndex(WfoExportTable.TAX_SUBGENUS)] = name.isInfraGeneric()? name.getInfraGenericEpithet() : null ;
 
             //... tax status, TODO 2 are there other status for accepted or other reasons for being ambiguous
@@ -570,12 +571,12 @@ public class WfoClassificationExport
             csvLine[table.getIndex(WfoExportTable.TAX_FAMILY)] = state.getFamilyStr();
 
             //name parts
-            csvLine[table.getIndex(WfoExportTable.NAME_GENUS)] = name.isSupraGeneric()? null : name.getGenusOrUninomial();
+            csvLine[table.getIndex(WfoExportTable.TAX_GENUS)] = name.isSupraGeneric()? null : name.getGenusOrUninomial();
             csvLine[table.getIndex(WfoExportTable.NAME_SPECIFIC_EPITHET)] = name.getSpecificEpithet();
             csvLine[table.getIndex(WfoExportTable.NAME_INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
 
             //TODO 3 verbatimTaxonRank, is this needed at all?
-            csvLine[table.getIndex(WfoExportTable.NAME_VERBATIM_RANK)] = null;
+            csvLine[table.getIndex(WfoExportTable.NAME_VERBATIM_RANK)] = rankStr;
 
             //name status
             csvLine[table.getIndex(WfoExportTable.NAME_STATUS)] = makeNameStatus(state, name);
@@ -612,7 +613,7 @@ public class WfoClassificationExport
 
             //TODO 1 related names like orth. var., original spelling,
 
-            state.getProcessor().put(table, name, csvLine);
+//            state.getProcessor().put(table, name, csvLine);
 
         } catch (Exception e) {
             state.getResult().addException(e,

@@ -125,6 +125,10 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID subspeciesUnpublishedNameUUID = UUID.fromString("b6da7ab2-6c67-44b7-9719-2557542f5a23");
     protected static final UUID basionymNameUuid = UUID.fromString("c7962b1f-950e-4e28-a3d1-aa0583dfdc92");
 
+    //WFO IDs
+    protected static final String subspeciesWfoId = "WFO-12347ss";
+    protected static final String speciesWfoId = "WFO-123477";
+
     //reference uuid
     protected static final UUID familyNomRefUuid = UUID.fromString("b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
     protected static final UUID genusNomRefUuid = UUID.fromString("5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
@@ -193,9 +197,22 @@ public abstract class TaxonTreeExportTestBase
         return "\"" + uuid + "\",";
     }
 
+    protected String str(String str) {
+        return "\"" + str + "\",";
+    }
+
     protected String getLine(List<String> list, UUID uuid) {
         for (String line : list) {
             if (line.startsWith("\""+ uuid.toString())) {
+                return line;
+            }
+        }
+        return null;
+    }
+
+    protected String getLine(List<String> list, String str) {
+        for (String line : list) {
+            if (line.startsWith("\""+ str +"\"")) {
                 return line;
             }
         }
@@ -286,7 +303,7 @@ public abstract class TaxonTreeExportTestBase
         //species
         TaxonName speciesName = parser.parseReferencedName("Genus species (Mill.) Hook in J. Appl. Synon. 5: 33. 1824",
                 NomenclaturalCode.ICNAFP, Rank.SPECIES());
-        addWfoIdentifier(speciesName, "WFO-123477");
+        addWfoIdentifier(speciesName, speciesWfoId);
         setUuid(speciesName, speciesNameUuid);
         setUuid(speciesName.getNomenclaturalReference(), speciesNomRefUuid);
         Taxon species = Taxon.NewInstance(speciesName, sec1);
@@ -316,7 +333,7 @@ public abstract class TaxonTreeExportTestBase
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
         setUuid(subspeciesName, subspeciesNameUuid);
         setUuid(subspeciesName.getNomenclaturalReference(), subspeciesNomRefUuid);
-        addWfoIdentifier(subspeciesName, "WFO-12347ss");
+        addWfoIdentifier(subspeciesName, subspeciesWfoId);
 
         Taxon subspecies = Taxon.NewInstance(subspeciesName, sec1);
         subspecies.getSecSource().setNameUsedInSource(subspeciesName);
