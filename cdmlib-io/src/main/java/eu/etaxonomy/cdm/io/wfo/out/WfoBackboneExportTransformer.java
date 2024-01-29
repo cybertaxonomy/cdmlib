@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
- * Transformer for WFO DwC-A export.
+ * Transformer for WFO Backbone export.
  *
  * @author a.mueller
  * @date 2023-12-08

@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.wfo.out;
 import eu.etaxonomy.cdm.io.out.ITaxonTreeExportTable;
 
 /**
- * An enumeration with each instance representing a table type in the Output Model.
+ * An enumeration with each instance representing a table type in the
+ * WFO Backbone format.
  *
  * @author a.mueller
  * @since 2023-12-08

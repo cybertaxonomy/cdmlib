@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
- * Classification or taxon tree exporter into WFO DwC-A format.
+ * Classification or taxon tree exporter into WFO Backbone format.
  *
  * @author a.mueller
  * @since 2023-12-08

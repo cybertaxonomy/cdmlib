@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 
 /**
- * Configurator for WFO DwC-A export.
+ * Configurator for WFO Backbone export.
  *
  * @author a.mueller
  * @since 2023-12-08
