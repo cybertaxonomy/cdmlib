@@ -30,12 +30,12 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
  * @author a.mueller
  * @since 2023-12-08
  */
-public class WfoExportState
-        extends TaxonTreeExportStateBase<WfoExportConfigurator,WfoExportState>{
+public class WfoBackboneExportState
+        extends TaxonTreeExportStateBase<WfoBackboneExportConfigurator,WfoBackboneExportState>{
 
     private ExportResult result;
 
-    private WfoExportResultProcessor processor = new WfoExportResultProcessor(this);
+    private WfoBackboneExportResultProcessor processor = new WfoBackboneExportResultProcessor(this);
 
     private TaxonBase<?> currentTaxonBase;
 
@@ -54,7 +54,7 @@ public class WfoExportState
     private UUID rootUuid;
 
     //CONSTRUCTOR
-    protected WfoExportState(WfoExportConfigurator config) {
+    protected WfoBackboneExportState(WfoBackboneExportConfigurator config) {
         super(config);
         result = ExportResult.NewInstance(config.getResultType());
         familyStr = config.getFamilyStr();
@@ -76,7 +76,7 @@ public class WfoExportState
     }
 
     //processor
-    protected WfoExportResultProcessor getProcessor() {
+    protected WfoBackboneExportResultProcessor getProcessor() {
         return processor;
     }
 

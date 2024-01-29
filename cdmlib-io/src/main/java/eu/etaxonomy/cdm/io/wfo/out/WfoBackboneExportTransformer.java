@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @author a.mueller
  * @date 2023-12-08
  */
-public class WfoExportTransformer extends ExportTransformerBase {
+public class WfoBackboneExportTransformer extends ExportTransformerBase {
 
     private static final long serialVersionUID = -527652844010832994L;
 

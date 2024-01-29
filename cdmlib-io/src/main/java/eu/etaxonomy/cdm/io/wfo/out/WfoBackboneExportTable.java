@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.io.out.ITaxonTreeExportTable;
  * @author a.mueller
  * @since 2023-12-08
  */
-public enum WfoExportTable implements ITaxonTreeExportTable {
+public enum WfoBackboneExportTable implements ITaxonTreeExportTable {
 
     CLASSIFICATION("Classification", classificationColumns()),
     REFERENCE("Reference", referenceColumns());
@@ -77,7 +77,7 @@ public enum WfoExportTable implements ITaxonTreeExportTable {
 
 // ************** CONSTRUCTOR *******************/
 
-    private WfoExportTable(String tableName, String[] columnNames){
+    private WfoBackboneExportTable(String tableName, String[] columnNames){
         this.tableName = tableName;
         this.columnNames = columnNames;
     }

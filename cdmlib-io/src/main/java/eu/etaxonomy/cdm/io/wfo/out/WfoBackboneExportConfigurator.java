@@ -22,8 +22,8 @@ import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
  * @author a.mueller
  * @since 2023-12-08
  */
-public class WfoExportConfigurator
-        extends TaxonTreeExportConfiguratorBase<WfoExportState,WfoExportConfigurator> {
+public class WfoBackboneExportConfigurator
+        extends TaxonTreeExportConfiguratorBase<WfoBackboneExportState,WfoBackboneExportConfigurator> {
 
     private static final long serialVersionUID = -6543105949709811075L;
 
@@ -36,17 +36,17 @@ public class WfoExportConfigurator
 
     private String familyStr = null;
 
-    private static final WfoExportTransformer transformer = new WfoExportTransformer();
+    private static final WfoBackboneExportTransformer transformer = new WfoBackboneExportTransformer();
 
 //************************* FACTORY ******************************/
 
-    public static WfoExportConfigurator NewInstance(){
-        WfoExportConfigurator result = new WfoExportConfigurator(transformer);
+    public static WfoBackboneExportConfigurator NewInstance(){
+        WfoBackboneExportConfigurator result = new WfoBackboneExportConfigurator(transformer);
         return result;
     }
 
-    public static WfoExportConfigurator NewInstance(ICdmDataSource source, File destination){
-        WfoExportConfigurator result = new WfoExportConfigurator(transformer);
+    public static WfoBackboneExportConfigurator NewInstance(ICdmDataSource source, File destination){
+        WfoBackboneExportConfigurator result = new WfoBackboneExportConfigurator(transformer);
         result.setSource(source);
         result.setDestination(destination);
         return result;
@@ -54,7 +54,7 @@ public class WfoExportConfigurator
 
 //************************ CONSTRUCTOR *******************************/
 
-    private WfoExportConfigurator(IExportTransformer transformer) {
+    private WfoBackboneExportConfigurator(IExportTransformer transformer) {
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
@@ -65,13 +65,13 @@ public class WfoExportConfigurator
     @SuppressWarnings("unchecked")
     protected void makeIoClassList() {
         ioClassList = new Class[] {
-                WfoClassificationExport.class
+                WfoBackboneExport.class
         };
     }
 
     @Override
-    public WfoExportState getNewState() {
-        return new WfoExportState(this);
+    public WfoBackboneExportState getNewState() {
+        return new WfoBackboneExportState(this);
     }
 
     @Override

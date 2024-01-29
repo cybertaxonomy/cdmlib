@@ -62,27 +62,27 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
  * @since 2023-12-08
  */
 @Component
-public class WfoClassificationExport
-        extends CdmExportBase<WfoExportConfigurator,WfoExportState,IExportTransformer,File>{
+public class WfoBackboneExport
+        extends CdmExportBase<WfoBackboneExportConfigurator,WfoBackboneExportState,IExportTransformer,File>{
 
     private static final long serialVersionUID = -4560488499411723333L;
 
-    public WfoClassificationExport() {
+    public WfoBackboneExport() {
         this.ioName = this.getClass().getSimpleName();
     }
 
     @Override
-    public long countSteps(WfoExportState state) {
+    public long countSteps(WfoBackboneExportState state) {
         TaxonNodeFilter filter = state.getConfig().getTaxonNodeFilter();
         return getTaxonNodeService().count(filter);
     }
 
     @Override
-    protected void doInvoke(WfoExportState state) {
+    protected void doInvoke(WfoBackboneExportState state) {
 
         try {
             IProgressMonitor monitor = state.getConfig().getProgressMonitor();
-            WfoExportConfigurator config = state.getConfig();
+            WfoBackboneExportConfigurator config = state.getConfig();
 
             //set root node
             if (config.getTaxonNodeFilter().hasClassificationFilter()) {
@@ -114,7 +114,7 @@ public class WfoClassificationExport
         }
     }
 
-    private void handleTaxonNode(WfoExportState state, TaxonNode taxonNode) {
+    private void handleTaxonNode(WfoBackboneExportState state, TaxonNode taxonNode) {
 
         if (taxonNode == null) {
             // TODO 5 taxon node not found
@@ -142,7 +142,7 @@ public class WfoClassificationExport
         }
     }
 
-    private String getParentWfoId(WfoExportState state, TaxonNode taxonNode) {
+    private String getParentWfoId(WfoBackboneExportState state, TaxonNode taxonNode) {
         TaxonNode parentNode = taxonNode.getParent();
         if (parentNode == null) {
             return null;
@@ -164,7 +164,7 @@ public class WfoClassificationExport
     }
 
     private Set<Rank> allowedRanks = new HashSet<>();
-    private boolean filterTaxon(WfoExportState state, TaxonNode taxonNode) {
+    private boolean filterTaxon(WfoBackboneExportState state, TaxonNode taxonNode) {
         Taxon taxon = taxonNode.getTaxon();
         if (taxon == null) {
             return true;
@@ -212,7 +212,7 @@ public class WfoClassificationExport
     /**
      * @return the WFO-ID of the taxon
      */
-    private String handleTaxon(WfoExportState state, TaxonNode taxonNode, String parentWfoId) {
+    private String handleTaxon(WfoBackboneExportState state, TaxonNode taxonNode, String parentWfoId) {
         //check null
         if (taxonNode == null) {
             state.getResult().addError("The taxonNode was null.", "handleTaxon");
@@ -235,7 +235,7 @@ public class WfoClassificationExport
         try {
 
             //classification csvLine
-            WfoExportTable table = WfoExportTable.CLASSIFICATION;
+            WfoBackboneExportTable table = WfoBackboneExportTable.CLASSIFICATION;
             String[] csvLine = new String[table.getSize()];
 
             //accepted name
@@ -243,33 +243,33 @@ public class WfoClassificationExport
             wfoId = handleName(state, table, csvLine, name);
 
             //... parentNameUsageID
-            csvLine[table.getIndex(WfoExportTable.TAX_PARENT_ID)] = parentWfoId;
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_PARENT_ID)] = parentWfoId;
 
             //... higher taxa
-            csvLine[table.getIndex(WfoExportTable.TAX_SUBFAMILY)] = null;
-            csvLine[table.getIndex(WfoExportTable.TAX_TRIBE)] = null;
-            csvLine[table.getIndex(WfoExportTable.TAX_SUBTRIBE)] = null;
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBFAMILY)] = null;
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_TRIBE)] = null;
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBTRIBE)] = null;
             //TODO
-            csvLine[table.getIndex(WfoExportTable.TAX_SUBGENUS)] = name.isInfraGeneric()? name.getInfraGenericEpithet() : null ;
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBGENUS)] = name.isInfraGeneric()? name.getInfraGenericEpithet() : null ;
 
             //... tax status, TODO 2 are there other status for accepted or other reasons for being ambiguous
             String taxonStatus = taxon.isDoubtful()? "ambiguous" : "Accepted";
-            csvLine[table.getIndex(WfoExportTable.TAX_STATUS)] = taxonStatus;
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = taxonStatus;
 
             //secundum reference
-            csvLine[table.getIndex(WfoExportTable.NAME_ACCORDING_TO_ID)] = getId(state, taxon.getSec());
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_ACCORDING_TO_ID)] = getId(state, taxon.getSec());
             if (taxon.getSec() != null
                     && (!state.getReferenceStore().contains((taxon.getSec().getUuid())))) {
                 handleReference(state, taxon.getSec());
             }
 
             //TODO 2 remarks, what exactly
-            csvLine[table.getIndex(WfoExportTable.TAXON_REMARKS)] = getRemarks(name);
+            csvLine[table.getIndex(WfoBackboneExportTable.TAXON_REMARKS)] = getRemarks(name);
 
             handleSynonyms(state, taxon);
 
             //TODO 2 taxon provisional, still an open issue?
-//                csvLine[table.getIndex(WfoExportTable.TAX_PROVISIONAL)] = taxonNode.isDoubtful() ? "1" : "0";
+//                csvLine[table.getIndex(WfoBackboneExportTable.TAX_PROVISIONAL)] = taxonNode.isDoubtful() ? "1" : "0";
 
             //TODO 1 taxon only published
 
@@ -287,7 +287,7 @@ public class WfoClassificationExport
         return wfoId;
     }
 
-    private void handleSynonyms(WfoExportState state, Taxon taxon) {
+    private void handleSynonyms(WfoBackboneExportState state, Taxon taxon) {
 
         if (!state.getConfig().isDoSynonyms()) {
             return;
@@ -416,8 +416,8 @@ public class WfoClassificationExport
         }
     }
 
-    private void handleSource(WfoExportState state, DescriptionElementBase element,
-            WfoExportTable factsTable) {
+    private void handleSource(WfoBackboneExportState state, DescriptionElementBase element,
+            WfoBackboneExportTable factsTable) {
 //        ColDpExportTable table = ColDpExportTable.FACT_SOURCES;
 //        try {
 //            Set<DescriptionElementSource> sources = element.getSources();
@@ -463,7 +463,7 @@ public class WfoClassificationExport
         return identEntity.getTitleCache();
     }
 
-    private String getId(WfoExportState state, ICdmBase cdmBase) {
+    private String getId(WfoBackboneExportState state, ICdmBase cdmBase) {
         if (cdmBase == null) {
             return "";
         }
@@ -471,13 +471,13 @@ public class WfoClassificationExport
         return cdmBase.getUuid().toString();
     }
 
-    private void handleSynonym(WfoExportState state, Synonym synonym) {
+    private void handleSynonym(WfoBackboneExportState state, Synonym synonym) {
         try {
             if (isUnpublished(state.getConfig(), synonym)) {
                 return;
             }
 
-            WfoExportTable table = WfoExportTable.CLASSIFICATION;
+            WfoBackboneExportTable table = WfoBackboneExportTable.CLASSIFICATION;
             String[] csvLine = new String[table.getSize()];
 
             TaxonName name = synonym.getName();
@@ -492,7 +492,7 @@ public class WfoClassificationExport
                     state.getResult().addError(message, "handleName");
                     state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
                 }
-                csvLine[table.getIndex(WfoExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedWfoId;
+                csvLine[table.getIndex(WfoBackboneExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedWfoId;
             }
 
             state.getProcessor().put(table, synonym, csvLine);
@@ -502,7 +502,7 @@ public class WfoClassificationExport
         }
     }
 
-    private String handleName(WfoExportState state, WfoExportTable table, String[] csvLine,
+    private String handleName(WfoBackboneExportState state, WfoBackboneExportTable table, String[] csvLine,
             TaxonName name) {
 
         name = CdmBase.deproxy(name);
@@ -527,14 +527,14 @@ public class WfoClassificationExport
                 state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
                 return null;
             }else {
-                csvLine[table.getIndex(WfoExportTable.TAXON_ID)] = wfoId;
+                csvLine[table.getIndex(WfoBackboneExportTable.TAXON_ID)] = wfoId;
             }
 
             //TODO 9 add IPNI ID if exists, scientific name ID
-            csvLine[table.getIndex(WfoExportTable.NAME_SCIENTIFIC_NAME_ID)] = null;
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME_ID)] = null;
 
             //localID
-            csvLine[table.getIndex(WfoExportTable.NAME_LOCAL_ID)] = getId(state, name);
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_LOCAL_ID)] = getId(state, name);
 
             //scientificName
             if (name.isProtectedTitleCache()) {
@@ -542,15 +542,15 @@ public class WfoClassificationExport
                 //     have complete data if titleCache is protected as it is considered to be irrelevant or at least preliminary
                 String message = "";
                 if (StringUtils.isNotEmpty(name.getNameCache())) {
-                    csvLine[table.getIndex(WfoExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
+                    csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
                     message = "ScientificName: Name cache " + name.getNameCache() + " used for name with protected titleCache " +  name.getTitleCache();
                 }else {
-                    csvLine[table.getIndex(WfoExportTable.NAME_SCIENTIFIC_NAME)] = name.getTitleCache();
+                    csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME)] = name.getTitleCache();
                     message = "ScientificName: Name has protected titleCache and no explicit nameCache: " +  name.getTitleCache();
                 }
                 state.getResult().addWarning(message);  //TODO 7 add location to warning
             } else {
-                csvLine[table.getIndex(WfoExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
+                csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
             }
 
             //rank
@@ -561,29 +561,29 @@ public class WfoClassificationExport
                 state.getResult().addWarning(message);  //TODO 2 warning sufficient for missing rank? + location
                 return wfoId;
             }
-            csvLine[table.getIndex(WfoExportTable.RANK)] = rankStr;
+            csvLine[table.getIndex(WfoBackboneExportTable.RANK)] = rankStr;
 
             //authorship
             //TODO 3 handle empty authorship cache warning
-            csvLine[table.getIndex(WfoExportTable.NAME_AUTHORSHIP)] = name.getAuthorshipCache();
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = name.getAuthorshipCache();
 
             //family TODO 2 family handling
-            csvLine[table.getIndex(WfoExportTable.TAX_FAMILY)] = state.getFamilyStr();
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_FAMILY)] = state.getFamilyStr();
 
             //name parts
-            csvLine[table.getIndex(WfoExportTable.TAX_GENUS)] = name.isSupraGeneric()? null : name.getGenusOrUninomial();
-            csvLine[table.getIndex(WfoExportTable.NAME_SPECIFIC_EPITHET)] = name.getSpecificEpithet();
-            csvLine[table.getIndex(WfoExportTable.NAME_INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_GENUS)] = name.isSupraGeneric()? null : name.getGenusOrUninomial();
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_SPECIFIC_EPITHET)] = name.getSpecificEpithet();
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
 
             //TODO 3 verbatimTaxonRank, is this needed at all?
-            csvLine[table.getIndex(WfoExportTable.NAME_VERBATIM_RANK)] = rankStr;
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_VERBATIM_RANK)] = rankStr;
 
             //name status
-            csvLine[table.getIndex(WfoExportTable.NAME_STATUS)] = makeNameStatus(state, name);
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_STATUS)] = makeNameStatus(state, name);
 
             //nom. ref
             String nomRef = NomenclaturalSourceFormatter.INSTANCE().format(name.getNomenclaturalSource());
-            csvLine[table.getIndex(WfoExportTable.NAME_PUBLISHED_IN)] = nomRef;
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_PUBLISHED_IN)] = nomRef;
 
             //originalNameID
             TaxonName originalName = name.getBasionym();  //TODO 5 basionym, order in case there are >1 basionyms
@@ -596,20 +596,20 @@ public class WfoClassificationExport
                     //TODO 1 handle basionym is in file assertion
                 }
                 String basionymId = getWfoId(state, originalName, false);
-                csvLine[table.getIndex(WfoExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;
+                csvLine[table.getIndex(WfoBackboneExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;
             }
 
             //TODO 1 created
-            csvLine[table.getIndex(WfoExportTable.CREATED)] = null;
+            csvLine[table.getIndex(WfoBackboneExportTable.CREATED)] = null;
 
             //TODO 2 modified
-            csvLine[table.getIndex(WfoExportTable.MODIFIED)] = null;
+            csvLine[table.getIndex(WfoBackboneExportTable.MODIFIED)] = null;
 
             //TODO 1 URL to taxon
-            csvLine[table.getIndex(WfoExportTable.REFERENCES)] = null;
+            csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = null;
 
             //TODO 3 excluded info
-            csvLine[table.getIndex(WfoExportTable.EXCLUDE)] = null;
+            csvLine[table.getIndex(WfoBackboneExportTable.EXCLUDE)] = null;
 
             //TODO 1 related names like orth. var., original spelling,
 
@@ -625,7 +625,7 @@ public class WfoClassificationExport
         return wfoId;
     }
 
-    private String getWfoId(WfoExportState state, TaxonName name, boolean warnIfNotExists) {
+    private String getWfoId(WfoBackboneExportState state, TaxonName name, boolean warnIfNotExists) {
         Identifier wfoId = name.getIdentifier(IdentifierType.uuidWfoNameIdentifier);
         if (wfoId == null && warnIfNotExists) {
             String message = "No wfo-id given for name: " + name.getTitleCache()+"/"+ name.getUuid();
@@ -634,7 +634,7 @@ public class WfoClassificationExport
         return wfoId == null ? null : wfoId.getIdentifier();
     }
 
-    private String makeNameStatus(WfoExportState state, TaxonName name) {
+    private String makeNameStatus(WfoBackboneExportState state, TaxonName name) {
         try {
 
             //TODO 1 what is with dubium
@@ -668,7 +668,7 @@ public class WfoClassificationExport
         }
     }
 
-    private void handleHomotypicalGroup(WfoExportState state, HomotypicalGroup group, Taxon acceptedTaxon) {
+    private void handleHomotypicalGroup(WfoBackboneExportState state, HomotypicalGroup group, Taxon acceptedTaxon) {
         try {
 
             List<TaxonName> typifiedNames = new ArrayList<>();
@@ -699,7 +699,7 @@ public class WfoClassificationExport
         }
     }
 
-    private void handleReference(WfoExportState state, Reference reference) {
+    private void handleReference(WfoBackboneExportState state, Reference reference) {
         try {
             if (state.getReferenceStore().contains(reference.getUuid())) {
                 return;
@@ -707,21 +707,21 @@ public class WfoClassificationExport
             reference = CdmBase.deproxy(reference);
 
             state.addReferenceToStore(reference);
-            WfoExportTable table = WfoExportTable.REFERENCE;
+            WfoBackboneExportTable table = WfoBackboneExportTable.REFERENCE;
             String[] csvLine = new String[table.getSize()];
 
-            csvLine[table.getIndex(WfoExportTable.IDENTIFIER)] = getId(state, reference);
+            csvLine[table.getIndex(WfoBackboneExportTable.IDENTIFIER)] = getId(state, reference);
 
             //TODO 2 correct?, ref biblio citation
-            csvLine[table.getIndex(WfoExportTable.REF_BIBLIO_CITATION)] = reference.getCitation();
+            csvLine[table.getIndex(WfoBackboneExportTable.REF_BIBLIO_CITATION)] = reference.getCitation();
 
             //TODO 1 uri (doi, uri or ext_link
-//            csvLine[table.getIndex(WfoExportTable.REF_DOI)] = reference.getDoiString();
+//            csvLine[table.getIndex(WfoBackboneExportTable.REF_DOI)] = reference.getDoiString();
 //
 //            //TODO 2 reference link link (=> external link)
 ////            csvLine[table.getIndex(ColDpExportTable.LINK)] = null;
 //            if (reference.getUri() != null) {
-//                csvLine[table.getIndex(WfoExportTable.LINK)] = reference.getUri().toString();
+//                csvLine[table.getIndex(WfoBackboneExportTable.LINK)] = reference.getUri().toString();
 //            }
 
             state.getProcessor().put(table, reference, csvLine);
@@ -745,12 +745,12 @@ public class WfoClassificationExport
     }
 
     @Override
-    protected boolean doCheck(WfoExportState state) {
+    protected boolean doCheck(WfoBackboneExportState state) {
         return false;
     }
 
     @Override
-    protected boolean isIgnore(WfoExportState state) {
+    protected boolean isIgnore(WfoBackboneExportState state) {
         return false;
     }
 }

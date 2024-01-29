@@ -26,18 +26,18 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  * @author a.mueller
  * @since 2023-12-08
  */
-public class WfoExportResultProcessor {
+public class WfoBackboneExportResultProcessor {
 
     private static final String HEADER = "HEADER_207dd23a-f877-4c27-b93a-8dbea3234281";
 
-    private Map<WfoExportTable, Map<String,String[]>> result = new HashMap<>();
-    private WfoExportState state;
+    private Map<WfoBackboneExportTable, Map<String,String[]>> result = new HashMap<>();
+    private WfoBackboneExportState state;
 
-    public WfoExportResultProcessor(WfoExportState state) {
+    public WfoBackboneExportResultProcessor(WfoBackboneExportState state) {
         super();
         this.state = state;
         Map<String,String[]> resultMap;
-        for (WfoExportTable table: WfoExportTable.values()){
+        for (WfoBackboneExportTable table: WfoBackboneExportTable.values()){
             resultMap = new HashMap<>();
             if (state.getConfig().isIncludeHeaderLines()){
                 resultMap.put(HEADER, table.getColumnNames());
@@ -46,7 +46,7 @@ public class WfoExportResultProcessor {
         }
     }
 
-    public void put(WfoExportTable table, String id, String[] csvLine) {
+    public void put(WfoBackboneExportTable table, String id, String[] csvLine) {
         Map<String,String[]> resultMap = result.get(table);
         if (resultMap == null ){
             resultMap = new HashMap<>();
@@ -70,7 +70,7 @@ public class WfoExportResultProcessor {
         }
     }
 
-    public boolean hasRecord(WfoExportTable table, String id){
+    public boolean hasRecord(WfoBackboneExportTable table, String id){
         Map<String, String[]> resultMap = result.get(table);
         if (resultMap == null){
             return false;
@@ -79,25 +79,25 @@ public class WfoExportResultProcessor {
         }
     }
 
-    public  String[] getRecord(WfoExportTable table, String id){
+    public  String[] getRecord(WfoBackboneExportTable table, String id){
         return result.get(table).get(id);
     }
 
-    public void put(WfoExportTable table, ICdmBase cdmBase, String[] csvLine) {
+    public void put(WfoBackboneExportTable table, ICdmBase cdmBase, String[] csvLine) {
        this.put(table, cdmBase.getUuid().toString(), csvLine);
     }
 
-    public void createFinalResult(WfoExportState state) {
+    public void createFinalResult(WfoBackboneExportState state) {
 
         if (!result.isEmpty() ){
             state.setHomotypicalGroupStore(new ArrayList<>());
             state.setReferenceStore(new ArrayList<>());
             state.setNodeChildrenMap(new HashMap<>());
             //Replace quotes by double quotes
-            for (WfoExportTable table: result.keySet()){
+            for (WfoBackboneExportTable table: result.keySet()){
                 //write each table in an explicite stream ...
                 Map<String, String[]> tableData = result.get(table);
-                WfoExportConfigurator config = state.getConfig();
+                WfoBackboneExportConfigurator config = state.getConfig();
                 ByteArrayOutputStream exportStream = new ByteArrayOutputStream();
 
                 try{
@@ -129,7 +129,7 @@ public class WfoExportResultProcessor {
         result.clear();
     }
 
-    private String createCsvLine(WfoExportConfigurator config, String[] csvLine) {
+    private String createCsvLine(WfoBackboneExportConfigurator config, String[] csvLine) {
         String lineString = "";
         boolean first = true;
         for (String columnEntry: csvLine){
