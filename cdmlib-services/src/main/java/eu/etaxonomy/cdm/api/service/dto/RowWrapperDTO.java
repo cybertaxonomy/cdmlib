@@ -241,19 +241,20 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             }else {
                 result = stateData.getModifiers().iterator().next().getLabel();
             }
-            if (stateData.getState()!=null ) {
-                if (stateData.getState().getPreferredRepresentation(lang) != null) {
-                    result += stateData.getState().getPreferredRepresentation(lang);
-                }else {
-                    result += stateData.getState().getLabel();
-                }
+        }
+        if (stateData.getState()!=null ) {
+            if (stateData.getState().getPreferredRepresentation(lang) != null) {
+                result += stateData.getState().getPreferredRepresentation(lang);
             }else {
-                result += "[no state]";
+                result += stateData.getState().getLabel();
             }
-            if (stateData.getCount() != null) {
-                result += " ("+stateData.getCount()+")";
-            }
-       }
+        }else {
+            result += "[no state]";
+        }
+        if (stateData.getCount() != null) {
+            result += " ("+stateData.getCount()+")";
+        }
+
 
        return result;
     }
