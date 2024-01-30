@@ -139,7 +139,7 @@ public class WfoBackboneExportConfigurator
     //sourceLinkBaseUrl
     /**
      * The base url without /cdm_dataportal/taxon/{uuid}
-     * e.g. https://portal.cybertaxonomy.org/salvador/cdm_dataportal/
+     * e.g. https://portal.cybertaxonomy.org/salvador
      */
     public String getSourceLinkBaseUrl() {
         return sourceLinkBaseUrl;
