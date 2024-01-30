@@ -1298,12 +1298,13 @@ public class Taxon
     }
 
     //TODO full functionality still needs to be checked
-    public void addBasionymSynonym(TaxonName basionym, Reference synSec, String synSecDetail){
+    public Synonym addBasionymSynonym(TaxonName basionym, Reference synSec, String synSecDetail){
         SynonymType synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
         Synonym synonym = addSynonymName(basionym, synSec, synSecDetail, synonymType);
         TaxonName thisName = this.getName();
         thisName.addBasionym(basionym);
         addSynonym(synonym);
+        return synonym;
     }
 
     /**

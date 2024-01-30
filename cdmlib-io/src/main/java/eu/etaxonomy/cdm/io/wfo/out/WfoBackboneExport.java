@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 
@@ -266,13 +267,6 @@ public class WfoBackboneExport
             String taxonStatus = taxon.isDoubtful()? "ambiguous" : "Accepted";
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = taxonStatus;
 
-            //secundum reference
-            csvLine[table.getIndex(WfoBackboneExportTable.TAX_NAME_ACCORDING_TO_ID)] = getId(state, taxon.getSec());
-            if (taxon.getSec() != null
-                    && (!state.getReferenceStore().contains((taxon.getSec().getUuid())))) {
-                handleReference(state, taxon.getSec());
-            }
-
             //TODO 2 remarks, what exactly
             csvLine[table.getIndex(WfoBackboneExportTable.TAXON_REMARKS)] = getRemarks(name);
 
@@ -281,23 +275,16 @@ public class WfoBackboneExport
             //TODO 2 taxon provisional, still an open issue?
 //                csvLine[table.getIndex(WfoBackboneExportTable.TAX_PROVISIONAL)] = taxonNode.isDoubtful() ? "1" : "0";
 
+            handleTaxonBase(state, table, csvLine, taxon);
 
-            //TODO 2 created
-            csvLine[table.getIndex(WfoBackboneExportTable.CREATED)] = null;
-
-            //TODO 2 modified
-            csvLine[table.getIndex(WfoBackboneExportTable.MODIFIED)] = null;
-
-            //TODO 1 URL to taxon
+            //TODO 7 URL to taxon, take it from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
             if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
-                String sourceLinkBaseUrl = makeSourceLinkBaseUrl(state, taxon);
-                csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = sourceLinkBaseUrl;
+                String taxonSourceLink = makeTaxonSourceLink(state, taxon);
+                csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = taxonSourceLink;
             }
 
-            //TODO 3 excluded info
+            //TODO 2 excluded info
             csvLine[table.getIndex(WfoBackboneExportTable.EXCLUDE)] = null;
-
-            //TODO 1 taxon only published
 
             //process taxon line
             state.getProcessor().put(table, taxon, csvLine);
@@ -313,12 +300,42 @@ public class WfoBackboneExport
         return wfoId;
     }
 
-    private String makeSourceLinkBaseUrl(WfoBackboneExportState state, Taxon taxon) {
+    private void handleTaxonBase(WfoBackboneExportState state, WfoBackboneExportTable table, String[] csvLine,
+            TaxonBase<?> taxonBase) {
+
+        //secundum reference
+        Reference secRef = taxonBase.getSec();
+        csvLine[table.getIndex(WfoBackboneExportTable.TAX_NAME_ACCORDING_TO_ID)] = getId(state, secRef);
+        if (secRef != null
+                && (!state.getReferenceStore().contains((secRef.getUuid())))) {
+            handleReference(state, secRef);
+        }
+
+        //TODO 2 created
+        csvLine[table.getIndex(WfoBackboneExportTable.CREATED)] = null;
+
+        //TODO 2 modified
+        csvLine[table.getIndex(WfoBackboneExportTable.MODIFIED)] = null;
+
+    }
+
+    private String makeTaxonSourceLink(WfoBackboneExportState state, Taxon taxon) {
         String baseUrl = state.getConfig().getSourceLinkBaseUrl();
         if (!baseUrl.endsWith("/")) {
             baseUrl += "/";
         }
         String result = baseUrl + "cdm_dataportal/taxon/" + taxon.getUuid() ;
+        return result;
+    }
+
+    private String makeSynonymSourceLink(WfoBackboneExportState state, Synonym synonym) {
+        String baseUrl = state.getConfig().getSourceLinkBaseUrl();
+        if (!baseUrl.endsWith("/")) {
+            baseUrl += "/";
+        }
+        String result = baseUrl + "cdm_dataportal/taxon/" +
+                synonym.getAcceptedTaxon().getUuid()
+                + "/synonymy?highlite=" + synonym.getUuid();
         return result;
     }
 
@@ -332,14 +349,14 @@ public class WfoBackboneExport
         HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
         handleHomotypicalGroup(state, homotypicGroup, taxon);
         for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
-            handleSynonym(state, syn);
+            handleSynonym(state, syn, true);
         }
 
         List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
         for (HomotypicalGroup group: heterotypicHomotypicGroups){
             handleHomotypicalGroup(state, group, taxon);
             for (Synonym syn : taxon.getSynonymsInGroup(group)) {
-                handleSynonym(state, syn);
+                handleSynonym(state, syn, false);
             }
         }
     }
@@ -506,7 +523,7 @@ public class WfoBackboneExport
         return cdmBase.getUuid().toString();
     }
 
-    private void handleSynonym(WfoBackboneExportState state, Synonym synonym) {
+    private void handleSynonym(WfoBackboneExportState state, Synonym synonym, boolean isHomotypic) {
         try {
             if (isUnpublished(state.getConfig(), synonym)) {
                 return;
@@ -529,6 +546,17 @@ public class WfoBackboneExport
                 }
                 csvLine[table.getIndex(WfoBackboneExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedWfoId;
             }
+
+            //status
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = isHomotypic ? "homotypicSynonym" : "heterotypicSynonym";
+
+            //TODO 7 URL to taxon, take it from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
+            if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
+                String taxonSourceLink = makeSynonymSourceLink(state, synonym);
+                csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = taxonSourceLink;
+            }
+
+            handleTaxonBase(state, table, csvLine, synonym);
 
             state.getProcessor().put(table, synonym, csvLine);
         } catch (Exception e) {
@@ -748,10 +776,12 @@ public class WfoBackboneExport
             //TODO 2 correct?, ref biblio citation
             csvLine[table.getIndex(WfoBackboneExportTable.REF_BIBLIO_CITATION)] = reference.getCitation();
 
-            //TODO 1 uri (doi, uri or ext_link
-//            csvLine[table.getIndex(WfoBackboneExportTable.REF_DOI)] = reference.getDoiString();
-//
-//            //TODO 2 reference link link (=> external link)
+            //ref uri
+            if (reference.getDoi() != null) {
+                csvLine[table.getIndex(WfoBackboneExportTable.REF_URI)] = reference.getDoiString();
+            }else {
+                //TODO 2 handle other reference links, e.g. external links
+            }
 ////            csvLine[table.getIndex(ColDpExportTable.LINK)] = null;
 //            if (reference.getUri() != null) {
 //                csvLine[table.getIndex(WfoBackboneExportTable.LINK)] = reference.getUri().toString();

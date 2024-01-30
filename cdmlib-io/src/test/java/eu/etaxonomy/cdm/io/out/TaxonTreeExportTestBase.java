@@ -114,6 +114,7 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID familyTaxonUuid = UUID.fromString("3162e136-f2e2-4f9a-9010-3f35908fbae1");
     protected static final UUID genusTaxonUuid = UUID.fromString("3f52e136-f2e1-4f9a-9010-2f35908fbd39");
     protected static final UUID speciesTaxonUuid = UUID.fromString("9182e136-f2e2-4f9a-9010-3f35908fb5e0");
+    protected static final UUID basionymSynonymUuid = UUID.fromString("08dfb25d-2283-42d6-9711-45656d988f4c");
     protected static final UUID subspeciesTaxonUuid = UUID.fromString("b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
     protected static final UUID subspeciesUnpublishedTaxonUuid = UUID.fromString("290e295a-9089-4616-a30c-15ded79e064f");
 
@@ -128,6 +129,7 @@ public abstract class TaxonTreeExportTestBase
     //WFO IDs
     protected static final String familyWfoId = "WFO-12347f";
     protected static final String speciesWfoId = "WFO-123477";
+    protected static final String speciesBasionymWfoId = "WFO-123457b";
     protected static final String subspeciesWfoId = "WFO-12347ss";
     protected static final String subspeciesUnpublishedWfoId = "WFO-12347uss";
 
@@ -321,8 +323,9 @@ public abstract class TaxonTreeExportTestBase
         //species basionym
         TaxonName basionymName = parser.parseReferencedName("Sus basionus Mill., The book of botany 3: 22. 1804", NomenclaturalCode.ICNAFP, Rank.SPECIES());
         basionymName.setUuid(basionymNameUuid);
-        addWfoIdentifier(basionymName, "WFO-123457b");
-        species.addBasionymSynonym(basionymName, species.getSec(), "67");
+        addWfoIdentifier(basionymName, speciesBasionymWfoId);
+        Synonym basionymSynonym = species.addBasionymSynonym(basionymName, species.getSec(), "67");
+        basionymSynonym.setUuid(basionymSynonymUuid);
 
         //unpublished species synonym
         TaxonName synonymName = parser.parseReferencedName("Genus synonym Mill., The book of botany 4: 23. 1805", NomenclaturalCode.ICNAFP, Rank.SPECIES());

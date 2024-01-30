@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.wfo.out;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,6 +56,22 @@ public class WfoBackboneExportTest
             str("Familyname") + NONE4 + NONE3 +
             str("family") + str("Conserved") + str("Sp. Pl. 3: 22. 1752") + str("Accepted")
             + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + familyTaxonUuid)
+            + NONE_END;
+
+    private String expectedSpeciesNameLine = str(speciesWfoId) + NONE + uuid(speciesNameUuid) +
+            str("Genus species") + str("species") + str("WFO-12347g") + str("(Mill.) Hook") +
+            str("Familyname") + NONE3 + str("Genus") + NONE + str("species") + NONE +
+            str("species") + str("Valid") + str("in J. Appl. Synon. 5: 33. 1824") + str("Accepted")
+            + NONE + str(speciesBasionymWfoId) + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid)
+            + NONE_END;
+
+    private String expectedSpeciesBasionymNameLine = str(speciesBasionymWfoId) + NONE + uuid(basionymNameUuid) +
+            str("Sus basionus") + str("species") + NONE + str("Mill.") +
+            str("Familyname") + NONE3 + str("Sus") + NONE + str("basionus") + NONE +
+            str("species") + str("Valid") + str("The book of botany 3: 22. 1804") + str("homotypicSynonym") +
+            str(speciesWfoId) + NONE + uuid(ref1UUID) + NONE3 +
+            //TODO 2 highlite => highlight once changed in portal code
+            str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid + "/synonymy?highlite=" + basionymSynonymUuid)
             + NONE_END;
 
     @Before
@@ -119,13 +136,11 @@ public class WfoBackboneExportTest
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
         Assert.assertEquals("There should be 7 taxa (5 accepted + 2 synonyms)", 7, taxonResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 5 accepted taxa", 5, filterAccepted(taxonResult).size());
+        System.out.println(taxonResult);
+        Assert.assertEquals("There should be 2 synonyms", 2, filterSynonyms(taxonResult).size());
 
-//        List<String> synonymResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
-//        Assert.assertEquals("There should be 2 synonym", 2, synonymResult.size() - COUNT_HEADER);
-
-        List<String> nameResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 7 names", 7, nameResult.size() - COUNT_HEADER);
-
+        //reference counts
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
         Assert.assertEquals("There should be 1 reference (1 sec reference)", 1, referenceResult.size() - COUNT_HEADER);
 
@@ -152,14 +167,34 @@ public class WfoBackboneExportTest
                 + NONE_END;
         Assert.assertEquals(expectedExcluded, unpublishedLine);
 
+        //... family => test nom. status 'conserved'
+        String nameStr = getLine(taxonResult, familyWfoId);
+        Assert.assertEquals(expectedFamilyNameLine, nameStr);
+
+        //... species => has basionym
+        String speciesStr = getLine(taxonResult, speciesWfoId);
+        Assert.assertEquals(expectedSpeciesNameLine, speciesStr);
+
+        //... species basionym/synonym
+        String speciesBasionymStr = getLine(taxonResult, speciesBasionymWfoId);
+        Assert.assertEquals(expectedSpeciesBasionymNameLine, speciesBasionymStr);
+
         //references
         String secRefLine = getLine(referenceResult, ref1UUID);
         Assert.assertEquals(expectedSecRefLine, secRefLine);
 
-        //name
-        //... family => test nom. status 'conserved'
-        String nameStr = getLine(nameResult, familyWfoId);
-        Assert.assertEquals(expectedFamilyNameLine, nameStr);
+    }
+
+    private List<String> filterSynonyms(List<String> taxonResult) {
+        return taxonResult.stream()
+                .filter(s->s.contains("typicSynonym"))
+                .collect(Collectors.toList());
+    }
+
+    private List<String> filterAccepted(List<String> taxonResult) {
+        return taxonResult.stream()
+                .filter(s->s.contains("Accepted"))
+                .collect(Collectors.toList());
     }
 
     @Test
