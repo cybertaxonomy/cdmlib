@@ -273,6 +273,22 @@ public class WfoBackboneExport
             //TODO 2 taxon provisional, still an open issue?
 //                csvLine[table.getIndex(WfoBackboneExportTable.TAX_PROVISIONAL)] = taxonNode.isDoubtful() ? "1" : "0";
 
+
+            //TODO 2 created
+            csvLine[table.getIndex(WfoBackboneExportTable.CREATED)] = null;
+
+            //TODO 2 modified
+            csvLine[table.getIndex(WfoBackboneExportTable.MODIFIED)] = null;
+
+            //TODO 1 URL to taxon
+            if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
+                csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] =
+                        state.getConfig().getSourceLinkBaseUrl() + "/cdm_dataportal/taxon/" + taxon.getUuid() ;
+            }
+
+            //TODO 3 excluded info
+            csvLine[table.getIndex(WfoBackboneExportTable.EXCLUDE)] = null;
+
             //TODO 1 taxon only published
 
             //process taxon line
@@ -612,18 +628,6 @@ public class WfoBackboneExport
                 String basionymId = getWfoId(state, originalName, false);
                 csvLine[table.getIndex(WfoBackboneExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;
             }
-
-            //TODO 2 created
-            csvLine[table.getIndex(WfoBackboneExportTable.CREATED)] = null;
-
-            //TODO 2 modified
-            csvLine[table.getIndex(WfoBackboneExportTable.MODIFIED)] = null;
-
-            //TODO 1 URL to taxon
-            csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = null;
-
-            //TODO 3 excluded info
-            csvLine[table.getIndex(WfoBackboneExportTable.EXCLUDE)] = null;
 
             //TODO 1 related names like orth. var., original spelling,
 

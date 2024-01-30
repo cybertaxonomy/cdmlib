@@ -38,6 +38,8 @@ public class WfoBackboneExportConfigurator
 
     private String familyStr = null;
 
+    private String sourceLinkBaseUrl = null;
+
     private static final WfoBackboneExportTransformer transformer = new WfoBackboneExportTransformer();
 
 //************************* FACTORY ******************************/
@@ -132,5 +134,17 @@ public class WfoBackboneExportConfigurator
     }
     public void setFamilyStr(String familyStr) {
         this.familyStr = familyStr;
+    }
+
+    //sourceLinkBaseUrl
+    /**
+     * The base url without /cdm_dataportal/taxon/{uuid}
+     * e.g. https://portal.cybertaxonomy.org/salvador/cdm_dataportal/
+     */
+    public String getSourceLinkBaseUrl() {
+        return sourceLinkBaseUrl;
+    }
+    public void setSourceLinkBaseUrl(String sourceLinkBaseUrl) {
+        this.sourceLinkBaseUrl = sourceLinkBaseUrl;
     }
 }
