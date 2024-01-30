@@ -53,7 +53,7 @@ public class ColDpExportTest
     private String expectedArmenianDistributionLine = uuid(subspeciesTaxonUuid) + NONE +
             "\"ARM\",\"Armenia\",\"iso\",\"uncertain\"," + NONE + NONE_END;
 
-    private String expectedFamilyNameLine = uuid(familyNameUuid) + "\"wfo:WFO-12347f\"," + NONE2 + "\"Family\",\"L.\",\"family\",\"Family\"," +
+    private String expectedFamilyNameLine = uuid(familyNameUuid) + "\"wfo:WFO-12347f\"," + NONE2 + "\"Familyname\",\"L.\",\"family\",\"Familyname\"," +
             NONE4 + NONE + "\"L.\"," + NONE + "\"1752\"," + NONE3 + "\"ICN\",\"conserved\"," +
             uuid(familyNomRefUuid) + "\"1752\",\"22\"," + NONE2 + NONE_END;
 

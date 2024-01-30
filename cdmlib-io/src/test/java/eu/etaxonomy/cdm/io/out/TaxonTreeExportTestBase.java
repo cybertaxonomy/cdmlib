@@ -126,8 +126,10 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID basionymNameUuid = UUID.fromString("c7962b1f-950e-4e28-a3d1-aa0583dfdc92");
 
     //WFO IDs
-    protected static final String subspeciesWfoId = "WFO-12347ss";
+    protected static final String familyWfoId = "WFO-12347f";
     protected static final String speciesWfoId = "WFO-123477";
+    protected static final String subspeciesWfoId = "WFO-12347ss";
+    protected static final String subspeciesUnpublishedWfoId = "WFO-12347uss";
 
     //reference uuid
     protected static final UUID familyNomRefUuid = UUID.fromString("b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
@@ -174,15 +176,19 @@ public abstract class TaxonTreeExportTestBase
         ExportResult result = defaultExport.invoke(config);
 
         //test exceptions
-        testExceptionsErrorsWarnings(result);
+        testExceptionsErrorsWarnings(result, 0, 0, 1);
     }
 
     protected abstract CONFIG newConfigurator();
 
     protected void testExceptionsErrorsWarnings(ExportResult result) {
-        Assert.assertTrue(result.getExceptions().size() == 0);
-        Assert.assertTrue(result.getErrors().size() == 0);
-        Assert.assertTrue(result.getWarnings().size() == 0);
+        testExceptionsErrorsWarnings(result, 0, 0, 0);
+    }
+
+    protected void testExceptionsErrorsWarnings(ExportResult result, int exceptions, int errors,int warnings) {
+        Assert.assertEquals(exceptions, result.getExceptions().size());
+        Assert.assertEquals(errors, result.getErrors().size());
+        Assert.assertEquals(warnings, result.getWarnings().size());
     }
 
     protected void setUuid(CdmBase cdmBase, String uuidStr) {
@@ -275,10 +281,10 @@ public abstract class TaxonTreeExportTestBase
         setUuid(classification.getRootNode(), rootNodeUuid);
 
         //family
-        TaxonName familyName = parser.parseReferencedName("Family L., Sp. Pl. 3: 22. 1752",
+        TaxonName familyName = parser.parseReferencedName("Familyname L., Sp. Pl. 3: 22. 1752",
                 NomenclaturalCode.ICNAFP, Rank.FAMILY());
         familyName.addStatus(NomenclaturalStatusType.CONSERVED(), null, null);
-        addWfoIdentifier(familyName, "WFO-12347f");
+        addWfoIdentifier(familyName, familyWfoId);
         setUuid(familyName, familyNameUuid);
         setUuid(familyName.getNomenclaturalReference(), familyNomRefUuid);
         Taxon family = Taxon.NewInstance(familyName, sec1);
@@ -346,7 +352,7 @@ public abstract class TaxonTreeExportTestBase
         TaxonName subspeciesNameUnpublished = parser.parseReferencedName("Genus species subsp. unpublished Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
         setUuid(subspeciesNameUnpublished, subspeciesUnpublishedNameUUID);
-        addWfoIdentifier(subspeciesNameUnpublished, "WFO-12347uss");
+        addWfoIdentifier(subspeciesNameUnpublished, subspeciesUnpublishedWfoId);
 
         Taxon subspeciesUnpublished = Taxon.NewInstance(subspeciesNameUnpublished, sec1);
         setUuid(subspeciesUnpublished, subspeciesUnpublishedTaxonUuid);

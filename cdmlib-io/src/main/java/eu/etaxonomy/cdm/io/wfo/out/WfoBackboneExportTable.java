@@ -34,17 +34,17 @@ public enum WfoBackboneExportTable implements ITaxonTreeExportTable {
     static final String TAX_SUBFAMILY = "subfamily";
     static final String TAX_TRIBE = "tribe";
     static final String TAX_SUBTRIBE = "subtribe";
-    static final String TAX_GENUS = "genus";
-    static final String TAX_SUBGENUS = "subgenus";
+    static final String TAX_GENUS = "genus";  //TODO should it be NAME_GENUS
+    static final String TAX_SUBGENUS = "subgenus";  //TODO should it be NAME_SUBGENUS
     static final String NAME_SPECIFIC_EPITHET = "specificEpithet";
     static final String NAME_INFRASPECIFIC_EPITHET = "infraspecificEpithet ";
     static final String NAME_VERBATIM_RANK = "verbatimTaxonRank ";
     static final String NAME_STATUS = "nomenclaturalStatus";
     static final String NAME_PUBLISHED_IN = "namePublishedIn";
-    static final String TAX_STATUS = "nomenclaturalStatus";
+    static final String TAX_STATUS = "taxonomicStatus";
     static final String TAX_ACCEPTED_NAME_ID = "acceptedNameUsageID";
     static final String NAME_ORIGINAL_NAME_ID = "originalNameUsageID";
-    static final String NAME_ACCORDING_TO_ID = "nameAccordingToID";
+    static final String TAX_NAME_ACCORDING_TO_ID = "nameAccordingToID";
     static final String TAXON_REMARKS = "taxonRemarks";
     static final String CREATED = "created";
     static final String MODIFIED = "modified";
@@ -59,13 +59,14 @@ public enum WfoBackboneExportTable implements ITaxonTreeExportTable {
 
 
     private final static String[] classificationColumns(){
-        return new String[]{TAXON_ID, NAME_SCIENTIFIC_NAME_ID, NAME_LOCAL_ID,
+        return new String[]{
+                TAXON_ID, NAME_SCIENTIFIC_NAME_ID, NAME_LOCAL_ID,
                 NAME_SCIENTIFIC_NAME, RANK, TAX_PARENT_ID,
-                NAME_AUTHORSHIP, TAX_FAMILY, TAX_SUBFAMILY, TAX_TRIBE, TAX_SUBTRIBE, TAX_GENUS,
-                TAX_SUBGENUS, NAME_SPECIFIC_EPITHET,
-                NAME_INFRASPECIFIC_EPITHET, NAME_VERBATIM_RANK, NAME_STATUS,
-                NAME_PUBLISHED_IN, TAX_STATUS, TAX_ACCEPTED_NAME_ID,
-                NAME_ORIGINAL_NAME_ID, NAME_ACCORDING_TO_ID, TAXON_REMARKS,
+                NAME_AUTHORSHIP, TAX_FAMILY, TAX_SUBFAMILY, TAX_TRIBE, TAX_SUBTRIBE,
+                TAX_GENUS, TAX_SUBGENUS, NAME_SPECIFIC_EPITHET, NAME_INFRASPECIFIC_EPITHET,
+                NAME_VERBATIM_RANK, NAME_STATUS, NAME_PUBLISHED_IN,
+                TAX_STATUS, TAX_ACCEPTED_NAME_ID,
+                NAME_ORIGINAL_NAME_ID, TAX_NAME_ACCORDING_TO_ID, TAXON_REMARKS,
                 CREATED, MODIFIED, REFERENCES, EXCLUDE};
     }
 

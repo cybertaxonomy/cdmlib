@@ -123,7 +123,7 @@ public class WfoBackboneExportResultProcessor {
                 }
 
                 state.getResult().putExportData(table.getTableName(), exportStream.toByteArray());
-                state.getResult().setExportType(ExportType.COLDP);
+                state.getResult().setExportType(ExportType.WFO_BACKBONE);
             }
         }
         result.clear();

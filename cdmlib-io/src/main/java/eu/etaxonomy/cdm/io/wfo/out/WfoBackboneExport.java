@@ -133,7 +133,6 @@ public class WfoBackboneExport
                         String wfoId = handleTaxon(state, taxonNode, parentWfoId);
                         state.putTaxonNodeWfoId(taxonNode, wfoId);
                     }
-                    state.putTaxonNodeWfoId(taxonNode, parentWfoId);
                 }
             } catch (Exception e) {
                 state.getResult().addException(e, "An unexpected error occurred when handling taxonNode "
@@ -213,6 +212,7 @@ public class WfoBackboneExport
      * @return the WFO-ID of the taxon
      */
     private String handleTaxon(WfoBackboneExportState state, TaxonNode taxonNode, String parentWfoId) {
+
         //check null
         if (taxonNode == null) {
             state.getResult().addError("The taxonNode was null.", "handleTaxon");
@@ -249,7 +249,7 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBFAMILY)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_TRIBE)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBTRIBE)] = null;
-            //TODO
+            //TODO 2 is subgenus handling correct?
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBGENUS)] = name.isInfraGeneric()? name.getInfraGenericEpithet() : null ;
 
             //... tax status, TODO 2 are there other status for accepted or other reasons for being ambiguous
@@ -257,7 +257,7 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = taxonStatus;
 
             //secundum reference
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_ACCORDING_TO_ID)] = getId(state, taxon.getSec());
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_NAME_ACCORDING_TO_ID)] = getId(state, taxon.getSec());
             if (taxon.getSec() != null
                     && (!state.getReferenceStore().contains((taxon.getSec().getUuid())))) {
                 handleReference(state, taxon.getSec());
@@ -567,7 +567,19 @@ public class WfoBackboneExport
             //TODO 3 handle empty authorship cache warning
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = name.getAuthorshipCache();
 
-            //family TODO 2 family handling
+            //family (use familystr if provided, otherwise try to compute from the family taxon
+            String familyStr = state.getFamilyStr();
+            if (StringUtils.isBlank(familyStr)){
+                if (Rank.FAMILY().equals(name.getRank())){
+                    familyStr = name.getNameCache();
+                }
+                if (StringUtils.isNotBlank(familyStr)) {
+                    state.setFamilyStr(familyStr);
+                }else {
+                    String message = "Obligatory family information is missing";
+                    state.getResult().addWarning(message);
+                }
+            }
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_FAMILY)] = state.getFamilyStr();
 
             //name parts
@@ -599,7 +611,7 @@ public class WfoBackboneExport
                 csvLine[table.getIndex(WfoBackboneExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;
             }
 
-            //TODO 1 created
+            //TODO 2 created
             csvLine[table.getIndex(WfoBackboneExportTable.CREATED)] = null;
 
             //TODO 2 modified
@@ -612,8 +624,6 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.EXCLUDE)] = null;
 
             //TODO 1 related names like orth. var., original spelling,
-
-//            state.getProcessor().put(table, name, csvLine);
 
         } catch (Exception e) {
             state.getResult().addException(e,
