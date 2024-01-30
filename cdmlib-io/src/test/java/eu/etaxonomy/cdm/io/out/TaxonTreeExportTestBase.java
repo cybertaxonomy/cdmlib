@@ -176,7 +176,7 @@ public abstract class TaxonTreeExportTestBase
         ExportResult result = defaultExport.invoke(config);
 
         //test exceptions
-        testExceptionsErrorsWarnings(result, 0, 0, 1);
+        testExceptionsErrorsWarnings(result);
     }
 
     protected abstract CONFIG newConfigurator();

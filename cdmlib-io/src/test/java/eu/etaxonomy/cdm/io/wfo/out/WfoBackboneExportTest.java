@@ -186,6 +186,28 @@ public class WfoBackboneExportTest
     }
 
     @Override
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    public void testFullSampleData(){
+
+        //create data
+        commonService.createFullSampleData();
+        commitAndStartNewTransaction();
+
+        //config+invoke
+        WfoBackboneExportConfigurator config = newConfigurator();
+        config.setTarget(TARGET.EXPORT_DATA);
+        ExportResult result = defaultExport.invoke(config);
+
+        //test exceptions
+        testExceptionsErrorsWarnings(result, 0, 0, 0);
+    }
+
+
+    @Override
     protected WfoBackboneExportConfigurator newConfigurator() {
         WfoBackboneExportConfigurator config = WfoBackboneExportConfigurator.NewInstance();
         config.setTarget(TARGET.EXPORT_DATA);
