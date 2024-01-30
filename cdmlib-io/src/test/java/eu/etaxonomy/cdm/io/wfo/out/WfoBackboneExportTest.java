@@ -45,7 +45,8 @@ public class WfoBackboneExportTest
             str("Genus species subsp. subspec") + str("subspecies") + str(speciesWfoId) + str("Mill.") +
             str("Myfamily")+ NONE3 + str("Genus") + NONE + str("species") + str("subspec")
             + str("subspecies") + str("Valid") + str("The book of botany 3: 22. 1804") + str("Accepted")
-            + NONE2 + uuid(ref1UUID) + NONE4 + NONE_END;
+            + NONE2 + uuid(ref1UUID) + NONE3 + str("https://www.abc.de/mytaxon/cdm_dataportal/taxon/" + subspeciesTaxonUuid)
+            + NONE_END;
 
     private String expectedSecRefLine = uuid(ref1UUID) + str("My sec ref") + NONE_END;
 
@@ -53,7 +54,8 @@ public class WfoBackboneExportTest
             str("Familyname") + str("family") + str("") + str("L.") +
             str("Familyname") + NONE4 + NONE3 +
             str("family") + str("Conserved") + str("Sp. Pl. 3: 22. 1752") + str("Accepted")
-            + NONE2 + uuid(ref1UUID) + NONE4 + NONE_END;
+            + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + familyTaxonUuid)
+            + NONE_END;
 
     @Before
     public void setUp()  {
@@ -70,6 +72,7 @@ public class WfoBackboneExportTest
         //config+invoke
         WfoBackboneExportConfigurator config = newConfigurator();
         config.setFamilyStr("Myfamily");
+        config.setSourceLinkBaseUrl("https://www.abc.de/mytaxon");
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
@@ -108,6 +111,7 @@ public class WfoBackboneExportTest
         //config+invoke
         WfoBackboneExportConfigurator config = newConfigurator();
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
+        config.setSourceLinkBaseUrl("http://www.abc.de/mytaxon/");
         //Note: on purpose we do not define a familyStr here as it is to be taken from the persisted family
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
@@ -133,7 +137,8 @@ public class WfoBackboneExportTest
 
         //subspecies taxon
         String subspeciesLine = getLine(taxonResult, subspeciesWfoId);
-        Assert.assertEquals(expectedSubspeciesTaxonLine.replace("Myfamily", "Familyname") , subspeciesLine);
+        String expectedSubspecies = expectedSubspeciesTaxonLine.replace("Myfamily", "Familyname").replace("https://", "http://");
+        Assert.assertEquals(expectedSubspecies , subspeciesLine);
 
         //unpublished/excluded/note
         //TODO evaluate unpublished flag and discuss how to handle excluded
@@ -143,7 +148,8 @@ public class WfoBackboneExportTest
                 str(speciesWfoId) + str("Mill.") + str("Familyname") + NONE3 + str("Genus")
                 + NONE + str("species") + str("unpublished") + str("subspecies") +
                 str ("Valid") + str("The book of botany 3: 22. 1804") +
-                str("Accepted") + NONE2 + uuid(ref1UUID) + NONE4 + NONE_END;
+                str("Accepted") + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + subspeciesUnpublishedTaxonUuid)
+                + NONE_END;
         Assert.assertEquals(expectedExcluded, unpublishedLine);
 
         //references
@@ -191,6 +197,8 @@ public class WfoBackboneExportTest
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
+    //overrides the original test as test sample does not contain WFO-IDs
+    //and therefore will throw a warning
     public void testFullSampleData(){
 
         //create data
@@ -203,7 +211,7 @@ public class WfoBackboneExportTest
         ExportResult result = defaultExport.invoke(config);
 
         //test exceptions
-        testExceptionsErrorsWarnings(result, 0, 0, 0);
+        testExceptionsErrorsWarnings(result, 0, 0, 1);
     }
 
 

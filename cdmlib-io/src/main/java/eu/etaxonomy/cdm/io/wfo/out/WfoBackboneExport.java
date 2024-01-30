@@ -102,6 +102,14 @@ public class WfoBackboneExport
 //          handleMetaData(state);  //FIXME metadata;
             monitor.subTask("Start partitioning");
 
+            //test configurator
+            String baseUrl = state.getConfig().getSourceLinkBaseUrl();
+            if (baseUrl != null && !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")){
+                String message = "Source link base url is not a http based url.";
+                state.getResult().addWarning(message);
+            }
+
+            //taxon nodes
             TaxonNode node = partitioner.next();
             while (node != null) {
                 handleTaxonNode(state, node);
@@ -282,8 +290,8 @@ public class WfoBackboneExport
 
             //TODO 1 URL to taxon
             if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
-                csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] =
-                        state.getConfig().getSourceLinkBaseUrl() + "/cdm_dataportal/taxon/" + taxon.getUuid() ;
+                String sourceLinkBaseUrl = makeSourceLinkBaseUrl(state, taxon);
+                csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = sourceLinkBaseUrl;
             }
 
             //TODO 3 excluded info
@@ -303,6 +311,15 @@ public class WfoBackboneExport
         }
 
         return wfoId;
+    }
+
+    private String makeSourceLinkBaseUrl(WfoBackboneExportState state, Taxon taxon) {
+        String baseUrl = state.getConfig().getSourceLinkBaseUrl();
+        if (!baseUrl.endsWith("/")) {
+            baseUrl += "/";
+        }
+        String result = baseUrl + "cdm_dataportal/taxon/" + taxon.getUuid() ;
+        return result;
     }
 
     private void handleSynonyms(WfoBackboneExportState state, Taxon taxon) {
