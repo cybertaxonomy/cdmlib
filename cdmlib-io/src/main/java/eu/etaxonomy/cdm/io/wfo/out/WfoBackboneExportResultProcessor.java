@@ -23,6 +23,8 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 /**
  * TODO merge with CDM light
  *
+ * @see https://dev.e-taxonomy.eu/redmine/issues/10446
+ *
  * @author a.mueller
  * @since 2023-12-08
  */

@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 /**
  * Transformer for WFO Backbone export.
  *
+ * @see https://dev.e-taxonomy.eu/redmine/issues/10446
+ *
  * @author a.mueller
  * @date 2023-12-08
  */

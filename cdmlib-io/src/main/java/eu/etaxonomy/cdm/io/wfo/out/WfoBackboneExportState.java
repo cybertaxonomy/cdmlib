@@ -27,6 +27,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 /**
  * State for WFO Backbone export.
  *
+ * @see https://dev.e-taxonomy.eu/redmine/issues/10446
+ *
  * @author a.mueller
  * @since 2023-12-08
  */

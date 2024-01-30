@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 /**
  * Configurator for WFO Backbone export.
  *
+ * @see https://dev.e-taxonomy.eu/redmine/issues/10446
+ *
  * @author a.mueller
  * @since 2023-12-08
  */
