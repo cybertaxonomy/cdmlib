@@ -226,30 +226,6 @@ public class WfoBackboneExportTest
     }
 
     @Override
-    @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-    })
-    //overrides the original test as test sample does not contain WFO-IDs
-    //and therefore will throw a warning
-    public void testFullSampleData(){
-
-        //create data
-        commonService.createFullSampleData();
-        commitAndStartNewTransaction();
-
-        //config+invoke
-        WfoBackboneExportConfigurator config = newConfigurator();
-        config.setTarget(TARGET.EXPORT_DATA);
-        ExportResult result = defaultExport.invoke(config);
-
-        //test exceptions
-        testExceptionsErrorsWarnings(result, 0, 0, 1);
-    }
-
-
-    @Override
     protected WfoBackboneExportConfigurator newConfigurator() {
         WfoBackboneExportConfigurator config = WfoBackboneExportConfigurator.NewInstance();
         config.setTarget(TARGET.EXPORT_DATA);
