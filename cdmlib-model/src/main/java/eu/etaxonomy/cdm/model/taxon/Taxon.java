@@ -456,6 +456,8 @@ public class Taxon
         if(descriptions == null) {
             return null;
         }
+
+        Set<TaxonDescription> descriptions= getDescriptions();
         for (TaxonDescription desc: descriptions) {
             if (desc.isDefault()) {
                 return desc;
