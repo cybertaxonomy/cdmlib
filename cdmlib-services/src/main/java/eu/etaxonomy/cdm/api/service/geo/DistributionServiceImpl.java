@@ -170,7 +170,7 @@ public class DistributionServiceImpl implements IDistributionService {
         TermTree<PresenceAbsenceTerm> statusTree = getPersistentStatusTree(config);
 
         // for all later applications apply the rules statusOrderPreference, hideHiddenArea
-        // and ignoreUndefinedStatus to all distributions, but KEEP fallback area distributions
+        // and statusTree(statusFilter) to all distributions, but KEEP fallback area distributions
         boolean keepFallBackOnlyIfNoSubareaDataExists = false;
         Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
                 areaTree, statusTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA,
@@ -220,6 +220,7 @@ public class DistributionServiceImpl implements IDistributionService {
             Set<MarkerType> fallbackAreaMarkerType = null;
             // only apply the subAreaPreference rule for the maps
             keepFallBackOnlyIfNoSubareaDataExists = true;
+            //this filters again, but this time with subarea preference rule and fallback area removal
             Set<Distribution> filteredMapDistributions = DistributionServiceUtilities.filterDistributions(
                     filteredDistributions, areaTree, statusTree, fallbackAreaMarkerType, !PREFER_AGGREGATED,
                     IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists);

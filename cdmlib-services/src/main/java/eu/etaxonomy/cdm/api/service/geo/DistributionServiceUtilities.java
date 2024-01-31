@@ -716,7 +716,7 @@ public class DistributionServiceUtilities {
             }
         }
 
-        // assign distributions to the area and filter undefined status
+        // map distributions to the area and apply status filter
         for(Distribution distribution : distributions){
             NamedArea area = distribution.getArea();
             if(area == null) {
@@ -880,28 +880,41 @@ public class DistributionServiceUtilities {
     }
 
     /**
-     * Removes all distributions that have an area being a parent of
+     * Removes all distributions that have an area being an ancestor of
      * another distribution area. E.g. removes distribution for "Europe"
      * if a distribution for "France" exists in the list, where Europe
-     * is a direct parent for France.
+     * is an ancestor for France.
      */
     private static void handleSubAreaPreferenceRule(SetMap<NamedArea, Distribution> filteredDistributions,
             TermTree<NamedArea> areaTree) {
 
         SetMap<NamedArea, NamedArea> childToParentsMap = areaTree.getParentMap();
-        Set<NamedArea> removeCandidatesArea = new HashSet<>();
+        Set<NamedArea> removeCandidateAreas = new HashSet<>();
+
         for(NamedArea area : filteredDistributions.keySet()){
-            if(removeCandidatesArea.contains(area)){
-                continue;
-            }
-            childToParentsMap.get(area).forEach(parent->{
-                if(parent != null && filteredDistributions.containsKey(parent)){
-                    removeCandidatesArea.add(parent);
+            Set<NamedArea> ancestors = new HashSet<>();
+            fillAncestorsRecursive(area, childToParentsMap, ancestors, removeCandidateAreas);
+
+            for (NamedArea parentArea : ancestors) {
+                if(parentArea != null && filteredDistributions.containsKey(parentArea)){
+                    removeCandidateAreas.add(parentArea);
                 }
-            });
+            }
         }
-        for(NamedArea removeKey : removeCandidatesArea){
+        for(NamedArea removeKey : removeCandidateAreas){
             filteredDistributions.remove(removeKey);
+        }
+    }
+
+    private static void fillAncestorsRecursive(NamedArea area, SetMap<NamedArea, NamedArea> childToParentsMap,
+            Set<NamedArea> ancestors, Set<NamedArea> removeCandidateAreas) {
+        if(removeCandidateAreas.contains(area)){
+            return;
+        }
+        Set<NamedArea> parents = childToParentsMap.get(area);
+        ancestors.addAll(parents);
+        for (NamedArea parent : parents) {
+            fillAncestorsRecursive(parent, childToParentsMap, ancestors, removeCandidateAreas);
         }
     }
 
