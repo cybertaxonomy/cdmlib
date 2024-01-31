@@ -166,9 +166,9 @@ public class TermTree <T extends DefinedTermBase>
 // ****************** GETTER / SETTER **********************************/
 
     /**
-	 * Returns the topmost {@link TermNode feature node} (root node) of <i>this</i>
-	 * feature tree. The root node does not have any parent. Since feature nodes
-	 * recursively point to their child nodes the complete feature tree is
+	 * Returns the topmost {@link TermNode term node} (root node) of <i>this</i>
+	 * term tree. The root node does not have any parent. Since term nodes
+	 * recursively point to their child nodes the complete term tree is
 	 * defined by its root node.
 	 */
 	public TermNode<T> getRoot() {

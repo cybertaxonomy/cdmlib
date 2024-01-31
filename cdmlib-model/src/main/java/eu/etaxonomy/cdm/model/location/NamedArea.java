@@ -302,7 +302,11 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
         return (NamedArea) area;
     }
 
+    /**
+     * @deprecated will be removed soon, use term trees instead
+     */
     @Override
+    @Deprecated
     public void setPartOf(NamedArea partOf){
         this.partOf = partOf;
     }
