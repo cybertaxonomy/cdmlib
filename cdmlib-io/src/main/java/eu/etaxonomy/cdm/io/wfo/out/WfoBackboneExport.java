@@ -577,7 +577,7 @@ public class WfoBackboneExport
             state.getNameStore().put(name.getId(), name.getUuid());
 
             //taxon ID
-            wfoId = getWfoId(state, name, true);
+            wfoId = getWfoId(state, name, false);
             if (isBlank(wfoId)) {
                 String message = "No WFO-ID given for taxon " + name.getTitleCache() + ". Taxon ignored";
                 state.getResult().addError(message);
