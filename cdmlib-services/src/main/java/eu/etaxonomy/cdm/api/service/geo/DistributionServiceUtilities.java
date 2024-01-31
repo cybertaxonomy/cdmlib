@@ -914,7 +914,9 @@ public class DistributionServiceUtilities {
         Set<NamedArea> parents = childToParentsMap.get(area);
         ancestors.addAll(parents);
         for (NamedArea parent : parents) {
-            fillAncestorsRecursive(parent, childToParentsMap, ancestors, removeCandidateAreas);
+            if (parent != null) {
+                fillAncestorsRecursive(parent, childToParentsMap, ancestors, removeCandidateAreas);
+            }
         }
     }
 

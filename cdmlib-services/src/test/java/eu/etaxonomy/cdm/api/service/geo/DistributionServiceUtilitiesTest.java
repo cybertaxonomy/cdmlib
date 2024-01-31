@@ -357,6 +357,39 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
+
+        //add Europe, but not as parent of Germany yet
+        Distribution distEurope = Distribution.NewInstance(NamedArea.EUROPE(), PresenceAbsenceTerm.NATIVE());
+        distributions.add(distEurope);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
+        Assert.assertEquals("Europe should be also in", 2, filteredDistributions.size());
+        Assert.assertTrue("Europe should be also in", filteredDistributions.contains(distEurope));
+        Assert.assertTrue("Berlin should still be in", filteredDistributions.contains(distBerlin));
+
+        //now add Europe as parent of Germany => Europe should be removed
+        Country.GERMANY().setPartOf(NamedArea.EUROPE());
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
+        Assert.assertEquals("Europe should be removed as in is a parent of Germany and ancestor of berlin", 1, filteredDistributions.size());
+        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
+        Assert.assertTrue("Berlin should still be in", filteredDistributions.contains(distBerlin));
+
+        //now remove Germany from distributions => Europe should still be removed as it is an ancestor of berlin
+        distributions.remove(distGermany);
+        Country.GERMANY().setPartOf(NamedArea.EUROPE());
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
+        Assert.assertEquals("Europe should be removed as it is an ancestor of berlin", 1, filteredDistributions.size());
+
+        //do not remove other area
+        Distribution distFrance = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE());
+        Country.FRANCE().setPartOf(NamedArea.EUROPE());
+        distributions.add(distFrance);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
+        Assert.assertEquals(2, filteredDistributions.size());
+
     }
 
     @Test
