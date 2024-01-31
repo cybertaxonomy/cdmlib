@@ -110,9 +110,6 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
     @Before
     public void setup(){  //for testFilterXXX
         distributions = new ArrayList<>();
-
-        berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
-        berlin.setPartOf(Country.GERMANY());
     }
 
     //copied from CondensedDistributionComposerEuroMedTest
@@ -263,6 +260,7 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
     @Test
     public void testFilterDistributions_aggregated(){
+        berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
 
         /* 1.
          * Aggregated elements are preferred over entered or imported elements
@@ -335,8 +333,17 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
     @Test
     public void testFilterDistributions_subAreaPreference(){
         subAreaPreference = true;
+        //NOTE: once removing partOf methods use areaTreeNotYetInUse instead
         TermTree<NamedArea> areaTree = null;
+        TermTree<NamedArea> areaTreeNotYetInUse = TermTree.NewInstance(TermType.NamedArea);
         TermTree<PresenceAbsenceTerm> statusTree = null;
+
+        berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
+        berlin.setPartOf(Country.GERMANY());
+        TermNode<NamedArea> germanyNode = areaTreeNotYetInUse.getRoot().addChild(Country.GERMANY());
+        germanyNode.addChild(berlin);
+        //add europe, but not yet as parent of Germany
+        TermNode<NamedArea> europeNode = areaTreeNotYetInUse.getRoot().addChild(NamedArea.EUROPE());
 
         /*
          * Sub area preference rule: If there is an area with a direct sub area
@@ -369,6 +376,7 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
         //now add Europe as parent of Germany => Europe should be removed
         Country.GERMANY().setPartOf(NamedArea.EUROPE());
+        europeNode.addChild(germanyNode);
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         Assert.assertEquals("Europe should be removed as in is a parent of Germany and ancestor of berlin", 1, filteredDistributions.size());
@@ -377,14 +385,14 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
         //now remove Germany from distributions => Europe should still be removed as it is an ancestor of berlin
         distributions.remove(distGermany);
-        Country.GERMANY().setPartOf(NamedArea.EUROPE());
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         Assert.assertEquals("Europe should be removed as it is an ancestor of berlin", 1, filteredDistributions.size());
 
         //do not remove other area
         Distribution distFrance = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE());
-        Country.FRANCE().setPartOf(NamedArea.EUROPE());
+        Country.FRANCE().setPartOf(NamedArea.EUROPE());  //
+        europeNode.addChild(Country.FRANCE());
         distributions.add(distFrance);
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
