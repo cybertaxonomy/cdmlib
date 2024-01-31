@@ -33,8 +33,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -61,6 +63,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -352,13 +355,14 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         subTestWithEditMapService(result);
     }
 
-//    @Test
+    @Test
+    @Ignore
     @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
-//    @DataSets({
-//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-//        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-//        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
-//    })
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
+    })
     public void getDistributionServiceRequestParameterString(){
 
         boolean subAreaPreference = false;

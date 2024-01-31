@@ -200,6 +200,7 @@ public class DistributionServiceImpl implements IDistributionService {
                         distributionOrder, termDao, useSecondMethod);
             }else {
                 //version with model entities as used in direct webservice (not taxon page DTO)
+                //TODO this is probably not in use anymore
                 tree = DistributionServiceUtilities.buildOrderedTree(omitLevels,
                         filteredDistributions, parentAreaMap, fallbackAreaMarkerTypes,
                         alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent,

@@ -707,7 +707,7 @@ public class DistributionServiceUtilities {
             boolean preferAggregated, boolean statusOrderPreference,
             boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists) {
 
-        SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
+        SetMap<NamedArea, Distribution> filteredDistributionsPerArea = new SetMap<>(distributions.size());
         Set<UUID> statusPositiveSet = null;
         if (statusTree != null) {
             statusPositiveSet = new HashSet<>();
@@ -727,7 +727,7 @@ public class DistributionServiceUtilities {
                     (distribution.getStatus() == null
                       || !statusPositiveSet.contains(distribution.getStatus().getUuid()));
             if (!filterOutStatus){
-                filteredDistributions.putItem(area, distribution);
+                filteredDistributionsPerArea.putItem(area, distribution);
             }
         }
 
@@ -741,33 +741,33 @@ public class DistributionServiceUtilities {
         //TODO since using area tree this is only relevant if keepFallBackOnlyIfNoSubareaDataExists = true
         //     as the area tree should also exclude real hidden areas
 //        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)) {
-            removeHiddenAndKeepFallbackAreas(areaTree, fallbackAreaMarkerTypes, filteredDistributions, keepFallBackOnlyIfNoSubareaDataExists);
+            removeHiddenAndKeepFallbackAreas(areaTree, fallbackAreaMarkerTypes, filteredDistributionsPerArea, keepFallBackOnlyIfNoSubareaDataExists);
 //        }
 
         // -------------------------------------------------------------------
         // 2) remove not computed distributions for areas for which computed
         //    distributions exists
         if(preferAggregated) {
-            handlePreferAggregated(filteredDistributions);
+            handlePreferAggregated(filteredDistributionsPerArea);
         }
 
         // -------------------------------------------------------------------
         // 3) status order preference rule
         if (statusOrderPreference) {
-            SetMap<NamedArea, Distribution> tmpMap = new SetMap<>(filteredDistributions.size());
-            for(NamedArea key : filteredDistributions.keySet()){
-                tmpMap.put(key, filterByHighestDistributionStatusForArea(filteredDistributions.get(key)));
+            SetMap<NamedArea, Distribution> tmpMap = new SetMap<>(filteredDistributionsPerArea.size());
+            for(NamedArea key : filteredDistributionsPerArea.keySet()){
+                tmpMap.put(key, filterByHighestDistributionStatusForArea(filteredDistributionsPerArea.get(key)));
             }
-            filteredDistributions = tmpMap;
+            filteredDistributionsPerArea = tmpMap;
         }
 
         // -------------------------------------------------------------------
         // 4) Sub area preference rule
         if(subAreaPreference){
-            handleSubAreaPreferenceRule(filteredDistributions, areaTree);
+            handleSubAreaPreferenceRule(filteredDistributionsPerArea, areaTree);
         }
 
-        return valuesOfAllInnerSets(filteredDistributions.values());
+        return valuesOfAllInnerSets(filteredDistributionsPerArea.values());
     }
 
     static TermTree<NamedArea> getAreaTree(Collection<Distribution> distributions,
