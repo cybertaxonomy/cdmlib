@@ -206,7 +206,11 @@ public abstract class TaxonTreeExportTestBase
     }
 
     protected String str(String str) {
-        return "\"" + str + "\",";
+        return strEnd(str)+",";
+    }
+
+    protected String strEnd(String str) {
+        return "\"" + str + "\"";
     }
 
     protected String getLine(List<String> list, UUID uuid) {

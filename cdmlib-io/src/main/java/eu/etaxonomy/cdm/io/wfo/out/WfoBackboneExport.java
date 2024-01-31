@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.wfo.out;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +53,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
@@ -173,7 +173,6 @@ public class WfoBackboneExport
         }
     }
 
-    private Set<Rank> allowedRanks = new HashSet<>();
     private boolean filterTaxon(WfoBackboneExportState state, TaxonNode taxonNode) {
         Taxon taxon = taxonNode.getTaxon();
         if (taxon == null) {
@@ -193,26 +192,10 @@ public class WfoBackboneExport
 
         Rank rank = taxonName.getRank();
         if (rank == null) {
+            //TODO 3 is missing rank handling correct?
             return true;
         }else {
-            if (allowedRanks.isEmpty()) {
-                allowedRanks.add(Rank.FAMILY());
-                allowedRanks.add(Rank.SUBFAMILY());
-                allowedRanks.add(Rank.TRIBE());
-                allowedRanks.add(Rank.SUBTRIBE());
-                allowedRanks.add(Rank.GENUS());
-                allowedRanks.add(Rank.SUBGENUS());
-                allowedRanks.add(Rank.SECTION_BOTANY());
-                allowedRanks.add(Rank.SPECIES());
-                allowedRanks.add(Rank.SUBSPECIES());
-                allowedRanks.add(Rank.VARIETY());
-                allowedRanks.add(Rank.SUBVARIETY());
-                allowedRanks.add(Rank.FORM());
-                allowedRanks.add(Rank.SUBFORM());
-                allowedRanks.add(Rank.INFRASPECIFICTAXON());
-            }
-            if (!allowedRanks.contains(rank)) {
-                //TODO 3 warn if this happens as such names should not have a wfo-id neither
+            if (rank.isSpeciesAggregate()){
                 return true;
             }
         }
@@ -270,24 +253,23 @@ public class WfoBackboneExport
             //TODO 2 remarks, what exactly
             csvLine[table.getIndex(WfoBackboneExportTable.TAXON_REMARKS)] = getRemarks(name);
 
-            handleSynonyms(state, taxon);
-
-            //TODO 2 taxon provisional, still an open issue?
-//                csvLine[table.getIndex(WfoBackboneExportTable.TAX_PROVISIONAL)] = taxonNode.isDoubtful() ? "1" : "0";
-
-            handleTaxonBase(state, table, csvLine, taxon);
-
             //TODO 7 URL to taxon, take it from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
             if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
                 String taxonSourceLink = makeTaxonSourceLink(state, taxon);
                 csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = taxonSourceLink;
             }
 
-            //TODO 2 excluded info
-            csvLine[table.getIndex(WfoBackboneExportTable.EXCLUDE)] = null;
+            //TODO 1 excluded info
+            csvLine[table.getIndex(WfoBackboneExportTable.EXCLUDE)] = makeExcluded(state, taxonNode);
+
+            handleTaxonBase(state, table, csvLine, taxon);
+
+            handleSynonyms(state, taxon);
 
             //process taxon line
             state.getProcessor().put(table, taxon, csvLine);
+
+            return wfoId;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -296,8 +278,20 @@ public class WfoBackboneExport
             state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
             return null;
         }
+    }
 
-        return wfoId;
+    private String makeExcluded(WfoBackboneExportState state, TaxonNode taxonNode) {
+        TaxonNodeStatus status = taxonNode.getStatus();
+        if (status == null || (status != TaxonNodeStatus.EXCLUDED && !status.isKindOf(TaxonNodeStatus.EXCLUDED))) {
+            return null;
+        }else {
+            Language lang = Language.getDefaultLanguage();  //TODO 7 language for status note
+
+            String result = status == TaxonNodeStatus.EXCLUDED ? "Excluded" : status.getLabel();
+            String note = taxonNode.preferredStatusNote(lang);
+            result = CdmUtils.concat(": ", result, note);
+            return result;
+        }
     }
 
     private void handleTaxonBase(WfoBackboneExportState state, WfoBackboneExportTable table, String[] csvLine,
@@ -710,7 +704,7 @@ public class WfoBackboneExport
             } else if (name.isIllegitimate()) {
                 return "Illegitimate";
             } else if (name.isInvalid()) {
-                //TODO 2 handle original spellings for name status
+                //TODO 1 handle original spellings for name status
                 if (name.isOrthographicVariant()) {
                     return "orthografia";
                 }else {

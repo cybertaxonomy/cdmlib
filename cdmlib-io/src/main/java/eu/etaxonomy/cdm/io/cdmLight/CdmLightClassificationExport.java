@@ -403,18 +403,8 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.UNCERTAIN_APPLICATION)] = taxonNode.isUncertainApplication() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = taxonNode.isUnresolved() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_STATUS)] = taxonNode.getStatus() == null ? null : taxonNode.getStatus().getLabel();
-                    Map<Language, LanguageString> notesMap = taxonNode.getStatusNote();
-                    String statusNotes = "";
-                    if (!notesMap.isEmpty() && notesMap.size() == 1) {
-                        statusNotes = notesMap.values().iterator().next().getText();
-                    } else if (!notesMap.isEmpty()) {
-                        statusNotes = notesMap.get(Language.getDefaultLanguage()) != null
-                                ? notesMap.get(Language.getDefaultLanguage()).getText() : null;
-                        if (statusNotes == null) {
-                            statusNotes = notesMap.values().iterator().next().getText();
-                        }
-                    }
-                    csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_NOTES)] = statusNotes;
+
+                    csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_NOTES)] = taxonNode.preferredStatusNote(Language.getDefaultLanguage());
 
                     if (taxonNode.getSource() != null) {
                         csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_REF_FK)] = getId(state, taxonNode.getSource().getCitation());

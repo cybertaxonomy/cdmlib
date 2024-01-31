@@ -137,7 +137,6 @@ public class WfoBackboneExportTest
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
         Assert.assertEquals("There should be 7 taxa (5 accepted + 2 synonyms)", 7, taxonResult.size() - COUNT_HEADER);
         Assert.assertEquals("There should be 5 accepted taxa", 5, filterAccepted(taxonResult).size());
-        System.out.println(taxonResult);
         Assert.assertEquals("There should be 2 synonyms", 2, filterSynonyms(taxonResult).size());
 
         //reference counts
@@ -164,7 +163,7 @@ public class WfoBackboneExportTest
                 + NONE + str("species") + str("unpublished") + str("subspecies") +
                 str ("Valid") + str("The book of botany 3: 22. 1804") +
                 str("Accepted") + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + subspeciesUnpublishedTaxonUuid)
-                + NONE_END;
+                + strEnd("Excluded: My status note");
         Assert.assertEquals(expectedExcluded, unpublishedLine);
 
         //... family => test nom. status 'conserved'

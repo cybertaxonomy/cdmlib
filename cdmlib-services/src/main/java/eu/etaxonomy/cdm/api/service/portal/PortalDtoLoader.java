@@ -388,17 +388,8 @@ public class PortalDtoLoader {
                     dto.setStatus(status.getLabel(language));
                 }
                 //statusNote
-                Map<Language, LanguageString> statusNote = node.getStatusNote();
-                if (statusNote != null) {
-                    //TODO handle fallback lang
-                    LanguageString statusNoteStr = statusNote.get(language);
-                    if (statusNoteStr == null && statusNote.size() > 0) {
-                        statusNoteStr = statusNote.entrySet().iterator().next().getValue();
-                    }
-                    if (statusNoteStr != null) {
-                        dto.setStatusNote(statusNoteStr.getText());
-                    }
-                }
+                dto.setStatusNote(node.preferredStatusNote(language));
+
                 //agent relations
                 Set<TaxonNodeAgentRelation> agents = node.getAgentRelations();
                 if (!agents.isEmpty()) {

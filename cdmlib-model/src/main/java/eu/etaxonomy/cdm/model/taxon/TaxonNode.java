@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -338,13 +339,17 @@ public class TaxonNode
         return this.statusNote;
     }
 
-    /**
-     * Returns the status note string in the given {@link Language language}
-     *
-     * @param language  the language in which the description string looked for is formulated
-     * @see             #getStatusNote()
-     * @see             #putStatusNote(Language, String)
-     */
+    public String preferredStatusNote(Language language){
+        List<Language> languages = new ArrayList<>();
+        languages.add(language);
+        return preferredStatusNote(languages);
+    }
+
+    public String preferredStatusNote(List<Language> languages){
+        LanguageString ls = MultilanguageTextHelper.getPreferredLanguageString(this.statusNote, languages);
+        return ls.getText(); //TODO what if text is empty?
+    }
+
     public String getStatusNote(Language language){
         LanguageString languageString = statusNote.get(language);
         if (languageString == null){
