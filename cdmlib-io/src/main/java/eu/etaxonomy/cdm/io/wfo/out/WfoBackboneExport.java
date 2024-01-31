@@ -162,7 +162,7 @@ public class WfoBackboneExport
             return wfoId;
         }else {
             wfoId = parentNode.getTaxon() == null ? null
-                    : getWfoId(state, parentNode.getTaxon().getName(), true);
+                    : getWfoId(state, parentNode.getTaxon().getName(), false);
             if (wfoId != null) {
                 state.putTaxonNodeWfoId(parentNode, wfoId);
                 state.putTaxonWfoId(parentNode.getTaxon(), wfoId);
@@ -579,7 +579,7 @@ public class WfoBackboneExport
             //taxon ID
             wfoId = getWfoId(state, name, false);
             if (isBlank(wfoId)) {
-                String message = "No WFO-ID given for taxon " + name.getTitleCache() + ". Taxon ignored";
+                String message = "No WFO-ID given for taxon " + name.getTitleCache() + ". Taxon ignored.";
                 state.getResult().addError(message);
                 state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
                 return null;
