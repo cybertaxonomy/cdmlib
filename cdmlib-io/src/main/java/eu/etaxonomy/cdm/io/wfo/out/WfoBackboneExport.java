@@ -259,7 +259,7 @@ public class WfoBackboneExport
                 csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = taxonSourceLink;
             }
 
-            //TODO 1 excluded info
+            //excluded info
             csvLine[table.getIndex(WfoBackboneExportTable.EXCLUDE)] = makeExcluded(state, taxonNode);
 
             handleTaxonBase(state, table, csvLine, taxon);
@@ -662,7 +662,7 @@ public class WfoBackboneExport
 
             if (originalName != null) {
                 if (!state.getNameStore().containsKey(originalName.getId())) {
-                    //TODO 1 handle basionym is in file assertion
+                    //TODO 2 handle basionym is in file assertion
                 }
                 String basionymId = getWfoId(state, originalName, false);
                 csvLine[table.getIndex(WfoBackboneExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;

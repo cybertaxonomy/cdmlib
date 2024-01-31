@@ -155,7 +155,7 @@ public class WfoBackboneExportTest
         Assert.assertEquals(expectedSubspecies , subspeciesLine);
 
         //unpublished/excluded/note
-        //TODO evaluate unpublished flag and discuss how to handle excluded
+        //TODO evaluate unpublished flag
         String unpublishedLine = getLine(taxonResult, subspeciesUnpublishedWfoId);
         String expectedExcluded = str(subspeciesUnpublishedWfoId)+ NONE + uuid(subspeciesUnpublishedNameUUID) +
                 str("Genus species subsp. unpublished") + str("subspecies") +
