@@ -378,8 +378,8 @@ public class DistributionServiceUtilities {
      * @param distribution
      * @param area
      */
-    private static void addAreaToLayerMap(Map<String, Map<Integer,
-            Set<Distribution>>> layerMap,
+    private static void addAreaToLayerMap(Map<String,
+            Map<Integer,Set<Distribution>>> layerMap,
             List<PresenceAbsenceTerm> statusList,
             Distribution distribution,
             NamedArea area,
@@ -541,12 +541,13 @@ public class DistributionServiceUtilities {
 
     private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
             List<PresenceAbsenceTerm> statusList) {
+
         PresenceAbsenceTerm status = distribution.getStatus();
         if (status != null) {
             int style = statusList.indexOf(status);
             Set<Distribution> distributionSet = styleMap.get(style);
             if (distributionSet == null) {
-                distributionSet = new HashSet<Distribution>();
+                distributionSet = new HashSet<>();
                 styleMap.put(style, distributionSet);
             }
             distributionSet.add(distribution);
@@ -715,7 +716,7 @@ public class DistributionServiceUtilities {
             }
         }
 
-        // assign distributions to the area and filter undefinedStatus
+        // assign distributions to the area and filter undefined status
         for(Distribution distribution : distributions){
             NamedArea area = distribution.getArea();
             if(area == null) {
@@ -880,20 +881,20 @@ public class DistributionServiceUtilities {
 
     /**
      * Removes all distributions that have an area being a parent of
-     * anothers distributions area. E.g. removes distribution for "Europe"
+     * another distribution area. E.g. removes distribution for "Europe"
      * if a distribution for "France" exists in the list, where Europe
      * is a direct parent for France.
      */
     private static void handleSubAreaPreferenceRule(SetMap<NamedArea, Distribution> filteredDistributions,
             TermTree<NamedArea> areaTree) {
 
-        SetMap<NamedArea, NamedArea> parentMap = areaTree.getParentMap();
+        SetMap<NamedArea, NamedArea> childToParentsMap = areaTree.getParentMap();
         Set<NamedArea> removeCandidatesArea = new HashSet<>();
         for(NamedArea area : filteredDistributions.keySet()){
             if(removeCandidatesArea.contains(area)){
                 continue;
             }
-            parentMap.get(area).forEach(parent->{
+            childToParentsMap.get(area).forEach(parent->{
                 if(parent != null && filteredDistributions.containsKey(parent)){
                     removeCandidatesArea.add(parent);
                 }

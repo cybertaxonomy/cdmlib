@@ -160,6 +160,7 @@ public class DistributionServiceImpl implements IDistributionService {
             //TODO better use areaTree created within filterDistributions(...) but how to get it easily?
             areaTree = DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes);
         }
+
         //TODO unify to use only the node map
         SetMap<NamedArea, NamedArea> parentAreaMap = areaTree.getParentMap();
         SetMap<NamedArea, TermNode<NamedArea>> parentAreaNodeMap = areaTree.getParentNodeMap();
@@ -222,10 +223,12 @@ public class DistributionServiceImpl implements IDistributionService {
                     filteredDistributions, areaTree, statusTree, fallbackAreaMarkerType, !PREFER_AGGREGATED,
                     IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists);
 
-            dto.setMapUriParams(DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
+            String mapUri = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
+                    filteredMapDistributions,
                     areaMapping,
                     presenceAbsenceTermColors,
-                    null, languages));
+                    null, languages);
+            dto.setMapUriParams(mapUri);
         }
 
         return dto;
@@ -343,7 +346,8 @@ public class DistributionServiceImpl implements IDistributionService {
         boolean keepFallbackOnlyIfNoSubareaDataExists = true;
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, areaTree, statusTree,
-                hideMarkedAreas, false, statusOrderPreference, subAreaPreference, keepFallbackOnlyIfNoSubareaDataExists);
+                hideMarkedAreas, false, statusOrderPreference,
+                subAreaPreference, keepFallbackOnlyIfNoSubareaDataExists);
 
         String uriParams = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
                 filteredDistributions,
