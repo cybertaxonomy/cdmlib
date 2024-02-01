@@ -111,7 +111,10 @@ public class WfoBackboneExport
 
             //test configurator
             String baseUrl = state.getConfig().getSourceLinkBaseUrl();
-            if (baseUrl != null && !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")){
+            if (isBlank(baseUrl)){
+                String message = "No base url provided.";
+                state.getResult().addWarning(message);
+            } else if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")){
                 String message = "Source link base url is not a http based url.";
                 state.getResult().addWarning(message);
             }
@@ -286,14 +289,15 @@ public class WfoBackboneExport
         }
     }
 
-    private String makeExcluded(WfoBackboneExportState state, TaxonNode taxonNode) {
+    private String makeExcluded(@SuppressWarnings("unused") WfoBackboneExportState state, TaxonNode taxonNode) {
         TaxonNodeStatus status = taxonNode.getStatus();
         if (status == null || (status != TaxonNodeStatus.EXCLUDED && !status.isKindOf(TaxonNodeStatus.EXCLUDED))) {
             return null;
         }else {
             Language lang = Language.getDefaultLanguage();  //TODO 7 language for status note
 
-            String result = status == TaxonNodeStatus.EXCLUDED ? "Excluded" : status.getLabel();
+            String result = status == TaxonNodeStatus.EXCLUDED ? "Excluded" :
+                 status == TaxonNodeStatus.EXCLUDED_TAX? "Taxonomically out of scope" : status.getLabel();
             String note = taxonNode.preferredStatusNote(lang);
             result = CdmUtils.concat(": ", result, note);
             return result;
