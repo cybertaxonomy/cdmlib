@@ -703,7 +703,8 @@ public class WfoBackboneExport
     /**
      * Handle names not being handled via taxonbase.
      */
-    private void handleNameOnly(WfoBackboneExportState state, WfoBackboneExportTable table, TaxonName name) {
+    private void handleNameOnly(WfoBackboneExportState state, WfoBackboneExportTable table,
+            TaxonName name, TaxonName mainName) {
         //TODO 1 names only check if implemented correctly
         if (!name.getTaxonBases().isEmpty()) {
             //TODO 2 find a better way to guarantee that the name is not added as a taxonbase elsewhere
@@ -711,7 +712,14 @@ public class WfoBackboneExport
         }
 
         String[] csvLine = new String[table.getSize()];
-        handleName(state, table, csvLine, name);
+        String wfoID = handleName(state, table, csvLine, name);
+        if (wfoID == null) {
+            String message = "Original spelling, orthographic variant or misspeling "
+                    + "'" + name + "' for name '" + mainName +"' does not have a WFO-ID"
+                    + " and therefore can not be exported";
+            state.getResult().addWarning(message);
+            return;
+       }
 
         //TODO 2 tax status correct?
         csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = "Synonym";
