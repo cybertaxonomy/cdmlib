@@ -415,7 +415,7 @@ public class WfoBackboneExport
         includedAnnotationTypes.add(AnnotationType.uuidEditorial);
 
         Set<UUID> includedTaxonFactTypes = new HashSet<>();  //make taxon remark facts configurable
-        includedTaxonFactTypes.add(Feature.NOTES().getUuid());
+        includedTaxonFactTypes.add(Feature.uuidNotes);
         Set<UUID> includedNameFactTypes = null;  //TODO 7 make name facts configurable
 
 
