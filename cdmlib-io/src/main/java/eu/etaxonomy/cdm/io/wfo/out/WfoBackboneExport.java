@@ -70,6 +70,10 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
  * @author a.mueller
  * @since 2023-12-08
  */
+/**
+ * @author muellera
+ * @since 01.02.2024
+ */
 @Component
 public class WfoBackboneExport
         extends CdmExportBase<WfoBackboneExportConfigurator,WfoBackboneExportState,IExportTransformer,File>{
@@ -675,16 +679,48 @@ public class WfoBackboneExport
                 csvLine[table.getIndex(WfoBackboneExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;
             }
 
-            //TODO 1 related names like orth. var., original spelling,
+            //original spelling
+            TaxonName originalSpelling = name.getOriginalSpelling();
+            if (originalSpelling != null) {
+                handleNameOnly(state, table, originalSpelling);
+            }
 
-        } catch (Exception e) {
+            //orth. var.
+            TaxonName orthVar = name.getOriginalSpelling();
+            if (orthVar != null) {
+                handleNameOnly(state, table, orthVar);
+            }
+
+         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred when handling the name " + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
-
             e.printStackTrace();
         }
 
         return wfoId;
+    }
+
+    /**
+     * Handle names not being handled via taxonbase.
+     */
+    private void handleNameOnly(WfoBackboneExportState state, WfoBackboneExportTable table, TaxonName name) {
+        //TODO 1 names only check if implemented correctly
+        if (!name.getTaxonBases().isEmpty()) {
+            //TODO 2 find a better way to guarantee that the name is not added as a taxonbase elsewhere
+            return;
+        }
+
+        String[] csvLine = new String[table.getSize()];
+        handleName(state, table, csvLine, name);
+
+        //TODO 2 tax status correct?
+        csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = "Synonym";
+
+        //TODO 2 remarks, REFERENCES, family, taxonBase, created, modified
+
+        //process original spelling
+        state.getProcessor().put(table, name, csvLine); // TODO Auto-generated method stub
+
     }
 
     private String getWfoId(WfoBackboneExportState state, TaxonName name, boolean warnIfNotExists) {
@@ -699,7 +735,7 @@ public class WfoBackboneExport
     private String makeNameStatus(WfoBackboneExportState state, TaxonName name) {
         try {
 
-            //TODO 1 what is with dubium
+            //TODO 2 what is with dubium
             if (name.isLegitimate()) {
                 if (name.isConserved()) {
                     return "Conserved";
@@ -711,7 +747,6 @@ public class WfoBackboneExport
             } else if (name.isIllegitimate()) {
                 return "Illegitimate";
             } else if (name.isInvalid()) {
-                //TODO 1 handle original spellings for name status
                 if (name.isOrthographicVariant()) {
                     return "orthografia";
                 }else {
