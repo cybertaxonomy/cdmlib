@@ -50,6 +50,8 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
@@ -682,13 +684,13 @@ public class WfoBackboneExport
             //original spelling
             TaxonName originalSpelling = name.getOriginalSpelling();
             if (originalSpelling != null) {
-                handleNameOnly(state, table, originalSpelling);
+                handleNameOnly(state, table, originalSpelling, name);
             }
 
             //orth. var.
-            TaxonName orthVar = name.getOriginalSpelling();
-            if (orthVar != null) {
-                handleNameOnly(state, table, orthVar);
+            Set<TaxonName> orthVars = getOrthographicVariants(name);
+            for (TaxonName orthVar : orthVars) {
+                handleNameOnly(state, table, orthVar, name);
             }
 
          } catch (Exception e) {
@@ -698,6 +700,18 @@ public class WfoBackboneExport
         }
 
         return wfoId;
+    }
+
+    private Set<TaxonName> getOrthographicVariants(TaxonName name) {
+        Set<TaxonName> result = new HashSet<>();
+        Set<NameRelationship> rels = name.getRelationsToThisName();
+        for(NameRelationship rel : rels) {
+            //TODO 2 handle also other type and other direction for orth. var.
+            if(rel.getType().getUuid().equals(NameRelationshipType.uuidOrthographicVariant)) {
+                result.add(rel.getFromName());
+            }
+        }
+        return result;
     }
 
     /**
