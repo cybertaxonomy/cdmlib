@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -53,6 +52,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -308,7 +308,7 @@ public class WfoBackboneExport
         csvLine[table.getIndex(WfoBackboneExportTable.TAX_NAME_ACCORDING_TO_ID)] = getId(state, secRef);
         if (secRef != null
                 && (!state.getReferenceStore().contains((secRef.getUuid())))) {
-            handleReference(state, secRef);
+            handleReference(state, taxonBase.getSecSource());
         }
 
         //TODO 2 created
@@ -509,53 +509,6 @@ public class WfoBackboneExport
         }
     }
 
-    private void handleSource(WfoBackboneExportState state, DescriptionElementBase element,
-            WfoBackboneExportTable factsTable) {
-//        ColDpExportTable table = ColDpExportTable.FACT_SOURCES;
-//        try {
-//            Set<DescriptionElementSource> sources = element.getSources();
-//
-//            for (DescriptionElementSource source : sources) {
-//                if (!(source.getType().equals(OriginalSourceType.Import)
-//                        && state.getConfig().isExcludeImportSources())) {
-//                    String[] csvLine = new String[table.getSize()];
-//                    Reference ref = source.getCitation();
-//                    if ((ref == null) && (source.getNameUsedInSource() == null)) {
-//                        continue;
-//                    }
-//                    if (ref != null) {
-//                        if (!state.getReferenceStore().contains(ref.getUuid())) {
-//                            handleReference(state, ref);
-//
-//                        }
-//                        csvLine[table.getIndex(ColDpExportTable.REFERENCE_FK)] = getId(state, ref);
-//                    }
-//                    csvLine[table.getIndex(ColDpExportTable.FACT_FK)] = getId(state, element);
-//
-//                    csvLine[table.getIndex(ColDpExportTable.NAME_IN_SOURCE_FK)] = getId(state,
-//                            source.getNameUsedInSource());
-//                    csvLine[table.getIndex(ColDpExportTable.FACT_TYPE)] = factsTable.getTableName();
-//                    if (StringUtils.isBlank(csvLine[table.getIndex(ColDpExportTable.REFERENCE_FK)])
-//                            && StringUtils.isBlank(csvLine[table.getIndex(ColDpExportTable.NAME_IN_SOURCE_FK)])) {
-//                        continue;
-//                    }
-//                    state.getProcessor().put(table, source, csvLine);
-//                }
-//            }
-//        } catch (Exception e) {
-//            state.getResult().addException(e, "An unexpected error occurred when handling single source "
-//                    + cdmBaseStr(element) + ": " + e.getMessage());
-//        }
-    }
-
-    private String getTitleCache(IIdentifiableEntity identEntity) {
-        if (identEntity == null) {
-            return "";
-        }
-        // TODO 3 titleCache refresh?
-        return identEntity.getTitleCache();
-    }
-
     private String getId(WfoBackboneExportState state, ICdmBase cdmBase) {
         if (cdmBase == null) {
             return "";
@@ -594,7 +547,7 @@ public class WfoBackboneExport
             //status
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = isHomotypic ? "homotypicSynonym" : "heterotypicSynonym";
 
-            //TODO 7 URL to taxon, take it from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
+            //TODO 5 URL to taxon, take it from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
             if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
                 String taxonSourceLink = makeSynonymSourceLink(state, synonym);
                 csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = taxonSourceLink;
@@ -804,7 +757,15 @@ public class WfoBackboneExport
         }
     }
 
-    private void handleReference(WfoBackboneExportState state, Reference reference) {
+    private void handleReference(WfoBackboneExportState state, OriginalSourceBase source) {
+
+        if (source == null || source.getCitation() == null) {
+            return;
+        }
+        Reference reference = source.getCitation();
+
+        //TODO 5 allow handle sec detail in ref table (if allowed by the export guide)
+        //     this is also important for adding external links which are source specific (see below)
         try {
             if (state.getReferenceStore().contains(reference.getUuid())) {
                 return;
@@ -820,16 +781,19 @@ public class WfoBackboneExport
             //TODO 2 correct?, ref biblio citation
             csvLine[table.getIndex(WfoBackboneExportTable.REF_BIBLIO_CITATION)] = reference.getCitation();
 
-            //ref uri
+            //ref uri  TODO 6 make ref URIs configurable
             if (reference.getDoi() != null) {
                 csvLine[table.getIndex(WfoBackboneExportTable.REF_URI)] = reference.getDoiString();
-            }else {
-                //TODO 2 handle other reference links, e.g. external links
+            }else if (reference.getUri() != null) {
+                csvLine[table.getIndex(WfoBackboneExportTable.REF_URI)] = reference.getUri().toString();
+            }else{
+                //TODO 5 not yet added as it is source specific but uuid is reference specific
+//                String uri = null;
+//                for (ExternalLink link : source.getLinks()) {
+//                    uri = CdmUtils.concat("; ", uri,  link.getUri() == null ? null : link.getUri().toString());
+//                }
+//                csvLine[table.getIndex(WfoBackboneExportTable.REF_URI)] = uri;
             }
-////            csvLine[table.getIndex(ColDpExportTable.LINK)] = null;
-//            if (reference.getUri() != null) {
-//                csvLine[table.getIndex(WfoBackboneExportTable.LINK)] = reference.getUri().toString();
-//            }
 
             state.getProcessor().put(table, reference, csvLine);
         } catch (Exception e) {
