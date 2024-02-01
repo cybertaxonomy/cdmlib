@@ -1059,10 +1059,10 @@ public class ColDpClassificationExport
             }
 
             //scientificName
-            if (name.isProtectedTitleCache() && StringUtils.isEmpty(name.getNameCache())) {
+            if (name.isProtectedTitleCache()) {
                 //TODO 7 make it configurable if we should always take titleCache if titleCache is protected, as nameCache may not necessarily have complete data if titleCache is protected as it is considered to be irrelevant or at least preliminary
                 String message = "";
-                if (StringUtils.isEmpty(name.getNameCache())) {
+                if (!isBlank(name.getNameCache())){
                     csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
                     message = "ScientificName: Name cache " + name.getNameCache() + " used for name with protected titleCache " +  name.getTitleCache();
                 }else {
