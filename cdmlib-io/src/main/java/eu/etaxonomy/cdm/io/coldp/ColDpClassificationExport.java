@@ -101,6 +101,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
  * Classification or taxon tree exporter into COL-DP format.
@@ -1074,21 +1075,30 @@ public class ColDpClassificationExport
                 csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
             }
             if (state.getConfig().isIncludeFullName()) {
-                csvLine[table.getIndex(ColDpExportTable.NAME_FULLNAME)] = name.getTitleCache();
+                String authorshipCache = name.getAuthorshipCache();
+                String normalizedAuthor = normalizeAuthor(state, authorshipCache);
+                String titleCache = name.getTitleCache();
+                if (titleCache != null) {
+                    if (state.getConfig().isNormalizeAuthorsToIpniStandard()) {
+                        titleCache = titleCache.replace(authorshipCache, normalizedAuthor);
+                    }
+                }
+                csvLine[table.getIndex(ColDpExportTable.NAME_FULLNAME)] = titleCache;
             }
 
             //authorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_AUTHORSHIP)] = name.getAuthorshipCache();
+            String authorshipCache = name.getAuthorshipCache();
+            csvLine[table.getIndex(ColDpExportTable.NAME_AUTHORSHIP)] = normalizeAuthor(state, name.getAuthorshipCache());
             //combinationAuthorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP)] = teamToString(name.getCombinationAuthorship());
+            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP)] = teamToString(state, name.getCombinationAuthorship());
             //combinationExAuthorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_EX_AUTHORSHIP)] = teamToString(name.getExCombinationAuthorship());
+            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_EX_AUTHORSHIP)] = teamToString(state, name.getExCombinationAuthorship());
             //combinationAuthorshipYear
             csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP_YEAR)] = name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getYear();
             //basionymAuthorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_AUTHORSHIP)] = teamToString(name.getBasionymAuthorship());
+            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_AUTHORSHIP)] = teamToString(state, name.getBasionymAuthorship());
             //basionymExAuthorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_EX_AUTHORSHIP)] = teamToString(name.getExBasionymAuthorship());
+            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_EX_AUTHORSHIP)] = teamToString(state, name.getExBasionymAuthorship());
             //basionymAuthorshipYear
             csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_AUTHORSHIP_YEAR)] =
                     basionym == null? null :
@@ -1183,7 +1193,18 @@ public class ColDpClassificationExport
         }
     }
 
-    private String teamToString(TeamOrPersonBase<?> author) {
+    //TODO 3 merge with WfoBackboneExport
+    private String normalizeAuthor(ColDpExportState state, String authorship) {
+        if (authorship == null) {
+            return null;
+        }else if (state.getConfig().isNormalizeAuthorsToIpniStandard()) {
+            return TeamDefaultCacheStrategy.removeWhitespaces(authorship);
+        }else {
+            return authorship.replace("\\s+", " ").trim();
+        }
+    }
+
+    private String teamToString(ColDpExportState state, TeamOrPersonBase<?> author) {
         if (author == null) {
             return null;
         }
@@ -1191,6 +1212,9 @@ public class ColDpClassificationExport
         if (StringUtils.isEmpty(nomCache)){
             return null;
         }else {
+            if (state.getConfig().isNormalizeAuthorsToIpniStandard()) {
+                nomCache = TeamDefaultCacheStrategy.removeWhitespaces(nomCache);
+            }
             return nomCache
                     .replace(", ", "|")
                     .replace(",", "|")

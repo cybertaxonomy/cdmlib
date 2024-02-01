@@ -42,6 +42,8 @@ public class ColDpExportConfigurator
 
     private boolean includeFullName = false;
 
+    private boolean normalizeAuthorsToIpniStandard = false;
+
     //filter
     private boolean doFactualData = true;
     private boolean includeUnpublishedFacts = false;
@@ -169,5 +171,13 @@ public class ColDpExportConfigurator
     }
     public void setIncludeFullName(boolean includeFullName) {
         this.includeFullName = includeFullName;
+    }
+
+
+    public boolean isNormalizeAuthorsToIpniStandard() {
+        return normalizeAuthorsToIpniStandard;
+    }
+    public void setNormalizeAuthorsToIpniStandard(boolean normalizeAuthorsToIpniStandard) {
+        this.normalizeAuthorsToIpniStandard = normalizeAuthorsToIpniStandard;
     }
 }
