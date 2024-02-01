@@ -89,7 +89,6 @@ public class WfoBackboneExportTest
         //config+invoke
         WfoBackboneExportConfigurator config = newConfigurator();
         config.setFamilyStr("Myfamily");
-        config.setSourceLinkBaseUrl("https://www.abc.de/mytaxon");
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
@@ -128,7 +127,6 @@ public class WfoBackboneExportTest
         //config+invoke
         WfoBackboneExportConfigurator config = newConfigurator();
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
-        config.setSourceLinkBaseUrl("http://www.abc.de/mytaxon/");
         //Note: on purpose we do not define a familyStr here as it is to be taken from the persisted family
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
@@ -225,10 +223,19 @@ public class WfoBackboneExportTest
         //tbc
     }
 
+
+
+    @Override
+    public void testFullSampleData() {
+        // TODO Auto-generated method stub
+        super.testFullSampleData();
+    }
+
     @Override
     protected WfoBackboneExportConfigurator newConfigurator() {
         WfoBackboneExportConfigurator config = WfoBackboneExportConfigurator.NewInstance();
         config.setTarget(TARGET.EXPORT_DATA);
+        config.setSourceLinkBaseUrl("http://www.abc.de/mytaxon/");
         return config;
     }
 
