@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
  * Classification or taxon tree exporter into WFO Backbone format.
@@ -639,7 +640,8 @@ public class WfoBackboneExport
 
             //authorship
             //TODO 3 handle empty authorship cache warning
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = normalizedAuthor(name);
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)]
+                    = normalizedAuthor(state, name);
 
             //family (use familystr if provided, otherwise try to compute from the family taxon
             String familyStr = state.getFamilyStr();
@@ -707,17 +709,19 @@ public class WfoBackboneExport
         return wfoId;
     }
 
-    //TODO 2 make it public somewhere in author formatter
-    private String normalizedAuthor(TaxonName name) {
-        if (isBlank(name.getAuthorshipCache())) {
+    private String normalizedAuthor(WfoBackboneExportState state, TaxonName name) {
+        if (name == null) {
             return null;
+        } else if (state.getConfig().isNormalizeAuthorsToIpniStandard()) {
+            return TeamDefaultCacheStrategy.removeWhitespaces(name.getAuthorshipCache());
+        } else {
+            String result = name.getAuthorshipCache();
+            if (result == null) {
+                return null;
+            }else {
+                return result.replaceAll("\\s+", " ").trim();
+            }
         }
-        String result = name.getAuthorshipCache();
-        result = result.replaceAll("\\.\\s+", ".")
-                .replaceAll("\\.\\&", ". &")
-                .replaceAll("\\.ex\\s+", ". ex ")
-                ;
-        return result;
     }
 
     private Set<TaxonName> getOrthographicVariants(TaxonName name) {
@@ -759,8 +763,9 @@ public class WfoBackboneExport
 
         //authorship, take from mainname if it does not exist
         //TODO 3 take from csvLine of both names
-        if (isBlank(normalizedAuthor(name))) {
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = normalizedAuthor(mainName);
+        if (isBlank(normalizedAuthor(state, name))) {
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)]
+                    = normalizedAuthor(state, mainName);
         }
 
         //nom. ref, take from main name if it does not exist

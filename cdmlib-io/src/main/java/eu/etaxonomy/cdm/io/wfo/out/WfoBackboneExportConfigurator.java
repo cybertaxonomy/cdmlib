@@ -40,6 +40,8 @@ public class WfoBackboneExportConfigurator
 
     private String sourceLinkBaseUrl = null;
 
+    private boolean normalizeAuthorsToIpniStandard = true;
+
     private static final WfoBackboneExportTransformer transformer = new WfoBackboneExportTransformer();
 
 //************************* FACTORY ******************************/
@@ -146,5 +148,12 @@ public class WfoBackboneExportConfigurator
     }
     public void setSourceLinkBaseUrl(String sourceLinkBaseUrl) {
         this.sourceLinkBaseUrl = sourceLinkBaseUrl;
+    }
+
+    public boolean isNormalizeAuthorsToIpniStandard() {
+        return normalizeAuthorsToIpniStandard;
+    }
+    public void setNormalizeAuthorsToIpniStandard(boolean normalizeAuthorsToIpniStandard) {
+        this.normalizeAuthorsToIpniStandard = normalizeAuthorsToIpniStandard;
     }
 }

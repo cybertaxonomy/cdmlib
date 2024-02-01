@@ -239,4 +239,38 @@ public class TeamDefaultCacheStrategyTest {
 		person1.setGivenName("O.");
 		Assert.assertEquals("team1 title cache should be P1FN, O.", "P1FN, O.", team1.getTitleCache());
 	}
+
+	@Test
+	public final void testRemoveWhitespaces() {
+	    String author = null;
+	    Assert.assertEquals(null, TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+	    author = "  ";
+	    Assert.assertEquals("", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+	    author = "Mill. ";
+	    Assert.assertEquals("Mill.", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+	    author = " Miller ";
+	    Assert.assertEquals("Result should always be trimed", "Miller", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+	    author = "A. Mill.";
+        Assert.assertEquals("A.Mill.", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+        author = "A. Mill.";
+        Assert.assertEquals("A.Mill.", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+        author = "A.   Mill.";
+        Assert.assertEquals("A.Mill.", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+        author = "A.   Mill. & B. Kohl.-Haber";
+        Assert.assertEquals("A.Mill. & B.Kohl.-Haber", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+        author = "A.   Mill. ,J. N. Bohl. f.& B. Kohl.-Haber";
+        Assert.assertEquals("A.Mill.,J.N.Bohl.f. & B.Kohl.-Haber", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+        author = " (Ab. ex CD. , All , Bet & J.Vall.) A.  Mill.ex Kohl.";
+        Assert.assertEquals("(Ab. ex CD., All, Bet & J.Vall.) A.Mill. ex Kohl.", TeamDefaultCacheStrategy.removeWhitespaces(author));
+
+	}
 }
