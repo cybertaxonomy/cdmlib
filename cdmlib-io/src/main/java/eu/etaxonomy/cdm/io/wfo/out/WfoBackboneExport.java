@@ -10,10 +10,12 @@ package eu.etaxonomy.cdm.io.wfo.out;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -43,7 +45,11 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IDescribable;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -250,8 +256,8 @@ public class WfoBackboneExport
             String taxonStatus = taxon.isDoubtful()? "ambiguous" : "Accepted";
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = taxonStatus;
 
-            //TODO 2 remarks, what exactly
-            csvLine[table.getIndex(WfoBackboneExportTable.TAXON_REMARKS)] = getRemarks(name);
+            //remarks
+            csvLine[table.getIndex(WfoBackboneExportTable.TAXON_REMARKS)] = getRemarks(state, taxon);
 
             //TODO 7 URL to taxon, take it from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
             if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
@@ -399,38 +405,79 @@ public class WfoBackboneExport
         return formatter.print(dateTime);
     }
 
-    private String getRemarks(AnnotatableEntity entity) {
+    //TODO 4 is remark handling correct?
+    private String getRemarks(WfoBackboneExportState state, TaxonBase<?> taxonBase) {
+
         String remarks = null;
-        for (Annotation a : entity.getAnnotations()) {
-            //TODO 3 handle other annotation types
-            if (AnnotationType.EDITORIAL().equals(a.getAnnotationType())
-                    && CdmUtils.isNotBlank(a.getText())){
-                remarks = CdmUtils.concat(";", remarks, a.getText());
-            }
-        }
+
+        Set<UUID> includedAnnotationTypes = new HashSet<>();
+        //TODO 5 make annotation types configurable
+        includedAnnotationTypes.add(AnnotationType.uuidEditorial);
+
+        Set<UUID> includedTaxonFactTypes = new HashSet<>();  //make taxon remark facts configurable
+        includedTaxonFactTypes.add(Feature.NOTES().getUuid());
+        Set<UUID> includedNameFactTypes = null;  //TODO 7 make name facts configurable
+
+
+        String nameAnnotations = getAnnotations(state, taxonBase.getName(), includedAnnotationTypes);
+        String nameFacts = getFacts(state, taxonBase.getName(), includedNameFactTypes);
+        String taxonAnnotations = getAnnotations(state, taxonBase, includedAnnotationTypes);
+        String taxonFacts = !taxonBase.isInstanceOf(Taxon.class)? null :
+            getFacts(state, CdmBase.deproxy(taxonBase, Taxon.class), includedTaxonFactTypes);
+
+        remarks = CdmUtils.concat("; ", nameAnnotations, nameFacts, taxonAnnotations, taxonFacts);
+
         return remarks;
     }
 
-//    private void handleMetaData(ColDpExportState state) {
-//        ColDpExportTable table = ColDpExportTable.METADATA;
-//        String[] csvLine = new String[table.getSize()];
-////        csvLine[table.getIndex(CdmLightExportTable.INSTANCE_ID)] = state.getConfig().getInctanceId();
-////        csvLine[table.getIndex(CdmLightExportTable.INSTANCE_NAME)] = state.getConfig().getInstanceName();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_BASE_URL)] = state.getConfig().getBase_url();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_CONTRIBUTOR)] = state.getConfig().getContributor();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_CREATOR)] = state.getConfig().getCreator();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_DESCRIPTION)] = state.getConfig().getDescription();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_DOWNLOAD_LINK)] = state.getConfig().getDataset_download_link();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_KEYWORDS)] = state.getConfig().getKeywords();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_LANDINGPAGE)] = state.getConfig().getDataSet_landing_page();
-//
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_LANGUAGE)] = state.getConfig().getLanguage() != null? state.getConfig().getLanguage().getLabel(): null;
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_LICENCE)] = state.getConfig().getLicence();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_LOCATION)] = state.getConfig().getLocation();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_RECOMMENDED_CITATTION)] = state.getConfig().getRecommended_citation();
-//        csvLine[table.getIndex(ColDpExportTable.DATASET_TITLE)] = state.getConfig().getTitle();
-//        state.getProcessor().put(table, "", csvLine);
-//    }
+    //TODO 4 move to a more general place for reusing and/or make it more performant
+    private String getFacts(@SuppressWarnings("unused") WfoBackboneExportState state,
+            IDescribable<?> entity,
+            Set<UUID> includedFeatures) {
+
+        if (entity == null) {
+            return null;
+        }
+        String result = null;
+        for (DescriptionBase<?> db : entity.getDescriptions()) {
+            if (db.isPublish()) {
+                for(DescriptionElementBase deb : db.getElements()){
+                    UUID featureUuid = deb.getFeature()==null ? null: deb.getFeature().getUuid();
+                    if (includedFeatures == null ||
+                            includedFeatures.contains(featureUuid)){
+                        //TODO 9 other fact types
+                        if (deb.isInstanceOf(TextData.class)) {
+                            TextData td = CdmBase.deproxy(deb, TextData.class);
+                            //TODO 7 handle locale
+                            LanguageString text = td.getPreferredLanguageString(Language.DEFAULT());
+                            if (text != null) {
+                                result = CdmUtils.concat(";", result, text.getText());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private String getAnnotations(@SuppressWarnings("unused") WfoBackboneExportState state,
+            AnnotatableEntity entity,
+            Set<UUID> includedAnnotationTypes) {
+
+        if (entity == null) {
+            return null;
+        }
+        String result = null;
+        for (Annotation a : entity.getAnnotations()) {
+            UUID typeUuid = a.getAnnotationType()==null ? null:  a.getAnnotationType().getUuid();
+            if (includedAnnotationTypes == null ||
+                    includedAnnotationTypes.contains(typeUuid)){
+                result = CdmUtils.concat(";", result, a.getText());
+            }
+        }
+        return result;
+    }
 
     private String createMultilanguageString(Map<Language, LanguageString> multilanguageText) {
         String text = "";
@@ -527,7 +574,10 @@ public class WfoBackboneExport
             String[] csvLine = new String[table.getSize()];
 
             TaxonName name = synonym.getName();
-            handleName(state, table, csvLine, name);
+            String wfoId = handleName(state, table, csvLine, name);
+            if (wfoId == null) {
+                return;
+            }
 
             //accepted name id
             if (synonym.getAcceptedTaxon()!= null && synonym.getAcceptedTaxon().getName() != null) {
