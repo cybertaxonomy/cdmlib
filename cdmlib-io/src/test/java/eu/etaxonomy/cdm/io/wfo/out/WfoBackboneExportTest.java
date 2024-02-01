@@ -134,9 +134,10 @@ public class WfoBackboneExportTest
 
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 7 taxa (5 accepted + 2 synonyms)", 7, taxonResult.size() - COUNT_HEADER);
+//      taxonResult.stream().forEach(tr->System.out.println(tr));
+        Assert.assertEquals("There should be 8 taxa (5 accepted + 3 synonyms)", 8, taxonResult.size() - COUNT_HEADER);
         Assert.assertEquals("There should be 5 accepted taxa", 5, filterAccepted(taxonResult).size());
-        Assert.assertEquals("There should be 2 synonyms", 2, filterSynonyms(taxonResult).size());
+        Assert.assertEquals("There should be 3 synonyms", 3, filterSynonyms(taxonResult).size());
 
         //reference counts
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
@@ -154,7 +155,6 @@ public class WfoBackboneExportTest
         Assert.assertEquals(expectedSubspecies , subspeciesLine);
 
         //unpublished/excluded/note
-        //TODO evaluate unpublished flag
         String unpublishedLine = getLine(taxonResult, subspeciesUnpublishedWfoId);
         String expectedExcluded = str(subspeciesUnpublishedWfoId)+ NONE + uuid(subspeciesUnpublishedNameUUID) +
                 str("Genus species subsp. unpublished") + str("subspecies") +
@@ -164,6 +164,19 @@ public class WfoBackboneExportTest
                 str("Accepted") + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + subspeciesUnpublishedTaxonUuid)
                 + strEnd("Excluded: My status note");
         Assert.assertEquals(expectedExcluded, unpublishedLine);
+
+        //original spelling
+        String originalSpellingLine = getLine(taxonResult, speciesOrigSpellingWfoId);
+        String expectedOrigSpellingLine = str(speciesOrigSpellingWfoId) + NONE + uuid(origSpellingNameUuid) +
+                str("Sus basyonus") + str("species") + NONE + str("Mill.") +
+                str("Familyname") + NONE3 + str("Sus") + NONE + str("basyonus") + NONE +
+                str("species") + str("orthografia") + str("The book of botany 3: 22. 1804") +
+                str("Synonym") +
+                str(speciesWfoId) + NONE + NONE + NONE3 +
+                //TODO 2 link for orig spelling
+                NONE //str("" + speciesTaxonUuid + "/synonymy?highlite=" + basionymSynonymUuid)
+                + NONE_END;
+        Assert.assertEquals(expectedOrigSpellingLine, originalSpellingLine);
 
         //... family => test nom. status 'conserved'
         String nameStr = getLine(taxonResult, familyWfoId);
@@ -185,7 +198,7 @@ public class WfoBackboneExportTest
 
     private List<String> filterSynonyms(List<String> taxonResult) {
         return taxonResult.stream()
-                .filter(s->s.contains("typicSynonym"))
+                .filter(s->s.contains("typicSynonym\"") || s.contains("\"Synonym\""))
                 .collect(Collectors.toList());
     }
 
@@ -210,25 +223,18 @@ public class WfoBackboneExportTest
 
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 5 taxa (4 acceptd + 1 synonym)", 5, taxonResult.size() - COUNT_HEADER);
-
-//        List<String> synonymResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
-//        Assert.assertEquals("There should be no synonym", 1, synonymResult.size() - COUNT_HEADER);
-
-        List<String> nameResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 5 names", 5, nameResult.size() - COUNT_HEADER);
-
+//      taxonResult.stream().forEach(tr->System.out.println(tr));
+        Assert.assertEquals("There should be 6 taxa (4 acceptd + 2 synonym)", 6, taxonResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 4 accepted taxa", 4, filterAccepted(taxonResult).size());
+        Assert.assertEquals("There should be 2 synonyms", 2, filterSynonyms(taxonResult).size());
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
         Assert.assertEquals("There should be 1 reference", 1, referenceResult.size() - COUNT_HEADER);
 
         //tbc
     }
 
-
-
     @Override
     public void testFullSampleData() {
-        // TODO Auto-generated method stub
         super.testFullSampleData();
     }
 

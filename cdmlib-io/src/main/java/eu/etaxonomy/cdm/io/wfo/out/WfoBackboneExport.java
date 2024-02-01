@@ -249,7 +249,7 @@ public class WfoBackboneExport
 
             //accepted name
             TaxonName name = taxon.getName();
-            wfoId = handleName(state, table, csvLine, name);
+            wfoId = handleName(state, table, csvLine, name, null);
 
             //... parentNameUsageID
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_PARENT_ID)] = parentWfoId;
@@ -527,7 +527,8 @@ public class WfoBackboneExport
         return cdmBase.getUuid().toString();
     }
 
-    private void handleSynonym(WfoBackboneExportState state, Synonym synonym, boolean isHomotypic) {
+    private void handleSynonym(WfoBackboneExportState state, Synonym synonym,
+            boolean isHomotypic) {
         try {
             if (isUnpublished(state.getConfig(), synonym)) {
                 return;
@@ -537,15 +538,12 @@ public class WfoBackboneExport
             String[] csvLine = new String[table.getSize()];
 
             TaxonName name = synonym.getName();
-            String wfoId = handleName(state, table, csvLine, name);
-            if (wfoId == null) {
-                return;
-            }
 
             //accepted name id
+            String acceptedWfoId = null;
             if (synonym.getAcceptedTaxon()!= null && synonym.getAcceptedTaxon().getName() != null) {
                 TaxonName acceptedName = synonym.getAcceptedTaxon().getName();
-                String acceptedWfoId = getWfoId(state, acceptedName, false);
+                acceptedWfoId = getWfoId(state, acceptedName, false);
                 if (acceptedWfoId == null) {
                     String message = "WFO-ID for accepted name is missing. This should not happen. Synonym: " + name.getTitleCache() + "; Accepted name: " + acceptedName.getTitleCache();
                     state.getResult().addError(message, "handleName");
@@ -553,6 +551,12 @@ public class WfoBackboneExport
                 }
                 csvLine[table.getIndex(WfoBackboneExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedWfoId;
             }
+
+            String wfoId = handleName(state, table, csvLine, name, acceptedWfoId);
+            if (wfoId == null) {
+                return;
+            }
+
 
             //status
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = isHomotypic ? "homotypicSynonym" : "heterotypicSynonym";
@@ -573,7 +577,7 @@ public class WfoBackboneExport
     }
 
     private String handleName(WfoBackboneExportState state, WfoBackboneExportTable table, String[] csvLine,
-            TaxonName name) {
+            TaxonName name, String acceptedNameWfoId) {
 
         name = CdmBase.deproxy(name);
         if (name == null || state.getNameStore().containsKey(name.getId())) {
@@ -592,7 +596,7 @@ public class WfoBackboneExport
             //taxon ID
             wfoId = getWfoId(state, name, false);
             if (isBlank(wfoId)) {
-                String message = "No WFO-ID given for taxon name " + name.getTitleCache() + ". Taxon/Synonym ignored.";
+                String message = "No WFO-ID given for taxon name " + name.getTitleCache() + ". Taxon/Synonym/Name ignored.";
                 state.getResult().addError(message);
                 state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
                 return null;
@@ -635,7 +639,7 @@ public class WfoBackboneExport
 
             //authorship
             //TODO 3 handle empty authorship cache warning
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = name.getAuthorshipCache();
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = normalizedAuthor(name);
 
             //family (use familystr if provided, otherwise try to compute from the family taxon
             String familyStr = state.getFamilyStr();
@@ -683,14 +687,15 @@ public class WfoBackboneExport
 
             //original spelling
             TaxonName originalSpelling = name.getOriginalSpelling();
+            acceptedNameWfoId = acceptedNameWfoId == null? wfoId : acceptedNameWfoId;
             if (originalSpelling != null) {
-                handleNameOnly(state, table, originalSpelling, name);
+                handleOrthographicVariants(state, table, originalSpelling, name, acceptedNameWfoId);
             }
 
             //orth. var.
             Set<TaxonName> orthVars = getOrthographicVariants(name);
             for (TaxonName orthVar : orthVars) {
-                handleNameOnly(state, table, orthVar, name);
+                handleOrthographicVariants(state, table, orthVar, name, acceptedNameWfoId);
             }
 
          } catch (Exception e) {
@@ -700,6 +705,19 @@ public class WfoBackboneExport
         }
 
         return wfoId;
+    }
+
+    //TODO 2 make it public somewhere in author formatter
+    private String normalizedAuthor(TaxonName name) {
+        if (isBlank(name.getAuthorshipCache())) {
+            return null;
+        }
+        String result = name.getAuthorshipCache();
+        result = result.replaceAll("\\.\\s+", ".")
+                .replaceAll("\\.\\&", ". &")
+                .replaceAll("\\.ex\\s+", ". ex ")
+                ;
+        return result;
     }
 
     private Set<TaxonName> getOrthographicVariants(TaxonName name) {
@@ -716,9 +734,11 @@ public class WfoBackboneExport
 
     /**
      * Handle names not being handled via taxonbase.
+     * @param acceptedNameWfoId
      */
-    private void handleNameOnly(WfoBackboneExportState state, WfoBackboneExportTable table,
-            TaxonName name, TaxonName mainName) {
+    private void handleOrthographicVariants(WfoBackboneExportState state, WfoBackboneExportTable table,
+            TaxonName name, TaxonName mainName, String acceptedNameWfoId) {
+
         //TODO 1 names only check if implemented correctly
         if (!name.getTaxonBases().isEmpty()) {
             //TODO 2 find a better way to guarantee that the name is not added as a taxonbase elsewhere
@@ -726,17 +746,35 @@ public class WfoBackboneExport
         }
 
         String[] csvLine = new String[table.getSize()];
-        String wfoID = handleName(state, table, csvLine, name);
+        String wfoID = handleName(state, table, csvLine, name, acceptedNameWfoId);
         if (wfoID == null) {
-            String message = "Original spelling, orthographic variant or misspeling "
+            String message = "Original spelling, orthographic variant or misspelling "
                     + "'" + name + "' for name '" + mainName +"' does not have a WFO-ID"
                     + " and therefore can not be exported";
             state.getResult().addWarning(message);
             return;
-       }
+        }
+
+        csvLine[table.getIndex(WfoBackboneExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedNameWfoId;
+
+        //authorship, take from mainname if it does not exist
+        //TODO 3 take from csvLine of both names
+        if (isBlank(normalizedAuthor(name))) {
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = normalizedAuthor(mainName);
+        }
+
+        //nom. ref, take from main name if it does not exist
+        //TODO 3 take from csvLine of both names
+        String nomRef = NomenclaturalSourceFormatter.INSTANCE().format(name.getNomenclaturalSource());
+        if (isBlank(nomRef)) {
+            nomRef = NomenclaturalSourceFormatter.INSTANCE().format(mainName.getNomenclaturalSource());
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_PUBLISHED_IN)] = nomRef;
+        }
 
         //TODO 2 tax status correct?
         csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = "Synonym";
+
+        csvLine[table.getIndex(WfoBackboneExportTable.NAME_STATUS)] = "orthografia";
 
         //TODO 2 remarks, REFERENCES, family, taxonBase, created, modified
 
