@@ -261,7 +261,7 @@ public class ManifestComposer {
         } catch (Exception e) {
             logger.error("Error reading media metadata", e);
         }
-        if (representationMetadata.isEmpty() || metaDataSource.equals("onlyCdm")) {
+        if (representationMetadata  == null || representationMetadata.isEmpty() || metaDataSource.equals("onlyCdm")) {
             //use only mediaData
         }else if (metaDataSource.equals("onlyMediaServer")) {
             for (MetadataEntry entry: representationMetadata) {
@@ -269,9 +269,9 @@ public class ManifestComposer {
             }
         } else  {
             for (MetadataEntry entry: representationMetadata) {
-                if (mediaMetadata.get(entry.getLabelString()) != null && metaDataSource.equals("preferCdm")) {
+                if (mediaMetadata.get(entry.getLabelString()) != null && metaDataSource.equalsIgnoreCase("cdm")) {
                     //keep it
-                }else if (mediaMetadata.get(entry.getLabelString()) != null && metaDataSource.equals("preferMediaServer")) {
+                }else if (mediaMetadata.get(entry.getLabelString()) != null && metaDataSource.equalsIgnoreCase("mediaServer")) {
                     mediaMetadata.put(entry.getLabelString(), entry);
                 }else {
                     //these data are not available in cdm meta data, so use meta data from media Server
@@ -285,14 +285,12 @@ public class ManifestComposer {
                     .stream()
                     .filter( e -> containsCaseInsensitive(e.getLabelString(), includes.values()))
                     .collect(Collectors.toList());
-//            if(logger.isDebugEnabled()) {
-//                logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
-//            }
+
            }
 
 
         // extractAndAddDesciptions(canvas, mediaMetadata);
-        canvas = addAttributionAndLicense(media, canvas, representationMetadata);
+        canvas = addAttributionAndLicense(media, canvas, representationMetadata, metaDataSource);
         representationMetadata = deduplicateMetadata(representationMetadata);
 
         orderMedatadaItems(canvas);
@@ -586,14 +584,14 @@ public class ManifestComposer {
         return html.toString();
     }
 
-    private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata) {
+    private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata, String metadataSource) {
 
         List<Language> languages = LocaleContext.getLanguages();
 
         List<String> rightsTexts = new ArrayList<>();
         List<String> creditTexts = new ArrayList<>();
         List<URI> license = new ArrayList<>();
-
+        MetadataEntry remove = null;
         if(entity.getRights() != null && entity.getRights().size() > 0){
             for(Rights right : entity.getRights()){
                 String rightText = "";
@@ -622,19 +620,32 @@ public class ManifestComposer {
                 }
                 // --- COPYRIGHT
                 else if(right.getType().equals(RightsType.COPYRIGHT())){
-                    // titleCache + agent
-                    String copyRightText = "";
-                    if(right.getText() != null){
-                        copyRightText = right.getText();
-                        //  sanitize potential '(c)' away
-                        copyRightText = copyRightText.replace("(c)", "").trim();
+                    //handle copyright similar to the other meta data and decide from metadataSource
+                    String copyRightText = null;
+                    if (metadataSource.contains("mediaServer")) {
+                        for (MetadataEntry entry: metadata) {
+                            if (entry.getLabelString().equalsIgnoreCase("copyright")) {
+                                copyRightText = "© " + entry.getValueString();
+                                remove = entry;
+                            }
+                        }
                     }
-                    if(right.getAgent() != null){
-                        // may only apply to RightsType.accessRights
-                        copyRightText += " " + right.getAgent().getTitleCache();
-                    }
-                    if(!copyRightText.isEmpty()){
-                        copyRightText = "© " + copyRightText;
+                    //if there is no copyright on mediaServer and the meta data shouldn't be only from media server
+                    if (copyRightText == null && !metadataSource.equalsIgnoreCase("onlyMediaServer")){
+                        // titleCache + agent
+                        if(right.getText() != null){
+                            copyRightText = right.getText();
+                            //  sanitize potential '(c)' away
+                            copyRightText = copyRightText.replace("(c)", "").trim();
+                        }
+                        if(right.getAgent() != null){
+                            // may only apply to RightsType.accessRights
+                            copyRightText += " " + right.getAgent().getTitleCache();
+                        }
+                        if(!copyRightText.isEmpty()){
+                            copyRightText = "© " + copyRightText;
+                        }
+
                     }
                     rightText = copyRightText;
                 } else
@@ -672,7 +683,11 @@ public class ManifestComposer {
         if(rightsTexts.size() > 0){
             String joinedRights = rightsTexts.stream().collect(Collectors.joining(", "));
             resource.addAttribution(joinedRights);
-            if(metadata != null){
+
+            if(metadata != null && remove != null){
+                if (remove!= null) {
+                    metadata.remove(remove);
+                }
                 metadata.add(new MetadataEntry(new PropertyValue("Copyright"), new PropertyValue(joinedRights)));
             }
         }
