@@ -89,6 +89,7 @@ public class WfoBackboneExportTest
         //config+invoke
         WfoBackboneExportConfigurator config = newConfigurator();
         config.setFamilyStr("Myfamily");
+        config.setSourceLinkBaseUrl("https://www.abc.de/mytaxon");
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
