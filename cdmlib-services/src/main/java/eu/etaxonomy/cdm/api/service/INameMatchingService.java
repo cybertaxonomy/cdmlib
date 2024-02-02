@@ -17,5 +17,5 @@ import eu.etaxonomy.cdm.api.service.config.NameMatchingConfigurator;
  */
 public interface INameMatchingService  {
 
-	public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config);
+	public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor);
 }

@@ -15,9 +15,9 @@ package eu.etaxonomy.cdm.model.metadata;
  *
  */
 public enum DistributionDescription implements IKeyLabel{
-    AlwaysDefault("AlwaysDefault", "Always use default description"),
+    AlwaysDefault("AlwaysDefault", "Use default description (create if not exist)"),
    // OwnDescriptionForDistributions("OwnDescription", "Use own description for distributions"),
-    UseAlreadyExisting("AlreadyExisting", "Use already existing descriptions");
+    UseAlreadyExisting("AlreadyExisting", "Use default description if exist, any otherwise");
    // DescriptionsPerSource("DescriptionPerSource", "Every source has its own description");
 
 

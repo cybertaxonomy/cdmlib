@@ -19,6 +19,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 
 /**
  * @author a.kohlbecker
@@ -93,6 +94,7 @@ public class MediaUriTransformationProcessorTest {
     public void testMakeMedia() throws URISyntaxException {
 
         URI uri = new URI(URI_STRING_1);
+        MediaRepresentationPart part = MediaRepresentationPart.NewInstance(uri, null);
 
         MediaUriTransformation transformation1 = new MediaUriTransformation();
         transformation1.setPathQueryFragment(new SearchReplace(PATTERN_1, "digilib/Scaler/IIIF/$1!$2/400,200/full/0/default.jpg"));
@@ -103,7 +105,7 @@ public class MediaUriTransformationProcessorTest {
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(uri);
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(part);
 
         assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,200/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
         assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());

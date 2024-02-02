@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
@@ -247,6 +249,12 @@ public class PortalDtoLoader {
     private void loadSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
         //TODO load specimen from multiple places
 
+        //TODO use filter
+        EnumSet<TaxonOccurrenceRelationType> specimenFilter = config.getSpecimenAssociationFilter();
+
+        //TODO maybe use OccurrenceService.listRootUnitDTOsByAssociatedTaxon
+        //     or OccurrenceService.listRootUnitsByAssociatedTaxon()
+
         try {
             ContainerDto<SpecimenDTO> container = new ContainerDto<>();
 
@@ -380,17 +388,8 @@ public class PortalDtoLoader {
                     dto.setStatus(status.getLabel(language));
                 }
                 //statusNote
-                Map<Language, LanguageString> statusNote = node.getStatusNote();
-                if (statusNote != null) {
-                    //TODO handle fallback lang
-                    LanguageString statusNoteStr = statusNote.get(language);
-                    if (statusNoteStr == null && statusNote.size() > 0) {
-                        statusNoteStr = statusNote.entrySet().iterator().next().getValue();
-                    }
-                    if (statusNoteStr != null) {
-                        dto.setStatusNote(statusNoteStr.getText());
-                    }
-                }
+                dto.setStatusNote(node.preferredStatusNote(language));
+
                 //agent relations
                 Set<TaxonNodeAgentRelation> agents = node.getAgentRelations();
                 if (!agents.isEmpty()) {
@@ -612,6 +611,7 @@ public class PortalDtoLoader {
     }
 
     private void loadProtologues(TaxonName name, TaxonBaseDto taxonBaseDto) {
+        //TODO maybe also load reference DOI/URL if no source external link exists
         NomenclaturalSource nomSource = name.getNomenclaturalSource();
         if (nomSource != null) {
             Set<ExternalLink> links = nomSource.getLinks();
@@ -930,8 +930,6 @@ public class PortalDtoLoader {
 
         //copied from DescriptionListController
 
-        boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
-        distributionConfig.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
         boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future
 
         //fallbackArea markers include markers for fully hidden areas and fallback areas.

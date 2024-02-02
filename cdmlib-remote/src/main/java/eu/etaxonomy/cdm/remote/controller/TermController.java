@@ -38,13 +38,15 @@ public class TermController
         extends AbstractIdentifiableController<DefinedTermBase, ITermService> {
 
     private static final List<String> TERM_COMPARE_INIT_STRATEGY = Arrays.asList(new String []{
-            "vocabulary"
+            "vocabulary",
+            "includes"
     });
 
     @Autowired
     @Override
     public void setService(ITermService service) {
         this.service = service;
+        setInitializationStrategy(TERM_COMPARE_INIT_STRATEGY);
     }
 
     /**

@@ -405,8 +405,6 @@ public abstract class CdmBase
         return true;
     }
 
-
-
     /** Overrides {@link java.lang.Object#hashCode()}
      *  See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities}
      * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}

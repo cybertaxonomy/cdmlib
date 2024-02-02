@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
@@ -699,12 +700,6 @@ public class TaxonServiceImpl
 
     @Override
     public <S extends TaxonBase> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
-            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return page(clazz, restrictions, pageSize, pageIndex, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
-    }
-
-    @Override
-    public <S extends TaxonBase> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
             Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished) {
 
         List<S> records;
@@ -960,25 +955,13 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public List<Media> listTaxonDescriptionMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, boolean limitToGalleries, List<String> propertyPath){
-        return listMedia(taxon, includeRelationships, limitToGalleries, true, false, false, propertyPath);
-    }
-
-    @Override
     public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
-            Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
-    	return  listMedia(taxon, includeRelationships, limitToGalleries, includeTaxonDescriptions, includeOccurrences, false,
-                includeTaxonNameDescriptions, propertyPath);
-    }
+            Boolean includeOriginalOccurences, Boolean includeTaxonNameDescriptions,
+            boolean includeUnpublished, List<String> propertyPath) {
 
-    @Override
-    public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeOriginalOccurences,
-            Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
-
-        //TODO let inherit
-        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
+        //FIXME add to parameters
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
 //      LogUtils.setLevel(logger, Level.TRACE);
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
@@ -1033,7 +1016,10 @@ public class TaxonServiceImpl
             Set<SpecimenOrObservationBase> specimensOrObservations = new HashSet<>();
             // --- Specimens
             for (Taxon t : taxa) {
-                specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(null, t, null, null, null, null));
+                specimensOrObservations.addAll(occurrenceDao.listByAssociatedTaxon(
+                        null, t, includeUnpublished,
+                        taxonOccurrenceRelTypes,
+                        null, null, null, null));
             }
             for (SpecimenOrObservationBase<?> occurrence : specimensOrObservations) {
 

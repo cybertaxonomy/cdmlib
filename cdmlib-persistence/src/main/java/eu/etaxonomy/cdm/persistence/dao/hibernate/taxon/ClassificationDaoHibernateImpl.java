@@ -199,7 +199,8 @@ public class ClassificationDaoHibernateImpl
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths){
 
-         Query<TaxonNode> query = prepareListChildrenOf(taxon, classification, subtree, false, includeUnpublished, TaxonNode.class);
+         Query<TaxonNode> query = prepareListChildrenOf(taxon, classification,
+                 subtree, false, includeUnpublished, TaxonNode.class);
 
          addPageSizeAndNumber(query, pageSize, pageIndex);
 

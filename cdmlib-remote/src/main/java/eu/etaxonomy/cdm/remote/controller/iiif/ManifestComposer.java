@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -138,7 +140,7 @@ public class ManifestComposer {
         this.mediaInfoFactory = mediaInfoFactory;
     }
 
-    <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) throws IOException {
+    <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid, String metaDataSource) throws IOException {
 
 //        LogUtils.setLevel(MediaUtils.class, Level.DEBUG);
 //        LogUtils.setLevel(logger, Level.DEBUG);
@@ -146,7 +148,7 @@ public class ManifestComposer {
         try {
         canvases = entityMediaContext.getMedia().parallelStream().map(m -> {
                 try {
-                    return createCanvas(onEntitiyType, onEntityUuid, m);
+                    return createCanvas(onEntitiyType, onEntityUuid, m, metaDataSource);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -181,7 +183,7 @@ public class ManifestComposer {
         return manifest;
     }
 
-    public Optional<Canvas> createCanvas(String onEntitiyType, String onEntityUuid, Media media) throws IOException {
+    public Optional<Canvas> createCanvas(String onEntitiyType, String onEntityUuid, Media media, String metaDataSource) throws IOException {
         Canvas canvas;
 
         MediaRepresentation thumbnailRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, 100, 100, thumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
@@ -240,27 +242,81 @@ public class ManifestComposer {
                 canvas.setWidth(thumbnailImageContents.get(0).getWidth());
             }
         }
+        Map<String, MetadataEntry> mediaMetadata = new HashMap<>();
+        Map<String, String> includes = mediaService.mediaMetadataKeyIncludes();
 
-        List<MetadataEntry> mediaMetadata = mediaMetaData(media);
-        List<MetadataEntry> representationMetadata;
+        mediaMetadata = mediaMetaData(media, includes);
+
+        List<MetadataEntry> representationMetadata = null;
         try {
             representationMetadata = mediaService.readResourceMetadataFiltered(fullSizeRepresentation)
                      .entrySet()
                      .stream()
                      .map(e -> new MetadataEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
-            mediaMetadata.addAll(representationMetadata);
+
         } catch (IOException e) {
             logger.error("Error reading media metadata", e);
         } catch (HttpException e) {
             logger.error("Error accessing remote media resource", e);
+        } catch (Exception e) {
+            logger.error("Error reading media metadata", e);
         }
+        if (representationMetadata  == null || representationMetadata.isEmpty() || metaDataSource.equals("onlyCdm")) {
+            //use only mediaData
+        }else if (metaDataSource.equals("onlyMediaServer")) {
+            for (MetadataEntry entry: representationMetadata) {
+                mediaMetadata.put(entry.getLabelString(), entry);
+            }
+        } else  {
+            for (MetadataEntry entry: representationMetadata) {
+                if (mediaMetadata.get(entry.getLabelString()) != null && metaDataSource.equalsIgnoreCase("cdm")) {
+                    //keep it
+                }else if (mediaMetadata.get(entry.getLabelString()) != null && metaDataSource.equalsIgnoreCase("mediaServer")) {
+                    mediaMetadata.put(entry.getLabelString(), entry);
+                }else {
+                    //these data are not available in cdm meta data, so use meta data from media Server
+                    mediaMetadata.put(entry.getLabelString(), entry);
+                }
+            }
+
+        }
+        if(!includes.isEmpty()) {
+            representationMetadata = mediaMetadata.values()
+                    .stream()
+                    .filter( e -> containsCaseInsensitive(e.getLabelString(), includes.values()))
+                    .collect(Collectors.toList());
+
+           }
+
 
         // extractAndAddDesciptions(canvas, mediaMetadata);
-        mediaMetadata = deduplicateMetadata(mediaMetadata);
-        canvas = addAttributionAndLicense(media, canvas, mediaMetadata);
+        canvas = addAttributionAndLicense(media, canvas, representationMetadata, metaDataSource);
+        representationMetadata = deduplicateMetadata(representationMetadata);
+
         orderMedatadaItems(canvas);
-        canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
+        canvas.addMetadata(representationMetadata.toArray(new MetadataEntry[representationMetadata.size()]));
         return Optional.of(canvas);
+    }
+
+    private boolean containsCaseInsensitive(String s, Collection<String> l){
+        boolean result = l.stream().anyMatch(x -> equalsIgnoreBlank(x, s));
+        return result;
+    }
+
+    private boolean equalsIgnoreBlank(String a, String b){
+        if (a.contains(" ")) {
+           a = StringUtils.replace(a," ", "");
+           if (a.equalsIgnoreCase(b)) {
+               return true;
+           }
+        }
+        if (b.contains(" ")) {
+            b = StringUtils.replace(b," ", "");
+            if (a.equalsIgnoreCase(b)) {
+                return true;
+            }
+        }
+        return a.equalsIgnoreCase(b);
     }
 
     /**
@@ -439,16 +495,25 @@ public class ManifestComposer {
         return metadata;
   }
 
-    private List<MetadataEntry> mediaMetaData(Media media) {
-        List<MetadataEntry> metadata = new ArrayList<>();
+    private Map<String, MetadataEntry> mediaMetaData(Media media, Map<String,String> mapping) {
+        Map<String, MetadataEntry> metadata = new HashMap<>();
         List<Language> languages = LocaleContext.getLanguages();
 
         if(media.getTitle() != null){
             // TODO get localized titleCache
-            metadata.add(new MetadataEntry("Title", media.getTitleCache()));
+            if (mapping.get("Title")!= null) {
+                metadata.put(mapping.get("Title"), new MetadataEntry(mapping.get("Title"), media.getTitleCache()));
+            }else {
+                metadata.put("Taxon", new MetadataEntry("Taxon", media.getTitleCache()));
+            }
         }
         if(media.getArtist() != null){
-            metadata.add(new MetadataEntry("Artist", media.getArtist().getTitleCache()));
+            if (mapping.get("Artist")!= null) {
+                metadata.put(mapping.get("Artist"), new MetadataEntry(mapping.get("Artist"), media.getArtist().getTitleCache()));
+            }else {
+                metadata.put("Photographer",new MetadataEntry("Photographer", media.getArtist().getTitleCache()));
+            }
+
         }
         if(media.getAllDescriptions().size() > 0){
             // TODO get localized description
@@ -456,10 +521,16 @@ public class ManifestComposer {
             for(LanguageString description : media.getAllDescriptions().values()){
                 descriptionValues.addValue(description.getText());
             }
-            metadata.add(new MetadataEntry(new PropertyValue("Description"), descriptionValues));
+            metadata.put("Description", new MetadataEntry(new PropertyValue("Description"), descriptionValues));
         }
         if(media.getMediaCreated() != null){
-            metadata.add(new MetadataEntry("Created on", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
+
+            if (mapping.get("Created Date")!= null) {
+                metadata.put(mapping.get("Created Date"), new MetadataEntry(mapping.get("Created Date"), media.getMediaCreated().toString()));
+            }else {
+                metadata.put("Created Date", new MetadataEntry("Created Date", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
+            }
+
         }
 
         if(!media.getIdentifiers().isEmpty()) {
@@ -469,7 +540,7 @@ public class ManifestComposer {
                     identifierValues.addValue(identifier.getIdentifier());
                 }
             }
-            metadata.add(new MetadataEntry(new PropertyValue("Identifiers"), identifierValues));
+            metadata.put("Identifiers", new MetadataEntry(new PropertyValue("Identifiers"), identifierValues));
         }
 
         if(!media.getSources().isEmpty()) {
@@ -477,7 +548,7 @@ public class ManifestComposer {
             for(IdentifiableSource source : media.getSources()){
                 descriptionValues.addValue(sourceAsHtml(source));
             }
-            metadata.add(new MetadataEntry(new PropertyValue("Sources"), descriptionValues));
+            metadata.put("Sources", new MetadataEntry(new PropertyValue("Sources"), descriptionValues));
         }
         return metadata;
     }
@@ -513,14 +584,14 @@ public class ManifestComposer {
         return html.toString();
     }
 
-    private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata) {
+    private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata, String metadataSource) {
 
         List<Language> languages = LocaleContext.getLanguages();
 
         List<String> rightsTexts = new ArrayList<>();
         List<String> creditTexts = new ArrayList<>();
         List<URI> license = new ArrayList<>();
-
+        MetadataEntry remove = null;
         if(entity.getRights() != null && entity.getRights().size() > 0){
             for(Rights right : entity.getRights()){
                 String rightText = "";
@@ -549,19 +620,32 @@ public class ManifestComposer {
                 }
                 // --- COPYRIGHT
                 else if(right.getType().equals(RightsType.COPYRIGHT())){
-                    // titleCache + agent
-                    String copyRightText = "";
-                    if(right.getText() != null){
-                        copyRightText = right.getText();
-                        //  sanitize potential '(c)' away
-                        copyRightText = copyRightText.replace("(c)", "").trim();
+                    //handle copyright similar to the other meta data and decide from metadataSource
+                    String copyRightText = null;
+                    if (metadataSource.contains("mediaServer")) {
+                        for (MetadataEntry entry: metadata) {
+                            if (entry.getLabelString().equalsIgnoreCase("copyright")) {
+                                copyRightText = "© " + entry.getValueString();
+                                remove = entry;
+                            }
+                        }
                     }
-                    if(right.getAgent() != null){
-                        // may only apply to RightsType.accessRights
-                        copyRightText += " " + right.getAgent().getTitleCache();
-                    }
-                    if(!copyRightText.isEmpty()){
-                        copyRightText = "© " + copyRightText;
+                    //if there is no copyright on mediaServer and the meta data shouldn't be only from media server
+                    if (copyRightText == null && !metadataSource.equalsIgnoreCase("onlyMediaServer")){
+                        // titleCache + agent
+                        if(right.getText() != null){
+                            copyRightText = right.getText();
+                            //  sanitize potential '(c)' away
+                            copyRightText = copyRightText.replace("(c)", "").trim();
+                        }
+                        if(right.getAgent() != null){
+                            // may only apply to RightsType.accessRights
+                            copyRightText += " " + right.getAgent().getTitleCache();
+                        }
+                        if(!copyRightText.isEmpty()){
+                            copyRightText = "© " + copyRightText;
+                        }
+
                     }
                     rightText = copyRightText;
                 } else
@@ -599,7 +683,11 @@ public class ManifestComposer {
         if(rightsTexts.size() > 0){
             String joinedRights = rightsTexts.stream().collect(Collectors.joining(", "));
             resource.addAttribution(joinedRights);
-            if(metadata != null){
+
+            if(metadata != null && remove != null){
+                if (remove!= null) {
+                    metadata.remove(remove);
+                }
                 metadata.add(new MetadataEntry(new PropertyValue("Copyright"), new PropertyValue(joinedRights)));
             }
         }

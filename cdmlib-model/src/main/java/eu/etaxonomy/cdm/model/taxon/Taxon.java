@@ -446,6 +446,26 @@ public class Taxon
         return descriptions;
     }
 
+    /**
+     * Returns the default description if exist {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
+     * concerning <i>this</i> taxon.
+     *
+     * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
+     */
+    public TaxonDescription getDefaultDescription() {
+        if(descriptions == null) {
+            return null;
+        }
+
+        Set<TaxonDescription> descriptions= getDescriptions();
+        for (TaxonDescription desc: descriptions) {
+            if (desc.isDefault()) {
+                return desc;
+            }
+        }
+        return null;
+    }
+
     public Set<TaxonDescription> getDescriptions(DescriptionType type) {
         Set<TaxonDescription> result = new HashSet<>();
         for (TaxonDescription description : getDescriptions()){
@@ -1280,12 +1300,13 @@ public class Taxon
     }
 
     //TODO full functionality still needs to be checked
-    public void addBasionymSynonym(TaxonName basionym, Reference synSec, String synSecDetail){
+    public Synonym addBasionymSynonym(TaxonName basionym, Reference synSec, String synSecDetail){
         SynonymType synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
         Synonym synonym = addSynonymName(basionym, synSec, synSecDetail, synonymType);
         TaxonName thisName = this.getName();
         thisName.addBasionym(basionym);
         addSynonym(synonym);
+        return synonym;
     }
 
     /**

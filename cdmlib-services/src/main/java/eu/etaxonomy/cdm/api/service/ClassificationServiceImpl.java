@@ -329,8 +329,11 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode, List<String> propertyPaths) throws FilterException{
+    public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid,
+            UUID subtreeUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode,
+            List<String> propertyPaths) throws FilterException{
+
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
         TaxonNode subtree = taxonNodeDao.load(subtreeUuid);
@@ -342,7 +345,10 @@ public class ClassificationServiceImpl
                 taxon, classification, subtree, includeUnpublished, pageSize, pageIndex, propertyPaths);
         Comparator<TaxonNodeDto> comparator = sortMode.comparator();
         // TODO order during the hibernate query in the dao?
-        List<TaxonNodeDto> dtos = results.stream().map(e -> new TaxonNodeDto(e)).sorted(comparator).collect(Collectors.toList());
+        List<TaxonNodeDto> dtos = results.stream()
+                .map(tn -> new TaxonNodeDto(tn))
+                .sorted(comparator)
+                .collect(Collectors.toList());
         return dtos;
     }
 

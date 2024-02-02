@@ -22,7 +22,9 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 /**
  * @author AM
  */
-public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclaturalAuthorCacheStrategy<Team> {
+public class TeamDefaultCacheStrategy
+        extends StrategyBase
+        implements INomenclaturalAuthorCacheStrategy<Team> {
 
     private static final long serialVersionUID = 8375295443642690479L;
     @SuppressWarnings("unused")
@@ -218,6 +220,28 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
      */
     public static String addHasMoreMembers(String str) {
         return str + ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
+    }
+
+    /**
+     * Removes the whitespaces in an authorship string
+     * to be compliant with IPNI abbreviated authorship
+     * standard.
+     * @param authorship
+     * @return the authorship without certain whitespaces
+     */
+    public static String removeWhitespaces(String authorship) {
+        if (authorship == null) {
+            return null;
+        }
+        String result = authorship
+                .replaceAll("\\.\\s+", ".") //remove whitespace after "."
+                .replaceAll("\\.\\&", ". &")  //... but add whitespace before "&"
+                .replaceAll("\\.ex\\s", ". ex ") //...and add whitespace between "." and "ex "
+                .replaceAll("\\s+", " ")  //replace multiple whitespaces by a single one
+                .replaceAll("\\s+,", ",")  //remove whitespaces before ","
+                .trim()                    //trim
+                ;
+        return result;
     }
 
 }

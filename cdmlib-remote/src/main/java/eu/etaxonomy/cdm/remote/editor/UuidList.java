@@ -39,7 +39,4 @@ public class UuidList extends ArrayList<UUID> {
         }
         return "[" + result + "]";
     }
-
-
-
 }

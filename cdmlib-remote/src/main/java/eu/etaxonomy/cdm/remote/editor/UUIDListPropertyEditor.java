@@ -26,7 +26,6 @@ public class UUIDListPropertyEditor extends PropertyEditorSupport {
     }
 
     public UUIDListPropertyEditor(String nullRepresentation){
-        super();
         this.nullRepresentation = nullRepresentation;
     }
 

@@ -8,6 +8,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -324,10 +326,14 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> findOccurrencesUuidAndTitleCache(
             Class<T> clazz, String queryString, String significantIdentifier, SpecimenOrObservationType recordBasis,
-            Taxon associatedTaxon, TaxonName associatedTaxonName, MatchMode matchmode, Integer limit, Integer start,
-            List<OrderHint> orderHints) {
+            Taxon associatedTaxon, TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer limit, Integer start, List<OrderHint> orderHints) {
+
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, limit, start, orderHints, null);
+                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished,
+                taxonOccurrenceRelTypes,
+                limit, start, orderHints, null);
         if(criteria!=null){
             ProjectionList projectionList = Projections.projectionList();
             projectionList.add(Projections.property("uuid"));
@@ -350,10 +356,13 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
-            MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            MatchMode matchmode, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, limit, start, orderHints, propertyPaths);
+                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished,
+                taxonOccurrenceRelTypes,
+                limit, start, orderHints, propertyPaths);
         if(criteria!=null){
             @SuppressWarnings("unchecked")
             List<T> results = criteria.list();
@@ -366,8 +375,10 @@ public class OccurrenceDaoHibernateImpl
 
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
-            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Criteria criteria = null;
 
         if(clazz == null) {
@@ -416,7 +427,9 @@ public class OccurrenceDaoHibernateImpl
         Set<UUID> associationUuids = new HashSet<>();
         //taxon associations
         if(associatedTaxon!=null){
-            List<UuidAndTitleCache<SpecimenOrObservationBase>> associatedTaxaList = listUuidAndTitleCacheByAssociatedTaxon(clazz, associatedTaxon, limit, start, orderHints);
+            List<UuidAndTitleCache<SpecimenOrObservationBase>> associatedTaxaList = listUuidAndTitleCacheByAssociatedTaxon(
+                    clazz, associatedTaxon, includeUnpublished, taxonOccurrenceRelTypes,
+                    limit, start, orderHints);
             if(associatedTaxaList!=null){
                 for (UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache : associatedTaxaList) {
                     associationUuids.add(uuidAndTitleCache.getUuid());
@@ -452,10 +465,12 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
-            MatchMode matchmode, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            MatchMode matchmode, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, limit, start, orderHints, propertyPaths);
+                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished, taxonOccurrenceRelTypes,
+                limit, start, orderHints, propertyPaths);
 
         if(criteria!=null){
             criteria.setProjection(Projections.rowCount());
@@ -667,9 +682,14 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(Class<T> clazz, Taxon associatedTaxon,
+    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(
+            Class<T> clazz, Taxon associatedTaxon, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints){
-        Query<Object[]> query = createSpecimenQuery("sob.uuid, sob.id, sob.titleCache", clazz, associatedTaxon, limit, start, orderHints, Object[].class);
+
+        Query<Object[]> query = createSpecimenQuery("sob.uuid, sob.id, sob.titleCache", clazz,
+                associatedTaxon, includeUnpublished, taxonOccurrenceRelTypes,
+                limit, start, orderHints, Object[].class);
         if(query==null){
             return Collections.emptyList();
         }
@@ -683,10 +703,14 @@ public class OccurrenceDaoHibernateImpl
 
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> clazz,
-            Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Taxon associatedTaxon, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         @SuppressWarnings("rawtypes")
-        Query<SpecimenOrObservationBase> query = createSpecimenQuery("sob", clazz, associatedTaxon, limit, start, orderHints, SpecimenOrObservationBase.class);
+        Query<SpecimenOrObservationBase> query = createSpecimenQuery(
+                "sob", clazz, associatedTaxon, includeUnpublished, taxonOccurrenceRelTypes,
+                limit, start, orderHints, SpecimenOrObservationBase.class);
         if(query==null){
             return Collections.emptyList();
         }
@@ -697,89 +721,73 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
-    private <T extends SpecimenOrObservationBase, R extends Object> Query<R> createSpecimenQuery(String select, Class<T> clazz,
-            Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, Class<R> returnClass){
+    private <T extends SpecimenOrObservationBase, R extends Object> Query<R> createSpecimenQuery(
+            String select, Class<T> clazz, Taxon associatedTaxon,
+            boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer limit, Integer start,
+            List<OrderHint> orderHints, Class<R> returnClass){
 
         Set<Integer> setOfAllIds = new HashSet<>();
+        boolean classFilterExists = clazz != null && !clazz.equals(SpecimenOrObservationBase.class);
+        boolean requiresClassFilter = false;
 
-        Criteria criteria = null;
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type, "specimen");
-        } else {
-            criteria = getSession().createCriteria(clazz, "specimen");
+        //Note: we don't pass limits and order to individual results query as the data is merged with other results
+
+        //add determinations
+        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.Determination)
+                || taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.CurrentDetermination)) {
+            boolean currentOnly = !taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.Determination);
+            List<Integer> detResults = addAssociatedDeterminations(clazz, associatedTaxon, currentOnly);
+            setOfAllIds.addAll(detResults);
         }
 
-        Disjunction determinationOr = Restrictions.disjunction();
-
-        // A Taxon may be referenced by the DeterminationEvent of the SpecimenOrObservationBase
-        Criteria determinationsCriteria = criteria.createCriteria("determinations");
-
-        determinationOr.add(Restrictions.eq("taxon", associatedTaxon));
-        //check also for synonyms
-        for (Synonym synonym : associatedTaxon.getSynonyms()) {
-            determinationOr.add(Restrictions.eq("taxon", synonym));
+        //add specimen associated via IndividualsAssociation
+        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.IndividualsAssociation)) {
+            List<Integer> iaResults = descriptionDao.getIndividualAssociationSpecimenIDs(
+                    associatedTaxon.getUuid(), null, includeUnpublished, null, null, null);
+            //NOTE: iaResults are not yet filtered by clazz
+            requiresClassFilter |= classFilterExists && !iaResults.isEmpty();
+            setOfAllIds.addAll(iaResults);
         }
 
-        //check also for name determinations
-        determinationOr.add(Restrictions.eq("taxonName", associatedTaxon.getName()));
-        for (TaxonName synonymName : associatedTaxon.getSynonymNames()) {
-            determinationOr.add(Restrictions.eq("taxonName", synonymName));
+        // add specimen associated via type designation
+        if (taxonOccurrenceRelTypes.contains(TaxonOccurrenceRelationType.TypeDesignation)) {
+            //... of accepted taxon name
+            List<Integer> accTdResults = taxonNameDao.getTypeSpecimenIdsForTaxonName(
+                    associatedTaxon.getName(), null, null, null);
+            //NOTE: accTdResults are not yet filtered by clazz
+            requiresClassFilter |= classFilterExists && !accTdResults.isEmpty();
+            setOfAllIds.addAll(accTdResults);
+
+            //... and of synonym names (via homotypic groups)
+            Set<Integer> synTdResults = getTypeSpecimenIdsForSynonyms(associatedTaxon);
+            //NOTE: synTdResults are not yet filtered by clazz
+            requiresClassFilter |= classFilterExists && !synTdResults.isEmpty();
+            setOfAllIds.addAll(synTdResults);
         }
 
-        determinationsCriteria.add(determinationOr);
-
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
-        criteria.setProjection(Projections.property("id"));
-
-        addOrder(criteria,orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<Integer> detResults = criteria.list();
-        setOfAllIds.addAll(detResults);
-
-        // The IndividualsAssociation elements in a TaxonDescription contain DerivedUnits
-        setOfAllIds.addAll(descriptionDao.getIndividualAssociationSpecimenIDs(
-                associatedTaxon.getUuid(), null, null, 0, null));
-
-
-        // SpecimenTypeDesignations may be associated with the TaxonName.
-        setOfAllIds.addAll(taxonNameDao.getTypeSpecimenIdsForTaxonName(
-                associatedTaxon.getName(), null, null, null));
-
-        // SpecimenTypeDesignations may be associated with any HomotypicalGroup related to the specific Taxon.
-        //TODO adapt to set of ids
-        for(HomotypicalGroup homotypicalGroup :  associatedTaxon.getHomotypicSynonymyGroups()) {
-            List<SpecimenTypeDesignation> byHomotypicalGroup = homotypicalGroupDao.getTypeDesignations(homotypicalGroup, SpecimenTypeDesignation.class, null, null, 0, null);
-            for (SpecimenTypeDesignation specimenTypeDesignation : byHomotypicalGroup) {
-                if (specimenTypeDesignation.getTypeSpecimen() != null){
-                    setOfAllIds.add(specimenTypeDesignation.getTypeSpecimen().getId());
-                }
-            }
-        }
-
-        if(setOfAllIds.size() == 0){
+        if(setOfAllIds.isEmpty()){
             // no need querying the data base
             return null;
         }
 
+        //query
         String queryString =
-            "select "+select+
-            " from SpecimenOrObservationBase sob" +
-            " where sob.id in (:setOfAllIds)";
+            " SELECT "+select+
+            " FROM SpecimenOrObservationBase sob" +
+            " WHERE sob.id in (:setOfAllIds)";
 
-        if(clazz != null && !clazz.equals(SpecimenOrObservationBase.class)){
-            queryString += " and sob.class = :type ";
+        if (!includeUnpublished) {
+            queryString += " AND sob.publish = TRUE ";
+        }
+
+        if(requiresClassFilter){
+            queryString += " AND sob.class = :type ";
         }
 
         if(orderHints != null && orderHints.size() > 0){
-            queryString += " order by ";
+            queryString += " ORDER BY ";
             String orderStr = "";
             for(OrderHint orderHint : orderHints){
                 if(orderStr.length() > 0){
@@ -793,13 +801,78 @@ public class OccurrenceDaoHibernateImpl
         Query<R> query = getSession().createQuery(queryString, returnClass);
         query.setParameterList("setOfAllIds", setOfAllIds);
 
-        if(clazz != null && !clazz.equals(SpecimenOrObservationBase.class)){
+        if(requiresClassFilter){
+            //note: null warning is incorrect here
             query.setParameter("type", clazz.getSimpleName());
         }
 
         addLimitAndStart(query, limit, start);
 
         return query;
+    }
+
+    private Set<Integer> getTypeSpecimenIdsForSynonyms(Taxon associatedTaxon) {
+        //TODO check if there is a real synonym relationship between accepted taxon and name of homotypic group
+        Set<Integer> synTdResults = new HashSet<>();
+        for(HomotypicalGroup homotypicalGroup :  associatedTaxon.getHomotypicSynonymyGroups()) {
+            //TODO fetch specimen IDs only instead of loading the type designation
+            List<SpecimenTypeDesignation> byHomotypicalGroup = homotypicalGroupDao.getTypeDesignations(
+                    homotypicalGroup, SpecimenTypeDesignation.class, null, null, 0, null);
+            for (SpecimenTypeDesignation specimenTypeDesignation : byHomotypicalGroup) {
+                if (specimenTypeDesignation.getTypeSpecimen() != null){
+                    synTdResults.add(specimenTypeDesignation.getTypeSpecimen().getId());
+                }
+            }
+        }
+        return synTdResults;
+    }
+
+    /**
+     * Computes the IDs of the specimen associated with a taxon via determinations
+     */
+    private List<Integer> addAssociatedDeterminations(Class<? extends SpecimenOrObservationBase> clazz,
+            Taxon associatedTaxon, boolean currentOnly) {
+
+        Criteria criteria = null;
+        if(clazz == null) {
+            criteria = getSession().createCriteria(type, "specimen");
+        } else {
+            criteria = getSession().createCriteria(clazz, "specimen");
+        }
+
+        Criteria determinationsCriteria = criteria.createCriteria("determinations");
+        if (currentOnly) {
+            determinationsCriteria.add(Restrictions.eq("preferredFlag", Boolean.TRUE));
+        }
+
+        Disjunction determinationOr = Restrictions.disjunction();
+
+        //taxon
+        determinationOr.add(Restrictions.eq("taxon", associatedTaxon));
+        //synonyms
+        for (Synonym synonym : associatedTaxon.getSynonyms()) {
+            determinationOr.add(Restrictions.eq("taxon", synonym));
+        }
+
+        //determinations via names, to be used only if determination taxon
+        //... accepted name
+        determinationOr.add(Restrictions.and(
+                Restrictions.eq("taxonName", associatedTaxon.getName()),
+                Restrictions.isNull("taxon")));
+        //... synonyms
+        for (TaxonName synonymName : associatedTaxon.getSynonymNames()) {
+            determinationOr.add(Restrictions.and(
+                    Restrictions.eq("taxonName", synonymName),
+                    Restrictions.isNull("taxon")));
+        }
+
+        determinationsCriteria.add(determinationOr);
+
+        criteria.setProjection(Projections.property("id"));
+
+        @SuppressWarnings("unchecked")
+        List<Integer> detResults = criteria.list();
+        return detResults;
     }
 
     @Override

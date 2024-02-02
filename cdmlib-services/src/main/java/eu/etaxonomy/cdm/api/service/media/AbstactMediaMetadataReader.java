@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.api.service.media;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
@@ -54,6 +56,13 @@ public abstract class AbstactMediaMetadataReader {
             text = text.substring(1 , text.length() - 1);
         }
 
+        //if text contains date with time informations, remove the time information
+        Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}");
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.matches()) {
+            text = text.substring(0, text.indexOf("T"));
+        }
+
         return text;
     }
 
@@ -88,9 +97,9 @@ public abstract class AbstactMediaMetadataReader {
     public void appendMetadataEntry(String key, String text) {
         key = convert(key);
         if(cdmImageInfo.getMetaData().containsKey(key)) {
-            if (!cdmImageInfo.getMetaData().get(key).contains(text)) {
-                cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
-            }
+           
+            cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
+            
         } else {
             cdmImageInfo.getMetaData().put(key, text);
         }
@@ -101,15 +110,7 @@ public abstract class AbstactMediaMetadataReader {
      * @return
      */
     private String convert(String text) {
-        MetaDataMapping mapping = null;
-        try {
-            mapping = MetaDataMapping.valueOf(text);
-        }catch(IllegalArgumentException e) {
-            //Do nothing
-        }
-        if (mapping != null) {
-            text = mapping.getLabel();
-        }
+
         if (!text.contains(" ")) {
             String[] splittedKey = StringUtils.splitByCharacterTypeCamelCase(text);
 

@@ -793,8 +793,9 @@ public class NomenclaturalStatusType
 	/**
 	 * Returns the nomenclatural status type "opus utique oppressum". This type
 	 * relates to article 32.7 (old ICBN) and article 32.9 as well as App. 6
-	 * (new {@link NomenclaturalCode#ICBN() ICBN}). This is a reference list of botanical opera, in which all
-	 * {@link BotanicalName taxon names} (or names of a certain rank) are oppressed. Such a name has the
+	 * (new {@link NomenclaturalCode#ICBN() ICBN}). This is a reference list of
+	 * botanical opera, in which all {@link BotanicalName taxon names} (or names
+	 * of a certain rank) are oppressed. Such a name has the
 	 * status "invalid" but in contrary to "rejected" not a single name
 	 * is rejected by the commission but an opus with regard to the validity of
 	 * all taxon names occurring in it.<BR>

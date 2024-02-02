@@ -10,20 +10,27 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator;
@@ -299,47 +306,120 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     @Override
     public Map<String, String> readResourceMetadataFiltered(MediaRepresentation representation) throws IOException, HttpException {
 
-        List<String> includes = mediaMetadataKeyIncludes();
+        Map<String, String> includes = mediaMetadataKeyIncludes();
         List<String> excludes = mediaMetadataKeyExludes();
-        Map<String, String> metadata = new HashMap<>();
-
-        for(MediaRepresentationPart part : representation.getParts()) {
-            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(part.getUri(), true);
-            if(iInfo.getMetaData() != null) {
-                metadata.putAll(iInfo.getMetaData());
-            }
+        Map<String, String> metadata = getMetaDatafromServer(representation);
+        if(logger.isDebugEnabled()) {
+            logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
         }
+       if(!includes.isEmpty()) {
+        metadata = metadata.entrySet()
+                .stream()
+                .filter( e -> containsCaseInsensitive(e.getKey(), includes.keySet()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if(logger.isDebugEnabled()) {
+            logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+        }
+       }
+       if(metadata == null) {
+            metadata = new HashMap<>();
+       }
+       Map<String, String> resultMetadata = new HashMap();
+       String replacedKey = null;
+       for (Entry<String,String> a: metadata.entrySet()) {
+           if (includes.containsKey(a.getKey().replaceAll(" ", ""))) {
+               replacedKey = includes.get(a.getKey().replaceAll(" ", ""));
+           }else {
+               replacedKey = includes.get(a.getKey());
+           }
+           if (resultMetadata.containsKey(replacedKey)) {
+               resultMetadata.put(replacedKey, resultMetadata.get(replacedKey) + "; " + a.getValue());
+           }else {
+               resultMetadata.put(replacedKey, a.getValue());
+           }
+       }
+       return resultMetadata;
+    }
+
+    /**
+     * Reads the metadata as stored in the file or web resource
+     * <p>
+     * Metadata of multiple parts is merged into one common metadata map whereas the later part being read may overwrite data from previous parts.
+     * The consequences of this can be neglected since we don't expect that multiple parts are actually being used.
+     *
+     * @param representation
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
+    @Override
+    public Map<String, String> readResourceMetadata(MediaRepresentation representation) throws IOException, HttpException {
+
+        Map<String, String> metadata = getMetaDatafromServer(representation);
         if(logger.isDebugEnabled()) {
             logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
         }
 
-        if(!includes.isEmpty()) {
-            metadata = metadata.entrySet()
-                    .stream()
-                    .filter( e -> containsCaseInsensitive(e.getKey(), includes))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            if(logger.isDebugEnabled()) {
-                logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
-            }
-        }
-        if(!excludes.isEmpty()) {
-            metadata = metadata.entrySet()
-                    .stream()
-                    .filter( e -> !containsCaseInsensitive(e.getKey(), excludes))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            if(logger.isDebugEnabled()) {
-                logger.debug("meta filtered by excludes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
-            }
+
+        if(logger.isDebugEnabled()) {
+            logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
         }
 
-        if(metadata == null) {
-            metadata = new HashMap<>();
+       if(metadata == null) {
+           metadata = new HashMap<>();
+       }
+       return metadata;
+    }
+
+    /**
+     * @param representation
+     * @param mapping
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
+    private Map<String, String> getMetaDatafromServer(MediaRepresentation representation)
+            throws IOException, HttpException {
+        Map<String, String> metadata = new HashMap<>();
+
+        for(MediaRepresentationPart part : representation.getParts()) {
+            if (part.getUri() == null) {
+                continue;
+            }
+            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(part.getUri(), true);
+            if(iInfo.getMetaData() != null) {
+                for (Entry<String,String> item:iInfo.getMetaData().entrySet()) {
+                    String key = item.getKey();
+                    if (metadata.get(key)!= null) {
+                        metadata.put(key, metadata.get(key).concat("; " + item.getValue()));
+                    }else {
+                        metadata.put(key, item.getValue());
+                    }
+                }
+            }
         }
         return metadata;
     }
 
-    private boolean containsCaseInsensitive(String s, List<String> l){
-        return l.stream().anyMatch(x -> x.equalsIgnoreCase(s));
+    private boolean containsCaseInsensitive(String s, Collection<String> l){
+        boolean result = l.stream().anyMatch(x -> equalsIgnoreBlank(x, s));
+        return result;
+    }
+
+    private boolean equalsIgnoreBlank(String a, String b){
+        if (a.contains(" ")) {
+           a = StringUtils.replace(a," ", "");
+           if (a.equalsIgnoreCase(b)) {
+               return true;
+           }
+        }
+        if (b.contains(" ")) {
+            b = StringUtils.replace(b," ", "");
+            if (a.equalsIgnoreCase(b)) {
+                return true;
+            }
+        }
+        return a.equalsIgnoreCase(b);
     }
 
     protected List<String> mediaMetadataKeyExludes(){
@@ -350,15 +430,36 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         return pref.splitStringListValue();
     }
 
-    protected List<String> mediaMetadataKeyIncludes(){
+    @Override
+    public Map<String, String> mediaMetadataKeyIncludes(){
         CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameIncludes));
+        String metaDataItems = null;
         if(pref == null) {
             if (PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue() == null) {
-                return new ArrayList<>();
+                return new HashMap<>();
             }
-            return Arrays.asList(PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString().split(","));
+           metaDataItems = PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString();
+
+        }else {
+           metaDataItems = pref.getValue();
         }
-       // return pref.splitStringListValue();
-        return Arrays.asList(pref.getValue().split(","));
+
+
+        Map<String, String> metaDataMapping = readJson(metaDataItems);
+        return metaDataMapping;
+
+    }
+    private Map<String, String> readJson(String json) {
+        JsonNode tree = null;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Map<String, String> map
+            = mapper.readValue(json, new TypeReference<Map<String,String>>(){});
+            return map;
+        } catch (JsonProcessingException e) {
+           logger.error(e.getMessage());
+        }
+        return null;
+
     }
 }

@@ -10,11 +10,14 @@ package eu.etaxonomy.cdm.api.dto.portal.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 
 /**
  * @author a.mueller
@@ -36,6 +39,8 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private boolean withTaxonNodes = true;
 
     private boolean includeUnpublished = false;
+
+    private EnumSet<TaxonOccurrenceRelationType> specimenAssociationFilter;
 
 
     //synonymy
@@ -163,6 +168,13 @@ public class TaxonPageDtoConfiguration implements Serializable {
     }
     public void setIncludeUnpublished(boolean includeUnpublished) {
         this.includeUnpublished = includeUnpublished;
+    }
+
+    public EnumSet<TaxonOccurrenceRelationType> getSpecimenAssociationFilter() {
+        return specimenAssociationFilter;
+    }
+    public void setSpecimenAssociationFilter(EnumSet<TaxonOccurrenceRelationType> specimenAssociationFilter) {
+        this.specimenAssociationFilter = specimenAssociationFilter;
     }
 
 }

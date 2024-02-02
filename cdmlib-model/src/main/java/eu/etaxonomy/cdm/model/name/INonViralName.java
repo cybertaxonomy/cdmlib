@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @since 21.01.2017
- *
  */
 public interface INonViralName extends ITaxonNameBase{
 
@@ -157,7 +156,16 @@ public interface INonViralName extends ITaxonNameBase{
      * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
      */
     public TeamOrPersonBase<?> getCombinationAuthorship();
-
+    /**
+     * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase in author (team)} that published <i>this</i> non viral
+     * taxon name.
+     *
+     * @return  the in-author (team) of <i>this</i> non viral taxon name
+     * @see     eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
+     * @see     eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
+     * @see     #getInBasionymAuthorship()
+     */
+    public TeamOrPersonBase<?> getInCombinationAuthorship();
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} that contributed to
@@ -419,6 +427,48 @@ public interface INonViralName extends ITaxonNameBase{
     */
    public boolean isProtectedAuthorshipCache();
 
+   /**
+    * Returns the boolean value if the name is conserved according to it's
+    * nomenclatural code. This can be true if the name either has the status
+    * of type {@link NomenclaturalStatusType#CONSERVED()} or if it has a
+    * name relationship of tpye {@link NameRelationshipType#CONSERVED_AGAINST()}.
+    *
+    * @return <code>true</code>, if this name is conserved
+    * @see INomenclaturalStanding
+    * @see <a href="https://dev.e-taxonomy.eu/redmine/issues/9273">Ticket on unifying status and name relation</a>
+    */
+   public boolean isConserved();
+
+   /**
+    * Returns the boolean value if the name is rejected by the nomenclatural code.
+    * This includes the names with nomenclatural status {@link NomenclaturalStatusType#REJECTED()},
+    * {@link NomenclaturalStatusType#UTIQUE_REJECTED()}
+    * and {@link NomenclaturalStatusType#OPUS_UTIQUE_OPPR()}.
+    * Also names being in a name relationship {@link NameRelationshipType#CONSERVED_AGAINST()}
+    * as the non-conserved name are included.<BR>
+    * A name considered as rejected in this sense can either be invalid (<i>opus utique rej.</i>)
+    * or illegitimate (others).
+    *
+    * @return <code>true</code>, if this name is rejected
+    * @see INomenclaturalStanding
+    * @see <a href="https://dev.e-taxonomy.eu/redmine/issues/9273">Ticket on unifying status and name relation</a>
+    */
+   public boolean isRejected();
+
+   /**
+    * Returns the boolean value if the name is an orthographic variant. This can
+    * be true if the name either has the status of type
+    * {@link NomenclaturalStatusType#ORTH_VAR()} or if it has a
+    * name relationship of tpye {@link NameRelationshipType#ORTHOGRAPHIC_VARIANT()}.
+    * <BR>TODO find a way to also handle original spellings here.
+    *
+    * @return <code>true</code>, if this name is an orthographic variant
+    * @see INomenclaturalStanding
+    * @deprecated deprecated as long as original spellings can not be easily handled here
+    * @see <a href="https://dev.e-taxonomy.eu/redmine/issues/9273">Ticket on unifying status and name relation</a>
+    */
+    @Deprecated
+    public boolean isOrthographicVariant();
 
    /**
     * Returns the boolean value of the flag intended to protect (true)
@@ -563,4 +613,31 @@ public interface INonViralName extends ITaxonNameBase{
     * @see  #isMonomHybrid()
     */
    public void setTrinomHybrid(boolean trinomHybrid);
+
+   /**
+    * @param the zoological in author of current combination
+    * according to ICZN Recommendation 51E.
+    * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+    * @see #getInCombinationAuthorship()
+    */
+    //moved to INonViralName because also Fungi names can have in-authors
+    public void setInCombinationAuthorship(TeamOrPersonBase<?> inCombinationAuthorship);
+
+   /**
+    * @return the zoological in author of original combination
+    * according to ICZN Recommendation 51E.
+    * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+    * @see #getInCombinationAuthorship()
+    */
+    //moved to INonViralName because also Fungi names can have in-authors
+    public TeamOrPersonBase<?> getInBasionymAuthorship();
+
+   /**
+    * @param the zoological in author of original combination
+    * according to ICZN Recommendation 51E.
+    * @see https://dev.e-taxonomy.eu/redmine/issues/6943
+    * @see #getInBasionymAuthorship()
+    */
+    //moved to INonViralName because also Fungi names can have in-authors
+    public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship);
 }

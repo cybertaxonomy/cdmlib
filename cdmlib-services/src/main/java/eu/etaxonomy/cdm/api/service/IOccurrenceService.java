@@ -6,11 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.apache.lucene.index.CorruptIndexException;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
@@ -72,7 +73,7 @@ public interface IOccurrenceService
     /**
      * Returns a paged list of occurrences that have been determined to belong
      * to the taxon concept determinedAs, optionally restricted to objects
-     * belonging to a class that that extends SpecimenOrObservationBase. This
+     * belonging to a class that extends SpecimenOrObservationBase. This
      * will also consider specimens that are determined as a taxon concept
      * belonging to the synonymy of the given taxon concept.
      * <p>
@@ -138,14 +139,15 @@ public interface IOccurrenceService
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Returns a List of Media that are associated with a given occurence
+     * Returns a List of Media that are associated with a given occurrence
      *
-     * @param occurence the occurence associated with these media
+     * @param occurrence the occurrence associated with these media
      * @param pageSize The maximum number of media returned (can be null for all related media)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of media instances
      */
+    //TODO needed?
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
@@ -223,8 +225,6 @@ public interface IOccurrenceService
 
     public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
 
-    public List<DerivedUnitFacade> listDerivedUnitFacades(DescriptionBase description, List<String> propertyPaths);
-
     /**
      * Lists all instances of {@link SpecimenOrObservationBase} which are
      * associated with the <code>taxon</code> specified as parameter.
@@ -257,7 +257,8 @@ public interface IOccurrenceService
      * @return
      */
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * The method will search for specimen associated with the taxon nodes.<br>
@@ -279,14 +280,6 @@ public interface IOccurrenceService
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start);
 
-
-    /**
-     * @deprecated replace by {@link #listRootUnitsByAssociatedTaxon(Class, Taxon, List, List)}
-     */
-    @Deprecated
-    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
-
-
     /**
      * See {@link #listByAssociatedTaxon(Class, Set, Taxon, Integer, Integer, Integer, List, List)}
      *
@@ -302,7 +295,9 @@ public interface IOccurrenceService
      * @return a Pager
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all {@link FieldUnit}s for the {@link SpecimenOrObservationBase} with the given {@link UUID}.<br>
@@ -343,21 +338,6 @@ public interface IOccurrenceService
             String queryString, RectangleDTO boundingBox, List<Language> languages, boolean highlightFragments,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
             throws IOException, LuceneParseException;
-    /**
-     * See {@link #listByAssociatedTaxon(Class, Set, String, Integer, Integer, Integer, List, List)}
-     *
-     * @param type
-     * @param includeRelationships
-     * @param associatedTaxon
-     * @param maxDepth
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return a Pager
-     */
-    public <T extends SpecimenOrObservationBase> Pager<T>  pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Moves the given {@link Sequence} from one {@link DnaSample} to another
@@ -453,29 +433,13 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return a collection of associated taxa
      */
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    /**
-      * @see #listIndividualsAssociationTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)
-      */
     public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all associated taxa for the given specimen (via type designations, determination, individuals associations)
-     * @param specimen
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @return
      */
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    /**
-     * @see #listAssociatedTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)axa
-     */
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -488,11 +452,6 @@ public interface IOccurrenceService
      * @return collection of all taxa the given specimen is determined as
      */
     public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    /**
-     * @see #listDeterminedTaxa(SpecimenOrObservationBase, Integer, Integer, List, List)
-     */
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -516,11 +475,6 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return a collection of all taxa where the given specimen is the type specimen
      */
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    /**
-     * @see #listTypeDesignationTaxa(DerivedUnit, Integer, Integer, List, List)a
-     */
     public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -533,6 +487,7 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return map of all designations with the given type specimens
      */
+    //TODO needed?
     public Map<DerivedUnit, Collection<SpecimenTypeDesignation>> listTypeDesignations(Collection<DerivedUnit> specimens, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -599,7 +554,7 @@ public interface IOccurrenceService
      *            authorTeam.persistentTitleCache
      * @return the number of found specimens
      */
-    public long countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config);
+    public long countOccurrences(FindOccurrencesConfigurator config);
 
     /**
      * Return the all {@link SpecimenOrObservationBase}s of the complete
@@ -633,7 +588,6 @@ public interface IOccurrenceService
      */
     public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid);
 
-
     /**
      * Returns a list of {@link UuidAndTitleCache} for the specimens found with the
      * given configurator
@@ -654,23 +608,12 @@ public interface IOccurrenceService
     public List<DerivedUnitDTO> findByTitleDerivedUnitDTO(
             FindOccurrencesConfigurator config);
 
-
-    /**
-     * Collects the <code>FieldUnits</code> which are at the root of the derivation event
-     * graph in which the {@link DerivedUnit} with the specified <code>findByAccessionNumber</code>
-     * is found.
-     *
-     * @deprecated method name unclear and thus replaced by {@link #findByGeneticAccessionNumber(String, List)}
-     */
-    @Deprecated
-    SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
-
     /**
      * Collects the <code>FieldUnits</code> which are at the root of the derivation event
      * graph in which the {@link DnaSample} with the specified <code>accessionNumberString</code>
      * is found.
      */
-    SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String dnaAccessionNumber, List<OrderHint> orderHints);
+    public SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String dnaAccessionNumber, List<OrderHint> orderHints);
 
     /**
      * Recursively searches all {@link DerivationEvent}s to find all "originals" ({@link SpecimenOrObservationBase})
@@ -706,13 +649,13 @@ public interface IOccurrenceService
      * <li>... also sollen beim DerivateTree eigentlich auch nur die Derivate
      * angezeigt werden, die über Taxon Association oder Determination an einem
      * Taxon oder Namen hängen und ihre direkten Eltern und Kinder (+
-     * KindesKinder…).
+     * KindesKinder…).</li>
      * <li>Also im Endeffekt muss man die Derivate raus suchen, die eine
      * Assoziation zu dem Taxon haben und dann die direkten Vorgänger und die
      * Nachfolger finden. Andere Derivate, die von Origin Derivaten abstammen
      * würden erstmal nicht dazugehören, außer sie sind ebenfalls mit dem Taxon
      * assoziiert....</li>
-     * <ul>
+     * </ol>
      *
      * Related tickets:
      *
@@ -721,18 +664,24 @@ public interface IOccurrenceService
      * <li>https://dev.e-taxonomy.eu/redmine/issues/9216</li>
      * </ul>
      *
+     * @param associatedTaxonUuid the associated taxon uuid
+     *      The uuid of the taxon for which associated derivatives are to be found.
      * @param includedRelationships
-     *  TODO
-     * @param associatedTaxonUuid
-     *  The uuid of the taxon for which associated derivatives are to be found.
+     *      if also specimen of related taxa are to be loaded the taxon relationships
+     *      can be defined here<BR>
+     *      TODO needed? it currently does not seem to be in use
+     * @param includeUnpublished
+     *      if <code>false</code> units marked as publish=false are not added
+     *      TODO maybe not yet fully implemented
      * @param propertyPaths
-     *  The bean initialization strategy
+     *      The bean initialization strategy
      * @return
-     *  The list of root units with fully or partially assembled derivation graph.
+     *      The list of root units with fully or partially assembled derivation graph.
      */
-    List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid, List<String> propertyPaths);
-
+    public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(
+            UUID associatedTaxonUuid, Set<TaxonRelationshipEdge> includedRelationships,
+            boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            List<String> propertyPaths);
 
     /**
      * Lists all root units which are
@@ -768,30 +717,27 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return
      */
-    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(Class<T> type, Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
-
+    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(
+            Class<T> type, Taxon associatedTaxon, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * See {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 
     /**
      * Load the FieldUnitDTO for the given <code>derivedUnitUuid</code> with all intermediate derivatives and {@link eu.etaxonomy.cdm.api.service.dto.GatheringEventDTO}
-
-     * @param derivedUnitUuid
-     * @return
      */
-    FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid);
+    public FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid);
 
-    Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber);
+    public Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber);
 
-	Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivativeMedia,
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivativeMedia,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
 }

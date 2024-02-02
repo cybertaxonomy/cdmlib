@@ -71,7 +71,11 @@ public class MediaToolbox implements IMediaToolbox {
             List<MediaRepresentation> newReprs = new ArrayList<>();
             for(MediaRepresentation repr : media.getRepresentations()) {
                 for(MediaRepresentationPart part : repr.getParts()) {
-                    newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
+                    try {
+                        newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
+                    }catch(Exception e) {
+                        logger.error(e.getLocalizedMessage(), e);
+                    }
                 }
             }
             for(MediaRepresentation r : newReprs) {

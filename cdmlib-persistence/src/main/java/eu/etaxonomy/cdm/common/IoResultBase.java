@@ -187,12 +187,12 @@ public abstract class IoResultBase implements Serializable{
             for (IoInfo ioInfo : list){
                 String codeLocation = ioInfo.codeLocation == null ? "" : ( "[" + ioInfo.codeLocation + "]");
                 String dataLocation = ioInfo.dataLocation == null ? "" : (ioInfo.dataLocation + ": ");
-                String message = ioInfo.message != null ? ioInfo.message : ioInfo.exception != null ? ioInfo.exception.getMessage() : "";
+                String message = ioInfo.message != null ? (ioInfo.message) : ioInfo.exception != null ? (ioInfo.exception.getMessage()) : "";
 
                 message = StringUtils.isBlank(message)? "no message" : message;
                 Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
-                String available = (stacktrace != null ? " (stacktrace available)" : "");
-                report.append("\n" + dataLocation + message + available + codeLocation);
+                String available = (stacktrace != null ? "(stacktrace available)" : "");
+                report.append("\n" + CdmUtils.concat(" ", dataLocation, message, available, codeLocation));
             }
         }
     }

@@ -20,12 +20,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class TaxonNodeDtoNaturalComparator implements Serializable, Comparator<TaxonNodeDto> {
 
+    private static final long serialVersionUID = 2124577165012914101L;
+
     public TaxonNodeDtoNaturalComparator(){
 		super();
 
 	}
 
-	@SuppressWarnings("null")
     @Override
 	public int compare(TaxonNodeDto node1, TaxonNodeDto node2) {
 	   // System.out.println("compare node 1: "+ node1.getTaxon().getTitleCache() + " - node 2: " + node2.getTaxon().getTitleCache());

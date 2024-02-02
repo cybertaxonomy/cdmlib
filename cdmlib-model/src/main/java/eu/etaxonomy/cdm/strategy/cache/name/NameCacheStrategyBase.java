@@ -230,7 +230,7 @@ public abstract class NameCacheStrategyBase
         TaxonName originalName = currentName.getOriginalSpelling();
         if (originalName != null){
             String originalInfo;
-            tags.add(TaggedText.NewSeparatorInstance(" [as \""));
+            tags.add(new TaggedText(TagEnum.nameInSourceSeparator, " [as \""));
             if (!originalName.isNonViral()){
                 originalInfo = originalName.getTitleCache();
                 tags.add(new TaggedText(TagEnum.name, originalInfo));
@@ -246,7 +246,7 @@ public abstract class NameCacheStrategyBase
                     }
                 }
             }
-            tags.add(TaggedText.NewSeparatorInstance("\"]"));
+            tags.add(new TaggedText(TagEnum.nameInSourceSeparator, "\"]"));
         }else{
             return;
         }

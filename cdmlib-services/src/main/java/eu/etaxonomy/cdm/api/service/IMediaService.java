@@ -90,10 +90,14 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
      */
     Map<String, String> readResourceMetadataFiltered(MediaRepresentation representation) throws IOException, HttpException;
 
+    Map<String, String> readResourceMetadata(MediaRepresentation representation) throws IOException, HttpException;
     /**
      * @param mediaUuids
      * @param config
      * @return
      */
     public DeleteResult delete(Set<UUID> mediaUuids, MediaDeletionConfigurator config);
+
+
+    Map<String, String> mediaMetadataKeyIncludes();
 }

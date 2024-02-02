@@ -76,6 +76,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -100,6 +101,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
  * Classification or taxon tree exporter into COL-DP format.
@@ -300,21 +302,23 @@ public class ColDpClassificationExport
                 TaxonName name = taxon.getName();
                 handleName(state, name, taxon, true);
 
-                //homotypic group / synonyms
-                HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
-                int index = 0;
-                handleHomotypicalGroup(state, homotypicGroup, taxon);
-                for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
-                    handleSynonym(state, syn, index);
-                    index++;
-                }
-
-                List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
-                for (HomotypicalGroup group: heterotypicHomotypicGroups){
-                    handleHomotypicalGroup(state, group, taxon);
-                    for (Synonym syn : taxon.getSynonymsInGroup(group)) {
+                if (state.getConfig().isDoSynonyms()) {
+                    //homotypic group / synonyms
+                    HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
+                    int index = 0;
+                    handleHomotypicalGroup(state, homotypicGroup, taxon);
+                    for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
                         handleSynonym(state, syn, index);
                         index++;
+                    }
+
+                    List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
+                    for (HomotypicalGroup group: heterotypicHomotypicGroups){
+                        handleHomotypicalGroup(state, group, taxon);
+                        for (Synonym syn : taxon.getSynonymsInGroup(group)) {
+                            handleSynonym(state, syn, index);
+                            index++;
+                        }
                     }
                 }
 
@@ -526,6 +530,9 @@ public class ColDpClassificationExport
     }
 
     private String toIsoDate(TimePeriod mediaCreated) {
+        if (mediaCreated == null) {
+            return null;
+        }
         //TODO 2 date, what if end or freetext exist?
         Partial partial = mediaCreated.getStart();
         if (partial == null || !partial.isSupported(DateTimeFieldType.year())
@@ -570,7 +577,8 @@ public class ColDpClassificationExport
             List<DescriptionElementBase> taxonInteractionsFacts = new ArrayList<>();
             List<DescriptionElementBase> commonNameFacts = new ArrayList<>();
             for (TaxonDescription description : descriptions) {
-                if (description.getElements() != null) {
+                if (description.getElements() != null &&
+                        description.isPublish() || state.getConfig().isIncludeUnpublishedFacts()){
                     for (DescriptionElementBase element : description.getElements()) {
                         element = CdmBase.deproxy(element);
                         if (element.getFeature().equals(Feature.COMMON_NAME())) {
@@ -1019,7 +1027,10 @@ public class ColDpClassificationExport
             return;
         }
         try {
-            ColDpExportTable table = ColDpExportTable.NAME;
+            //TODO is there a better way to handle configurable columns? #10451
+            ColDpExportTable table = state.getConfig().isIncludeFullName() ? ColDpExportTable.NAME_WITH_FULLNAME :
+                    ColDpExportTable.NAME;
+
             String[] csvLine = new String[table.getSize()];
 
             Rank rank = name.getRank();
@@ -1049,10 +1060,10 @@ public class ColDpClassificationExport
             }
 
             //scientificName
-            if (name.isProtectedTitleCache() && StringUtils.isEmpty(name.getNameCache())) {
+            if (name.isProtectedTitleCache()) {
                 //TODO 7 make it configurable if we should always take titleCache if titleCache is protected, as nameCache may not necessarily have complete data if titleCache is protected as it is considered to be irrelevant or at least preliminary
                 String message = "";
-                if (StringUtils.isEmpty(name.getNameCache())) {
+                if (!isBlank(name.getNameCache())){
                     csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
                     message = "ScientificName: Name cache " + name.getNameCache() + " used for name with protected titleCache " +  name.getTitleCache();
                 }else {
@@ -1063,19 +1074,31 @@ public class ColDpClassificationExport
             } else {
                 csvLine[table.getIndex(ColDpExportTable.NAME_SCIENTIFIC_NAME)] = name.getNameCache();
             }
+            if (state.getConfig().isIncludeFullName()) {
+                String authorshipCache = name.getAuthorshipCache();
+                String normalizedAuthor = normalizeAuthor(state, authorshipCache);
+                String titleCache = name.getTitleCache();
+                if (titleCache != null) {
+                    if (state.getConfig().isNormalizeAuthorsToIpniStandard()) {
+                        titleCache = titleCache.replace(authorshipCache, normalizedAuthor);
+                    }
+                }
+                csvLine[table.getIndex(ColDpExportTable.NAME_FULLNAME)] = titleCache;
+            }
 
             //authorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_AUTHORSHIP)] = name.getAuthorshipCache();
+            String authorshipCache = name.getAuthorshipCache();
+            csvLine[table.getIndex(ColDpExportTable.NAME_AUTHORSHIP)] = normalizeAuthor(state, name.getAuthorshipCache());
             //combinationAuthorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP)] = teamToString(name.getCombinationAuthorship());
+            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP)] = teamToString(state, name.getCombinationAuthorship());
             //combinationExAuthorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_EX_AUTHORSHIP)] = teamToString(name.getExCombinationAuthorship());
+            csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_EX_AUTHORSHIP)] = teamToString(state, name.getExCombinationAuthorship());
             //combinationAuthorshipYear
             csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP_YEAR)] = name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getYear();
             //basionymAuthorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_AUTHORSHIP)] = teamToString(name.getBasionymAuthorship());
+            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_AUTHORSHIP)] = teamToString(state, name.getBasionymAuthorship());
             //basionymExAuthorship
-            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_EX_AUTHORSHIP)] = teamToString(name.getExBasionymAuthorship());
+            csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_EX_AUTHORSHIP)] = teamToString(state, name.getExBasionymAuthorship());
             //basionymAuthorshipYear
             csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_AUTHORSHIP_YEAR)] =
                     basionym == null? null :
@@ -1170,7 +1193,18 @@ public class ColDpClassificationExport
         }
     }
 
-    private String teamToString(TeamOrPersonBase<?> author) {
+    //TODO 3 merge with WfoBackboneExport
+    private String normalizeAuthor(ColDpExportState state, String authorship) {
+        if (authorship == null) {
+            return null;
+        }else if (state.getConfig().isNormalizeAuthorsToIpniStandard()) {
+            return TeamDefaultCacheStrategy.removeWhitespaces(authorship);
+        }else {
+            return authorship.replace("\\s+", " ").trim();
+        }
+    }
+
+    private String teamToString(ColDpExportState state, TeamOrPersonBase<?> author) {
         if (author == null) {
             return null;
         }
@@ -1178,6 +1212,9 @@ public class ColDpClassificationExport
         if (StringUtils.isEmpty(nomCache)){
             return null;
         }else {
+            if (state.getConfig().isNormalizeAuthorsToIpniStandard()) {
+                nomCache = TeamDefaultCacheStrategy.removeWhitespaces(nomCache);
+            }
             return nomCache
                     .replace(", ", "|")
                     .replace(",", "|")
@@ -1493,7 +1530,8 @@ public class ColDpClassificationExport
             for (NameRelationship rel : fromRels) {
                 ColDpNameRelType coldpType = transformer.getColDpNameRelTypeByNameRelationType(rel.getType());
                 if (coldpType == null) {
-                    //TODO warning
+                    handleNoColDpNameRelType(state, rel.getType(), name);
+                    continue;
                 }else if (coldpType.getDirection() == 0) {
                     continue;  //the relation is handled the other way round if necessary
                 }
@@ -1507,7 +1545,8 @@ public class ColDpClassificationExport
             for (NameRelationship rel : toRels) {
                 ColDpNameRelType coldpType = transformer.getColDpNameRelTypeByNameRelationType(rel.getType());
                 if (coldpType == null) {
-                    //TODO warning
+                    handleNoColDpNameRelType(state, rel.getType(), name);
+                    continue;
                 }else if (coldpType.getDirection() == 1) {
                     continue;  //the relation is handled the other way round if necessary
                 }
@@ -1521,6 +1560,17 @@ public class ColDpClassificationExport
                             + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void handleNoColDpNameRelType(ColDpExportState state, NameRelationshipType nameRelType, TaxonName taxonName) {
+        String warning;
+        if (nameRelType == null) {
+            warning = "Name relationship has not type for name " + taxonName.getTitleCache();
+        } else {
+            //TODO misspelling, alternative name, blocking name for, avoids homonym of, unspecific "non"
+            warning = "Name relationship type not yet handled by COL-DP: " + nameRelType.getTitleCache() + "; name: " + taxonName.getTitleCache();
+        }
+        state.getResult().addWarning(warning);
     }
 
     private void handleRelNameCommonData(ColDpExportState state, ColDpExportTable table,

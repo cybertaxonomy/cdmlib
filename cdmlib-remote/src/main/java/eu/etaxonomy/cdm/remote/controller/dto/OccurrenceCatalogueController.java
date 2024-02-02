@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -206,8 +208,10 @@ public class OccurrenceCatalogueController
             HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         logger.info("doGetOccurrenceSearch() " +  requestPathAndQuery(request));
-
         ModelAndView mv = new ModelAndView();
+
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         Integer pS = null;
         Integer pN = null;
@@ -268,6 +272,8 @@ public class OccurrenceCatalogueController
             specimenOrObs= service.pageByAssociatedTaxon(DerivedUnit.class,
                     null,
                     taxon,
+                    includeUnpublished,
+                    taxonOccurrenceRelTypes,
                     null,
                     pagerParams.getPageSize(),
                     pagerParams.getPageIndex(),

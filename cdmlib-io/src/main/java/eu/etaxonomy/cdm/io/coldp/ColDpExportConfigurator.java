@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.out.IFactExportConfigurator;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
@@ -23,7 +24,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
  * @since 2023-07-17
  */
 public class ColDpExportConfigurator
-        extends TaxonTreeExportConfiguratorBase<ColDpExportState,ColDpExportConfigurator> {
+        extends TaxonTreeExportConfiguratorBase<ColDpExportState,ColDpExportConfigurator>
+        implements IFactExportConfigurator {
 
     private static final long serialVersionUID = -1562074221435082060L;
 
@@ -38,8 +40,13 @@ public class ColDpExportConfigurator
 
     private Comparator<TaxonNodeDto> taxonNodeComparator;
 
+    private boolean includeFullName = false;
+
+    private boolean normalizeAuthorsToIpniStandard = false;
+
     //filter
     private boolean doFactualData = true;
+    private boolean includeUnpublishedFacts = false;
 
     private static final ColDpExportTransformer transformer = new ColDpExportTransformer();
 
@@ -141,10 +148,36 @@ public class ColDpExportConfigurator
         this.taxonNodeComparator = taxonNodeComparator;
     }
 
+    @Override
     public boolean isDoFactualData() {
         return doFactualData;
     }
+    @Override
     public void setDoFactualData(boolean doFactualData) {
         this.doFactualData = doFactualData;
+    }
+
+    @Override
+    public boolean isIncludeUnpublishedFacts() {
+        return includeUnpublishedFacts;
+    }
+    @Override
+    public void setIncludeUnpublishedFacts(boolean includeUnpublishedFacts) {
+        this.includeUnpublishedFacts = includeUnpublishedFacts;
+    }
+
+    public boolean isIncludeFullName() {
+        return includeFullName;
+    }
+    public void setIncludeFullName(boolean includeFullName) {
+        this.includeFullName = includeFullName;
+    }
+
+
+    public boolean isNormalizeAuthorsToIpniStandard() {
+        return normalizeAuthorsToIpniStandard;
+    }
+    public void setNormalizeAuthorsToIpniStandard(boolean normalizeAuthorsToIpniStandard) {
+        this.normalizeAuthorsToIpniStandard = normalizeAuthorsToIpniStandard;
     }
 }

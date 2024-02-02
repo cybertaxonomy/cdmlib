@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -113,6 +114,7 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID familyTaxonUuid = UUID.fromString("3162e136-f2e2-4f9a-9010-3f35908fbae1");
     protected static final UUID genusTaxonUuid = UUID.fromString("3f52e136-f2e1-4f9a-9010-2f35908fbd39");
     protected static final UUID speciesTaxonUuid = UUID.fromString("9182e136-f2e2-4f9a-9010-3f35908fb5e0");
+    protected static final UUID basionymSynonymUuid = UUID.fromString("08dfb25d-2283-42d6-9711-45656d988f4c");
     protected static final UUID subspeciesTaxonUuid = UUID.fromString("b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
     protected static final UUID subspeciesUnpublishedTaxonUuid = UUID.fromString("290e295a-9089-4616-a30c-15ded79e064f");
 
@@ -123,6 +125,15 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID subspeciesNameUuid = UUID.fromString("3483cc5e-4c77-4c80-8cb0-73d43df31ee3");
     protected static final UUID subspeciesUnpublishedNameUUID = UUID.fromString("b6da7ab2-6c67-44b7-9719-2557542f5a23");
     protected static final UUID basionymNameUuid = UUID.fromString("c7962b1f-950e-4e28-a3d1-aa0583dfdc92");
+    protected static final UUID origSpellingNameUuid = UUID.fromString("bde06b48-bbda-428c-af4e-50c39db55821");
+
+    //WFO IDs
+    protected static final String familyWfoId = "WFO-12347f";
+    protected static final String speciesWfoId = "WFO-123477";
+    protected static final String speciesBasionymWfoId = "WFO-123457b";
+    protected static final String subspeciesWfoId = "WFO-12347ss";
+    protected static final String subspeciesUnpublishedWfoId = "WFO-12347uss";
+    protected static final String speciesOrigSpellingWfoId = "WFO-123477os";
 
     //reference uuid
     protected static final UUID familyNomRefUuid = UUID.fromString("b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
@@ -175,9 +186,13 @@ public abstract class TaxonTreeExportTestBase
     protected abstract CONFIG newConfigurator();
 
     protected void testExceptionsErrorsWarnings(ExportResult result) {
-        Assert.assertTrue(result.getExceptions().size() == 0);
-        Assert.assertTrue(result.getErrors().size() == 0);
-        Assert.assertTrue(result.getWarnings().size() == 0);
+        testExceptionsErrorsWarnings(result, 0, 0, 0);
+    }
+
+    protected void testExceptionsErrorsWarnings(ExportResult result, int exceptions, int errors,int warnings) {
+        Assert.assertEquals(exceptions, result.getExceptions().size());
+        Assert.assertEquals(errors, result.getErrors().size());
+        Assert.assertEquals(warnings, result.getWarnings().size());
     }
 
     protected void setUuid(CdmBase cdmBase, String uuidStr) {
@@ -192,9 +207,26 @@ public abstract class TaxonTreeExportTestBase
         return "\"" + uuid + "\",";
     }
 
+    protected String str(String str) {
+        return strEnd(str)+",";
+    }
+
+    protected String strEnd(String str) {
+        return "\"" + str + "\"";
+    }
+
     protected String getLine(List<String> list, UUID uuid) {
         for (String line : list) {
             if (line.startsWith("\""+ uuid.toString())) {
+                return line;
+            }
+        }
+        return null;
+    }
+
+    protected String getLine(List<String> list, String str) {
+        for (String line : list) {
+            if (line.startsWith("\""+ str +"\"")) {
                 return line;
             }
         }
@@ -257,9 +289,10 @@ public abstract class TaxonTreeExportTestBase
         setUuid(classification.getRootNode(), rootNodeUuid);
 
         //family
-        TaxonName familyName = parser.parseReferencedName("Family L., Sp. Pl. 3: 22. 1752",
+        TaxonName familyName = parser.parseReferencedName("Familyname L., Sp. Pl. 3: 22. 1752",
                 NomenclaturalCode.ICNAFP, Rank.FAMILY());
         familyName.addStatus(NomenclaturalStatusType.CONSERVED(), null, null);
+        addWfoIdentifier(familyName, familyWfoId);
         setUuid(familyName, familyNameUuid);
         setUuid(familyName.getNomenclaturalReference(), familyNomRefUuid);
         Taxon family = Taxon.NewInstance(familyName, sec1);
@@ -271,6 +304,7 @@ public abstract class TaxonTreeExportTestBase
         //genus
         TaxonName genusName = parser.parseReferencedName("Genus Humb., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.GENUS());
+        addWfoIdentifier(genusName, "WFO-12347g");
         setUuid(genusName, genusNameUuid);
         setUuid(genusName.getNomenclaturalReference(), genusNomRefUuid);
         Taxon genus = Taxon.NewInstance(genusName, sec1);
@@ -283,6 +317,7 @@ public abstract class TaxonTreeExportTestBase
         //species
         TaxonName speciesName = parser.parseReferencedName("Genus species (Mill.) Hook in J. Appl. Synon. 5: 33. 1824",
                 NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        addWfoIdentifier(speciesName, speciesWfoId);
         setUuid(speciesName, speciesNameUuid);
         setUuid(speciesName.getNomenclaturalReference(), speciesNomRefUuid);
         Taxon species = Taxon.NewInstance(speciesName, sec1);
@@ -294,11 +329,21 @@ public abstract class TaxonTreeExportTestBase
         //species basionym
         TaxonName basionymName = parser.parseReferencedName("Sus basionus Mill., The book of botany 3: 22. 1804", NomenclaturalCode.ICNAFP, Rank.SPECIES());
         basionymName.setUuid(basionymNameUuid);
-        species.addBasionymSynonym(basionymName, species.getSec(), "67");
+        addWfoIdentifier(basionymName, speciesBasionymWfoId);
+        Synonym basionymSynonym = species.addBasionymSynonym(basionymName, species.getSec(), "67");
+        basionymSynonym.setUuid(basionymSynonymUuid);
+
+        //original spelling
+        TaxonName speciesOrigSpelling = parser.parseReferencedName("Sus basyonus", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        speciesOrigSpelling.setUuid(origSpellingNameUuid);
+        addWfoIdentifier(speciesOrigSpelling, speciesOrigSpellingWfoId);
+        basionymName.getNomenclaturalSource().setNameUsedInSource(speciesOrigSpelling);
 
         //unpublished species synonym
         TaxonName synonymName = parser.parseReferencedName("Genus synonym Mill., The book of botany 4: 23. 1805", NomenclaturalCode.ICNAFP, Rank.SPECIES());
         setUuid(synonymName, "1584157b-5c43-4150-b271-95b2c99377b2");
+        addWfoIdentifier(synonymName, "WFO-12347us");
+
         Synonym synonymUnpublished = Synonym.NewInstance(synonymName, sec1);
         setUuid(synonymUnpublished, "a87c16b7-8299-4d56-a682-ce20973428ea");
         synonymUnpublished.setPublish(false);
@@ -309,6 +354,7 @@ public abstract class TaxonTreeExportTestBase
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
         setUuid(subspeciesName, subspeciesNameUuid);
         setUuid(subspeciesName.getNomenclaturalReference(), subspeciesNomRefUuid);
+        addWfoIdentifier(subspeciesName, subspeciesWfoId);
 
         Taxon subspecies = Taxon.NewInstance(subspeciesName, sec1);
         subspecies.getSecSource().setNameUsedInSource(subspeciesName);
@@ -321,6 +367,7 @@ public abstract class TaxonTreeExportTestBase
         TaxonName subspeciesNameUnpublished = parser.parseReferencedName("Genus species subsp. unpublished Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
         setUuid(subspeciesNameUnpublished, subspeciesUnpublishedNameUUID);
+        addWfoIdentifier(subspeciesNameUnpublished, subspeciesUnpublishedWfoId);
 
         Taxon subspeciesUnpublished = Taxon.NewInstance(subspeciesNameUnpublished, sec1);
         setUuid(subspeciesUnpublished, subspeciesUnpublishedTaxonUuid);
@@ -387,5 +434,9 @@ public abstract class TaxonTreeExportTestBase
 
         //commit
         commitAndStartNewTransaction(null);
+    }
+
+    private void addWfoIdentifier(TaxonName synonymName, String identifier) {
+        synonymName.addIdentifier(identifier, IdentifierType.IDENTIFIER_NAME_WFO());
     }
 }

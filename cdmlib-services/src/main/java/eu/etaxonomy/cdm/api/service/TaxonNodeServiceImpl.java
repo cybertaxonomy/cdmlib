@@ -223,7 +223,7 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,  boolean includeUnpublished,
+    public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive, boolean includeUnpublished,
             boolean doSynonyms, TaxonNodeSortMode sortMode,
             Integer pageSize, Integer pageIndex) {
 
@@ -1298,12 +1298,6 @@ public class TaxonNodeServiceImpl
             }
         }
         return result;
-    }
-
-    @Override
-    public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize,
-            Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return page(clazz, restrictions, pageSize, pageIndex, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
     }
 
     @Override

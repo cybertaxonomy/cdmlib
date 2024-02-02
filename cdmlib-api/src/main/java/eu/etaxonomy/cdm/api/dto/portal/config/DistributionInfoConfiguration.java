@@ -42,6 +42,8 @@ public class DistributionInfoConfiguration {
 
     private UUID areaTree = null;
 
+    private UUID statusTree = null;
+
     private CondensedDistributionConfiguration condensedDistrConfig = CondensedDistributionConfiguration.NewDefaultInstance();
 
     private EnumSet<InfoPart> infoParts = EnumSet.of(
@@ -49,7 +51,7 @@ public class DistributionInfoConfiguration {
 
     private boolean useTreeDto = true;
 
-    private boolean ignoreDistributionStatusUndefined = true;
+    private boolean includeUnpublished = false;
 
 //********************* GETTER / SETTER ***************************/
 
@@ -116,13 +118,6 @@ public class DistributionInfoConfiguration {
         this.useTreeDto = useTreeDto;
     }
 
-    public boolean isIgnoreDistributionStatusUndefined() {
-        return ignoreDistributionStatusUndefined;
-    }
-    public void setIgnoreDistributionStatusUndefined(boolean ignoreDistributionStatusUndefined) {
-        this.ignoreDistributionStatusUndefined = ignoreDistributionStatusUndefined;
-    }
-
     public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {
         return condensedDistrConfig;
     }
@@ -144,4 +139,17 @@ public class DistributionInfoConfiguration {
         this.areaTree = areaTree;
     }
 
+    public UUID getStatusTree() {
+        return statusTree;
+    }
+    public void setStatusTree(UUID statusTree) {
+        this.statusTree = statusTree;
+    }
+
+    public boolean isIncludeUnpublished() {
+        return includeUnpublished;
+    }
+    public void setIncludeUnpublished(boolean includeUnpublished) {
+        this.includeUnpublished = includeUnpublished;
+    }
 }

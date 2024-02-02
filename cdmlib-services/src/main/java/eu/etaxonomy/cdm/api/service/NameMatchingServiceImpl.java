@@ -93,8 +93,9 @@ public class NameMatchingServiceImpl
      * @return list of exact matching names (distance = 0), or list of best matches if exact matches are not found.
      */
     @Override
-    public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config) {
+    public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor) {
 
+        taxonName = taxonName.replace(" and ", " & ");
         // TODO Discuss the value of distance if query is monomial, binomial or trinomial
 
         // 0. Parsing and Normalizing
@@ -109,13 +110,17 @@ public class NameMatchingServiceImpl
     		config = new NameMatchingConfigurator();
     	}
 
-        TaxonName name = NonViralNameParserImpl.NewInstance().parseReferencedName(taxonName); //parsereferencename
-        //TODO what to do if name could not be parsed?
+        TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
 
         String genusQuery = name.getGenusOrUninomial();
         String specificEpithetQuery = name.getSpecificEpithet();
         String infraGenericQuery = name.getInfraGenericEpithet();
         String infraSpecificQuery = name.getInfraSpecificEpithet();
+        String authorshipCacheQuery = name.getAuthorshipCache();
+
+        if (name.getCombinationAuthorship() != null)  {
+            authorshipCacheQuery = name.getCombinationAuthorship().getNomenclaturalTitleCache();
+        }
 
         //define max. distances
         Integer maxDistance = config.getMaxDistance();
@@ -138,6 +143,7 @@ public class NameMatchingServiceImpl
          * the near match function of Rees 2007 it includes phonetic matches
          * (replace initial characters, soundalike changes, gender endings)
          */
+
         String normalizedGenusQuery = NameMatchingUtils.normalize(genusQuery);
         String phoneticNormalizedGenusQuery = NameMatchingUtils.nearMatch(normalizedGenusQuery);
 
@@ -178,6 +184,11 @@ public class NameMatchingServiceImpl
             if (result.exactResults.isEmpty()) {
                 result.bestResults = bestResults(resultSetOnlyGenusOrUninominal);
             }
+
+            if (compareAuthor) {
+                authorMatch(result, authorshipCacheQuery);
+                }
+
             return result;
         } else if (infraGenericQuery != null) {
         	String normalizedInfragenericQuery = NameMatchingUtils.normalize(infraGenericQuery);
@@ -212,6 +223,9 @@ public class NameMatchingServiceImpl
             if(result.exactResults.isEmpty()) {
             	result.bestResults = bestResults(resultSetInfraGenericListWithDist);
             }
+            if (compareAuthor) {
+                authorMatch(result, authorshipCacheQuery);
+                }
             return result;
         } else if (specificEpithetQuery != null && infraSpecificQuery == null){
 
@@ -250,6 +264,10 @@ public class NameMatchingServiceImpl
             if (result.exactResults.isEmpty()) {
             	result.bestResults = bestResults(resultSetEpithetListWithDist);
             }
+
+            if (compareAuthor) {
+                authorMatch(result, authorshipCacheQuery);
+                }
             return result;
 
         } else if (infraSpecificQuery != null) {
@@ -296,23 +314,39 @@ public class NameMatchingServiceImpl
             if (result.exactResults.isEmpty()) {
                 result.bestResults = bestResults(resultSetInfraSpecificListWithDist);
             }
+
+            if (compareAuthor) {
+            authorMatch(result, authorshipCacheQuery);
+            }
+
             return result;
         } else {
             return null;
         }
     }
 
-	private void filterNamesWithEpithets(List<SingleNameMatchingResult> taxonNamePartsWithDistance,
-			List<SingleNameMatchingResult> preFilteredEpithetListWithDist) {
-		for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
-			String infrageneric = taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
-			String infraspecific = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
-		    if (infrageneric.isEmpty() &&
-		    		infraspecific.isEmpty()) {
-		    	preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
-		    }
-		}
-	}
+
+    private static NameMatchingResult authorMatch(NameMatchingResult results, String authorshipQuery) {
+        if (!results.exactResults.isEmpty()) {
+            AuthorMatch.compareAuthor(results.exactResults, authorshipQuery);
+        } else {
+            AuthorMatch.compareAuthor(results.bestResults, authorshipQuery);
+        }
+        return results;
+    }
+
+
+    private void filterNamesWithEpithets(List<SingleNameMatchingResult> taxonNamePartsWithDistance,
+            List<SingleNameMatchingResult> preFilteredEpithetListWithDist) {
+        for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
+            String infrageneric = taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
+            String infraspecific = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
+            if (infrageneric.isEmpty() &&
+                    infraspecific.isEmpty()) {
+                preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
+            }
+        }
+    }
 
     /**
      * Filter all names from the DB that contain a infrageneric epithet (exclude all names that have epithet or infraspecfic epithet)

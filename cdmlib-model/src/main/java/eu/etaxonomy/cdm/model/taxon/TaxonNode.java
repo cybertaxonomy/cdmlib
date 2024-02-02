@@ -296,6 +296,10 @@ public class TaxonNode
         this.countChildren = countChildren;
     }
 
+    public void refreshCountChildren() {
+        this.countChildren = childNodes.size();
+    }
+
     //parent
     @Override
     public TaxonNode getParent(){
@@ -334,13 +338,29 @@ public class TaxonNode
         return this.statusNote;
     }
 
-    /**
-     * Returns the status note string in the given {@link Language language}
-     *
-     * @param language  the language in which the description string looked for is formulated
-     * @see             #getStatusNote()
-     * @see             #putStatusNote(Language, String)
-     */
+    public String preferredStatusNote(Language language){
+        List<Language> languages = new ArrayList<>();
+        languages.add(language);
+        return preferredStatusNote(languages);
+    }
+
+    public String preferredStatusNote(List<Language> languages){
+        if (statusNote == null || statusNote.isEmpty()) {
+            return null;
+        } else if (statusNote.size() == 1) {
+            LanguageString ls = statusNote.values().iterator().next();
+            return ls == null ? null : ls.getText();
+        } else {
+            for (Language lang : languages) {
+                LanguageString ls = statusNote.get(lang);
+                if (ls != null && isNotBlank(ls.getText())){
+                    return ls.getText();
+                }
+            }
+            return null;
+        }
+    }
+
     public String getStatusNote(Language language){
         LanguageString languageString = statusNote.get(language);
         if (languageString == null){
@@ -652,7 +672,7 @@ public class TaxonNode
             childNodes.remove(index);
             child.setClassification(null);
 
-            this.countChildren = childNodes.size();
+            refreshCountChildren();
             child.setParent(null);
             child.setTreeIndex(null);
         }

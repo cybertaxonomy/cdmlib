@@ -60,7 +60,7 @@ public class EntityCacherDebugResult {
             for(CdmBase rootEntity : rootEntities) {
                 debug(rootEntity, true, includeIgnored);
                 String out = toString(duplicateCdmEntityMap, notInCacheList, rootEntity);
-                System.out.println(out);
+                //System.out.println(out);
                 debugOutput.append(out);
                 clear();
             }

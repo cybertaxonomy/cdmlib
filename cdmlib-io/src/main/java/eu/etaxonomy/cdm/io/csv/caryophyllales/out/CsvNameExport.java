@@ -1,3 +1,8 @@
+/**
+* Copyright (C) 2008 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*/
 package eu.etaxonomy.cdm.io.csv.caryophyllales.out;
 
 import java.io.ByteArrayOutputStream;
@@ -23,7 +28,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.compare.name.HomotypicalGroupComparator;
+import eu.etaxonomy.cdm.compare.name.HomotypicGroupComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
@@ -36,6 +41,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -98,10 +104,9 @@ public class CsvNameExport extends CsvNameExportBase {
                 writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"));
                 break;
             case EXPORT_DATA :
+            default:
                 exportStream = new ByteArrayOutputStream();
                 writer = new PrintWriter(exportStream);
-                break;
-            default:
                 break;
             }
 
@@ -217,9 +222,6 @@ public class CsvNameExport extends CsvNameExportBase {
               }
               node = partitioner.next();
             }
-
-
-
 
 //        List<HashMap<String,String>> nameRecords = new ArrayList<>();
 //
@@ -463,10 +465,12 @@ public class CsvNameExport extends CsvNameExportBase {
             List<Language> langs = new ArrayList<>();
             langs.add(Language.ENGLISH());
             TermTree<NamedArea> areaTree = null;  //TODO
+            TermTree<PresenceAbsenceTerm> statusTree = null; //TODO
 
             //TODO add condensed distribution configuration to export configuration
             CondensedDistribution conDis = distributionService.getCondensedDistribution(
-                    distributions, areaTree, true, null, CondensedDistributionConfiguration.NewCubaInstance(), langs );
+                    distributions, areaTree, statusTree, true, null,
+                    CondensedDistributionConfiguration.NewCubaInstance(), langs );
 
             nameRecord.put(columnName, conDis.toString());
 
@@ -617,7 +621,7 @@ public class CsvNameExport extends CsvNameExportBase {
         }
         nameRecord.put("typeName", typeNameString);
         StringBuffer homotypicalSynonyms = new StringBuffer();
-        TreeMap<HomotypicalGroup,List<Synonym>> heterotypicSynonymsList = new TreeMap<>(new HomotypicalGroupComparator());
+        TreeMap<HomotypicalGroup,List<Synonym>> heterotypicSynonymsList = new TreeMap<>(new HomotypicGroupComparator());
 
         List<Synonym> homotypicSynonymsList = new ArrayList<>();
         StringBuffer heterotypicalSynonyms = new StringBuffer();
@@ -651,8 +655,6 @@ public class CsvNameExport extends CsvNameExportBase {
                 homotypicSynonymsList.add(synonym);
             }
         }
-
-
 
         String synonymString;
         boolean first = true;

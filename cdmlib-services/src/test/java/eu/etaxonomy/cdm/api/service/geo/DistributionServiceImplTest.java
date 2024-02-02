@@ -33,8 +33,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -61,6 +63,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -111,11 +114,12 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
         Set<MarkerType> fallbackAreaMarkerTypes = null;
 
         Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, fallbackAreaMarkerTypes, false,
-                statusOrderPreference, subAreaPreference, true, false);
+                distributions, areaTree, statusTree, fallbackAreaMarkerTypes, false,
+                statusOrderPreference, subAreaPreference, true);
 
         String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                 mapping, null, null, languages );
@@ -351,14 +355,16 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         subTestWithEditMapService(result);
     }
 
-//    @Test
+    @Test
+    @Ignore
     @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
-//    @DataSets({
-//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-//        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-//        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
-//    })
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
+    })
     public void getDistributionServiceRequestParameterString(){
+
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         Set<MarkerType> hideMarkedAreas = null;
@@ -375,20 +381,25 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         description1.addElement(distribution2);
 
         Taxon taxon = (Taxon)taxonService.find(UUID.fromString("7598f5d4-1cf2-4269-ae99-2adb79ae167c"));
-        TaxonDescription taxDesc = taxon.getDescriptions().iterator().next();
-        for (DescriptionElementBase deb : taxDesc.getElements()){
-            Distribution distribution = CdmBase.deproxy(deb, Distribution.class);
-            NamedArea area = distribution.getArea();
-            System.out.println(area.getTitleCache());
-        }
-        taxonDescriptions.addAll(taxon.getDescriptions());
 
-        String distributions = distributionService.getDistributionServiceRequestParameterString(taxonDescriptions,
+        taxonDescriptions.addAll(taxon.getDescriptions());
+        Set<Distribution> distributionSet = new HashSet<>();
+
+        for (TaxonDescription taxonDescription : taxonDescriptions) {
+            for (DescriptionElementBase deb : taxonDescription.getElements()){
+                if (deb.isInstanceOf(Distribution.class)){
+                    if (deb.getFeature().equals(Feature.DISTRIBUTION())) {
+                        distributionSet.add(CdmBase.deproxy(deb, Distribution.class));
+                    }
+                }
+            }
+        }
+
+        String distributions = distributionService.getDistributionServiceRequestParameterString(distributionSet,
                 subAreaPreference, statusOrderPreference, hideMarkedAreas, presenceAbsenceTermColors, langs);
-//        System.out.println(distributions);
+
         Assert.assertTrue("Distribution string should contain the non-persisted distribution Germany", distributions.contains("DEU"));
         Assert.assertFalse("Distribution string should contain France as it has a non-distribution feature", distributions.contains("FRA"));
-//        CHE,POL
     }
 
     @Override

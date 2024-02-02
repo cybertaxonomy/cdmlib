@@ -24,6 +24,8 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 
     private Rank rank = Rank.GENUS();
 
+    private UUID statusTree;
+
 	protected CsvNameExportConfigurator(File destination,
 			ICdmDataSource cdmSource, IExportTransformer transformer) {
 		super(destination, cdmSource, transformer);
@@ -128,5 +130,10 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
         this.invalidNamesQuoted = invalidNamesQuoted;
     }
 
-
+    public UUID getStatusTree() {
+        return statusTree;
+    }
+    public void setStatusTree(UUID statusTree) {
+        this.statusTree = statusTree;
+    }
 }

@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +16,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.Hibernate;
-import org.hibernate.query.Query;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -26,8 +24,6 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
@@ -52,24 +48,6 @@ public class DescriptionElementDaoImpl
     }
 
     @Override
-    public long countMedia(DescriptionElementBase descriptionElement) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query<Long> query = getSession().createQuery("select count(media) from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement", Long.class);
-            query.setParameter("descriptionElement", descriptionElement);
-
-            return (query.uniqueResult());
-        } else {
-            // Horribly inefficient, I know, but hard to do at the moment with envers.
-            // FIXME Improve this (by improving envers)
-            List<String> propertyPaths = new ArrayList<>();
-            propertyPaths.add("media");
-            DescriptionElementBase d = super.load(descriptionElement.getUuid(), propertyPaths);
-            return d.getMedia().size();
-        }
-    }
-
-    @Override
     public long count(Class<? extends DescriptionElementBase> clazz, String queryString) {
         checkNotInPriorView("DescriptionElementDaoImpl.countTextData(String queryString)");
         QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
@@ -88,44 +66,6 @@ public class DescriptionElementDaoImpl
             return fullTextQuery.getResultSize();
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
-        }
-    }
-
-    @Override
-    public List<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query<Media> query = getSession().createQuery("select media from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement order by index(media)", Media.class);
-            query.setParameter("descriptionElement", descriptionElement);
-
-            addPageSizeAndNumber(query, pageSize, pageNumber);
-
-            List<Media> results = query.list();
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-            return results;
-        } else {
-            // Horribly inefficient, I know, but hard to do at the moment with envers.
-            // FIXME Improve this (by improving envers)
-            List<String> pPaths = new ArrayList<>();
-            propertyPaths.add("media");
-            DescriptionElementBase d = super.load(descriptionElement.getUuid(), pPaths);
-            List<Media> results = new ArrayList<>();
-            results.addAll(d.getMedia());
-            if(pageSize != null) {
-                int fromIndex = 0;
-                int toIndex = 0;
-                if(pageNumber != null) {
-                    // if the page is out of scope
-                    if(results.size() < (pageNumber * pageSize)) {
-                        return new ArrayList<>();
-                    }
-                    fromIndex =   pageNumber * pageSize;
-                }
-                toIndex = results.size() < (fromIndex + pageSize) ? results.size() : fromIndex + pageSize;
-                results = results.subList(fromIndex, toIndex);
-            }
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-            return results;
         }
     }
 

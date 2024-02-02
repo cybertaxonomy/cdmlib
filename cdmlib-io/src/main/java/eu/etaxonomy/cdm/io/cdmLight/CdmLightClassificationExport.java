@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
@@ -104,6 +106,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -125,6 +128,9 @@ public class CdmLightClassificationExport
 
     @Autowired
     private IDistributionService distributionService;
+
+    @Autowired
+    private ITermTreeDao termTreeDao;
 
     public CdmLightClassificationExport() {
         this.ioName = this.getClass().getSimpleName();
@@ -306,37 +312,40 @@ public class CdmLightClassificationExport
                     TaxonName name = taxon.getName();
                     handleName(state, name, taxon, true);
 
-                    //homotypic group / synonyms
-                    HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
-                    int index = 0;
-                    int homotypicGroupIndex = 0;
-                    handleHomotypicalGroup(state, homotypicGroup, taxon, homotypicGroupIndex);
-                    homotypicGroupIndex++;
-                    for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
-                        handleSynonym(state, syn, index);
-                        index++;
-                    }
-                    List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
-                    for (HomotypicalGroup group: heterotypicHomotypicGroups){
-                        handleHomotypicalGroup(state, group, taxon, homotypicGroupIndex);
-                        for (Synonym syn : taxon.getSynonymsInGroup(group)) {
+                    if (state.getConfig().isDoSynonyms()) {
+
+                        //homotypic group / synonyms
+                        HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
+                        int index = 0;
+                        int homotypicGroupIndex = 0;
+                        handleHomotypicalGroup(state, homotypicGroup, taxon, homotypicGroupIndex);
+                        homotypicGroupIndex++;
+                        for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
                             handleSynonym(state, syn, index);
                             index++;
                         }
-                        homotypicGroupIndex++;
-                    }
+                        List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
+                        for (HomotypicalGroup group: heterotypicHomotypicGroups){
+                            handleHomotypicalGroup(state, group, taxon, homotypicGroupIndex);
+                            for (Synonym syn : taxon.getSynonymsInGroup(group)) {
+                                handleSynonym(state, syn, index);
+                                index++;
+                            }
+                            homotypicGroupIndex++;
+                        }
 
-                    //pro parte synonyms
-                    index = 0;
-                    for (Taxon tax : taxon.getAllProParteSynonyms()) {
-                        handleProPartePartialMisapplied(state, tax, taxon, true, false, index);
-                        index++;
-                    }
+                        //pro parte synonyms
+                        index = 0;
+                        for (Taxon tax : taxon.getAllProParteSynonyms()) {
+                            handleProPartePartialMisapplied(state, tax, taxon, true, false, index);
+                            index++;
+                        }
 
-                    //misapplications
-                    for (Taxon tax : taxon.getAllMisappliedNames()) {
-                        handleProPartePartialMisapplied(state, tax, taxon, false, true, index);
-                        index++;
+                        //misapplications
+                        for (Taxon tax : taxon.getAllMisappliedNames()) {
+                            handleProPartePartialMisapplied(state, tax, taxon, false, true, index);
+                            index++;
+                        }
                     }
 
                     //taxon table
@@ -394,18 +403,8 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.UNCERTAIN_APPLICATION)] = taxonNode.isUncertainApplication() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = taxonNode.isUnresolved() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_STATUS)] = taxonNode.getStatus() == null ? null : taxonNode.getStatus().getLabel();
-                    Map<Language, LanguageString> notesMap = taxonNode.getStatusNote();
-                    String statusNotes = "";
-                    if (!notesMap.isEmpty() && notesMap.size() == 1) {
-                        statusNotes = notesMap.values().iterator().next().getText();
-                    } else if (!notesMap.isEmpty()) {
-                        statusNotes = notesMap.get(Language.getDefaultLanguage()) != null
-                                ? notesMap.get(Language.getDefaultLanguage()).getText() : null;
-                        if (statusNotes == null) {
-                            statusNotes = notesMap.values().iterator().next().getText();
-                        }
-                    }
-                    csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_NOTES)] = statusNotes;
+
+                    csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_NOTES)] = taxonNode.preferredStatusNote(Language.getDefaultLanguage());
 
                     if (taxonNode.getSource() != null) {
                         csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_REF_FK)] = getId(state, taxonNode.getSource().getCitation());
@@ -449,20 +448,22 @@ public class CdmLightClassificationExport
                 List<DescriptionElementBase> usageFacts = new ArrayList<>();
                 for (TaxonDescription description : descriptions) {
                     if (description.getElements() != null) {
-                        for (DescriptionElementBase element : description.getElements()) {
-                            element = CdmBase.deproxy(element);
-                            handleAnnotations(element);
-                            if (element.getFeature().equals(Feature.COMMON_NAME())) {
-                                commonNameFacts.add(element);
-                            } else if (element.getFeature().equals(Feature.DISTRIBUTION())) {
-                                distributionFacts.add(element);
-                            } else if (element instanceof IndividualsAssociation
-                                    || isSpecimenFeature(element.getFeature())) {
-                                specimenFacts.add(element);
-                            } else if (element.getFeature().isSupportsTaxonInteraction()) {
-                                taxonInteractionsFacts.add(element);
-                            } else {
-                                simpleFacts.add(element);
+                        if (description.isPublish() || state.getConfig().isIncludeUnpublishedFacts()){
+                            for (DescriptionElementBase element : description.getElements()) {
+                                element = CdmBase.deproxy(element);
+                                handleAnnotations(element);
+                                if (element.getFeature().equals(Feature.COMMON_NAME())) {
+                                    commonNameFacts.add(element);
+                                } else if (element.getFeature().equals(Feature.DISTRIBUTION())) {
+                                    distributionFacts.add(element);
+                                } else if (element instanceof IndividualsAssociation
+                                        || isSpecimenFeature(element.getFeature())) {
+                                    specimenFacts.add(element);
+                                } else if (element.getFeature().isSupportsTaxonInteraction()) {
+                                    taxonInteractionsFacts.add(element);
+                                } else {
+                                    simpleFacts.add(element);
+                                }
                             }
                         }
                     }
@@ -877,32 +878,46 @@ public class CdmLightClassificationExport
                         + cdmBaseStr(element) + ": " + e.getMessage());
             }
         }
-         if(state.getConfig().isCreateCondensedDistributionString()){
-             List<Language> langs = new ArrayList<>();
-             langs.add(Language.ENGLISH());
-             TermTree<NamedArea> areaTree = null; //TODO
+        if(state.getConfig().isCreateCondensedDistributionString()){
+            List<Language> langs = new ArrayList<>();
+            langs.add(Language.ENGLISH());
+            TermTree<NamedArea> areaTree = null; //TODO
+            TermTree<PresenceAbsenceTerm> statusTree = getPersistentStatusTree(state.getConfig());
 
-             CondensedDistribution conDis = distributionService.getCondensedDistribution(
-                     //TODO add CondensedDistributionConfiguration to export configuration
-                     distributions, areaTree, true, null, state.getConfig().getCondensedDistributionConfiguration(), langs);
-             CdmLightExportTable tableCondensed =
-                     CdmLightExportTable.SIMPLE_FACT;
-             String[] csvLine = new String[tableCondensed.getSize()];
-             //the computed fact has no uuid, TODO: remember the uuid for later reference assignment
-             UUID randomUuid = UUID.randomUUID();
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] =
-                     randomUuid.toString();
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
-                     getId(state, taxon);
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
-                     conDis.toString();
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.LANGUAGE)] =Language.ENGLISH().toString();
+            CondensedDistribution conDis = distributionService.getCondensedDistribution(
+                    //TODO add CondensedDistributionConfiguration to export configuration
+                    distributions, areaTree, statusTree, true, null,
+                    state.getConfig().getCondensedDistributionConfiguration(), langs);
+            CdmLightExportTable tableCondensed =
+                    CdmLightExportTable.SIMPLE_FACT;
+            String[] csvLine = new String[tableCondensed.getSize()];
+            //the computed fact has no uuid, TODO: remember the uuid for later reference assignment
+            UUID randomUuid = UUID.randomUUID();
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] =
+                    randomUuid.toString();
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
+                    getId(state, taxon);
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
+                    conDis.toString();
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.LANGUAGE)] =Language.ENGLISH().toString();
 
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_CATEGORY)] =
-                     "CondensedDistribution";
+            csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_CATEGORY)] =
+                    "CondensedDistribution";
 
-             state.getProcessor().put(tableCondensed, taxon, csvLine);
-         }
+            state.getProcessor().put(tableCondensed, taxon, csvLine);
+        }
+    }
+
+    private TermTree<PresenceAbsenceTerm> getPersistentStatusTree(CdmLightExportConfigurator config) {
+        UUID statusTreeUuid = config.getStatusTree();
+        if (statusTreeUuid == null) {
+            return null;
+        }
+        //TODO property path
+        String[] propertyPath = new String[] {};
+        @SuppressWarnings("unchecked")
+        TermTree<PresenceAbsenceTerm> statusTree = termTreeDao.load(statusTreeUuid, Arrays.asList(propertyPath));
+        return statusTree;
     }
 
     private void handleCommonNameFacts(CdmLightExportState state, Taxon taxon,

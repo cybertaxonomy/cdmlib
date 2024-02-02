@@ -5,15 +5,18 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
-
+*/
 package eu.etaxonomy.cdm.database;
 
 import org.springframework.util.Assert;
 
+/**
+ * @author a.kohlecker
+ * @since 2009-03-18
+ */
 public class NamedContextHolder{
 
-	private static final ThreadLocal<String> contextHolder = new ThreadLocal<String>();
+	private static final ThreadLocal<String> contextHolder = new ThreadLocal<>();
 
 	public static void setContextKey(Object contextKey) {
 		Assert.notNull(contextKey, "contextKey cannot be null");
@@ -22,11 +25,10 @@ public class NamedContextHolder{
 	}
 
 	public static String getContextKey() {
-		return (String) contextHolder.get();
+		return contextHolder.get();
 	}
 
 	public static void clearContextKey() {
 		contextHolder.remove();
 	}
-
 }

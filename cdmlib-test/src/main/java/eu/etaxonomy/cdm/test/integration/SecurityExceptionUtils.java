@@ -29,7 +29,7 @@ public class SecurityExceptionUtils {
     static {
         try {
             //PermissionDeniedException is not available here yet, therefore we use Class.forName
-            permissionDeniedExceptionClass = Class.forName("eu.etaxonomy.cdm.database.PermissionDeniedException");
+            permissionDeniedExceptionClass = Class.forName("eu.etaxonomy.cdm.persistence.permission.PermissionDeniedException");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException ("PermissionDeniedException class could not be found. Propably it moved to another folder", e);
         }

@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -127,6 +128,14 @@ public class DeterminationEvent extends EventBase {
 		identifiedUnit.addDetermination(result);
 		return result;
 	}
+
+    public static DeterminationEvent NewInstance(Synonym synonym, SpecimenOrObservationBase identifiedUnit ){
+        DeterminationEvent result = new DeterminationEvent();
+        result.setTaxon(synonym);
+        result.setIdentifiedUnit(identifiedUnit);
+        identifiedUnit.addDetermination(result);
+        return result;
+    }
 
 //*********************** CONSTRUCTOR ********************************/
 

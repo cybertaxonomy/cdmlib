@@ -55,11 +55,6 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     private ITermService termService;
 
     @Test
-    public void testGetDefaultFeatureVocabulary() {
-        service.getDefaultFeatureVocabulary();
-    }
-
-    @Test
     @DataSet("CommonServiceImplTest.xml")
     public void testChangeDescriptionElement(){
         DescriptionBase<?> descBase = service.find(UUID.fromString("eb17b80a-9be6-4642-a6a8-b19a318925e6"));
@@ -80,7 +75,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
             }
         }
         service.saveOrUpdate(descBase);
-        Pager<DescriptionElementBase> allElements = service.getDescriptionElements(null, null, null, null, null, null);
+        Pager<DescriptionElementBase> allElements = service.pageDescriptionElements(null, null, null, null, false, null, null, null);
         Assert.assertEquals(1, allElements.getCount().intValue());
         DescriptionElementBase test = allElements.getRecords().get(0);
         if (test instanceof TextData){

@@ -247,9 +247,10 @@ public class MediaInfoFileReaderTest {
     @Test
     public void testReadMetaDataJpeg() throws IOException, HttpException{
 
-        CdmImageInfo instance = new MediaInfoFileReader(jpegUri).readMetaData().getCdmImageInfo();
+        CdmImageInfo instance = new MediaInfoFileReader(jpegUri).read().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
-        Assert.assertEquals(54, metaData.size());
+        //At this point we do not have the filter/deduplication information
+        Assert.assertEquals(57, metaData.size());
 
         Assert.assertEquals("My taxon", metaData.get("Taxon"));
         Assert.assertEquals("on the road", metaData.get("Locality"));
@@ -262,7 +263,7 @@ public class MediaInfoFileReaderTest {
 
     @Test
     public void testReadMetaDataTif() throws IOException, HttpException{
-        CdmImageInfo instance = new MediaInfoFileReader(tiffUri).readBaseInfo().readMetaData().getCdmImageInfo();
+        CdmImageInfo instance = new MediaInfoFileReader(tiffUri).readBaseInfo().read().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
         Assert.assertEquals(15, metaData.size());
     }
@@ -271,7 +272,7 @@ public class MediaInfoFileReaderTest {
     public void testReadMetaDataRemotePng() throws HttpException {
 
         try {
-            CdmImageInfo instance = new MediaInfoFileReader(remotePngUri).readMetaData().getCdmImageInfo();
+            CdmImageInfo instance = new MediaInfoFileReader(remotePngUri).read().getCdmImageInfo();
             Map<String, String> metaData = instance.getMetaData();
             Assert.assertEquals(1, metaData.size());
 

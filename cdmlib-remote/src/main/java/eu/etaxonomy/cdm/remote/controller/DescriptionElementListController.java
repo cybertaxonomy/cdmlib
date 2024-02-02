@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
@@ -65,6 +67,9 @@ public class DescriptionElementListController {
     @Autowired
     private ITaxonService taxonService;
 
+    protected static final boolean NO_UNPUBLISHED = DaoBase.NO_UNPUBLISHED;
+    protected static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
+
     @Autowired
     public ProgressMonitorController progressMonitorController;
 
@@ -72,7 +77,12 @@ public class DescriptionElementListController {
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
-            "multilanguageText"
+            "multilanguageText",
+            "stateData.modifyingText",
+            "stateData.categoricalData.$",
+            "annotations.$",
+            "annotations.annotationType.$",
+            "annotations.annotationType.includes.$"
     });
 
     protected List<String> getInitializationStrategy() {
@@ -100,6 +110,7 @@ public class DescriptionElementListController {
 
     /**
      * Requires the query parameter "descriptionType" to be present
+     * @TODO needed? A description element list without taxon or specimen relation does not seem to make sense.
      */
     @RequestMapping(value = "byFeature", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<? extends DescriptionElementBase> doPageDescriptionElementsByFeature(
@@ -111,6 +122,7 @@ public class DescriptionElementListController {
             HttpServletResponse response) throws IOException {
 
         logger.info("doPageDescriptionElementsByFeature : " + requestPathAndQuery(request));
+        boolean includeUnpublished = NO_UNPUBLISHED;
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
@@ -120,7 +132,7 @@ public class DescriptionElementListController {
         }
 
         Pager<? extends DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
-                type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
+                type, includeUnpublished, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
 
         return pager;
     }
@@ -142,6 +154,7 @@ public class DescriptionElementListController {
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
         Taxon taxon = null;
         if( taxon_uuid!= null){
             try {
@@ -150,9 +163,10 @@ public class DescriptionElementListController {
                 HttpStatusMessage.UUID_NOT_FOUND.send(response);
             }
         }
-
-        Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
-                pageIndex, getInitializationStrategy());
+        Set<Feature> featureSet = features != null ? features.asSet() : null;
+        List<String> propertyPath = getInitializationStrategy();
+        Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, featureSet, type, includeUnpublished,
+                pageSize, pageIndex, propertyPath);
         return pager;
     }
 

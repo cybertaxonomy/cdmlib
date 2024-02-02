@@ -309,10 +309,10 @@ public class Team extends TeamOrPersonBase<Team> {
 			return this.nomenclaturalTitleCache;
 		}
 		if (nomenclaturalTitleCache == null){
-			this.nomenclaturalTitleCache = cacheStrategy().getNomenclaturalTitleCache(this);
+			this.nomenclaturalTitleCache = getTruncatedCache(cacheStrategy().getNomenclaturalTitleCache(this));
 		}else{
 			//as long as team members do not inform the team about changes the cache must be created new each time
-		    nomenclaturalTitleCache = cacheStrategy().getNomenclaturalTitleCache(this);
+		    nomenclaturalTitleCache = getTruncatedCache(cacheStrategy().getNomenclaturalTitleCache(this));
 		}
 		return nomenclaturalTitleCache;
 	}
@@ -352,12 +352,12 @@ public class Team extends TeamOrPersonBase<Team> {
             return this.collectorTitleCache;
         }
         if (collectorTitleCache == null){
-            this.collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
+            this.collectorTitleCache = getTruncatedCache(cacheStrategy().getCollectorTitleCache(this));
         }else{
             try {
 
                 //as long as team members do not inform the team about changes the cache must be created new each time
-                collectorTitleCache = cacheStrategy().getCollectorTitleCache(this);
+                collectorTitleCache = getTruncatedCache(cacheStrategy().getCollectorTitleCache(this));
             } catch (Exception e) {
                 //see #10090, getCollectorTitleCache is called e.g. if team is a secundum author, in this case if members are not initialized by BeanInitializer, however, jsonlib later tries to initialize the team (the exception is swallowed so it is not critical but a stacktrace is logged, which is not necessary)
                 //see also comment on TitleAndNameCacheAutoInitializer.initialize() for TaxonBase
@@ -391,6 +391,7 @@ public class Team extends TeamOrPersonBase<Team> {
     }
 
     public void setCollectorTitleCache(String collectorTitleCache, boolean protectedCache) {
+        firePropertyChange("collectorTitleCache", this.collectorTitleCache, collectorTitleCache);
         this.collectorTitleCache = CdmUtils.Nb(collectorTitleCache);
         this.protectedCollectorTitleCache = protectedCache;
     }

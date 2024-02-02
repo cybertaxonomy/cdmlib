@@ -300,7 +300,7 @@ public class ImportDeduplicationHelper {
             return result;
         }else {
             try {
-                return (Optional)repository.getCommonService().findMatching((IMatchable)entity, matcher).stream().findFirst();
+                return repository.getCommonService().findMatching(entity, matcher).stream().findFirst();
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
@@ -590,8 +590,9 @@ public class ImportDeduplicationHelper {
     }
 
    /**
-     * Returns an existing matching persistend reference or the the given reference
+     * Returns an existing matching persistent reference or the the given reference
      * if no matching reference exists.
+     *
      * @param ref given reference
      * @param parsed if <code>true</code> use matching strategy for parsed references,
      *               the default matching strategy otherwise

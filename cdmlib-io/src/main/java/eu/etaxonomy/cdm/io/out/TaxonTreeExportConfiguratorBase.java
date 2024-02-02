@@ -23,7 +23,17 @@ public abstract class TaxonTreeExportConfiguratorBase
 
     private static final long serialVersionUID = 1663876643435871032L;
 
+
+    private boolean doSynonyms = true;
+
     protected TaxonTreeExportConfiguratorBase(IExportTransformer transformer) {
         super(transformer);
+    }
+
+    public boolean isDoSynonyms() {
+        return doSynonyms;
+    }
+    public void setDoSynonyms(boolean doSynonyms) {
+        this.doSynonyms = doSynonyms;
     }
 }

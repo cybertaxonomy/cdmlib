@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -29,6 +30,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
@@ -808,6 +810,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testListAssociatedTaxaAndListByAssociatedTaxon.xml")
     public void testListAssociatedTaxaAndListByAssociatedTaxon(){
+
+        boolean includeUnpublished = false;
         UUID associatedSpecimenUuid = UUID.fromString("6478a387-bc77-4f1b-bfab-671ad786a27e");
         UUID unassociatedSpecimenUuid = UUID.fromString("820e1af6-9bff-4244-97d3-81fd9a49c91c");
         UUID typeSpecimenUuid = UUID.fromString("b6f31b9f-f9e2-4bc7-883e-35bd6a9978b4");
@@ -877,24 +881,33 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //check association (IndividualsAssociations + TypeDesignations) specimen -> taxon (name)
 
         //unassociated specimen
-        java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(unassociatedSpecimen, null, null, null, null);
+        java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(
+                unassociatedSpecimen, includeUnpublished, null, null, null, null);
         assertNotNull(associatedTaxa);
         assertTrue(associatedTaxa.isEmpty());
 
         //type specimen
-        associatedTaxa = occurrenceService.listAssociatedTaxa(typeSpecimen, null, null, null, null);
+        associatedTaxa = occurrenceService.listAssociatedTaxa(
+                typeSpecimen, includeUnpublished, null, null, null, null);
         assertNotNull(associatedTaxa);
         assertEquals(1, associatedTaxa.size());
         assertEquals(taxon, associatedTaxa.iterator().next());
 
         //associated specimen
-        associatedTaxa = occurrenceService.listAssociatedTaxa(associatedSpecimen, null, null, null, null);
+        associatedTaxa = occurrenceService.listAssociatedTaxa(associatedSpecimen,
+                includeUnpublished, null, null, null, null);
         assertNotNull(associatedTaxa);
         assertEquals(1, associatedTaxa.size());
         assertEquals(taxon, associatedTaxa.iterator().next());
 
+        //FIXME adapt if needed
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
         //check association (IndividualsAssociations + TypeDesignations) taxon (name) -> specimen
-        List<DerivedUnit> byAssociatedTaxon = occurrenceService.listByAssociatedTaxon(DerivedUnit.class, null, taxon, null, null, null, null, null);
+        List<DerivedUnit> byAssociatedTaxon = occurrenceService.listByAssociatedTaxon(
+                DerivedUnit.class, null, taxon, includeUnpublished,
+                taxonOccurrenceRelTypes,
+                null, null, null, null, null);
         assertNotNull(byAssociatedTaxon);
         assertEquals(2, byAssociatedTaxon.size());
         assertTrue(byAssociatedTaxon.contains(associatedSpecimen));

@@ -39,7 +39,7 @@ public class SDDTransformer extends InputTransformerBase {
 
 	@Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 //		}else if (key.equalsIgnoreCase("distribution")){return Feature.DISTRIBUTION();
 //		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
 		}else{
@@ -49,7 +49,7 @@ public class SDDTransformer extends InputTransformerBase {
 
 	@Override
 	public UUID getFeatureUuid(String key) 	throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 
 //		}else if (key.equalsIgnoreCase("lifeform")){return uuidNote;
 
@@ -60,7 +60,7 @@ public class SDDTransformer extends InputTransformerBase {
 
 	@Override
 	public MarkerType getMarkerTypeByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 //		}else if (key.equalsIgnoreCase("distribution")){return MarkerType.;
 //		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
 		}else{
@@ -70,7 +70,7 @@ public class SDDTransformer extends InputTransformerBase {
 
 	@Override
 	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 //		}else if (key.equalsIgnoreCase("excluded")){return uuidExcludedTaxon;
 //		}else if (key.equalsIgnoreCase("EXCLUDED SPECIES, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
 //		}else if (key.equalsIgnoreCase("EXCLUDED GENUS, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
@@ -78,6 +78,5 @@ public class SDDTransformer extends InputTransformerBase {
 		}else{
 			return null;
 		}
-
 	}
 }

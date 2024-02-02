@@ -74,6 +74,8 @@ import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -490,6 +492,19 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
             }
         }
         return result;
+    }
+
+    @Transient
+    public DeterminationEvent getDeterminationsForTaxonOrName(TaxonBase taxon, TaxonName name){
+        for (DeterminationEvent event : getDeterminations()){
+            if (taxon != null && event.getTaxon() != null &&event.getTaxon().equals(taxon) ){
+                return event;
+            }
+            if (name != null && event.getTaxonName() != null && event.getTaxonName().equals(name)) {
+                return event;
+            }
+        }
+        return null;
     }
 
     public void addDetermination(DeterminationEvent determination) {

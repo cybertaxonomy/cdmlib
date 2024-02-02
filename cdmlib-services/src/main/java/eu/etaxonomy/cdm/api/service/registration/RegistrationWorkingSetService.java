@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.util.UserHelper;
-import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.format.reference.ReferenceEllypsisFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -50,6 +49,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.permission.PermissionDeniedException;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -255,9 +255,11 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     /**
      * {@inheritDoc}
      * @throws TypeDesignationSetException
+     * @throws PermissionDeniedException
      */
     @Override
-    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException {
+    public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections)
+            throws TypeDesignationSetException, PermissionDeniedException {
 
         Reference reference = repo.getReferenceService().load(referenceUuid); // needed to use load to avoid the problem described in #7331
         if(resolveSections){

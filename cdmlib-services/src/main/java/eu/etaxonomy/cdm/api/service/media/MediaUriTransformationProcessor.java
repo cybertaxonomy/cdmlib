@@ -118,6 +118,10 @@ public class MediaUriTransformationProcessor {
     }
 
     protected String buildPathQueryFragment(URI uri) {
+        if (uri == null) {
+
+            return null;
+        }
         String pathQueryFragment = uri.getPath();
         if (uri.getQuery() != null) {
             pathQueryFragment += "?" + uri.getQuery();
@@ -128,42 +132,15 @@ public class MediaUriTransformationProcessor {
         return pathQueryFragment;
     }
 
-    @Deprecated
-    public List<MediaRepresentation> makeNewMediaRepresentationsFor(URI uri) {
-
-        List<MediaRepresentation> repr = new ArrayList<>();
-
-        String pathQueryFragment = buildPathQueryFragment(uri);
-
-        for (MediaUriTransformation transformation : transformations) {
-
-            try {
-                Optional<URI> newUri = uriTransformation(uri, pathQueryFragment, transformation);
-                if(newUri.isPresent()) {
-                    MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(), null);
-                    MediaRepresentationPart part;
-                    if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
-                        part = ImageFile.NewInstance(newUri.get(), null, transformation.getHeight(), transformation.getWidth());
-                    } else {
-                        part = MediaRepresentationPart.NewInstance(newUri.get(), null);
-                    }
-                    mRepresentation.addRepresentationPart(part);
-                    repr.add(mRepresentation);
-                }
-
-            } catch (URISyntaxException e) {
-                logger.error(e);
-            }
-        }
-
-        return repr;
-    }
-
     public List<MediaRepresentation> makeNewMediaRepresentationsFor(MediaRepresentationPart part) {
 
         List<MediaRepresentation> repr = new ArrayList<>();
 
         String pathQueryFragment = buildPathQueryFragment(part.getUri());
+        if (pathQueryFragment == null) {
+            logger.error("Missing path query fragment, for media representation part with UUID: " + part.getUuid());
+            return repr;
+        }
 
         for (MediaUriTransformation transformation : transformations) {
 
@@ -190,7 +167,7 @@ public class MediaUriTransformationProcessor {
                     repr.add(mRepresentation);
                 }
 
-            } catch (URISyntaxException e) {
+            } catch (Exception e) {
                 logger.error(e);
             }
         }

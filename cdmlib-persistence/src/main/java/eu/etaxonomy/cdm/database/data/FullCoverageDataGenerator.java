@@ -973,7 +973,7 @@ public class FullCoverageDataGenerator {
 		Extension.NewInstance(identifiableEntity, "extension", ExtensionType.INFORMAL_CATEGORY());
 
 		//Identifier
-		Identifier identifier = identifiableEntity.addIdentifier("ident23", IdentifierType.WFO_NAME_IDENTIFIER());
+		Identifier identifier = identifiableEntity.addIdentifier("ident23", IdentifierType.IDENTIFIER_NAME_WFO());
 		handleAnnotatableEntity(identifier);
 
 	    //Links

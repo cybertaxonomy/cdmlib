@@ -393,6 +393,9 @@ public abstract class Cdm2CdmImportBase
         this.setInvisible(node, "classification", detach(node.getClassification(), state));
         handleParentTaxonNode(result, state);
         setNewCollection(node, TaxonNode.class, "childNodes", TaxonNode.class);
+        //TODO write test for refresh count children,
+        result.refreshCountChildren();
+
         return result;
     }
 

@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
@@ -57,6 +58,7 @@ public class TaxonNameDefaultCacheStrategy
     private String basionymStart = "(";
     private String basionymEnd = ")";
     private String exAuthorSeperator = " ex ";
+    private String inAuthorSeperator = " in ";
     private CharSequence basionymAuthorCombinationAuthorSeperator = " ";
 
     private String zooAuthorYearSeperator = ", ";
@@ -173,10 +175,8 @@ public class TaxonNameDefaultCacheStrategy
     }
 
     /**
-     * Returns the authorshipcache string for the atomized authorship fields. Does not use the authorship field.
+     * Returns the authorshipCache string for the atomized authorship fields. Does not use the authorship field.
      * @throws NullPointerException if nonViralName is null.
-     * @param taxonName
-     * @return
      */
     protected String getNonCacheAuthorshipCache(TaxonName nonViralName){
         if (nonViralName.getNameType().isZoological()){
@@ -187,6 +187,13 @@ public class TaxonNameDefaultCacheStrategy
             TeamOrPersonBase<?> exCombinationAuthor = nonViralName.getExCombinationAuthorship();
             TeamOrPersonBase<?> basionymAuthor = nonViralName.getBasionymAuthorship();
             TeamOrPersonBase<?> exBasionymAuthor = nonViralName.getExBasionymAuthorship();
+            TeamOrPersonBase<?> inCombinationAuthor = null;
+            TeamOrPersonBase<?> inBasionymAuthor = null;
+            if (nonViralName.getNameType() == NomenclaturalCode.Fungi) {
+                //for now we format only fungi (and zoonames, but not here) with in-authors
+                inCombinationAuthor = nonViralName.getInCombinationAuthorship();
+                inBasionymAuthor = nonViralName.getInBasionymAuthorship();
+            }
             if (isCultivar(nonViralName) ){
                 exCombinationAuthor = null;
                 basionymAuthor = null;
@@ -196,16 +203,16 @@ public class TaxonNameDefaultCacheStrategy
             String basionymPart = "";
             String authorPart = "";
             //basionym
-            if (basionymAuthor != null || exBasionymAuthor != null){
-                basionymPart = basionymStart + getAuthorAndExAuthor(basionymAuthor, exBasionymAuthor) + basionymEnd;
+            if (basionymAuthor != null || exBasionymAuthor != null || inBasionymAuthor != null){
+                basionymPart = basionymStart + getAuthorAndExAndInAuthor(basionymAuthor, exBasionymAuthor, inBasionymAuthor) + basionymEnd;
             }
-            if (combinationAuthor != null || exCombinationAuthor != null){
-                authorPart = getAuthorAndExAuthor(combinationAuthor, exCombinationAuthor);
+            if (combinationAuthor != null || exCombinationAuthor != null || inCombinationAuthor != null){
+                authorPart = getAuthorAndExAndInAuthor(combinationAuthor, exCombinationAuthor, inCombinationAuthor);
             }
             result = CdmUtils.concat(basionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
-//        if ("".equals(result)){
-//        	result = null;
-//        }
+//          if ("".equals(result)){
+//        	   result = null;
+//          }
             return result;
         }
     }
@@ -223,6 +230,8 @@ public class TaxonNameDefaultCacheStrategy
         TeamOrPersonBase<?> exCombinationAuthor = nonViralName.getExCombinationAuthorship();
         TeamOrPersonBase<?> basionymAuthor = nonViralName.getBasionymAuthorship();
         TeamOrPersonBase<?> exBasionymAuthor = nonViralName.getExBasionymAuthorship();
+        TeamOrPersonBase<?> inCombinationAuthor = nonViralName.getInCombinationAuthorship();
+        TeamOrPersonBase<?> inBasionymAuthor = nonViralName.getInBasionymAuthorship();
         Integer publicationYear = nonViralName.getPublicationYear();
         Integer originalPublicationYear = nonViralName.getOriginalPublicationYear();
 
@@ -230,13 +239,13 @@ public class TaxonNameDefaultCacheStrategy
         String authorPart = "";
         //basionym
         if (basionymAuthor != null || exBasionymAuthor != null || originalPublicationYear != null ){
-            String authorAndEx = getAuthorAndExAuthor(basionymAuthor, exBasionymAuthor);
+            String authorAndEx = getAuthorAndExAndInAuthor(basionymAuthor, exBasionymAuthor, inBasionymAuthor);
             String originalPublicationYearString = originalPublicationYear == null ? null : String.valueOf(originalPublicationYear);
             String authorAndExAndYear = CdmUtils.concat(zooAuthorYearSeperator, authorAndEx, originalPublicationYearString );
             basionymPart = basionymStart + authorAndExAndYear + basionymEnd;
         }
         if (combinationAuthor != null || exCombinationAuthor != null){
-            String authorAndEx = getAuthorAndExAuthor(combinationAuthor, exCombinationAuthor);
+            String authorAndEx = getAuthorAndExAndInAuthor(combinationAuthor, exCombinationAuthor, inCombinationAuthor);
             String publicationYearString = publicationYear == null ? null : String.valueOf(publicationYear);
             authorPart = CdmUtils.concat(zooAuthorYearSeperator, authorAndEx, publicationYearString);
         }
@@ -253,18 +262,23 @@ public class TaxonNameDefaultCacheStrategy
      * combination authors as well as on basionym/orginal combination authors.
      * The correct order is exAuthor ex author though some botanist do not know about and do it the
      * other way round. (see 46.4-46.6 ICBN (Vienna Code, 2006))
+     * @param inAuthor
      */
-    protected String getAuthorAndExAuthor(TeamOrPersonBase<?> author, TeamOrPersonBase<?> exAuthor){
+    protected String getAuthorAndExAndInAuthor(TeamOrPersonBase<?> author, TeamOrPersonBase<?> exAuthor, TeamOrPersonBase<?> inAuthor){
         String authorString = "";
         String exAuthorString = "";
+        String inAuthorString = "";
         if (author != null){
             authorString = getNomAuthorTitle(author);
         }
         if (exAuthor != null){
             exAuthorString = getNomAuthorTitle(exAuthor);
-            exAuthorString += exAuthorSeperator;
         }
-        String result = exAuthorString + authorString;
+        if (inAuthor != null){
+            inAuthorString = getNomAuthorTitle(inAuthor);
+        }
+        String result = CdmUtils.concat(inAuthorSeperator,
+                CdmUtils.concat(exAuthorSeperator, exAuthorString, authorString), inAuthorString);
         return result;
     }
 
@@ -334,8 +348,6 @@ public class TaxonNameDefaultCacheStrategy
 
     /**
      * Returns the tag list of the name part (without author and reference).
-     * @param taxonName
-     * @return
      */
     @Override
     public List<TaggedText> getTaggedName(TaxonName taxonName) {

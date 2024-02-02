@@ -77,7 +77,7 @@ public class TaxonXDescriptionImport
 		Reference ref = state.getModsReference();
 		if (ref != null){
 			result = ref.getTitle();
-			if ( CdmUtils.isEmpty(result)){
+			if ( CdmUtils.isBlank(result)){
 				result = ref.getTitleCache();
 			}
 		}

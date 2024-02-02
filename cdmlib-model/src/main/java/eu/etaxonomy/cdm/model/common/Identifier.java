@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  * @author a.mueller
  * @since 2014-06-30
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Identifier", propOrder = {
     "identifier",
@@ -49,7 +48,6 @@ public class Identifier
     private static final long serialVersionUID = 3337567049024506936L;
 	@SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
-
 
 	@XmlElement(name ="Identifier" )
 	@Column(length=800, name="identifier")

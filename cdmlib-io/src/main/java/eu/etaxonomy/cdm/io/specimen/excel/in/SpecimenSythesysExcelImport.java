@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -828,7 +830,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
     @Override
     protected void doInvoke(SpecimenSynthesysExcelImportState state) {
+
         boolean success = true;
+        //TODO adapt if needed
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
         if (state.getConfig().doAskForDate()) {
             keepAtomisedDate = askQuestion("Gathering dates can be stored in either atomised fieds (day month year) or in a concatenated field."+
                     "\nWhich value do you want to store?\nPress 1 for the atomised, press 2 for the concatenated field, and then press enter.");
@@ -879,8 +885,10 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 //DEBUG CHENOPODIUM VULVARIA
                 UUID uuid = UUID.fromString("85234ff5-8e40-4813-8f06-44ab960a905a");
                 Taxon taxon = (Taxon)getTaxonService().find(uuid);
-
-                specimenOrObs = getOccurrenceService().listByAssociatedTaxon(null, null, taxon, null, null, null, null, null);
+                boolean includeUnpublished = true; //for import we always include
+                specimenOrObs = getOccurrenceService().listByAssociatedTaxon(null, null,
+                        taxon, includeUnpublished, taxonOccurrenceRelTypes,
+                        null, null, null, null, null);
             }
             Map<String,String> unit=null;
             MyHashMap<String,String> myunit;

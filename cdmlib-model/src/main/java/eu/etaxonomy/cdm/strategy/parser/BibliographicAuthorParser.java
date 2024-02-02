@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
  * @author a.mueller
- * @date 05.03.2022
+ * @date 2022-03-05
  */
 public class BibliographicAuthorParser {
 
@@ -35,7 +35,7 @@ public class BibliographicAuthorParser {
             + UTF8.CAPITAL_O_ACUTE
             + UTF8.CAPITAL_U_ACUTE
             + "]";
-    private static String initialsRe = "("+initialChars+"\\.?\\s?|(del?|de la|de los|v[ao]n)\\s*){1,5}";
+    private static String initialsRe = "("+initialChars+"\\.?(\\s|"+UTF8.ANY_DASH_RE()+")?|(del?|de la|de los|v[ao]n)\\s*){1,5}";
     private static String initialsStrictRe = "((?!"+initialsRe+"\\s).)*\\s+("+initialsRe+")";
     private static Pattern pattern = Pattern.compile(initialsStrictRe);
 
@@ -96,7 +96,7 @@ public class BibliographicAuthorParser {
             Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
                 //initials not separated by comma
-                String initials = matcher.group(4);
+                String initials = matcher.group(5);
                 String family = str.replaceAll(initials + "$", "").trim();
                 person.setFamilyName(family);
                 person.setInitials(initials.trim());

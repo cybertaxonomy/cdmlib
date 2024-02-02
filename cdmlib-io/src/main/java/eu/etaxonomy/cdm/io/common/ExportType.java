@@ -15,6 +15,7 @@ package eu.etaxonomy.cdm.io.common;
 public enum ExportType {
         DWCA,
         CDM_LIGHT,
+        WFO_BACKBONE,
         COLDP,
         CSV_NAME,
         CSV_PRINT,

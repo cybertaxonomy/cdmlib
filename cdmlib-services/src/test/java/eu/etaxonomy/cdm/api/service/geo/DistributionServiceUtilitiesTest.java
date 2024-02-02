@@ -110,9 +110,6 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
     @Before
     public void setup(){  //for testFilterXXX
         distributions = new ArrayList<>();
-
-        berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
-        berlin.setPartOf(Country.GERMANY());
     }
 
     //copied from CondensedDistributionComposerEuroMedTest
@@ -263,6 +260,7 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
     @Test
     public void testFilterDistributions_aggregated(){
+        berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
 
         /* 1.
          * Aggregated elements are preferred over entered or imported elements
@@ -290,8 +288,9 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         statusOrderPreference= true;
         boolean preferAggregated = true;
         TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference, false, false);
+                areaTree, statusTree, hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceAbsenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
 
@@ -306,8 +305,8 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         distributions.add(parentComputedDistribution);
 
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hideMarkedAreas, preferAggregated,
-                statusOrderPreference, subAreaPreference, true, false);
+                distributions, areaTree, null, hideMarkedAreas, preferAggregated,
+                statusOrderPreference, subAreaPreference, true);
         Assert.assertEquals(2, filteredDistributions.size());
     }
 
@@ -315,6 +314,7 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
     public void testFilterDistributions_statusOrderPreference(){
         statusOrderPreference = true;
         TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
 
         /*
          * Status order preference rule: In case of multiple distribution status
@@ -325,7 +325,7 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED()));
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true, false);
+                distributions, areaTree, statusTree, hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(PresenceAbsenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
     }
@@ -333,7 +333,17 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
     @Test
     public void testFilterDistributions_subAreaPreference(){
         subAreaPreference = true;
+        //NOTE: once removing partOf methods use areaTreeNotYetInUse instead
         TermTree<NamedArea> areaTree = null;
+        TermTree<NamedArea> areaTreeNotYetInUse = TermTree.NewInstance(TermType.NamedArea);
+        TermTree<PresenceAbsenceTerm> statusTree = null;
+
+        berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
+        berlin.setPartOf(Country.GERMANY());
+        TermNode<NamedArea> germanyNode = areaTreeNotYetInUse.getRoot().addChild(Country.GERMANY());
+        germanyNode.addChild(berlin);
+        //add europe, but not yet as parent of Germany
+        TermNode<NamedArea> europeNode = areaTreeNotYetInUse.getRoot().addChild(NamedArea.EUROPE());
 
         /*
          * Sub area preference rule: If there is an area with a direct sub area
@@ -350,10 +360,44 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
         distributions.add(distGermany);
         distributions.add(distBerlin);
-        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
-                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
+
+        //add Europe, but not as parent of Germany yet
+        Distribution distEurope = Distribution.NewInstance(NamedArea.EUROPE(), PresenceAbsenceTerm.NATIVE());
+        distributions.add(distEurope);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
+        Assert.assertEquals("Europe should be also in", 2, filteredDistributions.size());
+        Assert.assertTrue("Europe should be also in", filteredDistributions.contains(distEurope));
+        Assert.assertTrue("Berlin should still be in", filteredDistributions.contains(distBerlin));
+
+        //now add Europe as parent of Germany => Europe should be removed
+        Country.GERMANY().setPartOf(NamedArea.EUROPE());
+        europeNode.addChild(germanyNode);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
+        Assert.assertEquals("Europe should be removed as in is a parent of Germany and ancestor of berlin", 1, filteredDistributions.size());
+        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
+        Assert.assertTrue("Berlin should still be in", filteredDistributions.contains(distBerlin));
+
+        //now remove Germany from distributions => Europe should still be removed as it is an ancestor of berlin
+        distributions.remove(distGermany);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
+        Assert.assertEquals("Europe should be removed as it is an ancestor of berlin", 1, filteredDistributions.size());
+
+        //do not remove other area
+        Distribution distFrance = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE());
+        Country.FRANCE().setPartOf(NamedArea.EUROPE());  //
+        europeNode.addChild(Country.FRANCE());
+        distributions.add(distFrance);
+        filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
+        Assert.assertEquals(2, filteredDistributions.size());
+
     }
 
     @Test
@@ -380,10 +424,11 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         hideMarkedAreas.add(MarkerType.IMPORTED());
         TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
 
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, hideMarkedAreas, false,
-                statusOrderPreference, subAreaPreference, true, false);
+                areaTree, statusTree, hideMarkedAreas, false,
+                statusOrderPreference, subAreaPreference, true);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(germany, filteredDistributions.iterator().next().getArea());
     }
@@ -408,27 +453,28 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         hideMarkedAreas = new HashSet<>();
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
 
         boolean keepFallBackOnlyIfNoSubareaDataExists = true;
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree,
+                distributions, areaTree, statusTree,
                 hideMarkedAreas,
                 NO_PREFER_AGGREGATED,
                 statusOrderPreference,
                 subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, false);
+                keepFallBackOnlyIfNoSubareaDataExists);
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
 
         keepFallBackOnlyIfNoSubareaDataExists = false;
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree,
+                distributions, areaTree, statusTree,
                 hideMarkedAreas,
                 NO_PREFER_AGGREGATED,
                 statusOrderPreference,
                 subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, false);
+                keepFallBackOnlyIfNoSubareaDataExists);
 
         Assert.assertEquals(2, filteredDistributions.size());
         Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(serbia));
@@ -457,21 +503,24 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         hideMarkedAreas = new HashSet<>();
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
 
         boolean keepFallBackOnlyIfNoSubareaDataExists = true;
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, false);
+                keepFallBackOnlyIfNoSubareaDataExists);
 
         Assert.assertEquals(1, filteredDistributions.size());
 
 
         keepFallBackOnlyIfNoSubareaDataExists = false;
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, false);
+                keepFallBackOnlyIfNoSubareaDataExists);
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
@@ -479,18 +528,20 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         keepFallBackOnlyIfNoSubareaDataExists = true;
         distributions.add(distSerbia);
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, false);
+                keepFallBackOnlyIfNoSubareaDataExists);
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
 
         keepFallBackOnlyIfNoSubareaDataExists = false;
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, false);
+                keepFallBackOnlyIfNoSubareaDataExists);
         Assert.assertEquals(2, filteredDistributions.size());
         Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(jugoslavia));
         Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(serbia));
@@ -498,18 +549,20 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         distributions.add(distPartOfSerbia);
         keepFallBackOnlyIfNoSubareaDataExists = true;
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, false);
+                keepFallBackOnlyIfNoSubareaDataExists);
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(partOfSerbia, filteredDistributions.iterator().next().getArea());
 
         keepFallBackOnlyIfNoSubareaDataExists = false;
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                distributions, areaTree, statusTree,
+                hideMarkedAreas, NO_PREFER_AGGREGATED,
                 statusOrderPreference, subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, false);
+                keepFallBackOnlyIfNoSubareaDataExists);
         Assert.assertEquals(3, filteredDistributions.size());
         Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(jugoslavia));
         Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(serbia));
@@ -542,14 +595,16 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         hideMarkedAreas = new HashSet<>();
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
 
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
                 distributions, areaTree,
+                statusTree,
                 hideMarkedAreas,
                 preferAggregated,
                 statusOrderPreference,
                 subAreaPreference,
-                true, false);
+                true);
 
         Assert.assertEquals(0, filteredDistributions.size());
 //        Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
@@ -574,14 +629,15 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         hideMarkedAreas = new HashSet<>();
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
 
         filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree,
+                distributions, areaTree, statusTree,
                 hideMarkedAreas,
                 false,
                 statusOrderPreference,
                 subAreaPreference,
-                true, false);
+                true);
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
@@ -592,7 +648,7 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
     public void testFilterDistributions_multipleParents(){
         subAreaPreference = true;
         statusOrderPreference = true;
-        boolean ignoreDistributionStatusUndefined = false;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
         boolean keepFallBackOnlyIfNoSubareaDataExists = true;
 
         setupTreeTest();  //we use tree test setup here
@@ -603,8 +659,8 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         distributions.remove(bawueDist);
         distributions.remove(berlinDist);
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
-                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, ignoreDistributionStatusUndefined);
+                statusTree, hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference,
+                subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists);
         Assert.assertEquals(4, filteredDistributions.size());
         List<NamedArea> areaList = filteredDistributions.stream().map(fd->fd.getArea()).collect(toList);
         Assert.assertTrue(areaList.contains(germany));
@@ -615,8 +671,8 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
         //add Saar which is child of Germany and West Europe
         createAndAddSaarAndWestEuropeDistribution();
         filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions, areaTree,
-                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists, ignoreDistributionStatusUndefined);
+                statusTree, hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference,
+                subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists);
         Assert.assertEquals(4, filteredDistributions.size());
         List<NamedArea> areaList2 = filteredDistributions.stream().map(fd->fd.getArea()).collect(toList);
         Assert.assertTrue(areaList2.contains(saar));

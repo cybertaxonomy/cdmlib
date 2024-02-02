@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
@@ -48,6 +50,7 @@ public class IdentifierType
     public static final UUID uuidWfoNameIdentifier = UUID.fromString("048e0cf9-f59c-42dd-bfeb-3a5cba0191c7");
     //currently only used in Caryophyllales_spp
     public static final UUID uuidPlantListIdentifier = UUID.fromString("06e4c3bd-7bf6-447a-b96e-2844b279f276");
+    public static final UUID uuidIndexFungorumIdentifier = UUID.fromString("f405be9f-359a-49ba-b09b-4a7920386190");
 
 	protected static Map<UUID, IdentifierType> termMap = null;
 
@@ -112,9 +115,8 @@ public class IdentifierType
     public static IdentifierType IDENTIFIER_NAME_WFO(){
         return getTermByUuid(uuidWfoNameIdentifier);
     }
-
-    public static IdentifierType WFO_NAME_IDENTIFIER(){
-        return getTermByUuid(uuidWfoNameIdentifier);
+    public static IdentifierType IDENTIFIER_NAME_IF(){
+        return getTermByUuid(uuidIndexFungorumIdentifier);
     }
 
 // ******************** GETTER /SETTER *********
@@ -152,8 +154,20 @@ public class IdentifierType
 		}
 	}
 
+    @Override
+    public IdentifierType readCsvLine(Class<IdentifierType> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        try {
+            IdentifierType newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
+            String urlPattern = CdmUtils.Ne(csvLine.get(5));
+            newInstance.setUrlPattern(urlPattern);
+            return newInstance;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 	@Override
 	protected int partOfCsvLineIndex(){
-		return 5;
+		return 6;
 	}
 }

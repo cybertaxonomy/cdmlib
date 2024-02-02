@@ -91,7 +91,7 @@ public class DwcaDistributionExport extends DwcaDataExportBase {
 	private void handleDistribution(DwcaTaxExportState state, DwcaDistributionRecord record, Distribution distribution, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
-		handleArea(state, record, distribution.getArea(), taxon, true);
+		handleArea(state, record, distribution.getArea(), taxon, distribution.getUserFriendlyTypeName(), true);
 		//TODO missing
 		record.setLifeStage(null);
 		record.setOccurrenceStatus(distribution.getStatus());

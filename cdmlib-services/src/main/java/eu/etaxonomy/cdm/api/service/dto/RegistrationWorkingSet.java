@@ -105,10 +105,6 @@ public class RegistrationWorkingSet {
 
     }
 
-    /**
-     * @param regDto
-     * @return
-     */
     protected Reference publicationUnit(RegistrationDTO regDto) {
         Reference ref = regDto.getCitation();
         while(ref.isOfType(ReferenceType.Section)&& ref.getInReference() != null){
@@ -120,10 +116,6 @@ public class RegistrationWorkingSet {
         return ref;
     }
 
-    /**
-     * @param reg
-     * @throws TypeDesignationSetException
-     */
     public void add(Registration reg) throws TypeDesignationSetException {
         Set<Registration> candidates = new HashSet<>();
         candidates.add(reg);
@@ -185,16 +177,10 @@ public class RegistrationWorkingSet {
         return registrationDTOs.stream().filter(r -> r.getUuid().equals(registrationUuid) ).findFirst();
     }
 
-    /**
-     * @return the citationId
-     */
     public UUID getCitationUuid() {
         return citationUuid;
     }
 
-    /**
-     * @return the citationString
-     */
     public String getCitation() {
         return citationString;
     }

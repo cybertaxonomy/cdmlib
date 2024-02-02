@@ -326,12 +326,12 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     @Override
     public long countByTitle(Class<? extends T> clazz, String queryString,  MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
+        return countByParam(clazz, "titleCache", queryString, matchmode, criterion);
     }
 
     @Override
     public long countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(clazz, "title",queryString,matchmode,criterion);
+        return countByParam(clazz, "title", queryString, matchmode, criterion);
     }
 
     @Override

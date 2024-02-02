@@ -36,7 +36,7 @@ public class BibliographicAuthorParserTest {
         Assert.assertEquals("P"+UTF8.SMALL_E_ACUTE+"rez-Farrera", team.getTeamMembers().get(2).getFamilyName());
         Assert.assertEquals("M. "+UTF8.CAPITAL_A_ACUTE+".", team.getTeamMembers().get(2).getInitials());
 
-        //without comma
+        //without comma between name and initials
         team = (Team)parser.parse("Contreras C.L.E., Mariaca M. R. & P"+UTF8.SMALL_E_ACUTE+"rez-Farrera M. "+UTF8.CAPITAL_A_ACUTE+".");
         Assert.assertEquals(3, team.getTeamMembers().size());
         Assert.assertEquals("Contreras", team.getTeamMembers().get(0).getFamilyName());
@@ -68,7 +68,7 @@ public class BibliographicAuthorParserTest {
         Assert.assertTrue(team.isHasMoreMembers());
         Assert.assertEquals("Contreras, C.L.E. & al.", team.getTitleCache());
 
-        //et al.
+        //& al.
         team = (Team)parser.parse("Contreras C.L.E. & al.");
         Assert.assertTrue(team.isHasMoreMembers());
         Assert.assertEquals("Contreras, C.L.E. & al.", team.getTitleCache());
@@ -83,6 +83,15 @@ public class BibliographicAuthorParserTest {
         Assert.assertEquals("Borja", team.getTeamMembers().get(2).getFamilyName());
         Assert.assertEquals("de la R. M. A.", team.getTeamMembers().get(2).getInitials());
 
+        //initials with hyphen
+        team = (Team)parser.parse("Moncada, B., Pérez-Pérez, R.-E. & Lücking, R.");
+        Assert.assertEquals(3, team.getTeamMembers().size());
+        Assert.assertEquals("Moncada", team.getTeamMembers().get(0).getFamilyName());
+        Assert.assertEquals("B.", team.getTeamMembers().get(0).getInitials());
+        Assert.assertEquals("Pérez-Pérez", team.getTeamMembers().get(1).getFamilyName());
+        Assert.assertEquals("R.-E.", team.getTeamMembers().get(1).getInitials());
+        Assert.assertEquals("Lücking", team.getTeamMembers().get(2).getFamilyName());
+        Assert.assertEquals("R.", team.getTeamMembers().get(2).getInitials());
     }
 
     @Test

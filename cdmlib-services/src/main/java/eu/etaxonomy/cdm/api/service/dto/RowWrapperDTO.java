@@ -234,8 +234,29 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     }
 
     private String generateStateDataString(StateDataDto stateData, Language lang) {
-        return (stateData.getModifiers()!=null && !stateData.getModifiers().isEmpty()?stateData.getModifiers().iterator().next().getPreferredRepresentation(lang).getLabel()+" ":"") + (stateData.getState()!=null?stateData.getState().getPreferredRepresentation(lang).getLabel():"[no state]")
-                +(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
+        String result = "";
+        if (stateData.getModifiers() != null && !stateData.getModifiers().isEmpty()) {
+            if (stateData.getModifiers().iterator().next().getPreferredRepresentation(lang) != null) {
+                result = stateData.getModifiers().iterator().next().getPreferredRepresentation(lang).getLabel() + " ";
+            }else {
+                result = stateData.getModifiers().iterator().next().getLabel();
+            }
+        }
+        if (stateData.getState()!=null ) {
+            if (stateData.getState().getPreferredRepresentation(lang) != null) {
+                result += stateData.getState().getPreferredRepresentation(lang);
+            }else {
+                result += stateData.getState().getLabel();
+            }
+        }else {
+            result += "[no state]";
+        }
+        if (stateData.getCount() != null) {
+            result += " ("+stateData.getCount()+")";
+        }
+
+
+       return result;
     }
 
     public void setDataValueForCategoricalData(UUID featureUuid, List<StateDataDto> states, Language lang){

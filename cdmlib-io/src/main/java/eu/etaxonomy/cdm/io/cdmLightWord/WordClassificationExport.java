@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.cdmLightWord;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -64,6 +65,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -101,6 +103,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -120,6 +123,9 @@ public class WordClassificationExport
 
     @Autowired
     private IDistributionService geoService;
+
+    @Autowired
+    private ITermTreeDao termTreeDao;
 
     public WordClassificationExport() {
         this.ioName = this.getClass().getSimpleName();
@@ -285,13 +291,13 @@ public class WordClassificationExport
     }
 
     private void handleTaxon(WordClassificationExportState state, TaxonNode taxonNode) {
-        try {
+        if (taxonNode == null) {
+            state.getResult().addError("The taxonNode was null.", "handleTaxon");
+            state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
+            return;
+        }
 
-            if (taxonNode == null) {
-                state.getResult().addError("The taxonNode was null.", "handleTaxon");
-                state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
-                return;
-            }
+        try {
             if (taxonNode.getTaxon() == null) {
                 state.getResult().addError("There was a taxon node without a taxon: " + taxonNode.getUuid(),
                         "handleTaxon");
@@ -767,14 +773,16 @@ public class WordClassificationExport
                         + cdmBaseStr(element) + ": " + e.getMessage());
             }
         }
-         if(state.getConfig().isCreateCondensedDistributionString()){
+        if(state.getConfig().isCreateCondensedDistributionString()){
              List<Language> langs = new ArrayList<>();
              langs.add(Language.ENGLISH());
 
              TermTree<NamedArea> areaTree = null; //TODO
+             TermTree<PresenceAbsenceTerm> statusTree = getPersistentStatusTree(state.getConfig()); //TODO
+
              CondensedDistribution conDis = geoService.getCondensedDistribution(
                      //TODO add CondensedDistributionConfiguration to export configuration
-                     distributions, areaTree, true, null, state.getConfig().getCondensedDistributionConfiguration(), langs);
+                     distributions, areaTree, statusTree, true, null, state.getConfig().getCondensedDistributionConfiguration(), langs);
              WordClassificationExportTable tableCondensed =
                      WordClassificationExportTable.SIMPLE_FACT;
              String[] csvLine = new String[tableCondensed.getSize()];
@@ -792,7 +800,19 @@ public class WordClassificationExport
                      "CondensedDistribution";
 
              state.getProcessor().put(tableCondensed, taxon, csvLine);
-         }
+        }
+    }
+
+    private TermTree<PresenceAbsenceTerm> getPersistentStatusTree(WordClassificationExportConfigurator config) {
+        UUID statusTreeUuid = config.getStatusTree();
+        if (statusTreeUuid == null) {
+            return null;
+        }
+        //TODO property path
+        String[] propertyPath = new String[] {};
+        @SuppressWarnings("unchecked")
+        TermTree<PresenceAbsenceTerm> statusTree = termTreeDao.load(statusTreeUuid, Arrays.asList(propertyPath));
+        return statusTree;
     }
 
     private void handleCommonNameFacts(WordClassificationExportState state, Taxon taxon,

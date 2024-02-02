@@ -146,7 +146,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 */
 	public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonName name,
 			Class<T> type,
-			TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
+			TypeDesignationStatusBase<?> status, Integer pageSize, Integer pageNumber,
 			List<String> propertyPaths);
 
 	/**
@@ -158,30 +158,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @return
 	 */
 	public List<Integer> getTypeSpecimenIdsForTaxonName(TaxonName name,
-	        TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber);
-
-	/**
-	 * Return a List of types related to this name, optionally filtered by type
-	 * designation status
-	 *
-	 * @param name
-	 *            the name
-	 * @param status
-	 *            the type designation status (or null to return all types)
-	 * @param pageSize
-	 *            The maximum number of types returned (can be null for all
-	 *            types)
-	 * @param pageNumber
-	 *            The offset (in pageSize chunks) from the start of the result
-	 *            set (0 - based)
-	 * @param propertyPaths
-	 * @return a List of TypeDesignationBase instances
-	 * @deprecated use {@link #getTypeDesignations(TaxonName, Class, TypeDesignationStatusBase, Integer, Integer, List)} instead
-	 */
-	@Deprecated
-	public List<TypeDesignationBase> getTypeDesignations(TaxonName name,
-			TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
-			List<String> propertyPaths);
+	        TypeDesignationStatusBase<?> status, Integer pageSize, Integer pageNumber);
 
 	/**
 	 * Returns a List of TaxonName instances that match the properties

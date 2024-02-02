@@ -351,17 +351,6 @@ public class CdmUtils {
     }
 
     /**
-     * @see #isBlank(String)
-     * @deprecated use {@link #isBlank(String)} instead
-     * @param string
-     * @return
-     */
-    @Deprecated
-    static public boolean isEmpty(String string){
-        return isBlank(string);
-    }
-
-    /**
      * Checks if all of the given strings are blank.
      * @param strings Strings to test
      * @return <code>true</code> if all strings are blank, false otherwise

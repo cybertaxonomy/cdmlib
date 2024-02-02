@@ -23,7 +23,8 @@ public enum MetaDataMapping implements IKeyLabel{
     Headline("Headline","Taxon"),
     Sublocation("Sublocation", "Locality"),
     OriginialTransmissionReference("Original Transmission, Reference", "Original Transmission Reference"),
-    Artist("Artist", "Photographer")
+    Artist("Artist", "Photographer"),
+    Copyright("Copyright Notice", "Copyright")
     ;
 
 

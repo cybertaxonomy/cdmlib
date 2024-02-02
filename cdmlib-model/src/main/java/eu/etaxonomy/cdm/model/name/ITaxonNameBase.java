@@ -46,11 +46,9 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
  *
  * @author a.mueller
  * @since 21.01.2017
- *
  */
 public interface ITaxonNameBase
         extends IIdentifiableEntity, IParsable, IRelated, IMatchable, Cloneable{
-
 
     public NomenclaturalCode getNameType();
     public void setNameType(NomenclaturalCode nameType);
@@ -951,6 +949,12 @@ public interface ITaxonNameBase
      * any sub type and is supposed to be handled via {@link IBotanicalName}
      */
     public boolean isBotanical();
+
+    /**
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#Fungi} or
+     * any sub type and is supposed to be handled via {@link IFungusName}
+     */
+    public boolean isFungus();
 
     /**
      * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNCP} or

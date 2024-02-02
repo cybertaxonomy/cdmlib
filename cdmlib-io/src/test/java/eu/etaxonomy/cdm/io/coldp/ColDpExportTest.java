@@ -53,13 +53,17 @@ public class ColDpExportTest
     private String expectedArmenianDistributionLine = uuid(subspeciesTaxonUuid) + NONE +
             "\"ARM\",\"Armenia\",\"iso\",\"uncertain\"," + NONE + NONE_END;
 
-    private String expectedFamilyNameLine = uuid(familyNameUuid) + NONE3 + "\"Family\",\"L.\",\"family\",\"Family\"," +
+    private String expectedFamilyNameLine = uuid(familyNameUuid) + "\"wfo:WFO-12347f\"," + NONE2 + "\"Familyname\",\"L.\",\"family\",\"Familyname\"," +
             NONE4 + NONE + "\"L.\"," + NONE + "\"1752\"," + NONE3 + "\"ICN\",\"conserved\"," +
             uuid(familyNomRefUuid) + "\"1752\",\"22\"," + NONE2 + NONE_END;
 
     //FIXME basionymID, nom. status
     private String basionymID = NONE;
-    private String expectedSubspeciesNameLine = uuid(subspeciesNameUuid) + NONE2 + basionymID + "\"Genus species subsp. subspec\",\"Mill.\",\"subspecies\","
+    private String expectedSubspeciesNameLine = uuid(subspeciesNameUuid) + "\"wfo:WFO-12347ss\"," + NONE + basionymID + "\"Genus species subsp. subspec\",\"Mill.\",\"subspecies\","
+            + NONE + "\"Genus\"," + NONE + "\"species\",\"subspec\"," + NONE + "\"Mill.\"," + NONE + "\"1804\"," + NONE3 +
+            "\"ICN\"," + VALID + uuid(subspeciesNomRefUuid) + "\"1804\",\"22\"," + NONE2 + NONE_END;
+    private String expectedSubspeciesNameLineWithFullName = uuid(subspeciesNameUuid) + "\"wfo:WFO-12347ss\"," + NONE + basionymID + "\"Genus species subsp. subspec\","
+            + "\"Genus species subsp. subspec Mill.\",\"Mill.\",\"subspecies\","
             + NONE + "\"Genus\"," + NONE + "\"species\",\"subspec\"," + NONE + "\"Mill.\"," + NONE + "\"1804\"," + NONE3 +
             "\"ICN\"," + VALID + uuid(subspeciesNomRefUuid) + "\"1804\",\"22\"," + NONE2 + NONE_END;
 
@@ -95,10 +99,11 @@ public class ColDpExportTest
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
 //    @Ignore
-    public void testSubTree(){
+    public void testSubTree_andWithFullName(){
 
         //config+invoke
         ColDpExportConfigurator config = newConfigurator();
+        config.setIncludeFullName(true);
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
@@ -116,7 +121,7 @@ public class ColDpExportTest
         List<String> distributionResult = getStringList(data, ColDpExportTable.DISTRIBUTION);
         Assert.assertEquals("There should be 1 distribution", 1, distributionResult.size() - COUNT_HEADER);
 
-        List<String> nameResult = getStringList(data, ColDpExportTable.NAME);
+        List<String> nameResult = getStringList(data, ColDpExportTable.NAME_WITH_FULLNAME);
         Assert.assertEquals("There should be 1 name", 1, nameResult.size() - COUNT_HEADER);
 
         //taxon
@@ -139,7 +144,7 @@ public class ColDpExportTest
         //name
         //TODO duplicated check withUnpublished
         String nameStr = getLine(nameResult, subspeciesNameUuid);
-        Assert.assertEquals(expectedSubspeciesNameLine, nameStr);
+        Assert.assertEquals(expectedSubspeciesNameLineWithFullName, nameStr);
     }
 
     @Test

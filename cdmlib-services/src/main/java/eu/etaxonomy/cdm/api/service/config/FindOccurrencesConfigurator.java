@@ -8,8 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
@@ -23,11 +25,15 @@ public class FindOccurrencesConfigurator
 
     private static final long serialVersionUID = -3225141895711379298L;
 
+    //TODO unify parameters or split configurator into use-cases
+
     private SpecimenOrObservationType specimenType;
     private UUID associatedTaxonUuid;
     private UUID associatedTaxonNameUuid;
     private String significantIdentifier;
     private boolean retrieveIndirectlyAssociatedSpecimens;
+    //used, if occurrences related to a taxon are retrieved
+    private EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
     private AssignmentStatus assignmentStatus = AssignmentStatus.ALL_SPECIMENS;
 
@@ -82,4 +88,10 @@ public class FindOccurrencesConfigurator
         this.retrieveIndirectlyAssociatedSpecimens = retrieveIndirectlyAssociatedSpecimens;
     }
 
+    public EnumSet<TaxonOccurrenceRelationType> getTaxonOccurrenceRelTypes() {
+        return taxonOccurrenceRelTypes;
+    }
+    public void setTaxonOccurrenceRelTypes(EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes) {
+        this.taxonOccurrenceRelTypes = taxonOccurrenceRelTypes;
+    }
 }

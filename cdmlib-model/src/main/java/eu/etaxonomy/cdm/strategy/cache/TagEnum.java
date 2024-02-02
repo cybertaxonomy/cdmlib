@@ -63,6 +63,12 @@ public enum TagEnum {
 	 */
 	nomStatus,
 	/**
+     *  A separator for the original spelling or a name in source in general.<BR>
+     *  Note: for name in source of the sec. reference there is a separate
+     *  tag {@link #secNameInSourceSeparator}
+     */
+    nameInSourceSeparator,
+	/**
 	 *  A separator to separate two tags () .
 	 *  A separator should include all needed whitespaces. So adding of whitespace
 	 *  is not needed if a separator is given.
@@ -156,7 +162,8 @@ public enum TagEnum {
 	 * @return <code>true</code> if type is separator or postSeparator
 	 */
 	public boolean isSeparator(){
-		return this == separator || this == postSeparator || this == secNameInSourceSeparator;
+		return this == separator || this == postSeparator || this == secNameInSourceSeparator
+		        || this == nameInSourceSeparator;
 	}
 	public boolean isHybridSign(){
 		return this == hybridSign;

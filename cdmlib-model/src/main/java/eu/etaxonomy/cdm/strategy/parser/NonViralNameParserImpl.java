@@ -182,18 +182,18 @@ public class NonViralNameParserImpl
 	}
 
 	/**
-	 * Returns the regEx to be used for the full-name depending on the code
-	 * @param nameToBeFilled
-	 * @return
+	 * Returns the regular expression to be used for the full-name depending on the code
 	 */
-	private String getCodeSpecificFullNameRegEx(INonViralName nameToBeFilledOrig){
+	private String getCodeSpecificFullNameRegEx(INonViralName nameToBeFilledOrig, boolean withoutInAuthor){
 	    INonViralName nameToBeFilled = CdmBase.deproxy(nameToBeFilledOrig);
 		if (nameToBeFilled.isZoological()){
 			return anyZooFullName;
 		}else if (nameToBeFilled.isCultivar()) {
             return anyCultivarFullName;
+		}else if (nameToBeFilled.isFungus()) {
+            return withoutInAuthor ? anyFungiNoInAuthorFullName : anyFungiFullName;
         }else if (nameToBeFilled.isBotanical()) {
-			return anyBotanicFullName;
+            return anyBotanicFullName;
 		}else if (nameToBeFilled.isNonViral()) {
 			return anyBotanicFullName;  //TODO ?
 		}else{
@@ -203,9 +203,7 @@ public class NonViralNameParserImpl
 	}
 
 	/**
-	 * Returns the regEx to be used for the fsimple-name depending on the code
-	 * @param nameToBeFilled
-	 * @return
+	 * Returns the regular expression to be used for the simple-name depending on the code
 	 */
 	private String getCodeSpecificSimpleNameRegEx(INonViralName nameToBeFilled){
 		nameToBeFilled = CdmBase.deproxy(nameToBeFilled);
@@ -247,13 +245,15 @@ public class NonViralNameParserImpl
 	    fullReferenceString = parseOriginalSpelling(fullReferenceString, nameToBeFilled, makeEmpty);
         nameToBeFilled.setProblemEnds(fullReferenceString.length());
 
-	    //get full name reg
-		String localFullNameRegEx = getCodeSpecificFullNameRegEx(nameToBeFilled);
-		//get full name reg
+	    //get full name regEx
+		String localFullNameRegEx = getCodeSpecificFullNameRegEx(nameToBeFilled, false);
+		//get full name without in author regEx
+		String localNoInAuthorFullNameRegEx = getCodeSpecificFullNameRegEx(nameToBeFilled, true);
+        //get simple name regEx
 		String localSimpleNameRegEx = getCodeSpecificSimpleNameRegEx(nameToBeFilled);
 
 		//separate name and reference part
-		String nameAndRefSeparatorRegEx = "(^" + localFullNameRegEx + ")("+ referenceSeperator + ")";
+		String nameAndRefSeparatorRegEx = "(^" + localNoInAuthorFullNameRegEx + ")("+ referenceSeperator + ")";
 		Matcher nameAndRefSeparatorMatcher = getMatcher(nameAndRefSeparatorRegEx, fullReferenceString);
 
 		Matcher onlyNameMatcher = getMatcher(localFullNameRegEx, fullReferenceString);
@@ -296,7 +296,7 @@ public class NonViralNameParserImpl
 	    //try to parse first part as name, but keep in mind full string is not parsable
 		int start = 0;
 
-		String localFullName = getCodeSpecificFullNameRegEx(nameToBeFilled);
+		String localFullName = getCodeSpecificFullNameRegEx(nameToBeFilled, false);
 		Matcher fullNameMatcher = getMatcher (pStart + localFullName, fullReferenceString);
 		if (fullNameMatcher.find()){
 			String fullNameString = fullNameMatcher.group(0);
@@ -1269,22 +1269,21 @@ public class NonViralNameParserImpl
 
 	/**
 	 * Author parser for external use
-	 * @param nonViralName
-	 * @param authorString
-	 * @throws StringNotParsableException
 	 */
 	@Override
 	public void parseAuthors(INonViralName nonViralNameOrig, String authorString) throws StringNotParsableException{
 	    INonViralName nonViralName = CdmBase.deproxy(nonViralNameOrig);
-	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
+	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[6];
 		Integer[] years = new Integer[4];
 		NomenclaturalCode code = nonViralName.getNameType();
 		fullAuthors(authorString, authors, years, code);
 		nonViralName.setCombinationAuthorship(authors[0]);
 		nonViralName.setExCombinationAuthorship(authors[1]);
-		nonViralName.setBasionymAuthorship(authors[2]);
-		nonViralName.setExBasionymAuthorship(authors[3]);
-		if (nonViralName.isZoological()){
+		nonViralName.setInCombinationAuthorship(authors[2]);
+		nonViralName.setBasionymAuthorship(authors[3]);
+		nonViralName.setExBasionymAuthorship(authors[4]);
+		nonViralName.setInBasionymAuthorship(authors[5]);
+        if (nonViralName.isZoological()){
 			IZoologicalName zooName = (IZoologicalName)nonViralName;
 			zooName.setPublicationYear(years[0]);
 			zooName.setOriginalPublicationYear(years[2]);
@@ -1292,7 +1291,7 @@ public class NonViralNameParserImpl
 	}
 
 	public void handleAuthors(INonViralName nameToBeFilled, String fullNameString, String authorString) {
-	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
+	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[6];
 		Integer[] years = new Integer[4];
 		try {
 			NomenclaturalCode code = nameToBeFilled.getNameType();
@@ -1307,8 +1306,11 @@ public class NonViralNameParserImpl
 		}
 		nameToBeFilled.setCombinationAuthorship(authors[0]);
 		nameToBeFilled.setExCombinationAuthorship(authors[1]);
-		nameToBeFilled.setBasionymAuthorship(authors[2]);
-		nameToBeFilled.setExBasionymAuthorship(authors[3]);
+		nameToBeFilled.setInCombinationAuthorship(authors[2]);
+
+		nameToBeFilled.setBasionymAuthorship(authors[3]);
+		nameToBeFilled.setExBasionymAuthorship(authors[4]);
+        nameToBeFilled.setInBasionymAuthorship(authors[5]);
 		if (nameToBeFilled.isZoological()){
 			IZoologicalName zooName = (IZoologicalName)nameToBeFilled;
 			zooName.setPublicationYear(years[0]);
@@ -1377,31 +1379,39 @@ public class NonViralNameParserImpl
 	 * Parses the fullAuthorString
 	 * @param fullAuthorString
 	 * @return array of Teams containing the Team[0],
-	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
+	 *          ExTeam[1], InTeam[2], BasionymTeam[3],
+	 *          ExBasionymTeam[4], InBasionymTeam[5]
 	 */
 	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors,
 	        Integer[] years, NomenclaturalCode code)
 			throws StringNotParsableException{
-		if (fullAuthorStringOrig == null || code == null){
+
+	    if (fullAuthorStringOrig == null || code == null){
 			return;
 		}
 		String fullAuthorString = fullAuthorStringOrig.trim();
 
 		//Botanic
 		if ( code.isBotanical() ){
-			if (! fullBotanicAuthorStringPattern.matcher(fullAuthorString).matches() ){
-				throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
+			if (code.isFungus()) {
+			    if (! fullFungiAuthorStringPattern.matcher(fullAuthorString).matches() ){
+	                throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable.");
+	            }
+			}else {
+			    if (! fullBotanicAuthorStringPattern.matcher(fullAuthorString).matches() ){
+			        throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable.");
+			    }
 			}
 		}
 		//Zoo
 		else if ( code.isZoological() ){
 			if (! fullZooAuthorStringPattern.matcher(fullAuthorString).matches() ){
-				throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
+				throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable.");
 			}
 		}else {
 			//TODO
 			logger.warn ("Full author String parsable only for defined BotanicalNames or ZoologicalNames but this is " + code.getLabel());
-			throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
+			throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable.");
 		}
 		fullAuthorsChecked(fullAuthorString, authors, years);
 	}
@@ -1420,22 +1430,24 @@ public class NonViralNameParserImpl
 			basString = basString.replaceAll(basEnd, "").trim();
 			authorShipStart = basionymMatcher.end(1);
 
-			TeamOrPersonBase<?>[] basAuthors = new TeamOrPersonBase[2];
+			TeamOrPersonBase<?>[] basAuthors = new TeamOrPersonBase[3];
 			Integer[] basYears = new Integer[2];
-			authorsAndEx(basString, basAuthors, basYears);
-			authors[2]= basAuthors[0];
+			authorsAndExAndIn(basString, basAuthors, basYears);
+			authors[3] = basAuthors[0];
 			years[2] = basYears[0];
-			authors[3]= basAuthors[1];
+			authors[4] = basAuthors[1];
 			years[3] = basYears[1];
+			authors[5] = basAuthors[2];
 		}
 		if (fullAuthorString.length() >= authorShipStart){
-			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];
+			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[3];
 			Integer[] combinationYears = new Integer[2];
-			authorsAndEx(fullAuthorString.substring(authorShipStart), combinationAuthors, combinationYears);
-			authors[0]= combinationAuthors[0] ;
+			authorsAndExAndIn(fullAuthorString.substring(authorShipStart), combinationAuthors, combinationYears);
+			authors[0] = combinationAuthors[0] ;
 			years[0] = combinationYears[0];
-			authors[1]= combinationAuthors[1];
+			authors[1] = combinationAuthors[1];
 			years[1] = combinationYears[1];
+			authors[2] = combinationAuthors[2];
 		}
 	}
 
@@ -1445,22 +1457,43 @@ public class NonViralNameParserImpl
 	 * @param authorShipStringOrig String representing the author and the ex-author team
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
-	protected void authorsAndEx (String authorShipStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years){
-		//TODO noch allgemeiner am Anfang durch Replace etc.
+	protected void authorsAndExAndIn (String authorShipStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years){
+		//TODO more general at the beginning by replace etc.
 		String authorShipString = authorShipStringOrig.trim();
 		authorShipString = authorShipString.replaceFirst(oWs + "ex" + oWs, " ex. " );
 
 		//int authorEnd = authorTeamString.length();
 		int authorBegin = 0;
 
-		Matcher exAuthorMatcher = exAuthorPattern.matcher(authorShipString);
+		//ex-author
+        Matcher exAuthorMatcher = exAuthorPattern.matcher(authorShipString);
 		if (exAuthorMatcher.find(0)){
 			authorBegin = exAuthorMatcher.end(0);
 			int exAuthorEnd = exAuthorMatcher.start(0);
-			String exString = authorShipString.substring(0, exAuthorEnd).trim();
-			authors [1] = author(exString);
+			String exAuthorString = authorShipString.substring(0, exAuthorEnd).trim();
+			authors [1] = author(exAuthorString);
+			authorShipString = authorShipString.substring(authorBegin).trim();
 		}
-		zooOrBotanicAuthor(authorShipString.substring(authorBegin), authors, years );
+
+        Pattern inAuthorPattern = Pattern.compile("(.*)" + oWs + "in" + oWs + "(.*)");
+        //in-author
+        Matcher inAuthorMatcher = inAuthorPattern.matcher(authorShipString);
+
+        Pattern authorTeamPattern = Pattern.compile(authorTeam);
+        //to avoid special cases for authors having " in " in the name
+        Matcher authorTeamMatcher = authorTeamPattern.matcher(authorShipString);
+
+        //
+        if (!authorTeamMatcher.matches() && inAuthorMatcher.matches()) {
+            String inAuthorStr = inAuthorMatcher.group(2);
+            TeamOrPersonBase<?>[] inAuthor = new TeamOrPersonBase<?>[1];
+            zooOrBotanicAuthor(inAuthorStr, inAuthor, years);
+            authors[2] = inAuthor[0];
+            authorShipString = inAuthorMatcher.group(1);
+        }
+
+        //author
+		zooOrBotanicAuthor(authorShipString, authors, years );
 	}
 
 	/**

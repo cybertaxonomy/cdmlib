@@ -20,8 +20,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactory;
-import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -37,7 +35,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.babadshanjan
@@ -168,10 +165,6 @@ public class DistributionImport
 	 */
     private void saveRecord(String taxonName, List<String> distributionList,
     		String status, String literatureNumber, String literature) {
-
-    	IdentifiableServiceConfiguratorImpl<TaxonName> config = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonName.class);
-    	config.setTitleSearchString(taxonName);
-    	config.setMatchMode(MatchMode.BEGINNING);
 
 		try {
     		// get the matching names from the DB

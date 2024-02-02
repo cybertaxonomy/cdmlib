@@ -13,16 +13,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -42,7 +44,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -130,6 +132,24 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
         binder.registerCustomEditor(MarkerType.class, new TermBasePropertyEditor<>(termService));
+    }
+
+    public static EnumSet<TaxonOccurrenceRelationType> bindAssociationFilter(String taxOccRelFilter) {
+        //TODO implement as binder
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = EnumSet.noneOf(TaxonOccurrenceRelationType.class);;
+        if (!StringUtils.isEmpty(taxOccRelFilter) && !"ALL".equalsIgnoreCase(taxOccRelFilter)) {
+            for (String split: taxOccRelFilter.split(",")){
+                TaxonOccurrenceRelationType relType = TaxonOccurrenceRelationType.of(split);
+                if(relType != null) {
+                    taxonOccurrenceRelTypes.add(relType);
+                }
+            }
+        }
+        if (taxonOccurrenceRelTypes.isEmpty()) {
+            taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
+        }
+        return taxonOccurrenceRelTypes;
     }
 
     protected List<String> getTaxonDescriptionInitStrategy() {
@@ -299,46 +319,47 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return pager;
     }
 
-
     @RequestMapping(value = "specimensOrObservationsCount", method = RequestMethod.GET)
     public StringResultDTO doCountSpecimensOrObservations(
             @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             HttpServletRequest request,
             HttpServletResponse response) {
+
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
 
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+
         FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
+        config.setIncludeUnpublished(includeUnpublished);
         config.setAssociatedTaxonUuid(uuid);
+        config.setTaxonOccurrenceRelTypes(taxonOccurrenceRelTypes);
         long countSpecimen = occurrenceService.countOccurrences(config);
         return new StringResultDTO(String.valueOf(countSpecimen));
-    }
-
-    /**
-     * @deprecated replaced by rootUnitDTOs
-     */
-    @Deprecated
-    @RequestMapping(value = "fieldUnitDTOs", method = RequestMethod.GET)
-    public List<SpecimenOrObservationBaseDTO> doListFieldUnitDTOs(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
-
-        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
-        return rootUnitDtos.stream().filter(dto -> dto instanceof FieldUnitDTO).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "rootUnitDTOs", method = RequestMethod.GET)
     public List<SpecimenOrObservationBaseDTO> doListRooUnitDTOs(
             @PathVariable("uuid") UUID uuid,
+            //TODO or should it be required
+            @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             HttpServletRequest request,
             HttpServletResponse response) {
+
+        // OccurrenceListController.doListlistRootUnitDTOsByAssociatedTaxon()
         logger.info("rootUnitDTOs() - " + request.getRequestURI());
 
-        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
-           // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+        boolean includeUnpublished = NO_UNPUBLISHED;
+
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
+
+        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(
+                uuid, null, includeUnpublished,
+                taxonOccurrenceRelTypes,
+                OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
         return rootUnitDtos;
     }
 
@@ -349,11 +370,17 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
         logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
         TaxonBase<?> tb = service.load(uuid);
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
         if(tb instanceof Taxon){
-            List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+            List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(
+                    null, null, (Taxon)tb, includeUnpublished,
+                    taxonOccurrenceRelTypes,
+                    null, null, null, orderHints, null);
             return specimensOrObservations;
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
@@ -371,8 +398,11 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
         logger.info("doGetAssociatedRootUnits() - " + request.getRequestURI());
 
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
         TaxonBase<?> taxonBase = service.load(uuid);
-        taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
+        taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
@@ -381,7 +411,10 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
             pagerParams.normalizeAndValidate(response);
 
-            return occurrenceService.pageRootUnitsByAssociatedTaxon(null, null, (Taxon) taxonBase, maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
+            return occurrenceService.pageRootUnitsByAssociatedTaxon(null, null, (Taxon) taxonBase,
+                    includeUnpublished,
+                    taxonOccurrenceRelTypes,
+                    maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
         }else{
             // FIXME proper HTTP code response
             return null;
@@ -492,8 +525,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
 
+        logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
@@ -527,7 +560,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
                     + classSimpleName);
             if (taxonDescriptions != null) {
                 for (TaxonDescription description : taxonDescriptions) {
-                    elements = descriptionService.listDescriptionElements(description, null, type, null, 0, initStrategy);
+                    Class<? extends DescriptionBase<?>> descriptionType = null;
+                    elements = descriptionService.listDescriptionElements(
+                            description, descriptionType, null, type, includeUnpublished, null, 0, initStrategy);
                     allElements.addAll(elements);
                     count += elements.size();
                 }

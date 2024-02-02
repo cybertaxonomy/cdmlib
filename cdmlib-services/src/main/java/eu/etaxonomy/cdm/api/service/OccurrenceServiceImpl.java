@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,6 +38,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
@@ -214,6 +214,7 @@ public class OccurrenceServiceImpl
                 );
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, mediaDTOs);
     }
+
     @Override
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivateMedia, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
@@ -257,17 +258,15 @@ public class OccurrenceServiceImpl
 	         }
          }
 
-
          return new DefaultPagerImpl<>(pageNumber, Long.valueOf(media.size()), pageSize, media);
     }
-
 
     @Override
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-    	return getMediaInHierarchy(rootOccurence, false, true, pageSize,
-                pageNumber, propertyPaths);
 
+        return getMediaInHierarchy(rootOccurence, false, true, pageSize,
+                pageNumber, propertyPaths);
     }
 
     @Override
@@ -315,60 +314,38 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public List<DerivedUnitFacade> listDerivedUnitFacades(
-            DescriptionBase description, List<String> derivedUnitFacadeInitStrategy) {
-
-        List<DerivedUnitFacade> derivedUnitFacadeList = new ArrayList<>();
-        IndividualsAssociation tempIndividualsAssociation;
-        SpecimenOrObservationBase tempSpecimenOrObservationBase;
-        List<IndividualsAssociation> elements = descriptionService.listDescriptionElements(description, null, IndividualsAssociation.class, null, 0, Arrays.asList(new String []{"associatedSpecimenOrObservation"}));
-        for (IndividualsAssociation element : elements) {
-            tempIndividualsAssociation = HibernateProxyHelper.deproxy(element, IndividualsAssociation.class);
-            if (tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null) {
-                tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
-                if (tempSpecimenOrObservationBase.isInstanceOf(DerivedUnit.class)) {
-                    try {
-                        derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance(HibernateProxyHelper.deproxy(tempSpecimenOrObservationBase, DerivedUnit.class)));
-                    } catch (DerivedUnitFacadeNotSupportedException e) {
-                        logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " + e.getMessage());
-                    }
-                }
-            }
-        }
-
-        beanInitializer.initializeAll(derivedUnitFacadeList, derivedUnitFacadeInitStrategy);
-
-        return derivedUnitFacadeList;
-    }
-
-
-    @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
+        return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, includeUnpublished,
+                taxonOccurrenceRelTypes,
+                maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
     }
 
     @Override
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start) {
         return dao.listUuidAndTitleCacheByAssociatedTaxon(taxonNodeUuids, limit, start);
-        }
-
-    @Override
-    @Deprecated
-    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return pageRootUnitsByAssociatedTaxon(FieldUnit.class, null, associatedTaxon, null, null, null, null, propertyPaths).getRecords();
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(Class<T> type, Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return pageRootUnitsByAssociatedTaxon(type, null, associatedTaxon, null, null, null, null, propertyPaths).getRecords();
+    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(
+            Class<T> type, Taxon associatedTaxon, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        return pageRootUnitsByAssociatedTaxon(type, null, associatedTaxon, includeUnpublished,
+                taxonOccurrenceRelTypes,
+                null, null, null, null, propertyPaths).getRecords();
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+    public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type,
+            Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, boolean includeUnpublished,
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
         if (!getSession().contains(associatedTaxon)) {
@@ -377,7 +354,9 @@ public class OccurrenceServiceImpl
 
         // gather the IDs of all relevant root units
         Set<UUID> rootUnitUuids = new HashSet<>();
-        List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, null, null, orderHints, propertyPaths);
+        List<SpecimenOrObservationBase> records = listByAssociatedTaxon(null, includeRelationships,
+                associatedTaxon, includeUnpublished, taxonOccurrenceRelTypes,
+                maxDepth, null, null, null, propertyPaths);
         for (SpecimenOrObservationBase<?> specimen : records) {
             for (SpecimenOrObservationBase<?> rootUnit : findRootUnits(specimen.getUuid(), null)) {
                 if(type == null || type.isAssignableFrom(rootUnit.getClass())) {
@@ -387,12 +366,43 @@ public class OccurrenceServiceImpl
         }
         long totalCount = rootUnitUuids.size();
         //dao.list() does the paging of the field units. Passing the field units directly to the Pager would not work
-        List<SpecimenOrObservationBase> rootUnits = dao.list(rootUnitUuids, pageSize, pageNumber, orderHints, propertyPaths);
-        List<T> castedUnits = new ArrayList<>(rootUnits.size());
-        for(SpecimenOrObservationBase<?> sob : rootUnits) {
-            // this cast should be save since the uuids have been filtered by type above
-            castedUnits.add((T)sob);
+        List<T> castedUnits = new ArrayList<>(rootUnitUuids.size());
+        try {
+            List<SpecimenOrObservationBase> rootUnits = dao.list(rootUnitUuids, pageSize, pageNumber, orderHints, propertyPaths);
+            castedUnits = new ArrayList<>(rootUnits.size());
+            for(SpecimenOrObservationBase<?> sob : rootUnits) {
+                // this cast should be save since the uuids have been filtered by type above
+                castedUnits.add((T)sob);
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
         }
+
+        Collections.sort(castedUnits, new Comparator<SpecimenOrObservationBase>() {
+
+            @Override
+            public int compare(SpecimenOrObservationBase o1, SpecimenOrObservationBase o2) {
+                if(o1 instanceof FieldUnit && o2 instanceof FieldUnit) {
+                    FieldUnit fu1 = (FieldUnit)o1;
+                    FieldUnit fu2 = (FieldUnit)o2;
+
+                    return PartialComparator.INSTANCE().compare(fu1.getGatheringEvent().getGatheringDate(), fu2.getGatheringEvent().getGatheringDate());
+                }
+                if(o1 instanceof DerivedUnit && o2 instanceof DerivedUnit) {
+                    SpecimenOrObservationBase<?> du1 = o1;
+                    SpecimenOrObservationBase<?> du2 = o2;
+                    return StringUtils.compare(du1.getTitleCache(), du2.getTitleCache());
+                }
+                if(o1 instanceof FieldUnit && o2 instanceof DerivedUnit) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+
+        });
+
+
         return new DefaultPagerImpl<>(pageNumber, totalCount, pageSize, castedUnits);
     }
 
@@ -440,7 +450,6 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-
     public String getMostSignificantIdentifier(UUID derivedUnitUuid) {
         return dao.findMostSignificantIdentifier(derivedUnitUuid);
     }
@@ -472,37 +481,15 @@ public class OccurrenceServiceImpl
         return derivedUnits;
     }
 
-//    private Set<DerivateDTO> getDerivedUnitDTOsFor(DerivateDTO specimenDto, DerivedUnit specimen, HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen) {
-//        Set<DerivateDTO> derivedUnits = new HashSet<>();
-////        load
-//        for (DerivationEvent derivationEvent : specimen.getDerivationEvents()) {
-//            for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
-//                if (!alreadyCollectedSpecimen.containsKey(specimenDto.getUuid())){
-//                    PreservedSpecimenDTO dto;
-//                    if (derivative instanceof DnaSample){
-//                        dto = DNASampleDTO.newInstance(derivative);
-//                    }else{
-//                        dto = PreservedSpecimenDTO.newInstance(derivative);
-//                    }
-//                    alreadyCollectedSpecimen.put(dto.getUuid(), dto);
-//                    dto.addAllDerivates(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
-//                    derivedUnits.add(dto);
-//                }
-//            }
-//        }
-//        return derivedUnits;
-//    }
-
-
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includedRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Taxon associatedTaxon, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer maxDepth, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
 
         Set<Taxon> taxa = new HashSet<>();
         Set<Integer> occurrenceIds = new HashSet<>();
         List<T> occurrences = new ArrayList<>();
-        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
         // Integer limit = PagerUtils.limitFor(pageSize);
         // Integer start = PagerUtils.startFor(pageSize, pageNumber);
@@ -512,13 +499,16 @@ public class OccurrenceServiceImpl
         }
 
         if (includedRelationships != null) {
-            taxa = taxonService.listRelatedTaxa(associatedTaxon, includedRelationships, maxDepth, includeUnpublished, null, null, propertyPaths);
+            taxa = taxonService.listRelatedTaxa(associatedTaxon, includedRelationships,
+                   maxDepth, includeUnpublished, null, null, propertyPaths);
         }
 
         taxa.add(associatedTaxon);
 
         for (Taxon taxon : taxa) {
-            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, null, null, orderHints, propertyPaths);
+            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, includeUnpublished,
+                    taxonOccurrenceRelTypes,
+                    null, null, orderHints, propertyPaths);
             for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 occurrenceIds.add(o.getId());
             }
@@ -530,47 +520,52 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-
-        UUID uuid = UUID.fromString(taxonUUID);
-        Taxon taxon = (Taxon) taxonService.load(uuid);
-        return pageByAssociatedTaxon(type, includeRelationships, taxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths);
-
-    }
-
-    @Override
     @Transactional
-    public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid, List<String> propertyPaths) {
+    public List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(
+            UUID associatedTaxonUuid, Set<TaxonRelationshipEdge> includedRelationships,
+            boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            List<String> propertyPaths) {
 
+        //assemble taxa
         Set<Taxon> taxa = new HashSet<>();
-        Set<SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashSet<>();
-        boolean includeUnpublished = INCLUDE_UNPUBLISHED;
-
         Taxon associatedTaxon = (Taxon) taxonService.load(associatedTaxonUuid);
         if (includedRelationships != null) {
             taxa = taxonService.listRelatedTaxa(associatedTaxon, includedRelationships, null, includeUnpublished, null, null, null);
         }
         taxa.add(associatedTaxon);
 
-        HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedUnits = new HashMap<>();
+        //resulting collections
+        Set<SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashSet<>();
+        Map<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedUnits = new HashMap<>();
+
+        //for each taxon
         for (Taxon taxon : taxa) {
+
+            //select all directly related units
+
+            //TODO needed? is this used elsewhere calling this dao method?
+            Class<? extends SpecimenOrObservationBase> type = null;
             // TODO there might be a good potential to speed up the whole processing by collecting all entities first
             // and to create the DTOs in a second step
-            Set<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null, taxon, null, null, null, propertyPaths)
-                    .stream()
-                    .map(u -> HibernateProxyHelper.deproxy(u, SpecimenOrObservationBase.class))
+            Set<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(
+                    type, taxon, includeUnpublished, taxonOccurrenceRelTypes,
+                    null, null, null, propertyPaths)
+                    .stream()  //stream only for calling deproxy
+                    .map(u -> CdmBase.deproxy(u))
                     .collect(Collectors.toSet());
+
+
             for (SpecimenOrObservationBase<?> unit : perTaxonOccurrences) {
+                //TODO needed? this seems to be duplicating the deproxy in the streem above
                 unit = HibernateProxyHelper.deproxy(unit);
+
                 if (unit instanceof DerivedUnit){
                     DerivedUnitDTO derivativeDTO;
                     if (!alreadyCollectedUnits.containsKey(unit.getUuid())){
                         DerivedUnit derivedUnit = (DerivedUnit)unit;
                         boolean isAssociated = false;
                         for (DeterminationEvent determination:derivedUnit.getDeterminations()) {
-                            	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon())){
+                            	if (determination.getTaxonName() != null && determination.getTaxonName().equals(taxon.getName()) || taxon.equals(determination.getTaxon()) ){
                             		isAssociated = true;
                             		break;
                             	}
@@ -586,14 +581,25 @@ public class OccurrenceServiceImpl
                             }
                         }
 
-                        for (TypeDesignationBase desc: taxon.getName().getTypeDesignations()) {
+                        for (TypeDesignationBase<?> desc: taxon.getName().getHomotypicalGroup().getTypeDesignations()) {
                             if (desc instanceof SpecimenTypeDesignation) {
                                 if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
                                     isAssociated = true;
                                     break;
                                 }
                             }
+                        }
 
+                        for (TaxonName name: taxon.getSynonymNames()) {
+                            for (TypeDesignationBase<?> desc :name.getHomotypicalGroup().getTypeDesignations()) {
+
+                                if (desc instanceof SpecimenTypeDesignation) {
+                                    if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
+                                        isAssociated = true;
+                                        break;
+                                    }
+                                }
+                            }
                         }
 
                         if (!isAssociated) {
@@ -641,13 +647,6 @@ public class OccurrenceServiceImpl
         });
 
         return orderdDTOs;
-    }
-
-    @Override
-    @Transactional
-    @Deprecated
-    public  SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints)  {
-        return findByAccessionNumber(accessionNumberString, orderHints);
     }
 
     @Override
@@ -1288,17 +1287,10 @@ public class OccurrenceServiceImpl
         return dao.listIndividualsAssociations(specimen, limit, start, orderHints, propertyPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listAssociatedTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
-    }
     @Override
     public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
 
         //individuals associations
@@ -1314,19 +1306,10 @@ public class OccurrenceServiceImpl
         return associatedTaxa;
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listDeterminedTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
-    }
-    @Override
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths) {
+    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
         for (DeterminationEvent determinationEvent : listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths)) {
             if(determinationEvent.getIdentifiedUnit().equals(specimen)){
@@ -1344,14 +1327,6 @@ public class OccurrenceServiceImpl
         return associatedTaxa;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listTypeDesignationTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
-    }
     @Override
     public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -1368,15 +1343,6 @@ public class OccurrenceServiceImpl
             }
         }
         return associatedTaxa;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listIndividualsAssociationTaxa(specimen, INCLUDE_UNPUBLISHED, limit, start, orderHints, propertyPaths);
     }
 
     @Override
@@ -1438,9 +1404,11 @@ public class OccurrenceServiceImpl
 
     @Override
     public long countByTitle(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             Taxon taxon = null;
+            EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = ((FindOccurrencesConfigurator) config).getTaxonOccurrenceRelTypes();
             if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
                 TaxonBase<?> taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
                 if(taxonBase != null && taxonBase.isInstanceOf(Taxon.class)){
@@ -1460,7 +1428,10 @@ public class OccurrenceServiceImpl
                 List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
                 List<SpecimenOrObservationBase> sobs = dao.findOccurrences(occurrenceConfig.getClazz(),
                         occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
-                        occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                        occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(),
+                        occurrenceConfig.isIncludeUnpublished(),
+                        taxonOccurrenceRelTypes,
+                        null, null,
                         occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
                 occurrences.addAll(sobs);
                 occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
@@ -1469,7 +1440,10 @@ public class OccurrenceServiceImpl
 
             return dao.countOccurrences(occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
-                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(),
+                    occurrenceConfig.isIncludeUnpublished(),
+                    taxonOccurrenceRelTypes,
+                    null, null,
                     occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
         }
         else{
@@ -1480,6 +1454,10 @@ public class OccurrenceServiceImpl
     @Override
     public Pager<UuidAndTitleCache<SpecimenOrObservationBase>> findByTitleUuidAndTitleCache(
             FindOccurrencesConfigurator config){
+
+        //FIXME if still used adapt
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
         List<UuidAndTitleCache<SpecimenOrObservationBase>> occurrences = new ArrayList<>();
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
@@ -1494,14 +1472,19 @@ public class OccurrenceServiceImpl
         }
         occurrences.addAll(dao.findOccurrencesUuidAndTitleCache(config.getClazz(),
                 config.getTitleSearchString(), config.getSignificantIdentifier(),
-                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
-                config.getOrderHints()));
+                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(),
+                config.isIncludeUnpublished(), taxonOccurrenceRelTypes,
+                null, null, config.getOrderHints()));
         long count = Integer.valueOf(occurrences.size()).longValue();
         return new DefaultPagerImpl<>(config.getPageNumber(), count, config.getPageSize(), occurrences);
     }
 
     @Override
     public List<DerivedUnitDTO> findByTitleDerivedUnitDTO(FindOccurrencesConfigurator config) {
+
+        //FIXME if still used adapt
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
             TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
@@ -1516,7 +1499,10 @@ public class OccurrenceServiceImpl
         List<DerivedUnit> occurrences = new ArrayList<>();
         occurrences.addAll(dao.findOccurrences(DerivedUnit.class,
                 config.getTitleSearchString(), config.getSignificantIdentifier(),
-                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
+                config.getSpecimenType(), taxon, taxonName, config.getMatchMode(),
+                config.isIncludeUnpublished(),
+                taxonOccurrenceRelTypes,
+                null, null,
                 config.getOrderHints(), null));
 
         List<DerivedUnitDTO> dtos = new ArrayList<>();
@@ -1527,6 +1513,10 @@ public class OccurrenceServiceImpl
     @Override
     public <S extends SpecimenOrObservationBase> Pager<S> findByTitle(
             IIdentifiableEntityServiceConfigurator<S> config) {
+
+        //FIXME if still used adapt
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
+
         if (config instanceof FindOccurrencesConfigurator) {
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
@@ -1541,10 +1531,13 @@ public class OccurrenceServiceImpl
             if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
-            List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(occurrenceConfig.getClazz(),
+            List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(
+                    occurrenceConfig.getClazz(),
                     occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
-                    occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
-                    occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
+                    occurrenceConfig.getSpecimenType(), taxon, taxonName,
+                    occurrenceConfig.getMatchMode(), occurrenceConfig.isIncludeUnpublished(),
+                    taxonOccurrenceRelTypes,
+                    null, null, occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
             occurrences.addAll(foundOccurrences);
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 
@@ -1634,7 +1627,7 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public long countOccurrences(IIdentifiableEntityServiceConfigurator<SpecimenOrObservationBase> config){
+    public long countOccurrences(FindOccurrencesConfigurator config){
         return countByTitle(config);
     }
 

@@ -97,9 +97,9 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return compareStatus;
         }
 
-        //not same homotypical group -
+        //not same homotypic group -
         //NOTE: this comparator should usually not be used
-        //      for comparing names of different homotypical groups.
+        //      for comparing names of different homotypic groups.
         //      The following is only to have a defined compare behavior
         //      which follows the contract of Comparator#compare.
         if (name1 == null ||
@@ -116,7 +116,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return result;
         }
 
-        //same homotypical group ...
+        //same homotypic group ...
         //one taxon is first in group
         if (isFirstInGroup(taxonBase1, name1)){
             return -1;

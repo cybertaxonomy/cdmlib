@@ -378,8 +378,8 @@ public class DistributionServiceUtilities {
      * @param distribution
      * @param area
      */
-    private static void addAreaToLayerMap(Map<String, Map<Integer,
-            Set<Distribution>>> layerMap,
+    private static void addAreaToLayerMap(Map<String,
+            Map<Integer,Set<Distribution>>> layerMap,
             List<PresenceAbsenceTerm> statusList,
             Distribution distribution,
             NamedArea area,
@@ -541,12 +541,13 @@ public class DistributionServiceUtilities {
 
     private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
             List<PresenceAbsenceTerm> statusList) {
+
         PresenceAbsenceTerm status = distribution.getStatus();
         if (status != null) {
             int style = statusList.indexOf(status);
             Set<Distribution> distributionSet = styleMap.get(style);
             if (distributionSet == null) {
-                distributionSet = new HashSet<Distribution>();
+                distributionSet = new HashSet<>();
                 styleMap.put(style, distributionSet);
             }
             distributionSet.add(distribution);
@@ -701,24 +702,32 @@ public class DistributionServiceUtilities {
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            TermTree<NamedArea> areaTree, Set<MarkerType> fallbackAreaMarkerTypes,
+            TermTree<NamedArea> areaTree, TermTree<PresenceAbsenceTerm> statusTree,
+            Set<MarkerType> fallbackAreaMarkerTypes,
             boolean preferAggregated, boolean statusOrderPreference,
-            boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists,
-            boolean ignoreDistributionStatusUndefined) {
+            boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists) {
 
-        SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
+        SetMap<NamedArea, Distribution> filteredDistributionsPerArea = new SetMap<>(distributions.size());
+        Set<UUID> statusPositiveSet = null;
+        if (statusTree != null) {
+            statusPositiveSet = new HashSet<>();
+            for (PresenceAbsenceTerm status : statusTree.asTermList()) {
+                statusPositiveSet.add(status.getUuid());
+            }
+        }
 
-        // assign distributions to the area and filter undefinedStatus
+        // map distributions to the area and apply status filter
         for(Distribution distribution : distributions){
             NamedArea area = distribution.getArea();
             if(area == null) {
                 logger.debug("skipping distribution with NULL area");
                 continue;
             }
-            boolean filterUndefined = ignoreDistributionStatusUndefined && distribution.getStatus() != null
-                    && distribution.getStatus().getUuid().equals(PresenceAbsenceTerm.uuidUndefined);
-            if (!filterUndefined){
-                filteredDistributions.putItem(area, distribution);
+            boolean filterOutStatus = statusPositiveSet != null &&
+                    (distribution.getStatus() == null
+                      || !statusPositiveSet.contains(distribution.getStatus().getUuid()));
+            if (!filterOutStatus){
+                filteredDistributionsPerArea.putItem(area, distribution);
             }
         }
 
@@ -732,33 +741,33 @@ public class DistributionServiceUtilities {
         //TODO since using area tree this is only relevant if keepFallBackOnlyIfNoSubareaDataExists = true
         //     as the area tree should also exclude real hidden areas
 //        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypes)) {
-            removeHiddenAndKeepFallbackAreas(areaTree, fallbackAreaMarkerTypes, filteredDistributions, keepFallBackOnlyIfNoSubareaDataExists);
+            removeHiddenAndKeepFallbackAreas(areaTree, fallbackAreaMarkerTypes, filteredDistributionsPerArea, keepFallBackOnlyIfNoSubareaDataExists);
 //        }
 
         // -------------------------------------------------------------------
         // 2) remove not computed distributions for areas for which computed
         //    distributions exists
         if(preferAggregated) {
-            handlePreferAggregated(filteredDistributions);
+            handlePreferAggregated(filteredDistributionsPerArea);
         }
 
         // -------------------------------------------------------------------
         // 3) status order preference rule
         if (statusOrderPreference) {
-            SetMap<NamedArea, Distribution> tmpMap = new SetMap<>(filteredDistributions.size());
-            for(NamedArea key : filteredDistributions.keySet()){
-                tmpMap.put(key, filterByHighestDistributionStatusForArea(filteredDistributions.get(key)));
+            SetMap<NamedArea, Distribution> tmpMap = new SetMap<>(filteredDistributionsPerArea.size());
+            for(NamedArea key : filteredDistributionsPerArea.keySet()){
+                tmpMap.put(key, filterByHighestDistributionStatusForArea(filteredDistributionsPerArea.get(key)));
             }
-            filteredDistributions = tmpMap;
+            filteredDistributionsPerArea = tmpMap;
         }
 
         // -------------------------------------------------------------------
         // 4) Sub area preference rule
         if(subAreaPreference){
-            handleSubAreaPreferenceRule(filteredDistributions, areaTree);
+            handleSubAreaPreferenceRule(filteredDistributionsPerArea, areaTree);
         }
 
-        return valuesOfAllInnerSets(filteredDistributions.values());
+        return valuesOfAllInnerSets(filteredDistributionsPerArea.values());
     }
 
     static TermTree<NamedArea> getAreaTree(Collection<Distribution> distributions,
@@ -871,28 +880,43 @@ public class DistributionServiceUtilities {
     }
 
     /**
-     * Removes all distributions that have an area being a parent of
-     * anothers distributions area. E.g. removes distribution for "Europe"
+     * Removes all distributions that have an area being an ancestor of
+     * another distribution area. E.g. removes distribution for "Europe"
      * if a distribution for "France" exists in the list, where Europe
-     * is a direct parent for France.
+     * is an ancestor for France.
      */
     private static void handleSubAreaPreferenceRule(SetMap<NamedArea, Distribution> filteredDistributions,
             TermTree<NamedArea> areaTree) {
 
-        SetMap<NamedArea, NamedArea> parentMap = areaTree.getParentMap();
-        Set<NamedArea> removeCandidatesArea = new HashSet<>();
+        SetMap<NamedArea, NamedArea> childToParentsMap = areaTree.getParentMap();
+        Set<NamedArea> removeCandidateAreas = new HashSet<>();
+
         for(NamedArea area : filteredDistributions.keySet()){
-            if(removeCandidatesArea.contains(area)){
-                continue;
-            }
-            parentMap.get(area).forEach(parent->{
-                if(parent != null && filteredDistributions.containsKey(parent)){
-                    removeCandidatesArea.add(parent);
+            Set<NamedArea> ancestors = new HashSet<>();
+            fillAncestorsRecursive(area, childToParentsMap, ancestors, removeCandidateAreas);
+
+            for (NamedArea parentArea : ancestors) {
+                if(parentArea != null && filteredDistributions.containsKey(parentArea)){
+                    removeCandidateAreas.add(parentArea);
                 }
-            });
+            }
         }
-        for(NamedArea removeKey : removeCandidatesArea){
+        for(NamedArea removeKey : removeCandidateAreas){
             filteredDistributions.remove(removeKey);
+        }
+    }
+
+    private static void fillAncestorsRecursive(NamedArea area, SetMap<NamedArea, NamedArea> childToParentsMap,
+            Set<NamedArea> ancestors, Set<NamedArea> removeCandidateAreas) {
+        if(removeCandidateAreas.contains(area)){
+            return;
+        }
+        Set<NamedArea> parents = childToParentsMap.get(area);
+        ancestors.addAll(parents);
+        for (NamedArea parent : parents) {
+            if (parent != null) {
+                fillAncestorsRecursive(parent, childToParentsMap, ancestors, removeCandidateAreas);
+            }
         }
     }
 

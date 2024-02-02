@@ -32,7 +32,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmRepository;
 import eu.etaxonomy.cdm.api.application.RunAsAuthenticator;
-import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.ICdmEntityUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
@@ -42,6 +41,7 @@ import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.permission.PermissionDeniedException;
 import eu.etaxonomy.cdm.persistence.permission.Role;
 
 /**

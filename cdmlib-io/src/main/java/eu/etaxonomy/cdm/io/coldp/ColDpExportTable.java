@@ -20,6 +20,7 @@ public enum ColDpExportTable implements ITaxonTreeExportTable {
 
     NAME_RELATION("NameRelation",nameRelationColumns()),
     NAME("Name", nameColumns()),
+    NAME_WITH_FULLNAME("Name2", nameWithFullNameColumns()),
     TAXON("Taxon", taxonColumns()),
     SYNONYM("Synonym", synonymColumns()),
     REFERENCE("Reference", referenceColumns()),
@@ -139,6 +140,8 @@ public enum ColDpExportTable implements ITaxonTreeExportTable {
     static final String NAME_BASIONYM_ID = "basionymID";
     static final String RANK = "rank";
     static final String NAME_SCIENTIFIC_NAME = "scientificName";
+    static final String NAME_FULLNAME = "fullName";
+
     static final String NAME_AUTHORSHIP = "authorship";
     static final String NAME_COMBINATION_AUTHORSHIP = "combinationAuthorship";
     static final String NAME_COMBINATION_EX_AUTHORSHIP = "combinationExAuthorshipYear";
@@ -205,6 +208,21 @@ public enum ColDpExportTable implements ITaxonTreeExportTable {
     private final static String[] nameColumns(){
         return new String[]{ID, ALTERNATIVE_ID, SOURCE_ID, NAME_BASIONYM_ID,
                 NAME_SCIENTIFIC_NAME, NAME_AUTHORSHIP, RANK,
+                NAME_UNINOMIAL, NAME_GENUS, NAME_INFRAGENERIC_EPITHET, NAME_SPECIFIC_EPITHET,
+                NAME_INFRASPECIFIC_EPITHET, NAME_CULTIVAR_EPITHET,
+                //TODO notho, originalSpelling
+                NAME_COMBINATION_AUTHORSHIP, NAME_COMBINATION_EX_AUTHORSHIP, NAME_COMBINATION_AUTHORSHIP_YEAR,
+                NAME_BASIONYM_AUTHORSHIP, NAME_BASIONYM_EX_AUTHORSHIP, NAME_BASIONYM_AUTHORSHIP_YEAR,
+                NAME_CODE, NAME_STATUS, REFERENCE_ID,
+                NAME_PUBLISHED_IN_YEAR, NAME_PUBLISHED_IN_PAGE, NAME_PUBLISHED_IN_PAGE_LINK,
+                LINK, REMARKS
+        };
+    }
+
+    private final static String[] nameWithFullNameColumns(){
+        return new String[]{ID, ALTERNATIVE_ID, SOURCE_ID, NAME_BASIONYM_ID,
+                NAME_SCIENTIFIC_NAME,
+                NAME_FULLNAME, NAME_AUTHORSHIP, RANK,
                 NAME_UNINOMIAL, NAME_GENUS, NAME_INFRAGENERIC_EPITHET, NAME_SPECIFIC_EPITHET,
                 NAME_INFRASPECIFIC_EPITHET, NAME_CULTIVAR_EPITHET,
                 //TODO notho, originalSpelling

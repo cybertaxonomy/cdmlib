@@ -277,6 +277,7 @@ public class DescriptionListController
             @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
             @RequestParam(value = "features", required = false ) Set<UUID> featureUuids,
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
+            @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
@@ -286,9 +287,9 @@ public class DescriptionListController
 
             logger.info("doGetDistributionInfo() - " + requestPathAndQuery(request));
 
+            boolean includeUnpublished = NO_UNPUBLISHED;
             ModelAndView mv = new ModelAndView();
 
-            boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
             boolean neverUseFallbackAreaAsParent = true;  //may become a service parameter in future
 
             DistributionInfoDto dto;
@@ -308,15 +309,16 @@ public class DescriptionListController
                         statusColorsString, termService, vocabularyService);
 
                 DistributionInfoConfiguration config = new DistributionInfoConfiguration();
+                config.setIncludeUnpublished(includeUnpublished);
                 config.setInfoParts(parts);
                 config.setPreferSubAreas(preferSubAreas);
                 config.setStatusOrderPreference(statusOrderPreference);
                 config.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
                 config.setOmitLevels(omitLevels);
                 config.setDistributionOrder(distributionOrder);
-                config.setIgnoreDistributionStatusUndefined(ignoreDistributionStatusUndefined);
                 config.setFeatures(featureUuids);
                 config.setAreaTree(areaTreeUuid);
+                config.setStatusTree(statusTreeUuid);
                 config.setCondensedDistributionConfiguration(condensedConfig);
                 //TODO needed?
                 config.setStatusColorsString(statusColorsString);

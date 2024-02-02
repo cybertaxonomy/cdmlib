@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import de.micromata.opengis.kml.v_2_2_0.Kml;
+import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -217,13 +219,16 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
             HttpServletResponse response)
             throws IOException {
 
-
         logger.info("doGetTaxonOccurrenceKml() " + requestPathAndQuery(request));
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(uuid, relationshipUuids,
-				relationshipInversUuids, maxDepth, response);
+				relationshipInversUuids, includeUnpublished,
+				taxonOccurrenceRelTypes,
+                maxDepth, response);
 
         Kml kml = geoservice.occurrencesToKML(specimensOrObersvations, specimenOrObservationTypeColors);
 
@@ -231,19 +236,21 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
     }
 
 	private List<SpecimenOrObservationBase> occurencesForTaxon(UUID taxonUuid, UuidList relationshipUuids,
-			UuidList relationshipInversUuids, Integer maxDepth, HttpServletResponse response) throws IOException {
-		Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
-                relationshipUuids, relationshipInversUuids, termService);
+			UuidList relationshipInversUuids, boolean includeUnpublished,
+			EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
+            Integer maxDepth,
+			HttpServletResponse response) throws IOException {
 
+	    Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
+                relationshipUuids, relationshipInversUuids, termService);
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, (List<String>)null);
 
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
-                null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
+                null, includeRelationships, taxon, includeUnpublished, taxonOccurrenceRelTypes,
+                maxDepth, null, null, orderHints, null);
 		return specimensOrObersvations;
 	}
-
-
 }

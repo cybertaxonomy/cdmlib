@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
 
     //TODO maybe we want a status "Included" too, instead of making TaxonNode.status an optional
-    //     attribute (see comments in #10096 attachement)
+    //     attribute (see comments in #10096 attachment)
     //0  - see #10096
 //    /**
 //     * The placement of the taxon is doubtful or preliminary.
@@ -93,13 +93,11 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
      * Alternative symbol: ↑ or u+2BD1 (https://unicode-table.com/en/2BD1/)
      */
     @XmlEnumValue("Uncertain_app")
-    UNCERTAIN_APPLICATION(UUID.fromString("c87ea64a-f3d3-41fe-a4c5-dd6a8697fc46"), "Uncertain application", "Name of verified uncertain application", "UNA", Character.toString((char)248)+"a", EXCLUDED),
+    UNCERTAIN_APPLICATION(UUID.fromString("c87ea64a-f3d3-41fe-a4c5-dd6a8697fc46"), "Uncertain application", "Name of verified uncertain application", "UNA", Character.toString((char)248)+"a", null),
 
     //8 #10096
     /**
-     * Name of verified uncertain application <BR>
-     * E.g. an effectively published name ascribing the name to an author who merely and correctly cited an earlier name.<BR>
-     * Alternative symbol: ↑ or u+2BD1 (https://unicode-table.com/en/2BD1/)
+     *
      */
     @XmlEnumValue("Unresolved")
     UNRESOLVED(UUID.fromString("ce6f2430-9662-4b78-8fc2-48b5fa9fd37e"), "Unresolved", "Unresolved name "+UTF8.EN_DASH+" to be further revised", "UNR", "u", null),
