@@ -452,6 +452,7 @@ public class Taxon
      *
      * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
      */
+    @Transient
     public TaxonDescription getDefaultDescription() {
         if(descriptions == null) {
             return null;
