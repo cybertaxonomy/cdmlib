@@ -77,6 +77,7 @@ import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -754,6 +755,9 @@ public class PortalDtoLoader {
             TreeNode<Feature, UUID> node, TaxonPageDto pageDto) {
 
         Feature feature = node.getData();
+        if(!featureMap.containsKey(feature.getUuid())){
+            return;
+        }
         //TODO locale
         FeatureDto featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
         features.addItem(featureDto);
