@@ -430,9 +430,16 @@ public class ColDpClassificationExport
                 //TODO 4 alternativeID handle other identifier types
                 if (type.equals(IdentifierType.IDENTIFIER_NAME_WFO())) {
                     prefix = "wfo";
+                    //TODO 2 handle wfo- prefix (according to docu the below is correct, but probably unwanted
                     value = value.replace("wfo-", "");
+                } else if (type.equals(IdentifierType.IDENTIFIER_NAME_IPNI())) {
+                    prefix = "ipni";
+                } else if (type.equals(IdentifierType.IDENTIFIER_NAME_TROPICOS())) {
+                    prefix = "tropicos";
+                } else if (type.equals(IdentifierType.IDENTIFIER_NAME_IF())) {
+                    prefix = "if";
                 }
-            }else if (url != null && !url.isEmpty() && isUrl(url)) {
+            } else if (url != null && !url.isEmpty() && isUrl(url)) {
                 value = url;
             }else {
                 //TODO 4 alternativeID log failing identifier
