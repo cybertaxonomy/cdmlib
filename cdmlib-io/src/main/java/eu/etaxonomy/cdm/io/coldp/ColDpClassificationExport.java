@@ -423,31 +423,54 @@ public class ColDpClassificationExport
         for (Identifier identifier : entity.getIdentifiers()) {
             //TODO 4 alternativeID filter Identifiers
             IdentifierType type = identifier.getType();
-            String prefix = null;
-            String value = identifier.getIdentifier();
             String url = identifier.getUrl();
-            if (type != null) {
-                //TODO 4 alternativeID handle other identifier types
-                if (type.equals(IdentifierType.IDENTIFIER_NAME_WFO())) {
-                    prefix = "wfo";
-                    //TODO 2 handle wfo- prefix (according to docu the below is correct, but probably unwanted
-                    value = value.replace("wfo-", "");
-                } else if (type.equals(IdentifierType.IDENTIFIER_NAME_IPNI())) {
-                    prefix = "ipni";
-                } else if (type.equals(IdentifierType.IDENTIFIER_NAME_TROPICOS())) {
-                    prefix = "tropicos";
-                } else if (type.equals(IdentifierType.IDENTIFIER_NAME_IF())) {
-                    prefix = "if";
-                }
+            if (isCuriType(type)){
+                //TODO 4 alternativeID handle other identifier types, e.g. those providing an URI pattern
+                alternativeIdStr = handleCuriTypes(alternativeIdStr, type, identifier);
             } else if (url != null && !url.isEmpty() && isUrl(url)) {
-                value = url;
+                alternativeIdStr = CdmUtils.concat(",", alternativeIdStr, url);
             }else {
                 //TODO 4 alternativeID log failing identifier
             }
-            alternativeIdStr = CdmUtils.concat(",", alternativeIdStr, CdmUtils.concat(":", prefix, value));
         }
 
         csvLine[table.getIndex(ColDpExportTable.ALTERNATIVE_ID)] = alternativeIdStr;
+    }
+
+    //TODO 4 curiType handle as Map<UUID,prefix>
+    private boolean isCuriType(IdentifierType type) {
+        return (type != null &&
+                (type.equals(IdentifierType.IDENTIFIER_NAME_WFO())
+                        || type.equals(IdentifierType.IDENTIFIER_NAME_IPNI())
+                        || type.equals(IdentifierType.IDENTIFIER_NAME_TROPICOS())
+                        || type.equals(IdentifierType.IDENTIFIER_NAME_IF())
+                ));
+    }
+
+    /**
+     * Handle CURI (compact URI) types - see https://github.com/CatalogueOfLife/coldp/blob/master/README.md#identifiers
+     *
+     * @param alternativeIdStr
+     * @param type
+     * @param identifier
+     * @return
+     */
+    private String handleCuriTypes(String alternativeIdStr, IdentifierType type, Identifier identifier) {
+        String prefix = null;
+        String value = identifier.getIdentifier();
+        if (type.equals(IdentifierType.IDENTIFIER_NAME_WFO())) {
+            prefix = "wfo";
+            //TODO 2 handle wfo- prefix (according to docu the below is correct, but probably unwanted
+            value = value.replace("wfo-", "");
+        } else if (type.equals(IdentifierType.IDENTIFIER_NAME_IPNI())) {
+            prefix = "ipni";
+        } else if (type.equals(IdentifierType.IDENTIFIER_NAME_TROPICOS())) {
+            prefix = "tropicos";
+        } else if (type.equals(IdentifierType.IDENTIFIER_NAME_IF())) {
+            prefix = "if";
+        }
+        alternativeIdStr = CdmUtils.concat(",", alternativeIdStr, CdmUtils.concat(":", prefix, value));
+        return alternativeIdStr;
     }
 
     private boolean isUrl(String url) {
