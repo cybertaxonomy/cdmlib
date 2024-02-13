@@ -77,7 +77,6 @@ import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -685,13 +684,16 @@ public class PortalDtoLoader {
             Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(taxon);
 
             //filter, sort and structure according to feature tree
-            TreeNode<Feature, UUID> filteredRootNode;
+            TreeNode<Feature, UUID> filteredRootNode = null;
             if (config.getFeatureTree() != null) {
 
                 @SuppressWarnings({ "unchecked"})
                 TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
-                filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
-            } else {
+                if (featureTree != null) {
+                    filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids.keySet());
+                }
+            }
+            if (filteredRootNode == null) {
                 filteredRootNode = createDefaultFeatureNode(taxon);
             }
 
