@@ -48,5 +48,4 @@ public class TaxonRowWrapperDTO extends RowWrapperDTO<TaxonDescription> {
             return false;
         }
     }
-
 }

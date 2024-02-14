@@ -23,49 +23,29 @@ public class GroupedTaxonDTO {
 
     private String groupTaxonName;
 
-    /**
-     * @return the taxonUuid
-     */
     public UUID getTaxonUuid() {
         return taxonUuid;
     }
-
-    /**
-     * @param taxonUuid the taxonUuid to set
-     */
     public void setTaxonUuid(UUID taxonUuid) {
         this.taxonUuid = taxonUuid;
     }
 
-    /**
-     * @return the groupTaxonUuid
-     */
     public UUID getGroupTaxonUuid() {
         return groupTaxonUuid;
     }
-
-    /**
-     * @param groupTaxonUuid the groupTaxonUuid to set
-     */
     public void setGroupTaxonUuid(UUID groupTaxonUuid) {
         this.groupTaxonUuid = groupTaxonUuid;
     }
 
-    /**
-     * @return the groupTaxonName
-     */
     public String getGroupTaxonName() {
         return groupTaxonName;
     }
-
-    /**
-     * @param groupTaxonName the groupTaxonName to set
-     */
     public void setGroupTaxonName(String groupTaxonName) {
         this.groupTaxonName = groupTaxonName;
     }
 
 //*********************** toString() ***************************/
+
     @Override
     public String toString() {
         String result = "taxon:" + (taxonUuid == null? "-":taxonUuid.toString())
@@ -73,6 +53,4 @@ public class GroupedTaxonDTO {
                 + "; group name:" + (groupTaxonName == null? "-":groupTaxonName.toString());
         return result;
     }
-
-
 }

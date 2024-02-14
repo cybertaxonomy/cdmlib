@@ -52,12 +52,10 @@ public class IncludedTaxaDTO {
 			this.doubtful = doubtful;
 		}
 
-
 		@Override
 		public String toString(){
 			return taxonUuid == null? super.toString() : taxonUuid.toString();
 		}
-
 	}
 
 	private List<IncludedTaxon> includedTaxa = new ArrayList<>();
@@ -111,6 +109,8 @@ public class IncludedTaxaDTO {
 		return false;
 	}
 
+	// ************************* TO STRING ***********************/
+
 	@Override
 	public String toString(){
 		String result = "";
@@ -124,5 +124,4 @@ public class IncludedTaxaDTO {
 		result = "[" + result + "]";
 		return result;
 	}
-
 }

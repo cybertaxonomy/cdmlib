@@ -95,7 +95,6 @@ public class DistributionServiceUtilitiesTest extends TermTestBase {
 
     private Set<NamedAreaLevel> omitLevels;
     private Set<MarkerType> fallBackAreaMarkerTypes;
-    private boolean fallbackWithSourceOnly;
     private boolean neverUseFallbackAreasAsParents;
     private Set<MarkerType> alternativeRootAreaMarkerTypes = null;
     private DistributionOrder distributionOrder;

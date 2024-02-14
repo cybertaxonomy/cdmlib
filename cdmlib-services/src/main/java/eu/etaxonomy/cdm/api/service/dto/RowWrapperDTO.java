@@ -75,15 +75,10 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 if(displayData!=null){
                     addDisplayStringsToMap(featureUuid, displayData);
                 }
-
             }
         }
     }
 
-    /**
-     * @param featureUuid
-     * @param displayData
-     */
     private void addDisplayStringsToMap(UUID featureUuid, Collection<String> displayData) {
         if (featureToDisplayDataMap.get(featureUuid) == null){
             featureToDisplayDataMap.put(featureUuid, new HashSet<>());
@@ -99,10 +94,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return data;
     }
 
-    /**
-     * @param feature
-     * @param data
-     */
     private void addToFeatureToElementMap(UUID featureUuid, DescriptionElementDto data) {
         if (featureToElementMap.get(featureUuid) == null){
             featureToElementMap.put(featureUuid, new HashSet<>());
@@ -121,10 +112,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     public DescriptionBaseDto getDescription() {
         return description;
     }
-
-    /**
-     * @param description the description to set
-     */
     public void setDescription(DescriptionBaseDto description) {
         this.description = description;
     }
@@ -141,7 +128,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         Set<DescriptionElementDto> descriptionElementBase = featureToElementMap.get(featureUuid);
         return descriptionElementBase;
     }
-
 
 
     private Collection<String> generateDisplayString(DescriptionElementDto descriptionElementBase, Language lang){
@@ -255,8 +241,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             result += " ("+stateData.getCount()+")";
         }
 
-
-       return result;
+        return result;
     }
 
     public void setDataValueForCategoricalData(UUID featureUuid, List<StateDataDto> states, Language lang){
@@ -299,10 +284,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         addDisplayStringsToMap(featureUuid, generateDisplayString(element, lang));
     }
 
-    /**
-     * @param featureUuid
-     * @param oldElement
-     */
     private void removeElementForFeature(UUID featureUuid) {
         DescriptionElementDto oldElement = null;
         for (DescriptionElementDto elementDto: description.getElements()){
@@ -310,7 +291,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 oldElement = elementDto;
                 break;
             }
-
         }
         description.getElements().remove(oldElement);
         featureToElementMap.remove(featureUuid);
@@ -338,7 +318,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         }
         featureToElementMap.remove(featureUuid);
         featureToDisplayDataMap.remove(featureUuid);
-
     }
 
     public void setDataValueForQuantitativeData(UUID featureUuid, Map<TermDto, List<String>> textFields, TermDto unit, NoDescriptiveDataStatus noDataStatus, Language lang){
@@ -371,7 +350,6 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         quantitativeData.getValues().clear();
         if (noDataStatus != null) {
             quantitativeData.setNoDataStatus(noDataStatus);
-
         }else {
             quantitativeData.setMeasurementUnit(unit);
             //add back all values from text fields
@@ -466,5 +444,4 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         }
         return false;
     }
-
 }

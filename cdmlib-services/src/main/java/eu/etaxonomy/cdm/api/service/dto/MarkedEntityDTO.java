@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.persistence.dto.EntityDTOBase;
  *
  * @author a.mueller
  * @since 2016-09-16
- *
  */
 //might extend AnnotatableEntity in future
 public class MarkedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> {
@@ -56,14 +55,8 @@ public class MarkedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase
 		return marker;
 	}
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "(" + marker.typeLabel + "; "  + cdmEntity.getTitleCache() + "; " + cdmEntity.getUuid() +  ")";
     }
-
-
 }
