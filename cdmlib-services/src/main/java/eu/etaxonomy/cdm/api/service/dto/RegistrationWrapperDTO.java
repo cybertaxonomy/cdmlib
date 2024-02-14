@@ -23,6 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.api.dto.RegistrationType;
+import eu.etaxonomy.cdm.api.dto.RegistrationDTO.RankedNameReference;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
@@ -40,13 +42,12 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
-public class RegistrationDTO {
+public class RegistrationWrapperDTO {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -78,35 +79,24 @@ public class RegistrationDTO {
 
     private String bibliographicInRefCitationString;
 
-    public static class RankedNameReference extends EntityReference {
-        private static final long serialVersionUID = -3375257142767682860L;
-        private boolean isSupraSpecific;
 
-        public RankedNameReference(UUID uuid, String label, boolean isSupraSpecific) {
-            super(uuid, label);
-            this.isSupraSpecific = isSupraSpecific;
-        }
-        public boolean isSupraGeneric() {
-            return isSupraSpecific;
-        }
-    }
 
-    public RegistrationDTO(Registration reg) {
+    public RegistrationWrapperDTO(Registration reg) {
 
         this.reg = reg;
 
-        registrationType = RegistrationType.from(reg);
+        registrationType = RegistrationDtoLoader.typeFrom(reg);
 
         if(reg.getSubmitter() != null ){
             submitterUserName = reg.getSubmitter().getUsername();
         }
 
-        if(hasName(reg)){
+        if(reg.hasName()){
             TaxonName taxonName = reg.getName();
             name = new RankedNameReference(taxonName.getUuid(),
                     taxonName.getTitleCache(), taxonName.isSupraSpecific());
         }
-        NamedSourceBase publishedUnit = findPublishedUnit(reg);
+        NamedSourceBase publishedUnit = reg.findPublishedUnit();
         if(publishedUnit != null) {
             citation = publishedUnit.getCitation();
             citationDetail = publishedUnit.getCitationMicroReference();
@@ -143,41 +133,14 @@ public class RegistrationDTO {
      * To create an initially empty DTO for which only the <code>typifiedName</code> and the <code>publication</code> are defined.
      * All TypeDesignations added to the <code>Registration</code> need to refer to the same <code>typifiedName</code> and must be
      * published in the same <code>publication</code>.
-     *
-     * @param reg
-     * @param typifiedName
      */
-    public RegistrationDTO(Registration reg, TaxonName typifiedName, Reference publication) {
+    public RegistrationWrapperDTO(Registration reg, TaxonName typifiedName, Reference publication) {
         this.reg = reg;
         citation = publication;
         // create a TypeDesignationSetContainer with only a reference to the typifiedName for validation
         typeDesignationSetContainer = new TypeDesignationSetContainer(typifiedName);
         makeBibliographicCitationStrings();
         makeNomenclaturalCitationString();
-    }
-
-    public static NamedSourceBase findPublishedUnit(Registration reg) {
-        NamedSourceBase publishedUnit = null;
-        if(hasName(reg)){
-            publishedUnit = reg.getName().getNomenclaturalSource();
-        } else if(hasTypifications(reg)){
-            if(!reg.getTypeDesignations().isEmpty()){
-                for(TypeDesignationBase<?> td : reg.getTypeDesignations()){
-                    if(td.getDesignationSource() != null) {
-                        publishedUnit = td.getDesignationSource();
-                    }
-                }
-            }
-        }
-        return publishedUnit;
-    }
-
-    private static boolean hasTypifications(Registration reg) {
-        return reg.getTypeDesignations() != null && reg.getTypeDesignations().size() > 0;
-    }
-
-    private static boolean hasName(Registration reg) {
-        return reg.getName() != null;
     }
 
     /**
@@ -245,7 +208,7 @@ public class RegistrationDTO {
         if(this.citation == null){
             this.citation = citation;
         } else {
-            throw new Exception("Can not set the citation on a non emtpy RegistrationDTO");
+            throw new Exception("Can not set the citation on a non emtpy RegistrationWrapperDTO");
         }
         makeBibliographicCitationStrings();
         makeNomenclaturalCitationString();

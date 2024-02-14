@@ -6,14 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.api.dto;
 
 import java.io.Serializable;
 import java.util.UUID;
-
-import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 
 /**
  * TODO probably not in use anymore after implementation of #10222
@@ -31,29 +27,6 @@ public class SourceDTO implements Serializable{
     // can not reduce to TypedEntityReference here since the data portal requires
     // doi, uri, etc, see function cdm_reference_markup() in cdm_dataportal
     private ReferenceDTO citation;
-
-    public static SourceDTO fromDescriptionElementSource(NamedSourceBase entity) {
-        if(entity == null) {
-            return null;
-        }
-        SourceDTO dto = new SourceDTO();
-        dto.uuid = entity.getUuid();
-        dto.setLabel(OriginalSourceFormatter.INSTANCE.format(entity));
-        dto.citation = ReferenceDTO.fromReference(entity.getCitation());
-        dto.citationDetail = entity.getCitationMicroReference();
-        return dto;
-    }
-
-    public static SourceDTO fromIdentifiableSource(IdentifiableSource entity) {
-        if(entity == null) {
-            return null;
-        }
-        SourceDTO dto = new SourceDTO();
-        dto.uuid = entity.getUuid();
-        dto.citation = ReferenceDTO.fromReference(entity.getCitation());
-        dto.citationDetail = entity.getCitationMicroReference();
-        return dto;
-    }
 
 //********************* GETTER / SETTER ***************************/
 

@@ -28,11 +28,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 /**
  * @author a.kohlbecker
  * @since Mar 22, 2017
- *
  */
 public class RegistrationWorkingSet {
 
-    private List<RegistrationDTO> registrationDTOs = new ArrayList<>();
+    private List<RegistrationWrapperDTO> registrationWrapperDTOs = new ArrayList<>();
 
     private UUID citationUuid = null;
 
@@ -49,18 +48,13 @@ public class RegistrationWorkingSet {
 
     }
 
-    public RegistrationWorkingSet(List<RegistrationDTO> registrationDTOs) throws TypeDesignationSetException {
-        validateAndAddDTOs(registrationDTOs, null);
+    public RegistrationWorkingSet(List<RegistrationWrapperDTO> registrationWrapperDTOs) throws TypeDesignationSetException {
+        validateAndAddDTOs(registrationWrapperDTOs, null);
     }
 
-    /**
-     * @param candidated
-     * @throws TypeDesignationSetException
-     *
-     */
     private void validateAndAdd(Set<Registration> candidates) throws TypeDesignationSetException {
-        List<RegistrationDTO> dtos = new ArrayList<>(registrationDTOs.size());
-        candidates.forEach(reg -> dtos.add(new RegistrationDTO(reg)));
+        List<RegistrationWrapperDTO> dtos = new ArrayList<>(registrationWrapperDTOs.size());
+        candidates.forEach(reg -> dtos.add(new RegistrationWrapperDTO(reg)));
         validateAndAddDTOs(dtos, null);
     }
 
@@ -78,11 +72,11 @@ public class RegistrationWorkingSet {
      *    Problems detected in prior validation and processing passed to this method to be completed. Can be <code>null</code>.
      * @throws TypeDesignationSetException
      */
-    private void validateAndAddDTOs(List<RegistrationDTO> candidates, List<String> problems) throws TypeDesignationSetException {
+    private void validateAndAddDTOs(List<RegistrationWrapperDTO> candidates, List<String> problems) throws TypeDesignationSetException {
         if(problems == null){
             problems = new ArrayList<>();
         }
-        for(RegistrationDTO regDto : candidates){
+        for(RegistrationWrapperDTO regDto : candidates){
                 Reference citation = publicationUnit(regDto);
                 if(citationUuid == null){
                     citationUuid = citation.getUuid();
@@ -93,7 +87,7 @@ public class RegistrationWorkingSet {
                         continue;
                     }
                 }
-                this.registrationDTOs.add(regDto);
+                this.registrationWrapperDTOs.add(regDto);
                 if(created == null || created.isAfter(regDto.getCreated())){
                     created = regDto.getCreated();
                 }
@@ -105,7 +99,7 @@ public class RegistrationWorkingSet {
 
     }
 
-    protected Reference publicationUnit(RegistrationDTO regDto) {
+    protected Reference publicationUnit(RegistrationWrapperDTO regDto) {
         Reference ref = regDto.getCitation();
         while(ref.isOfType(ReferenceType.Section)&& ref.getInReference() != null){
             ref = ref.getInReference();
@@ -122,7 +116,7 @@ public class RegistrationWorkingSet {
         validateAndAdd(candidates);
     }
 
-    public void add(RegistrationDTO regDTO) throws TypeDesignationSetException {
+    public void add(RegistrationWrapperDTO regDTO) throws TypeDesignationSetException {
         validateAndAddDTOs(Arrays.asList(regDTO), null);
     }
 
@@ -130,8 +124,8 @@ public class RegistrationWorkingSet {
      * @return the registrations
      */
     public List<Registration> getRegistrations() {
-        List<Registration> regs = new ArrayList<>(registrationDTOs.size());
-        registrationDTOs.forEach(dto -> regs.add(dto.registration()));
+        List<Registration> regs = new ArrayList<>(registrationWrapperDTOs.size());
+        registrationWrapperDTOs.forEach(dto -> regs.add(dto.registration()));
         return regs;
     }
 
@@ -143,7 +137,7 @@ public class RegistrationWorkingSet {
      */
     public int validationProblemsCount() {
         int validationProblemsCount = 0;
-        for(RegistrationDTO dto : getRegistrationDTOs()) {
+        for(RegistrationWrapperDTO dto : getRegistrationWrapperDTOs()) {
             validationProblemsCount = validationProblemsCount + dto.getValidationProblems().size();
         }
         return validationProblemsCount;
@@ -157,7 +151,7 @@ public class RegistrationWorkingSet {
      */
     public RegistrationStatus lowestStatus() {
         RegistrationStatus status = RegistrationStatus.REJECTED;
-        for(RegistrationDTO dto : getRegistrationDTOs()) {
+        for(RegistrationWrapperDTO dto : getRegistrationWrapperDTOs()) {
             if(dto.getStatus().compareTo(status) < 0){
                 status = dto.getStatus();
             }
@@ -169,12 +163,12 @@ public class RegistrationWorkingSet {
     /**
      * @return the registrations
      */
-    public List<RegistrationDTO> getRegistrationDTOs() {
-        return registrationDTOs;
+    public List<RegistrationWrapperDTO> getRegistrationWrapperDTOs() {
+        return registrationWrapperDTOs;
     }
 
-    public Optional<RegistrationDTO> getRegistrationDTO(UUID registrationUuid) {
-        return registrationDTOs.stream().filter(r -> r.getUuid().equals(registrationUuid) ).findFirst();
+    public Optional<RegistrationWrapperDTO> getRegistrationWrapperDTO(UUID registrationUuid) {
+        return registrationWrapperDTOs.stream().filter(r -> r.getUuid().equals(registrationUuid) ).findFirst();
     }
 
     public UUID getCitationUuid() {
@@ -186,11 +180,11 @@ public class RegistrationWorkingSet {
     }
 
     public DateTime getRegistrationDate() {
-        return registrationDTOs.isEmpty()? null: registrationDTOs.get(0).getRegistrationDate();
+        return registrationWrapperDTOs.isEmpty()? null: registrationWrapperDTOs.get(0).getRegistrationDate();
     }
 
     public DateTime getCreationDate() {
-        return registrationDTOs.isEmpty()? null: registrationDTOs.get(0).getCreated();
+        return registrationWrapperDTOs.isEmpty()? null: registrationWrapperDTOs.get(0).getCreated();
     }
 
     /**
@@ -207,7 +201,7 @@ public class RegistrationWorkingSet {
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();
-        registrationDTOs.forEach(dto -> str.append(dto.getIdentifier() + " : " + dto.getSummary()).append("\n"));
+        registrationWrapperDTOs.forEach(dto -> str.append(dto.getIdentifier() + " : " + dto.getSummary()).append("\n"));
         return str.toString();
     }
 

@@ -19,15 +19,15 @@ import java.util.UUID;
 import org.apache.lucene.index.CorruptIndexException;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
+import eu.etaxonomy.cdm.api.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.dto.MediaDTO;
+import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
-import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -629,7 +629,7 @@ public interface IOccurrenceService
      * @return
      *      The collection of all Field Units that are accessible from the derivative from where the search was started.
      */
-    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTOs(UUID unitUUID);
+    public Collection<SpecimenOrObservationBaseDTO<?>> findRootUnitDTOs(UUID unitUUID);
 
     /**
      * Finds the units which are associated to a taxon
@@ -732,7 +732,7 @@ public interface IOccurrenceService
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 
     /**
-     * Load the FieldUnitDTO for the given <code>derivedUnitUuid</code> with all intermediate derivatives and {@link eu.etaxonomy.cdm.api.service.dto.GatheringEventDTO}
+     * Load the FieldUnitDTO for the given <code>derivedUnitUuid</code> with all intermediate derivatives and {@link eu.etaxonomy.cdm.api.dto.GatheringEventDTO}
      */
     public FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid);
 

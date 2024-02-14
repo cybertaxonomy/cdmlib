@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IRegistrationService;
-import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
+import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -57,7 +57,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Controller
 @Api("registration")
-public class RegistrationDTOController
+public class RegistrationWrapperDTOController
             extends AbstractController<Registration, IRegistrationService>{
 
     private static final Logger logger = LogManager.getLogger();
@@ -71,7 +71,7 @@ public class RegistrationDTOController
             new OrderHint("summary", SortOrder.ASCENDING));
 
 
-    public RegistrationDTOController(){
+    public RegistrationWrapperDTOController(){
         setInitializationStrategy(Arrays.asList(new String[]{
                 "$",
                 "name.$",
@@ -103,21 +103,21 @@ public class RegistrationDTOController
         response = Registration.class
     )
     @RequestMapping(value="/registrationDTO", method = RequestMethod.GET, params={"identifier"})
-    public RegistrationDTO doGetByIdentifier(
+    public RegistrationWrapperDTO doGetByIdentifier(
             @RequestParam(value = "identifier", required = true) String identifier,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetByIdentifier() " + requestPathAndQuery(request));
-        Pager<RegistrationDTO> registrationDTOsPager = pageRegistrationDTOs(identifier, true, 0, 2, response);
-        if(registrationDTOsPager == null) {
+        Pager<RegistrationWrapperDTO> registrationWrapperDTOsPager = pageRegistrationWrapperDTOs(identifier, true, 0, 2, response);
+        if(registrationWrapperDTOsPager == null) {
             return null;  //error message send in previous method already
-        }else if(registrationDTOsPager.getCount() == 0) {
+        }else if(registrationWrapperDTOsPager.getCount() == 0) {
             HttpStatusMessage.create("No registration found for " + identifier + " ", HttpServletResponse.SC_NOT_FOUND)
                 .send(response);
             return null;
         } else {
-            return registrationDTOsPager.getRecords().get(0);
+            return registrationWrapperDTOsPager.getRecords().get(0);
         }
     }
 
@@ -127,7 +127,7 @@ public class RegistrationDTOController
     @ApiOperation(value = "Finds Registrations by persistent identifier."
     )
     @RequestMapping(value="/registrationDTO", method = RequestMethod.GET, params={"identifier", "validateUniqueness"})
-    public Pager<RegistrationDTO> doPageByIdentifier(
+    public Pager<RegistrationWrapperDTO> doPageByIdentifier(
             @RequestParam(value = "identifier", required = true) String identifier,
             @RequestParam(value = "validateUniqueness") boolean validateUniqueness,
             @RequestParam(value = "pageIndex", required=true) Integer pageIndex,
@@ -137,14 +137,14 @@ public class RegistrationDTOController
 
         logger.info("doPageByIdentifier() " + requestPathAndQuery(request));
 
-        return pageRegistrationDTOs(identifier, validateUniqueness, pageIndex, pageSize, response);
+        return pageRegistrationWrapperDTOs(identifier, validateUniqueness, pageIndex, pageSize, response);
 
     }
 
-    protected Pager<RegistrationDTO> pageRegistrationDTOs(String identifier, boolean validateUniqueness,
+    protected Pager<RegistrationWrapperDTO> pageRegistrationWrapperDTOs(String identifier, boolean validateUniqueness,
             Integer pageIndex, Integer pageSize, HttpServletResponse response) throws IOException {
 
-        Pager<RegistrationDTO> regPager = registrationWorkingSetService.pageDTOs(identifier, pageIndex, pageSize);
+        Pager<RegistrationWrapperDTO> regPager = registrationWorkingSetService.pageDTOs(identifier, pageIndex, pageSize);
 
         if(regPager.getCount() == 1){
             return regPager;
@@ -162,7 +162,7 @@ public class RegistrationDTOController
     }
 
     @RequestMapping(value="/registrationDTO/find", method = RequestMethod.GET)
-    public Pager<RegistrationDTO> doFind(
+    public Pager<RegistrationWrapperDTO> doFind(
             @RequestParam(value = "submitterUuid", required=false) UUID submitterUuid,
             @RequestParam(value = "status", required=false) RegistrationStatusList status,
             @RequestParam(value = "typeDesignationStatusUuids", required=false) UuidList typeDesignationStatusUuids,
@@ -180,7 +180,7 @@ public class RegistrationDTOController
         if(status != null){
             statusSet = status.asSet();
         }
-        Pager<RegistrationDTO> pager = registrationWorkingSetService.pageDTOs(submitterUuid, statusSet,
+        Pager<RegistrationWrapperDTO> pager = registrationWorkingSetService.pageDTOs(submitterUuid, statusSet,
                 identifierFilterPattern, taxonNameFilterPattern, referenceFilterPattern,
                 typeDesignationStatusUuids, pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
         return pager;
@@ -202,7 +202,7 @@ public class RegistrationDTOController
 
 
     @RequestMapping(value="/registrationDTO/findInTaxonGraph", method = RequestMethod.GET)
-    public Pager<RegistrationDTO> doPageByTaxomicInclusion(
+    public Pager<RegistrationWrapperDTO> doPageByTaxomicInclusion(
             @RequestParam(value = "taxonNameFilter", required = true) String taxonNameFilterPattern,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             @RequestParam(value = "pageIndex", required = false, defaultValue="0") Integer pageIndex,
@@ -214,7 +214,7 @@ public class RegistrationDTOController
 
         Collection<RegistrationStatus> includedStatus = Arrays.asList(RegistrationStatus.PUBLISHED);
 
-        Pager<RegistrationDTO> regPager = registrationWorkingSetService.findInTaxonGraph(null, includedStatus,
+        Pager<RegistrationWrapperDTO> regPager = registrationWorkingSetService.findInTaxonGraph(null, includedStatus,
                 taxonNameFilterPattern, matchMode,
                 pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
 
@@ -222,7 +222,7 @@ public class RegistrationDTOController
     }
 
     @RequestMapping(value="/registrationDTO", method = RequestMethod.GET, params="nameUuid")
-    public Pager<RegistrationDTO> doGetByNameUUID(
+    public Pager<RegistrationWrapperDTO> doGetByNameUUID(
             @RequestParam(value = "submitterUuid", required=false) UUID submitterUuid,
             @RequestParam(value = "status", required=false) RegistrationStatusList status,
             @RequestParam(value = "nameUuid", required=true) Collection<UUID> nameUuids,
@@ -237,7 +237,7 @@ public class RegistrationDTOController
         if(status != null){
             statusSet = status.asSet();
         }
-        Pager<RegistrationDTO> pager = registrationWorkingSetService.pageWorkingSetsByNameUUID(
+        Pager<RegistrationWrapperDTO> pager = registrationWorkingSetService.pageWorkingSetsByNameUUID(
                 nameUuids, pageSize, pageIndex, ORDER_BY_DATE_AND_ID);
         return pager;
     }

@@ -6,14 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.api.dto;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TaggedEntityReference;
 
@@ -23,7 +20,7 @@ import eu.etaxonomy.cdm.ref.TaggedEntityReference;
  */
 public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
 
-    private static final long serialVersionUID = -716568268770456996L;
+    private static final long serialVersionUID = 5895155323153858101L;
 
     private TaggedEntityReference<?> determination;
 
@@ -37,28 +34,9 @@ public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
         super(entity);
     }
 
-    public static DeterminationEventDTO from(DeterminationEvent entity) {
-        if(entity == null) {
-            return null;
-        }
-        DeterminationEventDTO dto = new DeterminationEventDTO(entity);
-        if(entity.getTaxon() != null) {
-            dto.setDetermination(new TaggedEntityReference(Taxon.class, entity.getTaxon().getUuid(), entity.getTaxon().getTaggedTitle()));
-        } else if(entity.getTaxonName() != null) {
-            dto.setDetermination(new TaggedEntityReference(TaxonName.class, entity.getTaxonName().getUuid(), entity.getTaxonName().getTaggedName()));
-        }
-        dto.modifier = entity.getModifier();
-        dto.isPreferred = entity.getPreferredFlag();
-        if(!entity.getReferences().isEmpty()) {
-            dto.references = entity.getReferences().stream().map(r -> ReferenceDTO.fromReference(r)).collect(Collectors.toSet());
-        }
-        return dto;
-    }
-
     public TaggedEntityReference<?> getDetermination() {
         return determination;
     }
-
     public void setDetermination(TaggedEntityReference<?> determination) {
         this.determination = determination;
     }
@@ -66,7 +44,6 @@ public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
     public boolean isPreferred() {
         return isPreferred;
     }
-
     public void setPreferred(boolean isPreferred) {
         this.isPreferred = isPreferred;
     }
@@ -74,7 +51,6 @@ public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
     public DefinedTerm getModifier() {
         return modifier;
     }
-
     public void setModifier(DefinedTerm modifier) {
         this.modifier = modifier;
     }
@@ -82,7 +58,6 @@ public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
     public Set<ReferenceDTO> getReferences() {
         return references;
     }
-
     public void setReferences(Set<ReferenceDTO> references) {
         this.references = references;
     }

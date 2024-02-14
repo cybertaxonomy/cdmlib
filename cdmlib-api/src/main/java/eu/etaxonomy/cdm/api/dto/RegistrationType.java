@@ -6,14 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
-
-import eu.etaxonomy.cdm.model.name.Registration;
+package eu.etaxonomy.cdm.api.dto;
 
 /**
  * @author a.kohlbecker
  * @since Mar 3, 2017
- *
  */
 public enum RegistrationType {
 
@@ -37,51 +34,20 @@ public enum RegistrationType {
      */
     EMPTY;
 
-    /**
-     * @param reg
-     * @return
-     */
-    public static RegistrationType from(Registration reg) {
-
-        if (reg.getName() != null && reg.getTypeDesignations() != null && reg.getTypeDesignations().size() > 0) {
-            return NAME_AND_TYPIFICATION;
-        }
-        if (reg.getName() != null) {
-            return NAME;
-        }
-        if (reg.getTypeDesignations().size() > 0) {
-            return TYPIFICATION;
-        }
-        return EMPTY;
-    }
-
-    /**
-     * @return
-     */
     public boolean isName() {
         return NAME.equals(this);
 
     }
 
-    /**
-     * @return
-     */
     public boolean isTypification() {
         return TYPIFICATION.equals(this);
     }
 
-    /**
-     * @return
-     */
     public boolean isNameAndTypification() {
         return NAME_AND_TYPIFICATION.equals(this);
     }
 
-    /**
-     * @return
-     */
     public boolean isEnmpty() {
         return EMPTY.equals(this);
     }
-
 }

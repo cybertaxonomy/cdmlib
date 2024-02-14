@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -112,7 +112,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
 
     @RequestMapping(value = { "rootUnitDTOs" }, method = RequestMethod.GET)
-    public  Collection<SpecimenOrObservationBaseDTO> doGetRootUnitDTOs(
+    public Collection<SpecimenOrObservationBaseDTO<?>> doGetRootUnitDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -122,7 +122,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, "$");
         sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 
-        Collection<SpecimenOrObservationBaseDTO> fieldUnitDtos = service.findRootUnitDTOs(uuid);
+        Collection<SpecimenOrObservationBaseDTO<?>> fieldUnitDtos = service.findRootUnitDTOs(uuid);
         return fieldUnitDtos;
     }
 

@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO.RankedNameReference;
+import eu.etaxonomy.cdm.api.dto.RegistrationDTO.RankedNameReference;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator.ORDER_BY;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;

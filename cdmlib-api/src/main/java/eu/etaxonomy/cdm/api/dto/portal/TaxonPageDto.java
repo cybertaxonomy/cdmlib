@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -40,6 +41,8 @@ public class TaxonPageDto extends TaxonBaseDto {
     private ContainerDto<KeyDTO> keys;
 
     private ContainerDto<SpecimenDTO> specimens;
+
+    private List<SpecimenOrObservationBaseDTO> rootSpecimens;
 
     private ContainerDto<MediaDTO> media;
 
@@ -438,5 +441,12 @@ public class TaxonPageDto extends TaxonBaseDto {
     }
     public void setSecTitleCache(String secTitleCache) {
         this.secTitleCache = secTitleCache;
+    }
+
+    public List<SpecimenOrObservationBaseDTO> getRootSpecimens() {
+        return rootSpecimens;
+    }
+    public void setRootSpecimens(List<SpecimenOrObservationBaseDTO> rootSpecimens) {
+        this.rootSpecimens = rootSpecimens;
     }
 }

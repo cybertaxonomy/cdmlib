@@ -30,6 +30,7 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
@@ -247,6 +248,19 @@ public class PortalDtoLoader {
     }
 
     private void loadSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
+
+        loadRootSpecimens(taxon, result, config);
+
+        boolean newSpecimensImplemented = false;
+        if (newSpecimensImplemented) {
+            loadNewRootSpecimens(taxon, result, config);
+        }
+    }
+
+    /**
+     * Not really implemented yet
+     */
+    private void loadNewRootSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
         //TODO load specimen from multiple places
 
         //TODO use filter
@@ -292,6 +306,18 @@ public class PortalDtoLoader {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading specimen data.", e));
         }
+    }
+
+    /**
+     * Loads specimen the "old" way.
+     */
+    private void loadRootSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
+        List<SpecimenOrObservationBaseDTO> rootSpecimens = this.repository.getOccurrenceService().listRootUnitDTOsByAssociatedTaxon(
+                taxon.getUuid(), null, config.isIncludeUnpublished(),
+                config.getSpecimenAssociationFilter(), null);
+
+        result.setRootSpecimens(rootSpecimens);
+
     }
 
     private List<SpecimenOrObservationBase<?>> loadTypeSpecimen(TaxonName name, TaxonPageDtoConfiguration config) {

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.Arrays;
 import java.util.List;
 
-import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
+import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -19,7 +19,7 @@ import net.sf.json.JsonConfig;
  * @author a.kohlbecker
  * @since Oct 8, 2020
  */
-public class RegistrationDtoBeanProcessor extends AbstractBeanProcessor<RegistrationDTO> {
+public class RegistrationWrapperDtoBeanProcessor extends AbstractBeanProcessor<RegistrationWrapperDTO> {
 
     @Override
     public List<String> getIgnorePropNames() {
@@ -31,7 +31,7 @@ public class RegistrationDtoBeanProcessor extends AbstractBeanProcessor<Registra
     }
 
     @Override
-    public JSONObject processBeanSecondStep(RegistrationDTO bean, JSONObject json, JsonConfig jsonConfig) {
+    public JSONObject processBeanSecondStep(RegistrationWrapperDTO bean, JSONObject json, JsonConfig jsonConfig) {
         // nothing to do here
         return json;
     }

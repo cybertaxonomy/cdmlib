@@ -407,6 +407,7 @@ public class TaxonPortalController extends TaxonController{
         config.setWithTaxonNodes(doTaxonNodes);
         config.setWithTaxonRelationships(doTaxonRelations);
 
+
         //filter
         config.setIncludeUnpublished(includeUnpublished);
         config.setSpecimenAssociationFilter(taxonOccurrenceRelTypes);

@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import eu.etaxonomy.cdm.api.dto.EventDTO;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -50,7 +51,6 @@ public class DerivationEventDTO extends EventDTO<DerivationEvent> {
     public String getInstitute() {
         return institute;
     }
-
     public void setInstitute(String institute) {
         this.institute = institute;
     }
@@ -58,9 +58,7 @@ public class DerivationEventDTO extends EventDTO<DerivationEvent> {
     public DerivationEventType getEventType() {
         return eventType;
     }
-
     public void setEventType(DerivationEventType eventType) {
         this.eventType = eventType;
     }
-
 }

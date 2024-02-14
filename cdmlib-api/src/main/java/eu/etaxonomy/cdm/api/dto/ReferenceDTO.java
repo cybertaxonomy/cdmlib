@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.dto;
+package eu.etaxonomy.cdm.api.dto;
 
 import java.util.UUID;
 
@@ -30,21 +30,8 @@ public class ReferenceDTO extends TypedEntityReference<Reference> {
     private DOI doi;
     private VerbatimTimePeriod datePublished;
 
-    public static ReferenceDTO fromReference(Reference entity) {
-        if(entity == null) {
-            return null;
-        }
-        ReferenceDTO dto = new ReferenceDTO(entity.getUuid());
-        dto.titleCache = entity.getTitleCache();
-        dto.abbrevTitleCache = entity.getAbbrevTitleCache();
-        dto.uri = entity.getUri();
-        dto.doi = entity.getDoi();
-        dto.datePublished = entity.getDatePublished();
-
-        return dto;
-    }
-
-    private ReferenceDTO(UUID uuid) {
+    //should only be used by loader classes
+    public ReferenceDTO(UUID uuid) {
         super(Reference.class, uuid);
     }
 
