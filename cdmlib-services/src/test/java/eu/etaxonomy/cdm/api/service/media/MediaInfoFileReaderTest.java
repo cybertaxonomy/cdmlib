@@ -57,7 +57,7 @@ public class MediaInfoFileReaderTest {
     @Test
     public void testNewInstanceJpeg(){
         try {
-            new MediaInfoFileReader(jpegUri).readBaseInfo();
+            new MediaInfoFileReader(jpegUri).readBaseInfo(false);
         } catch (Exception e) {
             fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
         }
@@ -66,7 +66,7 @@ public class MediaInfoFileReaderTest {
     @Test
     public void testNewInstanceTiff() {
         try {
-            new MediaInfoFileReader(tiffUri).readBaseInfo();
+            new MediaInfoFileReader(tiffUri).readBaseInfo(false);
         } catch (Exception e) {
             fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
         }
@@ -76,7 +76,7 @@ public class MediaInfoFileReaderTest {
     public void testNewInstanceRemotePng() {
         if(UriUtils.isInternetAvailable(remotePngUri)){
             try {
-                new MediaInfoFileReader(remotePngUri).readBaseInfo();
+                new MediaInfoFileReader(remotePngUri).readBaseInfo(false);
             } catch (Exception e) {
                 fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
             }
@@ -89,13 +89,13 @@ public class MediaInfoFileReaderTest {
     public void testNewInstanceFileDoesNotExist() throws HttpException, IOException {
         URI nonExistentUri = URI.create("file:///nonExistentImage.jpg");
 
-        new MediaInfoFileReader(nonExistentUri).readBaseInfo();
+        new MediaInfoFileReader(nonExistentUri).readBaseInfo(false);
     }
 
     private CdmImageInfo getJpegInstance(){
         if(jpegInstance == null){
             try {
-                jpegInstance =  new MediaInfoFileReader(jpegUri).readBaseInfo().getCdmImageInfo();
+                jpegInstance =  new MediaInfoFileReader(jpegUri).readBaseInfo(false).getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -107,7 +107,7 @@ public class MediaInfoFileReaderTest {
     private CdmImageInfo getTifInstance(){
         if(tifInstance == null){
             try {
-                tifInstance = new MediaInfoFileReader(tiffUri).readBaseInfo().getCdmImageInfo();
+                tifInstance = new MediaInfoFileReader(tiffUri).readBaseInfo(false).getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -122,7 +122,7 @@ public class MediaInfoFileReaderTest {
         }
         if(pngInstance == null){
             try {
-                pngInstance = new MediaInfoFileReader(remotePngUri).readBaseInfo().getCdmImageInfo();
+                pngInstance = new MediaInfoFileReader(remotePngUri).readBaseInfo(false).getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -263,7 +263,7 @@ public class MediaInfoFileReaderTest {
 
     @Test
     public void testReadMetaDataTif() throws IOException, HttpException{
-        CdmImageInfo instance = new MediaInfoFileReader(tiffUri).readBaseInfo().read().getCdmImageInfo();
+        CdmImageInfo instance = new MediaInfoFileReader(tiffUri).readBaseInfo(true).getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
         Assert.assertEquals(15, metaData.size());
     }
