@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -185,27 +184,6 @@ public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrO
             }
         }
         return derivateDTOs;
-    }
-
-    /**
-     * Recursively collects all derivatives from this.
-     */
-    private Collection<DerivedUnitDTO> collectDerivatives(DTO dto) {
-        return collectDerivatives(dto, new HashSet<>());
-    }
-
-    /**
-     * Private partner method to {@link #collectDerivatives()} for recursive calls.
-     */
-    private Collection<DerivedUnitDTO> collectDerivatives(SpecimenOrObservationBaseDTO<?> dto,
-            Set<DerivedUnitDTO> dtos) {
-
-        Set<DerivedUnitDTO> derivatives = dto.getDerivatives();
-        dtos.addAll(derivatives);
-        for(DerivedUnitDTO subDto : derivatives) {
-            dtos.addAll(collectDerivatives(subDto, dtos));
-        }
-        return dtos;
     }
 
     protected void setSpecimenTypeDesignations(DTO dto, Set<SpecimenTypeDesignation> specimenTypeDesignations) {

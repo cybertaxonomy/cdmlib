@@ -9,8 +9,10 @@
 package eu.etaxonomy.cdm.api.dto;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -166,7 +168,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
         Map<CollectionDTO, List<String> > unitIdenfierLabelsByCollections = new HashMap<>();
 
         // TODO collectDerivatives(maxDepth)
-        for(DerivedUnitDTO subDTO : this.getDerivatives()) {
+        for(DerivedUnitDTO subDTO : collectDerivatives(this)) {
             CollectionDTO collectionDTO = subDTO.getCollection();
             if (collectionDTO != null) {
                 //combine collection with identifier
@@ -207,6 +209,27 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
         }
 
         return treeLabels;
+    }
+
+    /**
+     * Recursively collects all derivatives from this.
+     */
+    public static Collection<DerivedUnitDTO> collectDerivatives(SpecimenOrObservationBaseDTO<?> dto) {
+        return collectDerivatives(dto, new HashSet<>());
+    }
+
+    /**
+     * Private partner method to {@link #collectDerivatives()} for recursive calls.
+     */
+    private static Collection<DerivedUnitDTO> collectDerivatives(SpecimenOrObservationBaseDTO<?> dto,
+            Set<DerivedUnitDTO> dtos) {
+
+        Set<DerivedUnitDTO> derivatives = dto.getDerivatives();
+        dtos.addAll(derivatives);
+        for(DerivedUnitDTO subDto : derivatives) {
+            dtos.addAll(collectDerivatives(subDto, dtos));
+        }
+        return dtos;
     }
 
     static class TreeLabels {
