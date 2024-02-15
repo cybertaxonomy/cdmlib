@@ -23,8 +23,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.api.dto.RegistrationType;
+import eu.etaxonomy.cdm.api.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.dto.RegistrationDTO.RankedNameReference;
+import eu.etaxonomy.cdm.api.dto.RegistrationType;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
@@ -47,6 +48,15 @@ import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
+/**
+ * Note by AM: this class was originally RegistrationDTO. As it holds
+ * the entity itself, is relatively complex and often used in Phycobank
+ * it has been left as it is.
+ * A simplified version has been created (partly by copying) in cdmlib-api
+ * called {@link RegistrationDTO}. In future the 2 versions might be merged.
+ *
+ * @author a.kohlbecker
+ */
 public class RegistrationWrapperDTO {
 
     private static final Logger logger = LogManager.getLogger();

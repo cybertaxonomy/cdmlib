@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 /**
  * Reading DTO for {@link Registration}s. See also RegistrationWrapperDTO from service layer
  * which is very similar.
+ * This class here is a simplified version. In future they might be merged.
  *
  * @author muellera
  * @since 14.02.2024
