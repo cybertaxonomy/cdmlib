@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 public class SpecimenOrObservationDTOFactory {
 
-    public static SpecimenOrObservationBaseDTO fromEntity(SpecimenOrObservationBase<?> entity) {
+    public static SpecimenOrObservationBaseDTO<?> fromEntity(SpecimenOrObservationBase<?> entity) {
        return fromEntity(entity, null);
     }
 

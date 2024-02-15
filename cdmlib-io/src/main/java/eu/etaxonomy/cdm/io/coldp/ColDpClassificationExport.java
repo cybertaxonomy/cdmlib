@@ -449,11 +449,6 @@ public class ColDpClassificationExport
 
     /**
      * Handle CURI (compact URI) types - see https://github.com/CatalogueOfLife/coldp/blob/master/README.md#identifiers
-     *
-     * @param alternativeIdStr
-     * @param type
-     * @param identifier
-     * @return
      */
     private String handleCuriTypes(String alternativeIdStr, IdentifierType type, Identifier identifier) {
         String prefix = null;
