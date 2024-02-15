@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IRegistrationService;
-import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
+import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
@@ -138,7 +138,6 @@ public class RegistrationWrapperDTOController
         logger.info("doPageByIdentifier() " + requestPathAndQuery(request));
 
         return pageRegistrationWrapperDTOs(identifier, validateUniqueness, pageIndex, pageSize, response);
-
     }
 
     protected Pager<RegistrationWrapperDTO> pageRegistrationWrapperDTOs(String identifier, boolean validateUniqueness,
@@ -191,7 +190,7 @@ public class RegistrationWrapperDTOController
     public RegistrationWorkingSet doGetRegistrationWorkingSet(
             @PathVariable("reference_uuid") UUID referenceUuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws TypeDesignationSetException {
+            @SuppressWarnings("unused") HttpServletResponse response) throws TypeDesignationSetException {
 
         logger.info("doGetRegistrationWorkingSet() " + requestPathAndQuery(request));
 
@@ -208,7 +207,7 @@ public class RegistrationWrapperDTOController
             @RequestParam(value = "pageIndex", required = false, defaultValue="0") Integer pageIndex,
             @RequestParam(value = "pageSize", required = false, defaultValue="30" /*AbstractController.DEFAULT_PAGE_SIZE_VALUE*/ ) Integer pageSize,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("findInTaxonGraph() " + requestPathAndQuery(request));
 
@@ -229,7 +228,7 @@ public class RegistrationWrapperDTOController
             @RequestParam(value = "pageIndex", required=false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
-            HttpServletResponse response) throws PermissionDeniedException, TypeDesignationSetException {
+            @SuppressWarnings("unused") HttpServletResponse response) throws PermissionDeniedException, TypeDesignationSetException {
 
         logger.info("doGetByNameUUID() " + requestPathAndQuery(request));
 
