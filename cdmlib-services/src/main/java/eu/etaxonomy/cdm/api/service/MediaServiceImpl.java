@@ -446,6 +446,13 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
 
         Map<String, String> metaDataMapping = readJson(metaDataItems);
+        if (metaDataMapping == null) {
+            if (PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue() == null) {
+                return new HashMap<>();
+            }
+           metaDataItems = PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString();
+           metaDataMapping = readJson(metaDataItems);
+        }
         return metaDataMapping;
 
     }

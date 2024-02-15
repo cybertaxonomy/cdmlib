@@ -62,9 +62,9 @@ public class MediaInfoFactory implements IMediaInfoFactory {
         }
 
         // :-( need to use the files reader
-        MediaInfoFileReader mediaReader = new MediaInfoFileReader(imageUri).readBaseInfo();
-        AbstactMediaMetadataReader reader = forceMetaData ? mediaReader.readMetaData() : mediaReader;
-        return reader.getCdmImageInfo();
+        MediaInfoFileReader mediaReader = new MediaInfoFileReader(imageUri).readBaseInfo(forceMetaData);
+        //AbstactMediaMetadataReader reader = forceMetaData ? mediaReader.readMetaData() : mediaReader;
+        return mediaReader.getCdmImageInfo();
 
     }
 

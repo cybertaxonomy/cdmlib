@@ -12,11 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.imaging.ImageInfo;
+import org.apache.commons.imaging.ImageParser;
 import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.common.GenericImageMetadata.GenericImageMetadataItem;
 import org.apache.commons.imaging.common.ImageMetadata;
 import org.apache.commons.imaging.common.ImageMetadata.ImageMetadataItem;
+import org.apache.commons.imaging.common.bytesource.ByteSourceInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.http.client.ClientProtocolException;
@@ -58,7 +59,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
 
     @Override
     public AbstactMediaMetadataReader read() throws IOException, HttpException {
-        return readBaseInfo().readMetaData();
+        return readBaseInfo(true);//.readMetaData();
     }
 
     /**
@@ -75,8 +76,8 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
      * @throws IOException
      * @throws HttpException
      */
-    public MediaInfoFileReader readBaseInfo() throws IOException, HttpException{
-        readImageInfo();
+    public MediaInfoFileReader readBaseInfo(boolean readMetaData) throws IOException, HttpException{
+        readImageInfo(readMetaData);
         readImageLength();
         readSuffix();
         return this;
@@ -85,18 +86,25 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
     /**
      * Reads the image info (width, height, bitPerPixel, metadata, format, mime type)
      */
-    public AbstactMediaMetadataReader readImageInfo() throws IOException, HttpException{
+    public AbstactMediaMetadataReader readImageInfo(boolean readMetaData) throws IOException, HttpException{
 
         InputStream inputStream;
         try {
             inputStream = UriUtils.getInputStream(cdmImageInfo.getUri());
-            ImageInfo imageInfo = Imaging.getImageInfo(inputStream, null);
+            ByteSourceInputStream byteSource = new ByteSourceInputStream(inputStream, null);
+            ImageParser parser = org.apache.commons.imaging.internal.Util.getImageParser(byteSource);
+
+            if (readMetaData) {
+                readMetaData(parser, byteSource);
+            }
+            ImageInfo imageInfo = parser.getImageInfo(byteSource);
 
             cdmImageInfo.setFormatName(imageInfo.getFormatName());
             cdmImageInfo.setMimeType(imageInfo.getMimeType());
             cdmImageInfo.setWidth(imageInfo.getWidth());
             cdmImageInfo.setHeight(imageInfo.getHeight());
             cdmImageInfo.setBitPerPixel(imageInfo.getBitsPerPixel());
+
             inputStream.close();
 
         } catch (ImageReadException e) {
@@ -107,12 +115,18 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
         return this;
     }
 
-    public AbstactMediaMetadataReader readMetaData() throws IOException, HttpException {
+    public AbstactMediaMetadataReader readMetaData(ImageParser parser, ByteSourceInputStream byteSource) throws IOException, HttpException {
 
         ImageMetadata mediaData = null;
+        InputStream inputStreamLocal = null;
         try {
-            InputStream inputStream = UriUtils.getInputStream(cdmImageInfo.getUri());
-            mediaData = Imaging.getMetadata(inputStream, null);
+//            if (inputStream == null) {
+//                inputStreamLocal = UriUtils.getInputStream(cdmImageInfo.getUri());
+//            }else {
+//                inputStreamLocal = inputStream;
+//            }
+            mediaData = parser.getMetadata(byteSource);
+//            mediaData = Imaging.getMetadata(inputStreamLocal, null);
         }catch (ImageReadException e) {
             logger.error("Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage());
             //throw new IOException(e);
