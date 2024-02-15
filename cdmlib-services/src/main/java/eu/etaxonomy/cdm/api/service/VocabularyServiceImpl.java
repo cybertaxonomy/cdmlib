@@ -214,7 +214,7 @@ public class VocabularyServiceImpl
     }
 
     @Override
-    public TermCollectionDto findVocabularyDtoByVocabularyUuid(UUID vocUuid) {
+    public TermVocabularyDto findVocabularyDtoByVocabularyUuid(UUID vocUuid) {
         return dao.findVocabularyDtoByUuid(vocUuid);
     }
 
