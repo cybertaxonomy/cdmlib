@@ -14,8 +14,6 @@ import java.util.Set;
 
 import org.joda.time.Partial;
 
-import eu.etaxonomy.cdm.model.location.Point;
-
 /**
  * @author k.luther
  * @since 21.06.2018
@@ -25,7 +23,7 @@ public class GatheringEventDTO implements Serializable{
     private static final long serialVersionUID = -4381193272881277448L;
 
     private String locality;
-    private Point exactLocation;
+    private PointDTO exactLocation;
     private String country;
     private Set<String> collectingAreas = new HashSet<>();
     private String collectingMethod;
@@ -49,10 +47,10 @@ public class GatheringEventDTO implements Serializable{
         this.locality = locality;
     }
 
-    public Point getExactLocation() {
+    public PointDTO getExactLocation() {
         return exactLocation;
     }
-    public void setExactLocation(Point exactLocation) {
+    public void setExactLocation(PointDTO exactLocation) {
         this.exactLocation = exactLocation;
     }
 

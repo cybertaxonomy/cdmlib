@@ -9,9 +9,9 @@
 package eu.etaxonomy.cdm.api.dto;
 
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TaggedEntityReference;
 
 /**
@@ -26,12 +26,12 @@ public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
 
     private boolean isPreferred = false;
 
-    private DefinedTerm modifier = null;
+    private DefinedTermDTO modifier = null;
 
     private Set<ReferenceDTO> references = null;
 
-    public DeterminationEventDTO(DeterminationEvent entity) {
-        super(entity);
+    public DeterminationEventDTO(Class<DeterminationEvent> clazz, UUID uuid) {
+        super(clazz, uuid);
     }
 
     public TaggedEntityReference<?> getDetermination() {
@@ -48,10 +48,10 @@ public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
         this.isPreferred = isPreferred;
     }
 
-    public DefinedTerm getModifier() {
+    public DefinedTermDTO getModifier() {
         return modifier;
     }
-    public void setModifier(DefinedTerm modifier) {
+    public void setModifier(DefinedTermDTO modifier) {
         this.modifier = modifier;
     }
 

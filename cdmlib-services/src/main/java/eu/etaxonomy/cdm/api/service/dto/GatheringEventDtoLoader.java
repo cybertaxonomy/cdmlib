@@ -34,8 +34,7 @@ public class GatheringEventDtoLoader {
         GatheringEventDTO dto = new GatheringEventDTO();
         dto.setLocality(locality);
 
-        //TODO DTO model dependency
-        dto.setExactLocation(exactLocation);
+        dto.setExactLocation(PointDtoLoader.fromEntity(exactLocation));
         dto.setCountry(country);
 
         dto.setCollectingAreas(collectingAreas);
@@ -59,7 +58,7 @@ public class GatheringEventDtoLoader {
             LanguageString locality = gathering.getLocality();
             dto.setLocality(locality.getText());
         }
-        dto.setExactLocation(gathering.getExactLocation());
+        dto.setExactLocation(PointDtoLoader.fromEntity(gathering.getExactLocation()));
         if (gathering.getCountry() != null){
             //TODO i18n
             dto.setCountry(gathering.getCountry().getTitleCache());

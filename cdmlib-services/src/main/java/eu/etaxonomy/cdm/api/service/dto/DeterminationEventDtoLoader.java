@@ -37,7 +37,7 @@ public class DeterminationEventDtoLoader {
         } else if(entity.getTaxonName() != null) {
             dto.setDetermination(TaggedEntityReference.from(TaxonName.class, entity.getTaxonName().getUuid(), entity.getTaxonName().getTaggedName()));
         }
-        dto.setModifier(entity.getModifier());
+        dto.setModifier(DefinedTermDtoLoader.INSTANCE().fromEntity(entity.getModifier()));
         dto.setPreferred(entity.getPreferredFlag());
         if(!entity.getReferences().isEmpty()) {
             dto.setReferences(

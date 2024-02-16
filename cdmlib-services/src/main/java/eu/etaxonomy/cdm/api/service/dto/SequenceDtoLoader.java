@@ -31,9 +31,9 @@ public class SequenceDtoLoader {
     private static void load(SequenceDTO dto, Sequence seq){
 
         dto.setContigFile(seq.getContigFile());
-        dto.setConsensusSequence(seq.getConsensusSequence());
+        dto.setConsensusSequence(seq.getConsensusSequence() == null ? null : seq.getConsensusSequence().getString());
         dto.setIsBarcode(seq.getIsBarcode());
-        dto.setBarcodeSequencePart(seq.getBarcodeSequencePart());
+        dto.setBarcodeSequencePart(seq.getBarcodeSequencePart() == null ? null : seq.getBarcodeSequencePart().getString());
         dto.setGeneticAccessionNumber(seq.getGeneticAccessionNumber());
         dto.setBoldProcessId(seq.getBoldProcessId());
 

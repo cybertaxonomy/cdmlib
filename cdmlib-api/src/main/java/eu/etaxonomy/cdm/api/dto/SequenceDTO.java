@@ -14,7 +14,6 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -28,17 +27,24 @@ public class SequenceDTO implements Serializable{
 
     //TODO DTO remove model
     private Media contigFile;
-    //TODO DTO remove model
-    private SequenceString consensusSequence;
+
+    private String consensusSequence;
+
     private Boolean isBarcode = null;
-    //TODO DTO remove model
-    private SequenceString barcodeSequencePart = SequenceString.NewInstance();
+
+    private String barcodeSequencePart;
+
     private String geneticAccessionNumber;
+
     private String boldProcessId;
+
     //TODO DTO remove model
     private Set<SingleReadAlignment> singleReadAlignments = new HashSet<>();
+
     private String dnaMarker;
+
     private String haplotype;
+
     //TODO DTO remove model
     private Set<Reference> citations = new HashSet<>();
 
@@ -47,6 +53,7 @@ public class SequenceDTO implements Serializable{
     private URI emblUri;
     private URI genBankUri;
 
+    // *************** GETTER / SETTER *********************************/
 
     public URI getBoldUri() {
         return boldUri;
@@ -83,10 +90,10 @@ public class SequenceDTO implements Serializable{
         this.contigFile = contigFile;
     }
 
-    public SequenceString getConsensusSequence() {
+    public String getConsensusSequence() {
         return consensusSequence;
     }
-    public void setConsensusSequence(SequenceString consensusSequence) {
+    public void setConsensusSequence(String consensusSequence) {
         this.consensusSequence = consensusSequence;
     }
 
@@ -97,10 +104,10 @@ public class SequenceDTO implements Serializable{
         this.isBarcode = isBarcode;
     }
 
-    public SequenceString getBarcodeSequencePart() {
+    public String getBarcodeSequencePart() {
         return barcodeSequencePart;
     }
-    public void setBarcodeSequencePart(SequenceString barcodeSequencePart) {
+    public void setBarcodeSequencePart(String barcodeSequencePart) {
         this.barcodeSequencePart = barcodeSequencePart;
     }
 
