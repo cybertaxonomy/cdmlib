@@ -40,7 +40,8 @@ public class RegistrationDtoLoader {
     }
 
     public RegistrationDTO fromEntity(Registration reg){
-        RegistrationDTO dto = new RegistrationDTO(Registration.class, reg.getUuid());
+        String label = null; //for now, we do not provide a label. Do we need it?
+        RegistrationDTO dto = new RegistrationDTO(Registration.class, reg.getUuid(), label);
         load(dto, reg);
         return dto;
     }

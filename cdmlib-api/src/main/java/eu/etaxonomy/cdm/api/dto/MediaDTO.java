@@ -35,7 +35,7 @@ public class MediaDTO extends TypedEntityReference<Media> {
     private List<SourceDTO> sources = new ArrayList<>();
 
     public MediaDTO(UUID uuid) {
-        super(Media.class, uuid);
+        super(Media.class, uuid, null);
     }
 
     public String getUri() {

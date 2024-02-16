@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * Type designations which refer to the same base entity (e.g. FieldUnit for SpecimenTypeDesignations
@@ -161,7 +162,7 @@ public class TypeDesignationSet {
         String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
-                TypedEntityReference.fromEntityWithLabel(baseEntity, label);
+                TypedEntityReferenceFactory.fromEntityWithLabel(baseEntity, label);
 
         return baseEntityReference;
     }

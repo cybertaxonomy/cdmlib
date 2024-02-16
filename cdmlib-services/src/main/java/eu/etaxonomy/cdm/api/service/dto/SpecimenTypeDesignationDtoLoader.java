@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.ref.EntityReference;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * Loader for {@link SpecimenTypeDesignationDTO}s. Extracted from DTO class.
@@ -42,7 +42,7 @@ public class SpecimenTypeDesignationDtoLoader {
        }
        dto.setNames(names);
        dto.setDesignationSource(SourceDtoLoader.fromDescriptionElementSource(typeDesignation.getDesignationSource()));
-       dto.setTypeSpecimen(TypedEntityReference.fromEntity(typeDesignation.getTypeSpecimen()));
+       dto.setTypeSpecimen(TypedEntityReferenceFactory.fromEntity(typeDesignation.getTypeSpecimen()));
        dto.setRegistrations(typeDesignation.getRegistrations().stream()
                .map(reg -> RegistrationDtoLoader.INSTANCE().fromEntity(reg))
                .collect(Collectors.toList()));

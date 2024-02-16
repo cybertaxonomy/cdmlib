@@ -12,9 +12,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.kohlbecker
@@ -26,35 +24,7 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     private Class<T> type;
 
-//**************************** FACTORY ***********************************/
-
-    public static <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
-        return TypedEntityReference.fromEntity(entity, true);
-    }
-
-    public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity, boolean withLabel) {
-        if(entity == null) {
-            return null;
-        }
-        entity = HibernateProxyHelper.deproxy(entity);
-        if(withLabel && IdentifiableEntity.class.isAssignableFrom(entity.getClass())) {
-            return fromEntityWithLabel(entity, ((IdentifiableEntity)entity).getTitleCache());
-        } else {
-            return new TypedEntityReference<>((Class<T>)entity.getClass(), entity.getUuid());
-        }
-    }
-
-    public static  <T extends CdmBase> TypedEntityReference<T> fromEntityWithLabel(T entity, String explicitLabel) {
-        if(entity == null) {
-            return null;
-        }
-        entity = HibernateProxyHelper.deproxy(entity);
-        return new TypedEntityReference<>((Class<T>)entity.getClass(), entity.getUuid(), explicitLabel);
-    }
-
-    public static <T extends CdmBase> TypedEntityReference<T> fromTypeAndId(Class<T> type, UUID uuid) {
-        return new TypedEntityReference(type, uuid, null);
-    }
+//**************************** CAST ***********************************/
 
     /**
      * Casts the <code>TypedEntityReference</code> to the <code>subType</code> if possible.
@@ -66,27 +36,13 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         if(!type.isAssignableFrom(subType)) {
             throw new ClassCastException("Cannot cast " + type.getName() + " to " + subType.getName());
         }
-        return new TypedEntityReference<>(subType, getUuid());
+        return new TypedEntityReference<>(subType, getUuid(), getLabel());
     }
 
 //********************* CONSTRUCTOR ****************************/
 
     protected TypedEntityReference(Class<T> type, UUID uuid, String label) {
         super(uuid, label);
-        this.type = type;
-    }
-
-    protected TypedEntityReference(T entity) {
-        this.type = (Class<T>) entity.getClass();
-        this.uuid = entity.getUuid();
-    }
-
-    /**
-     * @deprecated use factory method instead, should only be used by in DTO sub-class constructors (TODO; to be made protected once no longer used publicly)
-     */
-    @Deprecated
-    public TypedEntityReference(Class<T> type, UUID uuid) {
-        super(uuid, null);
         this.type = type;
     }
 

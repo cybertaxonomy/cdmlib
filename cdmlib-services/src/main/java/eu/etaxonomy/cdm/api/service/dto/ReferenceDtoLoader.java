@@ -23,7 +23,9 @@ public class ReferenceDtoLoader {
         if(entity == null) {
             return null;
         }
-        ReferenceDTO dto = new ReferenceDTO(entity.getUuid());
+        @SuppressWarnings("unchecked")
+        ReferenceDTO dto = new ReferenceDTO((Class<Reference>)entity.getClass(), entity.getUuid(), entity.getTitleCache());
+        //TODO see ReferenceDTO.titleCache
         dto.setTitleCache(entity.getTitleCache());
         dto.setAbbrevTitleCache(entity.getAbbrevTitleCache());
         dto.setUri(entity.getUri());

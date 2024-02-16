@@ -24,10 +24,8 @@ public class AnnotationDTO extends TypedEntityReference<Annotation> {
     private UUID annotationTypeUuid = null;
     private String text = null;
 
-    @SuppressWarnings("deprecation")
     public AnnotationDTO(UUID uuid) {
-        super(Annotation.class, uuid);
-        this.label = null;
+        super(Annotation.class, uuid, null);
     }
 
     public UUID getAnnotationTypeUuid() {

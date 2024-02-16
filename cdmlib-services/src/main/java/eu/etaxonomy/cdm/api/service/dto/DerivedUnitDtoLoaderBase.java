@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.OccurrenceStatus;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * @author muellera
@@ -139,7 +139,7 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
         dto.setDerivationTreeSummary(DerivationTreeSummaryDtoLoader.fromEntity(derivedUnit, dto.getSpecimenShortTitle()));
 
         if(derivedUnit.getStoredUnder() != null) {
-            dto.setStoredUnder(TypedEntityReference.fromEntity(derivedUnit.getStoredUnder()));
+            dto.setStoredUnder(TypedEntityReferenceFactory.fromEntity(derivedUnit.getStoredUnder()));
         }
         dto.setOriginalLabelInfo(derivedUnit.getOriginalLabelInfo());
         dto.setExsiccatum(derivedUnit.getExsiccatum());

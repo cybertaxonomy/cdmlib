@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
@@ -255,7 +256,7 @@ public class TypeDesignationSetContainer {
         String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
-                TypedEntityReference.fromEntityWithLabel(baseEntity, label);
+                TypedEntityReferenceFactory.fromEntityWithLabel(baseEntity, label);
 
         return baseEntityReference;
     }

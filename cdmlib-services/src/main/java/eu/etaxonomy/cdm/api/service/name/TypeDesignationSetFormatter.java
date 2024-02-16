@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
@@ -102,7 +103,8 @@ public class TypeDesignationSetFormatter {
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
 
         if(withNameIfAvailable && manager.getTypifiedNameCache() != null){
-            finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(), TypedEntityReference.fromEntity(manager.getTypifiedName(), false));
+            finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(),
+                    TypedEntityReferenceFactory.fromEntity(manager.getTypifiedName(), false));
             finalBuilder.addPostSeparator(POST_NAME_SEPARTOR);
         }
 
@@ -267,7 +269,7 @@ public class TypeDesignationSetFormatter {
         Reference ref = source.getCitation();
         if (ref != null){
             String citation = OriginalSourceFormatter.INSTANCE.format(source);
-            workingsetBuilder.add(TagEnum.reference, citation, TypedEntityReference.fromEntity(ref, false));
+            workingsetBuilder.add(TagEnum.reference, citation, TypedEntityReferenceFactory.fromEntity(ref, false));
         }
     }
 
@@ -303,7 +305,7 @@ public class TypeDesignationSetFormatter {
 
     private static void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
             TaggedTextBuilder workingsetBuilder) {
-        TypedEntityReference<?> typeDesignationEntity = TypedEntityReference.fromEntity(td, false);
+        TypedEntityReference<?> typeDesignationEntity = TypedEntityReferenceFactory.fromEntity(td, false);
         if(td instanceof NameTypeDesignation){
             buildTaggedTextForNameTypeDesignation((NameTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
         } else if (td instanceof TextualTypeDesignation){

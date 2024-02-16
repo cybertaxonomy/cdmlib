@@ -67,8 +67,8 @@ public class RegistrationDTO extends TypedEntityReference<Registration> {
 
     // **************** CONSTRUCTOR **************************/
 
-    public RegistrationDTO(Class<Registration> type, UUID uuid) {
-        super(type, uuid);
+    public RegistrationDTO(Class<Registration> type, UUID uuid, String label) {
+        super(type, uuid, label);
     }
 
     // ************* GETTER / SETTER **************************/

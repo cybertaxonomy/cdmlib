@@ -31,8 +31,8 @@ public class SpecimenTypeDesignationDTO
     private SourceDTO designationSource;
     private List<RegistrationDTO> registrations;
 
-    public SpecimenTypeDesignationDTO(Class<SpecimenTypeDesignation> type, UUID uuid) {
-        super(type, uuid);
+    public SpecimenTypeDesignationDTO(Class<SpecimenTypeDesignation> type, UUID uuid, String label) {
+        super(type, uuid, label);
     }
 
     public List<EntityReference> getNames() {

@@ -24,6 +24,7 @@ public class ReferenceDTO extends TypedEntityReference<Reference> {
 
     private static final long serialVersionUID = -2619569446682158500L;
 
+    //TODO is this needed? We have "label" in TypedEntityReference
     private String titleCache;
     private String abbrevTitleCache;
     private URI uri;
@@ -31,14 +32,13 @@ public class ReferenceDTO extends TypedEntityReference<Reference> {
     private VerbatimTimePeriod datePublished;
 
     //should only be used by loader classes
-    public ReferenceDTO(UUID uuid) {
-        super(Reference.class, uuid);
+    public ReferenceDTO(Class<Reference> clazz, UUID uuid, String label) {
+        super(clazz, uuid, label);
     }
 
     public String getTitleCache() {
         return titleCache;
     }
-
     public void setTitleCache(String titleCache) {
         this.titleCache = titleCache;
     }
@@ -46,7 +46,6 @@ public class ReferenceDTO extends TypedEntityReference<Reference> {
     public String getAbbrevTitleCache() {
         return abbrevTitleCache;
     }
-
     public void setAbbrevTitleCache(String abbrevTitleCache) {
         this.abbrevTitleCache = abbrevTitleCache;
     }
@@ -54,7 +53,6 @@ public class ReferenceDTO extends TypedEntityReference<Reference> {
     public URI getUri() {
         return uri;
     }
-
     public void setUri(URI uri) {
         this.uri = uri;
     }
@@ -62,7 +60,6 @@ public class ReferenceDTO extends TypedEntityReference<Reference> {
     public DOI getDoi() {
         return doi;
     }
-
     public void setDoi(DOI doi) {
         this.doi = doi;
     }
@@ -70,9 +67,7 @@ public class ReferenceDTO extends TypedEntityReference<Reference> {
     public VerbatimTimePeriod getDatePublished() {
         return datePublished;
     }
-
     public void setDatePublished(VerbatimTimePeriod datePublished) {
         this.datePublished = datePublished;
     }
-
 }

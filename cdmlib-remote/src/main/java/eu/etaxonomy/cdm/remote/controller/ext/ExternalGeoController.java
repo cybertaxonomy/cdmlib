@@ -140,12 +140,12 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
-        List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(taxonUuid, relationshipUuids,
+        List<SpecimenOrObservationBase> specimensOrObservations = occurencesForTaxon(taxonUuid, relationshipUuids,
 				relationshipInversUuids, includeUnpublished,
 				taxonOccurrenceRelTypes,
 				maxDepth, response);
 
-        OccurrenceServiceRequestParameterDto dto = geoService.getOccurrenceServiceRequestParameters(specimensOrObersvations,
+        OccurrenceServiceRequestParameterDto dto = geoService.getOccurrenceServiceRequestParameters(specimensOrObservations,
                 specimenOrObservationTypeColors );
 
         return dto;

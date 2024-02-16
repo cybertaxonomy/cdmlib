@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -377,7 +378,8 @@ public class RegistrationWrapperDTO {
             blockedBy = new HashSet<>();
             if(reg.getBlockedBy() != null){
                 for(Registration blockReg : reg.getBlockedBy()){
-                    TypedEntityReference<Registration> typedEntityRef = TypedEntityReference.fromEntityWithLabel(blockReg, blockReg.getIdentifier());
+                    TypedEntityReference<Registration> typedEntityRef =
+                            TypedEntityReferenceFactory.fromEntityWithLabel(blockReg, blockReg.getIdentifier());
                     blockedBy.add(typedEntityRef);
                 }
             }

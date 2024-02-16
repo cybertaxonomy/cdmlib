@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -192,7 +192,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 
         List<TaggedText> taggedText = formatter.toTaggedText(manager);
         Assert.assertEquals("first entry should be the typified name",
-                new TaggedText(TagEnum.name, "Prionus L.",TypedEntityReference.fromEntity(typifiedName, false)), taggedText.get(0));
+                new TaggedText(TagEnum.name, "Prionus L.",TypedEntityReferenceFactory.fromEntity(typifiedName, false)), taggedText.get(0));
         Assert.assertEquals("fourth entry should be the name type nameCache",
                 new TaggedText(TagEnum.name, "Prionus"), taggedText.get(3));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
         Assert.assertEquals("fourth entry should be the name type nameCache",
@@ -231,7 +231,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
 
         List<TaggedText> taggedText = formatter.toTaggedText(container);
         Assert.assertEquals("first entry should be the typified name",
-                new TaggedText(TagEnum.name, "Prionus coriatius L.",TypedEntityReference.fromEntity(typifiedName, false)), taggedText.get(0));
+                new TaggedText(TagEnum.name, "Prionus coriatius L.",TypedEntityReferenceFactory.fromEntity(typifiedName, false)), taggedText.get(0));
 //        Assert.assertEquals("fourth entry should be the name type nameCache",
 //                new TaggedText(TagEnum.name, "Prionus"), taggedText.get(3));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
 //        Assert.assertEquals("fourth entry should be the name type nameCache",

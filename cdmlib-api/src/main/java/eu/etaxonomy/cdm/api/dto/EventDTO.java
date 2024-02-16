@@ -26,11 +26,12 @@ public class EventDTO<T extends EventBase> extends TypedEntityReference<T>{
     protected String actor;
 
     public EventDTO(Class<T> type, UUID uuid) {
-        super(type, uuid);
+        super(type, uuid, null);
     }
 
+    @SuppressWarnings("unchecked")
     protected EventDTO(T entity) {
-        super(entity);
+        super((Class<T>)entity.getClass(), entity.getUuid(), null);
         timePeriod = entity.getTimeperiod();
         if(entity.getActor() != null) {
             actor = entity.getActor().getTitleCache();
