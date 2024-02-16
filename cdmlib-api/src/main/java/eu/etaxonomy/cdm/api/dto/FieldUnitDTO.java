@@ -35,7 +35,7 @@ public class FieldUnitDTO
 
 	//TODO also part of GatheringEvent, can be removed here?
 	private String country;
-    private String date; // TODO remove this obsolete copy of gatheringEvent.timeperiod
+    private String date; // TODO remove this obsolete copy of gatheringEvent.timeperiod?
 
 	private String fieldNumber;
 	private String fieldNotes;
