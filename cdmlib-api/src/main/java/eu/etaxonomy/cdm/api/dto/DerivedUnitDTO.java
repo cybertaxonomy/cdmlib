@@ -41,7 +41,7 @@ public class DerivedUnitDTO
     private List<DerivedUnitStatusDto> status;
 
     private String specimenShortTitle;
-    private List<TypedEntityReference<Taxon>> associatedTaxa = new ArrayList<>();;
+    private List<TypedEntityReference<Taxon>> associatedTaxa = new ArrayList<>();
     private URI preferredStableUri;
 
     private DerivationEventDTO derivationEvent;

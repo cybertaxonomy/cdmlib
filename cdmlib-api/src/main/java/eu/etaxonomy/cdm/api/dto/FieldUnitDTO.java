@@ -160,7 +160,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
      * The latter lists all collections with the number of specimens which are involved in this tree.
      */
     private TreeLabels assembleLablesFromTree(
-            boolean doSummaryLabel, boolean collectionsStatistics) {
+            boolean doSummaryLabel, boolean doCollectionsStatistics) {
 
         final String SEPARATOR_STRING = ", ";
 
@@ -196,7 +196,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
             treeLabels.summaryLabel = summaryLabel;
         }
 
-        if(collectionsStatistics) {
+        if(doCollectionsStatistics) {
             List<String> collectionStats = new ArrayList<>();
             for (CollectionDTO collectionDTO : unitIdenfierLabelsByCollections.keySet()) {
                 int unitCount = unitIdenfierLabelsByCollections.get(collectionDTO).size();
@@ -236,5 +236,4 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
         String summaryLabel = null;
         String collectionsStatistics = null;
     }
-
 }

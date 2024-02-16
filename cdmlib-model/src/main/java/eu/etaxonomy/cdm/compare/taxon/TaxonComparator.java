@@ -195,9 +195,6 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
     }
 
     /**
-     *
-     * @param name1
-     * @param name2
      * @param includeNomIlleg
      *    if <code>true</code> and if both names have no date or same date, the only
      *    name having nom. illeg. state is handled as if the name was published later than the name

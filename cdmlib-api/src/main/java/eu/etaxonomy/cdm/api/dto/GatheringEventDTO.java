@@ -79,6 +79,7 @@ public class GatheringEventDTO implements Serializable{
         this.collectingMethod = collectingMethod;
     }
 
+
     public Integer getAbsoluteElevation() {
         return absoluteElevation;
     }

@@ -76,6 +76,7 @@ public class FieldUnitDtoLoader extends SpecimenOrObservationBaseDtoLoader<Field
 
         dto.setFieldNotes(fieldUnit.getFieldNotes());
         dto.setFieldNumber(fieldUnit.getFieldNumber());
+
         if(typeIncludeFilter == null) {
             typeIncludeFilter = EnumSet.allOf(SpecimenOrObservationType.class);
         }
@@ -88,10 +89,12 @@ public class FieldUnitDtoLoader extends SpecimenOrObservationBaseDtoLoader<Field
 
         if (fieldUnit.getGatheringEvent() != null) {
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
-            // Country
+
+            //country
             NamedArea country = gatheringEvent.getCountry();
             dto.setCountry(country != null ? country.getLabel() : null);
-            // Collection
+
+            //collector/fieldNumber
             AgentBase<?> collector = gatheringEvent.getCollector();
             String fieldNumber = fieldUnit.getFieldNumber();
             String collectionString = "";

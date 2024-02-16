@@ -52,5 +52,4 @@ public class TimePeriodPartialFormatter extends DateTimeFormatter{
 
 		return result;
 	}
-
 }

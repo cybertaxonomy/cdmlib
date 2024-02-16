@@ -76,6 +76,7 @@ public class GatheringEventDtoLoader {
         dto.setDistanceToWaterSurface(gathering.getDistanceToWaterSurface());
         dto.setDistanceToWaterSurfaceMax(gathering.getDistanceToWaterSurfaceMax());
         dto.setDistanceToWaterSurfaceText(gathering.getDistanceToWaterSurfaceText());
+
         //TODO why only start date
         dto.setDate(gathering.getGatheringDate());
 
