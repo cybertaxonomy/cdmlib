@@ -43,7 +43,7 @@ public class SpecimenTypeDesignationDtoLoader {
            names.add(new EntityReference(name.getUuid(), name.getTitleCache()));
        }
        dto.setNames(names);
-       dto.setDesignationSource(SourceDtoLoader.fromDescriptionElementSource(typeDesignation.getDesignationSource()));
+       dto.setDesignationSource(SourceDtoLoader.fromEntity(typeDesignation.getDesignationSource()));
        dto.setTypeSpecimen(TypedEntityReferenceFactory.fromEntity(typeDesignation.getTypeSpecimen()));
        dto.setRegistrations(typeDesignation.getRegistrations().stream()
                .map(reg -> RegistrationDtoLoader.INSTANCE().fromEntity(reg))

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.dto.MediaDTO;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -34,7 +35,8 @@ public class MediaDtoLoader {
     public static List<MediaDTO> fromEntity(Media entity) {
         List<MediaDTO> dtos = new ArrayList<>();
         entity.getAllTitles(); // initialize all titles!!!
-        MediaDTO dto = new MediaDTO(entity.getUuid());
+        @SuppressWarnings("unchecked")
+        MediaDTO dto = new MediaDTO((Class<Media>)CdmBase.deproxy(entity).getClass(), entity.getUuid());
         for (MediaRepresentation rep :entity.getRepresentations()){
             for(MediaRepresentationPart p : rep.getParts()){
                 if(p.getUri() != null){
@@ -43,7 +45,7 @@ public class MediaDtoLoader {
                 }
             }
         }
-        entity.getSources().stream().forEach(s -> dto.getSources().add(SourceDtoLoader.fromIdentifiableSource(s)));
+        dto.setSources(SourceDtoLoader.fromEntities(entity.getSources()));
         if(dto.getUri() != null || !dto.getSources().isEmpty()) {
             dtos.add(dto);
         }

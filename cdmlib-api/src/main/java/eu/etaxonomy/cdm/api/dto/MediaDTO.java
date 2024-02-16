@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.media.Media;
@@ -32,10 +32,10 @@ public class MediaDTO extends TypedEntityReference<Media> {
 
     private Integer size;
 
-    private List<SourceDTO> sources = new ArrayList<>();
+    private Set<SourceDTO> sources = new HashSet<>();
 
-    public MediaDTO(UUID uuid) {
-        super(Media.class, uuid, null);
+    public MediaDTO(Class<Media> clazz, UUID uuid) {
+        super(clazz, uuid, null);
     }
 
     public String getUri() {
@@ -66,7 +66,11 @@ public class MediaDTO extends TypedEntityReference<Media> {
         this.size = size;
     }
 
-    public List<SourceDTO> getSources() {
+    public Set<SourceDTO> getSources() {
         return sources;
     }
+    public void setSources(Set<SourceDTO> sources) {
+        this.sources = sources;
+    }
+
 }

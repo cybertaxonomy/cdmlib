@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.api.dto.DeterminationEventDTO;
@@ -22,14 +24,31 @@ import eu.etaxonomy.cdm.ref.TaggedEntityReference;
  * @author muellera
  * @since 13.02.2024
  */
-public class DeterminationEventDtoLoader {
+public class DeterminationEventDtoLoader extends EventDtoLoaderBase {
 
-    public static DeterminationEventDTO fromEntity(DeterminationEvent entity) {
+    public static DeterminationEventDtoLoader INSTANCE(){
+        return new DeterminationEventDtoLoader();
+    }
+
+    public List<DeterminationEventDTO> fromEntities(Set<DeterminationEvent> entities){
+        return entities.stream()
+            .map(det -> fromEntity(det))
+            .collect(Collectors.toList());
+
+    }
+
+    public DeterminationEventDTO fromEntity(DeterminationEvent entity) {
         if(entity == null) {
             return null;
         }
         @SuppressWarnings("unchecked")
         DeterminationEventDTO dto = new DeterminationEventDTO((Class<DeterminationEvent>)entity.getClass(), entity.getUuid());
+        load(dto, entity);
+        return dto;
+    }
+
+    private void load(DeterminationEventDTO dto, DeterminationEvent entity) {
+        super.load(dto, entity);
         if(entity.getTaxon() != null) {
             @SuppressWarnings("unchecked")
             TaggedEntityReference<Taxon> taxonDto = TaggedEntityReference.from(Taxon.class, entity.getTaxon().getUuid(), entity.getTaxon().getTaggedTitle());
@@ -45,6 +64,6 @@ public class DeterminationEventDtoLoader {
                         .map(r -> ReferenceDtoLoader.fromEntity(r))
                         .collect(Collectors.toSet()));
         }
-        return dto;
     }
+
 }

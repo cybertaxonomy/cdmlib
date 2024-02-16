@@ -23,19 +23,11 @@ public class EventDTO<T extends EventBase> extends TypedEntityReference<T>{
     private static final long serialVersionUID = -756496997548410660L;
 
     private TimePeriod timePeriod;
-    protected String actor;
-
-    public EventDTO(Class<T> type, UUID uuid) {
-        super(type, uuid, null);
-    }
+    private String actor;
 
     @SuppressWarnings("unchecked")
-    protected EventDTO(T entity) {
-        super((Class<T>)entity.getClass(), entity.getUuid(), null);
-        timePeriod = entity.getTimeperiod();
-        if(entity.getActor() != null) {
-            actor = entity.getActor().getTitleCache();
-        }
+    protected EventDTO(Class<? extends EventBase> clazz, UUID uuid) {
+        super((Class<T>)clazz, uuid, null);
     }
 
     public TimePeriod getTimePeriod() {

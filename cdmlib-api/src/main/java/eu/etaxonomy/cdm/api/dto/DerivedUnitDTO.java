@@ -44,6 +44,8 @@ public class DerivedUnitDTO
     private List<TypedEntityReference<Taxon>> associatedTaxa = new ArrayList<>();;
     private URI preferredStableUri;
 
+    private DerivationEventDTO derivationEvent;
+
     private Map<String, List<String>> types = new HashMap<>();
 
     private String mostSignificantIdentifier;
@@ -150,4 +152,11 @@ public class DerivedUnitDTO
 	public void setStatus(List<DerivedUnitStatusDto> status) {
 		this.status = status;
 	}
+
+    public DerivationEventDTO getDerivationEvent() {
+        return derivationEvent;
+    }
+    public void setDerivationEvent(DerivationEventDTO derivationEvent) {
+        this.derivationEvent = derivationEvent;
+    }
 }

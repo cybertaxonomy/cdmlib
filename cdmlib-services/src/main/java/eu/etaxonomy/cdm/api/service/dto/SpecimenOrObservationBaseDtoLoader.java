@@ -13,7 +13,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.dto.MediaDTO;
@@ -83,10 +82,7 @@ public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrO
             collectorsString = CdmUtils.concat(" ", collectorsString, fieldNumberString);
             dto.setCollectorsString(collectorsString);
         }
-        dto.setDeterminations(specimenOrObservation.getDeterminations().stream()
-                .map(det -> DeterminationEventDtoLoader.fromEntity(det))
-                .collect(Collectors.toList())
-                );
+        dto.setDeterminations(DeterminationEventDtoLoader.INSTANCE().fromEntities(specimenOrObservation.getDeterminations()));
         Collections.sort(dto.getDeterminations(), new DeterminationEventDtoComparator());
 
         if (specimenOrObservation instanceof DerivedUnit){

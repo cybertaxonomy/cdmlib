@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import eu.etaxonomy.cdm.api.dto.ReferenceDTO;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -33,5 +36,12 @@ public class ReferenceDtoLoader {
         dto.setDatePublished(entity.getDatePublished());
 
         return dto;
+    }
+
+    public static Set<ReferenceDTO> fromEntities(Set<Reference> entities){
+        Set<ReferenceDTO> refDtos = new HashSet<>();
+        //TODO allow filtering
+        entities.stream().forEach(r->refDtos.add(ReferenceDtoLoader.fromEntity(r)));
+        return refDtos;
     }
 }

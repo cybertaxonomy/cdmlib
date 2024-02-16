@@ -15,7 +15,6 @@ import java.util.Set;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author k.luther
@@ -45,8 +44,7 @@ public class SequenceDTO implements Serializable{
 
     private String haplotype;
 
-    //TODO DTO remove model
-    private Set<Reference> citations = new HashSet<>();
+    private Set<ReferenceDTO> citations = new HashSet<>();
 
     private URI boldUri;
     private URI ddbjUri;
@@ -147,11 +145,10 @@ public class SequenceDTO implements Serializable{
         this.haplotype = haplotype;
     }
 
-    public Set<Reference> getCitations() {
+    public Set<ReferenceDTO> getCitations() {
         return citations;
     }
-    public void setCitations(Set<Reference> citations) {
+    public void setCitations(Set<ReferenceDTO> citations) {
         this.citations = citations;
     }
-
 }

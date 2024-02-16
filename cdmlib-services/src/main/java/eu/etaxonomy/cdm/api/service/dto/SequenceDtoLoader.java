@@ -44,7 +44,7 @@ public class SequenceDtoLoader {
         }
         dto.setHaplotype(seq.getHaplotype());
 
-        dto.setCitations(seq.getCitations());
+        dto.setCitations(ReferenceDtoLoader.fromEntities(seq.getCitations()));
         try{
             dto.setBoldUri(seq.getBoldUri());
             dto.setDdbjUri(seq.getDdbjUri());

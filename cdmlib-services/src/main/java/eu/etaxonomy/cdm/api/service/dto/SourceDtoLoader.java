@@ -8,10 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import eu.etaxonomy.cdm.api.dto.SourceDTO;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 
 /**
@@ -22,25 +23,15 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
  */
 public class SourceDtoLoader {
 
-    //TODO rename to formNamedSource
-    public static SourceDTO fromDescriptionElementSource(NamedSourceBase entity) {
+    public static Set<SourceDTO> fromEntities(Set<? extends OriginalSourceBase> entities){
+        Set<SourceDTO> refDtos = new HashSet<>();
+        //TODO allow filtering
+        entities.stream().forEach(s->refDtos.add(SourceDtoLoader.fromEntity(s)));
+        return refDtos;
+    }
+
+    public static SourceDTO fromEntity(OriginalSourceBase entity) {
         //TODO name used in source not needed?
-        SourceDTO dto = fromSourceBase(entity);
-        if(entity != null) {
-            dto.setLabel(OriginalSourceFormatter.INSTANCE.format(entity));
-        }
-        return dto;
-    }
-
-    public static SourceDTO fromIdentifiableSource(IdentifiableSource entity) {
-        SourceDTO dto = fromSourceBase(entity);
-        if(entity != null) {
-            //TODO AM unclear why IdentifiableSource does not have the label set
-        }
-        return dto;
-    }
-
-    private static SourceDTO fromSourceBase(OriginalSourceBase entity) {
         if(entity == null) {
             return null;
         }

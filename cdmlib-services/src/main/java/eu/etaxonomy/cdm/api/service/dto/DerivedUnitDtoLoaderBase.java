@@ -64,12 +64,12 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
         }
         dto.setBarcode(derivedUnit.getBarcode());
         dto.setCatalogNumber(derivedUnit.getCatalogNumber());
-        dto.setDerivationEvent(DerivationEventDTO.fromEntity(derivedUnit.getDerivedFrom()));
+        dto.setDerivationEvent(DerivationEventDtoLoader.INSTANCE().fromEntity(derivedUnit.getDerivedFrom()));
         if (derivedUnit.getPreservation()!= null){
             dto.setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
         }
         dto.setRecordBase(getRecordBaseString(derivedUnit));
-        dto.setSources(derivedUnit.getSources());
+        dto.setSources(SourceDtoLoader.fromEntities(derivedUnit.getSources()));
         setSpecimenTypeDesignations(dto, derivedUnit.getSpecimenTypeDesignations());
 
         // -------------------------------------------------------------
@@ -131,7 +131,7 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
 
             for (OccurrenceStatus specimenStatus : occurrenceStatus) {
                 DerivedUnitStatusDto statusDto = new DerivedUnitStatusDto(specimenStatus.getType().getLabel());
-                statusDto.setStatusSource(SourceDtoLoader.fromDescriptionElementSource(specimenStatus.getSource()) ) ;
+                statusDto.setStatusSource(SourceDtoLoader.fromEntity(specimenStatus.getSource()) ) ;
                 status.add(statusDto);
             }
             dto.setStatus(status);

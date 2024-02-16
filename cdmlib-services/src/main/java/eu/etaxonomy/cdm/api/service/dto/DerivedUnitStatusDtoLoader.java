@@ -21,7 +21,7 @@ public class DerivedUnitStatusDtoLoader {
 
     public static DerivedUnitStatusDto fromStatus(OccurrenceStatus status) {
         DerivedUnitStatusDto dto = new DerivedUnitStatusDto(status.getType().getLabel());
-        dto.setStatusSource(SourceDtoLoader.fromDescriptionElementSource(status.getSource()));
+        dto.setStatusSource(SourceDtoLoader.fromEntity(status.getSource()));
         return dto;
     }
 }
