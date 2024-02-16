@@ -28,7 +28,7 @@ public class CollectionDTO extends TypedEntityReference<Collection> {
     private CollectionDTO superCollection;
 
     public CollectionDTO(UUID uuid, String label) {
-        super(Collection.class, uuid);
+        super(Collection.class, uuid, label);
     }
 
     public String getCode() {
