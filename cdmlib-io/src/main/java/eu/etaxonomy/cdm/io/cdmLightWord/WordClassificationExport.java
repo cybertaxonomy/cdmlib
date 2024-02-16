@@ -2479,9 +2479,9 @@ public class WordClassificationExport
                                 csvLine[table.getIndex(WordClassificationExportTable.COLLECTOR_STRING)] = createCollectorString(
                                         state, gathering, fieldUnit);
 
-                                if (gathering.getGatheringDate() != null) {
+                                if (gathering.getTimeperiod() != null) {
                                     csvLine[table.getIndex(WordClassificationExportTable.COLLECTION_DATE)] = gathering
-                                            .getGatheringDate().toString();
+                                            .getTimeperiod().toString();
                                 }
                                 if (!gathering.getCollectingAreas().isEmpty()) {
                                     int index = 0;

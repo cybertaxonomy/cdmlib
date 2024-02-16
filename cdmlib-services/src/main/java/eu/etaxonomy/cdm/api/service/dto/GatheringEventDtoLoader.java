@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.api.dto.GatheringEventDTO;
+import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -78,7 +79,9 @@ public class GatheringEventDtoLoader {
         dto.setDistanceToWaterSurfaceText(gathering.getDistanceToWaterSurfaceText());
 
         //TODO why only start date
-        dto.setDate(gathering.getGatheringDate());
+        if(gathering.getGatheringStartDate() != null) {
+            dto.setDate(gathering.getGatheringStartDate().toString(TimePeriodPartialFormatter.INSTANCE()));
+        }
 
         for (NamedArea area: gathering.getCollectingAreas()){
             String areaString = area.getLabel();

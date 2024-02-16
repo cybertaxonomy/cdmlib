@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
+import eu.etaxonomy.cdm.api.dto.compare.OccurrenceDtoComparator;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
@@ -389,7 +390,8 @@ public class OccurrenceServiceImpl
                     FieldUnit fu1 = (FieldUnit)o1;
                     FieldUnit fu2 = (FieldUnit)o2;
 
-                    return PartialComparator.INSTANCE().compare(fu1.getGatheringEvent().getGatheringDate(), fu2.getGatheringEvent().getGatheringDate());
+                    //TODO implement TimePeriod comparator
+                    return PartialComparator.INSTANCE().compare(fu1.getGatheringEvent().getGatheringStartDate(), fu2.getGatheringEvent().getGatheringStartDate());
                 }
                 if(o1 instanceof DerivedUnit && o2 instanceof DerivedUnit) {
                     SpecimenOrObservationBase<?> du1 = o1;
@@ -624,30 +626,7 @@ public class OccurrenceServiceImpl
         List<SpecimenOrObservationBaseDTO<?>> orderdDTOs = new ArrayList<>(rootUnitDTOs);
         // TODO order dtos by date can only be done by string comparison
         // the FieldUnitDTO.date needs to be a Partial object for sensible ordering
-        Collections.sort(orderdDTOs, new Comparator<SpecimenOrObservationBaseDTO<?>>() {
-
-            @Override
-            public int compare(SpecimenOrObservationBaseDTO<?> o1, SpecimenOrObservationBaseDTO<?> o2) {
-                if(o1 instanceof FieldUnitDTO && o2 instanceof FieldUnitDTO) {
-                    FieldUnitDTO fu1 = (FieldUnitDTO)o1;
-                    FieldUnitDTO fu2 = (FieldUnitDTO)o2;
-                    //TODO if we want null values and values with missing year as smallest we should use
-                    //PartialComparator.INSTANCE_NULL_SMALLEST() here
-                    return PartialComparator.INSTANCE().compare(fu1.getDate(), fu2.getDate());
-                }
-                if(o1 instanceof DerivedUnitDTO && o2 instanceof DerivedUnitDTO) {
-                    SpecimenOrObservationBaseDTO<?> du1 = o1;
-                    SpecimenOrObservationBaseDTO<?> du2 = o2;
-                    return StringUtils.compare(du1.getLabel(), du2.getLabel());
-                 }
-                if(o1 instanceof FieldUnitDTO && o2 instanceof DerivedUnitDTO) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            }
-
-        });
+        Collections.sort(orderdDTOs, OccurrenceDtoComparator.INSTANCE());
 
         return (List)orderdDTOs;
     }

@@ -24,7 +24,13 @@ public class TimePeriodPartialFormatter extends DateTimeFormatter{
 
     private final String ENDASH = TimePeriod.SEP;
 
-	public static TimePeriodPartialFormatter NewInstance(){
+    private static TimePeriodPartialFormatter instance = new TimePeriodPartialFormatter();
+
+    public static TimePeriodPartialFormatter INSTANCE(){
+        return instance;
+    }
+
+    public static TimePeriodPartialFormatter NewInstance(){
 		return new TimePeriodPartialFormatter();
 	}
 

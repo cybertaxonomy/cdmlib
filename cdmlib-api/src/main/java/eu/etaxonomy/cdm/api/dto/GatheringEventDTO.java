@@ -12,8 +12,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.joda.time.Partial;
-
 /**
  * @author k.luther
  * @since 21.06.2018
@@ -37,7 +35,7 @@ public class GatheringEventDTO implements Serializable{
     private Double distanceToWaterSurfaceMax;
     private String distanceToWaterSurfaceText;
     private String collector;
-    private Partial date;
+    private String date;
 
 
     public String getLocality() {
@@ -152,10 +150,10 @@ public class GatheringEventDTO implements Serializable{
         this.collector = collector;
     }
 
-    public Partial getDate() {
+    public String getDate() {
         return date;
     }
-    public void setDate(Partial date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }

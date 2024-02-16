@@ -2595,9 +2595,9 @@ public class CdmLightClassificationExport
                                 csvLine[table.getIndex(CdmLightExportTable.COLLECTOR_STRING)] = createCollectorString(
                                         state, gathering, fieldUnit);
 
-                                if (gathering.getGatheringDate() != null) {
+                                if (gathering.getTimeperiod() != null) {
                                     csvLine[table.getIndex(CdmLightExportTable.COLLECTION_DATE)] = gathering
-                                            .getGatheringDate().toString();
+                                            .getTimeperiod().toString();
                                 }
                                 if (!gathering.getCollectingAreas().isEmpty()) {
                                     int index = 0;

@@ -36,8 +36,8 @@ public class FieldUnitFormatter extends SpecimenOrObservationBaseFormatter {
             if(gatheringEvent.getCountry()!=null){
                 formatKeyMap.put(FormatKey.GATHERING_COUNTRY, gatheringEvent.getCountry().getLabel());
             }
-            if(gatheringEvent.getGatheringDate()!=null){
-                formatKeyMap.put(FormatKey.GATHERING_DATE, gatheringEvent.getGatheringDate().toString());
+            if(gatheringEvent.getTimeperiod()!=null){
+                formatKeyMap.put(FormatKey.GATHERING_DATE, gatheringEvent.getTimeperiod().toString());
             }
         }
         formatKeyMap.put(FormatKey.FIELD_NUMBER, fieldUnit.getFieldNumber());

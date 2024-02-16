@@ -34,6 +34,7 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     private URI uri;
     private String type;
     //TODO external links
+    private String accessed;
 
     private List<URI> links;
 
@@ -120,5 +121,12 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     }
     public void setOriginalInfo(String originalInfo) {
         this.originalInfo = originalInfo;
+    }
+
+    public String getAccessed() {
+        return accessed;
+    }
+    public void setAccessed(String accessed) {
+        this.accessed = accessed;
     }
 }

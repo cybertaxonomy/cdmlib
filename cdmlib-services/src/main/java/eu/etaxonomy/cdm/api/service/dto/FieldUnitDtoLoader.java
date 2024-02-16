@@ -13,6 +13,7 @@ import java.util.EnumSet;
 import eu.etaxonomy.cdm.api.dto.DerivationTreeSummaryDTO;
 import eu.etaxonomy.cdm.api.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -97,17 +98,21 @@ public class FieldUnitDtoLoader extends SpecimenOrObservationBaseDtoLoader<Field
             //collector/fieldNumber
             AgentBase<?> collector = gatheringEvent.getCollector();
             String fieldNumber = fieldUnit.getFieldNumber();
-            String collectionString = "";
+            String collectingString = "";
             if (collector != null || fieldNumber != null) {
-                collectionString += collector != null ? collector : "";
-                if (!collectionString.isEmpty()) {
-                    collectionString += " ";
+                collectingString += collector != null ? collector : "";
+                if (!collectingString.isEmpty()) {
+                    collectingString += " ";
                 }
-                collectionString += (fieldNumber != null ? fieldNumber : "");
-                collectionString = collectionString.trim();
+                collectingString += (fieldNumber != null ? fieldNumber : "");
+                collectingString = collectingString.trim();
             }
-            dto.setCollectingString(collectionString);
-            dto.setDate(gatheringEvent.getGatheringDate());
+            dto.setCollectingString(collectingString);
+            if (gatheringEvent.getGatheringStartDate() != null) {
+                dto.setDate(gatheringEvent.getGatheringStartDate().toString(TimePeriodPartialFormatter.INSTANCE()));
+            }
+
+            dto.setTimePeriod(gatheringEvent.getTimeperiod());
         }
 
         // assemble derivate data DTO

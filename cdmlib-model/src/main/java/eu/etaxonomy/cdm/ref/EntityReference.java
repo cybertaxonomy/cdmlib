@@ -74,5 +74,4 @@ public class EntityReference implements Serializable, Comparable<EntityReference
             return this.label.compareTo(o2.label);
         }
     }
-
 }

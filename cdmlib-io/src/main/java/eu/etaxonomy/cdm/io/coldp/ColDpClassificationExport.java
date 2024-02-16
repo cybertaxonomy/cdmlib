@@ -1516,10 +1516,10 @@ public class ColDpClassificationExport
         csvLine[table.getIndex(ColDpExportTable.TYPE_HOST)] = null;
 
         //date
-        if (gathering.getGatheringDate() != null) {
+        if (gathering.getTimeperiod() != null) {
             //TODO 3 specimen type ISO 8601
             csvLine[table.getIndex(ColDpExportTable.TYPE_DATE)] = gathering
-                    .getGatheringDate().toString();
+                    .getTimeperiod().toString();
         }
 
 

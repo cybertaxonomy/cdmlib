@@ -19,30 +19,32 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.joda.time.Partial;
-
+import eu.etaxonomy.cdm.compare.common.TimePeriodComparator;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 
-public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
+public class FieldUnitDTO
+            extends SpecimenOrObservationBaseDTO<FieldUnit> {
 
     private static final long serialVersionUID = 3981843956067273220L;
 
-	private String country;
-	private Partial date; // TODO remove this obsolete copy of gatheringEvent.timeperiod
 	private String collectingString;
+
+	//collector + fieldnumber
 	private String collectionsStatistics;
+
+	//TODO also part of GatheringEvent, can be removed here?
+	private String country;
+    private String date; // TODO remove this obsolete copy of gatheringEvent.timeperiod
+
 	private String fieldNumber;
 	private String fieldNotes;
 
 	private GatheringEventDTO gatheringEvent;
 
-    private CollectionDTO collection;
+	//only for comparison, therefore not public
+	private TimePeriod timePeriod;
 
-    private String catalogNumber;
-
-    private String barcode;
-
-    private String preservationMethod;
 
     //******************** CONSTRUCTOR ***********************************/
 
@@ -74,11 +76,15 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
         this.collectingString = collectingString;
     }
 
-    public Partial getDate() {
+    public String getDate() {
         return date;
     }
-    public void setDate(Partial date) {
+    public void setDate(String date) {
         this.date = date;
+    }
+
+    public void setTimePeriod(TimePeriod timePeriod) {
+        this.timePeriod = timePeriod;
     }
 
     public boolean isHasType() {
@@ -109,42 +115,6 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
 
     public void setFieldNotes(String fieldNotes) {
         this.fieldNotes = fieldNotes;
-    }
-
-    public void setCollection(CollectionDTO collection) {
-        this.collection = collection;
-    }
-
-    public String getCatalogNumber() {
-        return catalogNumber;
-    }
-
-    public void setCatalogNumber(String catalogNumber) {
-        this.catalogNumber = catalogNumber;
-    }
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    public String getPreservationMethod() {
-        return preservationMethod;
-    }
-
-    public void setPreservationMethod(String preservationMethod) {
-        this.preservationMethod = preservationMethod;
-    }
-
-    public CollectionDTO getCollection() {
-        return collection;
-    }
-
-    public void setCollectioDTO(CollectionDTO collection) {
-        this.collection = collection;
     }
 
     @Override
@@ -235,5 +205,10 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO<FieldUnit> {
     static class TreeLabels {
         String summaryLabel = null;
         String collectionsStatistics = null;
+    }
+
+    public int compareByTimePeriod(FieldUnitDTO dto2, boolean nullFirst) {
+        TimePeriodComparator comparator = TimePeriodComparator.INSTANCE(nullFirst);
+        return comparator.compare(timePeriod, dto2.timePeriod);
     }
 }

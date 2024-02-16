@@ -269,7 +269,7 @@ public class GatheringEvent extends EventBase {
 /* ***** EventBase managed attributes  */
 
 	@Transient
-	public Partial getGatheringDate(){
+	public Partial getGatheringStartDate(){
 	    if(this.getTimeperiod()!=null){
 	        return this.getTimeperiod().getStart();
 	    }
