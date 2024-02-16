@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
+import eu.etaxonomy.cdm.api.service.dto.DtoUtil;
 import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
@@ -1160,10 +1161,7 @@ public class PortalDtoLoader {
 
         DateTime dateToAdd = dateToAddEntity.getUpdated() != null ? dateToAddEntity.getUpdated() : dateToAddEntity.getCreated();
 
-        LocalDateTime javaLocalDateTimeOfEntity = dateToAdd == null ? null:
-                LocalDateTime.of(dateToAdd.getYear(), dateToAdd.getMonthOfYear(),
-                        dateToAdd.getDayOfMonth(), dateToAdd.getHourOfDay(),
-                        dateToAdd.getMinuteOfHour(), dateToAdd.getSecondOfMinute());
+        LocalDateTime javaLocalDateTimeOfEntity = DtoUtil.fromDateTime(dateToAdd);
 
        if (existingLastDate == null) {
            return javaLocalDateTimeOfEntity;

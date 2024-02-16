@@ -56,7 +56,7 @@ public class DnaSampleDtoLoader extends DerivedUnitDtoLoaderBase<DnaSample> {
         for (AmplificationResult amplificationResult : dnaSample.getAmplificationResults()) {
               dto.addAmplificationResult(AmplificationResultDtoLoader.INSTANCE().fromEntity(amplificationResult));
         }
-        dto.setDnaQuality(CdmBase.deproxy(dnaSample.getDnaQuality()));
+        dto.setDnaQuality(DnaQualityDtoLoader.INSTANCE().fromEntity(dnaSample.getDnaQuality()));
         return dto;
     }
 }

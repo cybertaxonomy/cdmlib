@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.molecular.DnaQuality;
-
 /**
  * @author k.luther
  * @since 02.08.2018
@@ -26,7 +24,7 @@ public class DNASampleDTO extends DerivedUnitDTO {
 
     private Set<AmplificationResultDTO> amplificationResults = new HashSet<>();
 
-    private DnaQuality dnaQuality;
+    private DnaQualityDTO dnaQuality;
 
     //TODO
     public DNASampleDTO(Class type, UUID uuid, String label) {
@@ -50,10 +48,10 @@ public class DNASampleDTO extends DerivedUnitDTO {
 //        this.amplificationResults = amplificationResults;
 //    }
 
-    public DnaQuality getDnaQuality() {
+    public DnaQualityDTO getDnaQuality() {
         return dnaQuality;
     }
-    public void setDnaQuality(DnaQuality dnaQuality) {
+    public void setDnaQuality(DnaQualityDTO dnaQuality) {
         this.dnaQuality = dnaQuality;
     }
 
