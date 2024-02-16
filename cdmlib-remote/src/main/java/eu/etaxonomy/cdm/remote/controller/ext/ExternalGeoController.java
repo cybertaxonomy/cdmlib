@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -89,9 +88,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
     @Autowired
     private IDistributionService distributionService;
-
-    @Autowired
-    private IDescriptionService descriptionService;
 
     @Autowired
     private IOccurrenceService occurrenceService;
