@@ -25,7 +25,8 @@ public class AnnotationDtoLoader {
     }
 
     public <T extends CdmBase> AnnotationDTO fromEntity(Annotation annotation) {
-        AnnotationDTO dto = new AnnotationDTO(annotation.getUuid());
+        @SuppressWarnings("unchecked")
+        AnnotationDTO dto = new AnnotationDTO((Class<Annotation>)annotation.getClass(), annotation.getUuid());
         if(annotation.getAnnotationType() != null) {
             dto.setAnnotationTypeUuid(annotation.getAnnotationType().getUuid());
         }

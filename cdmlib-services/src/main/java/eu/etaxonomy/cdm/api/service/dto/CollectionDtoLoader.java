@@ -30,7 +30,8 @@ public class CollectionDtoLoader {
         if(entity == null) {
             return null;
         }
-        CollectionDTO dto = new CollectionDTO(entity.getUuid(), entity.getTitleCache());
+        @SuppressWarnings("unchecked")
+        CollectionDTO dto = new CollectionDTO((Class<Collection>)entity.getClass(), entity.getUuid(), entity.getTitleCache());
         return load(dto, entity, new HashSet<>());
     }
 
@@ -38,7 +39,8 @@ public class CollectionDtoLoader {
         if(entity == null) {
             return null;
         }
-        CollectionDTO dto = new CollectionDTO(entity.getUuid(), entity.getTitleCache());
+        @SuppressWarnings("unchecked")
+        CollectionDTO dto = new CollectionDTO((Class<Collection>)entity.getClass(), entity.getUuid(), entity.getTitleCache());
         return load(dto, entity, collectionsSeen);
     }
 

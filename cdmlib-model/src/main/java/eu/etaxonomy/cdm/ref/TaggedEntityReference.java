@@ -25,13 +25,23 @@ public class TaggedEntityReference<T extends CdmBase> extends TypedEntityReferen
 
     private List<TaggedText> taggedText;
 
-    public TaggedEntityReference(Class<T> type, UUID uuid, List<TaggedText> taggedText) {
+    //**************** FACTORY ***********************/
+
+    public static <T extends CdmBase> TaggedEntityReference<T> from(
+            Class<T> type, UUID uuid, List<TaggedText> taggedText) {
+        return new TaggedEntityReference<>(type, uuid, taggedText);
+    }
+
+    //**************** CONSTRUCTOR ***********************/
+
+    protected TaggedEntityReference(Class<T> type, UUID uuid, List<TaggedText> taggedText) {
         super(type, uuid, TaggedCacheHelper.createString(taggedText));
         this.taggedText = taggedText;
     }
 
+    //**************** GETTER ***********************/
+
     public List<TaggedText> getTaggedText() {
         return taggedText;
     }
-
 }

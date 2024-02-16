@@ -24,21 +24,6 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     private Class<T> type;
 
-//**************************** CAST ***********************************/
-
-    /**
-     * Casts the <code>TypedEntityReference</code> to the <code>subType</code> if possible.
-     *
-     * @throws ClassCastException
-     *  If the {@link #type} is not a super type of <code>subType</code>.
-     */
-    public <S extends CdmBase> TypedEntityReference<S> castTo(Class<S> subType){
-        if(!type.isAssignableFrom(subType)) {
-            throw new ClassCastException("Cannot cast " + type.getName() + " to " + subType.getName());
-        }
-        return new TypedEntityReference<>(subType, getUuid(), getLabel());
-    }
-
 //********************* CONSTRUCTOR ****************************/
 
     protected TypedEntityReference(Class<T> type, UUID uuid, String label) {
@@ -53,6 +38,21 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
     }
     public void setType(Class<T> type) {
         this.type = type;
+    }
+
+//**************************** CAST ***********************************/
+
+    /**
+     * Casts the <code>TypedEntityReference</code> to the <code>subType</code> if possible.
+     *
+     * @throws ClassCastException
+     *  If the {@link #type} is not a super type of <code>subType</code>.
+     */
+    public <S extends CdmBase> TypedEntityReference<S> castTo(Class<S> subType){
+        if(!type.isAssignableFrom(subType)) {
+            throw new ClassCastException("Cannot cast " + type.getName() + " to " + subType.getName());
+        }
+        return new TypedEntityReference<>(subType, getUuid(), getLabel());
     }
 
 //********************** hash/equal/toString *************************/

@@ -24,8 +24,8 @@ public class AnnotationDTO extends TypedEntityReference<Annotation> {
     private UUID annotationTypeUuid = null;
     private String text = null;
 
-    public AnnotationDTO(UUID uuid) {
-        super(Annotation.class, uuid, null);
+    public AnnotationDTO(Class<Annotation> clazz, UUID uuid) {
+        super(clazz, uuid, null);
     }
 
     public UUID getAnnotationTypeUuid() {

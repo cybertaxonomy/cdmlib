@@ -28,11 +28,14 @@ public class DeterminationEventDtoLoader {
         if(entity == null) {
             return null;
         }
-        DeterminationEventDTO dto = new DeterminationEventDTO(entity);
+        @SuppressWarnings("unchecked")
+        DeterminationEventDTO dto = new DeterminationEventDTO((Class<DeterminationEvent>)entity.getClass(), entity.getUuid());
         if(entity.getTaxon() != null) {
-            dto.setDetermination(new TaggedEntityReference<>(Taxon.class, entity.getTaxon().getUuid(), entity.getTaxon().getTaggedTitle()));
+            @SuppressWarnings("unchecked")
+            TaggedEntityReference<Taxon> taxonDto = TaggedEntityReference.from(Taxon.class, entity.getTaxon().getUuid(), entity.getTaxon().getTaggedTitle());
+            dto.setDetermination(taxonDto);
         } else if(entity.getTaxonName() != null) {
-            dto.setDetermination(new TaggedEntityReference<>(TaxonName.class, entity.getTaxonName().getUuid(), entity.getTaxonName().getTaggedName()));
+            dto.setDetermination(TaggedEntityReference.from(TaxonName.class, entity.getTaxonName().getUuid(), entity.getTaxonName().getTaggedName()));
         }
         dto.setModifier(entity.getModifier());
         dto.setPreferred(entity.getPreferredFlag());
