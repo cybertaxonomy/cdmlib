@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * @author pplitzner
@@ -70,7 +71,7 @@ public class DerivedUnitDTO
         return associatedTaxa;
     }
     public void addAssociatedTaxon(Taxon taxon){
-        associatedTaxa.add(TypedEntityReference.fromEntity(taxon));
+        associatedTaxa.add(TypedEntityReferenceFactory.fromEntity(taxon));
     }
 
     public void setPreferredStableUri(URI preferredStableUri) {

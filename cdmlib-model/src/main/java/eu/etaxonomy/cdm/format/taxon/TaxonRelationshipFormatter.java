@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
@@ -216,7 +216,7 @@ public class TaxonRelationshipFormatter {
             }
             TagEnum secType = /*isSensu? TagEnum.sensuReference : */ isRelation? TagEnum.relSecReference : TagEnum.secReference;
             TaggedText refTag = TaggedText.NewInstance(secType, secRef);
-            refTag.setEntityReference(new TypedEntityReference<>(CdmBase.deproxy(ref).getClass(), ref.getUuid()));
+            refTag.setEntityReference(TypedEntityReferenceFactory.fromTypeAndId(CdmBase.deproxy(ref).getClass(), ref.getUuid()));
             result.add(refTag);
         }
         if (isNotBlank(detail)){

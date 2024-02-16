@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
@@ -112,7 +112,7 @@ public abstract class NameCacheStrategyBase
             if (!isFirst) {
                 nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
             }
-            nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr, new TypedEntityReference<>(ncStatus.getClass(), ncStatus.getUuid())));
+            nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr, TypedEntityReferenceFactory.fromTypeAndId(ncStatus.getClass(), ncStatus.getUuid())));
             isFirst = false;
         }
         if (includeSeparatorAfter && !isFirst){
