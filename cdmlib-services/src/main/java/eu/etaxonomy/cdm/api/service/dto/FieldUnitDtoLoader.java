@@ -82,7 +82,7 @@ public class FieldUnitDtoLoader extends SpecimenOrObservationBaseDtoLoader<Field
         if (fieldUnit.getGatheringEvent() != null){
             dto.setGatheringEvent(GatheringEventDtoLoader.fromEntity(fieldUnit.getGatheringEvent()));
         }
-        dto.setRecordBase(fieldUnit.getRecordBasis());
+        dto.setRecordBase(getRecordBaseString(fieldUnit));
 
         // --------------------------------------
 

@@ -45,11 +45,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  */
 public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrObservationBaseDTO> {
 
-//    protected SpecimenOrObservationBaseDTO(Class<SpecimenOrObservationBase<?>> type, UUID uuid, String label) {
-//        super(type, uuid, label);
-//        xx;
-//    }
-
     protected void load(
             SpecimenOrObservationBase<?> specimenOrObservation,
             DTO dto) {
@@ -61,10 +56,10 @@ public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrO
 
         Set<Media> collectedMedia = collectMedia(specimenOrObservation);
         addMediaAsDTO(dto, collectedMedia);
-        dto.setKindOfUnit(specimenOrObservation.getKindOfUnit());
-        dto.setSex(specimenOrObservation.getSex());
+        dto.setKindOfUnit(DefinedTermDtoLoader.INSTANCE().fromEntity(specimenOrObservation.getKindOfUnit()));
+        dto.setSex(DefinedTermDtoLoader.INSTANCE().fromEntity(specimenOrObservation.getSex()));
         dto.setIndividualCount(specimenOrObservation.getIndividualCount());
-        dto.setLifeStage(specimenOrObservation.getLifeStage());
+        dto.setLifeStage(DefinedTermDtoLoader.INSTANCE().fromEntity(specimenOrObservation.getLifeStage()));
         FieldUnit fieldUnit = null;
         if (specimenOrObservation instanceof FieldUnit){
             fieldUnit = (FieldUnit)specimenOrObservation;
@@ -99,6 +94,16 @@ public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrO
             if (derivedUnit.getSpecimenTypeDesignations() != null){
                 setSpecimenTypeDesignations(dto, derivedUnit.getSpecimenTypeDesignations());
             }
+        }
+    }
+
+    protected String getRecordBaseString(SpecimenOrObservationBase<?> sob) {
+        SpecimenOrObservationType recordBasis = sob.getRecordBasis();
+        if (recordBasis == null) {
+            return null;
+        }else {
+            ///TODO i18n
+            return recordBasis.getLabel();
         }
     }
 

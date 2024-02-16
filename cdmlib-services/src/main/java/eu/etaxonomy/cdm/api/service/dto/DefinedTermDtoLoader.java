@@ -33,6 +33,11 @@ public class DefinedTermDtoLoader {
 
     //TODO use locales
     public <T extends CdmBase> DefinedTermDTO fromEntity(DefinedTermBase<?> entity, List<Language> languages) {
+        if (entity == null) {
+            return null;
+        } else {
+            entity = CdmBase.deproxy(entity);
+        }
 
         String label = entity.getPreferredLabel(null);
         DefinedTermDTO dto = new DefinedTermDTO(entity.getClass(), entity.getUuid(), label);

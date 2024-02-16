@@ -18,13 +18,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 
@@ -45,17 +41,15 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
     private boolean hasSpecimenScan;
 
     //occurrence data
-    private SpecimenOrObservationType recordBase;
-    private DefinedTerm kindOfUnit;
+    private String recordBase;
+    private DefinedTermDTO kindOfUnit;
     private String individualCount;
     private Set<DerivedUnitDTO> derivatives = new HashSet<>();
     private Set<AnnotationDTO> annotations = new HashSet<>();
     // TODO use DTO !!!
     private Set<IdentifiableSource> sources;
-    // TODO use DTO !!!
-    private DefinedTerm sex;
-    // TODO use DTO !!!
-    private DefinedTerm lifeStage;
+    private DefinedTermDTO sex;
+    private DefinedTermDTO lifeStage;
     private List<DeterminationEventDTO>determinations;
 
     //TODO is this needed here or in FieldUnitDTO, references the field unit information
@@ -165,10 +159,10 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
         this.summaryLabel = summaryLabel;
     }
 
-    public SpecimenOrObservationType getRecordBase() {
+    public String getRecordBase() {
         return recordBase;
     }
-    public void setRecordBase(SpecimenOrObservationType specimenOrObservationType) {
+    public void setRecordBase(String specimenOrObservationType) {
         this.recordBase = specimenOrObservationType;
     }
 
@@ -202,24 +196,24 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
         this.listOfMedia = listOfMedia;
     }
 
-    public TermBase getKindOfUnit() {
+    public DefinedTermDTO getKindOfUnit() {
         return kindOfUnit;
     }
-    public void setKindOfUnit(DefinedTerm kindOfUnit) {
-        this.kindOfUnit = HibernateProxyHelper.deproxy(kindOfUnit);
+    public void setKindOfUnit(DefinedTermDTO kindOfUnit) {
+        this.kindOfUnit = kindOfUnit;
     }
 
-    public DefinedTerm getSex() {
+    public DefinedTermDTO getSex() {
         return sex;
     }
-    public void setSex(DefinedTerm sex) {
+    public void setSex(DefinedTermDTO sex) {
         this.sex = sex;
     }
 
-    public DefinedTerm getLifeStage() {
+    public DefinedTermDTO getLifeStage() {
         return lifeStage;
     }
-    public void setLifeStage(DefinedTerm lifeStage) {
+    public void setLifeStage(DefinedTermDTO lifeStage) {
         this.lifeStage = lifeStage;
     }
 

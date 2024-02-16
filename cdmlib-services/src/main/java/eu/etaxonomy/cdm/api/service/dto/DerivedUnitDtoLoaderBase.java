@@ -68,7 +68,7 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
         if (derivedUnit.getPreservation()!= null){
             dto.setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
         }
-        dto.setRecordBase(derivedUnit.getRecordBasis());
+        dto.setRecordBase(getRecordBaseString(derivedUnit));
         dto.setSources(derivedUnit.getSources());
         setSpecimenTypeDesignations(dto, derivedUnit.getSpecimenTypeDesignations());
 
