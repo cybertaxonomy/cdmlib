@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaQuality;
 
 /**
@@ -25,7 +24,7 @@ public class DNASampleDTO extends DerivedUnitDTO {
 
     private Set<SequenceDTO> sequences = new HashSet<>();
 
-    private Set<AmplificationResult> amplificationResults = new HashSet<>();
+    private Set<AmplificationResultDTO> amplificationResults = new HashSet<>();
 
     private DnaQuality dnaQuality;
 
@@ -41,12 +40,15 @@ public class DNASampleDTO extends DerivedUnitDTO {
         this.sequences = sequences;
     }
 
-    public Set<AmplificationResult> getAmplificationResults() {
+    public Set<AmplificationResultDTO> getAmplificationResults() {
         return amplificationResults;
     }
-    public void setAmplificationResults(Set<AmplificationResult> amplificationResults) {
-        this.amplificationResults = amplificationResults;
+    public void addAmplificationResult(AmplificationResultDTO amplificationResult) {
+        this.amplificationResults.add(amplificationResult);
     }
+//    public void setAmplificationResults(Set<AmplificationResultDTO> amplificationResults) {
+//        this.amplificationResults = amplificationResults;
+//    }
 
     public DnaQuality getDnaQuality() {
         return dnaQuality;

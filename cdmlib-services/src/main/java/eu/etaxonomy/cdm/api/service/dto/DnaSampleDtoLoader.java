@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.api.dto.DNASampleDTO;
 import eu.etaxonomy.cdm.api.dto.SequenceDTO;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -52,7 +53,9 @@ public class DnaSampleDtoLoader extends DerivedUnitDtoLoaderBase<DnaSample> {
             seqDtos.add(SequenceDtoLoader.fromEntity(seq));
         }
         dto.setSequences(seqDtos);
-        dto.setAmplificationResults(dnaSample.getAmplificationResults());
+        for (AmplificationResult amplificationResult : dnaSample.getAmplificationResults()) {
+              dto.addAmplificationResult(AmplificationResultDtoLoader.INSTANCE().fromEntity(amplificationResult));
+        }
         dto.setDnaQuality(CdmBase.deproxy(dnaSample.getDnaQuality()));
         return dto;
     }
