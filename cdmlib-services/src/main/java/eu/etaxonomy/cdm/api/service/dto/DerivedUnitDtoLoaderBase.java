@@ -48,7 +48,7 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
 
     protected void load(DerivedUnitDTO dto, DerivedUnit derivedUnit) {
 
-        super.oldDtoConstructor(derivedUnit, dto);
+        super.load(derivedUnit, dto);
 
         // experimental feature, not yet exposed in method signature
         boolean cleanAccessionNumber = false;

@@ -30,25 +30,22 @@ public class DerivedUnitDTO
     private static final long serialVersionUID = 2345864166579381295L;
 
     private String accessionNumber;
-    private String specimenShortTitle;
     private TypedEntityReference<TaxonName> storedUnder;
-    private URI preferredStableUri;
-
-    private List<TypedEntityReference<Taxon>> associatedTaxa;
-    private Map<String, List<String>> types = new HashMap<>();
-
     private String originalLabelInfo;
     private String exsiccatum;
-    private String mostSignificantIdentifier;
-
     private CollectionDTO collection;
-
     private String catalogNumber;
-
     private String barcode;
-
     private String preservationMethod;
     private List<DerivedUnitStatusDto> status;
+
+    private String specimenShortTitle;
+    private List<TypedEntityReference<Taxon>> associatedTaxa = new ArrayList<>();;
+    private URI preferredStableUri;
+
+    private Map<String, List<String>> types = new HashMap<>();
+
+    private String mostSignificantIdentifier;
 
     //TODO remove model dependency
     public DerivedUnitDTO(Class<DerivedUnit> type, UUID uuid, String label) {
@@ -73,9 +70,6 @@ public class DerivedUnitDTO
         return associatedTaxa;
     }
     public void addAssociatedTaxon(Taxon taxon){
-        if(associatedTaxa==null){
-            associatedTaxa = new ArrayList<>();
-        }
         associatedTaxa.add(TypedEntityReference.fromEntity(taxon));
     }
 

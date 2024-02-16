@@ -50,7 +50,7 @@ public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrO
 //        xx;
 //    }
 
-    protected void oldDtoConstructor(
+    protected void load(
             SpecimenOrObservationBase<?> specimenOrObservation,
             DTO dto) {
 

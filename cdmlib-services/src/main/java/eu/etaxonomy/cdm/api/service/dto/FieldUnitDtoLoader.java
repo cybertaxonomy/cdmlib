@@ -72,7 +72,7 @@ public class FieldUnitDtoLoader extends SpecimenOrObservationBaseDtoLoader<Field
     private FieldUnitDTO load(FieldUnitDTO dto, FieldUnit fieldUnit, Integer maxDepth,
             EnumSet<SpecimenOrObservationType> typeIncludeFilter ) {
 
-        super.oldDtoConstructor(fieldUnit, dto);
+        super.load(fieldUnit, dto);
 
         dto.setFieldNotes(fieldUnit.getFieldNotes());
         dto.setFieldNumber(fieldUnit.getFieldNumber());

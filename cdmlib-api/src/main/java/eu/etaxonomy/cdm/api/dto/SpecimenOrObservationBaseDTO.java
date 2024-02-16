@@ -35,39 +35,40 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
 
     private int id;
     private TreeSet<AbstractMap.SimpleEntry<String, String>> characterData = new TreeSet<>(new PairComparator());
-    private DerivationTreeSummaryDTO derivationTreeSummary;
-    protected String taxonName;
 
+    //computed summary data
+    private DerivationTreeSummaryDTO derivationTreeSummary;
     protected String summaryLabel;
     protected boolean hasDetailImage;
     private boolean hasCharacterData;
     private boolean hasDna;
     private boolean hasSpecimenScan;
 
+    //occurrence data
     private SpecimenOrObservationType recordBase;
-    private TermBase kindOfUnit;
-    private String collectorsString;
+    private DefinedTerm kindOfUnit;
     private String individualCount;
     private Set<DerivedUnitDTO> derivatives = new HashSet<>();
     private Set<AnnotationDTO> annotations = new HashSet<>();
+    // TODO use DTO !!!
+    private Set<IdentifiableSource> sources;
+    // TODO use DTO !!!
+    private DefinedTerm sex;
+    // TODO use DTO !!!
+    private DefinedTerm lifeStage;
+    private List<DeterminationEventDTO>determinations;
 
+    //TODO is this needed here or in FieldUnitDTO, references the field unit information
+    private String collectorsString;
+
+    //links to this specimen
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations = new HashSet<>();
 
     //TODO DTO model dependency
+    //TODO shouldn't this be part of derived unit?
     private EventDTO<DerivationEvent> derivationEvent;
 
-    // TODO use DTO !!!
-    private Set<IdentifiableSource> sources;
-
     private List<MediaDTO> listOfMedia = new ArrayList<>();
-
-    // TODO use DTO !!!
-    private DefinedTerm sex;
-
-    // TODO use DTO !!!
-    private DefinedTerm lifeStage;
-
-    private List<DeterminationEventDTO>determinations;
 
     // ************************* CONSTRUCTOR *************************/
 
@@ -204,7 +205,7 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
     public TermBase getKindOfUnit() {
         return kindOfUnit;
     }
-    public void setKindOfUnit(TermBase kindOfUnit) {
+    public void setKindOfUnit(DefinedTerm kindOfUnit) {
         this.kindOfUnit = HibernateProxyHelper.deproxy(kindOfUnit);
     }
 
