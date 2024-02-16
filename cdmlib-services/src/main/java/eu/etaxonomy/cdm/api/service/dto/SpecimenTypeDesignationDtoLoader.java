@@ -29,7 +29,9 @@ public class SpecimenTypeDesignationDtoLoader {
 
    public static SpecimenTypeDesignationDTO fromEntity(SpecimenTypeDesignation typeDesignation)  {
 
-       SpecimenTypeDesignationDTO dto = new SpecimenTypeDesignationDTO(SpecimenTypeDesignation.class, typeDesignation.getUuid());
+       String label = null;
+       SpecimenTypeDesignationDTO dto = new SpecimenTypeDesignationDTO(
+               SpecimenTypeDesignation.class, typeDesignation.getUuid(), label);
 
        if (typeDesignation.getTypeStatus() != null){
            TermRepresentation_L10n term_L10n = new TermRepresentation_L10n(typeDesignation.getTypeStatus(), false);
