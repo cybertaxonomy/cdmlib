@@ -19,6 +19,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 
@@ -39,7 +40,7 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
     private boolean hasSpecimenScan;
 
     //occurrence data
-    private String recordBase;
+    private SpecimenOrObservationType recordBase;  //dataportal uses recordBase.uuid therefore this model dependency is currently needed here
     private DefinedTermDTO kindOfUnit;
     private String individualCount;
     private Set<DerivedUnitDTO> derivatives = new HashSet<>();
@@ -151,10 +152,10 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
         this.summaryLabel = summaryLabel;
     }
 
-    public String getRecordBase() {
+    public SpecimenOrObservationType getRecordBase() {
         return recordBase;
     }
-    public void setRecordBase(String specimenOrObservationType) {
+    public void setRecordBase(SpecimenOrObservationType specimenOrObservationType) {
         this.recordBase = specimenOrObservationType;
     }
 

@@ -93,13 +93,14 @@ public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrO
         }
     }
 
-    protected String getRecordBaseString(SpecimenOrObservationBase<?> sob) {
+    //see comment on dto.recordBase
+    protected SpecimenOrObservationType getRecordBaseString(SpecimenOrObservationBase<?> sob) {
         SpecimenOrObservationType recordBasis = sob.getRecordBasis();
         if (recordBasis == null) {
             return null;
         }else {
             ///TODO i18n
-            return recordBasis.getLabel();
+            return recordBasis;  //.getLabel();
         }
     }
 
