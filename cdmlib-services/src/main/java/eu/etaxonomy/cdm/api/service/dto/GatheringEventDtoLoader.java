@@ -12,8 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.api.dto.GatheringEventDTO;
-import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -30,7 +30,7 @@ public class GatheringEventDtoLoader {
             String collectingMethod, String collector, Integer absoluteElevation, Integer absoluteElevationMax,
             String absoluteElevationText, Double distanceToGround, Double distanceToGroundMax,
             String distanceToGroundText, Double distanceToWaterSurface, Double distanceToWaterSurfaceMax,
-            String distanceToWaterSurfaceText) {
+            String distanceToWaterSurfaceText, TimePeriod timePeriod) {
 
         GatheringEventDTO dto = new GatheringEventDTO();
         dto.setLocality(locality);
@@ -50,6 +50,9 @@ public class GatheringEventDtoLoader {
         dto.setDistanceToWaterSurface(distanceToWaterSurface);
         dto.setDistanceToWaterSurfaceMax(distanceToWaterSurfaceMax);
         dto.setDistanceToWaterSurfaceText(distanceToWaterSurfaceText);
+        if(timePeriod != null) {
+            dto.setDate(timePeriod.toString());
+        }
         return dto;
     }
 
@@ -78,9 +81,8 @@ public class GatheringEventDtoLoader {
         dto.setDistanceToWaterSurfaceMax(gathering.getDistanceToWaterSurfaceMax());
         dto.setDistanceToWaterSurfaceText(gathering.getDistanceToWaterSurfaceText());
 
-        //TODO why only start date
-        if(gathering.getGatheringStartDate() != null) {
-            dto.setDate(gathering.getGatheringStartDate().toString(TimePeriodPartialFormatter.INSTANCE()));
+        if(gathering.getTimeperiod() != null) {
+            dto.setDate(gathering.getTimeperiod().toString());
         }
 
         for (NamedArea area: gathering.getCollectingAreas()){
@@ -93,5 +95,4 @@ public class GatheringEventDtoLoader {
 
         return dto;
     }
-
 }

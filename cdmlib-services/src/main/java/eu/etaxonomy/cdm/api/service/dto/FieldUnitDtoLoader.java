@@ -13,7 +13,6 @@ import java.util.EnumSet;
 import eu.etaxonomy.cdm.api.dto.DerivationTreeSummaryDTO;
 import eu.etaxonomy.cdm.api.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -108,9 +107,9 @@ public class FieldUnitDtoLoader extends SpecimenOrObservationBaseDtoLoader<Field
                 collectingString = collectingString.trim();
             }
             dto.setCollectingString(collectingString);
-            if (gatheringEvent.getGatheringStartDate() != null) {
-                dto.setDate(gatheringEvent.getGatheringStartDate().toString(TimePeriodPartialFormatter.INSTANCE()));
-            }
+            if (gatheringEvent.getTimeperiod() != null) {
+                dto.setDate(gatheringEvent.getTimeperiod().toString());
+             }
 
             dto.setTimePeriod(gatheringEvent.getTimeperiod());
         }
