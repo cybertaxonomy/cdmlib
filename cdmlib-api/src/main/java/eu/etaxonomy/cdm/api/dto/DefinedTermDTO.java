@@ -11,10 +11,14 @@ package eu.etaxonomy.cdm.api.dto;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * DTO class for defined terms.
+ *
+ * TODO do we really need this? Isn't a {@link TypedEntityReference} or
+ * an {@link EntityReference} enough in most cases?
  *
  * @author muellera
  * @since 16.02.2024

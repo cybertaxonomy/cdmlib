@@ -20,12 +20,8 @@ public class EntityReference implements Serializable, Comparable<EntityReference
 
     private static final long serialVersionUID = -8173845668898512626L;
 
-    protected UUID uuid;
-    protected String label;
-
-    public EntityReference() {
-
-    }
+    private UUID uuid;
+    private String label;
 
     public EntityReference(UUID uuid, String label) {
         this.uuid = uuid;

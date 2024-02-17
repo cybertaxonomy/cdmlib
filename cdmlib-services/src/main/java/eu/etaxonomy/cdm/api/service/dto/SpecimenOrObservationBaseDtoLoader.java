@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.ref.EntityReference;
 
 /**
  * Loader for {@link SpecimenOrObservationBaseDTO}s. Extracted from DTO class.
@@ -94,13 +95,13 @@ public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrO
     }
 
     //see comment on dto.recordBase
-    protected SpecimenOrObservationType getRecordBaseString(SpecimenOrObservationBase<?> sob) {
+    protected EntityReference getRecordBaseString(SpecimenOrObservationBase<?> sob) {
         SpecimenOrObservationType recordBasis = sob.getRecordBasis();
         if (recordBasis == null) {
             return null;
         }else {
             ///TODO i18n
-            return recordBasis;  //.getLabel();
+            return new EntityReference(recordBasis.getUuid(), recordBasis.getLabel(null));
         }
     }
 

@@ -60,7 +60,7 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31)
-                .append(uuid)
+                .append(getUuid())
                 .appendSuper(type.hashCode())
                 .hashCode();
     }
@@ -70,7 +70,7 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
     public boolean equals(Object obj) {
         try {
             TypedEntityReference other = (TypedEntityReference) obj;
-            return uuid.equals(other.uuid) && type.equals(other.type);
+            return getUuid().equals(other.getUuid()) && type.equals(other.type);
 
         } catch (Exception e) {
             return false;
@@ -79,6 +79,6 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     @Override
     public String toString(){
-        return type.getSimpleName() + "#" + uuid;
+        return type.getSimpleName() + "#" + getUuid();
     }
 }
