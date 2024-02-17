@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
+import eu.etaxonomy.cdm.api.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.dto.SequenceDTO;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 
@@ -30,7 +32,14 @@ public class SequenceDtoLoader {
 
     private static void load(SequenceDTO dto, Sequence seq){
 
-        dto.setContigFile(seq.getContigFile());
+        if (seq.getContigFile() != null) {
+            List<MediaDTO> mediaDtos = MediaDtoLoader.fromEntity(seq.getContigFile());
+            if (mediaDtos != null && !mediaDtos.isEmpty()) {
+                //TODO filter best fit
+                dto.setContigFile(mediaDtos.get(0));
+            }
+        }
+
         dto.setConsensusSequence(seq.getConsensusSequence() == null ? null : seq.getConsensusSequence().getString());
         dto.setIsBarcode(seq.getIsBarcode());
         dto.setBarcodeSequencePart(seq.getBarcodeSequencePart() == null ? null : seq.getBarcodeSequencePart().getString());

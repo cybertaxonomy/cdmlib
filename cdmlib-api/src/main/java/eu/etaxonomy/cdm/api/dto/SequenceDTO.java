@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 
 /**
@@ -24,8 +23,7 @@ public class SequenceDTO implements Serializable{
 
     private static final long serialVersionUID = 2554339091503003103L;
 
-    //TODO DTO remove model
-    private Media contigFile;
+    private MediaDTO contigFile;
 
     private String consensusSequence;
 
@@ -81,10 +79,10 @@ public class SequenceDTO implements Serializable{
         this.genBankUri = genBankUri;
     }
 
-    public Media getContigFile() {
+    public MediaDTO getContigFile() {
         return contigFile;
     }
-    public void setContigFile(Media contigFile) {
+    public void setContigFile(MediaDTO contigFile) {
         this.contigFile = contigFile;
     }
 
