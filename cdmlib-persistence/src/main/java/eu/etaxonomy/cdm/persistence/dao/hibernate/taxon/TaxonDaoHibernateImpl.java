@@ -196,28 +196,6 @@ public class TaxonDaoHibernateImpl
         return result;
     }
 
-    //TODO needed? Currently only used by tests.
-    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean includeUnpublished,
-            String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
-        return getTaxaByName(doTaxa, doSynonyms, false, false, false,
-                queryString, null, null, matchMode, null, includeUnpublished, null, pageSize, pageNumber, null);
-    }
-
-    @Override
-    public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
-            Boolean accepted, boolean includeUnpublished, Integer pageSize, Integer pageNumber) {
-
-        boolean doTaxa = true;
-        boolean doSynonyms = true;
-
-        if (accepted == true) {
-            doSynonyms = false;
-        } else {
-           doTaxa = false;
-        }
-        return getTaxaByName(doTaxa, doSynonyms, includeUnpublished, queryString, matchMode, pageSize, pageNumber);
-    }
-
     @Override
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean includeAuthors,

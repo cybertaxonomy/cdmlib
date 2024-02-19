@@ -79,19 +79,6 @@ public interface ITaxonDao
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
      * where the taxonBase.name.nameCache property matches the String queryString.
-     * @param queryString
-     * @param matchMode
-     * @param accepted
-     * @param pageSize
-     * @param pageNumber
-     * @return
-     */
-    public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
-            Boolean accepted, boolean includeUnpublished, Integer pageSize, Integer pageNumber);
-
-    /**
-     * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
-     * where the taxonBase.name.nameCache property matches the String queryString.
      *
      * Note: The search result includes a search on titleCache (with {@link MatchMode#BEGINNING} or {@link MatchMode#ANYWHERE} )
      * for all records with protected titleCache (see #9561). Maybe this should be parameterized in future.
@@ -103,19 +90,6 @@ public interface ITaxonDao
             MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished,
             NameSearchOrder order, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-    /**
-     * @param doTaxa
-     * @param doSynonyms
-     * @param queryString
-     * @param classification TODO
-     * @param subtree
-     * @param matchMode
-     * @param namedAreas
-     * @param pageSize
-     * @param pageNumber
-     * @param propertyPaths
-     * @return
-     */
     public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean doIncludeAuthors, String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, boolean includeUnpublished);
@@ -125,14 +99,6 @@ public interface ITaxonDao
      * Returns a count of TaxonBase instances where the
      * taxon.name properties match the parameters passed.
      *
-     * @param doTaxa
-     * @param doSynonyms
-     * @param uninomial
-     * @param infragenericEpithet
-     * @param specificEpithet
-     * @param infraspecificEpithet
-     * @param rank
-     * @param authorshipCache
      * @return a count of TaxonBase instances
      */
     public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet,

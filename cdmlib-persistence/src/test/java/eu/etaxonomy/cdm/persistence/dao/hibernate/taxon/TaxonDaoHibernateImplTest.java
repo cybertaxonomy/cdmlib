@@ -179,7 +179,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         //assertFalse("The list should not be empty", results.isEmpty());
         assertEquals(1, results.size());
 
-        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, accepted, includeUnpublished, null, null);
+        String queryString = "A*";
+        MatchMode matchMode = MatchMode.BEGINNING;
+        results = taxonDao.getTaxaByName(doTaxa, noSynonyms, false, false, false, queryString, null, null, matchMode,
+                null, includeUnpublished, null, null, null, null);
+
         assertNotNull("getTaxaByName should return a List", results);
 
         int numberOfTaxaByName_A = 5;
@@ -198,7 +202,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(numberOfTaxaByName_A, results.size());
 
         includeUnpublished = false;
-        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, accepted, includeUnpublished, null, null);
+        results = taxonDao.getTaxaByName(doTaxa, noSynonyms, false, false, false, queryString, null, null, matchMode,
+                null, includeUnpublished, null, null, null, null);
+
         assertEquals(numberOfTaxaByName_A, results.size());  // no unpublished yet
 
 
@@ -212,11 +218,17 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 //		assertEquals(results.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
 
         includeUnpublished = true;
-        results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, accepted, includeUnpublished, null, null);
+        //TODO what is the difference to the first test?
+        results = taxonDao.getTaxaByName(doTaxa, noSynonyms, false, false, false, queryString, null, null, matchMode,
+                null, includeUnpublished, null, null, null, null);
+
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(numberOfTaxaByName_A, results.size());
 
-        results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, accepted, includeUnpublished, null, null);
+        queryString = "Aus";
+        matchMode = MatchMode.EXACT;
+        results = taxonDao.getTaxaByName(doTaxa, noSynonyms, false, false, false, queryString, null, null, matchMode,
+                null, includeUnpublished, null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
     }
