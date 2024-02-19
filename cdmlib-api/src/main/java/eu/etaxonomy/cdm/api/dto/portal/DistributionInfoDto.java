@@ -15,6 +15,14 @@ import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.model.description.Distribution;
 
 /**
+ * DTO which holds all information required by the dataportal to display
+ * distributions.<BR>
+ * These are the<ol>
+ *  <li>map params to show the distribution on a map</li>
+ *  <li>the distribution tree for hierarchical text representation</li>
+ *  <li>the condensed distribution info for an abbreviated 1-line representation</li>
+ * </ol>
+ *
  * @author a.kohlbecker
  * @since Jan 29, 2014
  */

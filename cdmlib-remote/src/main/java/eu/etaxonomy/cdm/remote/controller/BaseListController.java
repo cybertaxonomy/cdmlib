@@ -173,6 +173,10 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         return service.list(type, limit, start, null, getInitializationStrategy());
     }
 
+    /**
+     * Retrieves the according taxon node representing the taxon subtree. If no such taxon node
+     * is found an 404 error response is sent.
+     */
     // this is a copy from BaseController, should be unified
     protected TaxonNode getSubtreeOrError(UUID subtreeUuid, ITaxonNodeService taxonNodeService, HttpServletResponse response) throws IOException {
         TaxonNode subtree = null;
