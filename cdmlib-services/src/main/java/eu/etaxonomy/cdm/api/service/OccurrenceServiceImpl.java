@@ -627,12 +627,10 @@ public class OccurrenceServiceImpl
             }
         }
 
-        List<SpecimenOrObservationBaseDTO<?>> orderdDTOs = new ArrayList<>(rootUnitDTOs);
-        // TODO order dtos by date can only be done by string comparison
-        // the FieldUnitDTO.date needs to be a Partial object for sensible ordering
-        Collections.sort(orderdDTOs, OccurrenceDtoComparator.INSTANCE());
+        List<SpecimenOrObservationBaseDTO<?>> orderdRootUnitDTOs = new ArrayList<>(rootUnitDTOs);
+        Collections.sort(orderdRootUnitDTOs, OccurrenceDtoComparator.INSTANCE());
 
-        return (List)orderdDTOs;
+        return (List)orderdRootUnitDTOs;
     }
 
     @Override

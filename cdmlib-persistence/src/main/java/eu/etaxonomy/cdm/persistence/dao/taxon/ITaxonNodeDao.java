@@ -187,24 +187,11 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
             Classification classification, Integer limit, String pattern, boolean searchForClassifications,
             boolean includeDoubtful);
 
-    /**
-     * @param taxonUUID
-     * @param classificationUuid
-     * @return
-     */
-    List<TaxonNodeDto> getTaxonNodeForTaxonInClassificationDto(UUID taxonUUID, UUID classificationUuid);
+    public List<TaxonNodeDto> getTaxonNodeForTaxonInClassificationDto(UUID taxonUUID, UUID classificationUuid);
 
-    /**
-     * @param nodeUuid
-     * @return
-     */
-    TaxonNodeDto getTaxonNodeDto(UUID nodeUuid);
+    public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid);
 
-    /**
-     * @param nodeUuid
-     * @return
-     */
-    List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuid);
+    public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuid);
 
     /**
      * @param result
@@ -218,7 +205,5 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
 	List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex);
 
-	List<TaxonNodeDto> getTaxonNodeDtosWithoutParent(List<UUID> nodeUuids);
-
-
+    public List<TaxonNodeDto> getTaxonNodeDtosWithoutParent(List<UUID> nodeUuids);
 }

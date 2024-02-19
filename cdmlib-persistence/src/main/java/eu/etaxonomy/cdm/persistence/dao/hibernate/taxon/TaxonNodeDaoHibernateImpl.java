@@ -215,13 +215,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getNameRank()));
         }
         List<TaxonNodeDto> list = new ArrayList<>();
-//        int index = limit;
         for(SortableTaxonNodeQueryResult stnqr : result){
-//            if (index > 0){
-                list.add(new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
-//                index --;
-//            }
-
+            list.add(new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
         }
 
         return list;
@@ -1131,6 +1126,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
+
         String queryString = getTaxonNodeDtoQuery();
         queryString += "  INNER JOIN tn.classification AS cls " + " WHERE t.titleCache LIKE :pattern ";
 

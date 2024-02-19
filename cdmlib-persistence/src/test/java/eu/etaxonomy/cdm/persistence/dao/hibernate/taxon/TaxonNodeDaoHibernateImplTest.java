@@ -414,35 +414,35 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertEquals("770239f6-4fa8-496b-8738-fe8f7b2ad519", result.get(2).getUuid().toString()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
         assertEquals("4f73adcc-a535-4fbe-a97a-c05ee8b12191", result.get(3).getUuid().toString()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
     }
-    
+
     @Test
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoCheckSortIndex(){
 
-        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); 
+        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
         assertEquals(5, result.size());
-       
+
         assertTrue(0 == result.get(0).getSortIndex()); // Acherontia(Fabricius, 1798) rank: Genus
         assertTrue(0 == result.get(1).getSortIndex()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
         assertTrue(1 == result.get(2).getSortIndex()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
         assertTrue(0 == result.get(3).getSortIndex()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
-    
-    
+
+
     }
-    
+
     @Test
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoCheckStatus(){
 
-        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); 
+        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
         assertEquals(5, result.size());
-       
+
         assertEquals(TaxonNodeStatus.UNPLACED, result.get(0).getStatus()); // Acherontia(Fabricius, 1798) rank: Genus
         assertEquals(null, result.get(1).getStatus());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
         assertEquals(null, result.get(2).getStatus());  // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
         assertEquals(TaxonNodeStatus.EXCLUDED, result.get(3).getStatus());  // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
-    
-    
+
+
     }
 
     @Test

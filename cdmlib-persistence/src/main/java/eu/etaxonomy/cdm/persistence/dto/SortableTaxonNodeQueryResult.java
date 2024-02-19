@@ -26,20 +26,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
  */
 public class SortableTaxonNodeQueryResult {
 
-    protected UUID taxonNodeUuid;
-    protected Integer taxonNodeId;
-    protected String treeIndex;
-    protected UUID taxonUuid;
-    protected String taxonTitleCache;
-    protected String nameTitleCache;
-    protected Rank nameRank = Rank.UNKNOWN_RANK();
-    protected UUID parentNodeUuid;
-    protected Integer sortIndex;
-    protected UUID classificationUuid;
-    protected Boolean taxonIsPublish = true;
-    protected TaxonNodeStatus status;
- 
-
+    private UUID taxonNodeUuid;
+    private Integer taxonNodeId;
+    private String treeIndex;
+    private UUID taxonUuid;
+    private String taxonTitleCache;
+    private String nameTitleCache;
+    private Rank nameRank = Rank.UNKNOWN_RANK();
+    private UUID parentNodeUuid;
+    private Integer sortIndex;
+    private UUID classificationUuid;
+    private Boolean taxonIsPublish = true;
+    private TaxonNodeStatus status;
 
     private List<LanguageString> statusNote = new ArrayList<>();
 
@@ -116,7 +114,7 @@ public class SortableTaxonNodeQueryResult {
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
         this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, null);
     }
-    
+
     //tn.uuid, tn.id, t.uuid, t.titleCache, name.titleCache, rank, cl.uuid,  t.publish, tn.status, note
 
     public UUID getTaxonNodeUuid() {
@@ -129,11 +127,10 @@ public class SortableTaxonNodeQueryResult {
     public String getTreeIndex() {
         return treeIndex;
     }
-    
     public void setTreeIndex(String treeIndex) {
         this.treeIndex = treeIndex;
     }
-    
+
     public Integer getSortIndex() {
 		return sortIndex;
 	}
@@ -141,7 +138,7 @@ public class SortableTaxonNodeQueryResult {
 	public void setSortIndex(Integer sortIndex) {
 		this.sortIndex = sortIndex;
 	}
-	
+
     public UUID getTaxonUuid() {
         return taxonUuid;
     }
@@ -149,38 +146,23 @@ public class SortableTaxonNodeQueryResult {
         this.taxonUuid = taxonUuid;
     }
 
-    /**
-     * @return the parentNodeUuid
-     */
     public UUID getParentNodeUuid() {
         return parentNodeUuid;
     }
-
-    /**
-     * @param parentNodeUuid the parentNodeUuid to set
-     */
     public void setParentNodeUuid(UUID parentNodeUuid) {
         this.parentNodeUuid = parentNodeUuid;
     }
-    /**
-     * @return the parentNodeUuid
-     */
+
     public UUID getClassificationUuid() {
         return classificationUuid;
     }
-
-    /**
-     * @param parentNodeUuid the parentNodeUuid to set
-     */
     public void setClassificationUuid(UUID classificationUuid) {
         this.classificationUuid = classificationUuid;
     }
 
-    
     public Boolean isTaxonIsPublish() {
 		return taxonIsPublish;
 	}
-
 	public void setTaxonIsPublish(boolean taxonIsPublish) {
 		this.taxonIsPublish = taxonIsPublish;
 	}
@@ -199,6 +181,7 @@ public class SortableTaxonNodeQueryResult {
     public void setTaxonNodeId(Integer taxonNodeId) {
         this.taxonNodeId = taxonNodeId;
     }
+
     public String getTaxonTitleCache() {
         return taxonTitleCache;
     }

@@ -25,18 +25,18 @@ public class SortableTaxonNodeQueryResultComparator implements Serializable, Com
     public int compare(SortableTaxonNodeQueryResult o1, SortableTaxonNodeQueryResult o2) {
         //same UUID
 
-        if (o1.taxonNodeUuid.equals(o2.taxonNodeUuid)){
+        if (o1.getTaxonNodeUuid().equals(o2.getTaxonNodeUuid())){
             return 0;
         }
 
         //Rank
         Rank rankName1 = Rank.UNKNOWN_RANK();
-        if (o1.nameRank != null){
-            rankName1 = o1.nameRank;
+        if (o1.getNameRank() != null){
+            rankName1 = o1.getNameRank();
         }
         Rank rankName2 = Rank.UNKNOWN_RANK();
-        if (o2.nameRank != null){
-            rankName2 = o2.nameRank;
+        if (o2.getNameRank() != null){
+            rankName2 = o2.getNameRank();
         }
 
         //first compare ranks, if ranks are equal (or both null) compare names or taxon title cache if names are null
@@ -45,14 +45,14 @@ public class SortableTaxonNodeQueryResultComparator implements Serializable, Com
             return 1;
         }else if(rankName2 == null && rankName1 != null){
             return -1;
-        }else if (rankName1 != null && rankName1.isHigher(rankName2)){
+        }else if (rankName1 != null && rankName1.compareTo(rankName2)>0){
             return -1;
         }else if (rankName1 == null && rankName2 == null || rankName1.equals(rankName2)) {
-            if (o1.taxonTitleCache != null && o2.taxonTitleCache != null){
+            if (o1.getTaxonTitleCache() != null && o2.getTaxonTitleCache() != null){
                 //same rank, order by titleCache
-                int result = o1.taxonTitleCache.compareTo(o2.taxonTitleCache);
+                int result = o1.getTaxonTitleCache().compareTo(o2.getTaxonTitleCache());
                 if (result == 0){
-                    return o1.taxonNodeUuid.compareTo(o2.taxonNodeUuid);
+                    return o1.getTaxonNodeUuid().compareTo(o2.getTaxonNodeUuid());
                 }else{
                     return result;
                 }
