@@ -252,6 +252,8 @@ public class PortalDtoLoader {
 
         loadRootSpecimens(taxon, result, config);
 
+        //once fully switching to newSpecimens the tansient annotation on the getter should be removed
+        //in the TaxonPageDto
         boolean newSpecimensImplemented = false;
         if (newSpecimensImplemented) {
             loadNewRootSpecimens(taxon, result, config);

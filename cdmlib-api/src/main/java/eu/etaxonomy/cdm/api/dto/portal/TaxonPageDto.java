@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,7 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     private ContainerDto<KeyDTO> keys;
 
+    //for now this is transient and therefore not visible in the webservice
     private ContainerDto<SpecimenDTO> specimens;
 
     private List<SpecimenOrObservationBaseDTO> rootSpecimens;
@@ -406,6 +408,8 @@ public class TaxonPageDto extends TaxonBaseDto {
         this.keys = keys;
     }
 
+    //for now this is transient and therefore not visible in the webservice
+    @Transient
     public ContainerDto<SpecimenDTO> getSpecimens() {
         return specimens;
     }
