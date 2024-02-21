@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.dto.compare.OccurrenceDtoComparator;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -43,7 +44,7 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
     private EntityReference recordBase;  //dataportal uses recordBase.uuid
     private DefinedTermDTO kindOfUnit;
     private String individualCount;
-    private Set<DerivedUnitDTO> derivatives = new HashSet<>();
+    private Set<DerivedUnitDTO> derivatives = new TreeSet<>(OccurrenceDtoComparator.INSTANCE());
     private Set<AnnotationDTO> annotations = new HashSet<>();
     private Set<SourceDTO> sources;
     private DefinedTermDTO sex;
