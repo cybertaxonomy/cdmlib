@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +22,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -69,7 +67,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.compare.common.TimePeriodComparator;
+import eu.etaxonomy.cdm.compare.occurrence.SpecimenOrObservationBaseComparator;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacadeNotSupportedException;
@@ -77,7 +75,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -383,34 +380,8 @@ public class OccurrenceServiceImpl
             e.printStackTrace();
         }
 
-        Collections.sort(castedUnits, new Comparator<SpecimenOrObservationBase>() {
-
-            @Override
-            public int compare(SpecimenOrObservationBase o1, SpecimenOrObservationBase o2) {
-                if(o1 instanceof FieldUnit && o2 instanceof FieldUnit) {
-                    FieldUnit fu1 = (FieldUnit)o1;
-                    FieldUnit fu2 = (FieldUnit)o2;
-                    TimePeriod tp1 = fu1.getGatheringEvent() == null ? null : fu1.getGatheringEvent().getTimeperiod();
-                    TimePeriod tp2 = fu2.getGatheringEvent() == null ? null : fu2.getGatheringEvent().getTimeperiod();
-
-                    boolean nullFirst = false;
-                    TimePeriodComparator comparator = TimePeriodComparator.INSTANCE(nullFirst);
-                    return comparator.compare(tp1, tp2);
-                }
-                if(o1 instanceof DerivedUnit && o2 instanceof DerivedUnit) {
-                    SpecimenOrObservationBase<?> du1 = o1;
-                    SpecimenOrObservationBase<?> du2 = o2;
-                    return StringUtils.compare(du1.getTitleCache(), du2.getTitleCache());
-                }
-                if(o1 instanceof FieldUnit && o2 instanceof DerivedUnit) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            }
-
-        });
-
+        //NOTE: the comparator should work the same way as the OccurrenceDtoComparator
+        Collections.sort(castedUnits, SpecimenOrObservationBaseComparator.INSTANCE());
 
         return new DefaultPagerImpl<>(pageNumber, totalCount, pageSize, castedUnits);
     }
