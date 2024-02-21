@@ -227,9 +227,14 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "syntype" designation status. </BR>A syntype is any one of two or
-	 * more {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimens} cited in the {@link TaxonName#getNomenclaturalReference() protologue} of the
+	 * more {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimens} cited in the
+	 * {@link TaxonName#getNomenclaturalReference() protologue} of the
 	 * "type-bringing" {@link TaxonName taxon name} when no holotype was designated,
-	 * or any one of two or more specimens simultaneously designated as types.
+	 * or any one of the two or more specimens were simultaneously designated as types.<BR>
+	 * If a lectotype is chosen from among multiple syntypes, the remaining syntypes
+	 * remain syntypes if they belong to a different gathering to the lectotype.
+	 * If they belong to the same gathering, i.e they are duplicates of the lectotype,
+	 * they become isolectotypes.
 	 *
 	 * @see	#HOLOTYPE()
 	 */
@@ -267,8 +272,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "isolectotype" designation status. </BR>
-	 * An isolectotype is any
-	 * duplicate of the lectotype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
+	 * An isolectotype is any duplicate (deriving from the same gathering) of the lectotype.
+	 * It is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
 	 *
 	 * @see	#LECTOTYPE()
 	 */
@@ -335,8 +340,11 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "paralectotype" designation status. </BR>
-	 * A paralectotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}, cited when designating a lectotype, other than
-	 * the lectotype itself. Also called "lectoparatype" in zoology.
+	 * A paralectotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen},
+	 * cited when designating a lectotype, other than the lectotype itself.<BR>
+	 * Also called "lectoparatype" in zoology.<BR>
+	 * This status is not handled in ICNafp, therefore at least in botany it is considered a
+	 * wrong concept although it has had some informal usage in the past.
 	 *
 	 * @see	#LECTOTYPE()
 	 */
