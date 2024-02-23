@@ -238,10 +238,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
             Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode comparator) throws FilterException;
 
     /**
-     * @param taxonNode
-     * @param propertyPaths
      * @deprecated move to TaxonNodeService
-     * @return
      */
     @Deprecated
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);

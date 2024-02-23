@@ -97,6 +97,7 @@ public class TaxonPageDto extends TaxonBaseDto {
     }
 
     public static class TaxonNodeDTO extends CdmBaseDto {
+
         private UUID classificationUuid;
         private String classificationLabel;
         private String status;
@@ -136,7 +137,6 @@ public class TaxonPageDto extends TaxonBaseDto {
             }
             agents.addItem(agent);
         }
-
     }
 
     public static class HomotypicGroupDTO extends CdmBaseDto{

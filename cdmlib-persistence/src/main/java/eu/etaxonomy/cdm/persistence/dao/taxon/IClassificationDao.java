@@ -66,7 +66,6 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     public long[] countRankSpecificRootNodes(Classification classification, TaxonNode subtree, boolean includeUnpublished, Rank rank);
 
-
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
