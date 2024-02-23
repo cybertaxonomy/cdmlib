@@ -346,7 +346,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, 2, pattern, true);
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(0).getUuid().toString());
+        assertEquals(uuid1, result.get(0).getUuid());
 
         //test pattern
         pattern = "*TestBaum*";
@@ -374,7 +374,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         result = taxonNodeDao.getUuidAndTitleCache(100, pattern, classificationUuid, true);
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(0).getUuid().toString());
+        assertEquals(uuid1, result.get(0).getUuid());
 
         //test pattern without classification
         pattern = "*Rothschi*";
@@ -410,7 +410,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull(result);
         assertEquals(5, result.size());
         assertEquals("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7", result.get(0).getUuid().toString()); // Acherontia(Fabricius, 1798) rank: Genus
-        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(1).getUuid().toString()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
+        assertEquals(uuid1, result.get(1).getUuid()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
         assertEquals("770239f6-4fa8-496b-8738-fe8f7b2ad519", result.get(2).getUuid().toString()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
         assertEquals("4f73adcc-a535-4fbe-a97a-c05ee8b12191", result.get(3).getUuid().toString()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
     }
