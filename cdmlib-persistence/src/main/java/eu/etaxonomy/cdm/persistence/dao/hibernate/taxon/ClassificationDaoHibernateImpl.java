@@ -304,7 +304,7 @@ public class ClassificationDaoHibernateImpl
             QueryType queryType, boolean includeUnpublished, Class<R> resultClass){
 
     	 String selectWhat = queryType == QueryType.COUNT ? "COUNT(cn)"
-    	         : queryType == QueryType.INSTANCE ? "cn, cn.taxon, cn.taxon.name"
+    	         : queryType == QueryType.INSTANCE ? "cn"
     	         : (" new " +SortableTaxonNodeQueryResult.class.getName()+"("
     	                 + "cn.uuid "
     	                 + ", cn.id "
