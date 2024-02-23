@@ -1233,7 +1233,7 @@ public class WordClassificationExport
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
 
-            csvLine[table.getIndex(WordClassificationExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, rules);
+            csvLine[table.getIndex(WordClassificationExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, true, false, rules);
 
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
@@ -2068,7 +2068,8 @@ public class WordClassificationExport
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetContainer manager = new TypeDesignationSetContainer(group);
-                list.addAll(new TypeDesignationSetFormatter(true, false, false).toTaggedText(manager));
+                list.addAll(new TypeDesignationSetFormatter().withStartingTypeLabel(false)
+                        .toTaggedText(manager));
             }
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations

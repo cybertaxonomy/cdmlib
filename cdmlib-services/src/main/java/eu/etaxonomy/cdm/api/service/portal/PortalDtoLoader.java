@@ -521,11 +521,7 @@ public class PortalDtoLoader {
     private void handleTypification(HomotypicalGroup homotypicalGroup, HomotypicGroupDTO hgDto,
             TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
-        boolean withCitation = true;
-        boolean withStartingTypeLabel = true;
-        boolean withNameIfAvailable = false;
-        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(
-                withCitation, withStartingTypeLabel, withNameIfAvailable);
+        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter();
         Set<TypeDesignationBase<?>> desigs = homotypicalGroup.getTypeDesignations();
         try {
             TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance((Set)desigs);

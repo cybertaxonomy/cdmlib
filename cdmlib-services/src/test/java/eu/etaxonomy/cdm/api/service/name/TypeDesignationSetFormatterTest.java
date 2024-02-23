@@ -46,6 +46,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
+ * See also {@link TypeDesignationSetContainerTest} for further tests.
+ *
  * @author a.mueller
  * @since 30.03.2021
  */
@@ -186,7 +188,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(ntd, false);
 
         TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance(tds);
-        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
+        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true, false, false);
         String text = formatter.format(manager);
         Assert.assertEquals("Prionus L.\u202F\u2013\u202FNametype: Prionus coriatius L.", text);
 
@@ -224,7 +226,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         std_HT.getTypeSpecimen().addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
 
         TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
-        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true);
+        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true, false, false);
 
         String text = formatter.format(container);
         Assert.assertEquals("Prionus coriatius L.\u202F\u2013\u202FType: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA 1234, destroyed)", text);
@@ -263,7 +265,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(std_IT_3, false);
 
         TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
-        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(false, false, false);
+        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(false, false, false, false, false);
         String text = formatter.format(container);
         int holotypeIndex = text.indexOf("holotype");
         Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );

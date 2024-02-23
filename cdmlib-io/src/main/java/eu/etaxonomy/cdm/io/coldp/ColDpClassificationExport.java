@@ -1290,7 +1290,7 @@ public class ColDpClassificationExport
             TypeDesignationSetContainer typeContainer = new TypeDesignationSetContainer(specimenTypeDesignations, name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             //rules.addRule(TagEnum.name, "i");
-            csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = typeContainer.print(false, false, false, rules);
+            csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = typeContainer.print(false, false, false, true, false, rules);
 
             //TODO 2 type material what is this second type computation? Is it only about sources?
             StringBuilder stringbuilder = new StringBuilder();

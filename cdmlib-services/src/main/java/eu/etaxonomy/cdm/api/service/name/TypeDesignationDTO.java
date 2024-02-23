@@ -39,5 +39,4 @@ public class TypeDesignationDTO<T extends TypeDesignationBase> extends TaggedEnt
     public UUID getTypeUuid() {
         return typeUuid;
     }
-
 }

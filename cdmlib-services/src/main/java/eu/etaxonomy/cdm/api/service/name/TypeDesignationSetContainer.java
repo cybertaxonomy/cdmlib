@@ -47,8 +47,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
  * Container for of collection of {@link TypeDesignationBase type designations} for the same typified name.
  *
  * Type designations are ordered by the base type which is a {@link TaxonName} for {@link NameTypeDesignation name type designations} or
- * a {@link FieldUnit} in case of {@link SpecimenTypeDesignation specimen type designations}. The type designations per base type are furthermore ordered by the {@link TypeDesignationStatusBase}
- * (or a {@link DerivedUnit} if the field unit is missing).
+ * a {@link FieldUnit} in case of {@link SpecimenTypeDesignation specimen type designations}. The type designations per base type are
+ * furthermore ordered by the {@link TypeDesignationStatusBase} (or a {@link DerivedUnit} if the field unit is missing).
  * <BR>
  * All type designations belonging to one base type are handled in a {@link TypeDesignationSet}.
  * <BR>
@@ -394,12 +394,12 @@ public class TypeDesignationSetContainer {
         return null;
     }
 
-    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable) {
-        return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable).format(this);
+    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
+        return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this);
     }
 
-    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, HTMLTagRules htmlRules) {
-        return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable).format(this, htmlRules);
+    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType, HTMLTagRules htmlRules) {
+        return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this, htmlRules);
     }
 
 

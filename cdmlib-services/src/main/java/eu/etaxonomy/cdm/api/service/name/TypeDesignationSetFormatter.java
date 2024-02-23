@@ -62,9 +62,11 @@ public class TypeDesignationSetFormatter {
     private static final String POST_STATUS_SEPARATOR = ": ";
     private static final String POST_NAME_SEPARTOR = UTF8.EN_DASH_SPATIUM.toString();
 
-    private boolean withCitation;
-    private boolean withStartingTypeLabel;
-    private boolean withNameIfAvailable;
+    private boolean withCitation = true;
+    private boolean withStartingTypeLabel = true;
+    private boolean withNameIfAvailable = false;
+    private boolean withPrecedingMainType = true;
+    private boolean withAccessionNoType = false;
 
     public static String entityLabel(VersionableEntity baseEntity) {
         String label = "";
@@ -78,11 +80,42 @@ public class TypeDesignationSetFormatter {
         return label;
     }
 
+    public TypeDesignationSetFormatter() {
+    }
+
     public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
-            boolean withNameIfAvailable) {
+            boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
+
         this.withCitation = withCitation;
         this.withStartingTypeLabel = withStartingTypeLabel;
         this.withNameIfAvailable = withNameIfAvailable;
+        this.withPrecedingMainType = withPrecedingMainType;
+        this.withAccessionNoType = withAccessionNoType;
+    }
+
+    public TypeDesignationSetFormatter withCitation(boolean withCitation) {
+        this.withCitation = withCitation;
+        return this;
+    }
+
+    public TypeDesignationSetFormatter withStartingTypeLabel(boolean withStartingTypeLabel) {
+        this.withStartingTypeLabel = withStartingTypeLabel;
+        return this;
+    }
+
+    public TypeDesignationSetFormatter withNameIfAvailable(boolean withNameIfAvailable) {
+        this.withNameIfAvailable = withNameIfAvailable;
+        return this;
+    }
+
+    public TypeDesignationSetFormatter withPrecedingMainType(boolean withPrecedingMainType) {
+        this.withPrecedingMainType = withPrecedingMainType;
+        return this;
+    }
+
+    public TypeDesignationSetFormatter withAccessionNoType(boolean withAccessionNoType) {
+        this.withAccessionNoType = withAccessionNoType;
+        return this;
     }
 
     public String format(TypeDesignationSetContainer manager){
@@ -102,6 +135,7 @@ public class TypeDesignationSetFormatter {
 
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
 
+        //name, if available
         if(withNameIfAvailable && manager.getTypifiedNameCache() != null){
             finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(),
                     TypedEntityReferenceFactory.fromEntity(manager.getTypifiedName(), false));
@@ -294,6 +328,7 @@ public class TypeDesignationSetFormatter {
      */
     private boolean hasMultipleTypes(
             Map<VersionableEntity,TypeDesignationSet> typeWorkingSets) {
+
         if (typeWorkingSets == null || typeWorkingSets.isEmpty()){
             return false;
         }else if (typeWorkingSets.keySet().size() > 1) {
@@ -305,6 +340,7 @@ public class TypeDesignationSetFormatter {
 
     private static void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
             TaggedTextBuilder workingsetBuilder) {
+
         TypedEntityReference<?> typeDesignationEntity = TypedEntityReferenceFactory.fromEntity(td, false);
         if(td instanceof NameTypeDesignation){
             buildTaggedTextForNameTypeDesignation((NameTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
@@ -316,7 +352,6 @@ public class TypeDesignationSetFormatter {
             throw new RuntimeException("Unknown TypeDesignation type");
         }
     }
-
 
     private static void buildTaggedTextForNameTypeDesignation(NameTypeDesignation td, TaggedTextBuilder workingsetBuilder,
             TypedEntityReference<?> typeDesignationEntity) {

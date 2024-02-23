@@ -127,7 +127,7 @@ public class RegistrationWrapperDTO {
         default:
             try {
                 typeDesignationSetContainer = TypeDesignationSetContainer.NewDefaultInstance(reg.getTypeDesignations());
-                summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true)
+                summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true, true, false)
                         .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedCacheHelper.createString(summaryTaggedText);
             } catch (TypeDesignationSetException e) {
