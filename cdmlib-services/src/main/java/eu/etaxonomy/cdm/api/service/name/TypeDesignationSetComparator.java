@@ -67,11 +67,13 @@ public class TypeDesignationSetComparator implements Comparator<TypeDesignationS
         TypeDesignationSet ws1 = o1;
         TypeDesignationSet ws2 = o2;
 
+        //compare type
         if (ws1.getWorkingsetType() != ws2.getWorkingsetType()){
             //first specimen types, then name types (very rare case anyway)
             return ws1.getWorkingsetType() == TypeDesignationSetType.NAME_TYPE_DESIGNATION_SET? 1:-1;
         }
 
+        //has no status first, for technical reasons (TODO might be changed in future)
         boolean hasStatus1 = !ws1.keySet().contains(null) && !ws1.keySet().contains(NullTypeDesignationStatus.SINGLETON());
         boolean hasStatus2 = !ws2.keySet().contains(null) && !ws2.keySet().contains(NullTypeDesignationStatus.SINGLETON());
         if (hasStatus1 != hasStatus2){
@@ -84,6 +86,19 @@ public class TypeDesignationSetComparator implements Comparator<TypeDesignationS
         Class<?> type1 = o1.getBaseEntity().getClass();
         Class<?> type2 = o2.getBaseEntity().getClass();
 
+        //type status ("holo + lectotypes first"
+        if (orderBy == ORDER_BY.TYPE_STATUS) {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Comparator<TypeDesignationStatusBase<?>> statusComparator = (Comparator)new TypeDesignationStatusComparator<>();
+            TypeDesignationStatusBase<?> status1 = ws1.highestTypeStatus(statusComparator);
+            TypeDesignationStatusBase<?> status2 = ws2.highestTypeStatus(statusComparator);
+            int comp = statusComparator.compare(status1, status2);
+            if (comp != 0) {
+                return comp;
+            }
+        }
+
+        //by type (FieldUnits->DerivedUnits->TaxonNames)
         if(!type1.equals(type2)) {
             if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
                 // FieldUnits first
@@ -93,21 +108,9 @@ public class TypeDesignationSetComparator implements Comparator<TypeDesignationS
                 return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
             }
         } else {
-            if (orderBy == ORDER_BY.TYPE_STATUS) {
-                @SuppressWarnings({ "unchecked", "rawtypes" })
-                Comparator<TypeDesignationStatusBase<?>> statusComparator = (Comparator)new TypeDesignationStatusComparator<>();
-                TypeDesignationStatusBase<?> status1 = ws1.highestTypeStatus(statusComparator);
-                TypeDesignationStatusBase<?> status2 = ws2.highestTypeStatus(statusComparator);
-                int comp = statusComparator.compare(status1, status2);
-                if (comp != 0) {
-                    return comp;
-                }
-            }
-
             String label1 = TypeDesignationSetFormatter.entityLabel(o1.getBaseEntity());
             String label2 = TypeDesignationSetFormatter.entityLabel(o2.getBaseEntity());
             return label1.compareTo(label2);
         }
     }
-
 }

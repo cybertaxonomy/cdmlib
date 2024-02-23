@@ -152,7 +152,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         specimen_IT_3.setTitleCache("M", true);
         createDerivationEvent(fu_2, specimen_IT_3);
         std_IT_3.setTypeSpecimen(specimen_IT_3);
-        std_IT_3.setTypeStatus(SpecimenTypeDesignationStatus.ISOTYPE());
+        std_IT_3.setTypeStatus(SpecimenTypeDesignationStatus.SYNTYPE());
 
         mtd_HT_published = SpecimenTypeDesignation.NewInstance();
         mtd_HT_published.setId(5);
@@ -213,7 +213,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
 
         assertNotNull(result);
         assertEquals(
-                "Prionus L."+DASH_W+"Types: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (isotype: M);"
+                "Prionus L."+DASH_W+"Types: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (syntype: M);"
                 + " Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
                 + " nametype: Prionus coriatius L."
                 , result
@@ -224,7 +224,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         Iterator<TypeDesignationSet> byStatusMapIterator = orderedTypeDesignations.values().iterator();
         Iterator<TypeDesignationStatusBase<?>> keyIt_1 = byStatusMapIterator.next().keySet().iterator();
         Iterator<TypeDesignationStatusBase<?>> keyIt_2 = byStatusMapIterator.next().keySet().iterator();
-        assertEquals("isotype", keyIt_1.next().getLabel());
+        assertEquals("syntype", keyIt_1.next().getLabel());
         assertEquals("holotype", keyIt_2.next().getLabel());
         assertEquals("isotype", keyIt_2.next().getLabel());
 
@@ -232,12 +232,18 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         TypeDesignationSetComparator.ORDER_BY orderByTypeStatus = TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS;
         typeDesignationManager = TypeDesignationSetContainer.NewInstance(tds, orderByTypeStatus);
         result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
-
-        assertNotNull(result);
         assertEquals(
                 "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
-                + " Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (isotype: M);"
+                + " Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (syntype: M);"
                 + " nametype: Prionus coriatius L."
+                , result
+                );
+        //same with preceding type
+        result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
+        assertEquals(
+                "Prionus L."+DASH_W+"Holotype: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (OHA; isotypes: BER, KEW);"
+                + " Syntype: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (M);"
+                + " Nametype: Prionus coriatius L."
                 , result
                 );
 
@@ -247,7 +253,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         keyIt_2 = byStatusMapIterator.next().keySet().iterator();
         assertEquals("holotype", keyIt_1.next().getLabel());
         assertEquals("isotype", keyIt_1.next().getLabel());
-        assertEquals("isotype", keyIt_2.next().getLabel());
+        assertEquals("syntype", keyIt_2.next().getLabel());
     }
 
     @Test

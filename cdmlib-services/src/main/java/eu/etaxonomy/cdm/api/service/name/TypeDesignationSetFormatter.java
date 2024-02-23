@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -67,6 +68,7 @@ public class TypeDesignationSetFormatter {
     private boolean withNameIfAvailable = false;
     private boolean withPrecedingMainType = true;
     private boolean withAccessionNoType = false;
+    private boolean ignoreSyntypesWithLectotype = false;
 
     public static String entityLabel(VersionableEntity baseEntity) {
         String label = "";
@@ -85,12 +87,20 @@ public class TypeDesignationSetFormatter {
 
     public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
+        this(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType,
+                withAccessionNoType, false);
+    }
+
+    public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
+            boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType,
+            boolean ignoreSyntypesWithLectotype) {
 
         this.withCitation = withCitation;
         this.withStartingTypeLabel = withStartingTypeLabel;
         this.withNameIfAvailable = withNameIfAvailable;
         this.withPrecedingMainType = withPrecedingMainType;
         this.withAccessionNoType = withAccessionNoType;
+        this.ignoreSyntypesWithLectotype = ignoreSyntypesWithLectotype;
     }
 
     public TypeDesignationSetFormatter withCitation(boolean withCitation) {
@@ -167,7 +177,7 @@ public class TypeDesignationSetFormatter {
         TaggedTextBuilder taggedTextBuilder = new TaggedTextBuilder();
         if(typeSetCount > 0){
             taggedTextBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
-        }else if (withStartingTypeLabel){
+        }else if (withStartingTypeLabel && !withPrecedingMainType){
             //TODO this is not really exact as we may want to handle specimen types and
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
@@ -181,6 +191,16 @@ public class TypeDesignationSetFormatter {
             }
         }
 
+        //TODO why is typeDesingationSet not a list
+        List<TypeDesignationStatusBase> statusList = new ArrayList<>(typeDesignationSet.keySet());
+        //TODO single instance
+        statusList.sort(new TypeDesignationStatusComparator<>());
+
+        boolean hasPrecedingStatusLabel = withPrecedingMainType && !statusList.isEmpty();
+        if (hasPrecedingStatusLabel){
+            addStatusLabel(taggedTextBuilder, typeDesignationSet, statusList.get(0), lastWsType, typeSetCount, true);
+        }
+
         boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationSet);
         if(hasExplicitBaseEntity && !entityLabel(baseEntity).isEmpty()){
             taggedTextBuilder.add(TagEnum.specimenOrObservation, entityLabel(baseEntity), baseEntity);
@@ -189,10 +209,10 @@ public class TypeDesignationSetFormatter {
         if (withBrackets && hasExplicitBaseEntity){
             taggedTextBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
         }
-        for(TypeDesignationStatusBase<?> typeStatus : typeDesignationSet.keySet()) {
+        for(TypeDesignationStatusBase<?> typeStatus : statusList) {
             typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, taggedTextBuilder,
                     typeDesignationSet, typeStatusCount, typeStatus,
-                    lastWsType, typeSetCount);
+                    lastWsType, typeSetCount, hasPrecedingStatusLabel);
         }
         if (withBrackets && hasExplicitBaseEntity){
             taggedTextBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
@@ -223,33 +243,17 @@ public class TypeDesignationSetFormatter {
     private int buildTaggedTextForSingleTypeStatus(TypeDesignationSetContainer manager,
             TaggedTextBuilder workingsetBuilder, TypeDesignationSet typeDesignationSet,
             int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
-            TypeDesignationSetType lastWsType, int typeSetCount) {
+            TypeDesignationSetType lastWsType, int typeSetCount, boolean hasPrecedingStatusLabel) {
 
         //starting separator
         if(typeStatusCount++ > 0){
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
         }
+        boolean statusLabelPreceding = hasPrecedingStatusLabel && typeStatusCount == 1;
 
-        boolean isPlural = typeDesignationSet.get(typeStatus).size() > 1;
-        String label = null;
-        if(typeStatus != TypeDesignationSet.NULL_STATUS){
-            label = typeStatus.getLabel();
-        }else if (typeDesignationSet.getWorkingsetType() != lastWsType
-                && (workingsetBuilder.size() > 0 && typeSetCount > 0)){
-            //only for the first name type (coming after a specimen type add the label (extremely rare case, if at all existing)
-            if (typeDesignationSet.getWorkingsetType().isNameType()) {
-                label = "nametype";
-            }else if (typeDesignationSet.getWorkingsetType().isSpecimenType()) {
-                label = "type";
-            }
-        }
-        if (label != null){
-            label = (isPlural ? label + "s" : label);
-            if (workingsetBuilder.size() == 0){
-                label = StringUtils.capitalize(label);
-            }
-            workingsetBuilder.add(TagEnum.label, label);
-            workingsetBuilder.add(TagEnum.postSeparator, POST_STATUS_SEPARATOR);
+        //status label
+        if (!statusLabelPreceding) {
+            addStatusLabel(workingsetBuilder, typeDesignationSet, typeStatus, lastWsType, typeSetCount, false);
         }
 
         //designation + sources
@@ -261,6 +265,33 @@ public class TypeDesignationSetFormatter {
                     workingsetBuilder, typeDesignationCount);
         }
         return typeStatusCount;
+    }
+
+    private void addStatusLabel(TaggedTextBuilder workingsetBuilder, TypeDesignationSet typeDesignationSet,
+            TypeDesignationStatusBase<?> typeStatus, TypeDesignationSetType lastWsType,
+            int typeSetCount, boolean capitalize) {
+
+        boolean isPlural = typeDesignationSet.get(typeStatus).size() > 1;
+        String statusLabel = null;
+        if(typeStatus != TypeDesignationSet.NULL_STATUS){
+            statusLabel = typeStatus.getLabel();
+        }else if (typeDesignationSet.getWorkingsetType() != lastWsType
+                && (workingsetBuilder.size() > 0 && typeSetCount > 0 )){
+            //only for the first name type (coming after a specimen type add the label (extremely rare case, if at all existing)
+            if (typeDesignationSet.getWorkingsetType().isNameType()) {
+                statusLabel = "nametype";
+            }else if (typeDesignationSet.getWorkingsetType().isSpecimenType()) {
+                statusLabel = "type";
+            }
+        }
+        if (statusLabel != null){
+            statusLabel = (isPlural ? statusLabel + "s" : statusLabel);
+            if (workingsetBuilder.size() == 0 || capitalize){
+                statusLabel = StringUtils.capitalize(statusLabel);
+            }
+            workingsetBuilder.add(TagEnum.label, statusLabel);
+            workingsetBuilder.add(TagEnum.postSeparator, POST_STATUS_SEPARATOR);
+        }
     }
 
     protected static int buildTaggedTextForSingleType(TypeDesignationBase<?> typeDes, boolean withCitation,
