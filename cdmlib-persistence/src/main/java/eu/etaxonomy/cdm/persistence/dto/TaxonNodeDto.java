@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     /**
      * count of the direct taxonomic children
      */
-    private int taxonomicChildrenCount = 0;
+    private Integer taxonomicChildrenCount = 0;
 
     /**
      * The UUID of the associated secundum reference
@@ -61,6 +60,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
      */
     private TaxonNodeStatus status;
 
+    //TODO map only needed if we use this for writing, too
     private Map<Language, String> statusNote = new HashMap<>();
 
 
@@ -70,7 +70,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     private String rankLabel = null;
     private Integer rankOrderIndex = null;
 
-    private TaxonStatus taxonStatus;
+    private TaxonStatus taxonStatus = TaxonStatus.Accepted;
 
     private UUID classificationUUID = null;
     private UUID parentUUID = null;
@@ -88,32 +88,33 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(uuid, id, titleCache);
     }
 
-    public TaxonNodeDto(UUID uuid, Integer id, String nameTitleCache, String taxonTitleCache) {
-        super(uuid, id, nameTitleCache, taxonTitleCache);
+    public TaxonNodeDto(UUID uuid, Integer id, UUID taxonUuid, String treeIndex, String nameTitleCache,
+            String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex,
+            UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status,
+            List<LanguageString> statusNote, Integer childrenCount, UUID secUuid,
+            List<TaggedText> taggedName){
 
-    }
-    public TaxonNodeDto(UUID uuid, Integer id, UUID taxonUuid, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status, List<LanguageString> statusNote){
     	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
     	this.status = status;
     	this.taxonIsPublish = taxonIsPublished;
     	for (LanguageString str: statusNote) {
     		this.statusNote.put(str.getLanguage(), str.getText());
     	}
-	this.taxonUuid = taxonUuid;
+    	this.taxonUuid = taxonUuid;
+        this.taxonomicChildrenCount = childrenCount;
+        this.secUuid = secUuid;
+        this.taggedTitle = taggedName;
     }
 
-    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid) {
-        super(uuid, id, nameTitleCache, taxonTitleCache);
+    public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache,
+            Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid) {
+
+        super(TaxonNode.class, uuid, id, nameTitleCache, taxonTitleCache);  //TODO the correct handling of different titleCaches needs to be discussed
         this.rankOrderIndex = rankOrderIndex;
         this.parentUUID = parentUuid;
         this.treeIndex = treeIndex;
         this.sortIndex = sortIndex;
         this.classificationUUID = classificationUuid;
-    }
-
-    public TaxonNodeDto(UUID uuid, Integer id, String titleCache, Integer rankOrderIndex) {
-        super(uuid, id, titleCache);
-        this.rankOrderIndex = rankOrderIndex;
     }
 
     public TaxonNodeDto(Class<? extends ITaxonTreeNode> type, ITaxonTreeNode taxonTreeNode) {
@@ -152,7 +153,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             }
             rankOrderIndex = null;
         }
-        taxonStatus = TaxonStatus.Accepted;
 
         //taxonNode
         taxonomicChildrenCount = taxonNode.getCountChildren();
@@ -192,7 +192,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         classificationUUID = null;
     }
 
-    public int getTaxonomicChildrenCount() {
+    public Integer getTaxonomicChildrenCount() {
         return taxonomicChildrenCount;
     }
 

@@ -53,6 +53,8 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
@@ -176,6 +178,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
                 t_acherontia, classification, subtree, includeUnpublished, null, null, null);
         assertNotNull(children);
         assertEquals(1, children.size()); //1 is unpublished
+//        assertEquals(0, children.get(0).getChildNodes().size());
+
 
         includeUnpublished = true;
         TaxonNode t_acherontia_node = taxonNodeDao.load(NODE_ACHERONTIA_UUID);
@@ -195,6 +199,46 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull(children);
         assertEquals(2, children.size()); //1 is unpublished
     }
+
+
+    @Test
+    @DataSet
+    public void testListChildrenDTO(){
+        boolean includeUnpublished;
+        Taxon t_acherontia = (Taxon) taxonDao.load(ACHERONTIA_UUID);
+        TaxonNode subtree = null;
+        includeUnpublished = true;
+
+        Classification classification =  classificationDao.load(ClassificationUuid);
+        List<TaxonNodeDto> children = classificationDao.listChildrenOf(
+                t_acherontia, classification, subtree, includeUnpublished, null, null);
+        assertNotNull(children);
+        assertEquals(2, children.size());
+        TaxonNodeDto child = children.stream().filter(c->!c.isPublish()).findFirst().get();
+        Assert.assertEquals(UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519"), child.getUuid());
+        Assert.assertEquals("Acherontia styx Westwood, 1847", child.getTitleCache());
+        Assert.assertEquals("#t1#4#3#2#", child.getTreeIndex());
+        Assert.assertEquals(Integer.valueOf(1), child.getTaxonomicChildrenCount());
+        Assert.assertEquals(Integer.valueOf(1), child.getSortIndex());
+        List<TaggedText> taggedTitle = child.getTaggedTitle();
+        Assert.assertEquals("Acherontia styx Westwood, 1847", TaggedCacheHelper.createString(taggedTitle));
+        Assert.assertEquals("Acherontia", taggedTitle.get(0).getText());
+
+        includeUnpublished = false;
+        children = classificationDao.listChildrenOf(
+                t_acherontia, classification, subtree, includeUnpublished, null, null);
+        assertNotNull(children);
+        assertEquals(1, children.size()); //1 is unpublished
+        child = children.get(0);
+        Assert.assertEquals(uuid1, child.getUuid());
+        Assert.assertEquals("Acherontia lachesis (Fabricius, 1798)", child.getTitleCache());
+        Assert.assertEquals("#t1#4#3#1#", child.getTreeIndex());
+        Assert.assertEquals(Integer.valueOf(0), child.getTaxonomicChildrenCount());
+        Assert.assertEquals(Integer.valueOf(0), child.getSortIndex());
+
+
+    }
+
 
     @Test
     @DataSet

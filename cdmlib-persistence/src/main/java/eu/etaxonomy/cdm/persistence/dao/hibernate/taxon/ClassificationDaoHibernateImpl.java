@@ -33,6 +33,8 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.mueller
@@ -196,14 +198,32 @@ public class ClassificationDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+    public List<TaxonNodeDto> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex){
 
-         Query<TaxonNode> query = prepareListChildrenOf(taxon, classification,
-                 subtree, false, includeUnpublished, TaxonNode.class);
+         Query<SortableTaxonNodeQueryResult> query = prepareListChildrenOf(taxon, classification,
+                 subtree, QueryType.DTO, includeUnpublished, SortableTaxonNodeQueryResult.class);
 
          addPageSizeAndNumber(query, pageSize, pageIndex);
 
+         List<SortableTaxonNodeQueryResult> queryResult = query.list();
+         //check if array is "empty" (not containing null objects)  //copied from non-DTO version. Necessary here?
+         if(!queryResult.isEmpty() && queryResult.iterator().next()==null){
+            return java.util.Collections.emptyList();
+         }
+         List<TaxonNodeDto> result = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(queryResult);
+         return result;
+    }
+
+    @Override
+    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+
+        Query<TaxonNode> query = prepareListChildrenOf(taxon, classification,
+                 subtree, QueryType.INSTANCE, includeUnpublished, TaxonNode.class);
+
+         addPageSizeAndNumber(query, pageSize, pageIndex);
+//         query.setHint( "org.hibernate.readOnly", true );  //TODO does not seem to have an effect. (https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#hql-read-only-entities)
          List<TaxonNode> result = query.list();
          //check if array is "empty" (not containing null objects)
          if(!result.isEmpty() && result.iterator().next()==null){
@@ -249,7 +269,8 @@ public class ClassificationDaoHibernateImpl
     @Override
     public Long countChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree,
             boolean includeUnpublished){
-        Query<Long> query = prepareListChildrenOf(taxon, classification, subtree, true, includeUnpublished, Long.class);
+        Query<Long> query = prepareListChildrenOf(taxon, classification, subtree,
+                QueryType.COUNT, includeUnpublished, Long.class);
         Long count = query.uniqueResult();
         return count;
     }
@@ -261,10 +282,66 @@ public class ClassificationDaoHibernateImpl
         return count;
     }
 
-    private <R extends Object> Query<R> prepareListChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree,
-            boolean doCount, boolean includeUnpublished, Class<R> resultClass){
+    private enum QueryType {COUNT, DTO, INSTANCE}
 
-    	 String selectWhat = doCount ? "COUNT(cn)" : "cn";
+    public class TaxonNodeQueryResult {
+        public UUID nodeUuid; Integer nodeId; UUID taxonUuid; String taxonTitleCache;
+
+        public TaxonNodeQueryResult(String titleCache) {
+        }
+        public TaxonNodeQueryResult(UUID nodeUuid) {
+        }
+        public TaxonNodeQueryResult(UUID nodeUuid, int nodeId, UUID taxonUuid, String taxonTitleCache) {
+            this.nodeUuid = nodeUuid;
+            this.nodeId = nodeId;
+            this.taxonUuid = taxonUuid;
+            this.taxonTitleCache = taxonTitleCache;
+        }
+
+    }
+
+    private <R extends Object> Query<R> prepareListChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree,
+            QueryType queryType, boolean includeUnpublished, Class<R> resultClass){
+
+    	 String selectWhat = queryType == QueryType.COUNT ? "COUNT(cn)"
+    	         : queryType == QueryType.INSTANCE ? "cn, cn.taxon, cn.taxon.name"
+    	         : (" new " +SortableTaxonNodeQueryResult.class.getName()+"("
+    	                 + "cn.uuid "
+    	                 + ", cn.id "
+    	                 + ", cn.treeIndex "
+    	                 + ", cn.taxon.uuid "
+    	                 + ", cn.taxon.titleCache "
+    	                 + ", cn.taxon.name.titleCache "
+    	                 + ", cn.taxon.name.rank "
+    	                 + ", tn.uuid " //parent.uuid
+    	                 + ", index(cn) " //sortIndex,"
+    	                 + ", c.uuid "
+     	                 + ", cn.taxon.publish "
+     	                 + ", cn.status "
+    	                 + ", cn.countChildren"
+    	                 + ", cn.taxon.secSource.citation.uuid"
+    	                 + ", cn.taxon.name.nameType"
+                         + ", cn.taxon.name.genusOrUninomial"
+                         + ", cn.taxon.name.infraGenericEpithet"
+                         + ", cn.taxon.name.specificEpithet"
+                         + ", cn.taxon.name.infraSpecificEpithet"
+                         + ", cn.taxon.name.appendedPhrase"
+                         + ", cn.taxon.name.protectedTitleCache"
+                         + ", cn.taxon.name.protectedNameCache"
+                         + ", cn.taxon.name.nameCache"
+                         + ", cn.taxon.name.authorshipCache"
+                         + ", cn.taxon.name.publicationYear"
+                         + ", cn.taxon.name.monomHybrid"
+                         + ", cn.taxon.name.binomHybrid"
+                         + ", cn.taxon.name.trinomHybrid"
+
+//     	                 + ", entry(cn.statusNote) "  //cn.statusNote
+//    	                 + ", cn.taxon.name.rank.orderIndex "
+//    	                 + "cn.taxon.name.rank.titleCache "  //TODO maybe ...rank.representations (?)
+                         + ")"
+)
+
+    	                 ;   //TODO language dependent;
 
          String hql = "SELECT " + selectWhat
                  + " FROM TaxonNode AS tn "
