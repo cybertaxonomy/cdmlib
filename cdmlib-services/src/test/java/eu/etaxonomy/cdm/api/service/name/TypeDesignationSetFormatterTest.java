@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -52,6 +53,8 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @since 30.03.2021
  */
 public class TypeDesignationSetFormatterTest extends TermTestBase{
+
+    private static final String DASH_W = UTF8.EN_DASH_SPATIUM.toString();
 
     //variables and setup were copied from TypeDesignationSetContainerTest
     //not all of them are in use yet
@@ -229,7 +232,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true, false, false);
 
         String text = formatter.format(container);
-        Assert.assertEquals("Prionus coriatius L.\u202F\u2013\u202FType: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA 1234, destroyed)", text);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA 1234, destroyed)", text);
 
         List<TaggedText> taggedText = formatter.toTaggedText(container);
         Assert.assertEquals("first entry should be the typified name",
