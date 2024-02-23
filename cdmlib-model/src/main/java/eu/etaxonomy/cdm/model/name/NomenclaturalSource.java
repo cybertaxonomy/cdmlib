@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -110,9 +109,6 @@ public class NomenclaturalSource extends NamedSourceBase {
         }
     }
 
-    public String getNomenclaturalCitation() {
-        return NomenclaturalSourceFormatter.INSTANCE().format(this.getCitation(), this.getCitationMicroReference());
-    }
 
 //************************* CLONE() ************************/
 

@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -197,9 +195,6 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     }
 
 
-    public UUID getAcceptedTaxonUuid(){
-        return acceptedTaxon != null? acceptedTaxon.getUuid(): null;
-    }
 
 //*********************** CLONE ********************************************************/
 
