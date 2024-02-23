@@ -193,7 +193,7 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance(tds);
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter(true, true, true, false, false);
         String text = formatter.format(manager);
-        Assert.assertEquals("Prionus L.\u202F\u2013\u202FNametype: Prionus coriatius L.", text);
+        Assert.assertEquals("Prionus L."+DASH_W+"Nametype: Prionus coriatius L.", text);
 
         List<TaggedText> taggedText = formatter.toTaggedText(manager);
         Assert.assertEquals("first entry should be the typified name",
