@@ -1142,7 +1142,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         }
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
 
         return list;
     }
@@ -1156,7 +1156,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         query.setParameter("uuid", nodeUuid);
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
         if (list.isEmpty()) {
         	return null;
         }
@@ -1199,7 +1199,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
         List<SortableTaxonNodeQueryResult> result = query.list();
 
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
 
         return list;
     }
@@ -1214,7 +1214,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
         List<SortableTaxonNodeQueryResult> result = query.list();
 
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
 
         return list;
     }
@@ -1233,23 +1233,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         }
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
         if (list.isEmpty()) {
         	return null;
         }
         return list;
-    }
-
-
-    @Override
-    public List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
-        List<TaxonNodeDto> nodeDtos = new ArrayList<>();
-        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
-        for(SortableTaxonNodeQueryResult queryDTO : result){
-            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonUuid(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank()!= null? queryDTO.getNameRank().getOrderIndex(): null, queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(), queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getStatusNote());
-            nodeDtos.add(nodeDto);
-        }
-        return nodeDtos;
     }
 
     @Override
@@ -1269,7 +1257,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         }
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
         return list;
     }
 

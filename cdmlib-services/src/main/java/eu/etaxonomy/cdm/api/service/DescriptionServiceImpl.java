@@ -1077,7 +1077,7 @@ public class DescriptionServiceImpl
         List<SortableTaxonNodeQueryResult> result = dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
 
         if (!result.isEmpty()){
-            List<TaxonNodeDto> dtos = taxonNodeDao.createNodeDtos(result);
+            List<TaxonNodeDto> dtos = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
             if (dtos.size() == 1){
                 return dtos.get(0);
             }else{

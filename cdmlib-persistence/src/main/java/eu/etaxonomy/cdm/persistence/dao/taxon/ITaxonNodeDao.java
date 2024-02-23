@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -193,17 +192,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
     public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuid);
 
-    /**
-     * @param result
-     * @return
-     */
-    List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result);
-    /**
-     * @param taxonUuid
-     * @param subTreeIndex
-     * @return
-     */
-	List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex);
+    public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex);
 
     public List<TaxonNodeDto> getTaxonNodeDtosWithoutParent(List<UUID> nodeUuids);
 }

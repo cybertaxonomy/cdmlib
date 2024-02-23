@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -210,5 +210,14 @@ public class SortableTaxonNodeQueryResult {
 		this.status = status;
 	}
 
+    public static List<TaxonNodeDto> toTaxonNodeDtoList(List<SortableTaxonNodeQueryResult> result) {
+        List<TaxonNodeDto> nodeDtos = new ArrayList<>();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+        for(SortableTaxonNodeQueryResult queryDTO : result){
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonUuid(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank()!= null? queryDTO.getNameRank().getOrderIndex(): null, queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(), queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getStatusNote());
+            nodeDtos.add(nodeDto);
+        }
+        return nodeDtos;
+    }
 
 }
