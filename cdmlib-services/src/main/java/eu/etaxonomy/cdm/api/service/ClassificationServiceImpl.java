@@ -331,8 +331,7 @@ public class ClassificationServiceImpl
     @Override
     public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid,
             UUID subtreeUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode,
-            List<String> propertyPaths) throws FilterException{
+            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode) throws FilterException{
 
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);

@@ -235,7 +235,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
             Integer pageSize, Integer pageIndex, List<String> propertyPaths) throws FilterException;
 
     public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode comparator, List<String> propertyPaths) throws FilterException;
+            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode comparator) throws FilterException;
 
     /**
      * @param taxonNode

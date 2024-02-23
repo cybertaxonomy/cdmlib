@@ -134,7 +134,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         List<TaxonNodeDto> children;
         try {
             children = service.listChildNodeDtosOfTaxon(taxonUuid, classificationUuid, subtreeUuid,
-                    includeUnpublished, null, null, sortMode, NODE_INIT_STRATEGY);
+                    includeUnpublished, null, null, sortMode);
         } catch (FilterException e) {
             HttpStatusMessage.SUBTREE_FILTER_INVALID.send(response);
             return null;
