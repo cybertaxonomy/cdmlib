@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.dto.TaxonFindDto;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
@@ -924,5 +925,11 @@ public interface ITaxonService
 
     public <S extends TaxonBase> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
+
+    /**
+     * Creates a taxon search result DTO. For now this is a wrapper for {@link #findTaxaAndNames(IFindTaxaAndNamesConfigurator)}
+     * with additional information on accepted taxon uuid and formatted nomenclatural source.
+     */
+    public Pager<TaxonFindDto> findTaxaAndNamesDto(IFindTaxaAndNamesConfigurator configurator);
 
 }
