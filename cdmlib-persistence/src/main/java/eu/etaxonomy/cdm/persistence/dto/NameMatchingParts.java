@@ -32,6 +32,7 @@ public class NameMatchingParts {
 
     protected String infraSpecificEpithet;
 
+    protected String nameCache;
 
 //************ CONSTRUCTOR ***********************/
 
@@ -39,7 +40,7 @@ public class NameMatchingParts {
     }
 
     public NameMatchingParts(Integer taxonNameId, UUID taxonNameUuid, String titleCache, String authorshipCache,
-            String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet) {
+            String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String nameCache) {
         super();
         this.taxonNameId = taxonNameId;
         this.taxonNameUuid = taxonNameUuid;
@@ -49,6 +50,7 @@ public class NameMatchingParts {
         this.infraGenericEpithet = infraGenericEpithet;
         this.specificEpithet = specificEpithet;
         this.infraSpecificEpithet = infraSpecificEpithet;
+        this.nameCache = nameCache;
     }
 
 //***************** GETTER / SETTER ********************************/
@@ -116,12 +118,20 @@ public class NameMatchingParts {
         this.infraSpecificEpithet = infraSpecificEpithet;
     }
 
+    public String getNameCache() {
+        return nameCache;
+    }
+
+    public void setNameCache(String nameCache) {
+        this.nameCache = nameCache;
+    }
+
  // ************************** TO STRING *************************************/
 
     @Override
     public String toString() {
         return "NameMatchingParts [taxonNameId=" + taxonNameId + ", genusOrUninomial=" + genusOrUninomial
                 + ", infraGenericEpithet=" + infraGenericEpithet + ", specificEpithet=" + specificEpithet
-                + ", infraSpecificEpithet=" + infraSpecificEpithet + "]";
+                + ", infraSpecificEpithet=" + infraSpecificEpithet + ", nameCache=" + nameCache + "]";
     }
 }

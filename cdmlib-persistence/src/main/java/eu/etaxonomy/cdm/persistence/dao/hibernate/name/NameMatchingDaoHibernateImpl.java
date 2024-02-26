@@ -51,29 +51,38 @@ public class NameMatchingDaoHibernateImpl
     }
 
     @Override
-    public List<NameMatchingParts> findNameMatchingParts(Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
-        Set<String> generaSet = postFilteredGenusOrUninominalWithDis.keySet();
-        List <String> generaList = new ArrayList <>(generaSet);
-        StringBuilder hql = prepareFindTaxonNamePartsString();
-        Query<NameMatchingParts> query = getSession().createQuery(hql.toString());
+    public List<NameMatchingParts> findNameMatchingParts(Map<String, Integer> postFilteredGenusOrUninominalWithDis,
+            List<String> nameCacheList) {
+        StringBuilder hql = new StringBuilder();
+        List<NameMatchingParts> result = new ArrayList();
 
-        if(generaList != null && generaList.size() > 0){
+        if(postFilteredGenusOrUninominalWithDis != null && postFilteredGenusOrUninominalWithDis.size() > 0 ){
+            Set<String> generaSet = postFilteredGenusOrUninominalWithDis.keySet();
+            List <String> generaList = new ArrayList <>(generaSet);
+            hql = prepareFindTaxonNamePartsString("genusOrUninomial","generaList");
+            Query<NameMatchingParts> query = getSession().createQuery(hql.toString());
             query.setParameterList("generaList", generaList);
+            result = query.list();
+            return result;
+        } else {
+            hql = prepareFindTaxonNamePartsString("nameCache","nameCacheList");
+            Query<NameMatchingParts> query = getSession().createQuery(hql.toString());
+            query.setParameterList("nameCacheList", nameCacheList);
+            result = query.list();
+            return result;
         }
-        List<NameMatchingParts> result = query.list();
-        return result;
     }
 
-    private StringBuilder prepareFindTaxonNamePartsString() {
+    private StringBuilder prepareFindTaxonNamePartsString(String column, String values) {
 
         StringBuilder hql = new StringBuilder();
 
         hql.append("select new eu.etaxonomy.cdm.persistence.dto.NameMatchingParts(n.id, n.uuid, n.titleCache, n.authorshipCache, "
-              + "n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet)");
+              + "n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet, n.nameCache)");
         hql.append(" from TaxonName n ");
         hql.append("where 1 = 1 ");
-        hql.append("and n.genusOrUninomial in (");
-        hql.append(":generaList");
+        hql.append("and n."+column+ " in (");
+        hql.append(":" + values);
         hql.append(") ");
         return hql;
   }

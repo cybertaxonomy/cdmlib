@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,8 @@ public class NameMatchingServiceImpl
     private ITaxonNameDao nameDao;
     @Autowired
     private INameMatchingDao nameMatchingDao;
+    @Autowired
+    private INameMatchingDao nameListMatchingDao;
 
     //**********CONSTRUCTOR**********
 
@@ -66,7 +69,7 @@ public class NameMatchingServiceImpl
         public SingleNameMatchingResult(NameMatchingParts parts, Integer distance) {
             super(parts.getTaxonNameId(), parts.getTaxonNameUuid(), parts.getTitleCache(),
                     parts.getAuthorshipCache(), parts.getGenusOrUninomial(),
-                    parts.getInfraGenericEpithet(), parts.getSpecificEpithet(), parts.getInfraSpecificEpithet());
+                    parts.getInfraGenericEpithet(), parts.getSpecificEpithet(), parts.getInfraSpecificEpithet(), parts.getNameCache());
             this.distance = distance;
         }
 
@@ -86,6 +89,40 @@ public class NameMatchingServiceImpl
 
     //**********METHODS**********
     // TODO work in progress
+
+    /**
+     * Compares a list of input names with names in the Database. Returns list of exact matching names (distance = 0), or list of best matches if exact matches are not found
+     * @return list of matching names and its score
+     *
+     */
+
+    // a first search is execute with the input names of the list. The input name is compared against the name cache in the DB.
+    // if the name is found, it is listed in a "perfect match list" with a value of 1 (fully equivalent. The name is then deleted
+    // from the original input list
+
+
+    public List<SingleNameMatchingResult> compareTaxonListNameCache(List<String> input){
+        List<SingleNameMatchingResult> perfectMatch = new ArrayList<>();
+        List <NameMatchingParts> matchingNamesCacheList = nameListMatchingDao.findNameMatchingParts(null, input);
+        for (int x = 0 ; x < matchingNamesCacheList.size(); x++) {
+            perfectMatch.set(x, new SingleNameMatchingResult(matchingNamesCacheList.get(x), 1));
+        }
+        for (String x : input) {
+            for (NameMatchingParts y : matchingNamesCacheList) {
+                Iterator <String> iterator = input.iterator();
+                while (iterator.hasNext()) {
+                    String name = iterator.next();
+                    if (y.getNameCache().contains(x)) {
+                    iterator.remove();
+                    }
+                }
+            }
+        }
+        return perfectMatch;
+    }
+
+
+
 
     /**
      * Compares two names and calculates number of differences.
@@ -392,7 +429,7 @@ public class NameMatchingServiceImpl
     private List<SingleNameMatchingResult> getTaxonNamePartsFromDB(
     		Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
     	List<SingleNameMatchingResult> genusOrUninomialWithDistance = new ArrayList<>();
-    	List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis);
+    	List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis, null);
         postFilteredGenusOrUninominalWithDis.forEach((key, value) -> {
         	for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
         		if (fullNameMatchingParts.getGenusOrUninomial() == key) {

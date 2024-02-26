@@ -47,6 +47,23 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     @SpringBeanByType
 	private INameMatchingService nameMatchingService;
 
+//    @Test
+//    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testListMatches.xml")
+//    public void testCompareTaxonListNameCache(){
+//        List <String> query = new ArrayList<>();
+//        query.add("Reynosia mucronata subsp. azulensis");
+//        query.add("Asemeia hebeclada var. impensa");
+//        query.add("Ehretina crebrifolia");
+//
+//        NameMatchingServiceImpl matchResults = new NameMatchingServiceImpl();
+//        List<SingleNameMatchingResult> perfectMatches;
+//        perfectMatches = matchResults.compareTaxonListNameCache(query);
+//        Assert.assertEquals("Reynosia mucronata subsp. azulensis", perfectMatches.get(0).getNameCache());
+//        Assert.assertEquals("Asemeia hebeclada var. impensa", perfectMatches.get(1).getNameCache());
+//        Assert.assertEquals(1, query.size());
+//        Assert.assertEquals("Ehretina crebrifolia", query.get(0));
+//    }
+
     @Test
     public void testTrimCommonChar() {
 
