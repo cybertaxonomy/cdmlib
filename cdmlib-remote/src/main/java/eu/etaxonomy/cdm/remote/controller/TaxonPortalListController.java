@@ -91,7 +91,7 @@ public class TaxonPortalListController extends TaxonListController {
      *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"find"})
+    @RequestMapping(method = RequestMethod.GET, value={"findDto"})
     public Pager<TaxonFindDto> doFindDto(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID classificationUuid,
@@ -113,7 +113,7 @@ public class TaxonPortalListController extends TaxonListController {
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        logger.info("doFind() " + requestPathAndQuery(request));
+        logger.info("doFindDto() " + requestPathAndQuery(request));
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
