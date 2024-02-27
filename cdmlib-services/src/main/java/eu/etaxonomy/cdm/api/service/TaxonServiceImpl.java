@@ -3506,6 +3506,7 @@ public class TaxonServiceImpl
             Direction direction, boolean groupMisapplications,
             boolean includeUnpublished,
             Integer pageSize, Integer pageNumber) {
+
         TaxonBase<?> taxonBase = dao.load(taxonUuid);
         if (taxonBase == null || !taxonBase.isInstanceOf(TaxonBase.class)){
             //TODO handle
