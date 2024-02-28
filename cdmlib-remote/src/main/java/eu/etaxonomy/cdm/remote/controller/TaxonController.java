@@ -287,11 +287,6 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         		 HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
                  return null;
         }
-
-
-
-
-
     }
 
     protected  EntityInitStrategy getTaxonNodeInitStrategy() {

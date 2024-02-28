@@ -279,6 +279,10 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return taxonIsPublish;
     }
 
+    public Map<Language, String> getStatusNote() {
+        return statusNote;
+    }
+
     @Override
     public boolean equals(Object node2){
         if (node2 instanceof TaxonNodeDto){
@@ -286,9 +290,5 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         } else{
             return false;
         }
-    }
-
-    public Map<Language, String> getStatusNote() {
-        return statusNote;
     }
 }
