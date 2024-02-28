@@ -98,6 +98,11 @@ public class PolytomousKeyServiceImpl
 	}
 
 	@Override
+	public long countByTaxonomicScope(UUID taxonUuid) {
+	    return identificationKeyDao.countByTaxonomicScope(taxonUuid, PolytomousKey.class);
+	}
+
+	@Override
 	public Pager<PolytomousKey> findByTaxonomicScope(
 			TaxonBase taxon, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths, List<String> nodePaths) {

@@ -74,4 +74,17 @@ public class PolytomousKeyListController extends AbstractIdentifiableListControl
         Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, null);
         return pager;
     }
+
+    @RequestMapping(
+            params = {"countByTaxonomicScope"},
+            method = RequestMethod.GET)
+    public long doCountByTaxonomicScope(
+            @RequestParam(value = "countByTaxonomicScope") UUID taxonUuid,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
+
+        logger.info("doCountByTaxonomicScope: " + request.getRequestURI() + request.getQueryString());
+
+        return service.countByTaxonomicScope(taxonUuid);
+    }
 }
