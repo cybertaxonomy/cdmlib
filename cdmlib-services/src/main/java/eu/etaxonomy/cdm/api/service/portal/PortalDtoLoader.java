@@ -227,6 +227,9 @@ public class PortalDtoLoader {
     }
 
     private void loadKeys(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
+        if (!config.isWithKeys()){
+            return;
+        }
         try {
             ContainerDto<KeyDTO> container = new ContainerDto<>();
 
@@ -249,7 +252,9 @@ public class PortalDtoLoader {
     }
 
     private void loadSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
-
+        if (!config.isWithSpecimens()){
+            return;
+        }
         loadRootSpecimens(taxon, result, config);
 
         //once fully switching to newSpecimens the tansient annotation on the getter should be removed
@@ -335,7 +340,9 @@ public class PortalDtoLoader {
     }
 
     private void loadMedia(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
-
+        if (!config.isWithMedia()){
+            return;
+        }
         try {
             ContainerDto<MediaDTO> container = new ContainerDto<TaxonPageDto.MediaDTO>();
 
@@ -397,6 +404,9 @@ public class PortalDtoLoader {
     }
 
     private void loadTaxonNodes(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
+        if (!config.isWithTaxonNodes()){
+            return;
+        }
         try {
             ContainerDto<TaxonNodeDTO> container = new ContainerDto<TaxonPageDto.TaxonNodeDTO>();
             for (TaxonNode node : taxon.getTaxonNodes()) {
@@ -452,6 +462,10 @@ public class PortalDtoLoader {
     }
 
     private void loadSynonyms(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
+
+        if (!config.isWithSynonyms()) {
+            return;
+        }
 
         try {
             //        List<HomotypicalGroup> homotypicGroups = taxon.getHomotypicSynonymyGroups();
@@ -538,7 +552,9 @@ public class PortalDtoLoader {
     }
 
     private void loadConceptRelations(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
-
+        if (!config.isWithTaxonRelationships()){
+            return;
+        }
         try {
             //concept relations
             ContainerDto<ConceptRelationDTO> conceptRelContainer = new ContainerDto<>();
