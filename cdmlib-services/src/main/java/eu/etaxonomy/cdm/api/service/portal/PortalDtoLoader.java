@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
+import eu.etaxonomy.cdm.api.dto.portal.OccurrenceInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto.TaxonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
@@ -317,15 +318,18 @@ public class PortalDtoLoader {
     }
 
     /**
-     * Loads specimen the "old" way.
+     * Loads specimens the "old" way.
      */
     private void loadRootSpecimens(Taxon taxon, TaxonPageDto result, TaxonPageDtoConfiguration config) {
         List<SpecimenOrObservationBaseDTO> rootSpecimens = this.repository.getOccurrenceService().listRootUnitDTOsByAssociatedTaxon(
                 taxon.getUuid(), null, config.isIncludeUnpublished(),
                 config.getSpecimenAssociationFilter(), null);
 
-        result.setRootSpecimens(rootSpecimens);
-
+        if (result.getOccurrenceInfo() == null) {
+            OccurrenceInfoDto oid = new OccurrenceInfoDto();
+            result.setOccurrenceInfo(oid);
+        }
+        result.getOccurrenceInfo().setRootSpecimens(rootSpecimens);
     }
 
     private List<SpecimenOrObservationBase<?>> loadTypeSpecimen(TaxonName name, TaxonPageDtoConfiguration config) {
