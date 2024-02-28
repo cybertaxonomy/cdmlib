@@ -553,7 +553,7 @@ public class OccurrenceServiceImpl
                         for (TaxonDescription desc: taxon.getDescriptions()) {
                             for (DescriptionElementBase descElement: desc.getElements()) {
                                 if (descElement instanceof IndividualsAssociation) {
-                                    if (((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation().getUuid().equals(derivedUnit.getUuid())) {
+                                    if (((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation() != null &&((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation().getUuid().equals(derivedUnit.getUuid())) {
                                         isAssociated = true;
                                         break;
                                     }
@@ -563,7 +563,7 @@ public class OccurrenceServiceImpl
 
                         for (TypeDesignationBase<?> desc: taxon.getName().getHomotypicalGroup().getTypeDesignations()) {
                             if (desc instanceof SpecimenTypeDesignation) {
-                                if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
+                                if (((SpecimenTypeDesignation)desc).getTypeSpecimen() != null && ((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
                                     isAssociated = true;
                                     break;
                                 }
@@ -574,7 +574,7 @@ public class OccurrenceServiceImpl
                             for (TypeDesignationBase<?> desc :name.getHomotypicalGroup().getTypeDesignations()) {
 
                                 if (desc instanceof SpecimenTypeDesignation) {
-                                    if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
+                                    if (((SpecimenTypeDesignation)desc).getTypeSpecimen() != null && ((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
                                         isAssociated = true;
                                         break;
                                     }
