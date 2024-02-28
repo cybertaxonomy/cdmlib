@@ -240,9 +240,12 @@ public class NameServiceImpl
     public UpdateResult cloneTypeDesignation(UUID nameUuid, SpecimenTypeDesignation baseDesignation,
             String accessionNumber, String barcode, String catalogNumber,
             UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus, URI preferredStableUri){
+
         UpdateResult result = new UpdateResult();
 
-        DerivedUnit baseSpecimen = HibernateProxyHelper.deproxy(occurrenceService.load(baseDesignation.getTypeSpecimen().getUuid(), Arrays.asList("collection")), DerivedUnit.class);
+        DerivedUnit typeSpecimen = baseDesignation.getTypeSpecimen();  //split this to investigate cause of NPE (#10471)
+        UUID typeSpecimenUuid = typeSpecimen.getUuid();
+        DerivedUnit baseSpecimen = HibernateProxyHelper.deproxy(occurrenceService.load(typeSpecimenUuid, Arrays.asList("collection")), DerivedUnit.class);
         DerivedUnit duplicate = DerivedUnit.NewInstance(baseSpecimen.getRecordBasis());
         DerivationEvent derivedFrom = baseSpecimen.getDerivedFrom();
         Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(baseSpecimen.getUuid(), null);
