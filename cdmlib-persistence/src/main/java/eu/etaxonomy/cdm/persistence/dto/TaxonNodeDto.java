@@ -261,14 +261,18 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     }
 
     /**
-     * Preliminary implementation. May not be exactly match
+     * Preliminary implementation. May not exactly match
      * the real name cache.
      */
     public String getNameCache(){
-        List<TaggedText> nameCacheTags = taggedTitle.stream()
-                .filter(t->t.getType().isNameCachePart())
-                .collect(Collectors.toList());
-        return TaggedCacheHelper.createString(nameCacheTags, new HTMLTagRules());
+        if (taggedTitle == null) {
+            return null;
+        }else {
+            List<TaggedText> nameCacheTags = taggedTitle.stream()
+                    .filter(t->t.getType().isNameCachePart())
+                    .collect(Collectors.toList());
+            return TaggedCacheHelper.createString(nameCacheTags, new HTMLTagRules());
+        }
     }
 
     public boolean isPublish(){
