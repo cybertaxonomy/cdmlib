@@ -829,6 +829,7 @@ public class DistributionServiceUtilities {
             if (map.get(area)!=null) {
                 continue;
             }
+            //TODO partOf
             NamedArea parent = area.getPartOf();
             TermNode<NamedArea> parentNode;
 
@@ -888,7 +889,7 @@ public class DistributionServiceUtilities {
     private static void handleSubAreaPreferenceRule(SetMap<NamedArea, Distribution> filteredDistributions,
             TermTree<NamedArea> areaTree) {
 
-        SetMap<NamedArea, NamedArea> childToParentsMap = areaTree.getParentMap();
+        SetMap<NamedArea,NamedArea> childToParentsMap = areaTree.getParentMap();
         Set<NamedArea> removeCandidateAreas = new HashSet<>();
 
         for(NamedArea area : filteredDistributions.keySet()){
@@ -906,8 +907,9 @@ public class DistributionServiceUtilities {
         }
     }
 
-    private static void fillAncestorsRecursive(NamedArea area, SetMap<NamedArea, NamedArea> childToParentsMap,
+    private static void fillAncestorsRecursive(NamedArea area, SetMap<NamedArea,NamedArea> childToParentsMap,
             Set<NamedArea> ancestors, Set<NamedArea> removeCandidateAreas) {
+
         if(removeCandidateAreas.contains(area)){
             return;
         }
@@ -923,8 +925,10 @@ public class DistributionServiceUtilities {
     /**
      * Remove areas not in area tree but keep fallback areas.
      */
-    private static void removeHiddenAndKeepFallbackAreas(TermTree<NamedArea> areaTree, Set<MarkerType> fallbackAreaMarkerTypes,
-            SetMap<NamedArea,Distribution> filteredDistributionsPerArea, boolean keepFallBackOnlyIfNoSubareaDataExists) {
+    private static void removeHiddenAndKeepFallbackAreas(TermTree<NamedArea> areaTree,
+            Set<MarkerType> fallbackAreaMarkerTypes,
+            SetMap<NamedArea,Distribution> filteredDistributionsPerArea,
+            boolean keepFallBackOnlyIfNoSubareaDataExists) {
 
         Set<NamedArea> areasHiddenByMarker = new HashSet<>();
         Set<NamedArea> availableAreas = areaTree.getDistinctTerms();
@@ -937,7 +941,7 @@ public class DistributionServiceUtilities {
 
                 // if at least one sub area is not hidden by a marker
                 // the given area is a fall-back area for this sub area
-                SetMap<NamedArea, Distribution> distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributionsPerArea : null;
+                SetMap<NamedArea,Distribution> distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributionsPerArea : null;
                 boolean isFallBackArea = isRemainingFallBackArea(nodes, fallbackAreaMarkerTypes, distributionsForSubareaCheck);
                 if (!isFallBackArea) {
                     // this area does not need to be shown as
@@ -1160,5 +1164,4 @@ public class DistributionServiceUtilities {
         }
         return allValues;
     }
-
 }

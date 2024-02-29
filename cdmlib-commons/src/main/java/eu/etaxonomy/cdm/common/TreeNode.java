@@ -164,7 +164,7 @@ public class TreeNode<T,S> {
      * Returns the (first) child node (of type TreeNode) with the given nodeID.
      * @return the found node or null
      */
-    public TreeNode<T,S> findChildNode(S  nodeID) {
+    public TreeNode<T,S> findChildNode(S nodeID) {
         if (this.getChildren() == null) {
             return null;
         }

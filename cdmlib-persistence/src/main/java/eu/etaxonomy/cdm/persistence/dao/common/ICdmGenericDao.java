@@ -217,7 +217,6 @@ public interface ICdmGenericDao {
 
     public <T> Query<T> getHqlQuery(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException;
 
-
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 
 	public void createFullSampleData();

@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.api.dto.portal;
 import java.util.UUID;
 
 /**
+ * A DTO holding the term information as well as all the facts
+ * of this feature type. So it is not a pure term DTO representing
+ * only the term.
+ *
  * @author a.mueller
  * @date 10.01.2023
  */

@@ -607,7 +607,7 @@ public class TermNode <T extends DefinedTermBase>
     }
 
     /**
-     * Fills the given map with areas mapping to their parents set.
+     * Fills the given map with terms mapping to their parents set.
      */
     public void fillParentNodeMap(SetMap<T,TermNode<T>> map) {
         if (getTerm() != null) {
