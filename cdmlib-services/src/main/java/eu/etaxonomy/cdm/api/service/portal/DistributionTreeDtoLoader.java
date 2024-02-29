@@ -479,7 +479,8 @@ public class DistributionTreeDtoLoader {
   }
 
     public void handleAlternativeRootArea(DistributionTreeDto dto, Set<MarkerType> alternativeRootAreaMarkerTypes) {
-        //don't anything if no alternative area markers exist
+
+        //don't do anything if no alternative area markers exist
         if (CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypes)) {
             return;
         }
