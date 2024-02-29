@@ -536,6 +536,12 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
+    @Override
+    public <T> List<T> getHqlResult(String hqlQuery, Class<T> clazz){
+        return getHqlResult(hqlQuery, new Object[0], clazz);
+    }
+
+
 	@Override
 	public <T> List<T> getHqlResult(String hqlQuery, Object[] params, Class<T> clazz){
 		Query<T> query = getSession().createQuery(hqlQuery, clazz);

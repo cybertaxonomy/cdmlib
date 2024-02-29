@@ -204,6 +204,11 @@ public interface ICdmGenericDao {
 	 */
     public <T> List<T> getHqlResult(String hqlQuery, Object[] params, Class<T> clazz) throws UnsupportedOperationException;
 
+    /**
+     * Same as {@link #getHqlResult(String, Object[], Class)} but without hql parameters.
+     */
+    public <T> List<T> getHqlResult(String hqlQuery, Class<T> clazz);
+
 	/**
 	 * TODO remove as this is Hibernate specific.
 	 * Returns a Query.
