@@ -179,7 +179,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 		    List<String> propertyPaths = new ArrayList<String>();
 		    propertyPaths.add("level");
 
-		    List<NamedArea> partOf = dao.getPartOf(namedAreas, null, null,propertyPaths);
+		    List<NamedArea> partOf = dao.getPartOf(namedAreas, null, null, propertyPaths);
 
 		    assertNotNull("getPartOf should return a List",partOf);
 		    assertFalse("The list should not be empty",partOf.isEmpty());

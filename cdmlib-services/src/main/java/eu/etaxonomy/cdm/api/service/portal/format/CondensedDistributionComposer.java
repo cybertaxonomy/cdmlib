@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.format.description.distribution;
+package eu.etaxonomy.cdm.api.service.portal.format;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +23,15 @@ import java.util.stream.Collectors;
 
 import org.codehaus.plexus.util.StringUtils;
 
+import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
+import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.SymbolUsage;
+import eu.etaxonomy.cdm.api.dto.portal.tmp.TermDto;
+import eu.etaxonomy.cdm.api.dto.portal.tmp.TermNodeDto;
+import eu.etaxonomy.cdm.api.service.portal.DistributionDtoLoader;
+import eu.etaxonomy.cdm.api.service.portal.TermTreeDtoLoader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.SetMap;
@@ -33,9 +42,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * Base class for condensed distribution composers
@@ -59,43 +66,46 @@ public class CondensedDistributionComposer {
     }
 
 
-    public enum SymbolUsage{
-        Map,
-        Symbol1,
-        Symbol2,
-        IdInVoc,
-        AbbrevLabel;
-
-        public String getSymbol(DefinedTermBase<?> term, List<Language> langs) {
-            if (this == Map){
-                //TODO not valid for areas yet
-                return statusSymbols.get(term.getUuid());
-            }else if (this == Symbol1){
-                return term.getSymbol();
-            }else if (this == Symbol2){
-                return term.getSymbol2();
-            }else if (this == IdInVoc){
-                return term.getIdInVocabulary();
-            }else if (this == AbbrevLabel){
-                Representation r = term.getPreferredRepresentation(langs);
-                if (r != null){
-                    String abbrevLabel = r.getAbbreviatedLabel();
-                    if (abbrevLabel != null){
-                        return abbrevLabel;
-                    }
-                }
-            }
-            throw new RuntimeException("Unhandled enum value: " +  this);
+    public String getSymbol(SymbolUsage su, TermDto term, List<Language> langs) {
+        if (su == SymbolUsage.Map){
+            //TODO not valid for areas yet
+            return statusSymbols.get(term.getUuid());
+        }else if (su == SymbolUsage.Symbol1){
+            return term.getSymbol1();
+        }else if (su == SymbolUsage.Symbol2){
+            return term.getSymbol2();
+        }else if (su == SymbolUsage.IdInVoc){
+            return term.getIdInVocabulary();
+        }else if (su == SymbolUsage.AbbrevLabel){
+            return term.getAbbrevLabel();
         }
+        throw new RuntimeException("Unhandled enum value: " +  this);
     }
 
-    public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
-            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
+
+    /**
+     * Wrapper for {@link #createCondensedDistribution(Collection, SetMap, List, CondensedDistributionConfiguration)}
+     * to make the method easiy avaiable for test.
+     */
+    public CondensedDistribution createCondensedDistribution(Set<Distribution> distributions,
+            TermTree<NamedArea> areaTree, List<Language> languages,
+            CondensedDistributionConfiguration config) {
+
+        Set<DistributionDto> distributionDtos = distributions.stream()
+                .map(d->DistributionDtoLoader.INSTANCE().fromEntity(d))
+                .collect(Collectors.toSet());
+        SetMap<NamedAreaDto,TermNodeDto> area2TermNodesMap = TermTreeDtoLoader.getTerm2NodeMap(TermTreeDtoLoader.INSTANCE().fromEntity(areaTree), NamedAreaDto.class);
+        return createCondensedDistribution(distributionDtos, area2TermNodesMap, languages, config);
+    }
+
+    public CondensedDistribution createCondensedDistribution(
+            Collection<DistributionDto> filteredDistributions,
+            SetMap<NamedAreaDto,TermNodeDto> area2TermNodesMap,
             List<Language> languages,
             CondensedDistributionConfiguration config) {
 
         CondensedDistribution result = new CondensedDistribution();
-        Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap = new HashMap<>();
+        Map<NamedAreaDto,TermDto> areaToStatusMap = new HashMap<>();
 
         //1.-3. create area tree and status map
         DoubleResult<List<AreaNode>, List<AreaNode>> areaTreesAndStatusMap = createAreaTreesAndStatusMap(
@@ -109,7 +119,8 @@ public class CondensedDistributionComposer {
 
         //4. replace the area by the abbreviated representation and add symbols
         AreaNodeComparator areaNodeComparator = new AreaNodeComparator(config, languages);
-        AreaNodeComparator topLevelAreaOfScopeComparator = config.orderType == OrderType.NATURAL ? areaNodeComparator : new AreaNodeComparator(config, languages, OrderType.NATURAL);
+        AreaNodeComparator topLevelAreaOfScopeComparator = config.orderType == OrderType.NATURAL
+                ? areaNodeComparator : new AreaNodeComparator(config, languages, OrderType.NATURAL);
 
         //sort
         Collections.sort(topLevelNodes, topLevelAreaOfScopeComparator);
@@ -123,7 +134,7 @@ public class CondensedDistributionComposer {
             outOfScopeNodes = topLevelNodes;
 
             //handle areaOfScope  (endemic area)
-            PresenceAbsenceTerm areaOfScopeStatus = areaToStatusMap.get(areaOfScopeNode.area);
+            TermDto areaOfScopeStatus = areaToStatusMap.get(areaOfScopeNode.area);
             DoubleResult<String, Boolean> areaOfScopeStatusSymbol = statusSymbol(areaOfScopeStatus, config, languages, NOT_HANDLED_BY_PARENT);
             String areaOfScopeLabel = config.showAreaOfScopeLabel? makeAreaLabel(languages, areaOfScopeNode.area, config, null):"";
             String statusStr = areaOfScopeStatusSymbol.getFirstResult();
@@ -168,7 +179,7 @@ public class CondensedDistributionComposer {
     }
 
     private void handleAlternativeRootArea(List<AreaNode> topLevelNodes,
-            Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, CondensedDistributionConfiguration config) {
+            Map<NamedAreaDto,TermDto> areaToStatusMap, CondensedDistributionConfiguration config) {
 
         //don't anything if no alternative area markers exist
         if (CdmUtils.isNullSafeEmpty(config.alternativeRootAreaMarkers)) {
@@ -184,7 +195,7 @@ public class CondensedDistributionComposer {
             if (areaToStatusMap.get(topLevelNode.area) == null && nChildren == 1) {
                 //real top level node has no data and 1 child => potential candidate to be replaced by alternative root
                 AreaNode childNode = topLevelNode.subAreas.iterator().next();
-                NamedArea childArea = childNode.area;
+                NamedAreaDto childArea = childNode.area;
                 boolean childHasData = areaToStatusMap.get(childArea) != null;
                 if (isMarkedAs(childArea, config.alternativeRootAreaMarkers)
                         && childHasData) {
@@ -198,7 +209,7 @@ public class CondensedDistributionComposer {
                 //if root has data or >1 children test if children are alternative roots with no data => remove
                 Set<AreaNode> childNodes = new HashSet<>(topLevelNode.subAreas);
                 for(AreaNode childNode : childNodes) {
-                    NamedArea childArea = childNode.area;
+                    NamedAreaDto childArea = childNode.area;
                     boolean childHasNoData = areaToStatusMap.get(childArea) == null;
                     if (isMarkedAs(childArea, config.alternativeRootAreaMarkers)
                             && childHasNoData) {
@@ -216,28 +227,28 @@ public class CondensedDistributionComposer {
         parent.subAreas.remove(inBetweenNode);
     }
 
-    private boolean isMarkedAs(NamedArea area, Set<UUID> alternativeRootAreaMarkers) {
+    private boolean isMarkedAs(NamedAreaDto area, Set<UUID> alternativeRootAreaMarkers) {
         for (UUID uuid : alternativeRootAreaMarkers) {
-            if (area.hasMarker(uuid, true)) {
+            if (area.hasMarker(uuid)) {
                 return true;
             }
         }
         return false;
     }
 
-    protected Map<NamedArea, AreaNode>[] buildAreaHierarchie(
-            Map<NamedArea,PresenceAbsenceTerm> areaToStatusMap,
-            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
+    private Map<NamedAreaDto, AreaNode>[] buildAreaHierarchie(
+            Map<NamedAreaDto,TermDto> areaToStatusMap,
+            SetMap<NamedAreaDto,TermNodeDto> area2TermNodesMap,
             CondensedDistributionConfiguration config) {
 
-        Map<NamedArea,AreaNode> nativeArea2NodeMap = new HashMap<>();
-        Map<NamedArea,AreaNode> introducedArea2NodeMap = new HashMap<>();
-        Set<NamedArea> additionalHiddenParents = new HashSet<>();
+        Map<NamedAreaDto,AreaNode> nativeArea2NodeMap = new HashMap<>();
+        Map<NamedAreaDto,AreaNode> introducedArea2NodeMap = new HashMap<>();
+        Set<NamedAreaDto> additionalHiddenParents = new HashSet<>();
 
         //1. for each area decide which map (native or introduce), and merge
-        for(NamedArea area : areaToStatusMap.keySet()) {
+        for(NamedAreaDto area : areaToStatusMap.keySet()) {
             //decide which map
-            Map<NamedArea, AreaNode> map = nativeArea2NodeMap;
+            Map<NamedAreaDto,AreaNode> map = nativeArea2NodeMap;
             if (config.splitNativeAndIntroduced && isIntroduced(areaToStatusMap.get(area))){
                 map = introducedArea2NodeMap;
             }
@@ -254,15 +265,16 @@ public class CondensedDistributionComposer {
         removeFallbackAreasWithChildDistributions(nativeArea2NodeMap, introducedArea2NodeMap, additionalHiddenParents, config);
 
         @SuppressWarnings("unchecked")
-        Map<NamedArea, AreaNode>[] result = new Map[]{nativeArea2NodeMap, introducedArea2NodeMap};
+        Map<NamedAreaDto, AreaNode>[] result = new Map[]{nativeArea2NodeMap, introducedArea2NodeMap};
         return result;
     }
 
-    private void removeFallbackAreasWithChildDistributions(Map<NamedArea,AreaNode> area2NodeMap,
-            Map<NamedArea,AreaNode> area2NodeMap2, Set<NamedArea> additionalHiddenParents, CondensedDistributionConfiguration config) {
+    private void removeFallbackAreasWithChildDistributions(Map<NamedAreaDto,AreaNode> area2NodeMap,
+            Map<NamedAreaDto,AreaNode> area2NodeMap2, Set<NamedAreaDto> additionalHiddenParents,
+            CondensedDistributionConfiguration config) {
 
         //compute areas/areaNodes to be removed
-        Set<NamedArea> toBeDeletedAreas = new HashSet<>(additionalHiddenParents);
+        Set<NamedAreaDto> toBeDeletedAreas = new HashSet<>(additionalHiddenParents);
         Set<AreaNode> allNodes = new HashSet<>(area2NodeMap.values());
         allNodes.addAll(area2NodeMap2.values());
         for (AreaNode areaNode : allNodes){
@@ -271,13 +283,13 @@ public class CondensedDistributionComposer {
             }
         }
         //... remove them
-        for (NamedArea toBeDeletedArea : toBeDeletedAreas){
+        for (NamedAreaDto toBeDeletedArea : toBeDeletedAreas){
             removeFallbackArea(toBeDeletedArea, area2NodeMap);
             removeFallbackArea(toBeDeletedArea, area2NodeMap2);
         }
     }
 
-    private void removeFallbackArea(NamedArea toBeDeletedArea, Map<NamedArea, AreaNode> areaNodeMap) {
+    private void removeFallbackArea(NamedAreaDto toBeDeletedArea, Map<NamedAreaDto,AreaNode> areaNodeMap) {
         AreaNode toBeDeletedNode = areaNodeMap.get(toBeDeletedArea);
         if(toBeDeletedNode == null){
             return;
@@ -305,15 +317,15 @@ public class CondensedDistributionComposer {
         return parentIsHidden;
     }
 
-    private boolean isIntroduced(PresenceAbsenceTerm status) {
-        return status.isAnyIntroduced();
+    private boolean isIntroduced(TermDto status) {
+        return PresenceAbsenceTerm.isAnyIntroduced(status.getUuid());
     }
 
     private void mergeIntoHierarchy(
-            NamedArea area,
-            Map<NamedArea, AreaNode> area2NodeMap,
-            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
-            Set<NamedArea> additionalHiddenParents,
+            NamedAreaDto area,
+            Map<NamedAreaDto,AreaNode> area2NodeMap,
+            SetMap<NamedAreaDto,TermNodeDto> area2TermNodesMap,
+            Set<NamedAreaDto> additionalHiddenParents,
             CondensedDistributionConfiguration config) {
 
         AreaNode node = area2NodeMap.get(area);
@@ -323,7 +335,7 @@ public class CondensedDistributionComposer {
             area2NodeMap.put(area, node);
         }
 
-        NamedArea parent = getNonFallbackParent(area, area2TermNodesMap, additionalHiddenParents, config);   // findParentIn(area, areas);
+        NamedAreaDto parent = getNonFallbackParent(area, area2TermNodesMap, additionalHiddenParents, config);   // findParentIn(area, areas);
 
         if(parent != null) {
             AreaNode parentNode = area2NodeMap.get(parent);
@@ -341,13 +353,14 @@ public class CondensedDistributionComposer {
         }
     }
 
-    private NamedArea getNonFallbackParent(NamedArea area,
-            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
-            Set<NamedArea> additionalHiddenParents,
+    private NamedAreaDto getNonFallbackParent(NamedAreaDto area,
+            SetMap<NamedAreaDto,TermNodeDto> area2TermNodesMap,
+            Set<NamedAreaDto> additionalHiddenParents,
             CondensedDistributionConfiguration config) {
 
-        Set<TermNode<NamedArea>> termNodes = area2TermNodesMap.get(area);  //TODO handle >1 parents
-        Set<TermNode<NamedArea>> parentTermNodes = termNodes.stream().map(c->c.getParent()).collect(Collectors.toSet());
+        Set<TermNodeDto> termNodes = area2TermNodesMap.get(area);  //TODO handle >1 parents
+        Set<TermNodeDto> parentTermNodes = termNodes.stream()
+                .map(a->a.getParent()).collect(Collectors.toSet());
         //        return parents;
         //NOTE: filtering out all fallback areas here leads to failing "fallback" test
 
@@ -355,51 +368,52 @@ public class CondensedDistributionComposer {
             return null;
         }else if (parentTermNodes.size() == 1) {
             //TODO no check for fallback?
-            TermNode<NamedArea> tn = parentTermNodes.iterator().next();
-            return tn == null ? null : tn.getTerm();
+            TermNodeDto tn = parentTermNodes.iterator().next();
+            return tn == null ? null : (NamedAreaDto)tn.getTerm();
         }else{
-                Set<NamedArea> nonFallbackParents = parentTermNodes.stream()
-                        .filter(p->!isFallback(p, config))
-                        .map(tn->tn.getTerm())
-                        .collect(Collectors.toSet());
-                Set<NamedArea> fallbackParents = parentTermNodes.stream()
-                        .filter(p->isFallback(p, config))
-                        .map(tn->tn.getTerm())
-                        .collect(Collectors.toSet());
+            Set<NamedAreaDto> nonFallbackParents = parentTermNodes.stream()
+                    .filter(p->!isFallback(p, config))
+                    .map(tn->(NamedAreaDto)tn.getTerm())
+                    .collect(Collectors.toSet());
+            Set<NamedAreaDto> fallbackParents = parentTermNodes.stream()
+                    .filter(p->isFallback(p, config))
+                    .map(tn->(NamedAreaDto)tn.getTerm())
+                    .collect(Collectors.toSet());
 
-                additionalHiddenParents.addAll(fallbackParents);
-                if (!nonFallbackParents.isEmpty()) {
-                    //TODO at least use comparator here to have defined behavior
-                    //     or find other rules for decision
-                    return nonFallbackParents.iterator().next();
-                }else {
-                    Set<NamedArea> anyRecursiveNotFallback = fallbackParents.stream()
-                        .map(fp->getNonFallbackParent(fp, area2TermNodesMap, additionalHiddenParents, config))
-                        .collect(Collectors.toSet());
-                    return anyRecursiveNotFallback.isEmpty() ? null : anyRecursiveNotFallback.iterator().next();
-                }
-//                }else {
-//                    //TODO part-of , use parentAreaMap.get(p) but need to handle collection result
-//                    parents = nonFallbackParents.stream().map(p->p.getPartOf()).collect(Collectors.toSet());
-//                }
-//              for (NamedArea parent : parents) {
-//                if (parent == null) {
-//                    return null;
-//                }else
-//                while(parent != null && isHiddenOrFallback(parent, config)){
-//                    parent = parent.getPartOf();
-//                }
-//
+            additionalHiddenParents.addAll(fallbackParents);
+            if (!nonFallbackParents.isEmpty()) {
+                //TODO at least use comparator here to have defined behavior
+                //     or find other rules for decision
+                return nonFallbackParents.iterator().next();
+            }else {
+                Set<NamedAreaDto> anyRecursiveNotFallback = fallbackParents.stream()
+                    .map(fp->getNonFallbackParent(fp, area2TermNodesMap, additionalHiddenParents, config))
+                    .collect(Collectors.toSet());
+                return anyRecursiveNotFallback.isEmpty() ? null : anyRecursiveNotFallback.iterator().next();
+            }
+//            }else {
+//                //TODO part-of , use parentAreaMap.get(p) but need to handle collection result
+//                parents = nonFallbackParents.stream().map(p->p.getPartOf()).collect(Collectors.toSet());
 //            }
+//          for (NamedArea parent : parents) {
+//            if (parent == null) {
+//                return null;
+//            }else
+//            while(parent != null && isHiddenOrFallback(parent, config)){
+//                parent = parent.getPartOf();
+//            }
+//
+//        }
         }
     }
 
-    private boolean isFallback(TermNode<NamedArea> termNode, CondensedDistributionConfiguration config) {
+    private boolean isFallback(TermNodeDto termNode, CondensedDistributionConfiguration config) {
         if (config.fallbackAreaMarkers == null){
             return false;
         }
         for (UUID markerUuid : config.fallbackAreaMarkers){
-            if (termNode.hasMarker(markerUuid, true) || termNode.getTerm().hasMarker(markerUuid, true)){
+            if (termNode.hasMarker(markerUuid)
+                    || ((NamedAreaDto)termNode.getTerm()).hasMarker(markerUuid)){
                 return true;
             }
         }
@@ -411,17 +425,18 @@ public class CondensedDistributionComposer {
             return false;
         }
         for (UUID markerUuid : config.fallbackAreaMarkers){
-            if (areaNode.hasMarker(markerUuid) || areaNode.area.hasMarker(markerUuid, true)){
+            if (areaNode.hasMarker(markerUuid) || areaNode.area.hasMarker(markerUuid)){
                 return true;
             }
         }
         return false;
     }
 
-    protected String makeAreaLabel(List<Language> langs, NamedArea area,
+    private String makeAreaLabel(List<Language> langs, NamedAreaDto area,
             CondensedDistributionConfiguration config, String parentAreaLabel) {
+
         //TODO config with symbols, not only idInVocabulary
-        String label = config.areaSymbolField.getSymbol(area, langs);
+        String label = getSymbol(config.areaSymbolField, area, langs);
         if (config.shortenSubAreaLabelsIfPossible && parentAreaLabel != null && !parentAreaLabel.isEmpty()){
             //TODO make brackets not hardcoded, but also allow [],- etc., but how?
             if (label.startsWith(parentAreaLabel+"(") && label.endsWith(")") ){
@@ -432,13 +447,13 @@ public class CondensedDistributionComposer {
         return label;
     }
 
-    protected TripleResult<String, Boolean, Boolean> statusSymbolForArea(AreaNode areaNode, Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap,
+    private TripleResult<String, Boolean, Boolean> statusSymbolForArea(AreaNode areaNode, Map<NamedAreaDto,TermDto> areaToStatusMap,
             CondensedDistributionConfiguration config, List<Language> languages,boolean onlyIntroduced) {
 
         if (!config.showStatusOnParentAreaIfAllSame ){
             return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
         }else{
-            Set<PresenceAbsenceTerm> statusList = getStatusRecursive(areaNode, areaToStatusMap, new HashSet<>(), onlyIntroduced);
+            Set<TermDto> statusList = getStatusRecursive(areaNode, areaToStatusMap, new HashSet<>(), onlyIntroduced);
             if (statusList.isEmpty()){
                 return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
             }else if (statusList.size() == 1){
@@ -455,8 +470,8 @@ public class CondensedDistributionComposer {
         }
     }
 
-    private boolean containsBoldAreas(Set<PresenceAbsenceTerm> statusList, CondensedDistributionConfiguration config) {
-        for (PresenceAbsenceTerm status : statusList){
+    private boolean containsBoldAreas(Set<TermDto> statusList, CondensedDistributionConfiguration config) {
+        for (TermDto status : statusList){
             if (config.statusForBoldAreas.contains(status.getUuid())){
                 return true;
             }
@@ -464,11 +479,11 @@ public class CondensedDistributionComposer {
         return false;
     }
 
-    private Set<PresenceAbsenceTerm> getStatusRecursive(AreaNode areaNode,
-            Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, Set<PresenceAbsenceTerm> statusList,
+    private Set<TermDto> getStatusRecursive(AreaNode areaNode,
+            Map<NamedAreaDto,TermDto> areaToStatusMap, Set<TermDto> statusList,
             boolean onlyIntroduced) {
 
-        PresenceAbsenceTerm status = areaToStatusMap.get(areaNode.area);
+        TermDto status = areaToStatusMap.get(areaNode.area);
         if (status != null && (!onlyIntroduced || isIntroduced(status))){
             statusList.add(status);
         }
@@ -490,8 +505,9 @@ public class CondensedDistributionComposer {
      *      being the isBold flag and the third result indicates if this symbol includes information
      *      for all sub-areas (which passes the input parameter) to the output here
      */
-    protected TripleResult<String, Boolean, Boolean> statusSymbol(PresenceAbsenceTerm status,
-            CondensedDistributionConfiguration config, List<Language> languages, boolean statusHandledByParent) {
+    private TripleResult<String, Boolean, Boolean> statusSymbol(TermDto status,
+            CondensedDistributionConfiguration config, List<Language> languages,
+            boolean statusHandledByParent) {
 
         List<SymbolUsage> symbolPreferences = Arrays.asList(config.statusSymbolField);
         if(status == null) {
@@ -508,7 +524,7 @@ public class CondensedDistributionComposer {
         }
 
         for (SymbolUsage usage: symbolPreferences){
-            String symbol = usage.getSymbol(status, languages);
+            String symbol = getSymbol(usage, status, languages);
             if (symbol != null){
                 return new TripleResult<>(symbol, isBoldStatus(status, config), statusHandledByParent);
             }
@@ -517,27 +533,29 @@ public class CondensedDistributionComposer {
         return new TripleResult<>("", isBoldStatus(status, config), statusHandledByParent);
     }
 
-    private Boolean isBoldStatus(PresenceAbsenceTerm status, CondensedDistributionConfiguration config) {
+    private Boolean isBoldStatus(TermDto status, CondensedDistributionConfiguration config) {
         return config.statusForBoldAreas.contains(status.getUuid());
     }
 
+    //TODO do we really need an explicit class here, maybe we can simply use TermNodeDto
+    //     which has the params except for the missing parent (but we may want to add this anyway)
     private class AreaNode {
 
-        protected final NamedArea area;
+        protected final NamedAreaDto area;
         protected AreaNode parent = null;
         protected final Set<AreaNode> subAreas = new HashSet<>();
         protected final Set<UUID> markers = new HashSet<>();
 
-        public AreaNode(NamedArea area, SetMap<NamedArea,TermNode<NamedArea>> map) {
+        public AreaNode(NamedAreaDto area, SetMap<NamedAreaDto,TermNodeDto> map) {
             this.area = area;
             //areaNode marker
-            markers.addAll(map.get(area).stream().flatMap(termNode->termNode.getMarkers().stream())
-                .filter(m->m.getValue() && m.getMarkerType() != null)
-                .map(m->m.getMarkerType().getUuid()).collect(Collectors.toSet()));
+            markers.addAll(map.get(area).stream()
+                .flatMap(termNode->termNode.getMarkers().stream())
+                .collect(Collectors.toSet()));
             //area marker
-            markers.addAll(area.getMarkers().stream()
-                    .filter(m->m.getValue() && m.getMarkerType() != null)
-                    .map(m->m.getMarkerType().getUuid()).collect(Collectors.toSet()));
+            if (area.getMarkers() != null) {
+                markers.addAll(area.getMarkers());
+            }
         }
 
         public boolean hasMarker(UUID uuidMarkerType) {
@@ -557,8 +575,8 @@ public class CondensedDistributionComposer {
             return getParent() != null;
         }
 
-        public Collection<NamedArea> getSubareas() {
-            Collection<NamedArea> areas = new HashSet<>();
+        public Collection<NamedAreaDto> getSubareas() {
+            Collection<NamedAreaDto> areas = new HashSet<>();
             for(AreaNode node : subAreas) {
                 areas.add(node.area);
             }
@@ -572,6 +590,7 @@ public class CondensedDistributionComposer {
     }
 
     private class AreaNodeComparator implements Comparator<AreaNode>{
+
         private CondensedDistributionConfiguration config;
         private OrderType orderType;
         private List<Language> languages;
@@ -588,8 +607,8 @@ public class CondensedDistributionComposer {
 
         @Override
         public int compare(AreaNode areaNode1, AreaNode areaNode2) {
-            NamedArea area1 = areaNode1.area;
-            NamedArea area2 = areaNode2.area;
+            NamedAreaDto area1 = areaNode1.area;
+            NamedAreaDto area2 = areaNode2.area;
 
             if (area1 == null && area2 == null){
                 return 0;
@@ -602,8 +621,8 @@ public class CondensedDistributionComposer {
                     //- due to wrong ordering behavior in DefinedTerms
                     return - area1.compareTo(area2);
                 }else{
-                    String str1 = config.areaSymbolField.getSymbol(area1, languages);
-                    String str2 = config.areaSymbolField.getSymbol(area2, languages);
+                    String str1 = getSymbol(config.areaSymbolField, area1, languages);
+                    String str2 = getSymbol(config.areaSymbolField, area2, languages);
                     return CdmUtils.nullSafeCompareTo(str1, str2);
                 }
             }
@@ -614,17 +633,18 @@ public class CondensedDistributionComposer {
      * Creates the root nodes for the native and the introduces area trees and fills
      * the area2StatusMap.
      */
-    protected DoubleResult<List<AreaNode>, List<AreaNode>> createAreaTreesAndStatusMap(Collection<Distribution> filteredDistributions,
-            SetMap<NamedArea,TermNode<NamedArea>> area2TermNodesMap,
-            Map<NamedArea, PresenceAbsenceTerm> area2StatusMap,
+    private DoubleResult<List<AreaNode>, List<AreaNode>> createAreaTreesAndStatusMap(
+            Collection<DistributionDto> filteredDistributions,
+            SetMap<NamedAreaDto,TermNodeDto> area2TermNodesMap,
+            Map<NamedAreaDto,TermDto> area2StatusMap,
             CondensedDistributionConfiguration config){
 
         //we expect every area only to have 1 status  (multiple status should have been filtered beforehand)
 
         //1. compute all areas and their status
-        for(Distribution distr : filteredDistributions) {
-            PresenceAbsenceTerm status = distr.getStatus();
-            NamedArea area = distr.getArea();
+        for(DistributionDto distr : filteredDistributions) {
+            TermDto status = distr.getStatus();
+            NamedAreaDto area = distr.getArea();
 
             //TODO needed? Do we only want to have areas with status?
             if(status == null || area == null) {
@@ -635,7 +655,7 @@ public class CondensedDistributionComposer {
         }
 
         //2. build the area hierarchy
-        Map<NamedArea,AreaNode>[] areaNodeMaps = buildAreaHierarchie(area2StatusMap, area2TermNodesMap, config);
+        Map<NamedAreaDto,AreaNode>[] areaNodeMaps = buildAreaHierarchie(area2StatusMap, area2TermNodesMap, config);
 
         //3. find root nodes
         @SuppressWarnings("unchecked")
@@ -654,7 +674,7 @@ public class CondensedDistributionComposer {
     }
 
     private void handleSubAreas(CondensedDistribution result, AreaNode areaNode, CondensedDistributionConfiguration config,
-            AreaNodeComparator areaNodeComparator, List<Language> languages, Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap,
+            AreaNodeComparator areaNodeComparator, List<Language> languages, Map<NamedAreaDto,TermDto> areaToStatusMap,
             String parentAreaLabel, int level, boolean isBold, boolean statusHandledByParent, boolean isIntroduced) {
 
         if (!areaNode.subAreas.isEmpty()) {
@@ -673,7 +693,7 @@ public class CondensedDistributionComposer {
 
     private void handleSubAreasLoop(CondensedDistribution result, AreaNode areaNode,
             CondensedDistributionConfiguration config, AreaNodeComparator areaNodeComparator, List<Language> languages,
-            Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, String parentLabel, int level, boolean isBold,
+            Map<NamedAreaDto,TermDto> areaToStatusMap, String parentLabel, int level, boolean isBold,
             boolean statusHandledByParent, boolean isIntroduced) {
 
         List<AreaNode> subAreas = new ArrayList<>(areaNode.subAreas);
@@ -697,12 +717,12 @@ public class CondensedDistributionComposer {
     }
 
     private void handleSubAreaNode(List<Language> languages, CondensedDistribution result,
-            Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap, AreaNodeComparator areaNodeComparator,
+            Map<NamedAreaDto,TermDto> areaToStatusMap, AreaNodeComparator areaNodeComparator,
             AreaNode areaNode, CondensedDistributionConfiguration config, String parentAreaLabel, int level,
             boolean parentIsBold, boolean statusHandledByParent, boolean isIntroduced) {
 
         level++;
-        NamedArea area = areaNode.area;
+        NamedAreaDto area = areaNode.area;
 
         TripleResult<String, Boolean, Boolean> statusSymbol = statusHandledByParent?
                 new TripleResult<>("", parentIsBold, statusHandledByParent):
@@ -717,4 +737,5 @@ public class CondensedDistributionComposer {
         handleSubAreas(result, areaNode, config, areaNodeComparator, languages, areaToStatusMap, areaLabel, level,
                 isBold, isHandledByParent, isIntroduced);
     }
+
 }

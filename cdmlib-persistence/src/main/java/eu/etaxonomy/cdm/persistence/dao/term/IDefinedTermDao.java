@@ -149,7 +149,7 @@ public interface IDefinedTermDao
 	 */
 	public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-	//see getPartOf above
+	//see getPartOf above  //TODO can be removed
 	public List<NamedAreaDto> getPartOfNamedAreas(Set<UUID> areaUuids, SetMap<NamedArea, NamedArea> parentAreaMap);
 
 	/**
@@ -216,6 +216,8 @@ public interface IDefinedTermDao
 	 * @return
 	 */
 	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
+
+	public <TERM extends DefinedTermBase> List<UUID> getUuidByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz);
 
     public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField type);
 

@@ -14,7 +14,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -31,17 +30,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
-import eu.etaxonomy.cdm.api.dto.portal.IDistributionTree;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
-import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
-import eu.etaxonomy.cdm.api.service.portal.PortalDtoLoader;
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.SetMap;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -51,14 +46,11 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 
 /**
@@ -76,10 +68,10 @@ public class DistributionServiceImpl implements IDistributionService {
     private IDescriptionDao dao;
 
     @Autowired
-    private IDefinedTermDao termDao;
+    private ICommonService commonService;
 
     @Autowired
-    private ITermTreeDao termTreeDao;
+    private IDefinedTermDao termDao;
 
     @Autowired
     private ITermVocabularyDao vocabDao;
@@ -88,10 +80,11 @@ public class DistributionServiceImpl implements IDistributionService {
     private IGeoServiceAreaMapping areaMapping;
 
     @Override
-    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, UUID taxonUUID,
-            boolean neverUseFallbackAreaAsParent,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages, List<String> propertyPaths){
+    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config,
+            UUID taxonUUID,
+            Map<UUID,Color> distributionStatusColorMap,
+            List<Language> languages,
+            List<String> propertyPaths){
 
         Set<UUID> featureUuids = config.getFeatures();
         Set<Feature> features = null;
@@ -126,138 +119,11 @@ public class DistributionServiceImpl implements IDistributionService {
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(
                 taxonUUID, features, Distribution.class, config.isIncludeUnpublished(), null, null, initStrategy);
 
-        return composeDistributionInfoFor(config, distributions, neverUseFallbackAreaAsParent, presenceAbsenceTermColors, languages);
-    }
-
-    @Override
-    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config, List<Distribution> distributions,
-            boolean neverUseFallbackAreaAsParent, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages){
-
-        EnumSet<DistributionInfoDto.InfoPart> parts = config.getInfoParts();
-        boolean subAreaPreference = config.isPreferSubareas();
-        boolean statusOrderPreference = config.isStatusOrderPreference();
-        Set<MarkerType> fallbackAreaMarkerTypes = config.getFallbackAreaMarkerTypeList();
-        Set<MarkerType> alternativeRootAreaMarkerTypes = config.getAlternativeRootAreaMarkerTypes();
-        Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
-        CondensedDistributionConfiguration condensedDistConfig = config.getCondensedDistributionConfiguration();
-        DistributionOrder distributionOrder = config.getDistributionOrder();
-
-        final boolean PREFER_AGGREGATED = true;
-        final boolean PREFER_SUBAREA = true;
-
-        DistributionInfoDto dto = new DistributionInfoDto();
-
-        if(omitLevels == null) {
-            @SuppressWarnings("unchecked")  //2 lines to allow unchecked annotation
-            Set<NamedAreaLevel> emptySet = Collections.EMPTY_SET;
-            omitLevels = emptySet;
-        }
-
-        //area tree
-        TermTree<NamedArea> areaTree = getPersistentAreaTree(distributions, config);
-        if (areaTree == null) {
-            //TODO better use areaTree created within filterDistributions(...) but how to get it easily?
-            areaTree = DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes);
-        }
-
-        //TODO unify to use only the node map
-        SetMap<NamedArea, NamedArea> parentAreaMap = areaTree.getParentMap();
-        SetMap<NamedArea, TermNode<NamedArea>> parentAreaNodeMap = areaTree.getParentNodeMap();
-        SetMap<NamedArea, TermNode<NamedArea>> area2TermNodesMap = areaTree.getTermNodesMap();
-
-        //status tree
-        TermTree<PresenceAbsenceTerm> statusTree = getPersistentStatusTree(config);
-
-        // for all later applications apply the rules statusOrderPreference, hideHiddenArea
-        // and statusTree(statusFilter) to all distributions, but KEEP fallback area distributions
-        boolean keepFallBackOnlyIfNoSubareaDataExists = false;
-        Set<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(distributions,
-                areaTree, statusTree, fallbackAreaMarkerTypes, !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA,
-                keepFallBackOnlyIfNoSubareaDataExists);
-
-        if(parts.contains(InfoPart.elements)) {
-            dto.setElements(filteredDistributions);
-        }
-
-        if(parts.contains(InfoPart.tree)) {
-            IDistributionTree tree;
-            if (config.isUseTreeDto()) {
-
-                //transform distributions to distribution DTOs
-                Set<DistributionDto> filteredDtoDistributions = new HashSet<>();
-                for (Distribution distribution : filteredDistributions) {
-                    DistributionDto distDto = new DistributionDto(distribution, parentAreaMap);
-                    PortalDtoLoader.loadBaseData(distribution, distDto);
-                    distDto.setTimeperiod(distribution.getTimeperiod() == null ? null : distribution.getTimeperiod().toString());
-                    filteredDtoDistributions.add(distDto);
-                }
-
-                boolean useSecondMethod = false;
-                tree = DistributionServiceUtilities.buildOrderedTreeDto(omitLevels,
-                        filteredDtoDistributions, parentAreaMap, areaTree, fallbackAreaMarkerTypes,
-                        alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent,
-                        distributionOrder, termDao, useSecondMethod);
-            }else {
-                //version with model entities as used in direct webservice (not taxon page DTO)
-                //TODO this is probably not in use anymore
-                tree = DistributionServiceUtilities.buildOrderedTree(omitLevels,
-                        filteredDistributions, parentAreaMap, fallbackAreaMarkerTypes,
-                        alternativeRootAreaMarkerTypes, neverUseFallbackAreaAsParent,
-                        distributionOrder, termDao);
-            }
-            dto.setTree(tree);
-        }
-
-        if(parts.contains(InfoPart.condensedDistribution)) {
-            CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
-                    filteredDistributions, area2TermNodesMap, condensedDistConfig, languages);
-            dto.setCondensedDistribution(condensedDistribution);
-        }
-
-        if (parts.contains(InfoPart.mapUriParams)) {
-            boolean IGNORE_STATUS_ORDER_PREF = false;
-            Set<MarkerType> fallbackAreaMarkerType = null;
-            // only apply the subAreaPreference rule for the maps
-            keepFallBackOnlyIfNoSubareaDataExists = true;
-            //this filters again, but this time with subarea preference rule and fallback area removal
-            Set<Distribution> filteredMapDistributions = DistributionServiceUtilities.filterDistributions(
-                    filteredDistributions, areaTree, statusTree, fallbackAreaMarkerType, !PREFER_AGGREGATED,
-                    IGNORE_STATUS_ORDER_PREF, subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists);
-
-            String mapUri = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
-                    filteredMapDistributions,
-                    areaMapping,
-                    presenceAbsenceTermColors,
-                    null, languages);
-            dto.setMapUriParams(mapUri);
-        }
-
-        return dto;
-    }
-
-    private TermTree<NamedArea> getPersistentAreaTree(List<Distribution> distributions, DistributionInfoConfiguration config) {
-        UUID areaTreeUuid = config.getAreaTree();
-        if (areaTreeUuid == null) {
-            return null;
-        }
-        //TODO property path
-        String[] propertyPath = new String[] {};
-        @SuppressWarnings("unchecked")
-        TermTree<NamedArea> areaTree = termTreeDao.load(areaTreeUuid, Arrays.asList(propertyPath));
-        return areaTree;
-    }
-
-    private TermTree<PresenceAbsenceTerm> getPersistentStatusTree(DistributionInfoConfiguration config) {
-        UUID statusTreeUuid = config.getStatusTree();
-        if (statusTreeUuid == null) {
-            return null;
-        }
-        //TODO property path
-        String[] propertyPath = new String[] {};
-        @SuppressWarnings("unchecked")
-        TermTree<PresenceAbsenceTerm> statusTree = termTreeDao.load(statusTreeUuid, Arrays.asList(propertyPath));
-        return statusTree;
+        TermTree<NamedArea> areaTree = null;
+        TermTree<PresenceAbsenceTerm> statusTree = null;
+        return new DistributionInfoBuilder(languages, commonService).build(
+                config, distributions, areaTree, statusTree,
+                distributionStatusColorMap, areaMapping);
     }
 
     @Override
@@ -269,17 +135,28 @@ public class DistributionServiceImpl implements IDistributionService {
             CondensedDistributionConfiguration config,
             List<Language> langs) {
 
-        //TODO exclude "undefined" status as long as status tree is not yet
-        areaTree = areaTree == null ? DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes) : areaTree;
-        SetMap<NamedArea,TermNode<NamedArea>> parentNodeMap = areaTree.getParentNodeMap();
-        Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, null, statusTree, fallbackAreaMarkerTypes, false, statusOrderPreference, false, false);
-        CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
-                filteredDistributions,
-                parentNodeMap,
-                config,
-                langs);
-        return condensedDistribution;
+        DistributionInfoConfiguration diConfig = new DistributionInfoConfiguration();
+        diConfig.setCondensedDistributionConfiguration(config);
+        diConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes);
+        diConfig.setStatusOrderPreference(statusOrderPreference);
+        diConfig.setInfoParts(EnumSet.of(InfoPart.condensedDistribution));
+        DistributionInfoDto distInfo = new DistributionInfoBuilder(langs, commonService).build(null, distributions, areaTree, statusTree, null, areaMapping);
+        return distInfo.getCondensedDistribution();
+
+//        Collection<DistributionTmpDto> filteredDistributions = DistributionServiceUtilities.filterDistributions(
+//                distributions, areaTree, statusTree, fallbackAreaMarkerTypes, false, statusOrderPreference,
+//                false, false, -99);
+//
+//        //TODO exclude "undefined" status as long as status tree is not yet
+//        areaTree = areaTree == null ? DistributionServiceUtilities.getAreaTree(distributions, fallbackAreaMarkerTypes) : areaTree;
+//        SetMap<NamedArea,TermNode<NamedArea>> parentNodeMap = areaTree.getTerm2ParentNodeMap();
+//
+//        CondensedDistribution condensedDistribution = DistributionServiceUtilities.getCondensedDistribution(
+//                filteredDistributions,
+//                parentNodeMap,
+//                config,
+//                langs);
+//        return condensedDistribution;
     }
 
     @Override
@@ -292,7 +169,7 @@ public class DistributionServiceImpl implements IDistributionService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            Map<UUID, Color> presenceAbsenceTermColors,
             List<Language> langs,
             boolean includeUnpublished) {
 
@@ -335,28 +212,43 @@ public class DistributionServiceImpl implements IDistributionService {
     }
 
     @Override
+    //TODO needed?
     public String getDistributionServiceRequestParameterString(
             Set<Distribution> distributions,
-            boolean subAreaPreference,
+            boolean preferSubareas,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            Set<MarkerType> fallbackAreaMarkerTypes,
+            Map<UUID, Color> presenceAbsenceTermColors,
             List<Language> langs) {
 
         TermTree<NamedArea> areaTree = null;
         TermTree<PresenceAbsenceTerm> statusTree = null;
-        boolean keepFallbackOnlyIfNoSubareaDataExists = true;
-        Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, statusTree,
-                hideMarkedAreas, false, statusOrderPreference,
-                subAreaPreference, keepFallbackOnlyIfNoSubareaDataExists);
 
-        String uriParams = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
-                filteredDistributions,
-                areaMapping,
-                presenceAbsenceTermColors,
-                null, langs);
-        return uriParams;
+        DistributionInfoConfiguration diConfig = new DistributionInfoConfiguration();
+        diConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes);
+        diConfig.setStatusOrderPreference(statusOrderPreference);
+        diConfig.setPreferSubAreas(preferSubareas);
+        diConfig.setInfoParts(EnumSet.of(InfoPart.mapUriParams));
+        DistributionInfoDto distInfo = new DistributionInfoBuilder(langs, commonService)
+                .build(null, distributions, areaTree, statusTree,
+                        presenceAbsenceTermColors, areaMapping);
+        return distInfo.getMapUriParams();
+
+//
+//        TermTree<NamedArea> areaTree = null;
+//        TermTree<PresenceAbsenceTerm> statusTree = null;
+//        boolean keepFallbackOnlyIfNoSubareaDataExists = true;
+//        Collection<DistributionDto> filteredDistributions = DistributionServiceUtilities.filterDistributions(
+//                distributions, areaTree, statusTree,
+//                hideMarkedAreas, false, statusOrderPreference,
+//                subAreaPreference, keepFallbackOnlyIfNoSubareaDataExists);
+//
+//        String uriParams = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
+//                filteredDistributions,
+//                areaMapping,
+//                presenceAbsenceTermColors,
+//                null, langs);
+//        return uriParams;
     }
 
     @Override

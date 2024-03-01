@@ -6,15 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.format.description.distribution;
+package eu.etaxonomy.cdm.api.service.portal.format;
 
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.metadata.IKeyLabel;
 
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2015
  *
- * @deprecated the usage of this class is deprecated, please use {@link CondensedDistributionConfiguration} instead
+ * @deprecated the usage of this class is deprecated,
+ *             please use {@link CondensedDistributionConfiguration} instead
  */
  @Deprecated
 public enum CondensedDistributionRecipe implements IKeyLabel{

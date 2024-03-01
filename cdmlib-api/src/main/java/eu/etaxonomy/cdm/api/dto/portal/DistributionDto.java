@@ -8,12 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.common.SetMap;
-import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.api.dto.portal.tmp.TermDto;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 
 /**
  * @author a.mueller
@@ -22,28 +21,16 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 public class DistributionDto extends FactDtoBase {
 
     private NamedAreaDto area;
-    private LabeledEntityDto status;
+    private TermDto status;
+    //TODO maybe move up to FactDtoBase
+    private EnumSet<DescriptionType> descriptionType;
 
-    public DistributionDto(UUID uuid, int id, NamedAreaDto area, LabeledEntityDto status) {
+    public DistributionDto(UUID uuid, int id, NamedAreaDto area, TermDto status) {
         this.setUuid(uuid);
         this.setId(id);
         this.setLastUpdated(null);   //TODO
         this.area = area;
         this.setStatus(status);
-    }
-
-    public DistributionDto(Distribution distribution, SetMap<NamedArea, NamedArea> parentAreaMap) {
-        this.setUuid(distribution.getUuid());
-        this.setId(distribution.getId());
-        this.setLastUpdated(null);   //TODO
-        if (distribution.getArea() != null) {
-            this.area = new NamedAreaDto(distribution.getArea(), parentAreaMap);
-        }
-        if (distribution.getStatus() != null) {
-            PresenceAbsenceTerm distStatus = distribution.getStatus();
-            //TODO i18n
-            this.status = new LabeledEntityDto(distStatus.getUuid(), distStatus.getId(), distStatus.getLabel());
-        }
     }
 
 // *********************** GETTER / SETTER ***************************/
@@ -55,14 +42,23 @@ public class DistributionDto extends FactDtoBase {
         this.area = area;
     }
 
-    public LabeledEntityDto getStatus() {
+    public TermDto getStatus() {
         return status;
     }
-    public void setStatus(LabeledEntityDto status) {
+    public void setStatus(TermDto status) {
         this.status = status;
     }
 
+    public EnumSet<DescriptionType> getDescriptionType() {
+        return descriptionType;
+    }
+    public void setDescriptionType(EnumSet<DescriptionType> descriptionType) {
+        this.descriptionType = descriptionType;
+    }
+
 //*************************** toString() ********************************/
+
+
 
     @Override
     public String toString() {

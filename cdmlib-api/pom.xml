@@ -23,6 +23,6 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-model</artifactId>
     </dependency>
-   </dependencies>
+  </dependencies>
 
 </project>

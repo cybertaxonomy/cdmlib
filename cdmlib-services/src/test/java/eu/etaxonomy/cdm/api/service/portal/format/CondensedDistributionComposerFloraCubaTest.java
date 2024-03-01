@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.format.description.distribution;
+package eu.etaxonomy.cdm.api.service.portal.format;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,8 +17,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.common.SetMap;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionComposer.SymbolUsage;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.SymbolUsage;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -40,7 +41,8 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
 
     private static OrderedTermVocabulary<PresenceAbsenceTerm> statusVoc;
     private static OrderedTermVocabulary<NamedArea> cubaAreasVocabualary;
-    private static SetMap<NamedArea, TermNode<NamedArea>> area2TermNodesMap;
+    private static TermTree<NamedArea> areaTree;
+//    private static SetMap<NamedAreaDto, TermNodeDto> area2TermNodesMap;
 
     private static NamedArea cuba;
     private static NamedArea westernCuba;
@@ -135,7 +137,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         filteredDistributions.add(Distribution.NewInstance(oldWorld, PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE()));
 
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions, area2TermNodesMap, null, config);
+                filteredDistributions, areaTree, null, config);
         String condensedString = condensedDistribution.toString();
 
         Assert.assertEquals("Condensed string for Cuba differs",
@@ -170,7 +172,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
 
         config.areasBold = false;
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions, area2TermNodesMap, null, config);
+                filteredDistributions, areaTree, null, config);
 
         Assert.assertEquals("Condensed string for Cuba differs",
                 "nCu(-dCuW(PR* Art Hab* May Mat IJ) (c)CuE(nHo -cGu))" + config.outOfScopeAreasSeperator + "Bah ?VM",
@@ -182,7 +184,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         //this should better be done CondensedDistributionComposerEuroMedTest but we have the test data here, therefore we keep the test here
         config = CondensedDistributionConfiguration.NewDefaultInstance();
         config.statusSymbolField = SymbolUsage.Symbol1;
-        condensedDistribution = composer.createCondensedDistribution(filteredDistributions, area2TermNodesMap, null, config);
+        condensedDistribution = composer.createCondensedDistribution(filteredDistributions, areaTree, null, config);
         Assert.assertEquals("Condensed string for Cuba differs",
                 "n (c)CuE -dCuW(<b>Art Hab* IJ Mat May PR*</b>) [(c)CuE(-cGu nHo)]" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?VM",
                 condensedDistribution.toString());
@@ -192,7 +194,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
 
     private static boolean makeAreas(){
 
-        TermTree<NamedArea> areaTree = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
+        areaTree = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
 
         //vocabulary
         UUID cubaAreasVocabularyUuid = UUID.fromString("c81e3c7b-3c01-47d1-87cf-388de4b1908c");
@@ -418,7 +420,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         oldWorld = getNamedArea(uuid, label, abbrev, cubaAreasVocabualary);
         areaTree.getRoot().addChild(oldWorld);
 
-        area2TermNodesMap = areaTree.getTermNodesMap();
+//        area2TermNodesMap = (SetMap)TermTreeLoader.getTerm2NodeMap(TermTreeLoader.INSTANCE().fromEntity(areaTree));
 
         return true;
     }

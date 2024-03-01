@@ -260,23 +260,23 @@ public class TermTree <T extends DefinedTermBase>
      * Returns a map for an area and its parents.
      */
     @Transient
-    public SetMap<T, T> getParentMap() {
+    public SetMap<T, T> getTerm2ParentTermMap() {
         SetMap<T, T> result = new SetMap<>();
-        getRoot().fillParentMap(result);
+        getRoot().fillTerm2ParentTermMap(result);
         return result;
     }
 
     @Transient
-    public SetMap<T, TermNode<T>> getParentNodeMap() {
+    public SetMap<T, TermNode<T>> getTerm2ParentNodeMap() {
         SetMap<T,TermNode<T>> result = new SetMap<>();
-        getRoot().fillParentNodeMap(result);
+        getRoot().fillTerm2ParentNodeMap(result);
         return result;
     }
 
     @Transient
-    public SetMap<T, TermNode<T>> getTermNodesMap() {
+    public SetMap<T, TermNode<T>> getTerm2NodeMap() {
         SetMap<T, TermNode<T>> result = new SetMap<>();
-        getRoot().fillTermNodeMap(result);
+        getRoot().fillTerm2NodeMap(result);
         return result;
     }
 

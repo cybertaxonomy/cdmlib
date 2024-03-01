@@ -384,7 +384,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         return DescriptionType.includesType(types, DescriptionType.AGGREGATED);
     }
     public boolean isAggregatedDistribution() {
-        return DescriptionType.includesType(types, DescriptionType.AGGREGATED_DISTRIBUTION);
+        return isAggregatedDistribution(types);
     }
     public boolean isAggregatedStructuredDescription() {
         return DescriptionType.includesType(types, DescriptionType.AGGREGATED_STRUC_DESC);
@@ -397,6 +397,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     }
     public static boolean isSecondaryData(EnumSet<DescriptionType> set) {
         return DescriptionType.includesType(set, DescriptionType.SECONDARY_DATA);
+    }
+    public static boolean isAggregatedDistribution(EnumSet<DescriptionType> set) {
+        return DescriptionType.includesType(set, DescriptionType.AGGREGATED_DISTRIBUTION);
     }
 
     public abstract IDescribable<?> describedEntity();

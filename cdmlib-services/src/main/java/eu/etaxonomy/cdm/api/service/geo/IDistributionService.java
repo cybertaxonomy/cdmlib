@@ -22,9 +22,9 @@ import javax.xml.stream.XMLStreamException;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -56,14 +56,9 @@ public interface IDistributionService {
      * @return
      */
     public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config,
-            UUID taxonUUID, boolean neverUseFallbackAreaAsParent,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            UUID taxonUUID,
+            Map<UUID,Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths);
-
-    public DistributionInfoDto composeDistributionInfoFor(DistributionInfoConfiguration config,
-            List<Distribution> distributions, boolean neverUseFallbackAreaAsParent,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages);
 
     /**
     * @param distributions
@@ -92,7 +87,7 @@ public interface IDistributionService {
 
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors, List<Language> langs,
+            Map<UUID, Color> presenceAbsenceTermColors, List<Language> langs,
             boolean includeUnpublished);
 
     /**
@@ -113,7 +108,7 @@ public interface IDistributionService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            Map<UUID, Color> presenceAbsenceTermColors,
             List<Language> langs);
 
     /**

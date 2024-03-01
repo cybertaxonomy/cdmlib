@@ -110,6 +110,8 @@ public class TypedLabel {
         innerLabels.addAll(innerLabels);
     }
 
-
-
+    @Override
+    public String toString() {
+        return "TypedLabel [label=" + label + "]";
+    }
 }

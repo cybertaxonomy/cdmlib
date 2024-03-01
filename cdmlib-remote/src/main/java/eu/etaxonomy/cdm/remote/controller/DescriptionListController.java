@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -52,13 +53,11 @@ import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.portal.format.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -305,15 +304,15 @@ public class DescriptionListController
 
                 EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
-                Map<PresenceAbsenceTerm, Color> distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
-                        statusColorsString, termService, vocabularyService);
+                Map<UUID,Color> distributionStatusColors = DistributionServiceUtilities
+                        .buildStatusColorMap(statusColorsString, termService, vocabularyService);
 
                 DistributionInfoConfiguration config = new DistributionInfoConfiguration();
                 config.setIncludeUnpublished(includeUnpublished);
                 config.setInfoParts(parts);
                 config.setPreferSubAreas(preferSubAreas);
                 config.setStatusOrderPreference(statusOrderPreference);
-                config.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
+                config.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes);
                 config.setOmitLevels(omitLevels);
                 config.setDistributionOrder(distributionOrder);
                 config.setFeatures(featureUuids);
@@ -322,10 +321,11 @@ public class DescriptionListController
                 config.setCondensedDistributionConfiguration(condensedConfig);
                 //TODO needed?
                 config.setStatusColorsString(statusColorsString);
+                config.setNeverUseFallbackAreaAsParent(neverUseFallbackAreaAsParent);
 
                 // ignoreDistributionStatusUndefined, condensedConfig
                 dto = distributionService.composeDistributionInfoFor(config, taxonUuid,
-                        neverUseFallbackAreaAsParent, distributionStatusColors,
+                        distributionStatusColors,
                         LocaleContext.getLanguages(), getDescriptionInfoInitStrategy()
                       );
                 mv.addObject(dto);

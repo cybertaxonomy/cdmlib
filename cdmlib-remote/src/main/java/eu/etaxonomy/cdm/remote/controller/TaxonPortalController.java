@@ -39,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
@@ -48,11 +49,10 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.portal.IPortalDtoService;
+import eu.etaxonomy.cdm.api.service.portal.format.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -387,7 +387,6 @@ public class TaxonPortalController extends TaxonController{
         if (partSet == null) {
             partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
         }
-        partSet.remove(InfoPart.elements); // we do not want to return model instances here at all
 
 //      //TODO is this performant?
 //      IVocabularyService vocabularyService = null;
@@ -424,7 +423,6 @@ public class TaxonPortalController extends TaxonController{
         //default distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
         distributionConfig.setIncludeUnpublished(includeUnpublished);
-        distributionConfig.setUseTreeDto(true);
         distributionConfig.setInfoParts(EnumSet.copyOf(partSet));
         distributionConfig.setPreferSubAreas(preferSubAreas);
         distributionConfig.setStatusOrderPreference(statusOrderPreference);
@@ -438,14 +436,13 @@ public class TaxonPortalController extends TaxonController{
             condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
             distributionConfig.setCondensedDistributionConfiguration(condensedConfig);
         }
-        distributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+        distributionConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         distributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
 
         //iucn distribution info config
         DistributionInfoConfiguration iucnDistributionConfig = new DistributionInfoConfiguration();
         iucnDistributionConfig.setIncludeUnpublished(includeUnpublished);
         config.putDistributionInfoConfiguration(Feature.uuidIucnStatus, iucnDistributionConfig);
-        iucnDistributionConfig.setUseTreeDto(true);
         EnumSet<InfoPart> iucnPartSet = EnumSet.of(InfoPart.condensedDistribution);
         iucnDistributionConfig.setInfoParts(iucnPartSet);
 
@@ -462,7 +459,7 @@ public class TaxonPortalController extends TaxonController{
             condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
             iucnDistributionConfig.setCondensedDistributionConfiguration(condensedConfig);
         }
-        iucnDistributionConfig.setFallbackAreaMarkerTypeList(fallbackAreaMarkerTypes);
+        iucnDistributionConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes);
         iucnDistributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
 
         TaxonPageDto dto = portalDtoService.taxonPageDto(config);

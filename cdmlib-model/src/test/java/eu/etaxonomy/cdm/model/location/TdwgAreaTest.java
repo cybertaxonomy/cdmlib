@@ -115,7 +115,7 @@ public class TdwgAreaTest extends EntityTestBase {
 	public void testCompare(){
 		//test compare method for set functionality. TreeSet is used by OrderedTermVocabulary therefore
 		//this needs to work correctly
-		TermVocabulary voc = getAreaByTdwgAbbreviation("1").getVocabulary();
+		TermVocabulary<NamedArea> voc = getAreaByTdwgAbbreviation("1").getVocabulary();
 
 		Set<NamedArea> set = new TreeSet<>();
 		NamedArea area3 = NamedArea.NewInstance();

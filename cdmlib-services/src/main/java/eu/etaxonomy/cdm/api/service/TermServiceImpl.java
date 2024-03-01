@@ -145,6 +145,18 @@ public class TermServiceImpl
 		}
 	}
 
+    @Override
+    public UUID findUuidByIdInVocabulary(String id, UUID vocabularyUuid,  Class<? extends DefinedTermBase<?>> clazz) throws IllegalArgumentException {
+        List<UUID> list = dao.getUuidByIdInVocabulary(id, vocabularyUuid, clazz);
+        if (list.isEmpty()){
+            return null;
+        }else if (list.size() == 1){
+            return list.get(0);
+        }else{
+            String message = "There is more then 1 (%d) term with the same id in vocabulary. This is forbidden. Check the state of your database.";
+            throw new IllegalStateException(String.format(message, list.size()));
+        }
+    }
 
 	@Override
 	public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation) {

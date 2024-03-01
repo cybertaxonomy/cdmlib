@@ -596,12 +596,12 @@ public class TermNode <T extends DefinedTermBase>
     /**
      * Fills the given map with areas mapping to their parents set.
      */
-    public void fillParentMap(SetMap<T, T> map) {
+    public void fillTerm2ParentTermMap(SetMap<T, T> map) {
         if (getTerm() != null) {
             map.putItem(getTerm(), getParentTerm());
         }
         for (TermNode<T> node : getChildNodes()){
-            node.fillParentMap(map);
+            node.fillTerm2ParentTermMap(map);
         }
         return;
     }
@@ -609,12 +609,12 @@ public class TermNode <T extends DefinedTermBase>
     /**
      * Fills the given map with terms mapping to their parents set.
      */
-    public void fillParentNodeMap(SetMap<T,TermNode<T>> map) {
+    public void fillTerm2ParentNodeMap(SetMap<T,TermNode<T>> map) {
         if (getTerm() != null) {
             map.putItem(getTerm(), getParent());
         }
         for (TermNode<T> node : getChildNodes()){
-            node.fillParentNodeMap(map);
+            node.fillTerm2ParentNodeMap(map);
         }
         return;
     }
@@ -622,12 +622,12 @@ public class TermNode <T extends DefinedTermBase>
     /**
      * Fills the given map with terms mapping to nodes in the subtree (in case duplicates are allowed).
      */
-    public void fillTermNodeMap(SetMap<T, TermNode<T>> map) {
+    public void fillTerm2NodeMap(SetMap<T, TermNode<T>> map) {
         if (getTerm() != null) {
             map.putItem(getTerm(), this);
         }
         for (TermNode<T> node : getChildNodes()){
-            node.fillTermNodeMap(map);
+            node.fillTerm2NodeMap(map);
         }
         return;
     }

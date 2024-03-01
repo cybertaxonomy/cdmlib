@@ -9,8 +9,12 @@
 /**
  * Subpackage for handling condensed distribution string formatting.
  *
+ * Note: Still needs to be discussed where to put these classes best.
+ *       They have been moved from service-layer to model first,
+ *       but as {@link eu.etaxonomy.cdm.api.service.portal.format.CondensedDistributionComposer}
+ *       now depends to DTO classes they could not stay there anymore.
+ *
  * @author a.mueller
  * @date 09.02.2023
- *
  */
-package eu.etaxonomy.cdm.format.description.distribution;
+package eu.etaxonomy.cdm.api.service.portal.format;

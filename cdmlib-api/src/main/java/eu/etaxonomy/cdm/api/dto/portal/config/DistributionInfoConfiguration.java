@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
@@ -28,7 +27,7 @@ public class DistributionInfoConfiguration {
 
     private boolean statusOrderPreference = false;
 
-    private Set<MarkerType> fallbackAreaMarkerTypeList = new HashSet<>();
+    private Set<MarkerType> fallbackAreaMarkerTypes = new HashSet<>();
 
     private Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
 
@@ -49,9 +48,9 @@ public class DistributionInfoConfiguration {
     private EnumSet<InfoPart> infoParts = EnumSet.of(
             InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
 
-    private boolean useTreeDto = true;
-
     private boolean includeUnpublished = false;
+
+    boolean neverUseFallbackAreaAsParent = false;
 
 //********************* GETTER / SETTER ***************************/
 
@@ -69,11 +68,11 @@ public class DistributionInfoConfiguration {
         this.statusOrderPreference = statusOrderPreference;
     }
 
-    public Set<MarkerType> getFallbackAreaMarkerTypeList() {
-        return fallbackAreaMarkerTypeList;
+    public Set<MarkerType> getFallbackAreaMarkerTypes() {
+        return fallbackAreaMarkerTypes;
     }
-    public void setFallbackAreaMarkerTypeList(Set<MarkerType>fallbackAreaMarkerTypeList) {
-        this.fallbackAreaMarkerTypeList = fallbackAreaMarkerTypeList;
+    public void setFallbackAreaMarkerTypes(Set<MarkerType>fallbackAreaMarkerTypes) {
+        this.fallbackAreaMarkerTypes = fallbackAreaMarkerTypes;
     }
 
     public Set<MarkerType> getAlternativeRootAreaMarkerTypes() {
@@ -111,13 +110,6 @@ public class DistributionInfoConfiguration {
         this.infoParts = infoParts;
     }
 
-    public boolean isUseTreeDto() {
-        return useTreeDto;
-    }
-    public void setUseTreeDto(boolean useTreeDto) {
-        this.useTreeDto = useTreeDto;
-    }
-
     public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {
         return condensedDistrConfig;
     }
@@ -151,5 +143,12 @@ public class DistributionInfoConfiguration {
     }
     public void setIncludeUnpublished(boolean includeUnpublished) {
         this.includeUnpublished = includeUnpublished;
+    }
+
+    public boolean isNeverUseFallbackAreaAsParent() {
+        return neverUseFallbackAreaAsParent;
+    }
+    public void setNeverUseFallbackAreaAsParent(boolean neverUseFallbackAreaAsParent) {
+        this.neverUseFallbackAreaAsParent = neverUseFallbackAreaAsParent;
     }
 }
