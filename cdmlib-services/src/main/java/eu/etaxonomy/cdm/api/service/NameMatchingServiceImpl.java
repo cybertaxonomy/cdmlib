@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,8 +52,6 @@ public class NameMatchingServiceImpl
     private ITaxonNameDao nameDao;
     @Autowired
     private INameMatchingDao nameMatchingDao;
-    @Autowired
-    private INameMatchingDao nameListMatchingDao;
 
     //**********CONSTRUCTOR**********
 
@@ -86,43 +83,40 @@ public class NameMatchingServiceImpl
         List<SingleNameMatchingResult> bestResults = new ArrayList<>();
     }
 
-
     //**********METHODS**********
     // TODO work in progress
 
     /**
-     * Compares a list of input names with names in the Database. Returns list of exact matching names (distance = 0), or list of best matches if exact matches are not found
-     * @return list of matching names and its score
+     * Compares a list of input names with names in the Database.
+     * @return A map with input names as key, and results as values.
+     * Matches without a perfect match return a list of best matches
      *
      */
 
-    // a first search is execute with the input names of the list. The input name is compared against the name cache in the DB.
-    // if the name is found, it is listed in a "perfect match list" with a value of 1 (fully equivalent. The name is then deleted
-    // from the original input list
-
-
-    public List<SingleNameMatchingResult> compareTaxonListNameCache(List<String> input){
-        List<SingleNameMatchingResult> perfectMatch = new ArrayList<>();
-        List <NameMatchingParts> matchingNamesCacheList = nameListMatchingDao.findNameMatchingParts(null, input);
-        for (int x = 0 ; x < matchingNamesCacheList.size(); x++) {
-            perfectMatch.set(x, new SingleNameMatchingResult(matchingNamesCacheList.get(x), 1));
+    @Override
+    public Map<String, List<SingleNameMatchingResult>> compareTaxonListNameCache(List<String> input){
+        //TODO make a method that normalizes input names
+        //delete empty spaces (beginning-end), tab delim., and others
+        for (int i = 0 ; i < input.size(); i++) {
+            String name = input.get(i);
+            name = name.replaceAll("^\\s+", "");
+            name = name.replaceAll("\\s+$", "");
+            input.set(i,name);
         }
-        for (String x : input) {
-            for (NameMatchingParts y : matchingNamesCacheList) {
-                Iterator <String> iterator = input.iterator();
-                while (iterator.hasNext()) {
-                    String name = iterator.next();
-                    if (y.getNameCache().contains(x)) {
-                    iterator.remove();
-                    }
-                }
-            }
+        Map<String, List<SingleNameMatchingResult>> matchesMap = new HashMap<>();
+        List <NameMatchingParts> matchingNamesCacheList = nameMatchingDao.findNameMatchingParts(null, input);
+        for(NameMatchingParts part:matchingNamesCacheList) {
+            List<SingleNameMatchingResult> exactResults = new ArrayList<>();
+            exactResults.add(new SingleNameMatchingResult(part, 1));
+            matchesMap.put(part.getNameCache(), exactResults);
+            input.remove(part.getNameCache());
         }
-        return perfectMatch;
+        for(String remainingTaxonName:input) {
+            NameMatchingResult result = findMatchingNames(remainingTaxonName, null, false);
+            matchesMap.put(remainingTaxonName, result.bestResults);
+        }
+        return matchesMap;
     }
-
-
-
 
     /**
      * Compares two names and calculates number of differences.
@@ -133,12 +127,8 @@ public class NameMatchingServiceImpl
     public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor) {
 
         taxonName = taxonName.replace(" and ", " & ");
-        // TODO Discuss the value of distance if query is monomial, binomial or trinomial
 
         // 0. Parsing and Normalizing
-
-        // TODO? Remove all qualifiers such as cf., aff., ?, <i>, x, etc. from
-        // the full input string
 
     	NameMatchingResult result = new NameMatchingResult();
 

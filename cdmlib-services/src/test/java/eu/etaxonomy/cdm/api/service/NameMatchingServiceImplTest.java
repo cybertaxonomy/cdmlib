@@ -8,8 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -47,22 +52,41 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     @SpringBeanByType
 	private INameMatchingService nameMatchingService;
 
-//    @Test
-//    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testListMatches.xml")
-//    public void testCompareTaxonListNameCache(){
-//        List <String> query = new ArrayList<>();
-//        query.add("Reynosia mucronata subsp. azulensis");
-//        query.add("Asemeia hebeclada var. impensa");
-//        query.add("Ehretina crebrifolia");
-//
-//        NameMatchingServiceImpl matchResults = new NameMatchingServiceImpl();
-//        List<SingleNameMatchingResult> perfectMatches;
-//        perfectMatches = matchResults.compareTaxonListNameCache(query);
-//        Assert.assertEquals("Reynosia mucronata subsp. azulensis", perfectMatches.get(0).getNameCache());
-//        Assert.assertEquals("Asemeia hebeclada var. impensa", perfectMatches.get(1).getNameCache());
-//        Assert.assertEquals(1, query.size());
-//        Assert.assertEquals("Ehretina crebrifolia", query.get(0));
-//    }
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testListMatches.xml")
+    public void testCompareTaxonListNameCache(){
+        List <String> query = new ArrayList<>();
+        query.add("Reynosia mucronata subsp. azulensis ");
+        query.add(" Asemeia hebeclada var. impensa");
+        query.add("Ehretina crebrifolia");
+        query.add("Bectendra nigri");
+
+        Map<String, List<SingleNameMatchingResult>> m = nameMatchingService.compareTaxonListNameCache(query);
+        assertTrue("key found", m.containsKey("Reynosia mucronata subsp. azulensis"));
+        assertTrue("key found", m.containsKey("Asemeia hebeclada var. impensa"));
+        assertTrue("key found", m.containsKey("Ehretina crebrifolia"));
+        assertTrue("key found", m.containsKey("Bectendra nigri"));
+
+        List<SingleNameMatchingResult> reynosia = m.get("Reynosia mucronata subsp. azulensis");
+        assertEquals("Reynosia", reynosia.get(0).getGenusOrUninomial());
+        assertEquals(1, (int)reynosia.get(0).getDistance());
+
+        List<SingleNameMatchingResult> asemeia = m.get("Asemeia hebeclada var. impensa");
+        assertEquals("Asemeia", asemeia.get(0).getGenusOrUninomial());
+        assertEquals("hebeclada", asemeia.get(0).getSpecificEpithet());
+        assertEquals(1, (int)reynosia.get(0).getDistance());
+
+        List<SingleNameMatchingResult> bectendra = m.get("Bectendra nigri");
+        assertEquals(2, bectendra.size());
+
+        Assert.assertEquals("Nectandra", bectendra.get(0).getGenusOrUninomial());
+        Assert.assertEquals("nigra", bectendra.get(0).getSpecificEpithet());
+        assertEquals(3, (int)bectendra.get(0).getDistance());
+
+        Assert.assertEquals("Nectandra", bectendra.get(1).getGenusOrUninomial());
+        Assert.assertEquals("nigrita", bectendra.get(1).getSpecificEpithet());
+        assertEquals(4, (int)bectendra.get(1).getDistance());
+    }
 
     @Test
     public void testTrimCommonChar() {
