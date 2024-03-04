@@ -107,7 +107,7 @@ public class NameMatchingServiceImpl
         List <NameMatchingParts> matchingNamesCacheList = nameMatchingDao.findNameMatchingParts(null, input);
         for(NameMatchingParts part:matchingNamesCacheList) {
             List<SingleNameMatchingResult> exactResults = new ArrayList<>();
-            exactResults.add(new SingleNameMatchingResult(part, 1));
+            exactResults.add(new SingleNameMatchingResult(part, 0));
             matchesMap.put(part.getNameCache(), exactResults);
             input.remove(part.getNameCache());
         }

@@ -69,12 +69,12 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         List<SingleNameMatchingResult> reynosia = m.get("Reynosia mucronata subsp. azulensis");
         assertEquals("Reynosia", reynosia.get(0).getGenusOrUninomial());
-        assertEquals(1, (int)reynosia.get(0).getDistance());
+        assertEquals(0, (int)reynosia.get(0).getDistance());
 
         List<SingleNameMatchingResult> asemeia = m.get("Asemeia hebeclada var. impensa");
         assertEquals("Asemeia", asemeia.get(0).getGenusOrUninomial());
         assertEquals("hebeclada", asemeia.get(0).getSpecificEpithet());
-        assertEquals(1, (int)reynosia.get(0).getDistance());
+        assertEquals(0, (int)reynosia.get(0).getDistance());
 
         List<SingleNameMatchingResult> bectendra = m.get("Bectendra nigri");
         assertEquals(2, bectendra.size());
