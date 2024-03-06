@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO.TaxonRelationDTO;
@@ -98,7 +97,7 @@ public class TaxonRelationshipsDTOTest extends TermTestBase {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void test() {
         //2
         Reference sec2 = ReferenceFactory.newGeneric();
