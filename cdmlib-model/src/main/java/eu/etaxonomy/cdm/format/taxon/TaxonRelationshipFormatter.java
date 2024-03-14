@@ -107,17 +107,9 @@ public class TaxonRelationshipFormatter {
         TaggedTextBuilder builder = new TaggedTextBuilder();
 
         //rel symbol
-        String symbol = "";
-        if (!(type.isMisappliedName()|| isSynonym)){
-            symbol = doubtfulRelationStr + getSymbol(type, inverse, languages);
-        }else {
-            String abbrev = getAbbrevRepresentation(type, inverse, languages);
-            if (abbrev == null) {
-                abbrev = getSymbol(type, inverse, languages);
-            }
-            symbol = doubtfulRelationStr + abbrev;
-        }
+        String symbol = doubtfulRelationStr + getSymbol(type, inverse, languages);
         builder.add(TagEnum.symbol, symbol);
+
         //name
         if (!withoutName){
             if (isMisapplied){
@@ -301,16 +293,6 @@ public class TaxonRelationshipFormatter {
         }
 
         return UNDEFINED_SYMBOL;
-    }
-
-    private String getAbbrevRepresentation(TaxonRelationshipType type, boolean inverse, List<Language> languages) {
-        //abbrev label
-        Representation representation = !inverse? type.getPreferredRepresentation(languages): type.getPreferredInverseRepresentation(languages);
-        String abbrevLabel = representation.getAbbreviatedLabel();
-        if (isNotBlank(abbrevLabel)){
-            return abbrevLabel;
-        }
-        return null;
     }
 
     private boolean isPartialMAN(TaxonRelationshipType type, boolean inverse) {
