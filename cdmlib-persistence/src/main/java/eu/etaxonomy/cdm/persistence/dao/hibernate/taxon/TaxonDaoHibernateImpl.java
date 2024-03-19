@@ -225,7 +225,6 @@ public class TaxonDaoHibernateImpl
 
     //new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
     @Override
-    @SuppressWarnings("unchecked")
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, boolean includeAuthors, String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order) {
