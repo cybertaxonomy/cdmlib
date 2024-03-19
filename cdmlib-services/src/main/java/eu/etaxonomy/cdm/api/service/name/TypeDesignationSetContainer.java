@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
 /**
- * Container for of collection of {@link TypeDesignationBase type designations} for the same typified name.
+ * Container for or collection of {@link TypeDesignationBase type designations} for the same typified name.
  *
  * Type designations are ordered by the base type which is a {@link TaxonName} for {@link NameTypeDesignation name type designations} or
  * a {@link FieldUnit} in case of {@link SpecimenTypeDesignation specimen type designations}. The type designations per base type are
