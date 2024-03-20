@@ -591,7 +591,6 @@ public class WfoBackboneExport
         String wfoId = null;
         try {
 
-            Rank rank = name.getRank();
             state.getNameStore().put(name.getId(), name.getUuid());
 
             //taxon ID
@@ -629,6 +628,7 @@ public class WfoBackboneExport
             }
 
             //rank
+            Rank rank = name.getRank();
             String rankStr = state.getTransformer().getCacheByRank(rank);
             if (rankStr == null) {
                 String message = rank == null ? "No rank" : ("Rank not supported by WFO:" + rank.getLabel())

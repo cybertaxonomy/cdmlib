@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 @Ignore
 public class WfoContentExportTest
-        extends TaxonTreeExportTestBase<WfoBackboneExportConfigurator,WfoBackboneExportState> {
+        extends TaxonTreeExportTestBase<WfoContentExportConfigurator,WfoContentExportState> {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -81,25 +81,25 @@ public class WfoContentExportTest
     public void testSubTree_andWithFullName(){
 
         //config+invoke
-        WfoBackboneExportConfigurator config = newConfigurator();
+        WfoContentExportConfigurator config = newConfigurator();
         config.setFamilyStr("family");
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
 
         //counts and result lists
-        List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
+        List<String> taxonResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
         Assert.assertEquals("There should be 1 taxon (1 accepted)", 1, taxonResult.size() - COUNT_HEADER);
 
-//        List<String> synonymResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
+//        List<String> synonymResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
 //        Assert.assertEquals("There should be no synonym", 0, synonymResult.size() - COUNT_HEADER);
 
-        List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
+        List<String> referenceResult = getStringList(data, WfoContentExportTable.REFERENCE);
         Assert.assertEquals("There should be 1 references (1 sec reference)", 1, referenceResult.size() - COUNT_HEADER);
 
         //taxon
         //... species
-        String taxonStr = getTableString(data, WfoBackboneExportTable.CLASSIFICATION);
+        String taxonStr = getTableString(data, WfoContentExportTable.CLASSIFICATION);
         String notExpected = speciesTaxonUuid.toString();
         Assert.assertFalse("Result must not contain root of subtree taxon (species taxon)", taxonStr.startsWith(notExpected));
         //... subspecies
@@ -124,22 +124,22 @@ public class WfoContentExportTest
     public void testFullTreeWithUnpublished(){
 
         //config+invoke
-        WfoBackboneExportConfigurator config = newConfigurator();
+        WfoContentExportConfigurator config = newConfigurator();
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
 
         //test counts
-        List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
+        List<String> taxonResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
         Assert.assertEquals("There should be 7 taxa (5 accepted + 2 synonyms)", 7, taxonResult.size() - COUNT_HEADER);
 
-//        List<String> synonymResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
+//        List<String> synonymResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
 //        Assert.assertEquals("There should be 2 synonym", 2, synonymResult.size() - COUNT_HEADER);
 
-        List<String> nameResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
+        List<String> nameResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
         Assert.assertEquals("There should be 7 names", 7, nameResult.size() - COUNT_HEADER);
 
-        List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
+        List<String> referenceResult = getStringList(data, WfoContentExportTable.REFERENCE);
         Assert.assertEquals("There should be 1 reference (1 sec reference)", 1, referenceResult.size() - COUNT_HEADER);
 
         //test single data
@@ -181,30 +181,30 @@ public class WfoContentExportTest
     public void testFullData(){
 
         //config+invoke
-        WfoBackboneExportConfigurator config = newConfigurator();
+        WfoContentExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = checkAndGetData(result);
         Assert.assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
 
         //test counts
-        List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
+        List<String> taxonResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
         Assert.assertEquals("There should be 5 taxa (4 acceptd + 1 synonym)", 5, taxonResult.size() - COUNT_HEADER);
 
-//        List<String> synonymResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
+//        List<String> synonymResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
 //        Assert.assertEquals("There should be no synonym", 1, synonymResult.size() - COUNT_HEADER);
 
-        List<String> nameResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
+        List<String> nameResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
         Assert.assertEquals("There should be 5 names", 5, nameResult.size() - COUNT_HEADER);
 
-        List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
+        List<String> referenceResult = getStringList(data, WfoContentExportTable.REFERENCE);
         Assert.assertEquals("There should be 1 reference", 1, referenceResult.size() - COUNT_HEADER);
 
         //tbc
     }
 
     @Override
-    protected WfoBackboneExportConfigurator newConfigurator() {
-        WfoBackboneExportConfigurator config = WfoBackboneExportConfigurator.NewInstance();
+    protected WfoContentExportConfigurator newConfigurator() {
+        WfoContentExportConfigurator config = WfoContentExportConfigurator.NewInstance();
         config.setTarget(TARGET.EXPORT_DATA);
         return config;
     }

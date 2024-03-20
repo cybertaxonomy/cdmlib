@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -25,9 +27,11 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
@@ -44,7 +48,16 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -213,6 +226,7 @@ public class WfoContentExport
      * @return the WFO-ID of the taxon
      */
     private String handleTaxon(WfoContentExportState state, TaxonNode taxonNode, String parentWfoId) {
+
         //check null
         if (taxonNode == null) {
             state.getResult().addError("The taxonNode was null.", "handleTaxon");
@@ -245,33 +259,7 @@ public class WfoContentExport
             //... parentNameUsageID
             csvLine[table.getIndex(WfoContentExportTable.TAX_PARENT_ID)] = parentWfoId;
 
-            //... higher taxa
-            csvLine[table.getIndex(WfoContentExportTable.TAX_SUBFAMILY)] = null;
-            csvLine[table.getIndex(WfoContentExportTable.TAX_TRIBE)] = null;
-            csvLine[table.getIndex(WfoContentExportTable.TAX_SUBTRIBE)] = null;
-            //TODO
-            csvLine[table.getIndex(WfoContentExportTable.TAX_SUBGENUS)] = name.isInfraGeneric()? name.getInfraGenericEpithet() : null ;
-
-            //... tax status, TODO 2 are there other status for accepted or other reasons for being ambiguous
-            String taxonStatus = taxon.isDoubtful()? "ambiguous" : "Accepted";
-            csvLine[table.getIndex(WfoContentExportTable.TAX_STATUS)] = taxonStatus;
-
-            //secundum reference
-            csvLine[table.getIndex(WfoContentExportTable.NAME_ACCORDING_TO_ID)] = getId(state, taxon.getSec());
-            if (taxon.getSec() != null
-                    && (!state.getReferenceStore().contains((taxon.getSec().getUuid())))) {
-                handleReference(state, taxon.getSec());
-            }
-
-            //TODO 2 remarks, what exactly
-            csvLine[table.getIndex(WfoContentExportTable.TAXON_REMARKS)] = getRemarks(name);
-
-            handleSynonyms(state, taxon);
-
-            //TODO 2 taxon provisional, still an open issue?
-//                csvLine[table.getIndex(WfoContentExportTable.TAX_PROVISIONAL)] = taxonNode.isDoubtful() ? "1" : "0";
-
-            //TODO 1 taxon only published
+            handleDescriptions(state, taxon);
 
             //process taxon line
             state.getProcessor().put(table, taxon, csvLine);
@@ -287,26 +275,227 @@ public class WfoContentExport
         return wfoId;
     }
 
-    private void handleSynonyms(WfoContentExportState state, Taxon taxon) {
+    private void handleDescriptions(WfoContentExportState state, Taxon taxon) {
 
-        if (!state.getConfig().isDoSynonyms()) {
-            return;
-        }
+        //filtered descriptions
+        Set<TaxonDescription> descriptions = taxon.getDescriptions().stream().filter(d->d.isPublish()).collect(Collectors.toSet());
+        Stream<DescriptionElementBase> debStream = descriptions.stream().flatMap(d->d.getElements().stream());
 
-        //homotypic group / synonyms
-        HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
-        handleHomotypicalGroup(state, homotypicGroup, taxon);
-        for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
-            handleSynonym(state, syn);
-        }
+        SetMap<Feature,DescriptionElementBase> feature2DescriptionsMap = new SetMap<>();
+        debStream.forEach(deb->feature2DescriptionsMap.putItem(deb.getFeature(), deb));
 
-        List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
-        for (HomotypicalGroup group: heterotypicHomotypicGroups){
-            handleHomotypicalGroup(state, group, taxon);
-            for (Synonym syn : taxon.getSynonymsInGroup(group)) {
-                handleSynonym(state, syn);
+        feature2DescriptionsMap.entrySet().stream().forEach(e->{
+            Feature feature = e.getKey();
+            e.getValue().forEach(deb->{
+                deb = CdmBase.deproxy(deb);
+                if (Feature.uuidDistribution.equals(feature.getUuid()) && deb.getClass().equals(Distribution.class)) {
+                    handleDistribution(state, (Distribution)e.getValue(), taxon);
+                }else if (Feature.uuidCommonName.equals(feature.getUuid()) && deb.getClass().equals(CommonTaxonName.class)){
+                    handleCommonName(state, (CommonTaxonName)e.getValue(), taxon);
+                }else if (Feature.uuidImage.equals(feature.getUuid())) {
+                    //TODO 2 handle media
+                }else if (Feature.uuidHabitat.equals(feature.getUuid())) {
+                    handleMeasurementOrFact(state, "http://kew.org/wcs/terms/habitat", deb, taxon);
+                }else if (Feature.uuidLifeform.equals(feature.getUuid())) {
+                    handleMeasurementOrFact(state, "http://kew.org/wcs/terms/lifeform", deb, taxon);
+                }else if (Feature.uuidIucnStatus.equals(feature.getUuid())) {
+                    handleMeasurementOrFact(state, "http://kew.org/wcs/terms/hreatStatus", deb, taxon);
+                }else {
+                    //general description
+                    handleDescription(state, deb, taxon);
+                }
+            });
+        });
+    }
+
+    private void handleDescription(WfoContentExportState state, DescriptionElementBase deb, Taxon taxon) {
+        WfoContentExportTable table = WfoContentExportTable.DESCRIPTION;
+        //TODO i18n
+        List<Language> languages = new ArrayList<>();
+        languages.add(Language.ENGLISH());
+        languages.add(Language.FRENCH());
+        languages.add(Language.SPANISH_CASTILIAN());
+        languages.add(Language.GERMAN());
+
+        String[] csvLine = new String[table.getSize()];
+
+        //type
+        //TODO 1 description type
+
+        //description
+        String text = null;
+        if (deb instanceof TextData) {
+            TextData td = (TextData)deb;
+
+            //TODO i18n
+            LanguageString ls = td.getPreferredLanguageString(languages, INCLUDE_UNPUBLISHED);
+            if (ls != null) {
+                text = ls.getText();
+                //language TODO
             }
+        } else if (deb instanceof CategoricalData) {
+//            DefaultCategoricalDescriptionBuilder builder = new DefaultCategoricalDescriptionBuilder();
+//            text = builder.build((CategoricalData)deb, languages);
+            //TODO which formatter to use
+            CategoricalDataFormatter formatter = CategoricalDataFormatter.NewInstance(null);
+            text = formatter.format(deb);
+        } else {
+            //TODO other types or only message?
         }
+        csvLine[table.getIndex(WfoContentExportTable.DESC_DESCRIPTION)] = text;
+
+        //audience TODO
+        csvLine[table.getIndex(WfoContentExportTable.AUDIENCE)] = null;
+
+        //rights holder
+        handleRightsHolder(state, deb, csvLine, table, taxon);
+
+        //created TODO
+        handleCreated(state, deb, csvLine, table, taxon);
+
+        //creator
+        handleCreator(state, deb, csvLine, table, taxon);
+
+        //source
+        handleSource(state, deb, table);
+
+        //rights
+        handleRights(state, null, csvLine, table, taxon);
+
+        //license
+        handleLicense(state, null, csvLine, table, taxon);
+
+
+    }
+
+    private void handleCreator(WfoContentExportState state, DescriptionElementBase deb, String[] csvLine,
+            WfoContentExportTable table, Taxon taxon) {
+        // TODO Auto-generated method stub
+    }
+
+    private void handleCreated(WfoContentExportState state, DescriptionElementBase deb, String[] csvLine,
+            WfoContentExportTable table, Taxon taxon) {
+        // TODO created
+    }
+
+    private void handleRightsHolder(WfoContentExportState state, DescriptionElementBase deb,
+            String[] csvLine, WfoContentExportTable table, Taxon taxon) {
+        // TODO rightsholder
+        csvLine[table.getIndex(WfoContentExportTable.RIGHTS_HOLDER)] = null;
+
+    }
+
+    private void handleMeasurementOrFact(WfoContentExportState state, String string, DescriptionElementBase deb,
+            Taxon taxon) {
+
+    }
+
+    private void handleCommonName(WfoContentExportState state, CommonTaxonName commonName, Taxon taxon) {
+        WfoContentExportTable table = WfoContentExportTable.VERNACULAR_NAME;
+        //TODO i18n
+        List<Language> languages = null;
+        try {
+            if (commonName instanceof CommonTaxonName) {
+                String[] csvLine = new String[table.getSize()];
+//                Distribution distribution = (Distribution) element;
+//                distributions.add(distribution);
+
+                csvLine[table.getIndex(WfoContentExportTable.CN_VERNACULAR_NAME)] = commonName.getName();
+
+                //language
+                if (commonName.getLanguage() != null) {
+                    csvLine[table.getIndex(WfoContentExportTable.CN_VERNACULAR_NAME)] = commonName.getLanguage().getPreferredLabel(languages);
+                }
+
+                //countryCode
+                NamedArea area = commonName.getArea();
+                if (area != null && area.getVocabulary() != null && area.getVocabulary().getUuid().equals(NamedArea.uuidCountryVocabulary)) {
+                    String countryCode = ((Country)area).getIso3166_A2();
+                    csvLine[table.getIndex(WfoContentExportTable.CN_COUNTRY_CODE)] = countryCode;
+                }
+
+                //rights
+                handleRights(state, commonName, csvLine, table, taxon);
+
+                //license
+                handleLicense(state, commonName, csvLine, table, taxon);
+
+                //source
+                handleSource(state, commonName, table);
+
+                state.getProcessor().put(table, commonName, csvLine);
+            } else {
+                //TODO 1 is this handled elsewhere?
+                state.getResult()
+                        .addError("The common name for the taxon " + taxon.getUuid()
+                                + " is not of type CommonTaxonName. Could not be exported. UUID of the common name: "
+                                + commonName.getUuid());
+            }
+        } catch (Exception e) {
+            state.getResult().addException(e, "An unexpected error occurred when handling single common name "
+                    + cdmBaseStr(commonName) + ": " + e.getMessage());
+        }
+    }
+
+    private void handleLicense(WfoContentExportState state, CommonTaxonName commonName,
+            String[] csvLine, WfoContentExportTable table, Taxon taxon) {
+        // TODO 1 handle License
+
+    }
+
+    private void handleRights(WfoContentExportState state, CommonTaxonName commonName,
+            String[] csvLine, WfoContentExportTable table, Taxon taxon) {
+        // TODO 1 handle rights
+    }
+
+    private void handleDistribution(WfoContentExportState state, Distribution distribution, Taxon taxon) {
+        WfoContentExportTable table = WfoContentExportTable.DISTRIBUTION;
+        //TODO i18n
+        List<Language> languages = null;
+            try {
+                if (distribution instanceof Distribution) {
+                    String[] csvLine = new String[table.getSize()];
+//                    Distribution distribution = (Distribution) element;
+//                    distributions.add(distribution);
+                    NamedArea area = distribution.getArea();
+
+                    csvLine[table.getIndex(WfoContentExportTable.DIST_LOCALITY)] = area.getPreferredLabel(languages);
+
+                    //TDWG area
+                    if (area.getVocabulary() !=null && area.getVocabulary().getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)) {
+                        String tdwgCode = area.getIdInVocabulary();
+                        csvLine[table.getIndex(WfoContentExportTable.DIST_LOCATION_ID)] = tdwgCode;
+                    }
+
+                    //countryCode
+                    if (area.getVocabulary() !=null && area.getVocabulary().getUuid().equals(NamedArea.uuidCountryVocabulary)) {
+                        String countryCode = ((Country)area).getIso3166_A2();
+                        csvLine[table.getIndex(WfoContentExportTable.DIST_COUNTRY_CODE)] = countryCode;
+                    }
+
+                    if (distribution.getStatus() != null) {
+                        PresenceAbsenceTerm status = distribution.getStatus();
+                        csvLine[table.getIndex(WfoContentExportTable.DIST_ESTABLISHMENT_MEANS)] = status.getPreferredLabel(languages);
+                    }
+                    //source
+                    handleSource(state, distribution, table);
+
+                    //occurrencRemarks
+                    //TODO 5 occurrence remarks correct?
+                    csvLine[table.getIndex(WfoContentExportTable.DIST_OCCURRENCE_REMARKS)] = createAnnotationsString(distribution.getAnnotations());
+
+                    state.getProcessor().put(table, distribution, csvLine);
+                } else {
+                    //TODO 1 is this handled elsewhere?
+                    state.getResult()
+                            .addError("The distribution description for the taxon " + taxon.getUuid()
+                                    + " is not of type distribution. Could not be exported. UUID of the description element: "
+                                    + distribution.getUuid());
+                }
+            } catch (Exception e) {
+                state.getResult().addException(e, "An unexpected error occurred when handling single distribution "
+                        + cdmBaseStr(distribution) + ": " + e.getMessage());
+            }
     }
 
     private boolean isUrl(String url) {
@@ -471,37 +660,6 @@ public class WfoContentExport
         return cdmBase.getUuid().toString();
     }
 
-    private void handleSynonym(WfoContentExportState state, Synonym synonym) {
-        try {
-            if (isUnpublished(state.getConfig(), synonym)) {
-                return;
-            }
-
-            WfoContentExportTable table = WfoContentExportTable.CLASSIFICATION;
-            String[] csvLine = new String[table.getSize()];
-
-            TaxonName name = synonym.getName();
-            handleName(state, table, csvLine, name);
-
-            //accepted name id
-            if (synonym.getAcceptedTaxon()!= null && synonym.getAcceptedTaxon().getName() != null) {
-                TaxonName acceptedName = synonym.getAcceptedTaxon().getName();
-                String acceptedWfoId = getWfoId(state, acceptedName, false);
-                if (acceptedWfoId == null) {
-                    String message = "WFO-ID for accepted name is missing. This should not happen. Synonym: " + name.getTitleCache() + "; Accepted name: " + acceptedName.getTitleCache();
-                    state.getResult().addError(message, "handleName");
-                    state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
-                }
-                csvLine[table.getIndex(WfoContentExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedWfoId;
-            }
-
-            state.getProcessor().put(table, synonym, csvLine);
-        } catch (Exception e) {
-            state.getResult().addException(e, "An unexpected error occurred when handling synonym "
-                    + cdmBaseStr(synonym) + ": " + e.getMessage());
-        }
-    }
-
     private String handleName(WfoContentExportState state, WfoContentExportTable table, String[] csvLine,
             TaxonName name) {
 
@@ -513,13 +671,13 @@ public class WfoContentExport
             }
             return null;
         }
+
         String wfoId = null;
         try {
 
-            Rank rank = name.getRank();
             state.getNameStore().put(name.getId(), name.getUuid());
 
-            //taxon ID
+            //taxonID
             wfoId = getWfoId(state, name, true);
             if (isBlank(wfoId)) {
                 String message = "No WFO-ID given for taxon " + name.getTitleCache() + ". Taxon ignored";
@@ -530,11 +688,9 @@ public class WfoContentExport
                 csvLine[table.getIndex(WfoContentExportTable.TAXON_ID)] = wfoId;
             }
 
-            //TODO 9 add IPNI ID if exists, scientific name ID
+            //scientificNameID
+            //TODO 9 add IPNI ID if exists
             csvLine[table.getIndex(WfoContentExportTable.NAME_SCIENTIFIC_NAME_ID)] = null;
-
-            //localID
-            csvLine[table.getIndex(WfoContentExportTable.NAME_LOCAL_ID)] = getId(state, name);
 
             //scientificName
             if (name.isProtectedTitleCache()) {
@@ -554,6 +710,7 @@ public class WfoContentExport
             }
 
             //rank
+            Rank rank = name.getRank();
             String rankStr = state.getTransformer().getCacheByRank(rank);
             if (rankStr == null) {
                 String message = rank == null ? "No rank" : ("Rank not supported by WFO:" + rank.getLabel())
@@ -563,11 +720,12 @@ public class WfoContentExport
             }
             csvLine[table.getIndex(WfoContentExportTable.RANK)] = rankStr;
 
-            //authorship
+            //scientificNameAuthorship
             //TODO 3 handle empty authorship cache warning
             csvLine[table.getIndex(WfoContentExportTable.NAME_AUTHORSHIP)] = name.getAuthorshipCache();
 
-            //family TODO 2 family handling
+            //family
+            //TODO 2 family handling
             csvLine[table.getIndex(WfoContentExportTable.TAX_FAMILY)] = state.getFamilyStr();
 
             //name parts
@@ -575,45 +733,9 @@ public class WfoContentExport
             csvLine[table.getIndex(WfoContentExportTable.NAME_SPECIFIC_EPITHET)] = name.getSpecificEpithet();
             csvLine[table.getIndex(WfoContentExportTable.NAME_INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
 
-            //TODO 3 verbatimTaxonRank, is this needed at all?
-            csvLine[table.getIndex(WfoContentExportTable.NAME_VERBATIM_RANK)] = rankStr;
-
-            //name status
-            csvLine[table.getIndex(WfoContentExportTable.NAME_STATUS)] = makeNameStatus(state, name);
-
             //nom. ref
             String nomRef = NomenclaturalSourceFormatter.INSTANCE().format(name.getNomenclaturalSource());
             csvLine[table.getIndex(WfoContentExportTable.NAME_PUBLISHED_IN)] = nomRef;
-
-            //originalNameID
-            TaxonName originalName = name.getBasionym();  //TODO 5 basionym, order in case there are >1 basionyms
-            if (originalName == null) {
-                originalName = name.getReplacedSynonyms().stream().findFirst().orElse(null);
-            }
-
-            if (originalName != null) {
-                if (!state.getNameStore().containsKey(originalName.getId())) {
-                    //TODO 1 handle basionym is in file assertion
-                }
-                String basionymId = getWfoId(state, originalName, false);
-                csvLine[table.getIndex(WfoContentExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;
-            }
-
-            //TODO 1 created
-            csvLine[table.getIndex(WfoContentExportTable.CREATED)] = null;
-
-            //TODO 2 modified
-            csvLine[table.getIndex(WfoContentExportTable.MODIFIED)] = null;
-
-            //TODO 1 URL to taxon
-            csvLine[table.getIndex(WfoContentExportTable.REFERENCES)] = null;
-
-            //TODO 3 excluded info
-            csvLine[table.getIndex(WfoContentExportTable.EXCLUDE)] = null;
-
-            //TODO 1 related names like orth. var., original spelling,
-
-//            state.getProcessor().put(table, name, csvLine);
 
         } catch (Exception e) {
             state.getResult().addException(e,
