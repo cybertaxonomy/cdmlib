@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
-import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -33,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
  * @since 2023-12-08
  */
 public class WfoBackboneExportState
-        extends TaxonTreeExportStateBase<WfoBackboneExportConfigurator,WfoBackboneExportState>{
+        extends WfoExportStateBase<WfoBackboneExportConfigurator,WfoBackboneExportState>{
 
     private ExportResult result;
 

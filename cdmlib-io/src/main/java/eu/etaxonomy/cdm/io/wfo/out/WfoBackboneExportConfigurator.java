@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 
 /**
  * Configurator for WFO Backbone export.
@@ -25,7 +24,7 @@ import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
  * @since 2023-12-08
  */
 public class WfoBackboneExportConfigurator
-        extends TaxonTreeExportConfiguratorBase<WfoBackboneExportState,WfoBackboneExportConfigurator> {
+        extends WfoExportConfiguratorBase<WfoBackboneExportState,WfoBackboneExportConfigurator> {
 
     private static final long serialVersionUID = -6543105949709811075L;
 
@@ -64,7 +63,7 @@ public class WfoBackboneExportConfigurator
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
-        setUserFriendlyIOName("WFO Classification Export");
+        setUserFriendlyIOName("WFO Backbone Export");
     }
 
     @Override

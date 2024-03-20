@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 
 /**
  * Configurator for WFO Content export.
@@ -23,7 +22,7 @@ import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
  * @since 2024-01-30
  */
 public class WfoContentExportConfigurator
-        extends TaxonTreeExportConfiguratorBase<WfoContentExportState,WfoContentExportConfigurator> {
+        extends WfoExportConfiguratorBase<WfoContentExportState,WfoContentExportConfigurator> {
 
     private static final long serialVersionUID = -5696517221605512545L;
 
@@ -35,6 +34,8 @@ public class WfoContentExportConfigurator
     private boolean createZipFile = true;
 
     private String familyStr = null;
+
+    private boolean normalizeAuthorsToIpniStandard = true;
 
     private static final WfoContentExportTransformer transformer = new WfoContentExportTransformer();
 
@@ -58,7 +59,7 @@ public class WfoContentExportConfigurator
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
-        setUserFriendlyIOName("WFO Classification Export");
+        setUserFriendlyIOName("WFO Content Export");
     }
 
     @Override
@@ -130,5 +131,12 @@ public class WfoContentExportConfigurator
     }
     public void setFamilyStr(String familyStr) {
         this.familyStr = familyStr;
+    }
+
+    public boolean isNormalizeAuthorsToIpniStandard() {
+        return normalizeAuthorsToIpniStandard;
+    }
+    public void setNormalizeAuthorsToIpniStandard(boolean normalizeAuthorsToIpniStandard) {
+        this.normalizeAuthorsToIpniStandard = normalizeAuthorsToIpniStandard;
     }
 }
