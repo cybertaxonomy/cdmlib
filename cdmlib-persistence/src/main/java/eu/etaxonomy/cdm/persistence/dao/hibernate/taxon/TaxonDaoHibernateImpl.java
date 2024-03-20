@@ -488,7 +488,7 @@ public class TaxonDaoHibernateImpl
             }
             if(!doCount){
                 String orderBy = " ORDER BY ";
-                String alphabeticBase = " t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache, t.name.uuid, t.uuid ";
+                String alphabeticBase = " t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache, t.name.authorshipCache, t.name.uuid, t.uuid ";  //the later parameters are for having deterministic behavior only
 
                 if (order == NameSearchOrder.LENGTH_ALPHA_NAME){
                     orderBy += " length(t.name.nameCache), " + alphabeticBase;
