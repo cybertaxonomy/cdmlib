@@ -176,8 +176,11 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
         return this == PrimaryTaxonomicSource;
     }
 
+    /**
+     * Checks if this is any of the primary source types (currently either {@link #PrimaryTaxonomicSource}
+     * or {@link #isPrimaryMediaSource()})
+     */
     public boolean isPrimarySource() {
         return isPrimaryMediaSource() || isPrimaryTaxonomicSource();
     }
-
 }

@@ -44,10 +44,10 @@ import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
+import eu.etaxonomy.cdm.api.dto.portal.OccurrenceInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
-import eu.etaxonomy.cdm.api.dto.portal.OccurrenceInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto.TaxonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
@@ -128,6 +128,7 @@ import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -1200,12 +1201,13 @@ public class PortalDtoLoader {
     }
 
     private static void loadSources(CdmBase cdmBase, CdmBaseDto dto) {
+
         if (dto instanceof SingleSourcedDto && cdmBase.isInstanceOf(SingleSourcedEntityBase.class)) {
             //TODO other sourced
             SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
             SingleSourcedDto sourcedDto = (SingleSourcedDto)dto;
             NamedSource source = sourced.getSource();
-            if (source != null) { //TODO  && !source.isEmpty() - does not exist yet
+            if (source != null && isPublicSource(source)) { //TODO  && !source.isEmpty() - does not exist yet
                 SourceDto sourceDto = makeSource(source);
                 sourcedDto.setSource(sourceDto);
             }
@@ -1214,8 +1216,10 @@ public class PortalDtoLoader {
             ISourceable<OriginalSourceBase> sourced = (ISourceable<OriginalSourceBase>)cdmBase;
             SourcedDto sourcedDto = (SourcedDto)dto;
             for (OriginalSourceBase source : sourced.getSources()) {
-                SourceDto sourceDto = makeSource(source);
-                sourcedDto.addSource(sourceDto);
+                if (isPublicSource(source)) {
+                    SourceDto sourceDto = makeSource(source);
+                    sourcedDto.addSource(sourceDto);
+                }
             }
         }
         //load description sources for facts
@@ -1224,11 +1228,23 @@ public class PortalDtoLoader {
             if (db != null) {  //test sometime do not have a description for facts
                 SourcedDto sourcedDto = (SourcedDto)dto;
                 for (OriginalSourceBase source : db.getSources()) {
-                    SourceDto sourceDto = new SourceDto();
-                    loadSource(source, sourceDto);
-                    sourcedDto.addSource(sourceDto);
+                    if (isPublicSource(source)) {
+                        SourceDto sourceDto = new SourceDto();
+                        loadSource(source, sourceDto);
+                        sourcedDto.addSource(sourceDto);
+                    }
                 }
             }
+        }
+    }
+
+    private static boolean isPublicSource(OriginalSourceBase source) {
+        if (source.getType() == null) {
+            return false; //should not happen
+        }else {
+            OriginalSourceType type = source.getType();
+            //TODO 3 make source type configurable
+            return type.isPrimarySource();
         }
     }
 
