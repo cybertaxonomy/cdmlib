@@ -70,7 +70,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -674,19 +673,4 @@ public class PortalDtoLoader extends PortalDtoLoaderBase {
            return javaLocalDateTimeOfEntity;
        }
     }
-
-                if (isPublicSource(source)) {
-        }
-                    if (isPublicSource(source)) {
-            }
-        }
-    }
-
-    private static boolean isPublicSource(OriginalSourceBase source) {
-        if (source.getType() == null) {
-            return false; //should not happen
-        }else {
-            OriginalSourceType type = source.getType();
-            //TODO 3 make source type configurable
-            return type.isPrimarySource();
 }

@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
@@ -149,7 +150,7 @@ public abstract class PortalDtoLoaderBase {
             SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
             SingleSourcedDto sourcedDto = (SingleSourcedDto)dto;
             NamedSource source = sourced.getSource();
-            if (source != null) { //TODO  && !source.isEmpty() - does not exist yet
+            if (source != null && isPublicSource(source)) { //TODO  && !source.isEmpty() - does not exist yet
                 SourceDto sourceDto = makeSource(source);
                 sourcedDto.setSource(sourceDto);
             }
@@ -158,8 +159,10 @@ public abstract class PortalDtoLoaderBase {
             ISourceable<OriginalSourceBase> sourced = (ISourceable<OriginalSourceBase>)cdmBase;
             SourcedDto sourcedDto = (SourcedDto)dto;
             for (OriginalSourceBase source : sourced.getSources()) {
-                SourceDto sourceDto = makeSource(source);
-                sourcedDto.addSource(sourceDto);
+                if (isPublicSource(source)) {
+                    SourceDto sourceDto = makeSource(source);
+                    sourcedDto.addSource(sourceDto);
+                }
             }
         }
         //load description sources for facts
@@ -168,9 +171,11 @@ public abstract class PortalDtoLoaderBase {
             if (db != null) {  //test sometime do not have a description for facts
                 SourcedDto sourcedDto = (SourcedDto)dto;
                 for (OriginalSourceBase source : db.getSources()) {
-                    SourceDto sourceDto = new SourceDto();
-                    loadSource(source, sourceDto);
-                    sourcedDto.addSource(sourceDto);
+                    if (isPublicSource(source)) {
+                        SourceDto sourceDto = new SourceDto();
+                        loadSource(source, sourceDto);
+                        sourcedDto.addSource(sourceDto);
+                    }
                 }
             }
         }
@@ -252,5 +257,15 @@ public abstract class PortalDtoLoaderBase {
 
     protected static UUID getUuid(ICdmBase cdmBase) {
         return cdmBase == null ? null : cdmBase.getUuid();
+    }
+
+    protected static boolean isPublicSource(OriginalSourceBase source) {
+        if (source.getType() == null) {
+            return false; //should not happen
+        }else {
+            OriginalSourceType type = source.getType();
+            //TODO 3 make source type configurable
+            return type.isPrimarySource();
+        }
     }
 }
