@@ -364,8 +364,6 @@ public class WfoContentExport
 
         //license
         handleLicense(state, null, csvLine, table, taxon);
-
-
     }
 
     private void handleCreator(WfoContentExportState state, DescriptionElementBase deb, String[] csvLine,
