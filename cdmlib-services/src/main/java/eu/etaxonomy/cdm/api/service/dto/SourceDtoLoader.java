@@ -23,6 +23,10 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
  */
 public class SourceDtoLoader {
 
+    public static SourceDtoLoader INSTANCE(){
+        return new SourceDtoLoader();
+    }
+
     public static Set<SourceDTO> fromEntities(Set<? extends OriginalSourceBase> entities){
         Set<SourceDTO> refDtos = new HashSet<>();
         //TODO allow filtering

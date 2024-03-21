@@ -9,8 +9,11 @@
 package eu.etaxonomy.cdm.api.service.portal;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
+import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
+import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
@@ -37,6 +40,11 @@ public class DistributionDtoLoader {
     }
 
     private <T extends DefinedTermBase<T>> void load(DistributionDto dto, Distribution entity) {
-
+        //copied from PortalDtoLoader
+        SourcedDto sourcedDto = dto;
+        for (OriginalSourceBase source : entity.getSources()) {
+            SourceDto sourceDto = PortalDtoLoaderBase.makeSource(source);
+            sourcedDto.addSource(sourceDto);
+        }
     }
 }

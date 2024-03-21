@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 
 /**
  * @author a.mueller
@@ -55,6 +56,10 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private DistributionInfoConfiguration distributionInfoConfiguration = new DistributionInfoConfiguration();
 
     private Map<UUID,DistributionInfoConfiguration> perFeatureDistributionInfoConfiguration = new HashMap<>();
+
+    //supplemental data
+    EnumSet<OriginalSourceType> sourceTypes = EnumSet.of(OriginalSourceType.PrimaryTaxonomicSource,
+            OriginalSourceType.PrimaryMediaSource);
 
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
@@ -177,4 +182,10 @@ public class TaxonPageDtoConfiguration implements Serializable {
         this.specimenAssociationFilter = specimenAssociationFilter;
     }
 
+    public EnumSet<OriginalSourceType> getSourceTypes() {
+        return sourceTypes;
+    }
+    public void setSourceTypes(EnumSet<OriginalSourceType> sourceTypes) {
+        this.sourceTypes = sourceTypes;
+    }
 }

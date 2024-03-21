@@ -23,9 +23,9 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
  */
 public class DistributionInfoConfiguration {
 
-    private boolean preferSubAreas = false;
+    private boolean preferSubAreas = true;
 
-    private boolean statusOrderPreference = false;
+    private boolean statusOrderPreference = true;
 
     private Set<MarkerType> fallbackAreaMarkerTypes = new HashSet<>();
 
@@ -50,7 +50,7 @@ public class DistributionInfoConfiguration {
 
     private boolean includeUnpublished = false;
 
-    boolean neverUseFallbackAreaAsParent = false;
+    boolean neverUseFallbackAreaAsParent = true;  //true is E+M status
 
 //********************* GETTER / SETTER ***************************/
 

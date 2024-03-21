@@ -152,7 +152,9 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
     }
 
     private void createDefaultDistributions() {
-        distributions.add(Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()));
+        PresenceAbsenceTerm endemicStatus = PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
+        Assert.assertEquals(endemic, endemicStatus.getSymbol());
+        distributions.add(Distribution.NewInstance(europe, endemicStatus));
         distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
         bawueDistribution = Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE());
         distributions.add(bawueDistribution);

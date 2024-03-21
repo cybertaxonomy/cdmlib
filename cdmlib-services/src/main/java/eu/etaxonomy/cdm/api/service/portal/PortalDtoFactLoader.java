@@ -81,10 +81,71 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 /**
+ * TaxonPageDto
+ * |-...
+ * |-ContainerDto<FeatureDto>
+ * | |-count
+ * | |-orderRelevant
+ * | |-lastUpdated
+ * | |-items<FeatureDto>
+ * |   |-1
+ * |   | |-id
+ * |   | |-uuid
+ * |   | |-label
+ * |   | |-ContainerDto<IFactDto>
+ * |   | | |-...
+ * |   | | |-1<DistributionInfoDto>
+ * |   | | | |-clazz
+ * |   | | | |-condensedDistribution
+ * |   | | | |-tree<NamedAreaDto,DistributioDto>
+ * |   | | | |                       |-area
+ * |   | | | |                       |-status
+ * |   | | | |                       |-factDtoBase(timeperiod, sources, annotations, marker, id, uuid)
+ * |   | | | |-mapUriParams
+ * |   | | | |-lastUpdated
+ * |   | | |
+ * |   | | |-2<CommonNameDto>
+ * |   | | | |-clazz
+ * |   | | | |-name
+ * |   | | | |-transliteration
+ * |   | | | |-language
+ * |   | | | |-languageUuid
+ * |   | | | |-area
+ * |   | | | |-areaUuid
+ * |   | | | |-factDtoBase...
+ * |   | | |
+ * |   | | |-3<FactDto>
+ * |   | | | |-clazz
+ * |   | | | |-typedLabel
+ * |   | | | |-factDtoBase...
+ * |   | | |
+ * |   | | |-4<IndividualsAssociationDto>
+ * |   | | | |-description
+ * |   | | | |-occurrence
+ * |   | | | |-occurrenceUuid
+ * |   | | |
+ * |   | | |-5<TaxonInteractionDto>
+ * |   | | | |-description
+ * |   | | | |-taxon
+ * |   | | | |-taxonUuid
+ * |   | | | |-...
+ * |   | |
+ * |   | |-ContainerDto<FeatureDto>
+ * |   | | |-...
+ * |   |
+ * |   |-2
+ * |     |-...
+ * |
+ * |-...
+ *
  * @author muellera
  * @since 27.02.2024
  */
 public class PortalDtoFactLoader extends PortalDtoLoaderBase {
+
+    private LazyDtoLoader factLazyLoader = new LazyDtoLoader();
+
+    private TaxonPageDto pageDto;
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -95,12 +156,13 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 
     void loadTaxonFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
 
+        this.pageDto = taxonPageDto;
         try {
             //compute the features that do exist for this taxon
             //TODO should be uuidAndTitleCache e.g. for sorting in createDefaultFeatureNode
             Set<UUID> existingFeatureUuids = getExistingFeatureUuids(taxon,config.isIncludeUnpublished());
 
-            //filter, sort and structure according to feature tree
+            //featureTree (filter, sort and structure according to feature tree)
             TreeNode<Feature, UUID> filteredRootNode = null;
             if (config.getFeatureTree() != null) {
 
@@ -118,8 +180,13 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 
 
             //load facts per feature
-            SetMap<UUID, FactTmpDto> factsPerFeature = loadFeatureMapDto(taxon, config.isIncludeUnpublished());
+            SetMap<UUID, FactDtoBase> factsPerFeature = loadFactsPerFeature(taxon, config);
 //            Map<UUID,Set<FactTmpDto>> factsPerFeature = loadFeatureMap(taxon, config.isIncludeUnpublished());
+
+
+            factsPerFeature.values().stream().forEach(s->s.stream().forEach(f->handleSupplementalData(f)));
+
+            factLazyLoader.loadAll(dao, config.getSourceTypes());
 
             //load final result
             if (!filteredRootNode.getChildren().isEmpty()) {
@@ -135,6 +202,11 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         }
     }
 
+
+    private void handleSupplementalData(FactDtoBase f) {
+        factLazyLoader.add(DescriptionElementBase.class, f);
+        return;
+    }
 
     //TODO merge with loadFacts, it is almost the same, see //DIFFERENT
     void loadNameFacts(TaxonName name, TaxonBaseDto nameDto, TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
@@ -156,7 +228,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 //            }  //DIFFERENT END
 
             //load facts per feature
-            SetMap<UUID,FactTmpDto> featureMap = loadFeatureMap(name, config.isIncludeUnpublished());
+            SetMap<UUID,FactDtoBase> featureMap = loadFactsPerFeature(name, config);
 
             //load final result
             if (!filteredRootNode.getChildren().isEmpty()) {
@@ -188,7 +260,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 
         String describedAttr = clazz.equals(Taxon.class) ? "taxon" : clazz.equals(TaxonName.class) ? "name" : "describedSpecimenOrObservation";
 
-        String hql = "SELECT DISTINCT deb.feature.uuid"
+        String hql = "SELECT DISTINCT deb.feature.uuid "
                 + " FROM DescriptionElementBase deb "
                 + " WHERE deb.inDescription." + describedAttr +".uuid = '"+entityUuid  +"'"
                 + " AND deb.inDescription.imageGallery = false ";
@@ -284,7 +356,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 //       }
 //    }
 
-    private FactDtoBase handleFactDto(FeatureDto featureDto, FactTmpDto fact, TaxonPageDto pageDto) {
+    private FactDtoBase handleFactDto(FeatureDto featureDto, AllFactTypesDto fact, TaxonPageDto pageDto) {
         //TODO locale
         Language localeLang = null;
 
@@ -409,132 +481,132 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         return result;
     }
 
-    private FactDtoBase handleFact(FeatureDto featureDto, FactTmpDto fact, TaxonPageDto pageDto) {
-        //TODO locale
-        Language localeLang = null;
-
-        FactDtoBase result;
-        if (fact.type == TextData.class) {
-            Map<Language, LanguageString> i18n = fact.multilanguageText;
-            LanguageString ls = MultilanguageTextHelper.getPreferredLanguageString(i18n, LocaleContext.getLanguages());
-            String text = ls == null ? "" : CdmUtils.Nz(ls.getText());
-
-            FactDto factDto = new FactDto();
-            featureDto.addFact(factDto);
-            //TODO do we really need type information for textdata here?
-            TypedLabel typedLabel = new TypedLabel(text);
-            typedLabel.setCdmClass(fact.type);
-            typedLabel.setUuid(fact.uuid);
-            factDto.getTypedLabel().add(typedLabel);
-            //FIXME TODO
-            loadBaseData(fact.toInstance(), factDto);
-            //TODO
-            result = factDto;
-        }else if (fact.type == CommonTaxonName.class) {
-            CommonTaxonName ctn = CdmBase.deproxy(fact, CommonTaxonName.class);
-            CommonNameDto dto = new CommonNameDto();
-            featureDto.addFact(dto);
-
-            Language lang = ctn.getLanguage();
-            if (lang != null) {
-                String langLabel = getTermLabel(lang, localeLang);
-                dto.setLanguage(langLabel);
-                dto.setLanguageUuid(lang.getUuid());
-            }else {
-                //TODO
-                dto.setLanguage("-");
-            }
-            //area
-            NamedArea area = ctn.getArea();
-            if (area != null) {
-                String areaLabel = getTermLabel(area, localeLang);
-                dto.setArea(areaLabel);
-                dto.setAreaUUID(area.getUuid());
-            }
-            dto.setName(ctn.getName());
-            dto.setTransliteration(ctn.getTransliteration());
-            loadBaseData(ctn, dto);
-            //TODO sort all common names (not urgent as this is done by portal code)
-            result = dto;
-        } else if (fact.type == IndividualsAssociation.class) {
-            IndividualsAssociation ia = CdmBase.deproxy(fact, IndividualsAssociation.class);
-            IndividualsAssociationDto dto = new IndividualsAssociationDto ();
-
-            LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(ia.getDescription(), Arrays.asList(localeLang));
-            if (description != null) {
-                dto.setDescritpion(description.getText());
-            }
-            SpecimenOrObservationBase<?> specimen = ia.getAssociatedSpecimenOrObservation();
-            if (specimen != null) {
-                //TODO what to use here??
-                dto.setOccurrence(specimen.getTitleCache());
-                dto.setOccurrenceUuid(specimen.getUuid());
-            }
-
-            featureDto.addFact(dto);
-            loadBaseData(ia, dto);
-            result = dto;
-        } else if (fact.type == TaxonInteraction.class) {
-            TaxonInteraction ti = CdmBase.deproxy(fact, TaxonInteraction.class);
-            TaxonInteractionDto dto = new TaxonInteractionDto ();
-
-            LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(
-                    ti.getDescription(), Arrays.asList(localeLang));
-            if (description != null) {
-                dto.setDescritpion(description.getText());
-            }
-            Taxon taxon = ti.getTaxon2();
-            if (taxon != null) {
-                //TODO what to use here??
-                dto.setTaxon(taxon.cacheStrategy().getTaggedTitle(taxon));
-                dto.setTaxonUuid(taxon.getUuid());
-            }
-            featureDto.addFact(dto);
-            loadBaseData(ti, dto);
-            result = dto;
-        }else if (fact.type == CategoricalData.class) {
-            CategoricalData cd = CdmBase.deproxy(fact, CategoricalData.class);
-            FactDto factDto = new FactDto();
-            featureDto.addFact(factDto);
-            //TODO do we really need type information for textdata here?
-            String label = CategoricalDataFormatter.NewInstance(null).format(cd, localeLang);
-            TypedLabel typedLabel = new TypedLabel(label);
-            typedLabel.setClassAndId(cd);
-            factDto.getTypedLabel().add(typedLabel);
-            //TODO
-            loadBaseData(cd, factDto);
-            result = factDto;
-        }else if (fact.type == QuantitativeData.class) {
-            QuantitativeData qd = CdmBase.deproxy(fact, QuantitativeData.class);
-            FactDto factDto = new FactDto();
-            featureDto.addFact(factDto);
-            //TODO do we really need type information for textdata here?
-            String label = QuantitativeDataFormatter.NewInstance(null).format(qd, localeLang);
-            TypedLabel typedLabel = new TypedLabel(label);
-            typedLabel.setClassAndId(qd);
-            factDto.getTypedLabel().add(typedLabel);
-            //TODO
-            loadBaseData(qd, factDto);
-            result = factDto;
-        }else if (fact.type == TemporalData.class) {
-            TemporalData td = CdmBase.deproxy(fact, TemporalData.class);
-            FactDto factDto = new FactDto();
-            featureDto.addFact(factDto);
-            //TODO do we really need type information for textdata here?
-            String label = td.toString();
-            TypedLabel typedLabel = new TypedLabel(label);
-            typedLabel.setClassAndId(td);
-            factDto.getTypedLabel().add(typedLabel);
-            //TODO
-            loadBaseData(td, factDto);
-            result = factDto;
-        }else {
-            pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName()));
-            return null;
-        }
-        result.setTimeperiod(fact.getTimeperiod() == null ? null : fact.getTimeperiod().toString());
-        return result;
-    }
+//    private FactDtoBase handleFact(FeatureDto featureDto, FactDtoBase fact, TaxonPageDto pageDto) {
+//        //TODO locale
+//        Language localeLang = null;
+//
+//        FactDtoBase result;
+//        if (fact.type == TextData.class) {
+//            Map<Language, LanguageString> i18n = fact.multilanguageText;
+//            LanguageString ls = MultilanguageTextHelper.getPreferredLanguageString(i18n, LocaleContext.getLanguages());
+//            String text = ls == null ? "" : CdmUtils.Nz(ls.getText());
+//
+//            FactDto factDto = new FactDto();
+//            featureDto.addFact(factDto);
+//            //TODO do we really need type information for textdata here?
+//            TypedLabel typedLabel = new TypedLabel(text);
+//            typedLabel.setCdmClass(fact.type);
+//            typedLabel.setUuid(fact.uuid);
+//            factDto.getTypedLabel().add(typedLabel);
+//            //FIXME TODO
+//            loadBaseData(fact.toInstance(), factDto);
+//            //TODO
+//            result = factDto;
+//        }else if (fact.type == CommonTaxonName.class) {
+//            CommonTaxonName ctn = CdmBase.deproxy(fact, CommonTaxonName.class);
+//            CommonNameDto dto = new CommonNameDto();
+//            featureDto.addFact(dto);
+//
+//            Language lang = ctn.getLanguage();
+//            if (lang != null) {
+//                String langLabel = getTermLabel(lang, localeLang);
+//                dto.setLanguage(langLabel);
+//                dto.setLanguageUuid(lang.getUuid());
+//            }else {
+//                //TODO
+//                dto.setLanguage("-");
+//            }
+//            //area
+//            NamedArea area = ctn.getArea();
+//            if (area != null) {
+//                String areaLabel = getTermLabel(area, localeLang);
+//                dto.setArea(areaLabel);
+//                dto.setAreaUUID(area.getUuid());
+//            }
+//            dto.setName(ctn.getName());
+//            dto.setTransliteration(ctn.getTransliteration());
+//            loadBaseData(ctn, dto);
+//            //TODO sort all common names (not urgent as this is done by portal code)
+//            result = dto;
+//        } else if (fact.type == IndividualsAssociation.class) {
+//            IndividualsAssociation ia = CdmBase.deproxy(fact, IndividualsAssociation.class);
+//            IndividualsAssociationDto dto = new IndividualsAssociationDto ();
+//
+//            LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(ia.getDescription(), Arrays.asList(localeLang));
+//            if (description != null) {
+//                dto.setDescritpion(description.getText());
+//            }
+//            SpecimenOrObservationBase<?> specimen = ia.getAssociatedSpecimenOrObservation();
+//            if (specimen != null) {
+//                //TODO what to use here??
+//                dto.setOccurrence(specimen.getTitleCache());
+//                dto.setOccurrenceUuid(specimen.getUuid());
+//            }
+//
+//            featureDto.addFact(dto);
+//            loadBaseData(ia, dto);
+//            result = dto;
+//        } else if (fact.type == TaxonInteraction.class) {
+//            TaxonInteraction ti = CdmBase.deproxy(fact, TaxonInteraction.class);
+//            TaxonInteractionDto dto = new TaxonInteractionDto ();
+//
+//            LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(
+//                    ti.getDescription(), Arrays.asList(localeLang));
+//            if (description != null) {
+//                dto.setDescritpion(description.getText());
+//            }
+//            Taxon taxon = ti.getTaxon2();
+//            if (taxon != null) {
+//                //TODO what to use here??
+//                dto.setTaxon(taxon.cacheStrategy().getTaggedTitle(taxon));
+//                dto.setTaxonUuid(taxon.getUuid());
+//            }
+//            featureDto.addFact(dto);
+//            loadBaseData(ti, dto);
+//            result = dto;
+//        }else if (fact.type == CategoricalData.class) {
+//            CategoricalData cd = CdmBase.deproxy(fact, CategoricalData.class);
+//            FactDto factDto = new FactDto();
+//            featureDto.addFact(factDto);
+//            //TODO do we really need type information for textdata here?
+//            String label = CategoricalDataFormatter.NewInstance(null).format(cd, localeLang);
+//            TypedLabel typedLabel = new TypedLabel(label);
+//            typedLabel.setClassAndId(cd);
+//            factDto.getTypedLabel().add(typedLabel);
+//            //TODO
+//            loadBaseData(cd, factDto);
+//            result = factDto;
+//        }else if (fact.type == QuantitativeData.class) {
+//            QuantitativeData qd = CdmBase.deproxy(fact, QuantitativeData.class);
+//            FactDto factDto = new FactDto();
+//            featureDto.addFact(factDto);
+//            //TODO do we really need type information for textdata here?
+//            String label = QuantitativeDataFormatter.NewInstance(null).format(qd, localeLang);
+//            TypedLabel typedLabel = new TypedLabel(label);
+//            typedLabel.setClassAndId(qd);
+//            factDto.getTypedLabel().add(typedLabel);
+//            //TODO
+//            loadBaseData(qd, factDto);
+//            result = factDto;
+//        }else if (fact.type == TemporalData.class) {
+//            TemporalData td = CdmBase.deproxy(fact, TemporalData.class);
+//            FactDto factDto = new FactDto();
+//            featureDto.addFact(factDto);
+//            //TODO do we really need type information for textdata here?
+//            String label = td.toString();
+//            TypedLabel typedLabel = new TypedLabel(label);
+//            typedLabel.setClassAndId(td);
+//            factDto.getTypedLabel().add(typedLabel);
+//            //TODO
+//            loadBaseData(td, factDto);
+//            result = factDto;
+//        }else {
+//            pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName()));
+//            return null;
+//        }
+//        result.setTimeperiod(fact.getTimeperiod() == null ? null : fact.getTimeperiod().toString());
+//        return result;
+//    }
 
     /**
      * Recursive call to a feature tree's feature node in order to creates a tree structure
@@ -594,7 +666,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         return root;
     }
 
-    public class FactTmpDto{
+    public class AllFactTypesDto{
 
         DescriptionElementBase toInstance() {
             DescriptionElementBase deb;
@@ -631,6 +703,62 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             return deb;
         }
 
+        public FactDtoBase toDto() {
+
+            FactDtoBase dto;
+            //TODO label
+            if (type == Distribution.class) {
+                DistributionDto dd = new DistributionDto(null, this.id, null, null);
+                NamedAreaDto areaDto = new NamedAreaDto(null, id, null);
+                dd.setArea(factLazyLoader.add(NamedArea.class, areaDto));
+                TermDto statusDto = new TermDto(null, id, null);
+                dd.setStatus(factLazyLoader.add(PresenceAbsenceTerm.class, statusDto));
+                dto = dd;
+            } else if (type == TextData.class) {
+                FactDto td = new FactDto();
+                td.addTypedLabel(new TypedLabel("Test text"));
+                //TODO text
+                dto = td;
+            }else if (type == CommonTaxonName.class) {
+                CommonNameDto ctn = new CommonNameDto();
+//                NamedAreaDto areaDto = new NamedAreaDto(null, id, null);
+//                ctn.setArea(factLazyLoader.add(NamedArea.class, areaDto));
+                ctn.setArea("Testarea");  //TODO  //String
+                ctn.setLanguage("Testlanguage");  //String //TODO
+                ctn.setName(name);
+                ctn.setTransliteration(transliteration);
+                dto = ctn;
+            } else if (type == IndividualsAssociation.class) {
+                IndividualsAssociationDto ia = new IndividualsAssociationDto();
+                ia.setOccurrence(null);  //TODO
+                ia.setDescritpion(null); //TODO xxx
+                dto = ia;
+            } else if (type == TaxonInteraction.class) {
+                TaxonInteractionDto ti = new TaxonInteractionDto();
+                ti.setTaxon(null);  //TODO
+                ti.setDescritpion(null);  //TODO xxx
+                dto = ti;
+            }else if (type == CategoricalData.class) {
+                FactDto fd = new FactDto();
+                //TODO text
+                dto = fd;
+            }else if (type == QuantitativeData.class) {
+                FactDto fd = new FactDto();
+                //TODO text
+                dto = fd;
+            }else if (type == TemporalData.class) {
+                FactDto fd = new FactDto();
+                //TODO text
+                dto = fd;
+            }else {
+                pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + this.type.getSimpleName()));
+                return null;
+            }
+            dto.setTimeperiod(this.getTimeperiod() == null ? null : this.getTimeperiod().toString());
+            dto.setId(this.id);
+            return dto;
+        }
+
         public Object getTimeperiod() {
             return deb != null? deb.getTimeperiod(): timePeriod;
         }
@@ -644,9 +772,9 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         String name;
         TimePeriod timePeriod;
         PresenceAbsenceTerm status;
-        Map<Language, LanguageString> multilanguageText;
+        String transliteration;
 
-        public FactTmpDto(Map<String,Object> map) {
+        public AllFactTypesDto(Map<String,Object> map) {
             this.featureUuid = (UUID)map.get("featureUuid");
             this.type = (Class) map.get("type");
             this.uuid = (UUID)map.get("uuid");
@@ -655,16 +783,18 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             this.name = (String) map.get("name");
             this.timePeriod = (TimePeriod) map.get("timePeriod");
             this.status = (PresenceAbsenceTerm) map.get("status");
-            this.multilanguageText = (Map<Language, LanguageString>)map.get("i18nText");
+            this.transliteration = (String)map.get("transliteration");
+//            this.multilanguageText = (Map<Language, LanguageString>)map.get("i18nText");
         }
-        public FactTmpDto(DescriptionElementBase deb) {
+        public AllFactTypesDto(DescriptionElementBase deb) {
             this.deb = deb;
             this.type = CdmBase.deproxy(deb).getClass();
         }
+
     }
 
-    private SetMap<UUID, FactTmpDto> loadFeatureMapDto(IDescribable<?> describable,
-            boolean includeUnpublished) {
+    private SetMap<UUID, FactDtoBase> loadFactsPerFeature(IDescribable<?> describable,
+            TaxonPageDtoConfiguration config) {
 
         boolean withImageGallery = false;
 //        List<Map<String, Object>> dto = this.repository.getDescriptionElementService().getFactDto(
@@ -674,40 +804,48 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         UUID entityUuid = describable.getUuid();
 
         String describedAttr = clazz.equals(Taxon.class) ? "taxon" : clazz.equals(TaxonName.class) ? "name" : "describedSpecimenOrObservation";
-        String hql = "SELECT new map(deb.feature.uuid as featureUuid, type(deb) as type, "
-                + "    deb.uuid as uuid, deb.id as id, "
-                + "    deb.area as area, deb.name as name,"
-                + "    deb.timeperiod as timePeriod, deb.status as status)"
-                + "    deb.multilanguageText as i18nText"
-                + " FROM DescriptionElementBase deb "
-                + " WHERE deb.inDescription." + describedAttr +".uuid = '" + entityUuid +"'"
-                + " AND deb.inDescription.imageGallery = false ";
-        if (!includeUnpublished) {
+        String hql = "SELECT new map(deb.feature.uuid as featureUuid, type(deb) as type "
+                   +    " ,deb.uuid as uuid, deb.id as id "
+                   +    " ,deb.area as area, deb.name as name "
+                   +    " ,deb.timeperiod as timePeriod, deb.status as status "
+                   +    " ,deb.transliteration as transliteration "
+//                   +    " ,deb.multilanguageText as i18nText"
+                   +    ")"
+                   + " FROM DescriptionElementBase deb "
+                   + " WHERE deb.inDescription." + describedAttr +".uuid = '" + entityUuid +"'"
+                   + " AND deb.inDescription.imageGallery = false ";
+        if (!config.isIncludeUnpublished()) {
             hql += " AND deb.inDescription.publish = true ";
         }
 
-        SetMap<UUID, FactTmpDto> setMap = new SetMap<>();
         try {
-            List<Map<String,Object>> list = (List)dao.getHqlResult(hql, Map.class);
+            SetMap<UUID, FactDtoBase> result = new SetMap<>();
 
-            for (Map<String,Object> map : list) {
-                FactTmpDto fact = new FactTmpDto(map);
+            List<Map<String,Object>> factMaps = dao.getHqlMapResult(hql, Object.class);
+
+            for (Map<String,Object> factMap : factMaps) {
+                AllFactTypesDto fact = new AllFactTypesDto(factMap);
                 UUID featureUuid = fact.featureUuid;
-                DescriptionElementBase deb = fact.toInstance();
-                setMap.putItem(featureUuid, fact);
+                FactDtoBase dto = fact.toDto();
+                if (dto != null) {
+                    result.putItem(featureUuid, dto);
+                }
             }
 
-            return setMap;
+            return result;
+
         } catch (Exception e) {
             e.printStackTrace();
 //                TODO logging
             return new SetMap<>();
         }
+
+
     }
 
-    private SetMap<UUID,FactTmpDto> loadFeatureMap(IDescribable<?> describable, boolean includeUnpublished) {
+    private SetMap<UUID,AllFactTypesDto> loadFeature2FactMap(IDescribable<?> describable, boolean includeUnpublished) {
 
-        SetMap<UUID,FactTmpDto> featureMap = new SetMap<>();
+        SetMap<UUID,AllFactTypesDto> featureMap = new SetMap<>();
 
         //... load facts
         for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
@@ -719,42 +857,44 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
                 if (featureMap.get(feature.getUuid()) == null) {
                     featureMap.put(feature.getUuid(), new HashSet<>());
                 }
-                featureMap.get(feature.getUuid()).add(new FactTmpDto(deb));
+                featureMap.get(feature.getUuid()).add(new AllFactTypesDto(deb));
             }
         }
         return featureMap;
     }
 
     private void handleFeatureNode(TaxonPageDtoConfiguration config,
-            SetMap<UUID,FactTmpDto> featureMap, ContainerDto<FeatureDto> features,
+            SetMap<UUID,FactDtoBase> featureMap, ContainerDto<FeatureDto> features,
             TreeNode<Feature, UUID> node, TaxonPageDto pageDto) {
 
         Feature feature = node.getData();
-        if(!featureMap.containsKey(feature.getUuid())){
+        UUID featureUuid = node.getNodeId();
+        Set<FactDtoBase> facts = featureMap.get(featureUuid);
+        if(facts == null){
             return;
         }
-        //TODO locale
+
+        //TODO locale und früher
         FeatureDto featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
         features.addItem(featureDto);
 
         List<DistributionDto> distributions = new ArrayList<>();
 
         //
-        for (FactTmpDto fact : featureMap.get(feature.getUuid())){
-            if (fact.type == Distribution.class) {
-                TermDto status = TermDtoLoader.INSTANCE().fromEntity(fact.status);
-                NamedAreaDto namedAreaDto = TermDtoLoader.INSTANCE().fromEntity(fact.area);
-                DistributionDto distDto = new DistributionDto(fact.uuid, fact.id, namedAreaDto, status);
-                distributions.add(distDto);
-//                distributions.add(CdmBase.deproxy(fact, Distribution.class));
+        for (FactDtoBase fact : facts){
+            if (fact instanceof DistributionDto) {
+                distributions.add((DistributionDto)fact);
             }else {
                 //TODO how to handle CommonNames, do we also want to have a data structure
                 //with Language|
 //                             -- Area|
 //                                    --name
                 // a bit like for distribution??
-                handleFact(featureDto, fact, pageDto);
+
+                //normal facts (usually 1 per feature or at least not hierarchically ordered)
+                featureDto.addFact(fact);
             }
+
         }
 
         handleDistributions(config, featureDto, distributions, pageDto);

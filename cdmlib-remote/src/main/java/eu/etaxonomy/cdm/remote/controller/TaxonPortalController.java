@@ -356,11 +356,15 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
+//          @RequestParam(value = "neverUseFallbackAreaAsParent", required = false) boolean neverUseFallbackAreaAsParent,
             @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
 
             //TODO configuration data
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+
+        //maybe become a parameter, but first test if
+        Boolean neverUseFallbackAreaAsParent = null;   //currently default is true in configuration
 
         boolean includeUnpublished = NO_UNPUBLISHED;
         EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
@@ -431,6 +435,9 @@ public class TaxonPortalController extends TaxonController{
         distributionConfig.setOmitLevels(omitLevels);
         distributionConfig.setStatusColorsString(statusColorsString);
         distributionConfig.setDistributionOrder(distributionOrder);
+        if (neverUseFallbackAreaAsParent != null) {
+            distributionConfig.setNeverUseFallbackAreaAsParent(neverUseFallbackAreaAsParent);
+        }
         if (recipe != null) {
             CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
             condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);

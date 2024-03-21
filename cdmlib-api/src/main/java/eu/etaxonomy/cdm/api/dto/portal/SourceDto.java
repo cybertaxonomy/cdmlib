@@ -38,12 +38,22 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
 
     private List<URI> links;
 
+// ******************** CONSTRUCTOR ****************/
+
+    public SourceDto() {
+        super();
+    }
+
+    public SourceDto(int id) {
+        super(null, id, null);
+    }
 
 //************* GETTER/SETTER ***********************/
 
     public List<TypedLabel> getLabel() {
         return label;
     }
+
     public void addLabel(TypedLabel label) {
         if (this.label == null) {
             this.label = new ArrayList<>();

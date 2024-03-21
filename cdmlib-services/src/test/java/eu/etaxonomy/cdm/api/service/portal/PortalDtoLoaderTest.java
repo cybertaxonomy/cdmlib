@@ -19,10 +19,14 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
+import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -35,6 +39,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -72,7 +77,21 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //facts
         ContainerDto<FeatureDto> taxonFacts = dto.getTaxonFacts();
         Assert.assertEquals(1, taxonFacts.getCount());
-
+        FeatureDto featureDto = taxonFacts.getItems().get(0);
+        ContainerDto<IFactDto> facts = featureDto.getFacts();
+        Assert.assertEquals(1, facts.getCount());
+        IFactDto d = facts.getItems().get(0);
+        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), d.getClazz());
+        DistributionInfoDto did = (DistributionInfoDto)d;
+        //TODO this still fails
+        System.out.println(did.getCondensedDistribution().getHtmlString() + ": TODO");
+        //TODO probably the order is not deterministic, so we may need to check single parts only, same as in according builder test
+        String mapUriParamsStart = did.getMapUriParams().substring(0, 50);
+        String mapUriParamsEnd = did.getMapUriParams().replace(mapUriParamsStart, "");
+        Assert.assertEquals("as=a:,,0.1,|b:,,0.1,&ad=country_earth%3Agmi_cntry:", mapUriParamsStart);
+        Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:DEU&title=[ab]:present\\|[ab]:introduced"));
+        DistributionTreeDto tree = (DistributionTreeDto)did.getTree();
+        Assert.assertEquals("Tree:2<FRA:introduced{}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
     }
 
     private void createTestData() {
@@ -89,11 +108,26 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //facts
         TaxonDescription td = TaxonDescription.NewInstance(taxon);
+        Country.GERMANY().setSymbol("De");
+        PresenceAbsenceTerm.PRESENT().setSymbol("");
         Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
         td.addElement(germany);
-        Distribution france = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.INTRODUCED());
-        td.addElement(france);
+        Country.FRANCE().setSymbol("Fr");
+        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
+        Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.INTRODUCED());
+        td.addElement(franceDist);
 
+        //sources
+        //primary
+        Reference franceRef = ReferenceFactory.newBook();
+        franceRef.setAuthorship(author);
+        franceRef.setTitle("My French distribution");
+        franceRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1978"));
+        franceDist.addPrimaryTaxonomicSource(franceRef, "44");
+        //import
+        Reference importRef = ReferenceFactory.newDatabase();
+        importRef.setTitle("French distribution import");  //should not be shown in output
+        franceDist.addImportSource("7777", "Distribution", franceRef, "99");
     }
 
     @Override

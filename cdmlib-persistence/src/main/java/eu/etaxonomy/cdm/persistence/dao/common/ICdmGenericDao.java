@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -203,6 +204,24 @@ public interface ICdmGenericDao {
 	 * @return the result of the hibernate query
 	 */
     public <T> List<T> getHqlResult(String hqlQuery, Object[] params, Class<T> clazz) throws UnsupportedOperationException;
+
+    public <T> List<T> getHqlResult(String hqlQuery, Map<String, Object> params, Class<T> clazz);
+
+    public <T> List<Map<String,T>> getHqlMapResult(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException;
+
+    /**
+     * Returns the result of an hql map query (a query which returns a map)
+     * @param hqlQuery
+     * @return the result of the hibernate query
+     */
+    public <T> List<Map<String,T>> getHqlMapResult(String hqlQuery, Object[] params, Class<T> clazz) throws UnsupportedOperationException;
+
+    /**
+     * Returns the result of an hql map query (a query which returns a map)
+     * @param hqlQuery
+     * @return the result of the hibernate query
+     */
+    public <T> List<Map<String,T>> getHqlMapResult(String hqlQuery, Map<String,Object> params, Class<T> clazz) throws UnsupportedOperationException;
 
     /**
      * Same as {@link #getHqlResult(String, Object[], Class)} but without hql parameters.

@@ -904,7 +904,7 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
                 neverUseFallbackAreasAsParents, distributionOrder, null, withSecondMethod);
     }
 
-    private String tree2String(DistributionTreeDto tree) {
+    public String tree2String(DistributionTreeDto tree) {
         StringBuilder sb = new StringBuilder();
         TreeNode<Set<DistributionDto>, NamedAreaDto> root = tree.getRootElement();
         Assert.assertNotNull("root should exist", root);
