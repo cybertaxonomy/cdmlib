@@ -80,8 +80,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
@@ -469,7 +469,7 @@ public class PortalDtoLoader extends PortalDtoLoaderBase {
         try {
             TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance((Set)desigs);
             List<TaggedText> tags = formatter.toTaggedText(manager);
-            String label = TaggedCacheHelper.createString(tags);
+            String label = TaggedTextFormatter.createString(tags);
             hgDto.setTypes(label);
             hgDto.setTaggedTypes(tags);
 //            hgDto.setTypedTypes(null);
@@ -539,7 +539,7 @@ public class PortalDtoLoader extends PortalDtoLoaderBase {
 
         List<Language> languages = Arrays.asList(new Language[] {Language.DEFAULT()}); // TODO config.locales;
         List<TaggedText> tags = taxRelFormatter.getTaggedText(rel, inverse, languages, withoutName);
-        String relLabel = TaggedCacheHelper.createString(tags);
+        String relLabel = TaggedTextFormatter.createString(tags);
         ConceptRelationDTO dto = new TaxonPageDto.ConceptRelationDTO();
         loadBaseData(rel, dto);
         dto.setRelSource(makeSource(rel.getSource()));
