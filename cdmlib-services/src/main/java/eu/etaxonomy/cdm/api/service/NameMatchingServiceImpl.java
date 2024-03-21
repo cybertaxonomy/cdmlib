@@ -125,7 +125,7 @@ public class NameMatchingServiceImpl
      */
     @Override
     public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor) {
-
+//        taxonName = capitalInicial(taxonName);
         taxonName = taxonName.replace(" and ", " & ");
 
         // 0. Parsing and Normalizing
@@ -267,7 +267,7 @@ public class NameMatchingServiceImpl
             List<SingleNameMatchingResult> resultSetEpithetListWithDist = new ArrayList<>();
             for (SingleNameMatchingResult preFilteredEpithet: preFilteredEpithetListWithDist) {
             	String epithetInDB = preFilteredEpithet.getSpecificEpithet();
-            	if (epithetInDB.isEmpty()) {
+            	if (epithetInDB == null || epithetInDB.isEmpty()) {
                     continue;
                 }
                 String epithetNameInDBNormalized = NameMatchingUtils.normalize(epithetInDB);
@@ -353,6 +353,17 @@ public class NameMatchingServiceImpl
     }
 
 
+    /**
+     * @param taxonName
+     * @return
+     */
+    private static String capitalInicial(String taxonName) {
+        if (taxonName != null & !taxonName.isEmpty()) {
+            taxonName = taxonName.substring(0,1).toUpperCase() + taxonName.substring(1).toLowerCase();
+        }
+        return taxonName;
+    }
+
     private static NameMatchingResult authorMatch(NameMatchingResult results, String authorshipQuery) {
         if (!results.exactResults.isEmpty()) {
             AuthorMatch.compareAuthor(results.exactResults, authorshipQuery);
@@ -368,8 +379,8 @@ public class NameMatchingServiceImpl
         for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
             String infrageneric = taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
             String infraspecific = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
-            if (infrageneric.isEmpty() &&
-                    infraspecific.isEmpty()) {
+            if (infrageneric == null ||  infrageneric.isEmpty() &&
+                    infraspecific == null || infraspecific.isEmpty()) {
                 preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
             }
         }
@@ -427,6 +438,7 @@ public class NameMatchingServiceImpl
                  }
             }
         });
+
         return genusOrUninomialWithDistance;
     }
 
@@ -614,10 +626,12 @@ public class NameMatchingServiceImpl
             String normalizedEphitetQuery, int maxDistance) {
         List<SingleNameMatchingResult> fullNameMatchingPartsListTemp = new ArrayList<>();
         for (SingleNameMatchingResult fullNameMatchingParts : preFilteredEpithetListWithDist) {
-            if (fullNameMatchingParts.getSpecificEpithet().length()
+            String specificEpithet = fullNameMatchingParts.getSpecificEpithet();
+            if (specificEpithet != null && fullNameMatchingParts.getSpecificEpithet().length()
                     - normalizedEphitetQuery.length() <= maxDistance) {
                 fullNameMatchingPartsListTemp.add(fullNameMatchingParts);
                 preFilteredEpithetListWithDist = fullNameMatchingPartsListTemp;
+//                System.out.println(fullNameMatchingParts.getSpecificEpithet());
             }
         }
     }

@@ -199,6 +199,9 @@
          <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationWrapperDtoBeanProcessor" />
         </entry>
+        <entry key="eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.NameMatchingBeanProcessor" />
+        </entry>
       </map>
     </property>
     <property name="jsonPropertyFilter">
