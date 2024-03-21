@@ -32,6 +32,9 @@ public class WfoContentExportTransformer extends WfoExportTransformerBase {
         if (feature == null) {
             return null;
         }
+
+        //see also https://rs.gbif.org/vocabulary/gbif/description_type.xml
+
         if (feature.equals(Feature.DESCRIPTION())) {
             //general
             return "http://rs.gbif.org/vocabulary/gbif/descriptionType/general";
