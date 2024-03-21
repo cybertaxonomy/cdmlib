@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.XmlExportState;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -309,61 +310,79 @@ public class WfoContentExport
     }
 
     private void handleDescription(WfoContentExportState state, DescriptionElementBase deb, Taxon taxon) {
-        WfoContentExportTable table = WfoContentExportTable.DESCRIPTION;
-        //TODO i18n
-        List<Language> languages = new ArrayList<>();
-        languages.add(Language.ENGLISH());
-        languages.add(Language.FRENCH());
-        languages.add(Language.SPANISH_CASTILIAN());
-        languages.add(Language.GERMAN());
 
-        String[] csvLine = new String[table.getSize()];
-
-        //type
-        //TODO 1 description type
-
-        //description
-        String text = null;
-        if (deb instanceof TextData) {
-            TextData td = (TextData)deb;
-
+        try {
+            WfoContentExportTable table = WfoContentExportTable.DESCRIPTION;
             //TODO i18n
-            LanguageString ls = td.getPreferredLanguageString(languages, INCLUDE_UNPUBLISHED);
-            if (ls != null) {
-                text = ls.getText();
-                //language TODO
+            List<Language> languages = new ArrayList<>();
+            languages.add(Language.ENGLISH());
+            languages.add(Language.FRENCH());
+            languages.add(Language.SPANISH_CASTILIAN());
+            languages.add(Language.GERMAN());
+
+            String[] csvLine = new String[table.getSize()];
+
+            //TODO 3 description types still need fine-tuning
+            String type = getDescriptionTpe(state, deb);
+            if (type == null) {
+                return;
             }
-        } else if (deb instanceof CategoricalData) {
+
+            //description
+            String text = null;
+            if (deb instanceof TextData) {
+                TextData td = (TextData)deb;
+
+                //TODO i18n
+                LanguageString ls = td.getPreferredLanguageString(languages, INCLUDE_UNPUBLISHED);
+                if (ls != null) {
+                    text = ls.getText();
+                    //language TODO
+                }
+            } else if (deb instanceof CategoricalData) {
 //            DefaultCategoricalDescriptionBuilder builder = new DefaultCategoricalDescriptionBuilder();
 //            text = builder.build((CategoricalData)deb, languages);
-            //TODO which formatter to use
-            CategoricalDataFormatter formatter = CategoricalDataFormatter.NewInstance(null);
-            text = formatter.format(deb);
-        } else {
-            //TODO other types or only message?
+                //TODO which formatter to use
+                CategoricalDataFormatter formatter = CategoricalDataFormatter.NewInstance(null);
+                text = formatter.format(deb);
+            } else {
+                //TODO other types or only message?
+            }
+            csvLine[table.getIndex(WfoContentExportTable.DESC_DESCRIPTION)] = text;
+
+            //audience TODO
+            csvLine[table.getIndex(WfoContentExportTable.AUDIENCE)] = null;
+
+            //rights holder
+            handleRightsHolder(state, deb, csvLine, table, taxon);
+
+            //created TODO
+            handleCreated(state, deb, csvLine, table, taxon);
+
+            //creator
+            handleCreator(state, deb, csvLine, table, taxon);
+
+            //source
+            handleSource(state, deb, table);
+
+            //rights
+            handleRights(state, null, csvLine, table, taxon);
+
+            //license
+            handleLicense(state, null, csvLine, table, taxon);
+        } catch (Exception e) {
+            state.getResult().addException(e, "An unexpected error occurred when handling single description "
+                    + cdmBaseStr(deb) + ": " + e.getMessage());
         }
-        csvLine[table.getIndex(WfoContentExportTable.DESC_DESCRIPTION)] = text;
+    }
 
-        //audience TODO
-        csvLine[table.getIndex(WfoContentExportTable.AUDIENCE)] = null;
-
-        //rights holder
-        handleRightsHolder(state, deb, csvLine, table, taxon);
-
-        //created TODO
-        handleCreated(state, deb, csvLine, table, taxon);
-
-        //creator
-        handleCreator(state, deb, csvLine, table, taxon);
-
-        //source
-        handleSource(state, deb, table);
-
-        //rights
-        handleRights(state, null, csvLine, table, taxon);
-
-        //license
-        handleLicense(state, null, csvLine, table, taxon);
+    private String getDescriptionTpe(WfoContentExportState state, DescriptionElementBase deb) {
+        try {
+            return state.getTransformer().getCacheByFeature(deb.getFeature());
+        } catch (UndefinedTransformerMethodException e) {
+//            e.printStackTrace();
+            return null; //should not happen
+        }
     }
 
     private void handleCreator(WfoContentExportState state, DescriptionElementBase deb, String[] csvLine,
