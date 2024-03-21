@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author a.mueller
  * @since 09.09.2015
  */
-public class TaggedCacheHelper {
+public class TaggedTextFormatter {
 
     private static final TaggedText WHITESPACE_TAG = TaggedText.NewWhitespaceInstance();
 

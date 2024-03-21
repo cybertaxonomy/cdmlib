@@ -17,7 +17,7 @@ import javax.swing.text.html.HTML;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -123,6 +123,6 @@ public class CondensedDistribution {
     public String toString(){
         HTMLTagRules htmlTagRules = new HTMLTagRules();
         htmlTagRules.setIncludeSingleInstanceHtml(true);
-        return TaggedCacheHelper.createString(this.taggedText, htmlTagRules);
+        return TaggedTextFormatter.createString(this.taggedText, htmlTagRules);
     }
 }

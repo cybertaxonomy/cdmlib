@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -129,7 +129,7 @@ public class RegistrationWrapperDTO {
                 typeDesignationSetContainer = TypeDesignationSetContainer.NewDefaultInstance(reg.getTypeDesignations());
                 summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true, true, false)
                         .toTaggedText(typeDesignationSetContainer));
-                summary = TaggedCacheHelper.createString(summaryTaggedText);
+                summary = TaggedTextFormatter.createString(summaryTaggedText);
             } catch (TypeDesignationSetException e) {
                 validationProblems.add("Validation errors: " + e.getMessage());
             }

@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
@@ -236,7 +236,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         if (tags == null){
             return null;
         }else{
-            String result = TaggedCacheHelper.createString(tags, htmlTagRules);
+            String result = TaggedTextFormatter.createString(tags, htmlTagRules);
             return result;
         }
     }

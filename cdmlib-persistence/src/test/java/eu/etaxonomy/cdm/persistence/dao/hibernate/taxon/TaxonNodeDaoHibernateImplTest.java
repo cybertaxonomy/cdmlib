@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -221,7 +221,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Assert.assertEquals(Integer.valueOf(1), child.getTaxonomicChildrenCount());
         Assert.assertEquals(Integer.valueOf(1), child.getSortIndex());
         List<TaggedText> taggedTitle = child.getTaggedTitle();
-        Assert.assertEquals("Acherontia styx Westwood, 1847", TaggedCacheHelper.createString(taggedTitle));
+        Assert.assertEquals("Acherontia styx Westwood, 1847", TaggedTextFormatter.createString(taggedTitle));
         Assert.assertEquals("Acherontia", taggedTitle.get(0).getText());
 
         includeUnpublished = false;

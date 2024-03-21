@@ -15,7 +15,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
@@ -45,7 +45,7 @@ public class NameCacheStrategyTestBase extends TermTestBase {
 	protected String getStringValue(Method method, Object object,Object parameter){
 		try {
 			List<TaggedText> list = (List<TaggedText>)method.invoke(object, parameter);
-			return TaggedCacheHelper.createString(list);
+			return TaggedTextFormatter.createString(list);
 		} catch (IllegalArgumentException e) {
 			logger.error("IllegalArgumentException " + e.getMessage());
 			return null;

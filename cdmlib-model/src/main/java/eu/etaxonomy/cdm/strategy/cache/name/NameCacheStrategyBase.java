@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 
@@ -299,10 +299,10 @@ public abstract class NameCacheStrategyBase
     }
 
     protected String createString(List<TaggedText> tags) {
-        return TaggedCacheHelper.createString(tags);
+        return TaggedTextFormatter.createString(tags);
     }
 
     protected String createString(List<TaggedText> tags, HTMLTagRules htmlTagRules) {
-        return TaggedCacheHelper.createString(tags, htmlTagRules);
+        return TaggedTextFormatter.createString(tags, htmlTagRules);
     }
 }

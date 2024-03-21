@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -271,7 +271,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             List<TaggedText> nameCacheTags = taggedTitle.stream()
                     .filter(t->t.getType().isNameCachePart())
                     .collect(Collectors.toList());
-            return TaggedCacheHelper.createString(nameCacheTags, new HTMLTagRules());
+            return TaggedTextFormatter.createString(nameCacheTags, new HTMLTagRules());
         }
     }
 

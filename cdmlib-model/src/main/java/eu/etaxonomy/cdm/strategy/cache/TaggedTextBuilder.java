@@ -82,6 +82,6 @@ public class TaggedTextBuilder {
 
     @Override
     public String toString(){
-        return TaggedCacheHelper.createString(taggedText);
+        return TaggedTextFormatter.createString(taggedText);
     }
 }

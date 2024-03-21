@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
@@ -129,11 +129,11 @@ public class TypeDesignationSetFormatter {
     }
 
     public String format(TypeDesignationSetContainer manager){
-        return TaggedCacheHelper.createString(toTaggedText(manager));
+        return TaggedTextFormatter.createString(toTaggedText(manager));
     }
 
     public String format(TypeDesignationSetContainer manager, HTMLTagRules htmlTagRules){
-        return TaggedCacheHelper.createString(toTaggedText(manager), htmlTagRules);
+        return TaggedTextFormatter.createString(toTaggedText(manager), htmlTagRules);
     }
 
     public List<TaggedText> toTaggedText(TypeDesignationSetContainer manager){

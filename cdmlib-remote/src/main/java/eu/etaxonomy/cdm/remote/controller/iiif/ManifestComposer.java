@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
  * Factory class for creating iiif manifests.
@@ -448,7 +448,7 @@ public class ManifestComposer {
             List taggedTitle = ((TaxonBase)entity).getTaggedTitle();
             if(taggedTitle != null){
                 //FIXME taggedTitel to HTML!!!!
-                metadata.add(new MetadataEntry(entity.getClass().getSimpleName(), TaggedCacheHelper.createString(taggedTitle)));
+                metadata.add(new MetadataEntry(entity.getClass().getSimpleName(), TaggedTextFormatter.createString(taggedTitle)));
             }
         } else {
             String titleCache = entity.getTitleCache();
