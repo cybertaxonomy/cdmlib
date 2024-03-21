@@ -85,7 +85,7 @@ public enum WfoContentExportTable implements ITaxonTreeExportTable {
     static final String DIST_LOCALITY = "locality";
     static final String DIST_LOCATION_ID = "locationID";
     static final String DIST_COUNTRY_CODE = "countryCode";
-    static final String DIST_ESTABLISHMENT_MEANS = "";
+    static final String DIST_ESTABLISHMENT_MEANS = "establishmentMeans";
     static final String DIST_OCCURRENCE_REMARKS = "occurrenceRemarks";
 
 
