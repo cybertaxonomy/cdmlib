@@ -10,18 +10,19 @@ package eu.etaxonomy.cdm.api.service.portal;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IdentifiableDto;
+import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
-import eu.etaxonomy.cdm.api.service.dto.SourceDtoLoader;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
@@ -43,7 +44,7 @@ public class LazyDtoLoader {
     //not necessarily a map
     private Map<Class<DescriptionElementBase>,? extends FactDto> factProxies = new HashMap<>();
 
-    private Map<Class<OriginalSourceBase>,? extends FactDto> sourceProxies = new HashMap<>();
+    private Set<SourceDto> sourceProxies = new HashSet<>();
 
 
 
@@ -68,10 +69,10 @@ public class LazyDtoLoader {
         }
 
         //TODO clazz distinction needed here
-        for (Class<? extends CdmBase> clazz : sourceProxies.keySet()) {
-            SourceDtoLoader .INSTANCE().loadAll(sourcedProxies.get(clazz),
-                    clazz, dao, sourceTypes, this);
-        }
+//        for (Class<? extends CdmBase> clazz : sourceProxies) {
+            SourceDtoLoader.INSTANCE().loadAll(sourceProxies,
+                    dao, sourceTypes, this);
+//        }
 
 
     }

@@ -41,8 +41,8 @@ public class SourceDtoLoader {
     /**
      * DTOs must have id initialized
      */
-    public void loadAll(Set<SourceDto> dtos, Class baseClass, ICdmGenericDao commonDao,
-            EnumSet<OriginalSourceType> sourceTypes, LazyDtoLoader lazyLoader) {
+    public void loadAll(Set<SourceDto> dtos, ICdmGenericDao commonDao,
+            EnumSet<OriginalSourceType> sourceTypeFilter, LazyDtoLoader lazyLoader) {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
 
