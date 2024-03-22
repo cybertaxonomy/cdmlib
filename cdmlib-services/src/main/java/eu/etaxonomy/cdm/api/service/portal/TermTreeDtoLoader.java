@@ -130,9 +130,9 @@ public class TermTreeDtoLoader {
         //TODO i18n
         //TODO since adding he marker type stuff, maybe an N+1 issue?, need to check
         String hql = " SELECT new map (t.uuid as termUuid, t.id as termId, t.titleCache as termLabel, "
-                +    "    t.level.uuid as levelUuid, "
+                +    "    l.uuid as levelUuid, "
                 +    "    t.partOf.id as parentId, m.markerType.uuid as markerUuid) "
-                   + " FROM DefinedTermBase t LEFT OUTER JOIN t.markers m with m.flag = true "
+                   + " FROM DefinedTermBase t LEFT OUTER JOIN t.level l LEFT OUTER JOIN t.markers m with m.flag = true "
                    + "      LEFT OUTER JOIN m.markerType mt "
                    + " WHERE t.vocabulary.uuid in ?1 "
                    + " ORDER BY t.id "
