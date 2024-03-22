@@ -140,7 +140,7 @@ public class DistributionServiceImpl implements IDistributionService {
         diConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes);
         diConfig.setStatusOrderPreference(statusOrderPreference);
         diConfig.setInfoParts(EnumSet.of(InfoPart.condensedDistribution));
-        DistributionInfoDto distInfo = new DistributionInfoBuilder(langs, commonService).build(null, distributions, areaTree, statusTree, null, areaMapping);
+        DistributionInfoDto distInfo = new DistributionInfoBuilder(langs, commonService).build(diConfig, distributions, areaTree, statusTree, null, areaMapping);
         return distInfo.getCondensedDistribution();
 
 //        Collection<DistributionTmpDto> filteredDistributions = DistributionServiceUtilities.filterDistributions(

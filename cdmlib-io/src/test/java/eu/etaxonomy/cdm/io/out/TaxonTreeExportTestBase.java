@@ -190,6 +190,9 @@ public abstract class TaxonTreeExportTestBase
     }
 
     protected void testExceptionsErrorsWarnings(ExportResult result, int exceptions, int errors,int warnings) {
+        if (result.getExceptions().size() > 0 && exceptions == 0) {
+            result.getExceptions().iterator().next().getException().printStackTrace();
+        }
         Assert.assertEquals("The number of exceptions differs from the expected number of exceptions",
                 exceptions, result.getExceptions().size());
         Assert.assertEquals("The number of errors differs from the expected number of errors",

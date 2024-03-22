@@ -35,7 +35,7 @@ public class DistributionInfoConfiguration {
 
     private String statusColorsString;
 
-    private DistributionOrder distributionOrder = DistributionOrder.LABEL;
+    private DistributionOrder distributionOrder = getDefaultDistributionOrder();
 
     private Set<UUID> features = new HashSet<>();
 
@@ -45,8 +45,7 @@ public class DistributionInfoConfiguration {
 
     private CondensedDistributionConfiguration condensedDistrConfig = CondensedDistributionConfiguration.NewDefaultInstance();
 
-    private EnumSet<InfoPart> infoParts = EnumSet.of(
-            InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
+    private EnumSet<InfoPart> infoParts = getDefaultInfoParts();
 
     private boolean includeUnpublished = false;
 
@@ -57,6 +56,7 @@ public class DistributionInfoConfiguration {
     public boolean isPreferSubareas() {
         return preferSubAreas;
     }
+
     public void setPreferSubAreas(boolean preferSubAreas) {
         this.preferSubAreas = preferSubAreas;
     }
@@ -72,21 +72,21 @@ public class DistributionInfoConfiguration {
         return fallbackAreaMarkerTypes;
     }
     public void setFallbackAreaMarkerTypes(Set<MarkerType>fallbackAreaMarkerTypes) {
-        this.fallbackAreaMarkerTypes = fallbackAreaMarkerTypes;
+        this.fallbackAreaMarkerTypes = fallbackAreaMarkerTypes == null? new HashSet<>() : fallbackAreaMarkerTypes;
     }
 
     public Set<MarkerType> getAlternativeRootAreaMarkerTypes() {
         return alternativeRootAreaMarkerTypes;
     }
     public void setAlternativeRootAreaMarkerTypes(Set<MarkerType> alternativeRootAreaMarkerTypes) {
-        this.alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypes;
+        this.alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypes == null? new HashSet<>() : alternativeRootAreaMarkerTypes;
     }
 
     public Set<NamedAreaLevel> getOmitLevels() {
         return omitLevels;
     }
     public void setOmitLevels(Set<NamedAreaLevel> omitLevels) {
-        this.omitLevels = omitLevels;
+        this.omitLevels = omitLevels == null? new HashSet<>() : omitLevels;
     }
 
     public String getStatusColorsString() {
@@ -100,28 +100,34 @@ public class DistributionInfoConfiguration {
         return distributionOrder;
     }
     public void setDistributionOrder(DistributionOrder distributionOrder) {
-        this.distributionOrder = distributionOrder;
+        this.distributionOrder = distributionOrder == null? getDefaultDistributionOrder() : distributionOrder;
+    }
+    private DistributionOrder getDefaultDistributionOrder() {
+        return DistributionOrder.LABEL;
     }
 
     public EnumSet<InfoPart> getInfoParts() {
         return infoParts;
     }
     public void setInfoParts(EnumSet<InfoPart> infoParts) {
-        this.infoParts = infoParts;
+        this.infoParts = infoParts == null ? getDefaultInfoParts() : infoParts;
+    }
+    private EnumSet<InfoPart> getDefaultInfoParts() {
+        return EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
     }
 
     public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {
         return condensedDistrConfig;
     }
     public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistrConfig) {
-        this.condensedDistrConfig = condensedDistrConfig;
+        this.condensedDistrConfig = condensedDistrConfig == null ? CondensedDistributionConfiguration.NewDefaultInstance() : condensedDistrConfig;
     }
 
     public Set<UUID> getFeatures() {
         return features;
     }
     public void setFeatures(Set<UUID> features) {
-        this.features = features;
+        this.features = features == null? new HashSet<>() : features;
     }
 
     public UUID getAreaTree() {
