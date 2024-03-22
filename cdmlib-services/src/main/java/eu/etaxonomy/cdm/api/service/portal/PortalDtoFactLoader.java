@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermDto;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilder;
 import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
+import eu.etaxonomy.cdm.api.service.geo.IGeoServiceAreaMapping;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
@@ -147,11 +148,15 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 
     private TaxonPageDto pageDto;
 
+    private IGeoServiceAreaMapping areaMapping;
+
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    public PortalDtoFactLoader(ICdmRepository repository, ICdmGenericDao dao) {
+    public PortalDtoFactLoader(ICdmRepository repository, ICdmGenericDao dao,
+            IGeoServiceAreaMapping areaMapping) {
         super(repository, dao);
+        this.areaMapping = areaMapping;
     }
 
     void loadTaxonFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
@@ -321,8 +326,8 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         DistributionInfoDto dto = new DistributionInfoBuilder(LocaleContext.getLanguages(), repository.getCommonService())
                 .buildFromDto(distributionConfig,
                     distributions,
-                    null, null,
-                    distributionStatusColors, null);
+                    null, null,   //TODO areaTree and statusTree ??
+                    distributionStatusColors, areaMapping);
 
         //should not be necessary anymore as distribution data is now loaded directly in DistributionServiceImpl
         //by calling PortalDtoLoader.loadBaseData() directly

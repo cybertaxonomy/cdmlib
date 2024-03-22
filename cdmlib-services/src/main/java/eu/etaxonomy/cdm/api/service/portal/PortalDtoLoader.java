@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.dto.DtoUtil;
+import eu.etaxonomy.cdm.api.service.geo.IGeoServiceAreaMapping;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -97,13 +98,14 @@ public class PortalDtoLoader extends PortalDtoLoaderBase {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    private PortalDtoFactLoader factLoader;
+    private PortalDtoFactLoader_Old factLoader;
 
-    public PortalDtoLoader(ICdmRepository repository, ICdmGenericDao dao) {
+    public PortalDtoLoader(ICdmRepository repository, ICdmGenericDao dao, IGeoServiceAreaMapping areaMapping) {
         super(repository, dao);
-        this.factLoader = new PortalDtoFactLoader(repository, dao);
+        this.factLoader = new PortalDtoFactLoader_Old(repository, dao, areaMapping);
     }
 
+    //TODO can we handle the area mapping better?
     public TaxonPageDto load(Taxon taxon, TaxonPageDtoConfiguration config) {
         TaxonPageDto result = new TaxonPageDto();
 

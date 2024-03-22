@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.service.geo.IGeoServiceAreaMapping;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 public class PortalDtoServiceImpl implements IPortalDtoService {
 
     @Autowired
-    private ICdmGenericDao dao;
+    private ICdmGenericDao genericDao;
 
     @Autowired
     private ITaxonDao taxonDao;
@@ -41,10 +42,13 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
     @Qualifier("cdmRepository")
     private ICdmRepository repository;
 
+    @Autowired
+    private IGeoServiceAreaMapping areaMapping;
+
     @Override
     public TaxonPageDto taxonPageDto(TaxonPageDtoConfiguration config) {
 
-        PortalDtoLoader loader = new PortalDtoLoader(repository, dao);
+        PortalDtoLoader loader = new PortalDtoLoader(repository, genericDao, areaMapping);
         Taxon taxon = (Taxon)taxonDao.load(config.getTaxonUuid());
         TaxonPageDto dto = null;
         try {
@@ -67,7 +71,7 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
                 + " FROM Taxon t JOIN t.name as n "
                 + " WHERE t.uuid = :uuid ";
         //TODO singleResult
-        List<Object[]> hqlResult = dao.getHqlResult(taxonHql, new Object[] {config.getTaxonUuid()}, Object[].class);
+        List<Object[]> hqlResult = genericDao.getHqlResult(taxonHql, new Object[] {config.getTaxonUuid()}, Object[].class);
         dto.setId((int)hqlResult.get(0)[0]);
         dto.setUuid((UUID)hqlResult.get(0)[1]);
         dto.setLabel((String)hqlResult.get(0)[2]);
@@ -85,7 +89,7 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
                 + "    n.titleCache as nameLabel, n.homotypicalGroup.uuid "
                 + " FROM Synonym s JOIN s.acceptedTaxon t JOIN s.name as n "
                 + " WHERE t.uuid = :uuid ";
-        List<Object[]> sysnonymsResult = dao.getHqlResult(synonymsHql, new Object[] {config.getTaxonUuid()}, Object[].class);
+        List<Object[]> sysnonymsResult = genericDao.getHqlResult(synonymsHql, new Object[] {config.getTaxonUuid()}, Object[].class);
 
         //facts
 
