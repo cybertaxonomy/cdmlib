@@ -39,9 +39,9 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
@@ -69,6 +69,8 @@ public class TypeDesignationSetFormatter {
     private boolean withPrecedingMainType = true;
     private boolean withAccessionNoType = false;
     private boolean ignoreSyntypesWithLectotype = false;
+
+    private TypeDesignationStatusComparator statusComparator = new TypeDesignationStatusComparator<>();
 
     public static String entityLabel(VersionableEntity baseEntity) {
         String label = "";
@@ -193,8 +195,7 @@ public class TypeDesignationSetFormatter {
 
         //TODO why is typeDesingationSet not a list
         List<TypeDesignationStatusBase> statusList = new ArrayList<>(typeDesignationSet.keySet());
-        //TODO single instance
-        statusList.sort(new TypeDesignationStatusComparator<>());
+        statusList.sort(statusComparator);
 
         boolean hasPrecedingStatusLabel = withPrecedingMainType && !statusList.isEmpty();
         if (hasPrecedingStatusLabel){
