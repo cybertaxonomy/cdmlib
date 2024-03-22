@@ -351,12 +351,12 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
                 distributions.stream().map(d->new DistributionInfoBuilder(null,null)
                         .toDistributionDto(d)).collect(Collectors.toSet());
 
-        Set<DistributionDto> result = new DistributionInfoBuilder(null, commonService).filterDistributions(
-                dists, areaTreeDto,
-                statusTreeDto, hideMarkerAreaTypeUuids, preferAggregated,
-                useStatusOrderPreference, doSubAreaPreference,
-                keepFallBackOnlyIfNoSubareaDataExists,
-                area2TermNodesMap, area2ParentAreaMap);
+        Set<DistributionDto> result = new DistributionInfoBuilder(null, commonService)
+                .filterDistributions(dists, areaTreeDto,
+                    statusTreeDto, hideMarkerAreaTypeUuids, preferAggregated,
+                    useStatusOrderPreference, doSubAreaPreference,
+                    keepFallBackOnlyIfNoSubareaDataExists,
+                    area2TermNodesMap, area2ParentAreaMap);
         return result;
     }
 

@@ -128,7 +128,7 @@ public class TermTreeDtoLoader {
             Set<UUID> vocabularyUuids) {
 
         //TODO i18n
-        //TODO since adding he marker type stuff, maybe an N+1 issue?, need to check
+        //TODO since adding the marker type stuff, maybe an N+1 issue?, need to check  (did I miss to say ... this is slow?)
         String hql = " SELECT new map (t.uuid as termUuid, t.id as termId, t.titleCache as termLabel, "
                 +    "    l.uuid as levelUuid, "
                 +    "    t.partOf.id as parentId, m.markerType.uuid as markerUuid) "
