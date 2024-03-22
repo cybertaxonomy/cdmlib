@@ -436,7 +436,7 @@ public class PortalDtoFactLoader_Old extends PortalDtoLoaderBase {
         TermTree<NamedArea> areaTree = repository.getTermTreeService().find(areaTreeUuid);
         UUID statusTreeUuid = distributionConfig.getAreaTree();
         @SuppressWarnings("unchecked")
-        TermTree<PresenceAbsenceTerm> statusTree = repository.getTermTreeService().find(areaTreeUuid);
+        TermTree<PresenceAbsenceTerm> statusTree = repository.getTermTreeService().find(statusTreeUuid);
 
         DistributionInfoDto dto = new DistributionInfoBuilder(LocaleContext.getLanguages(), repository.getCommonService())
             .build(distributionConfig, distributions, areaTree, statusTree, distributionStatusColors,

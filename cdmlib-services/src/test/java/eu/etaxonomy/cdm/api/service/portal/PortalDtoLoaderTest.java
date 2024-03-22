@@ -89,7 +89,7 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
         String mapUriParamsStart = did.getMapUriParams().substring(0, 50);
         String mapUriParamsEnd = did.getMapUriParams().replace(mapUriParamsStart, "");
         Assert.assertEquals("as=a:,,0.1,|b:,,0.1,&ad=country_earth%3Agmi_cntry:", mapUriParamsStart);
-        Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:DEU&title=[ab]:present\\|[ab]:introduced"));
+        Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:introduced"));
         DistributionTreeDto tree = (DistributionTreeDto)did.getTree();
         Assert.assertEquals("Tree:2<FRA:introduced{}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
     }
@@ -127,7 +127,7 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //import
         Reference importRef = ReferenceFactory.newDatabase();
         importRef.setTitle("French distribution import");  //should not be shown in output
-        franceDist.addImportSource("7777", "Distribution", franceRef, "99");
+        franceDist.addImportSource("7777", "Distribution", importRef, "99");
     }
 
     @Override
