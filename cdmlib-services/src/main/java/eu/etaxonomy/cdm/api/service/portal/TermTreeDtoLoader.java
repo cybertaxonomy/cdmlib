@@ -130,6 +130,7 @@ public class TermTreeDtoLoader {
         //TODO i18n
         //TODO since adding he marker type stuff, maybe an N+1 issue?, need to check
         String hql = " SELECT new map (t.uuid as termUuid, t.id as termId, t.titleCache as termLabel, "
+                +    "    t.level.uuid as levelUuid, "
                 +    "    t.partOf.id as parentId, m.markerType.uuid as markerUuid) "
                    + " FROM DefinedTermBase t LEFT OUTER JOIN t.markers m with m.flag = true "
                    + "      LEFT OUTER JOIN m.markerType mt "
@@ -170,6 +171,7 @@ public class TermTreeDtoLoader {
             Integer termId = (Integer)e.get("termId");
             UUID markerUuid = (UUID)e.get("markerUuid");
             if (lastAreaDto != null && termId.equals(lastTermId)) {
+                //"workaround" for handling multiple markers
                 lastAreaDto.addMarker(markerUuid);
             }else {
                 UUID termUuid = (UUID)e.get("termUuid");
@@ -178,6 +180,7 @@ public class TermTreeDtoLoader {
                 TermNodeDto nodeDto = new TermNodeDto(UUID.randomUUID(), null, termLabel, null);
                 //TODO or should we directly add the marker to the node, instead of adding it to the area?
                 areaDto.addMarker(markerUuid);
+                areaDto.setLevelUuid((UUID)e.get("levelUuid"));
                 nodeDto.setTerm(areaDto);
                 termId2NodeMap.put(termId, nodeDto);
                 lastTermId = termId;
