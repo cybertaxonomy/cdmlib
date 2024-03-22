@@ -91,7 +91,7 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("as=a:,,0.1,|b:,,0.1,&ad=country_earth%3Agmi_cntry:", mapUriParamsStart);
         Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:introduced"));
         DistributionTreeDto tree = (DistributionTreeDto)did.getTree();
-        Assert.assertEquals("Tree:2<FRA:introduced{}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        Assert.assertEquals("Tree:2<FRA:introduced{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
     }
 
     private void createTestData() {

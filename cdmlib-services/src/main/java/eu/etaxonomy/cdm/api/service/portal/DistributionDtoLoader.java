@@ -8,10 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service.portal;
 
+import java.util.EnumSet;
+
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
@@ -43,8 +46,14 @@ public class DistributionDtoLoader {
         //copied from PortalDtoLoader
         SourcedDto sourcedDto = dto;
         for (OriginalSourceBase source : entity.getSources()) {
-            SourceDto sourceDto = PortalDtoLoaderBase.makeSource(source);
-            sourcedDto.addSource(sourceDto);
+            if (source.getType().isPrimarySource()) {
+                SourceDto sourceDto = PortalDtoLoaderBase.makeSource(source);
+                sourcedDto.addSource(sourceDto);
+            }
         }
+
+        dto.setTimeperiod(entity.getTimeperiod() == null ? null : entity.getTimeperiod().toString());
+        dto.setDescriptionType(entity.getInDescription() == null? EnumSet.noneOf(DescriptionType.class)
+                : entity.getInDescription().getTypes());
     }
 }

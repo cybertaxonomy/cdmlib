@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.api.dto.portal.tmp.TermDto;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermNodeDto;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermTreeDto;
 import eu.etaxonomy.cdm.api.service.ICommonService;
-import eu.etaxonomy.cdm.api.service.portal.TermDtoLoader;
+import eu.etaxonomy.cdm.api.service.portal.DistributionDtoLoader;
 import eu.etaxonomy.cdm.api.service.portal.TermTreeDtoLoader;
 import eu.etaxonomy.cdm.api.service.portal.format.CondensedDistributionComposer;
 import eu.etaxonomy.cdm.common.SetMap;
@@ -93,13 +93,8 @@ public class DistributionInfoBuilder {
 
     //TODO shouldn't we use the loader instead?
     DistributionDto toDistributionDto(Distribution distribution) {
-        DistributionDto dto = new DistributionDto(distribution.getUuid(), distribution.getId(),
-                TermDtoLoader.INSTANCE().fromEntity(distribution.getArea()),
-                TermDtoLoader.INSTANCE().fromEntity(distribution.getStatus())
-                );
-        dto.setTimeperiod(distribution.getTimeperiod() == null ? null : distribution.getTimeperiod().toString());
-        dto.setDescriptionType(distribution.getInDescription() == null? EnumSet.noneOf(DescriptionType.class)
-                : distribution.getInDescription().getTypes());
+
+        DistributionDto dto = DistributionDtoLoader.INSTANCE().fromEntity(distribution);
         return dto;
     }
 
