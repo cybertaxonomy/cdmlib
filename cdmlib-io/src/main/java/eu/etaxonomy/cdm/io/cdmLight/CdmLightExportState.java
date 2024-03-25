@@ -177,4 +177,31 @@ public class CdmLightExportState
     protected void setNameStore(Map<Integer, UUID> nameStore) {
         this.nameStore = nameStore;
     }
+
+    /**
+     * Increments the counter for the short citation.<BR>
+     * As a short citation may not be unique and therefore
+     * a counter needs to be added to it to make it unique.<BR>
+     *
+     * For Miller (1977) you may have also Miller (1977a),
+     * Miller (1977b), etc.
+     */
+    public String incrementShortCitation(String shortCitation) {
+        Integer counter = shortCitationCounter.get(shortCitation);
+        if (counter == null) {
+            counter = 0;
+        }
+        shortCitationCounter.put(shortCitation, counter + 1);
+        return counterToString(counter);
+    }
+
+    private String counterToString(Integer counter) {
+        if (counter == 0) {
+            return "";
+        }else {
+            return Character.toString((char)('a'+counter - 1));
+        }
+    }
+
+    private Map<String,Integer> shortCitationCounter = new HashMap<>();
 }

@@ -2451,6 +2451,12 @@ public class CdmLightClassificationExport
             // TODO short citations correctly
             String shortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null); // Should be Author(year) like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
+            csvLine[table.getIndex(CdmLightExportTable.BIBLIO_LONG_CITATION)] = reference.getTitleCache();
+            String uniqueString = state.incrementShortCitation(shortCitation);
+            String uniqueShortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null, null, uniqueString);
+            csvLine[table.getIndex(CdmLightExportTable.UNIQUE_SHORT_CITATION)] = shortCitation;
+
+
             // TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.isProtectedTitleCache()
                     ? reference.getTitleCache() : reference.getTitle();
@@ -2494,6 +2500,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.URI)] = reference.getUri().toString();
             }
             csvLine[table.getIndex(CdmLightExportTable.REF_TYPE)] = reference.getType().getKey();
+
 
             state.getProcessor().put(table, reference, csvLine);
         } catch (Exception e) {

@@ -81,6 +81,8 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     //Reference
     static final String REFERENCE_ID = "Reference_ID";
     static final String BIBLIO_SHORT_CITATION = "BibliographicShortCitation";
+    static final String BIBLIO_LONG_CITATION = "BibliographicLongCitation";
+    static final String UNIQUE_SHORT_CITATION = "UniqueShortCitation";
     static final String REF_TITLE = "Title";
     static final String ABBREV_REF_TITLE = "AbbrevTitle";
     static final String DATE_PUBLISHED = "DatePublished";
@@ -367,7 +369,7 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
 
     private final static String[] referenceColumns(){
         return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
-                REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, AUTHOR_FK, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI};
+                REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, AUTHOR_FK, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI, BIBLIO_LONG_CITATION, UNIQUE_SHORT_CITATION};
     }
 
     private final static String[] typeDesignationColumns(){

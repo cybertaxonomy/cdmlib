@@ -73,16 +73,20 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
      * @param citationDetail the microreference (page, figure, etc.), if <code>null</code> also the colon separator is not used
      */
     public String format(Reference reference, String microReference){
-        return format(reference, microReference, null);
+        return format(reference, microReference, null, null);
     }
 
     public String format(Reference reference, String microReference, TimePeriod accessed){
+        return format(reference, microReference, accessed, null);
+    }
+
+    public String format(Reference reference, String microReference, TimePeriod accessed, String uniqueString){
         if (reference == null){
             return null;
         }
 
         if(reference.isProtectedTitleCache()){
-            return handleCitationDetailInTitleCache(reference, microReference, accessed);
+            return handleCitationDetailInTitleCache(reference, microReference, accessed, uniqueString);
         }
 
         if (longForm) {
@@ -91,7 +95,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         TeamOrPersonBase<?> authorship = reference.getAuthorship();
         String authorStr = "";
         if (authorship == null) {
-            return handleCitationDetailInTitleCache(reference, microReference, accessed);
+            return handleCitationDetailInTitleCache(reference, microReference, accessed, uniqueString);
         }
         authorship = CdmBase.deproxy(authorship);
         if (authorship instanceof Person){
@@ -106,7 +110,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
                 authorStr = TeamDefaultCacheStrategy.INSTANCE_ET_AL_2().getFamilyTitle(team);
             }
         }
-        String result = CdmUtils.concat(" ", authorStr, getShortCitationDateAndDetail(reference, microReference, accessed));
+        String result = CdmUtils.concat(" ", authorStr, getShortCitationDateAndDetail(reference, microReference, accessed, uniqueString));
 
         return result;
     }
@@ -145,8 +149,9 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
     }
 
-    private String getShortCitationDateAndDetail(Reference reference, String microReference, TimePeriod accessed) {
+    private String getShortCitationDateAndDetail(Reference reference, String microReference, TimePeriod accessed, String uniqueString) {
         String dateStr = getDateString(reference, accessed);
+        dateStr = CdmUtils.concat("", dateStr, uniqueString);
         return getShortTimePeriodAndDetail(dateStr, microReference, withYearBrackets);
     }
 
@@ -204,7 +209,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
      * it is concatenated with separator ":"
      * @return the concatenated string
      */
-    private String handleCitationDetailInTitleCache(Reference reference, String citationDetail, TimePeriod accessed) {
+    private String handleCitationDetailInTitleCache(Reference reference, String citationDetail, TimePeriod accessed, String uniqueString) {
         String titleCache = reference.getTitleCache();
 
         //remove reference.accessed
@@ -229,7 +234,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
             return titleCache;
         }
         if (isBlank(titleCache)){
-            return getShortCitationDateAndDetail(reference, citationDetail, accessed);
+            return getShortCitationDateAndDetail(reference, citationDetail, accessed, uniqueString);
         }
 
         //is citationDetail included in titleCache?
@@ -252,7 +257,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
             }
         }
 
-        String dateAndDetail = getShortCitationDateAndDetail(reference, citationDetail, accessed);
+        String dateAndDetail = getShortCitationDateAndDetail(reference, citationDetail, accessed, uniqueString);
         String result = titleCache + (dateAndDetail.startsWith(":")? "": " ") + dateAndDetail;
         return result.trim();
     }
