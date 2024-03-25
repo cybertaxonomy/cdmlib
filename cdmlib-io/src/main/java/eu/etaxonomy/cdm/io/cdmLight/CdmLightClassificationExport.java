@@ -1143,7 +1143,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.FULL_NAME_WITH_REF)] = name.getFullTitleCache();
             } else {
                 List<TaggedText> taggedFullTitleCache = name.getTaggedFullTitle();
-                List<TaggedText> taggedName = name.getTaggedName();
+//                List<TaggedText> taggedName = name.getTaggedName();
 
                 String fullTitleWithHtml = createNameWithItalics(taggedFullTitleCache);
                 // TODO: adapt the tropicos titlecache creation
@@ -1197,7 +1197,8 @@ public class CdmLightClassificationExport
             NomenclaturalSource nomenclaturalSource = name.getNomenclaturalSource();
             if (nomenclaturalSource != null &&nomenclaturalSource.getNameUsedInSource() != null){
                 handleName(state, nomenclaturalSource.getNameUsedInSource(), null);
-                csvLine[table.getIndex(CdmLightExportTable.NAME_USED_IN_SOURCE_FK)] = getId(state, nomenclaturalSource.getNameUsedInSource());
+                csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING_FK)] = getId(state, nomenclaturalSource.getNameUsedInSource());
+                csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING)] = nomenclaturalSource.getNameUsedInSource().getTitleCache();
             }
 
             if (nomRef != null) {
