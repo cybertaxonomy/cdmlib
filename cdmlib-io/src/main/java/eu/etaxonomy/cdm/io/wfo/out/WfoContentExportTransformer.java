@@ -36,12 +36,16 @@ public class WfoContentExportTransformer extends WfoExportTransformerBase {
         //see also https://rs.gbif.org/vocabulary/gbif/description_type.xml
 
         if (feature.equals(Feature.DESCRIPTION())) {
+//      } else if (feature.equals(Feature.MORPHOLOGY())) {  //morphology does not yet exist as feature in CDM
             //general
-            return "http://rs.gbif.org/vocabulary/gbif/descriptionType/general";
+            return "http://rs.gbif.org/vocabulary/gbif/descriptionType/morphology";
         } else if (feature.equals(Feature.DIAGNOSIS())) {
             //diagnostic
             return "http://rs.gbif.org/vocabulary/gbif/descriptionType/diagnostic";
-//        } else if (feature.equals(Feature.MORPHOLOGY())) {
+        } else if (feature.equals(Feature.NOTES())) {
+            //general
+            return "http://rs.gbif.org/vocabulary/gbif/descriptionType/general";
+//        } else if (feature.equals(Feature.MORPHOLOGY())) {  //mor
 //            //morphology
 //            return "http://rs.gbif.org/vocabulary/gbif/descriptionType/morphology";
 //        } else if (feature.equals(Feature.HABIT())) {
@@ -129,9 +133,9 @@ public class WfoContentExportTransformer extends WfoExportTransformerBase {
 //        }else if (feature.equals(Feature.hybrids())) {
 //            //hybrids
 //            return "http://rs.gbif.org/vocabulary/gbif/descriptionType/hybrids";
-//        }else if (feature.equals(Feature.literature())) {
-//            //literature
-//            return "http://rs.gbif.org/vocabulary/gbif/descriptionType/literature";
+        }else if (feature.equals(Feature.CITATION())) {
+            //literature
+            return "http://rs.gbif.org/vocabulary/gbif/descriptionType/literature";
 //        }else if (feature.equals(Feature.culture())) {
 //            //culture
 //            return "http://rs.gbif.org/vocabulary/gbif/descriptionType/culture";
