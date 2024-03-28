@@ -467,9 +467,9 @@ public class PortalDtoLoader extends PortalDtoLoaderBase {
             TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
         TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter();
-        Set<TypeDesignationBase<?>> desigs = homotypicalGroup.getTypeDesignations();
+        Set<TypeDesignationBase<?>> designations = homotypicalGroup.getTypeDesignations();
         try {
-            TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance((Set)desigs);
+            TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance((Set)designations);
             List<TaggedText> tags = formatter.toTaggedText(manager);
             String label = TaggedTextFormatter.createString(tags);
             hgDto.setTypes(label);

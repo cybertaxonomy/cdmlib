@@ -21,6 +21,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import eu.etaxonomy.cdm.api.dto.RegistrationDTO.RankedNameReference;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator.ORDER_BY;
@@ -44,11 +47,13 @@ import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
 /**
- * Container for or collection of {@link TypeDesignationBase type designations} for the same typified name.
+ * Container for or collection of {@link TypeDesignationBase type designations} for a single typified name.
  *
- * Type designations are ordered by the base type which is a {@link TaxonName} for {@link NameTypeDesignation name type designations} or
- * a {@link FieldUnit} in case of {@link SpecimenTypeDesignation specimen type designations}. The type designations per base type are
- * furthermore ordered by the {@link TypeDesignationStatusBase} (or a {@link DerivedUnit} if the field unit is missing).
+ * Type designations are ordered by the base type which is a {@link TaxonName} for
+ * {@link NameTypeDesignation name type designations} or a {@link FieldUnit} in case of
+ * {@link SpecimenTypeDesignation specimen type designations} (or a {@link DerivedUnit} if the
+ * field unit is missing). <BR>
+ * The type designations per base type are furthermore ordered by the {@link TypeDesignationStatusBase type designation status}.
  * <BR>
  * All type designations belonging to one base type are handled in a {@link TypeDesignationSet}.
  * <BR>
@@ -58,6 +63,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
  * @since Mar 10, 2017
  */
 public class TypeDesignationSetContainer {
+
+    private static final Logger logger = LogManager.getLogger();
 
     //currently not really in use
     enum NameTypeBaseEntityType{
@@ -84,12 +91,14 @@ public class TypeDesignationSetContainer {
 
 // **************************** FACTORY ***************************************/
 
-    public static TypeDesignationSetContainer NewDefaultInstance(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
+    public static TypeDesignationSetContainer NewDefaultInstance(
+            @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
             throws TypeDesignationSetException{
-        return new TypeDesignationSetContainer(typeDesignations);
+        return new TypeDesignationSetContainer(typeDesignations, null, null);
     }
 
-    public static TypeDesignationSetContainer NewInstance(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
+    public static TypeDesignationSetContainer NewInstance(
+            @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
             TypeDesignationSetComparator.ORDER_BY orderBy)
             throws TypeDesignationSetException{
         TypeDesignationSetContainer result = new TypeDesignationSetContainer(typeDesignations, null, orderBy);
@@ -98,19 +107,15 @@ public class TypeDesignationSetContainer {
 
 // **************************** CONSTRUCTOR ***********************************/
 
-    private TypeDesignationSetContainer(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
-            throws TypeDesignationSetException{
-    	this(typeDesignations, null, null);
-    }
-
-    public TypeDesignationSetContainer(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
-            TaxonName typifiedName, ORDER_BY orderBy)
-            throws TypeDesignationSetException  {
+    public TypeDesignationSetContainer(
+            @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
+            TaxonName typifiedName,
+            ORDER_BY orderBy) throws TypeDesignationSetException  {
 
         if (orderBy != null) {
             typeDesignationSetComparator = new TypeDesignationSetComparator(orderBy);
         }
-        for (TypeDesignationBase<?> typeDes:typeDesignations){
+        for (TypeDesignationBase<?> typeDes: typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
         try {
@@ -244,7 +249,7 @@ public class TypeDesignationSetContainer {
             }
         }
         if(baseEntity == null) {
-            throw new DataIntegrityException("Incomplete TypeDesignation, no type missin in " + td.toString());
+            throw new DataIntegrityException("Incomplete TypeDesignation, no type (specimen or name) found in " + td.toString());
         }
         return baseEntity;
     }

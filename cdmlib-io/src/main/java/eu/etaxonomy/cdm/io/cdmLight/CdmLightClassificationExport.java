@@ -1301,7 +1301,7 @@ public class CdmLightClassificationExport
             String protologueUriString = extractProtologueURIs(state, name);
 
             csvLine[table.getIndex(CdmLightExportTable.PROTOLOGUE_URI)] = protologueUriString;
-            Collection<TypeDesignationBase> specimenTypeDesignations = new ArrayList<>();
+            Collection<TypeDesignationBase> nonTextualTypeDesignations = new ArrayList<>();
             List<TextualTypeDesignation> textualTypeDesignations = new ArrayList<>();
             for (TypeDesignationBase<?> typeDesignation : name.getTypeDesignations()) {
                 if (typeDesignation.isInstanceOf(TextualTypeDesignation.class)) {
@@ -1327,15 +1327,15 @@ public class CdmLightClassificationExport
                     }
                 } else if (typeDesignation.isInstanceOf(SpecimenTypeDesignation.class)) {
                     SpecimenTypeDesignation specimenType = HibernateProxyHelper.deproxy(typeDesignation, SpecimenTypeDesignation.class);
-                    specimenTypeDesignations.add(specimenType);
+                    nonTextualTypeDesignations.add(specimenType);
                     handleSpecimenType(state, specimenType);
-
-
                 }else if (typeDesignation instanceof NameTypeDesignation){
-                    specimenTypeDesignations.add(HibernateProxyHelper.deproxy(typeDesignation, NameTypeDesignation.class));
+                    NameTypeDesignation nameTypeDesignation = CdmBase.deproxy(typeDesignation, NameTypeDesignation.class);
+                    nonTextualTypeDesignations.add(nameTypeDesignation);
                 }
             }
-            TypeDesignationSetContainer manager = new TypeDesignationSetContainer(specimenTypeDesignations, name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
+            TypeDesignationSetContainer manager = new TypeDesignationSetContainer(nonTextualTypeDesignations,
+                    name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
             //TODO params
