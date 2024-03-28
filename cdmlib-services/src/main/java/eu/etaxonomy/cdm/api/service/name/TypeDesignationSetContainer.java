@@ -119,9 +119,11 @@ public class TypeDesignationSetContainer {
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
         try {
-        	findTypifiedName();
-        }catch (TypeDesignationSetException e) {
         	if (typifiedName == null) {
+        	    findTypifiedName();
+        	}
+        }catch (TypeDesignationSetException e) {
+        	if (this.typifiedName == null) {
         		throw e;
         	}
         	this.typifiedName = typifiedName;
@@ -317,8 +319,14 @@ public class TypeDesignationSetContainer {
             }
             if(typifiedNames.size() > 1){
                 //TODO instead throw RegistrationValidationException()
-                problems.add("Multiple typified names in type designation '" + typeDesignation.toString() + "'");
-                continue;
+//                problems.add("Multiple typified names in type designation '" + typeDesignation.toString() + "'");
+
+                //TODO it is possible that a type designation set has > 1 typified names. For name type designations
+                //this is even relatively often the case (for specimen type designations it is a rare exception
+                //or the types where stored not only at the type giving name but also at other names - happened
+                //for Cichorieae at least)
+                //=> we do not handle this as a problem
+                //continue;
             }
             if(typifiedName == null){
                 // remember
@@ -329,7 +337,9 @@ public class TypeDesignationSetContainer {
                 if(!typifiedName.getUuid().equals(otherTypifiedName.getUuid())){
                     //TODO instead throw RegistrationValidationException()
                     String message = "Multiple typified names [" + typifiedName.getTitleCache()+ "/" + typifiedName.getUuid() + " and "  + otherTypifiedName.getTitleCache() + "/" + otherTypifiedName.getUuid()  + "] in type designation set '" + typeDesignations.toString() + "'";
-                    problems.add(message);
+                    logger.warn(message);
+                    //TODO see comment on "typifiedNames.size() > 1" above
+//                    problems.add(message);
                 }
             }
         }
