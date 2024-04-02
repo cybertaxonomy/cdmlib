@@ -875,36 +875,42 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         Feature feature = node.getData();
         UUID featureUuid = node.getNodeId();
         Set<FactDtoBase> facts = featureMap.get(featureUuid);
+        FeatureDto featureDto;
         if(facts == null){
-            return;
-        }
-
-        //TODO locale und früher
-        FeatureDto featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
-        features.addItem(featureDto);
-
-        List<DistributionDto> distributions = new ArrayList<>();
-
-        //
-        for (FactDtoBase fact : facts){
-            if (fact instanceof DistributionDto) {
-                distributions.add((DistributionDto)fact);
+            if (node.getChildren().isEmpty()) {
+                return;
             }else {
-                //TODO how to handle CommonNames, do we also want to have a data structure
-                //with Language|
+                //TODO locale und früher
+                featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
+            }
+        }else {
+            //TODO locale und früher
+            featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
+
+            List<DistributionDto> distributions = new ArrayList<>();
+
+            //
+            for (FactDtoBase fact : facts){
+                if (fact instanceof DistributionDto) {
+                    distributions.add((DistributionDto)fact);
+                }else {
+                    //TODO how to handle CommonNames, do we also want to have a data structure
+                    //with Language|
 //                             -- Area|
 //                                    --name
-                // a bit like for distribution??
+                    // a bit like for distribution??
 
-                //normal facts (usually 1 per feature or at least not hierarchically ordered)
-                featureDto.addFact(fact);
+                    //normal facts (usually 1 per feature or at least not hierarchically ordered)
+                    featureDto.addFact(fact);
+                }
+
             }
 
+            handleDistributions(config, featureDto, distributions, pageDto);
+            //TODO really needed?
+            orderFacts(featureDto);
         }
-
-        handleDistributions(config, featureDto, distributions, pageDto);
-        //TODO really needed?
-        orderFacts(featureDto);
+        features.addItem(featureDto);
 
         //children
         ContainerDto<FeatureDto> childFeatures = new ContainerDto<>();

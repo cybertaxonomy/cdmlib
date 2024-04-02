@@ -233,32 +233,38 @@ public class PortalDtoFactLoader_Old extends PortalDtoLoaderBase {
             TreeNode<Feature, UUID> node, TaxonPageDto pageDto) {
 
         Feature feature = node.getData();
+        FeatureDto featureDto;
         if(!featureMap.containsKey(feature.getUuid())){
-            return;
-        }
-        //TODO locale
-        FeatureDto featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
-        features.addItem(featureDto);
-
-        List<Distribution> distributions = new ArrayList<>();
-
-        //
-        for (DescriptionElementBase fact : featureMap.get(feature.getUuid())){
-            if (fact.isInstanceOf(Distribution.class)) {
-                distributions.add(CdmBase.deproxy(fact, Distribution.class));
+            if (node.getChildren().isEmpty()){
+                return;
             }else {
-                //TODO how to handle CommonNames, do we also want to have a data structure
-                //with Language|
+                //TODO locale
+                featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
+            }
+        }else {
+            //TODO locale
+            featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
+            List<Distribution> distributions = new ArrayList<>();
+
+            //
+            for (DescriptionElementBase fact : featureMap.get(feature.getUuid())){
+                if (fact.isInstanceOf(Distribution.class)) {
+                    distributions.add(CdmBase.deproxy(fact, Distribution.class));
+                }else {
+                    //TODO how to handle CommonNames, do we also want to have a data structure
+                    //with Language|
 //                             -- Area|
 //                                    --name
-                // a bit like for distribution??
-                handleFact(featureDto, fact, pageDto);
+                    // a bit like for distribution??
+                    handleFact(featureDto, fact, pageDto);
+                }
             }
-        }
 
-        handleDistributions_old(config, featureDto, distributions, pageDto);
-        //TODO really needed?
-        orderFacts(featureDto);
+            handleDistributions_old(config, featureDto, distributions, pageDto);
+            //TODO really needed?
+            orderFacts(featureDto);
+        }
+        features.addItem(featureDto);
 
         //children
         ContainerDto<FeatureDto> childFeatures = new ContainerDto<>();
@@ -453,10 +459,9 @@ public class PortalDtoFactLoader_Old extends PortalDtoLoaderBase {
     }
 
     /**
-     * Recursive call to a feature tree's feature node in order to creates a tree structure
+     * Recursive call to a feature tree's feature node in order to create a tree structure
      * ordered in the same way as the according feature tree but only containing features
-     * that do really exist for the given taxon. If only a child node is required the parent
-     * node/feature is also considered to be required.<BR>
+     * that do really exist for the given taxon and ancestors of such features.<BR>
      */
     //TODO 1 does this also work with old load?
     private TreeNode<Feature, UUID> filterFeatureNode(TermNode<Feature> featureNode,
