@@ -71,7 +71,7 @@ public class MediaInfoServiceReader extends AbstactMediaMetadataReader {
 
     @Override
     public AbstactMediaMetadataReader read() throws IOException, HttpException {
-        logger.debug("reading metadata from " + metadataUri);
+        logger.info("reading metadata from " + metadataUri);
         InputStream jsonStream = UriUtils.getInputStream(metadataUri);
         ObjectMapper mapper = new ObjectMapper();
         MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
