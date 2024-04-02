@@ -100,7 +100,7 @@ public abstract class PortalDtoLoaderBase {
         //loadIdentifiable(cdmBase, dto);
     }
 
-    private static void loadAnnotatable(CdmBase cdmBase, CdmBaseDto dto) {
+    static void loadAnnotatable(CdmBase cdmBase, CdmBaseDto dto) {
         if (dto instanceof AnnotatableDto && cdmBase.isInstanceOf(AnnotatableEntity.class)) {
             AnnotatableEntity annotatable = CdmBase.deproxy(cdmBase, AnnotatableEntity.class);
             AnnotatableDto annotatableDto = (AnnotatableDto)dto;
@@ -144,7 +144,7 @@ public abstract class PortalDtoLoaderBase {
         }
     }
 
-    private static void loadSources(CdmBase cdmBase, CdmBaseDto dto) {
+    static void loadSources(CdmBase cdmBase, CdmBaseDto dto) {
         if (dto instanceof SingleSourcedDto && cdmBase.isInstanceOf(SingleSourcedEntityBase.class)) {
             //TODO other sourced
             SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
