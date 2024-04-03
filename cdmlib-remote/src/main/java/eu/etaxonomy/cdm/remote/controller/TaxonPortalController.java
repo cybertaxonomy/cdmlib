@@ -451,7 +451,7 @@ public class TaxonPortalController extends TaxonController{
         distributionConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
         distributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
 
-        //iucn distribution info config
+        //IUCN distribution info config
         DistributionInfoConfiguration iucnDistributionConfig = new DistributionInfoConfiguration();
         iucnDistributionConfig.setIncludeUnpublished(includeUnpublished);
         config.putDistributionInfoConfiguration(Feature.uuidIucnStatus, iucnDistributionConfig);

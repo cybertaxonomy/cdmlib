@@ -23,6 +23,7 @@ import net.sf.json.JsonConfig;
  */
 public class NameMatchingBeanProcessor extends AbstractBeanProcessor<SingleNameMatchingResult> {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     @Override
@@ -45,7 +46,6 @@ public class NameMatchingBeanProcessor extends AbstractBeanProcessor<SingleNameM
         json.element("taxonNameID", bean.getTaxonNameId(), jsonConfig);
         return json;
     }
-
 
 
 }

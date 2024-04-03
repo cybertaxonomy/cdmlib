@@ -45,7 +45,7 @@ public class NameMatchingController {
     public NameMatchingResult doGetNameMatching(
             @RequestParam(value="namecache", required = true) String nameCache,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 

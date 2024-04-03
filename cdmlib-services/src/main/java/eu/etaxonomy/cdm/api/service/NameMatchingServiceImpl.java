@@ -430,7 +430,8 @@ public class NameMatchingServiceImpl
 	 */
     private List<SingleNameMatchingResult> getTaxonNamePartsFromDB(
     		Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
-    	List<SingleNameMatchingResult> genusOrUninomialWithDistance = new ArrayList<>();
+
+        List<SingleNameMatchingResult> genusOrUninomialWithDistance = new ArrayList<>();
     	List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis, null);
         postFilteredGenusOrUninominalWithDis.forEach((key, value) -> {
         	for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
