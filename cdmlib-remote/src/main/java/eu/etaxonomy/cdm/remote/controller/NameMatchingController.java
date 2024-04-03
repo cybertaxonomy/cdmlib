@@ -8,12 +8,15 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.etaxonomy.cdm.api.service.INameMatchingService;
@@ -27,9 +30,10 @@ import io.swagger.annotations.Api;
 
 @RestController
 @Api("name_matching")
-@RequestMapping(value = {"/namecache/{namecache}" })
-
+@RequestMapping(value = {"/namematch/" })
 public class NameMatchingController {
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private INameMatchingService nameMatchingservice;
@@ -39,8 +43,13 @@ public class NameMatchingController {
             value = {"match"},
             method = RequestMethod.GET)
     public NameMatchingResult doGetNameMatching(
-            @PathVariable("namecache") String nameCache) throws IOException {
-        if (nameCache!= null & !nameCache.isEmpty()) {
+            @RequestParam(value="namecache", required = true) String nameCache,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        logger.info("doGetNameMatching()" + request.getRequestURI());
+
+        if (nameCache!= null && !nameCache.isEmpty()) {
             nameCache= nameCache.substring(0,1).toUpperCase() + nameCache.substring(1).toLowerCase();
         }
         NameMatchingResult result = nameMatchingservice.findMatchingNames(nameCache, null, false);
