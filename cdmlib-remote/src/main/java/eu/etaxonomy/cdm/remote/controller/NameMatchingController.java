@@ -62,41 +62,44 @@ public class NameMatchingController {
         }
         NameMatchingResult result = nameMatchingservice.findMatchingNames(nameCache, null, false);
 
-        return adaptNameMatchingResult(result);
+        return NameMatchingAdapter.invoke(result);
     }
 
-    private NameMatchingCombinedResult adaptNameMatchingResult(NameMatchingResult innerResult) {
-        NameMatchingCombinedResult result = new NameMatchingCombinedResult();
-        result.setExactMatches(loadResultListFromPartsList(innerResult.getExactResults()));
-        result.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
-        return result;
-    }
+    private static class NameMatchingAdapter {
 
-    private List<NameMatchingExactResult> loadResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
-        return partsList.stream().map(p->loadResultFromParts(p)).collect(Collectors.toList());
-    }
+        private static NameMatchingCombinedResult invoke(NameMatchingResult nameMatchingResult) {
+            NameMatchingCombinedResult result = new NameMatchingCombinedResult();
+            result.setExactMatches(loadResultListFromPartsList(nameMatchingResult.getExactResults()));
+            result.setCandidates(loadCandiateResultListFromPartsList(nameMatchingResult.getBestResults()));
+            return result;
+        }
 
-    private List<NameMatchingCandidateResult> loadCandiateResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
-        return partsList.stream().map(p->loadCandidateResultFromParts(p)).collect(Collectors.toList());
-    }
+        private static List<NameMatchingExactResult> loadResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
+            return partsList.stream().map(p->loadResultFromParts(p)).collect(Collectors.toList());
+        }
 
-    private NameMatchingExactResult loadResultFromParts(NameMatchingParts parts) {
-       return loadResultFromParts(parts, new NameMatchingExactResult());
-    }
+        private static List<NameMatchingCandidateResult> loadCandiateResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
+            return partsList.stream().map(p->loadCandidateResultFromParts(p)).collect(Collectors.toList());
+        }
 
-    private NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
-        NameMatchingCandidateResult result = new NameMatchingCandidateResult();
-        loadResultFromParts(parts, result);
-        result.setDistance(parts.getDistance());
-        return result;
-    }
+        private static NameMatchingExactResult loadResultFromParts(NameMatchingParts parts) {
+           return loadResultFromParts(parts, new NameMatchingExactResult());
+        }
 
-    private NameMatchingExactResult loadResultFromParts(NameMatchingParts parts, NameMatchingExactResult result) {
-        result.setTaxonNameId(parts.getTaxonNameId());
-        result.setTaxonNameUuid(parts.getTaxonNameUuid());
-        result.setAuthorship(parts.getAuthorshipCache());
-        result.setNameWithAuthor(parts.getTitleCache());
-        result.setPureName(parts.getNameCache());
-        return result;
+        private static NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
+            NameMatchingCandidateResult result = new NameMatchingCandidateResult();
+            loadResultFromParts(parts, result);
+            result.setDistance(parts.getDistance());
+            return result;
+        }
+
+        private static NameMatchingExactResult loadResultFromParts(NameMatchingParts parts, NameMatchingExactResult result) {
+            result.setTaxonNameId(parts.getTaxonNameId());
+            result.setTaxonNameUuid(parts.getTaxonNameUuid());
+            result.setAuthorship(parts.getAuthorshipCache());
+            result.setNameWithAuthor(parts.getTitleCache());
+            result.setPureName(parts.getNameCache());
+            return result;
+        }
     }
 }
