@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilder;
 import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
-import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.geo.IGeoServiceAreaMapping;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -407,7 +406,6 @@ public class PortalDtoFactLoader_Old extends PortalDtoLoaderBase {
         if (distributions.isEmpty()) {
             return;
         }
-        IDistributionService distributionService = repository.getDistributionService();
 
         //configs
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration(featureDto.getUuid());
@@ -447,13 +445,6 @@ public class PortalDtoFactLoader_Old extends PortalDtoLoaderBase {
         DistributionInfoDto dto = new DistributionInfoBuilder(LocaleContext.getLanguages(), repository.getCommonService())
             .build(distributionConfig, distributions, areaTree, statusTree, distributionStatusColors,
                     areaMapping);
-
-//        distributionService.composeDistributionInfoFor(distributionConfig, null,
-//                distributionStatusColors, null, null);
-//
-//        DistributionInfoDto dto = distributionService.composeDistributionInfoFor(distributionConfig,
-//                distributions, neverUseFallbackAreaAsParent,
-//                distributionStatusColors, LocaleContext.getLanguages());
 
         featureDto.addFact(dto);
     }

@@ -6,14 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
-
-import io.swagger.annotations.Api;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import io.swagger.annotations.Api;
 
 @Controller
 @Api("portal_descriptionElement")
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
             "/portal/descriptionElement/{uuid}",
             "/portal/descriptionElement/{uuid_list}"
             })
-public class DescriptionElementPortalController extends DescriptionElementController
-{
+public class DescriptionElementPortalController extends DescriptionElementController {
 
 }
