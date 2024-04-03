@@ -200,7 +200,8 @@ public class NameMatchingServiceImpl
         }
 
         List<SingleNameMatchingResult> taxonNamePartsWithDistance = new ArrayList<>();
-        taxonNamePartsWithDistance.addAll(getTaxonNamePartsFromDB(postFilteredGenusOrUninominalWithDis));
+        List<SingleNameMatchingResult> taxonNamePartsFromDb = getTaxonNamePartsFromDB(postFilteredGenusOrUninominalWithDis);
+        taxonNamePartsWithDistance.addAll(taxonNamePartsFromDb);
 
         List<SingleNameMatchingResult> resultSetOnlyGenusOrUninominal = new ArrayList<>();
         if (specificEpithetQuery == null && infraGenericQuery == null) {
