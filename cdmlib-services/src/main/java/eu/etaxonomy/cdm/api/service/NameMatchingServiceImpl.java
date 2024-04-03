@@ -434,7 +434,7 @@ public class NameMatchingServiceImpl
     	List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis, null);
         postFilteredGenusOrUninominalWithDis.forEach((key, value) -> {
         	for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
-        		if (fullNameMatchingParts.getGenusOrUninomial() == key) {
+        		if (fullNameMatchingParts.getGenusOrUninomial().equals(key)) {
         			genusOrUninomialWithDistance.add(new SingleNameMatchingResult(fullNameMatchingParts, value));
                  }
             }
