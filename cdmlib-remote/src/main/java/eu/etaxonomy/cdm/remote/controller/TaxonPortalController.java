@@ -353,7 +353,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
             //TODO still needs to be used
             @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
-            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            @RequestParam(value = "omitLevels", required = false) DefinedTermBaseList<NamedAreaLevel> omitLevelList,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
 //          @RequestParam(value = "neverUseFallbackAreaAsParent", required = false) boolean neverUseFallbackAreaAsParent,
@@ -419,9 +419,14 @@ public class TaxonPortalController extends TaxonController{
         if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
             fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
         }
+
         Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
         if(!CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypeList)){
             alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypeList.asSet();
+        }
+        Set<NamedAreaLevel> omitLevels = new HashSet<>();
+        if(!CdmUtils.isNullSafeEmpty(omitLevelList)){
+            omitLevels = omitLevelList.asSet();
         }
 
         //default distribution info config
