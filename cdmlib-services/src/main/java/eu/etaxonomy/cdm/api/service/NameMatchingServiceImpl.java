@@ -448,7 +448,6 @@ public class NameMatchingServiceImpl
      * Deletes common characters at the beginning and end of both parameters.
      * Returns the space separated concatenation of the remaining strings. <BR>
      */
-
     public static String trimCommonChar(String queryName, String dbName) {
 
         String shortenedQueryName = "";
@@ -508,8 +507,8 @@ public class NameMatchingServiceImpl
             computedDistanceTemp = 0;
         } else {
         	try {
-            restantTrimmedQuery = trimmedStrings.split(" ")[0];
-            restantTrimmedDB = trimmedStrings.split(" ")[1];}
+                restantTrimmedQuery = trimmedStrings.split(" ")[0];
+                restantTrimmedDB = trimmedStrings.split(" ")[1];}
         	catch (Exception e) {
         		//TODO don't use System.out.println in production!
         		System.out.println("trimmed string is empty");

@@ -1,9 +1,21 @@
+/**
+* Copyright (C) 2023 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author andreabee90
+ * @since 13.08.2023
+ */
 public class NameMatchingUtils {
 
 //  Delete known text elements such as cf. aff. and subgenera if it is enclosed in brackets
