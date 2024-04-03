@@ -16,23 +16,23 @@ import java.util.UUID;
  */
 public class NameMatchingParts {
 
-    protected Integer taxonNameId;
+    private Integer taxonNameId;
 
-    protected UUID taxonNameUuid;
+    private UUID taxonNameUuid;
 
-    protected String titleCache;
+    private String titleCache;
 
-    protected String authorshipCache;
+    private String authorshipCache;
 
-    protected String genusOrUninomial;
+    private String genusOrUninomial;
 
-    protected String infraGenericEpithet;
+    private String infraGenericEpithet;
 
-    protected String specificEpithet;
+    private String specificEpithet;
 
-    protected String infraSpecificEpithet;
+    private String infraSpecificEpithet;
 
-    protected String nameCache;
+    private String nameCache;
 
 //************ CONSTRUCTOR ***********************/
 
@@ -41,7 +41,7 @@ public class NameMatchingParts {
 
     public NameMatchingParts(Integer taxonNameId, UUID taxonNameUuid, String titleCache, String authorshipCache,
             String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String nameCache) {
-        super();
+
         this.taxonNameId = taxonNameId;
         this.taxonNameUuid = taxonNameUuid;
         this.titleCache = titleCache;

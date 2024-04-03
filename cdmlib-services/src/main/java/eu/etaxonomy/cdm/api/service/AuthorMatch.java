@@ -17,12 +17,9 @@ import eu.etaxonomy.cdm.common.NameMatchingUtils;
  * @author andreabee90
  * @since 21.11.2023
  */
-
 public class AuthorMatch {
 
-
     public static List<SingleNameMatchingResult> compareAuthor (List<SingleNameMatchingResult> resultList, String authorshipQuery) {
-
 
         authorNormalization(resultList);
         AuthorMatch.etal(authorshipQuery);

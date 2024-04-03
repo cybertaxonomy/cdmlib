@@ -79,8 +79,22 @@ public class NameMatchingServiceImpl
     }
 
     public class NameMatchingResult{
+
         List<SingleNameMatchingResult> exactResults = new ArrayList<>();
         List<SingleNameMatchingResult> bestResults = new ArrayList<>();
+
+        public List<SingleNameMatchingResult> getExactResults() {
+            return exactResults;
+        }
+        public void setExactResults(List<SingleNameMatchingResult> exactResults) {
+            this.exactResults = exactResults;
+        }
+        public List<SingleNameMatchingResult> getBestResults() {
+            return bestResults;
+        }
+        public void setBestResults(List<SingleNameMatchingResult> bestResults) {
+            this.bestResults = bestResults;
+        }
     }
 
     //**********METHODS**********
@@ -95,6 +109,7 @@ public class NameMatchingServiceImpl
 
     @Override
     public Map<String, List<SingleNameMatchingResult>> compareTaxonListNameCache(List<String> input){
+
         //TODO make a method that normalizes input names
         //delete empty spaces (beginning-end), tab delim., and others
         for (int i = 0 ; i < input.size(); i++) {
@@ -103,19 +118,22 @@ public class NameMatchingServiceImpl
             name = name.replaceAll("\\s+$", "");
             input.set(i,name);
         }
-        Map<String, List<SingleNameMatchingResult>> matchesMap = new HashMap<>();
-        List <NameMatchingParts> matchingNamesCacheList = nameMatchingDao.findNameMatchingParts(null, input);
-        for(NameMatchingParts part:matchingNamesCacheList) {
+
+        Map<String, List<SingleNameMatchingResult>> result = new HashMap<>();
+        List<NameMatchingParts> matchingNamesCacheList = nameMatchingDao.findNameMatchingParts(null, input);
+
+        for(NameMatchingParts parts: matchingNamesCacheList) {
             List<SingleNameMatchingResult> exactResults = new ArrayList<>();
-            exactResults.add(new SingleNameMatchingResult(part, 0));
-            matchesMap.put(part.getNameCache(), exactResults);
-            input.remove(part.getNameCache());
+            exactResults.add(new SingleNameMatchingResult(parts, 0));
+            result.put(parts.getNameCache(), exactResults);
+            input.remove(parts.getNameCache());
         }
-        for(String remainingTaxonName:input) {
-            NameMatchingResult result = findMatchingNames(remainingTaxonName, null, false);
-            matchesMap.put(remainingTaxonName, result.bestResults);
+
+        for(String remainingTaxonName: input) {
+            NameMatchingResult matchingNames = findMatchingNames(remainingTaxonName, null, false);
+            result.put(remainingTaxonName, matchingNames.bestResults);
         }
-        return matchesMap;
+        return result;
     }
 
     /**
@@ -125,7 +143,8 @@ public class NameMatchingServiceImpl
      */
     @Override
     public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor) {
-//        taxonName = capitalInicial(taxonName);
+
+        //        taxonName = capitalInicial(taxonName);
         taxonName = taxonName.replace(" and ", " & ");
 
         // 0. Parsing and Normalizing
@@ -353,11 +372,6 @@ public class NameMatchingServiceImpl
         }
     }
 
-
-    /**
-     * @param taxonName
-     * @return
-     */
     private static String capitalInicial(String taxonName) {
         if (taxonName != null & !taxonName.isEmpty()) {
             taxonName = taxonName.substring(0,1).toUpperCase() + taxonName.substring(1).toLowerCase();
@@ -680,6 +694,7 @@ public class NameMatchingServiceImpl
 
     public static List<SingleNameMatchingResult> exactResults(
             List<SingleNameMatchingResult> resultShapingList) {
+
         List<SingleNameMatchingResult> exactResults = new ArrayList<>();
         for (SingleNameMatchingResult exactResult : resultShapingList) {
             if (exactResult.getDistance() == 0) {

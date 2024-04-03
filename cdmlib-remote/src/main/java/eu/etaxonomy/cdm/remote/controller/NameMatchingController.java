@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,8 +22,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
+import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
+import eu.etaxonomy.cdm.api.nameMatching.NameMatchingExactResult;
 import eu.etaxonomy.cdm.api.service.INameMatchingService;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
+import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
+import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
 import io.swagger.annotations.Api;
 
 /**
@@ -42,7 +50,7 @@ public class NameMatchingController {
     @RequestMapping(
             value = {"match"},
             method = RequestMethod.GET)
-    public NameMatchingResult doGetNameMatching(
+    public NameMatchingCombinedResult doGetNameMatching(
             @RequestParam(value="namecache", required = true) String nameCache,
             HttpServletRequest request,
             @SuppressWarnings("unused") HttpServletResponse response) {
@@ -53,6 +61,42 @@ public class NameMatchingController {
             nameCache= nameCache.substring(0,1).toUpperCase() + nameCache.substring(1).toLowerCase();
         }
         NameMatchingResult result = nameMatchingservice.findMatchingNames(nameCache, null, false);
+
+        return adaptNameMatchingResult(result);
+    }
+
+    private NameMatchingCombinedResult adaptNameMatchingResult(NameMatchingResult innerResult) {
+        NameMatchingCombinedResult result = new NameMatchingCombinedResult();
+        result.setExactMatches(loadResultListFromPartsList(innerResult.getExactResults()));
+        result.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
+        return result;
+    }
+
+    private List<NameMatchingExactResult> loadResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
+        return partsList.stream().map(p->loadResultFromParts(p)).collect(Collectors.toList());
+    }
+
+    private List<NameMatchingCandidateResult> loadCandiateResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
+        return partsList.stream().map(p->loadCandidateResultFromParts(p)).collect(Collectors.toList());
+    }
+
+    private NameMatchingExactResult loadResultFromParts(NameMatchingParts parts) {
+       return loadResultFromParts(parts, new NameMatchingExactResult());
+    }
+
+    private NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
+        NameMatchingCandidateResult result = new NameMatchingCandidateResult();
+        loadResultFromParts(parts, result);
+        result.setDistance(parts.getDistance());
+        return result;
+    }
+
+    private NameMatchingExactResult loadResultFromParts(NameMatchingParts parts, NameMatchingExactResult result) {
+        result.setTaxonNameId(parts.getTaxonNameId());
+        result.setTaxonNameUuid(parts.getTaxonNameUuid());
+        result.setAuthorship(parts.getAuthorshipCache());
+        result.setNameWithAuthor(parts.getTitleCache());
+        result.setPureName(parts.getNameCache());
         return result;
     }
 }
