@@ -462,7 +462,7 @@ public class GbifJsonOccurrenceParser {
                                     string = mediaRecord.get("identifier").isTextual()? mediaRecord.get("identifier").textValue():mediaRecord.get("identifier").asText();
                                     uri = new URI(string);
                                     imageInf = MediaInfoFileReader.legacyFactoryMethod(uri)
-                                        .readBaseInfo(false)
+                                        .readBaseInfo()
                                         .getCdmImageInfo();
                                 } catch (URISyntaxException |IOException | HttpException | IllegalArgumentException e) {
                                     e.printStackTrace();
