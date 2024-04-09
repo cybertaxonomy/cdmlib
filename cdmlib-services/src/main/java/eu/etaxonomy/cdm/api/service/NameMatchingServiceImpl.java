@@ -394,9 +394,10 @@ public class NameMatchingServiceImpl
         for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
             String infrageneric = taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
             String infraspecific = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
-            if (infrageneric == null ||  infrageneric.isEmpty() &&
-                    infraspecific == null || infraspecific.isEmpty()) {
-                preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
+            if (infrageneric == null ||  infrageneric.isEmpty()){
+                if (infraspecific == null || infraspecific.isEmpty()) {
+                    preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
+                }
             }
         }
     }
@@ -432,9 +433,11 @@ public class NameMatchingServiceImpl
 			String epi = taxonNamePartsWithDistance.get(i).getSpecificEpithet();
 			String infge= taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
 			String infraspec = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
-			if (epi.isEmpty() && infge.isEmpty() && infraspec.isEmpty()) {
-		        resultSetOnlyGenusOrUninominal.add(taxonNamePartsWithDistance.get(i));
-		    }
+			if ((epi == null || epi.isEmpty()) &&
+			        (infge == null || infge.isEmpty()) &&
+			        (infraspec == null || infraspec.isEmpty())) {
+			        resultSetOnlyGenusOrUninominal.add(taxonNamePartsWithDistance.get(i));
+			}
 		}
 	}
 
@@ -661,6 +664,8 @@ public class NameMatchingServiceImpl
 
         if (totalDist <= maxDistance) {
             epithetListTemp.add(part);
+        } else if (epithetQueryLength <=maxDistance) {
+            epithetListTemp.add(part);
         } else if (halfLength < maxDistance) {
             if ((normalizedEphitetQuery.substring(0, 1).equals(epithetInDB.substring(0, 1))
                     && epithetComputedDistance == 2 || epithetComputedDistance == 3)
@@ -681,6 +686,8 @@ public class NameMatchingServiceImpl
         int halfLength = Math.max(epithetDBLength, epithetQueryLength) / 2;
 
         if (totalDist <= maxDistance) {
+            infragenericList.add(fullTaxonNamePart);
+        } else if (epithetQueryLength < maxDistance) {
             infragenericList.add(fullTaxonNamePart);
         } else if (halfLength < maxDistance) {
             if ((normalizedInfragenericQuery.substring(0, 1).equals(infragenericInDB.substring(0, 1))
