@@ -483,6 +483,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             return null;
         }
         result.setTimeperiod(fact.timePeriod == null ? null : fact.timePeriod.toString());
+        result.setSortIndex(fact.sortIndex);
         return result;
     }
 
@@ -705,6 +706,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
                 return null;
             }
             deb.setTimeperiod(timePeriod);
+            deb.setSortIndex(sortIndex);
             return deb;
         }
 
@@ -761,6 +763,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             }
             dto.setTimeperiod(this.getTimeperiod() == null ? null : this.getTimeperiod().toString());
             dto.setId(this.id);
+            dto.setSortIndex(this.sortIndex);
             return dto;
         }
 
@@ -776,6 +779,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         NamedArea area;
         String name;
         TimePeriod timePeriod;
+        Integer sortIndex;
         PresenceAbsenceTerm status;
         String transliteration;
 
@@ -787,6 +791,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             this.area = (NamedArea) map.get("area");
             this.name = (String) map.get("name");
             this.timePeriod = (TimePeriod) map.get("timePeriod");
+            this.sortIndex = (Integer)map.get("sortIndex");
             this.status = (PresenceAbsenceTerm) map.get("status");
             this.transliteration = (String)map.get("transliteration");
 //            this.multilanguageText = (Map<Language, LanguageString>)map.get("i18nText");
@@ -812,7 +817,8 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
         String hql = "SELECT new map(deb.feature.uuid as featureUuid, type(deb) as type "
                    +    " ,deb.uuid as uuid, deb.id as id "
                    +    " ,deb.area as area, deb.name as name "
-                   +    " ,deb.timeperiod as timePeriod, deb.status as status "
+                   +    " ,deb.timeperiod as timePeriod, deb.sortIndex as sortIndex"
+                   +    " ,deb.status as status "
                    +    " ,deb.transliteration as transliteration "
 //                   +    " ,deb.multilanguageText as i18nText"
                    +    ")"

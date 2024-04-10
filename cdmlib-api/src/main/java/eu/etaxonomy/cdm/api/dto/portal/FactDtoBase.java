@@ -15,6 +15,7 @@ package eu.etaxonomy.cdm.api.dto.portal;
 public class FactDtoBase extends SourcedDto implements IFactDto {
 
     private String timeperiod;
+    private Integer sortIndex;
 
     @Override
     public String getClazz() {
@@ -27,5 +28,12 @@ public class FactDtoBase extends SourcedDto implements IFactDto {
 
     public void setTimeperiod(String timeperiod) {
         this.timeperiod = timeperiod;
+    }
+
+    public Integer getSortIndex() {
+        return sortIndex;
+    }
+    public void setSortIndex(Integer sortIndex) {
+        this.sortIndex = sortIndex;
     }
 }
