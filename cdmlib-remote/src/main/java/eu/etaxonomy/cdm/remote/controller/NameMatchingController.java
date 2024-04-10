@@ -35,7 +35,6 @@ import io.swagger.annotations.Api;
  * @author andreabee90
  * @since 05.03.2024
  */
-
 @RestController
 @Api("name_matching")
 @RequestMapping(value = {"/namematch/" })
