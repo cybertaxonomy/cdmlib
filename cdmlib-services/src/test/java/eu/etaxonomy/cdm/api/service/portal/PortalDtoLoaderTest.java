@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.portal;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -19,15 +20,21 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
+import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
+import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
+import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -80,9 +87,10 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
         FeatureDto featureDto = taxonFacts.getItems().get(0);
         ContainerDto<IFactDto> facts = featureDto.getFacts();
         Assert.assertEquals(1, facts.getCount());
-        IFactDto d = facts.getItems().get(0);
-        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), d.getClazz());
-        DistributionInfoDto did = (DistributionInfoDto)d;
+        IFactDto factDto = facts.getItems().get(0);
+        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), factDto.getClazz());
+        DistributionInfoDto did = (DistributionInfoDto)factDto;
+        //... condensed distribution
         //TODO this still fails
         System.out.println(did.getCondensedDistribution().getHtmlString() + ": TODO");
         //TODO probably the order is not deterministic, so we may need to check single parts only, same as in according builder test
@@ -90,8 +98,13 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
         String mapUriParamsEnd = did.getMapUriParams().replace(mapUriParamsStart, "");
         Assert.assertEquals("as=a:,,0.1,|b:,,0.1,&ad=country_earth%3Agmi_cntry:", mapUriParamsStart);
         Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:introduced"));
+        //...tree
         DistributionTreeDto tree = (DistributionTreeDto)did.getTree();
         Assert.assertEquals("Tree:2<FRA:introduced{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        Assert.assertEquals("Should be France and Germany", 2, tree.getRootElement().children.size());
+        TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(1);
+        Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
+        Assert.assertEquals(1, germanyNode.getData().iterator().next().getAnnotations().getCount());
     }
 
     private void createTestData() {
@@ -111,6 +124,9 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Country.GERMANY().setSymbol("De");
         PresenceAbsenceTerm.PRESENT().setSymbol("");
         Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
+        germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Abc Annotation"));
+        germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.TECHNICAL(), Language.DEFAULT()));
+
         td.addElement(germany);
         Country.FRANCE().setSymbol("Fr");
         PresenceAbsenceTerm.INTRODUCED().setSymbol("i");

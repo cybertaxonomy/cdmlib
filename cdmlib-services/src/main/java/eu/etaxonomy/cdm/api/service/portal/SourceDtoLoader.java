@@ -19,7 +19,11 @@ import java.util.stream.Collectors;
 import eu.etaxonomy.cdm.api.dto.SourceDTO;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.common.SetMap;
+import eu.etaxonomy.cdm.format.common.TypedLabel;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 /**
@@ -51,8 +55,8 @@ public class SourceDtoLoader {
 
 
         String hql = "SELECT new map(osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
-                +     " osb.originalInfo originalInfo, "
-                +     " osb.citation ref, osb.citationMicroReference detail) "
+                +     " osb.originalInfo as originalInfo, "
+                +     " osb.citation as ref, osb.citationMicroReference as detail) "
                 //cdmSource, type, links
                 + " FROM OriginalSourceBase osb "
                 + " WHERE osb.id IN :baseIds"
@@ -66,16 +70,31 @@ public class SourceDtoLoader {
             List<Map<String, Object>> sourceMap = commonDao.getHqlMapResult(hql, params, Object.class);
 
             sourceMap.stream().forEach(e->{
-                //TODO existiert schon
-                Integer id = (Integer)e.get("sourceId");
+                Integer id = (Integer)e.get("id");
 
                 dtosForSource.get(id).stream().forEach(dto->{
+                    UUID uuid = (UUID)e.get("uuid");
+                    dto.setUuid(uuid);
                     dto.setAccessed(null);  //TODO timeperiod
                     dto.setDoi(null); //TODO doi
+                    dto.setOriginalInfo((String)e.get("originalInfo"));
+                    String detail = (String)e.get("detail");
+                    dto.setCitationDetail(detail);
+                    Reference citation = (Reference)e.get("ref");
+                    String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(citation, detail);
+                    Class<? extends ICdmBase> clazz = null;  //TODO
+                    TypedLabel typedLabel = new TypedLabel(uuid, clazz, label, null);
+                    dto.addLabel(typedLabel);
+                    dto.addLink(null); //TODO
+                    dto.setLinkedClass(null); //TODO
+                    dto.setNameInSource(null); //TODO
+                    dto.setNameInSourceUuid(null); //TODO
+                    if (citation != null) {
+                        dto.setReferenceUuid(citation.getUuid());
+                    }
+                    dto.setType(null); //TODO
+                    dto.setUri(null); //TODO
                     dto.setLastUpdated(null); //TODO
-                    dto.setOriginalInfo(null);
-                    dto.setUuid((UUID)e.get("uuid"));
-                    dto.setCitationDetail((String)e.get("detail"));
                 });
 //                lazyLoader.add(OriginalSourceBase.class, sourceDto);
             });

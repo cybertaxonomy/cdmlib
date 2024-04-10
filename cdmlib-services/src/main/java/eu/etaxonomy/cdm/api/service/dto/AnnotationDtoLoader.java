@@ -8,9 +8,19 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import eu.etaxonomy.cdm.api.dto.AnnotationDTO;
+import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 /**
  * Loader for {@link AnnotationDTO}s. Extracted from DTO class.
@@ -34,4 +44,44 @@ public class AnnotationDtoLoader {
         return dto;
     }
 
+    /**
+     * DTOs must have id initialized
+     */
+    public void loadAll(Set<AnnotationDto> dtos, ICdmGenericDao commonDao) {
+
+        Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
+
+        SetMap<Integer,AnnotationDto> dtosForAnnotation = new SetMap<>();
+        dtos.stream().forEach(dto->dtosForAnnotation.putItem(dto.getId(), dto));
+
+
+        String hql = "SELECT new map(a.id as id, a.uuid as uuid, "
+                +     " a.text as text, a.annotationType.uuid as typeUuid) "
+                + " FROM Annotation a "
+                + " WHERE a.id IN :baseIds "
+                ;
+
+        Map<String,Object> params = new HashMap<>();
+        params.put("baseIds", baseIds);
+
+        try {
+            List<Map<String, Object>> annotationMap = commonDao.getHqlMapResult(hql, params, Object.class);
+
+            annotationMap.stream().forEach(e->{
+                Integer id = (Integer)e.get("id");
+
+                dtosForAnnotation.get(id).stream().forEach(dto->{
+                    UUID uuid = (UUID)e.get("uuid");
+                    dto.setUuid(uuid);
+                    dto.setText((String)e.get("text"));
+                    dto.setTypeUuid((UUID)e.get("typeUuid"));
+                    dto.setLastUpdated(null); //TODO
+                });
+            });
+        } catch (UnsupportedOperationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return;
+    }
 }

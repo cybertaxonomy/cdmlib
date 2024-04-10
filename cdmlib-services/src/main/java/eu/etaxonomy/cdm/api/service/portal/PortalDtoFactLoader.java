@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -191,7 +192,10 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 
             factsPerFeature.values().stream().forEach(s->s.stream().forEach(f->handleSupplementalData(f)));
 
-            factLazyLoader.loadAll(dao, config.getSourceTypes());
+            //TODO make configurable
+            Set<UUID> annotationTypes = new HashSet<>();
+            annotationTypes.add(AnnotationType.uuidEditorial);
+            factLazyLoader.loadAll(dao, config.getSourceTypes(), annotationTypes);
 
             //load final result
             if (!filteredRootNode.getChildren().isEmpty()) {
@@ -674,41 +678,41 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 
     public class AllFactTypesDto{
 
-        DescriptionElementBase toInstance() {
-            DescriptionElementBase deb;
-            if (type == Distribution.class) {
-                Distribution td = Distribution.NewInstance(area, status);
-                deb = td;
-            } else if (type == TextData.class) {
-                TextData td = TextData.NewInstance();
-                deb = td;
-            }else if (type == CommonTaxonName.class) {
-                Language lang = null;
-                CommonTaxonName ctn = CommonTaxonName.NewInstance(name, lang);
-                deb = ctn;
-            } else if (type == IndividualsAssociation.class) {
-                IndividualsAssociation ia = IndividualsAssociation.NewInstance();
-                deb = ia;
-            } else if (type == TaxonInteraction.class) {
-                TaxonInteraction ti = TaxonInteraction.NewInstance();
-                deb = ti;
-            }else if (type == CategoricalData.class) {
-                CategoricalData cd = CategoricalData.NewInstance();
-                deb = cd;
-            }else if (type == QuantitativeData.class) {
-                QuantitativeData qd = QuantitativeData.NewInstance();
-                deb = qd;
-            }else if (type == TemporalData.class) {
-                TemporalData td = TemporalData.NewInstance();
-                deb = td;
-            }else {
-                //TODO logging
-                return null;
-            }
-            deb.setTimeperiod(timePeriod);
-            deb.setSortIndex(sortIndex);
-            return deb;
-        }
+//        DescriptionElementBase toInstance() {
+//            DescriptionElementBase deb;
+//            if (type == Distribution.class) {
+//                Distribution td = Distribution.NewInstance(area, status);
+//                deb = td;
+//            } else if (type == TextData.class) {
+//                TextData td = TextData.NewInstance();
+//                deb = td;
+//            }else if (type == CommonTaxonName.class) {
+//                Language lang = null;
+//                CommonTaxonName ctn = CommonTaxonName.NewInstance(name, lang);
+//                deb = ctn;
+//            } else if (type == IndividualsAssociation.class) {
+//                IndividualsAssociation ia = IndividualsAssociation.NewInstance();
+//                deb = ia;
+//            } else if (type == TaxonInteraction.class) {
+//                TaxonInteraction ti = TaxonInteraction.NewInstance();
+//                deb = ti;
+//            }else if (type == CategoricalData.class) {
+//                CategoricalData cd = CategoricalData.NewInstance();
+//                deb = cd;
+//            }else if (type == QuantitativeData.class) {
+//                QuantitativeData qd = QuantitativeData.NewInstance();
+//                deb = qd;
+//            }else if (type == TemporalData.class) {
+//                TemporalData td = TemporalData.NewInstance();
+//                deb = td;
+//            }else {
+//                //TODO logging
+//                return null;
+//            }
+//            deb.setTimeperiod(timePeriod);
+//            deb.setSortIndex(sortIndex);
+//            return deb;
+//        }
 
         public FactDtoBase toDto() {
 
@@ -716,10 +720,12 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             //TODO label
             if (type == Distribution.class) {
                 DistributionDto dd = new DistributionDto(null, this.id, null, null);
-                NamedAreaDto areaDto = new NamedAreaDto(null, id, null);
-                dd.setArea(factLazyLoader.add(NamedArea.class, areaDto));
-                TermDto statusDto = new TermDto(null, id, null);
-                dd.setStatus(factLazyLoader.add(PresenceAbsenceTerm.class, statusDto));
+                NamedAreaDto areaDto = TermDtoLoader.INSTANCE().fromEntity(this.area);
+                //factLazyLoader.add(NamedArea.class, areaDto)
+                dd.setArea(areaDto);
+                TermDto statusDto = TermDtoLoader.INSTANCE().fromEntity(this.status);
+                //OLD: factLazyLoader.add(PresenceAbsenceTerm.class, statusDto)
+                dd.setStatus(statusDto);
                 dto = dd;
             } else if (type == TextData.class) {
                 FactDto td = new FactDto();
@@ -761,17 +767,17 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
                 pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + this.type.getSimpleName()));
                 return null;
             }
-            dto.setTimeperiod(this.getTimeperiod() == null ? null : this.getTimeperiod().toString());
+
+            dto.setTimeperiod(this.timePeriod == null ? null : this.timePeriod.toString());
             dto.setId(this.id);
             dto.setSortIndex(this.sortIndex);
             return dto;
         }
 
-        public Object getTimeperiod() {
-            return deb != null? deb.getTimeperiod(): timePeriod;
-        }
+//        public Object getTimeperiod() {
+//            return deb != null? deb.getTimeperiod(): timePeriod;
+//        }
 
-        DescriptionElementBase deb;
         UUID featureUuid;
         Class type;
         UUID uuid;
@@ -796,10 +802,10 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             this.transliteration = (String)map.get("transliteration");
 //            this.multilanguageText = (Map<Language, LanguageString>)map.get("i18nText");
         }
-        public AllFactTypesDto(DescriptionElementBase deb) {
-            this.deb = deb;
-            this.type = CdmBase.deproxy(deb).getClass();
-        }
+//        public AllFactTypesDto(DescriptionElementBase deb) {
+//            this.deb = deb;
+//            this.type = CdmBase.deproxy(deb).getClass();
+//        }
 
     }
 
@@ -854,25 +860,25 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 
     }
 
-    private SetMap<UUID,AllFactTypesDto> loadFeature2FactMap(IDescribable<?> describable, boolean includeUnpublished) {
-
-        SetMap<UUID,AllFactTypesDto> featureMap = new SetMap<>();
-
-        //... load facts
-        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
-            if (description.isImageGallery()) {
-                continue;
-            }
-            for (DescriptionElementBase deb : description.getElements()) {
-                Feature feature = deb.getFeature();
-                if (featureMap.get(feature.getUuid()) == null) {
-                    featureMap.put(feature.getUuid(), new HashSet<>());
-                }
-                featureMap.get(feature.getUuid()).add(new AllFactTypesDto(deb));
-            }
-        }
-        return featureMap;
-    }
+//    private SetMap<UUID,AllFactTypesDto> loadFeature2FactMap(IDescribable<?> describable, boolean includeUnpublished) {
+//
+//        SetMap<UUID,AllFactTypesDto> featureMap = new SetMap<>();
+//
+//        //... load facts
+//        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
+//            if (description.isImageGallery()) {
+//                continue;
+//            }
+//            for (DescriptionElementBase deb : description.getElements()) {
+//                Feature feature = deb.getFeature();
+//                if (featureMap.get(feature.getUuid()) == null) {
+//                    featureMap.put(feature.getUuid(), new HashSet<>());
+//                }
+//                featureMap.get(feature.getUuid()).add(new AllFactTypesDto(deb));
+//            }
+//        }
+//        return featureMap;
+//    }
 
     private void handleFeatureNode(TaxonPageDtoConfiguration config,
             SetMap<UUID,FactDtoBase> featureMap, ContainerDto<FeatureDto> features,

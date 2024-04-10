@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -205,5 +207,15 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
      */
     public boolean isPublicSource() {
         return isPrimarySource() || isOther() || isUnknown() || isAggregation();
+    }
+
+    public static EnumSet<OriginalSourceType> allPublicTypes(){
+        Set<OriginalSourceType> enumset = new HashSet<>();
+        for (OriginalSourceType ost : values()) {
+            if (ost.isPublicSource()) {
+                enumset.add(ost);
+            }
+        }
+        return EnumSet.copyOf(enumset);
     }
 }

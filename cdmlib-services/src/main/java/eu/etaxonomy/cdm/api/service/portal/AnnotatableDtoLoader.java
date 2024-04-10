@@ -8,60 +8,59 @@
 */
 package eu.etaxonomy.cdm.api.service.portal;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
-import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
+import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
+import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.common.SetMap;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 /**
  * @author muellera
  * @since 07.03.2024
  */
-public class SourcedDtoLoader {
+public class AnnotatableDtoLoader {
 
-    public static SourcedDtoLoader INSTANCE(){
-        return new SourcedDtoLoader();
+    public static AnnotatableDtoLoader INSTANCE(){
+        return new AnnotatableDtoLoader();
     }
-
-    //TODO config sourceTypes
 
     /**
      * DTOs must have id initialized
      */
-    public void loadAll(Set<SourcedDto> dtos, Class baseClass, ICdmGenericDao commonDao,
-            EnumSet<OriginalSourceType> sourceTypes, LazyDtoLoader lazyLoader) {
+    public void loadAll(Set<AnnotatableDto> dtos, Class baseClass, ICdmGenericDao commonDao,
+            Set<UUID> annotationTypeFilter, LazyDtoLoader lazyLoader) {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
-        SetMap<Integer,SourcedDto> dtosForSource = new SetMap<>();
-        dtos.stream().forEach(dto->dtosForSource.putItem(dto.getId(), dto));
+        SetMap<Integer,AnnotatableDto> dtosForAnnotatable = new SetMap<>();
+        dtos.stream().forEach(dto->dtosForAnnotatable.putItem(dto.getId(), dto));
 
-        String hql = "SELECT new map(bc.id as factId, s.id as sourceId) "
-                + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.sources s "
-                + " WHERE s.type IN :osbTypes AND bc.id IN :baseIds";
+        String hql = "SELECT new map(bc.id as id, a.id as annotationId) "
+                + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.annotations a "
+                //TODO allow empty type filter
+                + " WHERE a.annotationType.uuid IN :annotationTypes AND bc.id IN :baseIds";
 
         Map<String,Object> params = new HashMap<>();
-        params.put("osbTypes", sourceTypes);
+        params.put("annotationTypes", annotationTypeFilter);
         params.put("baseIds", baseIds);
 
-        List<Map<String, Integer>> sourceIdMapping;
+        List<Map<String, Integer>> annotationIdMapping;
         try {
-            sourceIdMapping = commonDao.getHqlMapResult(hql, params, Integer.class);
+            annotationIdMapping = commonDao.getHqlMapResult(hql, params, Integer.class);
 
-            sourceIdMapping.stream().forEach(e->{
-                Integer id = e.get("sourceId");
-                SourceDto sourceDto = new SourceDto(id);
-                Integer factId = e.get("factId");
-                dtosForSource.get(factId).stream().forEach(sdd->sdd.addSource(sourceDto));
-                lazyLoader.add(OriginalSourceBase.class, sourceDto);
+            annotationIdMapping.stream().forEach(e->{
+                Integer annotationId = e.get("annotationId");
+                AnnotationDto annotationDto = new AnnotationDto();
+                annotationDto.setId(annotationId);
+                Integer annotatableId = e.get("id");
+                dtosForAnnotatable.get(annotatableId).stream().forEach(a->a.addAnnotation(annotationDto));
+                lazyLoader.add(Annotation.class, annotationDto);
             });
         } catch (UnsupportedOperationException e) {
             // TODO Auto-generated catch block

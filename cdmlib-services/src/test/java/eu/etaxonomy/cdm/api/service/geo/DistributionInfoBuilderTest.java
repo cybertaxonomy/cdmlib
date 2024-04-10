@@ -913,7 +913,7 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
         for (TreeNode<Set<DistributionDto>,NamedAreaDto> node : root.getChildren()) {
             node2String(node, sb);
         }
-        System.out.println(sb);
+//        System.out.println(sb);
         return sb.toString();
     }
 
@@ -935,8 +935,10 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
                 if (date.getSources() != null) {
                     for (SourceDto source : date.getSources().getItems()) {
                         List<TypedLabel> typedLabel = source.getLabel();
-                        String label = typedLabel.get(0).getLabel();
-                        sb.append(label);
+                        if (!typedLabel.isEmpty()) {  //should never be empty
+                            String label = typedLabel.get(0).getLabel();
+                            sb.append(label);
+                        }
                     }
                 }
                 sb.append("}");

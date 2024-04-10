@@ -102,6 +102,12 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 		return annotation;
 	}
 
+    public static Annotation NewEditorialDefaultLanguageInstance(String text){
+        Annotation annotation = new Annotation(text, Language.DEFAULT());
+        annotation.setAnnotationType(AnnotationType.EDITORIAL());
+        return annotation;
+    }
+
 	/**
 	 * Factory method. Using default language.
 	 */
