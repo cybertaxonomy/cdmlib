@@ -394,10 +394,10 @@ public class NameMatchingServiceImpl
         for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
             String infrageneric = taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
             String infraspecific = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
-            if (infrageneric == null ||  infrageneric.isEmpty()){
-                if (infraspecific == null || infraspecific.isEmpty()) {
-                    preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
-                }
+            if (infrageneric == null ||  infrageneric.isEmpty() &&
+                    (infraspecific == null || infraspecific.isEmpty())) {
+                preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
+
             }
         }
     }
@@ -433,10 +433,8 @@ public class NameMatchingServiceImpl
 			String epi = taxonNamePartsWithDistance.get(i).getSpecificEpithet();
 			String infge= taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
 			String infraspec = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
-			if ((epi == null || epi.isEmpty()) &&
-			        (infge == null || infge.isEmpty()) &&
-			        (infraspec == null || infraspec.isEmpty())) {
-			        resultSetOnlyGenusOrUninominal.add(taxonNamePartsWithDistance.get(i));
+			if (StringUtils.isAllEmpty(epi, infge, infraspec)) {
+			    resultSetOnlyGenusOrUninominal.add(taxonNamePartsWithDistance.get(i));
 			}
 		}
 	}
