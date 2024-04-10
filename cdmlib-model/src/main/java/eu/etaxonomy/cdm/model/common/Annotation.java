@@ -87,11 +87,10 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     @Type(type="uriUserType")
     private URI linkbackUri;
 
+// ******************************* FACTORY *******************************/
+
 	/**
 	 * Factory method.
-	 * @param text
-	 * @param lang
-	 * @return
 	 */
 	public static Annotation NewInstance(String text, Language lang){
 		return new Annotation(text, lang);
@@ -105,19 +104,14 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 
 	/**
 	 * Factory method. Using default language.
-	 * @param text
-	 * @return
 	 */
 	public static Annotation NewDefaultLanguageInstance(String text){
 		return new Annotation(text, Language.DEFAULT());
 	}
 
-
 // *********** CONSTRUCTOR **************************************/
 
-	protected Annotation(){
-		super();
-	}
+	protected Annotation(){}
 
 	protected Annotation(String text, Language language) {
 		super(text, language);
