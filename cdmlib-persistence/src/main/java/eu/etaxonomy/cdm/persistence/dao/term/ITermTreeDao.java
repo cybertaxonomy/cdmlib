@@ -31,7 +31,7 @@ public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
     /**
      * Loads nodes and the nodes child nodes recursively
      */
-    public void deepLoadNodes(List<TermNode> nodes, List<String> nodePaths);
+    public void deepLoadNodes(List<TermNode<?>> nodes, List<String> nodePaths);
 
     public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern);

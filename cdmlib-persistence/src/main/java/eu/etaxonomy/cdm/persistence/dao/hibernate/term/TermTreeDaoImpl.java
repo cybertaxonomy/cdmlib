@@ -65,11 +65,11 @@ public class TermTreeDaoImpl
     }
 
     @Override
-    public void deepLoadNodes(List<TermNode> nodes, List<String> nodePaths) {
+    public void deepLoadNodes(List<TermNode<?>> nodes, List<String> nodePaths) {
 
         defaultBeanInitializer.initializeAll(nodes, nodePaths);
 
-        List<TermNode> childrenOfChildren = new ArrayList<>();
+        List<TermNode<?>> childrenOfChildren = new ArrayList<>();
         for(TermNode<?> node : nodes) {
             if(node.getChildCount() > 0){
                 childrenOfChildren.addAll(node.getChildNodes());

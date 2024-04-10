@@ -147,6 +147,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
     public void setTaxonRelationshipTypeTree(UUID taxonRelationshipTypeTree) {
         this.taxonRelationshipTypeTree = taxonRelationshipTypeTree;
     }
+
     public UUID getFeatureTree() {
         return featureTree;
     }
