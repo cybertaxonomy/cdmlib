@@ -625,6 +625,8 @@ public class PortalDtoLoader extends PortalDtoLoaderBase {
             dto.setInverse(false);
             //ruleConsidered
             dto.setRuleConsidered(rel.getRuleConsidered());
+            //year
+            dto.setYear(relatedName.getReferenceYear());
             taxonDto.addRelatedName(dto);
         }
 

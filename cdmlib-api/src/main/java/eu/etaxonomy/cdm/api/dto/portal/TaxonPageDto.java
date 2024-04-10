@@ -173,12 +173,14 @@ public class TaxonPageDto extends TaxonBaseDto {
     }
 
     public static class NameRelationDTO extends SingleSourcedDto {
+
         private List<TaggedText> nameLabel;
         private UUID nameUuid;
         private String relType;
         private UUID relTypeUuid;
         private boolean inverse;
         private String ruleConsidered;
+        private String year;  //needed e.g. for homonyms
         //TODO relatedTaxon in this classification
 
         public List<TaggedText> getNameLabel() {
@@ -216,6 +218,12 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setRuleConsidered(String ruleConsidered) {
             this.ruleConsidered = ruleConsidered;
+        }
+        public String getYear() {
+            return year;
+        }
+        public void setYear(String year) {
+            this.year = year;
         }
     }
 
