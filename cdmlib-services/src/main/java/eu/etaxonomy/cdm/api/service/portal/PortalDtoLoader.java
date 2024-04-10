@@ -647,6 +647,8 @@ public class PortalDtoLoader extends PortalDtoLoaderBase {
             dto.setRelType(rep == null ? rel.getType().toString() : rep.getLabel());
             //inverse
             dto.setInverse(true);
+            //year
+            dto.setYear(relatedName.getReferenceYear());
             taxonDto.addRelatedName(dto);
         }
     }
