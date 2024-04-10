@@ -2122,7 +2122,7 @@ public class ColDpClassificationExport
 
         String referenceID = null;
         for (IOriginalSource osb : sourceable.getSources()) {
-            if (osb.getCitation() != null && osb.getType().isPrimarySource()) {
+            if (osb.getCitation() != null && osb.getType().isPublicSource()) {
                 referenceID = CdmUtils.concat(";", getId(state, osb.getCitation()));
                 handleReference(state, osb.getCitation());
             }

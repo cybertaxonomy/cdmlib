@@ -176,11 +176,34 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
         return this == PrimaryTaxonomicSource;
     }
 
+    public boolean isOther() {
+        return this == Other;
+    }
+
+    public boolean isAggregation() {
+        return this == Aggregation;
+    }
+
+    public boolean isUnknown() {
+        return this == Unknown;
+    }
     /**
      * Checks if this is any of the primary source types (currently either {@link #PrimaryTaxonomicSource}
      * or {@link #isPrimaryMediaSource()})
      */
     public boolean isPrimarySource() {
         return isPrimaryMediaSource() || isPrimaryTaxonomicSource();
+    }
+
+    /**
+     * Returns all source types that should be publicly shown by default.
+     * As the dataportal hardcoded it until now for the following 5 source types
+     * we implement it for these source types for now. However, I removed {@link #Lineage}
+     * as this does not make sense.<BR>
+     *
+     * See also #10322.
+     */
+    public boolean isPublicSource() {
+        return isPrimarySource() || isOther() || isUnknown() || isAggregation();
     }
 }

@@ -265,7 +265,7 @@ public abstract class PortalDtoLoaderBase {
         }else {
             OriginalSourceType type = source.getType();
             //TODO 3 make source type configurable
-            return type.isPrimarySource();
+            return type.isPublicSource();
         }
     }
 }
