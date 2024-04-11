@@ -27,7 +27,9 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
+import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -37,22 +39,28 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
+import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -64,6 +72,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     private UUID taxonUuid1 = UUID.fromString("075d1b8c-91d3-4b10-93b7-08ac872d09e8");
+    private UUID taxonUuid2 = UUID.fromString("792fcc6a-4854-46bd-a6c5-20b578170d8d");
+    private UUID specimenUuid1 = UUID.fromString("b2bc2edc-297b-44d7-96c7-2280a7fb0342");
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -90,8 +100,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //facts
         ContainerDto<FeatureDto> features = dto.getTaxonFacts();
-        Assert.assertEquals("There should be 3 features, distribution and description and common names",
-                3, features.getCount());
+        Assert.assertEquals("There should be 6 features, distribution and description and common names",
+                6, features.getCount());
 
         //... common taxon name
         FeatureDto commonNameDto = features.getItems().get(0);
@@ -112,16 +122,41 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         testDistributions(distributionDto);
 
         //...categorical data
+        //TODO
 
         //quantitative data
+        //TODO
 
         //termporal data
-
-        //individuals association
+        FeatureDto floweringDto = features.getItems().get(3);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
+                "Flowering Season", floweringDto.getLabel());
+        Assert.assertEquals(1, floweringDto.getFacts().getCount());
+        FactDto flowering1 = (FactDto)floweringDto.getFacts().getItems().get(0);
+        Assert.assertEquals("(10 Mar–)15 Apr–30 Jun(–20 Jul)", flowering1.getTypedLabel().get(0).getLabel());
 
         //taxon interaction
+        FeatureDto hostPlantDto = features.getItems().get(4);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
+                "Host Plant", hostPlantDto.getLabel());
+        Assert.assertEquals(1, hostPlantDto.getFacts().getCount());
+        TaxonInteractionDto hostPlant1 = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().get(0);
+        Assert.assertEquals("Genus species Mill. sec. My secbook", TaggedTextFormatter.createString(hostPlant1.getTaxon()));
+        Assert.assertEquals(taxonUuid2, hostPlant1.getTaxonUuid());
+        Assert.assertEquals("Taxon interaction description", hostPlant1.getDescritpion());
+
+        //individuals association
+        FeatureDto materialExaminedDto = features.getItems().get(5);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
+                "Materials Examined", materialExaminedDto.getLabel());
+        Assert.assertEquals(1, materialExaminedDto.getFacts().getCount());
+        IndividualsAssociationDto materialExamined1 = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().get(0);
+        Assert.assertEquals("My specimen", materialExamined1.getOccurrence());
+        Assert.assertEquals(specimenUuid1, materialExamined1.getOccurrenceUuid());
+        Assert.assertEquals("Associated specimen description", materialExamined1.getDescritpion());
 
         //use data
+        //TODO
     }
 
     private void testCommonNames(FeatureDto commonNameDto) {
@@ -239,6 +274,28 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());
         CommonTaxonName cn2 = CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY());
         taxDesc.addElements(cn1, cn2);
+
+        //temporal data
+        TemporalData temporalData1 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
+                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(4, 15, 6, 30, 3, 10, 7, 20));
+        taxDesc.addElement(temporalData1);
+
+        //individual association
+        DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
+        specimen.setTitleCache("My specimen", true);
+        specimen.setUuid(specimenUuid1);
+        IndividualsAssociation indAss = IndividualsAssociation.NewInstance(specimen);
+        indAss.putDescription(Language.DEFAULT(), "Associated specimen description");
+        indAss.setFeature(Feature.MATERIALS_EXAMINED());
+        taxDesc.addElement(indAss);
+
+        //taxon interaction
+        Taxon taxon2 = Taxon.NewInstance(accName, secRef);
+        taxon2.setUuid(taxonUuid2);
+        TaxonInteraction taxInteract = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
+        taxInteract.setTaxon2(taxon2);
+        taxInteract.putDescription(Language.DEFAULT(), "Taxon interaction description");
+        taxDesc.addElement(taxInteract);
     }
 
     @Override

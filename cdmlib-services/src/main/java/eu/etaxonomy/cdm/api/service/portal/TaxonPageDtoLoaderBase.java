@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.portal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -36,7 +37,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -293,6 +296,10 @@ public abstract class TaxonPageDtoLoaderBase {
         MediaDTO dto = new TaxonPageDto.MediaDTO();
         loadBaseData(media, dto);
         dto.setLabel(media.getTitleCache());
+        //TODO i18n
+        List<Language> languages = new ArrayList<>();
+        LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(media.getAllDescriptions(), languages);
+        dto.setDescription(description == null ? null : description.getText());
         ContainerDto<MediaRepresentationDTO> representations = new ContainerDto<>();
         for (MediaRepresentation rep : media.getRepresentations()) {
             MediaRepresentationDTO repDto = new MediaRepresentationDTO();
