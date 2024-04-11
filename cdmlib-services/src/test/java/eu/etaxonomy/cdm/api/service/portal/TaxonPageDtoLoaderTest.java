@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
+import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
@@ -36,8 +37,10 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -82,24 +85,55 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Genus", list.get(0).getText());
 
         //facts
-        ContainerDto<FeatureDto> taxonFacts = dto.getTaxonFacts();
-        Assert.assertEquals(1, taxonFacts.getCount());
-        FeatureDto featureDto = taxonFacts.getItems().get(0);
-        ContainerDto<IFactDto> facts = featureDto.getFacts();
-        Assert.assertEquals(1, facts.getCount());
-        IFactDto factDto = facts.getItems().get(0);
-        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), factDto.getClazz());
-        DistributionInfoDto did = (DistributionInfoDto)factDto;
+        ContainerDto<FeatureDto> features = dto.getTaxonFacts();
+        Assert.assertEquals("There should be 2 features, distribution and description", 2, features.getCount());
+        testDescription(features);
+
+        testDistributions(features);
+    }
+
+    private void testDescription(ContainerDto<FeatureDto> features) {
+        FeatureDto descriptionDto = features.getItems().get(0);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
+                "Description", descriptionDto.getLabel());
+        ContainerDto<IFactDto> descriptions = descriptionDto.getFacts();
+        Assert.assertEquals(4, descriptions.getCount());
+        FactDto description1 = (FactDto)descriptions.getItems().get(0);
+        FactDto description2 = (FactDto)descriptions.getItems().get(1);
+        FactDto description3 = (FactDto)descriptions.getItems().get(2);
+        FactDto description4 = (FactDto)descriptions.getItems().get(3);
+        Assert.assertNull("Current sorting should sort null to the top. This may change in future.",
+                description1.getSortIndex());
+        Assert.assertNull("Current sorting should sort null to the top. This may change in future.",
+                description2.getSortIndex());
+        Assert.assertTrue("Current sorting should work on id if no sortIndex is given. This may change in future.",
+                description1.getId() < description2.getId());
+        //TODO use typed label formatter (once implemented)
+        Assert.assertEquals("If sortindex is given it should be used for sorting.",
+                "My fourth description", description3.getTypedLabel().get(0).getLabel().toString());
+        Assert.assertEquals("If sortindex is given it should be used for sorting.",
+                "My third description", description4.getTypedLabel().get(0).getLabel().toString());
+    }
+
+    private void testDistributions(ContainerDto<FeatureDto> features) {
+        FeatureDto distributionDto = features.getItems().get(1);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
+                "Distribution", distributionDto.getLabel());
+        ContainerDto<IFactDto> distributions = distributionDto.getFacts();
+        Assert.assertEquals(1, distributions.getCount());
+        IFactDto distribution = distributions.getItems().get(0);
+        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
+        DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
         //... condensed distribution
         //TODO this still fails
-        System.out.println(did.getCondensedDistribution().getHtmlString() + ": TODO");
+        System.out.println(distributionInfo.getCondensedDistribution().getHtmlString() + ": TODO");
         //TODO probably the order is not deterministic, so we may need to check single parts only, same as in according builder test
-        String mapUriParamsStart = did.getMapUriParams().substring(0, 50);
-        String mapUriParamsEnd = did.getMapUriParams().replace(mapUriParamsStart, "");
+        String mapUriParamsStart = distributionInfo.getMapUriParams().substring(0, 50);
+        String mapUriParamsEnd = distributionInfo.getMapUriParams().replace(mapUriParamsStart, "");
         Assert.assertEquals("as=a:,,0.1,|b:,,0.1,&ad=country_earth%3Agmi_cntry:", mapUriParamsStart);
         Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:introduced"));
         //...tree
-        DistributionTreeDto tree = (DistributionTreeDto)did.getTree();
+        DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
         Assert.assertEquals("Tree:2<FRA:introduced{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
         Assert.assertEquals("Should be France and Germany", 2, tree.getRootElement().children.size());
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(1);
@@ -119,35 +153,45 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         taxon.setUuid(taxonUuid1);
         taxonService.save(taxon);
 
-        //facts
-        TaxonDescription td = TaxonDescription.NewInstance(taxon);
+        //distributions
+        TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon);
         Country.GERMANY().setSymbol("De");
         PresenceAbsenceTerm.PRESENT().setSymbol("");
         Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
         germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Abc Annotation"));
         germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.TECHNICAL(), Language.DEFAULT()));
 
-        td.addElement(germany);
+        taxDesc.addElement(germany);
         Country.FRANCE().setSymbol("Fr");
         PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
         Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.INTRODUCED());
-        td.addElement(franceDist);
+        taxDesc.addElement(franceDist);
 
-        //sources
-        //primary
+        //... sources
+        //... ... primary
         Reference franceRef = ReferenceFactory.newBook();
         franceRef.setAuthorship(author);
         franceRef.setTitle("My French distribution");
         franceRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1978"));
         franceDist.addPrimaryTaxonomicSource(franceRef, "44");
-        //import
+        //... ... import
         Reference importRef = ReferenceFactory.newDatabase();
         importRef.setTitle("French distribution import");  //should not be shown in output
         franceDist.addImportSource("7777", "Distribution", importRef, "99");
+
+        //text facts
+        TextData td1 = TextData.NewInstance(Feature.DESCRIPTION(), "My first description", Language.DEFAULT(), null);
+        TextData td2 = TextData.NewInstance(Feature.DESCRIPTION(), "My second description", Language.DEFAULT(), null);
+        TextData td3 = TextData.NewInstance(Feature.DESCRIPTION(), "My third description", Language.DEFAULT(), null);
+        td3.setSortIndex(2);
+        td3.addPrimaryTaxonomicSource(franceRef, "63");
+        TextData td4 = TextData.NewInstance(Feature.DESCRIPTION(), "My fourth description", Language.DEFAULT(), null);
+        td4.setSortIndex(1);
+
+        taxDesc.addElements(td1, td2, td3, td4);
     }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {
     }
-
 }

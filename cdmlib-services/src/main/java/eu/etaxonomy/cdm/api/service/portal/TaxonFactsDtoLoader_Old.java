@@ -397,6 +397,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonPageDtoLoaderBase {
             return null;
         }
         result.setTimeperiod(fact.getTimeperiod() == null ? null : fact.getTimeperiod().toString());
+        result.setSortIndex(fact.getSortIndex());
         return result;
     }
 

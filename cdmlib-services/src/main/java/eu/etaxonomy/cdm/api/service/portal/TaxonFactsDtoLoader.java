@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -184,12 +185,10 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
                 filteredRootNode = createDefaultFeatureNode(taxon);
             }
 
-
             //load facts per feature
             SetMap<UUID, FactDtoBase> factsPerFeature = loadFactsPerFeature(taxon, config);
-//            Map<UUID,Set<FactTmpDto>> factsPerFeature = loadFeatureMap(taxon, config.isIncludeUnpublished());
 
-
+            //handle supplemental data
             factsPerFeature.values().stream().forEach(s->s.stream().forEach(f->handleSupplementalData(f)));
 
             //TODO make configurable
@@ -677,107 +676,68 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
         return root;
     }
 
-    public class AllFactTypesDto{
+    private FactDtoBase allFactTypesDto2FactDtoBase(AllFactTypesDto aftd) {
 
-//        DescriptionElementBase toInstance() {
-//            DescriptionElementBase deb;
-//            if (type == Distribution.class) {
-//                Distribution td = Distribution.NewInstance(area, status);
-//                deb = td;
-//            } else if (type == TextData.class) {
-//                TextData td = TextData.NewInstance();
-//                deb = td;
-//            }else if (type == CommonTaxonName.class) {
-//                Language lang = null;
-//                CommonTaxonName ctn = CommonTaxonName.NewInstance(name, lang);
-//                deb = ctn;
-//            } else if (type == IndividualsAssociation.class) {
-//                IndividualsAssociation ia = IndividualsAssociation.NewInstance();
-//                deb = ia;
-//            } else if (type == TaxonInteraction.class) {
-//                TaxonInteraction ti = TaxonInteraction.NewInstance();
-//                deb = ti;
-//            }else if (type == CategoricalData.class) {
-//                CategoricalData cd = CategoricalData.NewInstance();
-//                deb = cd;
-//            }else if (type == QuantitativeData.class) {
-//                QuantitativeData qd = QuantitativeData.NewInstance();
-//                deb = qd;
-//            }else if (type == TemporalData.class) {
-//                TemporalData td = TemporalData.NewInstance();
-//                deb = td;
-//            }else {
-//                //TODO logging
-//                return null;
-//            }
-//            deb.setTimeperiod(timePeriod);
-//            deb.setSortIndex(sortIndex);
-//            return deb;
-//        }
-
-        public FactDtoBase toDto() {
-
-            FactDtoBase dto;
-            //TODO label
-            if (type == Distribution.class) {
-                DistributionDto dd = new DistributionDto(null, this.id, null, null);
-                NamedAreaDto areaDto = TermDtoLoader.INSTANCE().fromEntity(this.area);
-                //factProxyLoader.add(NamedArea.class, areaDto)
-                dd.setArea(areaDto);
-                TermDto statusDto = TermDtoLoader.INSTANCE().fromEntity(this.status);
-                //OLD: factProxyLoader.add(PresenceAbsenceTerm.class, statusDto)
-                dd.setStatus(statusDto);
-                dto = dd;
-            } else if (type == TextData.class) {
-                FactDto td = new FactDto();
-                td.addTypedLabel(new TypedLabel("Test text"));
-                //TODO text
-                dto = td;
-            }else if (type == CommonTaxonName.class) {
-                CommonNameDto ctn = new CommonNameDto();
-//                NamedAreaDto areaDto = new NamedAreaDto(null, id, null);
-//                ctn.setArea(factProxyLoader.add(NamedArea.class, areaDto));
-                ctn.setArea("Testarea");  //TODO  //String
-                ctn.setLanguage("Testlanguage");  //String //TODO
-                ctn.setName(name);
-                ctn.setTransliteration(transliteration);
-                dto = ctn;
-            } else if (type == IndividualsAssociation.class) {
-                IndividualsAssociationDto ia = new IndividualsAssociationDto();
-                ia.setOccurrence(null);  //TODO
-                ia.setDescritpion(null); //TODO xxx
-                dto = ia;
-            } else if (type == TaxonInteraction.class) {
-                TaxonInteractionDto ti = new TaxonInteractionDto();
-                ti.setTaxon(null);  //TODO
-                ti.setDescritpion(null);  //TODO xxx
-                dto = ti;
-            }else if (type == CategoricalData.class) {
-                FactDto fd = new FactDto();
-                //TODO text
-                dto = fd;
-            }else if (type == QuantitativeData.class) {
-                FactDto fd = new FactDto();
-                //TODO text
-                dto = fd;
-            }else if (type == TemporalData.class) {
-                FactDto fd = new FactDto();
-                //TODO text
-                dto = fd;
-            }else {
-                pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + this.type.getSimpleName()));
-                return null;
+        FactDtoBase dto;
+        //TODO label
+        if (aftd.type == Distribution.class) {
+            DistributionDto distDto = new DistributionDto(null, aftd.id, null, null);
+            NamedAreaDto areaDto = TermDtoLoader.INSTANCE().fromEntity(aftd.area);
+            //factProxyLoader.add(NamedArea.class, areaDto)
+            distDto.setArea(areaDto);
+            TermDto statusDto = TermDtoLoader.INSTANCE().fromEntity(aftd.status);
+            //OLD: factProxyLoader.add(PresenceAbsenceTerm.class, statusDto)
+            distDto.setStatus(statusDto);
+            dto = distDto;
+        } else if (aftd.type == TextData.class) {
+            FactDto td = new FactDto();
+            if (StringUtils.isNotBlank(aftd.text)) {
+                td.addTypedLabel(new TypedLabel(aftd.text));
             }
-
-            dto.setTimeperiod(this.timePeriod == null ? null : this.timePeriod.toString());
-            dto.setId(this.id);
-            dto.setSortIndex(this.sortIndex);
-            return dto;
+            dto = td;
+        }else if (aftd.type == CommonTaxonName.class) {
+            CommonNameDto ctn = new CommonNameDto();
+//            NamedAreaDto areaDto = new NamedAreaDto(null, id, null);
+//            ctn.setArea(factProxyLoader.add(NamedArea.class, areaDto));
+            ctn.setArea("Testarea");  //TODO  //String
+            ctn.setLanguage("Testlanguage");  //String //TODO
+            ctn.setName(aftd.name);
+            ctn.setTransliteration(aftd.transliteration);
+            dto = ctn;
+        } else if (aftd.type == IndividualsAssociation.class) {
+            IndividualsAssociationDto ia = new IndividualsAssociationDto();
+            ia.setOccurrence(null);  //TODO
+            ia.setDescritpion(null); //TODO xxx
+            dto = ia;
+        } else if (aftd.type == TaxonInteraction.class) {
+            TaxonInteractionDto ti = new TaxonInteractionDto();
+            ti.setTaxon(null);  //TODO
+            ti.setDescritpion(null);  //TODO xxx
+            dto = ti;
+        }else if (aftd.type == CategoricalData.class) {
+            FactDto fd = new FactDto();
+            //TODO text
+            dto = fd;
+        }else if (aftd.type == QuantitativeData.class) {
+            FactDto fd = new FactDto();
+            //TODO text
+            dto = fd;
+        }else if (aftd.type == TemporalData.class) {
+            FactDto fd = new FactDto();
+            //TODO text
+            dto = fd;
+        }else {
+            pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + aftd.type.getSimpleName()));
+            return null;
         }
 
-//        public Object getTimeperiod() {
-//            return deb != null? deb.getTimeperiod(): timePeriod;
-//        }
+        dto.setTimeperiod(aftd.timePeriod == null ? null : aftd.timePeriod.toString());
+        dto.setId(aftd.id);
+        dto.setSortIndex(aftd.sortIndex);
+        return dto;
+    }
+
+    private class AllFactTypesDto{
 
         UUID featureUuid;
         Class type;
@@ -789,6 +749,7 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
         Integer sortIndex;
         PresenceAbsenceTerm status;
         String transliteration;
+        String text;
 
         public AllFactTypesDto(Map<String,Object> map) {
             this.featureUuid = (UUID)map.get("featureUuid");
@@ -801,21 +762,15 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
             this.sortIndex = (Integer)map.get("sortIndex");
             this.status = (PresenceAbsenceTerm) map.get("status");
             this.transliteration = (String)map.get("transliteration");
-//            this.multilanguageText = (Map<Language, LanguageString>)map.get("i18nText");
+            LanguageString i18n = (LanguageString)map.get("i18nText");
+            //TODO why is this already a language string and not a multi-language string
+            //FIXME probably we need to deduplicate if >1 language representation exists!!
+            this.text = i18n == null ? null : i18n.getText();
         }
-//        public AllFactTypesDto(DescriptionElementBase deb) {
-//            this.deb = deb;
-//            this.type = CdmBase.deproxy(deb).getClass();
-//        }
-
     }
 
     private SetMap<UUID, FactDtoBase> loadFactsPerFeature(IDescribable<?> describable,
             TaxonPageDtoConfiguration config) {
-
-        boolean withImageGallery = false;
-//        List<Map<String, Object>> dto = this.repository.getDescriptionElementService().getFactDto(
-//                Taxon.class, describable.getUuid(), includeUnpublished, withImageGallery);
 
         Class<? extends IDescribable> clazz = Taxon.class;
         UUID entityUuid = describable.getUuid();
@@ -823,13 +778,16 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
         String describedAttr = clazz.equals(Taxon.class) ? "taxon" : clazz.equals(TaxonName.class) ? "name" : "describedSpecimenOrObservation";
         String hql = "SELECT new map(deb.feature.uuid as featureUuid, type(deb) as type "
                    +    " ,deb.uuid as uuid, deb.id as id "
-                   +    " ,deb.area as area, deb.name as name "
+                   +    " ,a as area, deb.name as name "
+                   +    " ,st as status "
                    +    " ,deb.timeperiod as timePeriod, deb.sortIndex as sortIndex"
-                   +    " ,deb.status as status "
                    +    " ,deb.transliteration as transliteration "
-//                   +    " ,deb.multilanguageText as i18nText"
+                   +    " ,mlt as i18nText "
                    +    ")"
                    + " FROM DescriptionElementBase deb "
+                   + "     LEFT OUTER JOIN deb.status st "
+                   + "     LEFT OUTER JOIN deb.area a "
+                   + "     LEFT OUTER JOIN deb.multilanguageText mlt "
                    + " WHERE deb.inDescription." + describedAttr +".uuid = '" + entityUuid +"'"
                    + " AND deb.inDescription.imageGallery = false ";
         if (!config.isIncludeUnpublished()) {
@@ -844,7 +802,7 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
             for (Map<String,Object> factMap : factMaps) {
                 AllFactTypesDto fact = new AllFactTypesDto(factMap);
                 UUID featureUuid = fact.featureUuid;
-                FactDtoBase dto = fact.toDto();
+                FactDtoBase dto = allFactTypesDto2FactDtoBase(fact);
                 if (dto != null) {
                     result.putItem(featureUuid, dto);
                 }
@@ -860,26 +818,6 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
 
 
     }
-
-//    private SetMap<UUID,AllFactTypesDto> loadFeature2FactMap(IDescribable<?> describable, boolean includeUnpublished) {
-//
-//        SetMap<UUID,AllFactTypesDto> featureMap = new SetMap<>();
-//
-//        //... load facts
-//        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
-//            if (description.isImageGallery()) {
-//                continue;
-//            }
-//            for (DescriptionElementBase deb : description.getElements()) {
-//                Feature feature = deb.getFeature();
-//                if (featureMap.get(feature.getUuid()) == null) {
-//                    featureMap.put(feature.getUuid(), new HashSet<>());
-//                }
-//                featureMap.get(feature.getUuid()).add(new AllFactTypesDto(deb));
-//            }
-//        }
-//        return featureMap;
-//    }
 
     private void handleFeatureNode(TaxonPageDtoConfiguration config,
             SetMap<UUID,FactDtoBase> featureMap, ContainerDto<FeatureDto> features,
@@ -920,7 +858,6 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
             }
 
             handleDistributions(config, featureDto, distributions, pageDto);
-            //TODO really needed?
             orderFacts(featureDto);
         }
         features.addItem(featureDto);
@@ -935,30 +872,57 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
         }
     }
 
-    //TODO not really used yet, only for distinguishing fact classes,
-    //needs discussion if needed and how to implement.
+    //TODO needs discussion if needed and how to implement.
     //we could also move compareTo methods to DTO classes but with this
     //remove from having only data in the DTO, no logic
     private void orderFacts(FeatureDto featureDto) {
         List<IFactDto> list = featureDto.getFacts().getItems();
         Collections.sort(list, (f1,f2)->{
             if (!f1.getClass().equals(f2.getClass())) {
+                //if fact classes differ we first order by class for now
                 return f1.getClass().getSimpleName().compareTo(f2.getClass().getSimpleName());
             }else {
                 if (f1 instanceof FactDto) {
                    FactDto fact1 = (FactDto)f1;
                    FactDto fact2 = (FactDto)f2;
-
-//                   return fact1.getTypedLabel().toString().compareTo(fact2.getTypedLabel().toString());
-                   return 0; //FIXME;
+                   int c = CdmUtils.nullSafeCompareTo(fact1.getSortIndex(), fact2.getSortIndex());
+                   if (c == 0) {
+                       //TODO correct order for facts without sortindex is not discussed yet. But there is a
+                       // dataportal test that requires defined behavior. Ordering by id usually implies that the
+                       // fact added first is shown first.
+                       c = CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
+                   }
+                   if (c == 0) {
+                       c = CdmUtils.nullSafeCompareTo(fact1.getTypedLabel().toString(), fact2.getTypedLabel().toString());
+                   }
+                   return c;
                 } else if (f1 instanceof CommonNameDto) {
-                    int result = 0;
                     CommonNameDto fact1 = (CommonNameDto)f1;
                     CommonNameDto fact2 = (CommonNameDto)f2;
-                    return 0;  //FIXME
+                    int c = CdmUtils.nullSafeCompareTo(fact1.getSortIndex(), fact2.getSortIndex());
+                    if (c == 0) {
+                        //TODO unclear if name or language should come first
+                        c = CdmUtils.nullSafeCompareTo(fact1.getName(), fact2.getName());
+                    }
+                    if (c == 0) {
+                        //TODO unclear if name or language should come first
+                        c = CdmUtils.nullSafeCompareTo(fact1.getLanguage(), fact2.getLanguage());
+                    }
+                    if (c == 0) {
+                        //to have deterministic behavior we finally order by id if everything else is equal
+                        c = CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
+                    }
+
+                    return c;
+                }else if (f1 instanceof FactDtoBase) {
+                    //TODO add compare for DistributionDto, IndividualsAssocitationDto and TaxonInteractionDto
+                    //default, to have deterministic behavior at least
+                    FactDtoBase fact1 = (FactDto)f1;
+                    FactDtoBase fact2 = (FactDto)f2;
+                    return CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
                 }
             }
-            return 0;  //FIXME
+            return 0; //TODO
         });
     }
 }
